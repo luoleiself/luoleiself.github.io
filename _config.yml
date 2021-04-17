@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: luoleiself
-subtitle: 'blog'
-description: 'luoleiself blog'
+title: luoleiself's blog
+subtitle: blog
+description: 努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...
 keywords:
-author: luolei
+author: luoleiself
 language: zh-CN
 timezone: ''
 
@@ -15,7 +15,7 @@ timezone: ''
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://luoleiself.github.io
 # permalink: :year/:month/:day/:title/
-permalink: :title-:hash/
+permalink: :category/:hash.html
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
@@ -98,9 +98,34 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+# theme: landscape
+theme: next
+
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+
+# RSS
+# https://github.com/hexojs/hexo-generator-feed
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content:
+  content_limit: 140
+  content_limit_delim: ' '
+  order_by: -date
+  icon: icon.png
+  autodiscovery: true
+  template:
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: git
+  repo: https://github.com/luoleiself/luoleiself.github.io #https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io
+  branch: [main]
+  # message: [message]
