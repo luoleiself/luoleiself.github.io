@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/uncategorized/7df03390b905/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>GIT实战命令</title>
     <url>/tools/745b531fbfc3/</url>
     <content><![CDATA[<p><a href="https://git-scm.com/"><img src="../../images/git-flow-1.jpg" alt="概念图"></a></p>
@@ -101,6 +83,7 @@
 <li><p>%w([[,[,]]]) switch line wrapping, like the -w option of git-shortlog(1).</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span> <span class="comment"># 设置 log 缩写并美化输出提交记录</span></span><br></pre></td></tr></table></figure></li>
 </ul>
+<p><img src="../../images/git-config-1.jpg" alt="配置1"></p>
 <h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose <span class="comment"># 显示关联的远程仓库的详细信息</span></span><br></pre></td></tr></table></figure>
 
 <h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url <span class="comment"># 添加关联的远程仓库信息</span></span><br></pre></td></tr></table></figure>
@@ -123,15 +106,63 @@
 <li><p>all 获取所有 url</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name <span class="comment"># 获取关联仓库地址</span></span><br></pre></td></tr></table></figure></li>
 </ul>
+<hr>
 <h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name] <span class="comment"># 初始化 指定/当前 目录为 git 仓库</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="克隆"><a href="#克隆" class="headerlink" title="克隆"></a>克隆</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> [url] <span class="comment"># 下载远程仓库和历史记录</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h4><h3 id="外篇"><a href="#外篇" class="headerlink" title="外篇"></a>外篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;] <span class="comment"># 初始化指定目录为嵌套仓库</span></span><br></pre></td></tr></table></figure>
+<h4 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h4><h5 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h5><ul>
+<li><p>a|all 列出所有本地和关联远程分支</p>
+</li>
+<li><p>r 列出关联远程分支</p>
+</li>
+<li><p>v|verbose 列出分支并显示当前提交信息摘要</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-a] [-r] [-v] <span class="comment"># 查看分支</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="新建"><a href="#新建" class="headerlink" title="新建"></a>新建</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch &lt;branch-name&gt; <span class="comment"># 创建新分支</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f|--force] <span class="comment"># 强制删除嵌套仓库</span></span><br><span class="line">git submodule deinit [--all] <span class="comment"># 删除所有嵌套仓库</span></span><br></pre></td></tr></table></figure>
+<h5 id="移动-修改"><a href="#移动-修改" class="headerlink" title="移动|修改"></a>移动|修改</h5><ul>
+<li><p>m 移动|修改分支, old-branch 无则为移动操作</p>
+</li>
+<li><p>M 强制移动|修改分支即使新分支存在, old-branch 无则为移动操作</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-m] [-M] [&lt;old-branch&gt;] &lt;new-branch&gt; <span class="comment"># 移动|修改分支</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h5><ul>
+<li><p>c 复制分支和分支提交历史</p>
+</li>
+<li><p>C 强制复制分支和分支提交历史</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-c] [-M] [&lt;old-branch&gt;] &lt;new-branch&gt; <span class="comment"># 复制分支</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h5><ul>
+<li><p>d 删除本地分支,一般和 r 配合删除关联远程分支</p>
+</li>
+<li><p>D 强制删除本地分支,即使分支未被合并</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-d] [-D] &lt;branch-name&gt; <span class="comment"># 删除分支, -D 强制删除即使分支未被合并</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="切换"><a href="#切换" class="headerlink" title="切换"></a>切换</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout [branch-name] <span class="comment"># 切换到指定分支</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b|--branch) &lt;branch&gt; [&lt;path&gt;] <span class="comment"># 设置嵌套仓库的默认远程关联分支</span></span><br></pre></td></tr></table></figure>
+<h6 id="切换并创建新分支"><a href="#切换并创建新分支" class="headerlink" title="切换并创建新分支"></a>切换并创建新分支</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -b &lt;branch-name&gt; [-t] [&lt;remote-branch&gt;] <span class="comment"># 基于远程分支创建新分支,自动建立追踪关系</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="追踪关系"><a href="#追踪关系" class="headerlink" title="追踪关系"></a>追踪关系</h5><ul>
+<li><p>t|no-track 建立|取消分支追踪关系</p>
+</li>
+<li><p>u|unset-upstream 建立|取消分支追踪关系</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -t &lt;remote-branch&gt; <span class="comment"># 当前分支和远程分支建立追踪关系</span></span><br><span class="line">git branch -u &lt;local-branch&gt; &lt;remote-branch&gt; <span class="comment"># 指定分支和远程分支建立追踪关系</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="分支追踪关系-提交摘要"><a href="#分支追踪关系-提交摘要" class="headerlink" title="分支追踪关系,提交摘要"></a>分支追踪关系,提交摘要</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-vv] <span class="comment"># 查看本地分支追踪关系和提交信息</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/git-branch-1.jpg" alt="追踪关系"></p>
+<h5 id="分支合并"><a href="#分支合并" class="headerlink" title="分支合并"></a>分支合并</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git merge --no-ff &lt;branch-name&gt; <span class="comment"># 合并指定分支到当前分支</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h4><hr>
+<h4 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h4><hr>
+<h4 id="远程同步"><a href="#远程同步" class="headerlink" title="远程同步"></a>远程同步</h4><hr>
+<h3 id="外篇"><a href="#外篇" class="headerlink" title="外篇"></a>外篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;] <span class="comment"># 初始化指定目录为嵌套仓库</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f] <span class="comment"># 强制删除嵌套仓库</span></span><br><span class="line">git submodule deinit [--all] <span class="comment"># 删除所有嵌套仓库</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;] <span class="comment"># 设置嵌套仓库的默认远程关联分支</span></span><br></pre></td></tr></table></figure>
 
 <h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt; <span class="comment"># 设置嵌套仓库新的地址,会自动同步新的地址配置项</span></span><br></pre></td></tr></table></figure>
 
@@ -143,13 +174,13 @@
 
 <h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
 <li><p>list</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l|--list] <span class="comment"># 显示支持的归档文件格式</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l] <span class="comment"># 显示支持的归档文件格式</span></span><br></pre></td></tr></table></figure></li>
 <li><p>format</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;fmt&gt; [&lt;path&gt;...] <span class="comment"># 指定归档文件格式</span></span><br></pre></td></tr></table></figure></li>
 <li><p>prefix</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...] <span class="comment"># 指定归档文件前缀</span></span><br></pre></td></tr></table></figure></li>
 <li><p>output|o</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o|--output &lt;file&gt;] [&lt;path&gt;...] <span class="comment"># 将归档文件写入到指定文件非输出流</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...] <span class="comment"># 将归档文件写入到指定文件非输出流</span></span><br></pre></td></tr></table></figure></li>
 <li><p>add-file</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...] <span class="comment"># 添加未被追踪的文件到归档文件中</span></span><br></pre></td></tr></table></figure></li>
 </ul>
@@ -170,5 +201,23 @@
       <tags>
         <tag>git</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/uncategorized/7df03390b905/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
   </entry>
 </search>
