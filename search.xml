@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>GIT实战命令</title>
-    <url>/tools/745b531fbfc3/</url>
+    <title>Git命令配置篇</title>
+    <url>/tools/00ea2bbb2db0/</url>
     <content><![CDATA[<p><a href="https://git-scm.com/"><img src="../../images/git-flow-1.jpg" alt="概念图"></a></p>
-<h3 id="配置篇"><a href="#配置篇" class="headerlink" title="配置篇"></a>配置篇</h3><h4 id="Git-仓库用户凭据"><a href="#Git-仓库用户凭据" class="headerlink" title="Git 仓库用户凭据"></a>Git 仓库用户凭据</h4><p>场景: 使用 https 方式与远程仓库同步时, 不想每次都在提示框中输入用户名和密码确认, 此方式在用户家目录下创建(修改) .git-credentials 文件, 存储用户名和密码</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --system --<span class="built_in">unset</span> credential.helper <span class="comment"># 清除本地存储的用户名和密码凭据</span></span><br><span class="line">git config --global credential.helper store <span class="comment"># 存储凭据, 在第一次 push 时提示输入</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="Git-环境定制"><a href="#Git-环境定制" class="headerlink" title="Git 环境定制"></a>Git 环境定制</h4><ul>
-<li><p>local 读取仓库配置文件 <code>.git/config</code></p>
-</li>
-<li><p>global 读取用户配置文件 <code>.gitconfig</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -l|--list <span class="comment"># 显示配置项, 不指定 [] 则显示全部</span></span><br><span class="line">git config [--global] -e|--edit  <span class="comment"># 使用 vim 编辑配置文件, 默认编辑仓库配置文件</span></span><br></pre></td></tr></table></figure></li>
+<h3 id="配置篇"><a href="#配置篇" class="headerlink" title="配置篇"></a>配置篇</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><h5 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h5><p>远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步</p>
+<h5 id="Repository"><a href="#Repository" class="headerlink" title="Repository"></a>Repository</h5><p>本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本</p>
+<h5 id="Index-Stage"><a href="#Index-Stage" class="headerlink" title="Index / Stage"></a>Index / Stage</h5><p>暂存区, 临时存放改动的需要被提交的文件列表信息</p>
+<h5 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h5><p>工作区, 当前可见的随时可以进行操作的区域</p>
+<h4 id="Git-仓库用户凭据"><a href="#Git-仓库用户凭据" class="headerlink" title="Git 仓库用户凭据"></a>Git 仓库用户凭据</h4><p>场景: 使用 https 方式与远程仓库同步时, 不想每次都在提示框中输入用户名和密码确认, 此方式在用户家目录下创建(修改) .git-credentials 文件, 存储用户名和密码</p>
+<ul>
+<li><p>清除本地存储的用户名和密码凭据</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --system --<span class="built_in">unset</span> credential.helper</span><br></pre></td></tr></table></figure></li>
+<li><p>存储凭据, 在第一次 push 时提示输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h5 id="unset-重置"><a href="#unset-重置" class="headerlink" title="unset 重置"></a>unset 重置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --<span class="built_in">unset</span> [key] <span class="comment"># 删除指定设置, 默认为仓库</span></span><br><span class="line">git config --<span class="built_in">unset</span> user.name <span class="comment"># 删除仓库用户名</span></span><br></pre></td></tr></table></figure>
+<h4 id="Git-环境定制"><a href="#Git-环境定制" class="headerlink" title="Git 环境定制"></a>Git 环境定制</h4><ul>
+<li>local 读取仓库配置文件 <code>.git/config</code></li>
+<li>global 读取用户配置文件 <code>.gitconfig</code>, 不加默认为仓库配置</li>
+</ul>
+<h5 id="显示配置项"><a href="#显示配置项" class="headerlink" title="显示配置项"></a>显示配置项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -l|--list</span><br></pre></td></tr></table></figure>
 
-<h5 id="add-添加配置"><a href="#add-添加配置" class="headerlink" title="add 添加配置"></a>add 添加配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --add key value <span class="comment"># 设置仓库配置, 默认为仓库</span></span><br><span class="line">git config --add user.name Tom <span class="comment"># 设置仓库用户名为 Tom</span></span><br></pre></td></tr></table></figure>
+<h5 id="使用-vim-编辑配置文件"><a href="#使用-vim-编辑配置文件" class="headerlink" title="使用 vim 编辑配置文件"></a>使用 vim 编辑配置文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -e|--edit</span><br></pre></td></tr></table></figure>
 
-<h5 id="get-获取配置"><a href="#get-获取配置" class="headerlink" title="get 获取配置"></a>get 获取配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --get key <span class="comment"># 获取指定配置, 默认为仓库</span></span><br><span class="line">git config --get user.name <span class="comment"># 获取用户名 Tom</span></span><br></pre></td></tr></table></figure>
+<h5 id="unset-重置"><a href="#unset-重置" class="headerlink" title="unset 重置"></a>unset 重置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --<span class="built_in">unset</span> [key]</span><br></pre></td></tr></table></figure>
 
-<h5 id="alias-命令缩写"><a href="#alias-命令缩写" class="headerlink" title="alias 命令缩写"></a>alias 命令缩写</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] <span class="built_in">alias</span>.* value <span class="comment"># 设置命令缩写, 默认为仓库</span></span><br><span class="line">git config alias.co checkout <span class="comment"># 设置 checkout 的缩写命令为 co</span></span><br></pre></td></tr></table></figure>
+<h5 id="add-添加配置"><a href="#add-添加配置" class="headerlink" title="add 添加配置"></a>add 添加配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --add key value</span><br><span class="line">git config --add user.name Tom</span><br></pre></td></tr></table></figure>
+
+<h5 id="get-获取配置"><a href="#get-获取配置" class="headerlink" title="get 获取配置"></a>get 获取配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --get key</span><br><span class="line">git config --get user.name</span><br></pre></td></tr></table></figure>
+
+<h5 id="alias-命令缩写"><a href="#alias-命令缩写" class="headerlink" title="alias 命令缩写"></a>alias 命令缩写</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] <span class="built_in">alias</span>.* value</span><br><span class="line">git config alias.co checkout</span><br></pre></td></tr></table></figure>
 
 <h6 id="alias-log-美化"><a href="#alias-log-美化" class="headerlink" title="alias.log 美化"></a>alias.log 美化</h6><ul>
 <li><p>%H commit hash</p>
@@ -81,16 +91,16 @@
 <li><p>%x00 print a byte from a hex code</p>
 </li>
 <li><p>%w([[,[,]]]) switch line wrapping, like the -w option of git-shortlog(1).</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span> <span class="comment"># 设置 log 缩写并美化输出提交记录</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span></span><br></pre></td></tr></table></figure></li>
 </ul>
 <p><img src="../../images/git-config-1.jpg" alt="配置1"></p>
-<h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose <span class="comment"># 显示关联的远程仓库的详细信息</span></span><br></pre></td></tr></table></figure>
+<h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose</span><br></pre></td></tr></table></figure>
 
-<h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url <span class="comment"># 添加关联的远程仓库信息</span></span><br></pre></td></tr></table></figure>
+<h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url</span><br></pre></td></tr></table></figure>
 
-<h6 id="remove-删除"><a href="#remove-删除" class="headerlink" title="remove 删除"></a>remove 删除</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote remove name <span class="comment"># 删除关联的远程仓库信息</span></span><br></pre></td></tr></table></figure>
+<h6 id="remove-删除"><a href="#remove-删除" class="headerlink" title="remove 删除"></a>remove 删除</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote remove name</span><br></pre></td></tr></table></figure>
 
-<h6 id="rename-修改关联仓库名称"><a href="#rename-修改关联仓库名称" class="headerlink" title="rename 修改关联仓库名称"></a>rename 修改关联仓库名称</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rename old new <span class="comment"># 修改关联的远程仓库名称</span></span><br></pre></td></tr></table></figure>
+<h6 id="rename-修改关联仓库名称"><a href="#rename-修改关联仓库名称" class="headerlink" title="rename 修改关联仓库名称"></a>rename 修改关联仓库名称</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rename old new</span><br></pre></td></tr></table></figure>
 
 <h6 id="set-url-设置关联仓库地址"><a href="#set-url-设置关联仓库地址" class="headerlink" title="set-url 设置关联仓库地址"></a>set-url 设置关联仓库地址</h6><ul>
 <li><p>push 设置推送 url</p>
@@ -98,67 +108,27 @@
 <li><p>add 保持当前的 url,并添加一个新的 url</p>
 </li>
 <li><p>delete 将删除匹配到的 url, 并添加一个新的 url</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote set-url [--push|--add|--delete] name url <span class="comment"># 设置关联仓库地址</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote set-url [--push|--add|--delete] name url</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h6 id="get-url-获取关联仓库地址"><a href="#get-url-获取关联仓库地址" class="headerlink" title="get-url 获取关联仓库地址"></a>get-url 获取关联仓库地址</h6><ul>
 <li><p>push 获取推送 url</p>
 </li>
 <li><p>all 获取所有 url</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name <span class="comment"># 获取关联仓库地址</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name</span><br></pre></td></tr></table></figure></li>
 </ul>
 <hr>
-<h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name] <span class="comment"># 初始化 指定/当前 目录为 git 仓库</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="克隆"><a href="#克隆" class="headerlink" title="克隆"></a>克隆</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> [url] <span class="comment"># 下载远程仓库和历史记录</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h4><h5 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h5><ul>
-<li><p>a|all 列出所有本地和关联远程分支</p>
-</li>
-<li><p>r 列出关联远程分支</p>
-</li>
-<li><p>v|verbose 列出分支并显示当前提交信息摘要</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-a] [-r] [-v] <span class="comment"># 查看分支</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="新建"><a href="#新建" class="headerlink" title="新建"></a>新建</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch &lt;branch-name&gt; <span class="comment"># 创建新分支</span></span><br></pre></td></tr></table></figure>
-
-<h5 id="移动-修改"><a href="#移动-修改" class="headerlink" title="移动|修改"></a>移动|修改</h5><ul>
-<li><p>m 移动|修改分支, old-branch 无则为移动操作</p>
-</li>
-<li><p>M 强制移动|修改分支即使新分支存在, old-branch 无则为移动操作</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-m] [-M] [&lt;old-branch&gt;] &lt;new-branch&gt; <span class="comment"># 移动|修改分支</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h5><ul>
-<li><p>c 复制分支和分支提交历史</p>
-</li>
-<li><p>C 强制复制分支和分支提交历史</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-c] [-M] [&lt;old-branch&gt;] &lt;new-branch&gt; <span class="comment"># 复制分支</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h5><ul>
-<li><p>d 删除本地分支,一般和 r 配合删除关联远程分支</p>
-</li>
-<li><p>D 强制删除本地分支,即使分支未被合并</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-d] [-D] &lt;branch-name&gt; <span class="comment"># 删除分支, -D 强制删除即使分支未被合并</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="切换"><a href="#切换" class="headerlink" title="切换"></a>切换</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout [branch-name] <span class="comment"># 切换到指定分支</span></span><br></pre></td></tr></table></figure>
-
-<h6 id="切换并创建新分支"><a href="#切换并创建新分支" class="headerlink" title="切换并创建新分支"></a>切换并创建新分支</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -b &lt;branch-name&gt; [-t] [&lt;remote-branch&gt;] <span class="comment"># 基于远程分支创建新分支,自动建立追踪关系</span></span><br></pre></td></tr></table></figure>
-
-<h5 id="追踪关系"><a href="#追踪关系" class="headerlink" title="追踪关系"></a>追踪关系</h5><ul>
-<li><p>t|no-track 建立|取消分支追踪关系</p>
-</li>
-<li><p>u|unset-upstream 建立|取消分支追踪关系</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -t &lt;remote-branch&gt; <span class="comment"># 当前分支和远程分支建立追踪关系</span></span><br><span class="line">git branch -u &lt;local-branch&gt; &lt;remote-branch&gt; <span class="comment"># 指定分支和远程分支建立追踪关系</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="分支追踪关系-提交摘要"><a href="#分支追踪关系-提交摘要" class="headerlink" title="分支追踪关系,提交摘要"></a>分支追踪关系,提交摘要</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-vv] <span class="comment"># 查看本地分支追踪关系和提交信息</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="../../images/git-branch-1.jpg" alt="追踪关系"></p>
-<h5 id="分支合并"><a href="#分支合并" class="headerlink" title="分支合并"></a>分支合并</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git merge --no-ff &lt;branch-name&gt; <span class="comment"># 合并指定分支到当前分支</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h4><hr>
-<h4 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h4><hr>
-<h4 id="远程同步"><a href="#远程同步" class="headerlink" title="远程同步"></a>远程同步</h4><hr>
-<h3 id="外篇"><a href="#外篇" class="headerlink" title="外篇"></a>外篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;] <span class="comment"># 初始化指定目录为嵌套仓库</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令其他篇</title>
+    <url>/tools/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;] <span class="comment"># 初始化指定目录为嵌套仓库</span></span><br></pre></td></tr></table></figure>
 
 <h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f] <span class="comment"># 强制删除嵌套仓库</span></span><br><span class="line">git submodule deinit [--all] <span class="comment"># 删除所有嵌套仓库</span></span><br></pre></td></tr></table></figure>
 
@@ -194,6 +164,7 @@
 <li><p>e 使用正则表达式匹配</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt; <span class="comment"># 从工作区移除未被追踪的文件</span></span><br></pre></td></tr></table></figure></li>
 </ul>
+<hr>
 ]]></content>
       <categories>
         <category>tools</category>
@@ -219,5 +190,136 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>Git命令操作篇</title>
+    <url>/tools/b0420868a4bc/</url>
+    <content><![CDATA[<h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name]</span><br></pre></td></tr></table></figure>
+
+<h4 id="克隆仓库"><a href="#克隆仓库" class="headerlink" title="克隆仓库"></a>克隆仓库</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> [url]</span><br></pre></td></tr></table></figure>
+
+<h4 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h4><h5 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h5><ul>
+<li><p>a|all 列出所有本地和关联远程分支</p>
+</li>
+<li><p>r 列出关联远程分支</p>
+</li>
+<li><p>v|verbose 列出分支并显示当前提交信息摘要</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-a] [-r] [-v]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="新建"><a href="#新建" class="headerlink" title="新建"></a>新建</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="移动-修改"><a href="#移动-修改" class="headerlink" title="移动|修改"></a>移动|修改</h5><ul>
+<li><p>m 移动|修改分支, old-branch 无则为移动操作</p>
+</li>
+<li><p>M 强制移动|修改分支即使新分支存在, old-branch 无则为移动操作</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-m] [-M] [&lt;old-branch&gt;] &lt;new-branch&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h5><ul>
+<li><p>c 复制分支和分支提交历史</p>
+</li>
+<li><p>C 强制复制分支和分支提交历史</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-c] [-M] [&lt;old-branch&gt;] &lt;new-branch&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h5><ul>
+<li><p>d 删除本地分支,一般和 r 配合删除关联远程分支</p>
+</li>
+<li><p>D 强制删除本地分支, 即使分支未被合并</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-d] [-D] &lt;branch-name&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="切换"><a href="#切换" class="headerlink" title="切换"></a>切换</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout [branch-name]</span><br></pre></td></tr></table></figure>
+
+<h6 id="切换并创建新分支"><a href="#切换并创建新分支" class="headerlink" title="切换并创建新分支"></a>切换并创建新分支</h6><p>基于远程分支创建新分支,自动建立追踪关系</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -b &lt;branch-name&gt; [-t] [&lt;remote-branch&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="分支追踪关系"><a href="#分支追踪关系" class="headerlink" title="分支追踪关系"></a>分支追踪关系</h5><ul>
+<li>t|no-track 建立|取消分支追踪关系</li>
+<li>u|unset-upstream 建立|取消分支追踪关系</li>
+</ul>
+<h6 id="当前分支和远程分支建立追踪关系"><a href="#当前分支和远程分支建立追踪关系" class="headerlink" title="当前分支和远程分支建立追踪关系"></a>当前分支和远程分支建立追踪关系</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -t &lt;remote-branch&gt;</span><br></pre></td></tr></table></figure>
+
+<h6 id="指定分支和远程分支建立追踪关系"><a href="#指定分支和远程分支建立追踪关系" class="headerlink" title="指定分支和远程分支建立追踪关系"></a>指定分支和远程分支建立追踪关系</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -u &lt;local-branch&gt; &lt;remote-branch&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="分支追踪关系-提交摘要"><a href="#分支追踪关系-提交摘要" class="headerlink" title="分支追踪关系,提交摘要"></a>分支追踪关系,提交摘要</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch [-vv]</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/git-branch-1.jpg" alt="upstream"></p>
+<h5 id="分支合并"><a href="#分支合并" class="headerlink" title="分支合并"></a>分支合并</h5><h6 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h6><ul>
+<li>fast-forward(ff): 快速合并, 不创建新的 commit, 原分支删除后提交记录消失, 默认方式</li>
+<li>no-ff: 不快速合并, 保留原有分支记录, 创建新的 commit</li>
+<li>squash: 合并一些不必要的 commit, 创建新的 commit</li>
+<li>stat: 合并结束后统计显示区别</li>
+<li>continue: 解决冲突后结束合并</li>
+<li>abort: 中断解决冲突结束合并</li>
+<li>quit: 放弃合并</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git merge [--no-ff] &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/git-branch-2.png" alt="merge"></p>
+<h6 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h6><ul>
+<li>i|interactive: 交互式操作</li>
+<li>continue: 解决冲突后结束合并</li>
+<li>abort: 中断解决冲突结束合并</li>
+<li>quit: 放弃合并</li>
+<li>skip: 重启合并跳过当前的修改</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git rebase &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/git-branch-3.png" alt="rebase"></p>
+<h6 id="选择合并"><a href="#选择合并" class="headerlink" title="选择合并"></a>选择合并</h6><ul>
+<li><p>选择一个或者多个 commit, 合并进当前分支, 手动 commit</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git cherry-pick [--no-commit|-n] &lt;commit-ish&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>选择 commit 区间合并, 含尾不含头</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git cherry-pick [--ff] commit1...commitN</span><br></pre></td></tr></table></figure></li>
+<li><p>选择 commit 区间合并, 包含头和尾</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git cherry-pick [--ff] commit1^...commitN</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h4><h5 id="添加暂存区"><a href="#添加暂存区" class="headerlink" title="添加暂存区"></a>添加暂存区</h5><ul>
+<li>all|A|. 提交所有文件</li>
+<li>i|interactive 交互式操作</li>
+<li>n|dry-run 不执行任何操作, 只显示做什么</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add [-A] [-i] [-n] [&lt;file&gt;...]</span><br></pre></td></tr></table></figure>
+
+<h5 id="撤销文件"><a href="#撤销文件" class="headerlink" title="撤销文件"></a>撤销文件</h5><ul>
+<li><p>撤销工作区文件的变更</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -- [.|&lt;file&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>恢复上一个 commit 的所有文件到工作区</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout .</span><br></pre></td></tr></table></figure></li>
+<li><p>恢复指定 commit 的指定文件到工作区</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout [commit] [file]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h5><ul>
+<li>a|all git add 的缩写</li>
+<li>m|message commit 的注释</li>
+<li>amend 改写上一次 commit 的注释</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git commit [-am] [&lt;file&gt;...]</span><br></pre></td></tr></table></figure>
+
+<h5 id="版本变更"><a href="#版本变更" class="headerlink" title="版本变更"></a>版本变更</h5><h6 id="reset"><a href="#reset" class="headerlink" title="reset"></a>reset</h6><ul>
+<li><p>mixed: 还原版本库和暂存区, 工作区保持不变, 默认方式</p>
+</li>
+<li><p>soft: 还原版本库, 暂存区和工作保持不变</p>
+</li>
+<li><p>hard: 还原版本库和暂存区和工作区</p>
+</li>
+<li><p>keep: 还原版本库和暂存区, 并更新工作区中的 commit 和 HEAD 之间不同的文件, 如果不同的文件本地有更改则中止</p>
+</li>
+<li><p>merge: 还原版本库和暂存区, 并更新工作区中的 commit 和 HEAD 之间不同的文件, 但保留暂存区和工作区中不同的文件(既有未添加的更改), 如果不同的文件有未暂存的更改则中止</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git reset 3f405f2</span><br><span class="line">git reset --soft HEAD^</span><br><span class="line">git reset --hard HEAD~3</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><img src="../../images/git-branch-4.png" alt="reset"></p>
+<h6 id="revert"><a href="#revert" class="headerlink" title="revert"></a>revert</h6><p>撤销一个或多个 commit, 并手动提交 commit</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git revert [--no-commit/-n] [&lt;commit-ish&gt;...]</span><br></pre></td></tr></table></figure>
+
+<h5 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h5><hr>
+<h4 id="暂存"><a href="#暂存" class="headerlink" title="暂存"></a>暂存</h4><hr>
+<h4 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h4><hr>
+<h4 id="远程同步"><a href="#远程同步" class="headerlink" title="远程同步"></a>远程同步</h4><hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
   </entry>
 </search>
