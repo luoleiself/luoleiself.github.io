@@ -159,9 +159,9 @@ tags:
 
 #### 文件操作
 
-##### 添加暂存区
+##### 添加文件
 
-- all|A|. 提交所有文件
+- all|A|. 添加所有文件提交信息列表
 - i|interactive 交互式操作
 - n|dry-run 不执行任何操作, 只显示做什么
 
@@ -191,7 +191,7 @@ tags:
 
 ##### 提交
 
-- a|all git add 的缩写
+- a|all git add -A 的缩写
 - m|message commit 的注释
 - amend 改写上一次 commit 的注释
 
@@ -222,7 +222,7 @@ tags:
 撤销一个或多个 commit, 并手动提交 commit
 
 ```bash
-  git revert [--no-commit/-n] [<commit-ish>...]
+  git revert [--no-commit|-n] [<commit-ish>...]
 ```
 
 ##### 比较
@@ -230,6 +230,28 @@ tags:
 ---
 
 #### 暂存
+
+保存当前工作区的状态以备以后继续使用并恢复干净的工作区
+
+- list: 显示暂存区暂存记录
+- show: 显示暂存区记录和当前工作区的不同
+- pop: 取出指定的 stash 还原到工作区中并从暂存区中移除
+- apply: 取出指定的 stash 还原到工作区不会从暂存区移除
+- clear: 清空暂存区
+- drop: 从暂存区移除指定的 stash
+- create: 创建一个 stash 对象并返回 commit
+- store: 使用返回的 commit 生成 stash 记录
+
+```bash
+  git stash
+  git stash list
+  git stash show|pop|apply|drop [<stash@{0}>]
+  git stash clear
+  git stash create [<message>]
+  git stash store [-m <message>] <commit>
+```
+
+![stash](../../images/git-stash-1.jpg)
 
 ---
 
