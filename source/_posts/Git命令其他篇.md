@@ -24,6 +24,8 @@ tags:
   git submodule deinit [--all]
 ```
 
+<!-- more -->
+
 ##### submodule set-branch 设置分支
 
 设置嵌套仓库的默认远程关联分支
@@ -70,6 +72,8 @@ tags:
   git submodule update [--recursive] [<path>]
 ```
 
+---
+
 #### archive 归档
 
 - list: 显示支持的归档文件格式
@@ -101,6 +105,8 @@ tags:
   ```bash
     git archive --add-file <file> [<path>...]
   ```
+
+---
 
 #### clean 清除
 
