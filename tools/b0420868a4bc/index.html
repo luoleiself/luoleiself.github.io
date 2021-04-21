@@ -23,19 +23,21 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"luoleiself.github.io","root":"/","images":"/images","scheme":"Mist","version":"8.3.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="操作篇初始化仓库1git init [project-name]  克隆仓库1git clone [url]  分支查看 a|all 列出所有本地和关联远程分支  r 列出关联远程分支  v|verbose 列出分支并显示当前提交信息摘要 1git branch [-a] [-r] [-v]  新建1git branch &lt;branch-name&gt;  移动|修改 m 移动|修改分支,">
+<meta name="description" content="操作篇初始化仓库1git init [project-name]  克隆仓库1git clone [url]  分支查看 a|all: 列出所有本地和关联远程分支  r: 列出关联远程分支  v|verbose: 列出分支并显示当前提交信息摘要 1git branch [-a] [-r] [-v]  新建1git branch &lt;branch-name&gt;  移动|修改 m: 移动|修改">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git命令操作篇">
 <meta property="og:url" content="https://luoleiself.github.io/tools/b0420868a4bc/index.html">
 <meta property="og:site_name" content="luoleiself&#39;s blog">
-<meta property="og:description" content="操作篇初始化仓库1git init [project-name]  克隆仓库1git clone [url]  分支查看 a|all 列出所有本地和关联远程分支  r 列出关联远程分支  v|verbose 列出分支并显示当前提交信息摘要 1git branch [-a] [-r] [-v]  新建1git branch &lt;branch-name&gt;  移动|修改 m 移动|修改分支,">
+<meta property="og:description" content="操作篇初始化仓库1git init [project-name]  克隆仓库1git clone [url]  分支查看 a|all: 列出所有本地和关联远程分支  r: 列出关联远程分支  v|verbose: 列出分支并显示当前提交信息摘要 1git branch [-a] [-r] [-v]  新建1git branch &lt;branch-name&gt;  移动|修改 m: 移动|修改">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://luoleiself.github.io/images/git-branch-1.jpg">
 <meta property="og:image" content="https://luoleiself.github.io/images/git-branch-2.png">
 <meta property="og:image" content="https://luoleiself.github.io/images/git-branch-3.png">
 <meta property="og:image" content="https://luoleiself.github.io/images/git-branch-4.png">
+<meta property="og:image" content="https://luoleiself.github.io/images/git-diff-1.jpg">
+<meta property="og:image" content="https://luoleiself.github.io/images/git-stash-1.jpg">
 <meta property="article:published_time" content="2021-04-20T08:48:57.000Z">
-<meta property="article:modified_time" content="2021-04-20T13:15:04.113Z">
+<meta property="article:modified_time" content="2021-04-21T07:32:40.210Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary">
@@ -202,7 +204,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text">操作篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BB%93%E5%BA%93"><span class="nav-number">1.1.</span> <span class="nav-text">初始化仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%8B%E9%9A%86%E4%BB%93%E5%BA%93"><span class="nav-number">1.2.</span> <span class="nav-text">克隆仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%94%AF"><span class="nav-number">1.3.</span> <span class="nav-text">分支</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">查看</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA"><span class="nav-number">1.3.2.</span> <span class="nav-text">新建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8-%E4%BF%AE%E6%94%B9"><span class="nav-number">1.3.3.</span> <span class="nav-text">移动|修改</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6"><span class="nav-number">1.3.4.</span> <span class="nav-text">复制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">1.3.5.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%87%E6%8D%A2"><span class="nav-number">1.3.6.</span> <span class="nav-text">切换</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E5%B9%B6%E5%88%9B%E5%BB%BA%E6%96%B0%E5%88%86%E6%94%AF"><span class="nav-number">1.3.6.1.</span> <span class="nav-text">切换并创建新分支</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E8%BF%BD%E8%B8%AA%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.7.</span> <span class="nav-text">分支追踪关系</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E5%88%86%E6%94%AF%E5%92%8C%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E5%BB%BA%E7%AB%8B%E8%BF%BD%E8%B8%AA%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.7.1.</span> <span class="nav-text">当前分支和远程分支建立追踪关系</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%88%86%E6%94%AF%E5%92%8C%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E5%BB%BA%E7%AB%8B%E8%BF%BD%E8%B8%AA%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.7.2.</span> <span class="nav-text">指定分支和远程分支建立追踪关系</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E8%BF%BD%E8%B8%AA%E5%85%B3%E7%B3%BB-%E6%8F%90%E4%BA%A4%E6%91%98%E8%A6%81"><span class="nav-number">1.3.8.</span> <span class="nav-text">分支追踪关系,提交摘要</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6"><span class="nav-number">1.3.9.</span> <span class="nav-text">分支合并</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#merge"><span class="nav-number">1.3.9.1.</span> <span class="nav-text">merge</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#rebase"><span class="nav-number">1.3.9.2.</span> <span class="nav-text">rebase</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%90%88%E5%B9%B6"><span class="nav-number">1.3.9.3.</span> <span class="nav-text">选择合并</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.</span> <span class="nav-text">文件操作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%9A%82%E5%AD%98%E5%8C%BA"><span class="nav-number">1.4.1.</span> <span class="nav-text">添加暂存区</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%92%A4%E9%94%80%E6%96%87%E4%BB%B6"><span class="nav-number">1.4.2.</span> <span class="nav-text">撤销文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4"><span class="nav-number">1.4.3.</span> <span class="nav-text">提交</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E5%8F%98%E6%9B%B4"><span class="nav-number">1.4.4.</span> <span class="nav-text">版本变更</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#reset"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">reset</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#revert"><span class="nav-number">1.4.4.2.</span> <span class="nav-text">revert</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AF%94%E8%BE%83"><span class="nav-number">1.4.5.</span> <span class="nav-text">比较</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9A%82%E5%AD%98"><span class="nav-number">1.5.</span> <span class="nav-text">暂存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A5%E5%BF%97"><span class="nav-number">1.6.</span> <span class="nav-text">日志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">1.7.</span> <span class="nav-text">远程同步</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text">操作篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BB%93%E5%BA%93"><span class="nav-number">1.1.</span> <span class="nav-text">初始化仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%8B%E9%9A%86%E4%BB%93%E5%BA%93"><span class="nav-number">1.2.</span> <span class="nav-text">克隆仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%94%AF"><span class="nav-number">1.3.</span> <span class="nav-text">分支</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">查看</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA"><span class="nav-number">1.3.2.</span> <span class="nav-text">新建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8-%E4%BF%AE%E6%94%B9"><span class="nav-number">1.3.3.</span> <span class="nav-text">移动|修改</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6"><span class="nav-number">1.3.4.</span> <span class="nav-text">复制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">1.3.5.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%87%E6%8D%A2"><span class="nav-number">1.3.6.</span> <span class="nav-text">切换</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E5%B9%B6%E5%88%9B%E5%BB%BA%E6%96%B0%E5%88%86%E6%94%AF"><span class="nav-number">1.3.6.1.</span> <span class="nav-text">切换并创建新分支</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E8%BF%BD%E8%B8%AA%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.7.</span> <span class="nav-text">分支追踪关系</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E5%88%86%E6%94%AF%E5%92%8C%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E5%BB%BA%E7%AB%8B%E8%BF%BD%E8%B8%AA%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.7.1.</span> <span class="nav-text">当前分支和远程分支建立追踪关系</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%88%86%E6%94%AF%E5%92%8C%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E5%BB%BA%E7%AB%8B%E8%BF%BD%E8%B8%AA%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.7.2.</span> <span class="nav-text">指定分支和远程分支建立追踪关系</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E8%BF%BD%E8%B8%AA%E5%85%B3%E7%B3%BB-%E6%8F%90%E4%BA%A4%E6%91%98%E8%A6%81"><span class="nav-number">1.3.8.</span> <span class="nav-text">分支追踪关系,提交摘要</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6"><span class="nav-number">1.3.9.</span> <span class="nav-text">分支合并</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#merge"><span class="nav-number">1.3.9.1.</span> <span class="nav-text">merge</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#rebase"><span class="nav-number">1.3.9.2.</span> <span class="nav-text">rebase</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%90%88%E5%B9%B6"><span class="nav-number">1.3.9.3.</span> <span class="nav-text">选择合并</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.</span> <span class="nav-text">文件操作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%87%E4%BB%B6"><span class="nav-number">1.4.1.</span> <span class="nav-text">添加文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%92%A4%E9%94%80%E6%96%87%E4%BB%B6"><span class="nav-number">1.4.2.</span> <span class="nav-text">撤销文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4"><span class="nav-number">1.4.3.</span> <span class="nav-text">提交</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E5%8F%98%E6%9B%B4"><span class="nav-number">1.4.4.</span> <span class="nav-text">版本变更</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#reset"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">reset</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#revert"><span class="nav-number">1.4.4.2.</span> <span class="nav-text">revert</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE"><span class="nav-number">1.4.5.</span> <span class="nav-text">标签</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-tag"><span class="nav-number">1.4.5.1.</span> <span class="nav-text">创建 tag</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4-tag"><span class="nav-number">1.4.5.2.</span> <span class="nav-text">提交 tag</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-tag"><span class="nav-number">1.4.5.3.</span> <span class="nav-text">删除 tag</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AF%94%E8%BE%83"><span class="nav-number">1.4.6.</span> <span class="nav-text">比较</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%8C%BA%E5%92%8C%E7%89%88%E6%9C%AC%E5%BA%93%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">1.4.6.1.</span> <span class="nav-text">工作区和版本库的差异</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9A%82%E5%AD%98%E5%8C%BA%E5%92%8C%E5%B7%A5%E4%BD%9C%E5%8C%BA%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">1.4.6.2.</span> <span class="nav-text">暂存区和工作区的差异</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9A%82%E5%AD%98%E5%8C%BA%E5%92%8C%E7%89%88%E6%9C%AC%E5%BA%93%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">1.4.6.3.</span> <span class="nav-text">暂存区和版本库的差异</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9A%82%E5%AD%98%E5%8C%BA%E5%92%8C%E6%8C%87%E5%AE%9A-commit-%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">1.4.6.4.</span> <span class="nav-text">暂存区和指定 commit 的差异</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9A%82%E5%AD%98"><span class="nav-number">1.5.</span> <span class="nav-text">暂存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A5%E5%BF%97"><span class="nav-number">1.6.</span> <span class="nav-text">日志</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6%E7%8A%B6%E6%80%81"><span class="nav-number">1.6.1.</span> <span class="nav-text">查看文件状态</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95"><span class="nav-number">1.6.2.</span> <span class="nav-text">历史记录</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">1.7.</span> <span class="nav-text">远程同步</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#pull-%E6%8B%89%E5%8F%96%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E4%BF%A1%E6%81%AF%E5%B9%B6%E6%89%A7%E8%A1%8C%E5%90%88%E5%B9%B6"><span class="nav-number">1.7.1.</span> <span class="nav-text">pull 拉取远程分支信息并执行合并</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#fetch-%E6%8B%89%E5%8F%96%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E4%BF%A1%E6%81%AF"><span class="nav-number">1.7.2.</span> <span class="nav-text">fetch 拉取远程分支信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#push-%E6%8E%A8%E9%80%81%E6%9C%AC%E5%9C%B0%E5%88%86%E6%94%AF%E4%BF%A1%E6%81%AF%E5%88%B0%E8%BF%9C%E7%A8%8B"><span class="nav-number">1.7.3.</span> <span class="nav-text">push 推送本地分支信息到远程</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -304,10 +306,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-04-20 16:48:57 / 修改时间：21:15:04" itemprop="dateCreated datePublished" datetime="2021-04-20T16:48:57+08:00">2021-04-20</time>
+      <time title="创建时间：2021-04-20 16:48:57" itemprop="dateCreated datePublished" datetime="2021-04-20T16:48:57+08:00">2021-04-20</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-04-21 15:32:40" itemprop="dateModified" datetime="2021-04-21T15:32:40+08:00">2021-04-21</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -333,31 +341,31 @@
 <h4 id="克隆仓库"><a href="#克隆仓库" class="headerlink" title="克隆仓库"></a>克隆仓库</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> [url]</span><br></pre></td></tr></table></figure>
 
 <h4 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h4><h5 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h5><ul>
-<li><p>a|all 列出所有本地和关联远程分支</p>
+<li><p>a|all: 列出所有本地和关联远程分支</p>
 </li>
-<li><p>r 列出关联远程分支</p>
+<li><p>r: 列出关联远程分支</p>
 </li>
-<li><p>v|verbose 列出分支并显示当前提交信息摘要</p>
+<li><p>v|verbose: 列出分支并显示当前提交信息摘要</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch [-a] [-r] [-v]</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h5 id="新建"><a href="#新建" class="headerlink" title="新建"></a>新建</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch &lt;branch-name&gt;</span><br></pre></td></tr></table></figure>
 
 <h5 id="移动-修改"><a href="#移动-修改" class="headerlink" title="移动|修改"></a>移动|修改</h5><ul>
-<li><p>m 移动|修改分支, old-branch 无则为移动操作</p>
+<li><p>m: 移动|修改分支, old-branch 无则为移动操作</p>
 </li>
-<li><p>M 强制移动|修改分支即使新分支存在, old-branch 无则为移动操作</p>
+<li><p>M: 强制移动|修改分支即使新分支存在, old-branch 无则为移动操作</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch [-m] [-M] [&lt;old-branch&gt;] &lt;new-branch&gt;</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h5 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h5><ul>
-<li><p>c 复制分支和分支提交历史</p>
+<li><p>c: 复制分支和分支提交历史</p>
 </li>
-<li><p>C 强制复制分支和分支提交历史</p>
+<li><p>C: 强制复制分支和分支提交历史</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch [-c] [-M] [&lt;old-branch&gt;] &lt;new-branch&gt;</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h5 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h5><ul>
-<li><p>d 删除本地分支,一般和 r 配合删除关联远程分支</p>
+<li><p>d: 删除本地分支,一般和 r 配合删除关联远程分支</p>
 </li>
-<li><p>D 强制删除本地分支, 即使分支未被合并</p>
+<li><p>D: 强制删除本地分支, 即使分支未被合并</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch [-d] [-D] &lt;branch-name&gt;</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h5 id="切换"><a href="#切换" class="headerlink" title="切换"></a>切换</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout [branch-name]</span><br></pre></td></tr></table></figure>
@@ -366,8 +374,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b &lt;branch-name&gt; [-t] [&lt;remote-branch&gt;]</span><br></pre></td></tr></table></figure>
 
 <h5 id="分支追踪关系"><a href="#分支追踪关系" class="headerlink" title="分支追踪关系"></a>分支追踪关系</h5><ul>
-<li>t|no-track 建立|取消分支追踪关系</li>
-<li>u|unset-upstream 建立|取消分支追踪关系</li>
+<li>t|no-track: 建立|取消分支追踪关系</li>
+<li>u|unset-upstream: 建立|取消分支追踪关系</li>
 </ul>
 <h6 id="当前分支和远程分支建立追踪关系"><a href="#当前分支和远程分支建立追踪关系" class="headerlink" title="当前分支和远程分支建立追踪关系"></a>当前分支和远程分支建立追踪关系</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -t &lt;remote-branch&gt;</span><br></pre></td></tr></table></figure>
 
@@ -406,10 +414,11 @@
 <li><p>选择 commit 区间合并, 包含头和尾</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git cherry-pick [--ff] commit1^...commitN</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h4 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h4><h5 id="添加暂存区"><a href="#添加暂存区" class="headerlink" title="添加暂存区"></a>添加暂存区</h5><ul>
-<li>all|A|. 提交所有文件</li>
-<li>i|interactive 交互式操作</li>
-<li>n|dry-run 不执行任何操作, 只显示做什么</li>
+<hr>
+<h4 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h4><h5 id="添加文件"><a href="#添加文件" class="headerlink" title="添加文件"></a>添加文件</h5><ul>
+<li>all|A|. 添加所有文件提交信息列表</li>
+<li>i|interactive: 交互式操作</li>
+<li>n|dry-run: 不执行任何操作, 只显示做什么</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add [-A] [-i] [-n] [&lt;file&gt;...]</span><br></pre></td></tr></table></figure>
 
@@ -422,9 +431,9 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout [commit] [file]</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h5 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h5><ul>
-<li>a|all git add 的缩写</li>
-<li>m|message commit 的注释</li>
-<li>amend 改写上一次 commit 的注释</li>
+<li>a|all: git add -A 的缩写</li>
+<li>m|message: commit 的注释</li>
+<li>amend: 改写上一次 commit 的注释</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit [-am] [&lt;file&gt;...]</span><br></pre></td></tr></table></figure>
 
@@ -442,12 +451,119 @@
 </ul>
 <p><img src="../../images/git-branch-4.png" alt="reset"></p>
 <h6 id="revert"><a href="#revert" class="headerlink" title="revert"></a>revert</h6><p>撤销一个或多个 commit, 并手动提交 commit</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git revert [--no-commit/-n] [&lt;commit-ish&gt;...]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git revert [--no-commit|-n] [&lt;commit-ish&gt;...]</span><br></pre></td></tr></table></figure>
 
-<h5 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h5><hr>
-<h4 id="暂存"><a href="#暂存" class="headerlink" title="暂存"></a>暂存</h4><hr>
-<h4 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h4><hr>
-<h4 id="远程同步"><a href="#远程同步" class="headerlink" title="远程同步"></a>远程同步</h4><hr>
+<hr>
+<h5 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h5><ul>
+<li><p>d|delete: 删除指定标签</p>
+</li>
+<li><p>l|list: 显示所有标签列表</p>
+</li>
+<li><p>show: 查看指定标签信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git tag [-l]</span><br><span class="line">git show [&lt;tag-name&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h6 id="创建-tag"><a href="#创建-tag" class="headerlink" title="创建 tag"></a>创建 tag</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag [&lt;tag-name&gt;] [&lt;commit&gt;]</span><br></pre></td></tr></table></figure>
+
+<h6 id="提交-tag"><a href="#提交-tag" class="headerlink" title="提交 tag"></a>提交 tag</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git push [&lt;remote&gt;] [&lt;tag-name&gt;]</span><br><span class="line">git push [&lt;remote&gt;] --tags</span><br></pre></td></tr></table></figure>
+
+<h6 id="删除-tag"><a href="#删除-tag" class="headerlink" title="删除 tag"></a>删除 tag</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git tag [-d] [&lt;tag-name&gt;]</span><br><span class="line">git push [&lt;remote&gt;] :refs/tags/[&lt;tag-name&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h5 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h5><ul>
+<li><p>stat: 统计不同数量</p>
+</li>
+<li><p>cached: 比较暂存区和指定 commit 的差异</p>
+</li>
+<li><p>staged: 比较暂存区和版本库的差异</p>
+</li>
+<li><p>check: 列出找到可能的空白错误</p>
+</li>
+<li><p>path: 指定 commit 之间的文件的差异</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git diff [&lt;commit&gt;] [&lt;commit&gt;] [--] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h6 id="工作区和版本库的差异"><a href="#工作区和版本库的差异" class="headerlink" title="工作区和版本库的差异"></a>工作区和版本库的差异</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git diff HEAD</span><br></pre></td></tr></table></figure>
+
+<h6 id="暂存区和工作区的差异"><a href="#暂存区和工作区的差异" class="headerlink" title="暂存区和工作区的差异"></a>暂存区和工作区的差异</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git diff</span><br></pre></td></tr></table></figure>
+
+<h6 id="暂存区和版本库的差异"><a href="#暂存区和版本库的差异" class="headerlink" title="暂存区和版本库的差异"></a>暂存区和版本库的差异</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git diff [--staged]</span><br></pre></td></tr></table></figure>
+
+<h6 id="暂存区和指定-commit-的差异"><a href="#暂存区和指定-commit-的差异" class="headerlink" title="暂存区和指定 commit 的差异"></a>暂存区和指定 commit 的差异</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git diff [--cached] [&lt;commit&gt;]</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/git-diff-1.jpg" alt="diff"></p>
+<hr>
+<h4 id="暂存"><a href="#暂存" class="headerlink" title="暂存"></a>暂存</h4><p>保存当前工作区的状态以备以后继续使用并恢复干净的工作区</p>
+<ul>
+<li>list: 显示暂存区暂存记录</li>
+<li>show: 显示暂存区最新的记录和当前工作区的不同</li>
+<li>pop: 取出指定的 stash 还原到工作区中并从暂存区中移除</li>
+<li>apply: 取出指定的 stash 还原到工作区不从暂存区移除</li>
+<li>clear: 清空暂存区</li>
+<li>drop: 从暂存区移除指定的 stash</li>
+<li>create: 基于当前工作区状态创建一个 stash 对象并返回 commit</li>
+<li>store: 使用返回的 commit 生成 stash 记录</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git stash</span><br><span class="line">git stash list</span><br><span class="line">git stash show|pop|apply|drop [&lt;stash@&#123;0&#125;&gt;]</span><br><span class="line">git stash clear</span><br><span class="line">git stash create [&lt;message&gt;]</span><br><span class="line">git stash store [-m &lt;message&gt;] &lt;commit&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/git-stash-1.jpg" alt="stash"></p>
+<hr>
+<h4 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h4><h5 id="查看文件状态"><a href="#查看文件状态" class="headerlink" title="查看文件状态"></a>查看文件状态</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
+
+<h5 id="历史记录"><a href="#历史记录" class="headerlink" title="历史记录"></a>历史记录</h5><ul>
+<li><p>all: 显示所有分支历史记录</p>
+</li>
+<li><p>stat: 统计每个 commit 的差异数量</p>
+</li>
+<li><p>follow: 显示指定文件的历史记录</p>
+</li>
+<li><p>summary: 显示每个 commit 的具体操作</p>
+</li>
+<li><p>p: 显示每个 commit 文件的修改详情</p>
+</li>
+<li><p>graph: 图形化显示历史记录</p>
+</li>
+<li><p>oneline: 每条历史记录独占一行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span> [&lt;remote&gt;]</span><br><span class="line">git <span class="built_in">log</span> --<span class="built_in">stat</span></span><br><span class="line">git <span class="built_in">log</span> -p [&lt;commit&gt;] [&lt;file&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="远程同步"><a href="#远程同步" class="headerlink" title="远程同步"></a>远程同步</h4><h5 id="pull-拉取远程分支信息并执行合并"><a href="#pull-拉取远程分支信息并执行合并" class="headerlink" title="pull 拉取远程分支信息并执行合并"></a>pull 拉取远程分支信息并执行合并</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull [&lt;remote&gt;] [&lt;remote-branch-name&gt;[:&lt;local-branch-name&gt;]]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>all: 获取远程所有分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull [--all]</span><br></pre></td></tr></table></figure></li>
+<li><p>stat: 统计合并后的差异</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull [--<span class="built_in">stat</span>] [&lt;remote&gt;] [&lt;remote-branch-name&gt;[:&lt;local-branch-name&gt;]]</span><br></pre></td></tr></table></figure></li>
+<li><p>no-ff: 不执行快速合并</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull [--no-ff] [&lt;remote&gt;] [&lt;remote-branch-name&gt;[:&lt;local-branch-name&gt;]]</span><br></pre></td></tr></table></figure></li>
+<li><p>t|tags: 获取远程的 tags, 默认</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull [-t] [&lt;remote&gt;] [&lt;remote-branch-name&gt;[:&lt;local-branch-name&gt;]]</span><br></pre></td></tr></table></figure></li>
+<li><p>no-tags: 不拉取远程的 tags</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull [--no-tags] [&lt;remote&gt;] [&lt;remote-branch-name&gt;[:&lt;local-branch-name&gt;]]</span><br></pre></td></tr></table></figure></li>
+<li><p>set-upstream: 建立追踪关系</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull [--set-upstream] [&lt;remote&gt;] [&lt;remote-branch-name&gt;[:&lt;local-branch-name&gt;]]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="fetch-拉取远程分支信息"><a href="#fetch-拉取远程分支信息" class="headerlink" title="fetch 拉取远程分支信息"></a>fetch 拉取远程分支信息</h5><ul>
+<li><p>all: 获取所有远程分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch [-all]</span><br></pre></td></tr></table></figure></li>
+<li><p>t|tags: 获取远程的 tags, 默认</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch [-t] [&lt;remote&gt;] [&lt;remote-branch-name&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>no-tags: 不拉取远程的 tags</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull [--no-tags] [&lt;remote&gt;] [&lt;remote-branch-name&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="push-推送本地分支信息到远程"><a href="#push-推送本地分支信息到远程" class="headerlink" title="push 推送本地分支信息到远程"></a>push 推送本地分支信息到远程</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push [&lt;remote&gt;] [&lt;local-branch-name&gt;[:&lt;remote-branch-nam&gt;]]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>all: 推送所有的分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push [--all]</span><br></pre></td></tr></table></figure></li>
+<li><p>f|force: 强制推送分支信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push [-f] [&lt;remote&gt;] [&lt;local-branch-name&gt;[:&lt;remote-branch-nam&gt;]]</span><br></pre></td></tr></table></figure></li>
+<li><p>d|delete: 删除远程分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git push [-d] [&lt;remote&gt;] [&lt;remote-branch-name&gt;]</span><br><span class="line">git push [&lt;remote&gt;] [:[&lt;remote_branch_name&gt;]]</span><br></pre></td></tr></table></figure></li>
+<li><p>tags: 推送标签信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git push [&lt;remote&gt;] [&lt;tag-name&gt;]</span><br><span class="line">git push [&lt;remote&gt;] [--tags]</span><br><span class="line">git push [&lt;remote&gt;] :refs/tags/[&lt;tag-name&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>u|set-upstream: 建立分支追踪</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push [-u] [&lt;remote&gt;] [&lt;remote-branch-name&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
 
     </div>
 
@@ -464,8 +580,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/tools/00ea2bbb2db0/" rel="prev" title="Git命令配置篇">
-                  <i class="fa fa-chevron-left"></i> Git命令配置篇
+                <a href="/uncategorized/7df03390b905/" rel="prev" title="Hello World">
+                  <i class="fa fa-chevron-left"></i> Hello World
                 </a>
             </div>
             <div class="post-nav-item">
