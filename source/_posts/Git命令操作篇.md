@@ -157,6 +157,8 @@ tags:
     git cherry-pick [--ff] commit1^...commitN
   ```
 
+---
+
 #### 文件操作
 
 ##### 添加文件
@@ -225,7 +227,77 @@ tags:
   git revert [--no-commit|-n] [<commit-ish>...]
 ```
 
+---
+
+##### 标签
+
+- d|delete 删除指定标签
+- l|list 显示所有标签列表
+- show 查看指定标签信息
+
+  ```bash
+    git tag [-l] [-d] [<tag-name>]
+    git show [<tag-name>]
+  ```
+
+###### 创建 tag
+
+```bash
+  git tag [<tag-name>] [<commit>]
+```
+
+###### 提交 tag
+
+```bash
+  git push [<remote>] --tags
+  git push [<remote>] [<tag-name>]
+```
+
+###### 删除 tag
+
+```bash
+  git push [<remote>] :refs/tags/[<tag-name>]
+```
+
+---
+
 ##### 比较
+
+- stat: 统计不同数量
+- cached: 比较暂存区和指定 commit 的差异
+- staged: 比较暂存区和版本库的差异
+- check: 列出找到可能的空白错误
+- path: 指定 commit 之间的文件的差异
+
+  ```bash
+    git diff [<commit>] [<commit>] [--] [<path>]
+  ```
+
+###### 工作区和版本库的差异
+
+```bash
+  git diff HEAD
+```
+
+###### 暂存区和工作区的差异
+
+```bash
+  git diff
+```
+
+###### 暂存区和版本库的差异
+
+```bash
+  git diff [--staged]
+```
+
+###### 暂存区和指定 commit 的差异
+
+```bash
+  git diff [--cached] [<commit>]
+```
+
+![diff](../../images/git-diff-1.jpg)
 
 ---
 
@@ -234,12 +306,12 @@ tags:
 保存当前工作区的状态以备以后继续使用并恢复干净的工作区
 
 - list: 显示暂存区暂存记录
-- show: 显示暂存区记录和当前工作区的不同
+- show: 显示暂存区最新的记录和当前工作区的不同
 - pop: 取出指定的 stash 还原到工作区中并从暂存区中移除
-- apply: 取出指定的 stash 还原到工作区不会从暂存区移除
+- apply: 取出指定的 stash 还原到工作区不从暂存区移除
 - clear: 清空暂存区
 - drop: 从暂存区移除指定的 stash
-- create: 创建一个 stash 对象并返回 commit
+- create: 基于当前工作区状态创建一个 stash 对象并返回 commit
 - store: 使用返回的 commit 生成 stash 记录
 
 ```bash
@@ -257,8 +329,81 @@ tags:
 
 #### 日志
 
+##### 查看文件状态
+
+```bash
+  git status
+```
+
+##### 历史记录
+
+- all: 显示所有分支历史记录
+- stat: 统计每个 commit 的差异数量
+- follow: 显示指定文件的历史记录
+- summary: 显示每个 commit 的具体操作
+- p: 显示每个 commit 文件的修改详情
+- graph: 图形化显示历史记录
+- oneline: 每条历史记录独占一行
+
+  ```bash
+    git log [<remote>]
+    git log --stat
+    git log -p [<commit>] [<file>]
+  ```
+
 ---
 
 #### 远程同步
+
+##### pull
+
+- all 获取远程所有分支信息
+
+  ```bash
+    git pull [--all]
+  ```
+
+- stat 统计合并后的差异
+
+  ```bash
+    git pull [--stat] [<remote>[:<local-branch-name>]]
+  ```
+
+- no-ff 不执行快速合并
+
+  ```bash
+    git pull [--no-ff] [<remote>[:<local-branch-name>]]
+  ```
+
+##### fetch
+
+##### push
+
+- git fetch origin [<remote_branch_name>[:<local_branch_name>]] # 拉取远程分支
+  - git fetch origin # 拉取所有远程分支信息
+  - git fetch origin remote_branch_name # 拉取指定远程分支信息到本地
+  - git fetch origin remote_branch_name:local_branch_name # 拉取指定远程分支到本地指定分支上
+  - 1. 如果 local_branch_name 与当前工作分支名相同, 则提示 fatal: Refusing to fetch into current branch refs/heads/master of non-bare repository.
+  - 2. 如果 本地已存在 local_branch_name, 则提示 ! [rejected] remote_branch_name -> local_branch_name (non-fast-forward)
+  - 3. 否则在本地创建 local_branch_name, 并切换到 local_branch_name 上
+  - git fetch origin + pu：pu maint：tmp # 拉取远程仓库的 pu 和 maint 分支 到本地的 pu 和 tmp 分支上, 只有 pu 分支会被更新即使没有变动
+  -
+  - git remote -v   # 显示所有远程仓库
+  - git remote show [remote] # 显示某个远程仓库的信息
+  - git remote add [shortname] [url] # 增加一个新的远程仓库，并命名
+  -
+  - git pull origin [<remote_branch_name>[:<local_branch_name>]] # 拉取远程分支并快速合并, --set-upstream-to 参数有影响
+  - git pull origin # 拉取所有远程分支信息并快速合并
+  - git pull origin remote_branch_name # 拉取指定远程分支信息到本地当前工作分支上,并执行快速合并
+  - git pull origin remote_branch_name:local_branch_name # 拉取指定远程分支信息到本地指定分支,并快速合并到当前工作分支上
+  - 1. 如果 local_branch_name 已存在, 则提示 ! [rejected] remote_branch_name -> local_branch_name (non-fast-forward)
+  - 2. 如果 local_branch_name 不存在, 则创建新分支 local_branch_name, 并快速合并到当前工作分支上,不会自动切换分支
+  - git pull origin master --allow-unrelated-histories # 允许合并远程仓库和本地仓库无关的历史,一般用在关联两个仓库更新版本历史问题
+  -
+  - git push origin local_branch_name:remote_branch_name   # 推送本地分支到远程分支, 如果远程分支不存在, 则新建
+  - git push origin --force   # 强行推送当前分支到远程仓库，即使有冲突
+  - git push origin --all # 推送所有分支到远程仓库
+  - git push origin --delete [remote_branch_name]   # 删除远程分支,功能同下
+  - git push origin :[remote_branch_name] # 删除远程分支,功能同上
 
 ---
