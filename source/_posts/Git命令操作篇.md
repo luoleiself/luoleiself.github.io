@@ -25,9 +25,9 @@ tags:
 
 ##### 查看
 
-- a|all 列出所有本地和关联远程分支
-- r 列出关联远程分支
-- v|verbose 列出分支并显示当前提交信息摘要
+- a|all: 列出所有本地和关联远程分支
+- r: 列出关联远程分支
+- v|verbose: 列出分支并显示当前提交信息摘要
 
   ```bash
     git branch [-a] [-r] [-v]
@@ -41,8 +41,8 @@ tags:
 
 ##### 移动|修改
 
-- m 移动|修改分支, old-branch 无则为移动操作
-- M 强制移动|修改分支即使新分支存在, old-branch 无则为移动操作
+- m: 移动|修改分支, old-branch 无则为移动操作
+- M: 强制移动|修改分支即使新分支存在, old-branch 无则为移动操作
 
   ```bash
     git branch [-m] [-M] [<old-branch>] <new-branch>
@@ -50,8 +50,8 @@ tags:
 
 ##### 复制
 
-- c 复制分支和分支提交历史
-- C 强制复制分支和分支提交历史
+- c: 复制分支和分支提交历史
+- C: 强制复制分支和分支提交历史
 
   ```bash
     git branch [-c] [-M] [<old-branch>] <new-branch>
@@ -59,8 +59,8 @@ tags:
 
 ##### 删除
 
-- d 删除本地分支,一般和 r 配合删除关联远程分支
-- D 强制删除本地分支, 即使分支未被合并
+- d: 删除本地分支,一般和 r 配合删除关联远程分支
+- D: 强制删除本地分支, 即使分支未被合并
 
   ```bash
     git branch [-d] [-D] <branch-name>
@@ -82,8 +82,8 @@ tags:
 
 ##### 分支追踪关系
 
-- t|no-track 建立|取消分支追踪关系
-- u|unset-upstream 建立|取消分支追踪关系
+- t|no-track: 建立|取消分支追踪关系
+- u|unset-upstream: 建立|取消分支追踪关系
 
 ###### 当前分支和远程分支建立追踪关系
 
@@ -164,8 +164,8 @@ tags:
 ##### 添加文件
 
 - all|A|. 添加所有文件提交信息列表
-- i|interactive 交互式操作
-- n|dry-run 不执行任何操作, 只显示做什么
+- i|interactive: 交互式操作
+- n|dry-run: 不执行任何操作, 只显示做什么
 
 ```bash
   git add [-A] [-i] [-n] [<file>...]
@@ -193,9 +193,9 @@ tags:
 
 ##### 提交
 
-- a|all git add -A 的缩写
-- m|message commit 的注释
-- amend 改写上一次 commit 的注释
+- a|all: git add -A 的缩写
+- m|message: commit 的注释
+- amend: 改写上一次 commit 的注释
 
 ```bash
   git commit [-am] [<file>...]
@@ -231,12 +231,12 @@ tags:
 
 ##### 标签
 
-- d|delete 删除指定标签
-- l|list 显示所有标签列表
-- show 查看指定标签信息
+- d|delete: 删除指定标签
+- l|list: 显示所有标签列表
+- show: 查看指定标签信息
 
   ```bash
-    git tag [-l] [-d] [<tag-name>]
+    git tag [-l]
     git show [<tag-name>]
   ```
 
@@ -249,13 +249,14 @@ tags:
 ###### 提交 tag
 
 ```bash
-  git push [<remote>] --tags
   git push [<remote>] [<tag-name>]
+  git push [<remote>] --tags
 ```
 
 ###### 删除 tag
 
 ```bash
+  git tag [-d] [<tag-name>]
   git push [<remote>] :refs/tags/[<tag-name>]
 ```
 
@@ -355,55 +356,105 @@ tags:
 
 #### 远程同步
 
-##### pull
+##### pull 拉取远程分支信息并执行合并
 
-- all 获取远程所有分支信息
+```bash
+  git pull [<remote>] [<remote-branch-name>[:<local-branch-name>]]
+```
+
+- all: 获取远程所有分支
 
   ```bash
     git pull [--all]
   ```
 
-- stat 统计合并后的差异
+- stat: 统计合并后的差异
 
   ```bash
-    git pull [--stat] [<remote>[:<local-branch-name>]]
+    git pull [--stat] [<remote>] [<remote-branch-name>[:<local-branch-name>]]
   ```
 
-- no-ff 不执行快速合并
+- no-ff: 不执行快速合并
 
   ```bash
-    git pull [--no-ff] [<remote>[:<local-branch-name>]]
+    git pull [--no-ff] [<remote>] [<remote-branch-name>[:<local-branch-name>]]
   ```
 
-##### fetch
+- t|tags: 获取远程的 tags, 默认
 
-##### push
+  ```bash
+    git pull [-t] [<remote>] [<remote-branch-name>[:<local-branch-name>]]
+  ```
 
-- git fetch origin [<remote_branch_name>[:<local_branch_name>]] # 拉取远程分支
-  - git fetch origin # 拉取所有远程分支信息
-  - git fetch origin remote_branch_name # 拉取指定远程分支信息到本地
-  - git fetch origin remote_branch_name:local_branch_name # 拉取指定远程分支到本地指定分支上
-  - 1. 如果 local_branch_name 与当前工作分支名相同, 则提示 fatal: Refusing to fetch into current branch refs/heads/master of non-bare repository.
-  - 2. 如果 本地已存在 local_branch_name, 则提示 ! [rejected] remote_branch_name -> local_branch_name (non-fast-forward)
-  - 3. 否则在本地创建 local_branch_name, 并切换到 local_branch_name 上
-  - git fetch origin + pu：pu maint：tmp # 拉取远程仓库的 pu 和 maint 分支 到本地的 pu 和 tmp 分支上, 只有 pu 分支会被更新即使没有变动
-  -
-  - git remote -v   # 显示所有远程仓库
-  - git remote show [remote] # 显示某个远程仓库的信息
-  - git remote add [shortname] [url] # 增加一个新的远程仓库，并命名
-  -
-  - git pull origin [<remote_branch_name>[:<local_branch_name>]] # 拉取远程分支并快速合并, --set-upstream-to 参数有影响
-  - git pull origin # 拉取所有远程分支信息并快速合并
-  - git pull origin remote_branch_name # 拉取指定远程分支信息到本地当前工作分支上,并执行快速合并
-  - git pull origin remote_branch_name:local_branch_name # 拉取指定远程分支信息到本地指定分支,并快速合并到当前工作分支上
-  - 1. 如果 local_branch_name 已存在, 则提示 ! [rejected] remote_branch_name -> local_branch_name (non-fast-forward)
-  - 2. 如果 local_branch_name 不存在, 则创建新分支 local_branch_name, 并快速合并到当前工作分支上,不会自动切换分支
-  - git pull origin master --allow-unrelated-histories # 允许合并远程仓库和本地仓库无关的历史,一般用在关联两个仓库更新版本历史问题
-  -
-  - git push origin local_branch_name:remote_branch_name   # 推送本地分支到远程分支, 如果远程分支不存在, 则新建
-  - git push origin --force   # 强行推送当前分支到远程仓库，即使有冲突
-  - git push origin --all # 推送所有分支到远程仓库
-  - git push origin --delete [remote_branch_name]   # 删除远程分支,功能同下
-  - git push origin :[remote_branch_name] # 删除远程分支,功能同上
+- no-tags: 不拉取远程的 tags
+
+  ```bash
+    git pull [--no-tags] [<remote>] [<remote-branch-name>[:<local-branch-name>]]
+  ```
+
+- set-upstream: 建立追踪关系
+
+  ```bash
+    git pull [--set-upstream] [<remote>] [<remote-branch-name>[:<local-branch-name>]]
+  ```
+
+##### fetch 拉取远程分支信息
+
+- all: 获取所有远程分支
+
+  ```bash
+    git fetch [-all]
+  ```
+
+- t|tags: 获取远程的 tags, 默认
+
+  ```bash
+    git fetch [-t] [<remote>] [<remote-branch-name>]
+  ```
+
+- no-tags: 不拉取远程的 tags
+
+  ```bash
+    git pull [--no-tags] [<remote>] [<remote-branch-name>]
+  ```
+
+##### push 推送本地分支信息到远程
+
+```bash
+  git push [<remote>] [<local-branch-name>[:<remote-branch-nam>]]
+```
+
+- all: 推送所有的分支
+
+  ```bash
+    git push [--all]
+  ```
+
+- f|force: 强制推送分支信息
+
+  ```bash
+    git push [-f] [<remote>] [<local-branch-name>[:<remote-branch-nam>]]
+  ```
+
+- d|delete: 删除远程分支
+
+  ```bash
+    git push [-d] [<remote>] [<remote-branch-name>]
+    git push [<remote>] [:[<remote_branch_name>]]
+  ```
+
+- tags: 推送标签信息
+
+  ```bash
+    git push [<remote>] [<tag-name>]
+    git push [<remote>] [--tags]
+    git push [<remote>] :refs/tags/[<tag-name>]
+  ```
+
+- u|set-upstream: 建立分支追踪
+
+  ```bash
+    git push [-u] [<remote>] [<remote-branch-name>]
+  ```
 
 ---

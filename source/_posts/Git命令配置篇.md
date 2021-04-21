@@ -47,8 +47,8 @@ tags:
 
 #### Git 环境定制
 
-- local 读取仓库配置文件 `.git/config`
-- global 读取用户配置文件 `.gitconfig`, 不加默认为仓库配置
+- local: 读取仓库配置文件 `.git/config`
+- global: 读取用户配置文件 `.gitconfig`, 不加默认为仓库配置
 
 ##### 显示配置项
 
@@ -154,9 +154,9 @@ tags:
 
 ###### set-url 设置关联仓库地址
 
-- push 设置推送 url
-- add 保持当前的 url,并添加一个新的 url
-- delete 将删除匹配到的 url, 并添加一个新的 url
+- push: 设置推送 url
+- add: 保持当前的 url,并添加一个新的 url
+- delete: 将删除匹配到的 url, 并添加一个新的 url
 
   ```bash
     git remote set-url [--push|--add|--delete] name url
@@ -164,8 +164,8 @@ tags:
 
 ###### get-url 获取关联仓库地址
 
-- push 获取推送 url
-- all 获取所有 url
+- push: 获取推送 url
+- all: 获取所有 url
 
   ```bash
     git remote get-url [--push|--all] name
