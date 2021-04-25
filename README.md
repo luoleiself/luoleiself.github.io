@@ -1,4 +1,4 @@
-## Hexo blog
+# Hexo blog
 
 ```bash
   npm start # 启动服务器,开发环境
@@ -7,7 +7,7 @@
   npm run deploy # 生成静态文件并部署
 ```
 
-### 部署
+## 部署
 
 hexo-deployer-git
 
@@ -24,7 +24,7 @@ deploy:
   # message: [message]
 ```
 
-### RSS 订阅
+## RSS 订阅
 
 hexo-generator-feed
 
@@ -68,7 +68,7 @@ social:
   RSS: /atom.xml || fa fa-rss
 ```
 
-### 本地文章搜索
+## 本地文章搜索
 
 hexo-generator-searchdb
 
@@ -100,7 +100,7 @@ local_search:
   preload: false
 ```
 
-### 相关文章推荐
+## 相关文章推荐
 
 hexo-related-popular-posts
 
@@ -121,7 +121,7 @@ related_posts:
     #isExcerpt: false
 ```
 
-### 文章字数阅读时间统计
+## 文章字数阅读时间统计
 
 hexo-symbols-count-time
 
