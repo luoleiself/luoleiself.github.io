@@ -219,7 +219,10 @@ tags:
     git reset --hard HEAD~3
   ```
 
-![reset](../../images/git-branch-4.png)
+![reset-1](../../images/git-branch-4.png)
+![reset-2](../../images/git-branch-5.png)
+
+- 其他参数区别参见 git reset \-\-help
 
 ###### revert
 
