@@ -42,7 +42,7 @@
     <link href="https://luoleiself.github.io/tools/b0420868a4bc/"/>
     <id>https://luoleiself.github.io/tools/b0420868a4bc/</id>
     <published>2021-04-20T08:48:57.000Z</published>
-    <updated>2021-04-21T07:48:12.225Z</updated>
+    <updated>2021-05-10T03:23:27.624Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;操作篇&quot;&gt;&lt;a href=&quot;#操作篇&quot; class=&quot;headerlink&quot; title=&quot;操作篇&quot;&gt;&lt;/a&gt;操作篇&lt;/h3&gt;&lt;h4 id=&quot;初始化仓库&quot;&gt;&lt;a href=&quot;#初始化仓库&quot; class=&quot;headerlink&quot; title=&quot;初始化仓库&quot;&gt;&lt;/a&gt;初始化仓库&lt;/h4&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;git init [project-name]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
@@ -57,6 +57,39 @@
 &lt;li&gt;&lt;p&gt;v|verbose: 列出分支并显示当前提交信息摘要&lt;/p&gt;
 &lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;git branch [-a] [-r] [-v]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
 &lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="tools" scheme="https://luoleiself.github.io/categories/tools/"/>
+    
+    
+    <category term="git" scheme="https://luoleiself.github.io/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Git命令配置篇</title>
+    <link href="https://luoleiself.github.io/tools/00ea2bbb2db0/"/>
+    <id>https://luoleiself.github.io/tools/00ea2bbb2db0/</id>
+    <published>2021-04-17T10:25:55.000Z</published>
+    <updated>2021-05-10T02:57:57.430Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://git-scm.com/&quot;&gt;&lt;img src=&quot;../../images/git-flow-1.jpg&quot; alt=&quot;概念图&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;配置篇&quot;&gt;&lt;a href=&quot;#配置篇&quot; class=&quot;headerlink&quot; title=&quot;配置篇&quot;&gt;&lt;/a&gt;配置篇&lt;/h3&gt;&lt;h4 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h4&gt;&lt;h5 id=&quot;结构型概念&quot;&gt;&lt;a href=&quot;#结构型概念&quot; class=&quot;headerlink&quot; title=&quot;结构型概念&quot;&gt;&lt;/a&gt;结构型概念&lt;/h5&gt;&lt;h6 id=&quot;Remote&quot;&gt;&lt;a href=&quot;#Remote&quot; class=&quot;headerlink&quot; title=&quot;Remote&quot;&gt;&lt;/a&gt;Remote&lt;/h6&gt;&lt;p&gt;远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步&lt;/p&gt;
+&lt;h6 id=&quot;Repository&quot;&gt;&lt;a href=&quot;#Repository&quot; class=&quot;headerlink&quot; title=&quot;Repository&quot;&gt;&lt;/a&gt;Repository&lt;/h6&gt;&lt;p&gt;本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本&lt;/p&gt;
+&lt;h6 id=&quot;Index-Stage&quot;&gt;&lt;a href=&quot;#Index-Stage&quot; class=&quot;headerlink&quot; title=&quot;Index / Stage&quot;&gt;&lt;/a&gt;Index / Stage&lt;/h6&gt;&lt;p&gt;暂存区, 临时存放改动的需要被提交的文件列表信息&lt;/p&gt;
+&lt;h6 id=&quot;Workspace&quot;&gt;&lt;a href=&quot;#Workspace&quot; class=&quot;headerlink&quot; title=&quot;Workspace&quot;&gt;&lt;/a&gt;Workspace&lt;/h6&gt;&lt;p&gt;工作区, 当前可见的随时可以进行操作的区域&lt;/p&gt;
+&lt;h5 id=&quot;功能型概念&quot;&gt;&lt;a href=&quot;#功能型概念&quot; class=&quot;headerlink&quot; title=&quot;功能型概念&quot;&gt;&lt;/a&gt;功能型概念&lt;/h5&gt;&lt;h6 id=&quot;文件状态&quot;&gt;&lt;a href=&quot;#文件状态&quot; class=&quot;headerlink&quot; title=&quot;文件状态&quot;&gt;&lt;/a&gt;文件状态&lt;/h6&gt;&lt;ul&gt;
+&lt;li&gt;修改: Git 可以感知到工作目录中的文件的变化, 然后通过 add 命令可以将变更的文件添加到暂存区&lt;/li&gt;
+&lt;li&gt;暂存: 通过 add 命令将工作目录中的变更的文件提交到暂存区, 等候被 commit&lt;/li&gt;
+&lt;li&gt;提交: 将暂存区的文件 commit 至 Git 版本库中永久保存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h6 id=&quot;commit-节点&quot;&gt;&lt;a href=&quot;#commit-节点&quot; class=&quot;headerlink&quot; title=&quot;commit 节点&quot;&gt;&lt;/a&gt;commit 节点&lt;/h6&gt;&lt;p&gt;Git 中每次的提交都会对提交的文件生成快照并生成一个 hash 值作为唯一标识的节点, 不管 HEAD 或者 Branch 都是对 commit 节点的引用&lt;/p&gt;
+&lt;h6 id=&quot;HEAD&quot;&gt;&lt;a href=&quot;#HEAD&quot; class=&quot;headerlink&quot; title=&quot;HEAD&quot;&gt;&lt;/a&gt;HEAD&lt;/h6&gt;&lt;blockquote&gt;
+&lt;p&gt;指针或者引用, 一个仓库中只能有一个 HEAD, 指向任意一个节点/分支,并且指向的节点始终为当前工作目录&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;</summary>
     
     
     
@@ -85,30 +118,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>Git命令配置篇</title>
-    <link href="https://luoleiself.github.io/tools/00ea2bbb2db0/"/>
-    <id>https://luoleiself.github.io/tools/00ea2bbb2db0/</id>
-    <published>2021-04-17T10:25:55.000Z</published>
-    <updated>2021-04-21T07:49:42.841Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://git-scm.com/&quot;&gt;&lt;img src=&quot;../../images/git-flow-1.jpg&quot; alt=&quot;概念图&quot;&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;配置篇&quot;&gt;&lt;a href=&quot;#配置篇&quot; class=&quot;headerlink&quot; title=&quot;配置篇&quot;&gt;&lt;/a&gt;配置篇&lt;/h3&gt;&lt;h4 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h4&gt;&lt;h5 id=&quot;Remote&quot;&gt;&lt;a href=&quot;#Remote&quot; class=&quot;headerlink&quot; title=&quot;Remote&quot;&gt;&lt;/a&gt;Remote&lt;/h5&gt;&lt;p&gt;远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步&lt;/p&gt;
-&lt;h5 id=&quot;Repository&quot;&gt;&lt;a href=&quot;#Repository&quot; class=&quot;headerlink&quot; title=&quot;Repository&quot;&gt;&lt;/a&gt;Repository&lt;/h5&gt;&lt;p&gt;本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本&lt;/p&gt;
-&lt;h5 id=&quot;Index-Stage&quot;&gt;&lt;a href=&quot;#Index-Stage&quot; class=&quot;headerlink&quot; title=&quot;Index / Stage&quot;&gt;&lt;/a&gt;Index / Stage&lt;/h5&gt;&lt;p&gt;暂存区, 临时存放改动的需要被提交的文件列表信息&lt;/p&gt;
-&lt;h5 id=&quot;Workspace&quot;&gt;&lt;a href=&quot;#Workspace&quot; class=&quot;headerlink&quot; title=&quot;Workspace&quot;&gt;&lt;/a&gt;Workspace&lt;/h5&gt;&lt;p&gt;工作区, 当前可见的随时可以进行操作的区域&lt;/p&gt;
-&lt;hr&gt;</summary>
-    
-    
-    
-    <category term="tools" scheme="https://luoleiself.github.io/categories/tools/"/>
-    
-    
-    <category term="git" scheme="https://luoleiself.github.io/tags/git/"/>
     
   </entry>
   
