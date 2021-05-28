@@ -260,10 +260,18 @@ tags:
 
 ###### 删除 tag
 
-```bash
-  git tag [-d] [<tag-name>]
-  git push [<remote>] :refs/tags/[<tag-name>]
-```
+- 删除本地 tag
+
+  ```bash
+    git tag [-d] [<tag-name>]
+  ```
+
+- 删除远程 tag
+
+  ```bash
+    git push [<remote>] [--delete] <tag-name>
+    git push [<remote>] :refs/tags/<tag-name>
+  ```
 
 ---
 
