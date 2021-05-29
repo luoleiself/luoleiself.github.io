@@ -222,6 +222,10 @@ tags:
 ![reset-1](../../images/git-branch-4.png)
 ![reset-2](../../images/git-branch-5.png)
 
+> reset 回退操作时只在当前分支的 commit 上操作, 跳过 merge 进来的 commit
+
+![reset-3](../../images/git-reset-1.png)
+
 - 其他参数区别参见 git reset \-\-help
 
 ###### revert
@@ -363,6 +367,7 @@ tags:
     git log [<remote>]
     git log --stat
     git log -p [<commit>] [<file>]
+    git log [commit[..commit]]
   ```
 
 ---
