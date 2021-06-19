@@ -1,64 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Git命令其他篇</title>
-    <url>/tools/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;fmt&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Git命令操作篇</title>
     <url>/tools/b0420868a4bc/</url>
     <content><![CDATA[<h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name]</span><br></pre></td></tr></table></figure>
@@ -311,6 +253,64 @@
       </tags>
   </entry>
   <entry>
+    <title>Git命令其他篇</title>
+    <url>/tools/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;fmt&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git命令配置篇</title>
     <url>/tools/00ea2bbb2db0/</url>
     <content><![CDATA[<p><a href="https://git-scm.com/"><img src="../../images/git-flow-1.jpg" alt="概念图"></a></p>
@@ -464,5 +464,764 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>Vue3.0知识点</title>
+    <url>/Vue/8019b94eb3b7/</url>
+    <content><![CDATA[<blockquote>
+<p>Vue 3.0.11</p>
+</blockquote>
+<h2 id="应用配置"><a href="#应用配置" class="headerlink" title="应用配置"></a>应用配置</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 每个 Vue 应用会暴露一个 config 对象, 在挂载应用之前, 可修改其属性</span></span><br><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(app.config);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>errorHandler 处理组件渲染过程中抛出的未捕获错误</p>
+<ul>
+<li>类型: Function</li>
+<li>默认: undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.config.errorHandler = <span class="function">(<span class="params">err, vm, info</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 处理错误</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>warnHandler 处理 Vue 运行中的警告, 开发环境下有效</p>
+<ul>
+<li>类型: Function</li>
+<li>默认: undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.config.warnHandler = <span class="function">(<span class="params">msg, vm, trace</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 处理警告</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>globalProperties 添加应用程序内任何组件实例都可访问的全局 property, 属性名冲突时,组件内 property 优先</p>
+<ul>
+<li>类型: [key: string]: any</li>
+<li>默认: undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line">Vue.prototype.$xhr = <span class="function">() =&gt;</span> &#123;&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line">app.config.globalProperties.$xhr = <span class="function">() =&gt;</span> &#123;&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>isCustomElement 指定一个方法, 用来识别在 Vue 之外定义的自定义元素, 如果组件符合此条件, 则不需要本地或全局注册</p>
+<blockquote>
+<p>注意, 所有原生 HTML 和 SVG 标记不需要在此函数中匹配——Vue 解析器自动执行此检查</p>
+</blockquote>
+<ul>
+<li>类型: (tag: string) =&gt; boolean</li>
+<li>默认: undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.config.isCustomElement = <span class="function">(<span class="params">tag</span>) =&gt;</span> tag.startsWith(<span class="string">&#x27;icon-&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>optionMergeStrategies 合并策略选项分别接收在父实例和子实例上定义的该选项的值作为第一个和第二个参数, 引用上下文实例被作为第三个参数传入</p>
+<ul>
+<li>类型: { [key: string]: Function }</li>
+<li>默认: {}</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> app = Vue.createApp(&#123;</span><br><span class="line">  <span class="function"><span class="title">mounted</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.$options.hello);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">app.config.optionMergeStrategies.hello = <span class="function">(<span class="params">parent, child, vm</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`Hello, <span class="subst">$&#123;child&#125;</span>`</span>;</span><br><span class="line">&#125;;</span><br><span class="line">app.mixin(&#123;</span><br><span class="line">  hello: <span class="string">&#x27;Vue&#x27;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// &#x27;Hello, Vue&#x27;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>performance 启用对组件初始化、编译、渲染和更新的性能追踪</p>
+<ul>
+<li>类型: boolean</li>
+<li>默认: false</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">app.config.performance = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<span id="more"></span>
+
+<h2 id="应用-API"><a href="#应用-API" class="headerlink" title="应用 API"></a>应用 API</h2><blockquote>
+<p>调用 createApp 返回一个应用实例，该实例提供了一个应用上下文, 应用实例挂载的整个组件树共享相同的上下文</p>
+</blockquote>
+<ul>
+<li><p>component 注册或检索全局组件</p>
+<ul>
+<li>参数<ul>
+<li>{string} name</li>
+<li>{Function | Object} [definition]</li>
+</ul>
+</li>
+<li>返回值<ul>
+<li>传入 definition 参数，返回应用实例</li>
+<li>不传入 definition 参数，返回组件定义</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line"><span class="comment">// 注册一个名为 my-component 的组件</span></span><br><span class="line">app.component(<span class="string">&#x27;my-component&#x27;</span>, &#123;</span><br><span class="line">  <span class="comment">/* ... */</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 检索注册的组件(始终返回构造函数)</span></span><br><span class="line"><span class="keyword">const</span> MyComponent = app.component(<span class="string">&#x27;my-component&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>config 应用配置对象</p>
+</li>
+<li><p>directive 注册或检索全局指令</p>
+<ul>
+<li>参数<ul>
+<li>{string} name</li>
+<li>{Function | Object} [definition]</li>
+</ul>
+</li>
+<li>返回值<ul>
+<li>传入 definition 参数，返回应用实例</li>
+<li>不传入 definition 参数，返回指令定义</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, onCreated, onMounted &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line"><span class="comment">// 注册</span></span><br><span class="line">app.directive(<span class="string">&#x27;my-directive&#x27;</span>, &#123;</span><br><span class="line">  <span class="comment">// 指令是具有一组生命周期的钩子：</span></span><br><span class="line">  <span class="comment">// 在绑定元素的 attribute 或事件监听器被应用之前调用</span></span><br><span class="line">  <span class="function"><span class="title">created</span>(<span class="params">el, binding, vnode, prevNode</span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="comment">// 在绑定元素的父组件挂载之前调用</span></span><br><span class="line">  <span class="function"><span class="title">beforeMount</span>(<span class="params">el, binding, vnode, prevNode</span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="comment">// 绑定元素的父组件被挂载时调用</span></span><br><span class="line">  <span class="function"><span class="title">mounted</span>(<span class="params">el, binding, vnode, prevNode</span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="comment">// 在包含组件的 VNode 更新之前调用</span></span><br><span class="line">  <span class="function"><span class="title">beforeUpdate</span>(<span class="params">el, binding, vnode, prevNode</span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="comment">// 在包含组件的 VNode 及其子组件的 VNode 更新之后调用</span></span><br><span class="line">  <span class="function"><span class="title">updated</span>(<span class="params">el, binding, vnode, prevNode</span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="comment">// 在绑定元素的父组件卸载之前调用</span></span><br><span class="line">  <span class="function"><span class="title">beforeUnmount</span>(<span class="params">el, binding, vnode, prevNode</span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="comment">// 卸载绑定元素的父组件时调用</span></span><br><span class="line">  <span class="function"><span class="title">unmounted</span>(<span class="params">el, binding, vnode, prevNode</span>)</span> &#123;&#125;,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 注册 (功能指令)</span></span><br><span class="line">app.directive(<span class="string">&#x27;my-directive&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 这将被作为 `mounted` 和 `updated` 调用</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// getter, 如果已注册，则返回指令定义</span></span><br><span class="line"><span class="keyword">const</span> myDirective = app.directive(<span class="string">&#x27;my-directive&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>mixin 将一个 mixin 应用到整个应用范围内</p>
+<ul>
+<li>参数<ul>
+<li>{Object} mixin</li>
+</ul>
+</li>
+<li>返回值: 应用实例</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line">app.mixin(&#123;&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>mount 挂载应用实例</p>
+<ul>
+<li>参数<ul>
+<li>{Element | string} rootContainer</li>
+<li>{boolean} isHydrate</li>
+</ul>
+</li>
+<li>返回值: 根组件实例</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=<span class="string">&#x27;my-app&#x27;</span>&gt;&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;;</span><br><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line"><span class="comment">// 做一些必要的准备</span></span><br><span class="line">app.mount(<span class="string">&#x27;#my-app&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>unmount 卸载应用实例的根组件</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=<span class="string">&#x27;my-app&#x27;</span>&gt;&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;;</span><br><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line"><span class="comment">// 做一些必要的准备</span></span><br><span class="line">app.mount(<span class="string">&#x27;#my-app&#x27;</span>);</span><br><span class="line"><span class="comment">// 挂载5秒后，应用将被卸载</span></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> app.unmount(), <span class="number">5000</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>provide 设置一个可以被注入到应用范围内所有组件中的值</p>
+<ul>
+<li>参数<ul>
+<li>{string | Symbol} key</li>
+<li>value</li>
+</ul>
+</li>
+<li>返回值: 应用实例</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;</span><br><span class="line">  inject: [<span class="string">&#x27;user&#x27;</span>],</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;div&gt;</span></span><br><span class="line"><span class="string">      &#123;&#123; user &#125;&#125;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">&#125;);</span><br><span class="line">app.provide(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;administrator&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>use 安装 Vue.js 插件。如果插件是一个对象，它必须暴露一个 install 方法。如果它本身是一个函数，它将被视为安装方法</p>
+<ul>
+<li>参数<ul>
+<li>{Object | Function} plugin</li>
+<li>…options (可选)</li>
+</ul>
+</li>
+<li>返回值: 应用实例</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> MyPlugin <span class="keyword">from</span> <span class="string">&#x27;./plugins/MyPlugin&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line">app.use(MyPlugin);</span><br><span class="line">app.mount(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="全局-API"><a href="#全局-API" class="headerlink" title="全局 API"></a>全局 API</h2><ul>
+<li><p>createApp 返回一个提供应用上下文的应用实例,应用实例挂载的整个组件树共享同一个上下文</p>
+<ul>
+<li>参数<ul>
+<li>{Object} rootConf 根组件选项对象</li>
+<li>{Object} propConf 根 prop</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(</span><br><span class="line">  &#123;</span><br><span class="line">    props: [<span class="string">&#x27;username&#x27;</span>],</span><br><span class="line">    <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;&#125;,</span><br><span class="line">    computed: &#123;&#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123; <span class="attr">username</span>: <span class="string">&#x27;Hello World&#x27;</span> &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
+<li><p>h 返回一个”虚拟节点”,通常缩写为 VNode：一个普通对象，其中包含向 Vue 描述它应在页面上渲染哪种节点的信息,包括所有子节点的描述</p>
+<ul>
+<li>参数<ul>
+<li>{String | Object | Function} type</li>
+<li>{Object} props</li>
+<li>{String | Array} children</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">render</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">  <span class="comment">// 使用返回 null 的函数将渲染一个注释</span></span><br><span class="line">  <span class="keyword">return</span> Vue.h(<span class="string">&#x27;div&#x27;</span>, &#123;&#125;, [</span><br><span class="line">    Vue.h(<span class="literal">null</span>, &#123;&#125;, [<span class="string">&#x27; Annotation start &#x27;</span>]),</span><br><span class="line">    Vue.h(<span class="string">&#x27;h2&#x27;</span>, &#123;&#125;, [<span class="string">&#x27;Hello World&#x27;</span>]),</span><br><span class="line">    Vue.h(<span class="string">&#x27;p&#x27;</span>, &#123;&#125;, <span class="string">&#x27;This is a label p, it contain description...&#x27;</span>),</span><br><span class="line">    Vue.h(<span class="literal">null</span>, &#123;&#125;, [<span class="string">&#x27; Annotation end &#x27;</span>])</span><br><span class="line">  ])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>defineComponent 创建一个合成类型的构造函数,用于手动渲染函数、TSX 和 IDE 工具支持</p>
+<ol>
+<li><p>具有组件选项的对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, defineComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> MyComponent = defineComponent(&#123;</span><br><span class="line">  <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; <span class="attr">count</span>: <span class="number">1</span> &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    <span class="function"><span class="title">increment</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.count++;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> app = createApp(MyComponent).mount(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>一个 setup 函数, 函数名称作为组件名称使用</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, defineComponent, ref &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> HelloWorld = defineComponent(<span class="function">(<span class="params">props, &#123; attrs, emit, slots &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> count = ref(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> &#123; count &#125;;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> app = createApp(HelloWorld).mount(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>defineAsyncComponent 创建一个只有在需要时才会加载的异步组件</p>
+<ol>
+<li><p>接受一个返回 Promise 的工厂函数</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 全局注册</span></span><br><span class="line"><span class="keyword">import</span> &#123; defineAsyncComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> AsyncComp = defineAsyncComponent(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./components/AsyncComponent.vue&#x27;</span>));</span><br><span class="line">app.component(<span class="string">&#x27;async-component&#x27;</span>, AsyncComp);</span><br><span class="line"><span class="comment">// 局部注册</span></span><br><span class="line"><span class="keyword">import</span> &#123; createApp, defineAsyncComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line">createApp(&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  components: &#123;</span><br><span class="line">    AsyncComponent: defineAsyncComponent(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./components/AsyncComponent.vue&#x27;</span>)),</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>接受一个对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineAsyncComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">const</span> AsyncComp = defineAsyncComponent(&#123;</span><br><span class="line">  <span class="comment">// 工厂函数</span></span><br><span class="line">  loader: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./Foo.vue&#x27;</span>)</span><br><span class="line">  <span class="comment">// 加载异步组件时要使用的组件</span></span><br><span class="line">  loadingComponent: LoadingComponent,</span><br><span class="line">  <span class="comment">// 加载失败时要使用的组件</span></span><br><span class="line">  errorComponent: ErrorComponent,</span><br><span class="line">  <span class="comment">// 在显示 loadingComponent 之前的延迟 | 默认值：200（单位 ms）</span></span><br><span class="line">  delay: <span class="number">200</span>,</span><br><span class="line">  <span class="comment">// 如果提供了 timeout ，并且加载组件的时间超过了设定值，将显示错误组件</span></span><br><span class="line">  <span class="comment">// 默认值：Infinity（即永不超时，单位 ms）</span></span><br><span class="line">  timeout: <span class="number">3000</span>,</span><br><span class="line">  <span class="comment">// 定义组件是否可挂起 | 默认值：true</span></span><br><span class="line">  suspensible: <span class="literal">false</span>,</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>error 错误信息对象</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>fail  一个函数，指示加载程序结束退出</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>attempts 允许的最大重试次数</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="function"><span class="title">onError</span>(<span class="params">error, retry, fail, attempts</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (error.message.match(<span class="regexp">/fetch/</span>) &amp;&amp; attempts &lt;= <span class="number">3</span>) &#123;</span><br><span class="line">      <span class="comment">// 请求发生错误时重试，最多可尝试 3 次</span></span><br><span class="line">      retry()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 注意，retry/fail 就像 promise 的 resolve/reject 一样：</span></span><br><span class="line">      <span class="comment">// 必须调用其中一个才能继续错误处理。</span></span><br><span class="line">      fail()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>resolveComponent 允许按名称解析 component</p>
+<blockquote>
+<p>resolveComponent 只能在 render 或 setup 函数中使用</p>
+</blockquote>
+<ul>
+<li><p>参数</p>
+<ul>
+<li>{String} name 已加载的组件的名称</li>
+</ul>
+</li>
+<li><p>返回值: 返回一个 Component, 如果找不到则返回接收的参数 name</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> app = Vue.createApp(&#123;&#125;);</span><br><span class="line">app.component(<span class="string">&#x27;MyComponent&#x27;</span>, &#123;</span><br><span class="line">  <span class="comment">/* ... */</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">import</span> &#123; resolveComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="function"><span class="title">render</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> MyComponent = resolveComponent(<span class="string">&#x27;MyComponent&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>resolveDynamicComponent 返回已解析的 Component 或新创建的 VNode，其中组件名称作为节点标签。如果找不到 Component,将发出警告</p>
+<blockquote>
+<p>允许使用与 &lt;component :is=””&gt; 相同的机制来解析一个 component</p>
+</blockquote>
+<blockquote>
+<p>resolveDynamicComponent 只能在 render 或 setup 函数中使用</p>
+</blockquote>
+<ul>
+<li>参数<ul>
+<li>{String | Object} component 组件</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; resolveDynamicComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line">render () &#123;</span><br><span class="line">  <span class="keyword">const</span> MyComponent = resolveDynamicComponent(<span class="string">&#x27;MyComponent&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>resolveDirective 允许按名称解析一个 directive</p>
+<blockquote>
+<p>resolveDirective 只能在 render 或 setup 函数中使用</p>
+</blockquote>
+<ul>
+<li>参数<ul>
+<li>{String} name 已加载的指令名称</li>
+</ul>
+</li>
+<li>返回值: 返回一个 Directive, 如果没有找到则返回 undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, resolveDirective &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line">app.directive(<span class="string">&#x27;highlight&#x27;</span>, &#123;&#125;);</span><br><span class="line">render () &#123;</span><br><span class="line">  <span class="keyword">const</span> highlightDirective = resolveDirective(<span class="string">&#x27;highlight&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>withDirectives 允许将指令应用于 VNode。返回一个包含应用指令的 VNode</p>
+<blockquote>
+<p>withDirectives 只能在 render 或 setup 函数中使用</p>
+</blockquote>
+<ul>
+<li><p>参数</p>
+<ul>
+<li><p>{Element} vnode 使用 h() 创建的虚拟节点</p>
+</li>
+<li><p>{Array} directives 指令数组</p>
+<ul>
+<li><p>每个指令都是一个数组, 最多可以定义 4 个索引</p>
+<ul>
+<li>[directive] 指令本身</li>
+<li>[directive, value] 上述内容,指令的值</li>
+<li>[directive, value, arg] 上述内容,一个 String 参数,eg: v-on:click 中的 click</li>
+<li>[directive, value, arg, modifiers] 上述内容,定义任意修饰符的 key:value 键值对</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MyDirective = resolveDirective(<span class="string">&#x27;MyDirective&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> nodeWithDirectives = withDirectives(h(<span class="string">&#x27;div&#x27;</span>), [[MyDirective, <span class="number">100</span>, <span class="string">&#x27;click&#x27;</span>, &#123; <span class="attr">prevent</span>: <span class="literal">true</span> &#125;]]);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; withDirectives, resolveDirective &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> foo = resolveDirective(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bar = resolveDirective(<span class="string">&#x27;bar&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> withDirectives(h(<span class="string">&#x27;div&#x27;</span>), [</span><br><span class="line">  [foo, <span class="built_in">this</span>.x],</span><br><span class="line">  [bar, <span class="built_in">this</span>.y],</span><br><span class="line">]);</span><br></pre></td></tr></table></figure></li>
+<li><p>createRenderer 自定义渲染器可以传入特定于平台的类型</p>
+<ul>
+<li>参数<ul>
+<li>HostNode 宿主环境中的节点</li>
+<li>HostElement 宿主环境中的元素</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createRenderer &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> &#123; render, createApp &#125; = createRenderer&lt;Node, Element&gt;(&#123;</span><br><span class="line">  patchProp,</span><br><span class="line">  ...nodeOps</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li><p>nextTick 将回调推迟到下一个 DOM 更新周期之后执行</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, nextTick &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;</span><br><span class="line">  <span class="function"><span class="title">setup</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> message = ref(<span class="string">&#x27;Hello!&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> changeMessage = <span class="keyword">async</span> (newMessage) =&gt; &#123;</span><br><span class="line">      message.value = newMessage;</span><br><span class="line">      <span class="keyword">await</span> nextTick();</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;Now DOM is updated&#x27;</span>);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>mergeProps 将包含 VNode prop 的多个对象合并为一个单独的对象, 返回一个新创建的对象, 而作为参数传递的对象则不会被修改.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h, mergeProps &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  inheritAttrs: <span class="literal">false</span>,</span><br><span class="line">  <span class="function"><span class="title">render</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> props = mergeProps(</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="comment">// 该 class 将与 $attrs 中的其他 class 合并。</span></span><br><span class="line">        class: &#x27;active&#x27;,</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="built_in">this</span>.$attrs</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">return</span> h(<span class="string">&#x27;div&#x27;</span>, props);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><h3 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h3><h4 id="data"><a href="#data" class="headerlink" title="data"></a>data</h4><ul>
+<li>vm.a 等价于 vm.$data.a</li>
+<li>以 _ 或 $ 开头的 property 不会被组件实例代理, vm.$data._property</li>
+</ul>
+<h4 id="props-用于接收来自父组件的数据"><a href="#props-用于接收来自父组件的数据" class="headerlink" title="props 用于接收来自父组件的数据"></a>props 用于接收来自父组件的数据</h4><h4 id="computed-计算属性"><a href="#computed-计算属性" class="headerlink" title="computed 计算属性"></a>computed 计算属性</h4><ul>
+<li>计算属性的结果会被缓存,依赖的响应式 property 变化才会重新计算</li>
+</ul>
+<h4 id="methods"><a href="#methods" class="headerlink" title="methods"></a>methods</h4><h4 id="watch"><a href="#watch" class="headerlink" title="watch"></a>watch</h4><h4 id="emits-定义组件触发的自定义事件"><a href="#emits-定义组件触发的自定义事件" class="headerlink" title="emits 定义组件触发的自定义事件"></a>emits 定义组件触发的自定义事件</h4><blockquote>
+<p>emits 选项中列出的事件不会从组件的根元素继承，也将从 $attrs property 中移除</p>
+</blockquote>
+<ul>
+<li><p>Array&lt;string&gt; | Object</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line"><span class="comment">// 数组语法</span></span><br><span class="line">app.component(<span class="string">&#x27;todo-item&#x27;</span>, &#123;</span><br><span class="line">  emits: [<span class="string">&#x27;check&#x27;</span>],</span><br><span class="line">  <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.$emit(<span class="string">&#x27;check&#x27;</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 对象语法</span></span><br><span class="line">app.component(<span class="string">&#x27;reply-form&#x27;</span>, &#123;</span><br><span class="line">  emits: &#123;</span><br><span class="line">    <span class="comment">// 没有验证函数</span></span><br><span class="line">    click: <span class="literal">null</span>,</span><br><span class="line">    <span class="comment">// 带有验证函数</span></span><br><span class="line">    submit: <span class="function">(<span class="params">payload</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (payload.email &amp;&amp; payload.password) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.warn(<span class="string">`Invalid submit event payload!`</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="function"><span class="title">mounted</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.$emit(<span class="string">&#x27;submit&#x27;</span>, &#123; <span class="attr">email</span>: <span class="string">&#x27;&#x27;</span>, <span class="attr">password</span>: <span class="string">&#x27;&#x27;</span> &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h3><h4 id="template"><a href="#template" class="headerlink" title="template"></a>template</h4><blockquote>
+<p>如果 Vue 选项中包含渲染函数，该模板将被忽略</p>
+</blockquote>
+<h4 id="render"><a href="#render" class="headerlink" title="render"></a>render</h4><blockquote>
+<p>render 函数的优先级高于从挂载元素 template 选项或内置 DOM 提取出的 HTML 模板编译渲染函数</p>
+</blockquote>
+<h3 id="生命周期钩子"><a href="#生命周期钩子" class="headerlink" title="生命周期钩子"></a>生命周期钩子</h3><blockquote>
+<p>所有的生命周期钩子自动绑定 this 上下文到实例中, 不能使用箭头函数来定义一个生命周期方法</p>
+</blockquote>
+<h4 id="beforeCreate"><a href="#beforeCreate" class="headerlink" title="beforeCreate"></a>beforeCreate</h4><h4 id="created"><a href="#created" class="headerlink" title="created"></a>created</h4><h4 id="beforeMount"><a href="#beforeMount" class="headerlink" title="beforeMount"></a>beforeMount</h4><blockquote>
+<p>该钩子在服务器端渲染期间不被调用</p>
+</blockquote>
+<h4 id="mounted"><a href="#mounted" class="headerlink" title="mounted"></a>mounted</h4><blockquote>
+<p>该钩子在服务器端渲染期间不被调用</p>
+</blockquote>
+<h4 id="beforeUpdate"><a href="#beforeUpdate" class="headerlink" title="beforeUpdate"></a>beforeUpdate</h4><blockquote>
+<p>该钩子在服务器端渲染期间不被调用，因为只有初次渲染会在服务端进行</p>
+</blockquote>
+<h4 id="updated"><a href="#updated" class="headerlink" title="updated"></a>updated</h4><blockquote>
+<p>该钩子在服务器端渲染期间不被调用</p>
+</blockquote>
+<h4 id="activated-被-keep-alive-缓存的组件激活时调用"><a href="#activated-被-keep-alive-缓存的组件激活时调用" class="headerlink" title="activated 被 keep-alive 缓存的组件激活时调用"></a>activated 被 keep-alive 缓存的组件激活时调用</h4><blockquote>
+<p>该钩子在服务器端渲染期间不被调用</p>
+</blockquote>
+<h4 id="deactivated-被-keep-alive-缓存的组件停用时调用"><a href="#deactivated-被-keep-alive-缓存的组件停用时调用" class="headerlink" title="deactivated 被 keep-alive 缓存的组件停用时调用"></a>deactivated 被 keep-alive 缓存的组件停用时调用</h4><blockquote>
+<p>该钩子在服务器端渲染期间不被调用</p>
+</blockquote>
+<h4 id="beforeUnmount"><a href="#beforeUnmount" class="headerlink" title="beforeUnmount"></a>beforeUnmount</h4><blockquote>
+<p>该钩子在服务器端渲染期间不被调用</p>
+</blockquote>
+<h4 id="unmounted"><a href="#unmounted" class="headerlink" title="unmounted"></a>unmounted</h4><blockquote>
+<p>该钩子在服务器端渲染期间不被调用</p>
+</blockquote>
+<h4 id="errorCaptured-当捕获一个来自子孙组件的错误时被调用"><a href="#errorCaptured-当捕获一个来自子孙组件的错误时被调用" class="headerlink" title="errorCaptured 当捕获一个来自子孙组件的错误时被调用"></a>errorCaptured 当捕获一个来自子孙组件的错误时被调用</h4><ul>
+<li>参数<ul>
+<li>err: Error</li>
+<li>instance: Component</li>
+<li>info: string</li>
+</ul>
+</li>
+<li>返回值: 可以返回 false 阻止错误继续向上传播</li>
+</ul>
+<h4 id="renderTracked-跟踪虚拟-DOM-重新渲染时调用"><a href="#renderTracked-跟踪虚拟-DOM-重新渲染时调用" class="headerlink" title="renderTracked 跟踪虚拟 DOM 重新渲染时调用"></a>renderTracked 跟踪虚拟 DOM 重新渲染时调用</h4><ul>
+<li>参数<ul>
+<li>e: DebuggerEvent</li>
+</ul>
+</li>
+</ul>
+<h4 id="renderTriggered-当虚拟-DOM-重新渲染被触发时调用"><a href="#renderTriggered-当虚拟-DOM-重新渲染被触发时调用" class="headerlink" title="renderTriggered 当虚拟 DOM 重新渲染被触发时调用"></a>renderTriggered 当虚拟 DOM 重新渲染被触发时调用</h4><ul>
+<li>参数<ul>
+<li>e: DebuggerEvent</li>
+</ul>
+</li>
+</ul>
+<h3 id="选项-资源"><a href="#选项-资源" class="headerlink" title="选项/资源"></a>选项/资源</h3><h4 id="directives-包含组件实例可用指令的哈希表"><a href="#directives-包含组件实例可用指令的哈希表" class="headerlink" title="directives 包含组件实例可用指令的哈希表"></a>directives 包含组件实例可用指令的哈希表</h4><h4 id="components-包含组件实例可用组件的哈希表"><a href="#components-包含组件实例可用组件的哈希表" class="headerlink" title="components 包含组件实例可用组件的哈希表"></a>components 包含组件实例可用组件的哈希表</h4><h3 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h3><h4 id="mixins"><a href="#mixins" class="headerlink" title="mixins"></a>mixins</h4><ul>
+<li>Mixin 钩子按照传入顺序依次调用，并在调用组件自身的钩子之前被调用</li>
+</ul>
+<h4 id="extends-允许声明扩展另一个组件"><a href="#extends-允许声明扩展另一个组件" class="headerlink" title="extends 允许声明扩展另一个组件"></a>extends 允许声明扩展另一个组件</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> CompA = &#123; ... &#125;</span><br><span class="line"><span class="comment">// 在没有调用 `Vue.extend` 时候继承 CompA</span></span><br><span class="line"><span class="keyword">const</span> CompB = &#123;</span><br><span class="line">  <span class="keyword">extends</span>: CompA,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="provide-inject"><a href="#provide-inject" class="headerlink" title="provide / inject"></a>provide / inject</h4><blockquote>
+<p>允许一个祖先组件向其所有子孙后代注入一个依赖,不论组件层次深度</p>
+</blockquote>
+<blockquote>
+<p>provide 和 inject 绑定并不是响应式的 s</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 父级组件 provide  &#x27;foo&#x27;</span></span><br><span class="line"><span class="keyword">const</span> Provider = &#123;</span><br><span class="line">  provide: &#123;</span><br><span class="line">    foo: <span class="string">&#x27;bar&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 或者是返回一个对象的函数</span></span><br><span class="line">  <span class="comment">// provide() &#123;</span></span><br><span class="line">  <span class="comment">//   return &#123;</span></span><br><span class="line">  <span class="comment">//     foo: &#x27;bar&#x27;,</span></span><br><span class="line">  <span class="comment">//   &#125;;</span></span><br><span class="line">  <span class="comment">// &#125;,</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 子组件 inject  &#x27;foo&#x27;</span></span><br><span class="line"><span class="keyword">const</span> Child = &#123;</span><br><span class="line">  inject: [<span class="string">&#x27;foo&#x27;</span>],</span><br><span class="line">  <span class="comment">// 或者是一个对象</span></span><br><span class="line">  <span class="comment">// inject: &#123;</span></span><br><span class="line">  <span class="comment">//   foo: &#123;</span></span><br><span class="line">  <span class="comment">//     default: &#x27;foo&#x27;,</span></span><br><span class="line">  <span class="comment">//   &#125;,</span></span><br><span class="line">  <span class="comment">// &#125;,</span></span><br><span class="line">  <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.foo); <span class="comment">// =&gt; &quot;bar&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="setup-组合式-API-的入口点"><a href="#setup-组合式-API-的入口点" class="headerlink" title="setup 组合式 API 的入口点"></a>setup 组合式 API 的入口点</h4><ul>
+<li><p>在创建组件实例时, 在初始 prop 解析之后立即调用 setup</p>
+</li>
+<li><p>在生命周期方面, 在 beforeCreate 钩子之前调用</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li>props 接收父组件传入的属性, 不要结构 props 对象,会失去响应式</li>
+<li>ctx 上下文对象, 包含了 attrs, slots, emit</li>
+</ul>
+</li>
+<li><p>返回值</p>
+<ul>
+<li><p>Object 对象的属性合并到组件实例的上下文</p>
+</li>
+<li><p>h 返回一个渲染函数, 该函数可以直接使用在同一作用域中声明的响应式状态</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;h, ref, reactive&#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="function"><span class="title">setup</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> count = ref(<span class="number">0</span>)</span><br><span class="line">  <span class="keyword">const</span> object = reactive(&#123; <span class="attr">foo</span>: <span class="string">&#x27;bar&#x27;</span> &#125;)</span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> h(<span class="string">&#x27;div&#x27;</span>, [count.value, object.foo])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="杂项"><a href="#杂项" class="headerlink" title="杂项"></a>杂项</h3><h4 id="name"><a href="#name" class="headerlink" title="name"></a>name</h4><h4 id="delimiters"><a href="#delimiters" class="headerlink" title="delimiters"></a>delimiters</h4><ul>
+<li>默认值: [‘, ‘] 模板文本插值的分隔符</li>
+</ul>
+<h4 id="inheritAttrs"><a href="#inheritAttrs" class="headerlink" title="inheritAttrs"></a>inheritAttrs</h4><ul>
+<li><p>控制是否在子组件的根元素上显示不被认作 props 的 attributes 绑定</p>
+</li>
+<li><p>默认值: true</p>
+</li>
+</ul>
+<h2 id="实例-Property"><a href="#实例-Property" class="headerlink" title="实例 Property"></a>实例 Property</h2><ul>
+<li>$data</li>
+<li>$props</li>
+<li>$el</li>
+<li>$options 当前组件实例的初始化选项</li>
+<li>$parent 父组件实例</li>
+<li>$root 根组件实例</li>
+<li>$slots 用来访问被插槽分发的内容</li>
+<li>$refs</li>
+<li>$attrs</li>
+</ul>
+<h2 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h2><ul>
+<li>$watch</li>
+<li>$emit</li>
+<li>$forceUpdate 迫使组件实例重新渲染,仅仅影响实例本身和插入插槽内容的子组件</li>
+<li>$nextTick</li>
+</ul>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><ul>
+<li><p>v-text</p>
+</li>
+<li><p>v-html</p>
+</li>
+<li><p>v-show</p>
+</li>
+<li><p>v-else-if</p>
+</li>
+<li><p>v-for</p>
+</li>
+<li><p>v-on</p>
+</li>
+<li><p>v-bind</p>
+</li>
+<li><p>v-model</p>
+</li>
+<li><p>v-slot 只能使用在 template 标签上, 当被提供的内容只有默认插槽时, 组件的标签才可以当作插槽的模板使用(v-slot 写在标签上)</p>
+</li>
+<li><p>v-pre 跳过这个元素和它的子元素的编译过程</p>
+</li>
+<li><p>v-cloak 这个指令保持在元素上直到关联组件实例结束编译</p>
+</li>
+<li><p>v-once</p>
+</li>
+<li><p>v-is 对于某些 HTML 元素只能出现在固定位置的解析规则的重定义</p>
+<blockquote>
+<p>注意：本节仅影响直接在页面的 HTML 中写入 Vue 模板的情况</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue 2.x</span></span><br><span class="line">&lt;!-- 这样做是有必要的，因为 <span class="string">`&lt;my-component-row&gt;`</span> 放在一个 --&gt;</span><br><span class="line">&lt;!-- <span class="string">`&lt;table&gt;`</span> 内可能无效且被放置到外面 --&gt;</span><br><span class="line">&lt;table&gt;</span><br><span class="line">  &lt;tr is=<span class="string">&quot;my-component-row&quot;</span>&gt;&lt;/tr&gt;</span><br><span class="line">&lt;/table&gt;</span><br><span class="line"><span class="comment">// vue 3.x</span></span><br><span class="line">&lt;table&gt;</span><br><span class="line">  &lt;tr v-is=<span class="string">&quot;my-component-row&quot;</span>&gt;&lt;/tr&gt; &lt;!-- 不正确，不会渲染任何内容 --&gt;</span><br><span class="line">&lt;/table&gt;</span><br><span class="line">&lt;table&gt;</span><br><span class="line">  &lt;tr v-is=<span class="string">&quot;&#x27;my-component-row&#x27;&quot;</span>&gt;&lt;/tr&gt; &lt;!-- 正确 --&gt;</span><br><span class="line">&lt;/table&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="特殊指令"><a href="#特殊指令" class="headerlink" title="特殊指令"></a>特殊指令</h2><ul>
+<li><p>key</p>
+</li>
+<li><p>ref</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div ref=<span class="string">&quot;root&quot;</span>&gt;This is a root element&lt;/div&gt;</span><br><span class="line">  &lt;div v-<span class="keyword">for</span>=<span class="string">&quot;(item, i) in list&quot;</span> :ref=<span class="string">&quot;el =&gt; &#123; if (el) divs[i] = el &#125;&quot;</span>&gt;</span><br><span class="line">    &#123;&#123; item &#125;&#125;</span><br><span class="line">  &lt;/div</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  <span class="keyword">import</span> &#123; ref, onMounted &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    <span class="function"><span class="title">setup</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> root = ref(<span class="literal">null</span>);</span><br><span class="line">      <span class="keyword">const</span> divs = ref([]);</span><br><span class="line">      <span class="comment">// 确保在每次更新之前重置ref</span></span><br><span class="line">      onBeforeUpdate(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        divs.value = [];</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      onMounted(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// DOM元素将在初始渲染后分配给ref</span></span><br><span class="line">        <span class="built_in">console</span>.log(root.value); <span class="comment">// &lt;div&gt;这是根元素&lt;/div&gt;</span></span><br><span class="line">      &#125;);</span><br><span class="line">      <span class="keyword">return</span> &#123; root, divs &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>is</p>
+</li>
+</ul>
+<h2 id="内置组件"><a href="#内置组件" class="headerlink" title="内置组件"></a>内置组件</h2><ul>
+<li><p>component</p>
+<ul>
+<li>is 渲染一个元组件为动态组件</li>
+</ul>
+</li>
+<li><p>transition</p>
+<ul>
+<li>props<ul>
+<li>name</li>
+<li>appear</li>
+<li>persisted</li>
+<li>css</li>
+<li>type</li>
+<li>mode</li>
+<li>duration</li>
+<li>enter/leave-from-class</li>
+<li>appear-class</li>
+<li>enter/leave/appear-to-class</li>
+<li>enter/leave/appear-active-class</li>
+</ul>
+</li>
+<li>events<ul>
+<li>before-enter/leave</li>
+<li>enter/leave/appear</li>
+<li>after-enter/leave/appear</li>
+<li>enter/leave/appear-cancelled</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;!-- 单个元素 --&gt;</span><br><span class="line">&lt;transition&gt;</span><br><span class="line">  &lt;div v-<span class="keyword">if</span>=<span class="string">&quot;ok&quot;</span>&gt;toggled content&lt;/div&gt;</span><br><span class="line">&lt;/transition&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 动态组件 --&gt;</span><br><span class="line">&lt;transition name=<span class="string">&quot;fade&quot;</span> mode=<span class="string">&quot;out-in&quot;</span> appear&gt;</span><br><span class="line">  &lt;component :is=<span class="string">&quot;view&quot;</span>&gt;&lt;/component&gt;</span><br><span class="line">&lt;/transition&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 事件钩子 --&gt;</span><br><span class="line">&lt;div id=<span class="string">&quot;transition-demo&quot;</span>&gt;</span><br><span class="line">  &lt;transition @after-enter=<span class="string">&quot;transitionComplete&quot;</span>&gt;</span><br><span class="line">    &lt;div v-show=<span class="string">&quot;ok&quot;</span>&gt;toggled content&lt;/div&gt;</span><br><span class="line">  &lt;/transition&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>transition-group</p>
+<ul>
+<li>props<ul>
+<li>tag</li>
+<li>move-class</li>
+</ul>
+</li>
+<li>events 和 transition 相同</li>
+</ul>
+</li>
+<li><p>keep-alive</p>
+<ul>
+<li>props<ul>
+<li>{String|RegExp|Array} include 哪些组件实例可以被缓存</li>
+<li>{String|RegExp|Array} exclude 哪些组件实例不被缓存</li>
+<li>{String|Number} max 最多可以缓存多少组件实例</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;!-- 逗号分隔字符串 --&gt;</span><br><span class="line">&lt;keep-alive include=<span class="string">&quot;a,b&quot;</span>&gt;</span><br><span class="line">  &lt;component :is=<span class="string">&quot;view&quot;</span>&gt;&lt;/component&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- regex (使用 <span class="string">`v-bind`</span>) --&gt;</span><br><span class="line">&lt;keep-alive :include=<span class="string">&quot;/a|b/&quot;</span>&gt;</span><br><span class="line">  &lt;component :is=<span class="string">&quot;view&quot;</span>&gt;&lt;/component&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- <span class="built_in">Array</span> (使用 <span class="string">`v-bind`</span>) --&gt;</span><br><span class="line">&lt;keep-alive :include=<span class="string">&quot;[&#x27;a&#x27;, &#x27;b&#x27;]&quot;</span>&gt;</span><br><span class="line">  &lt;component :is=<span class="string">&quot;view&quot;</span>&gt;&lt;/component&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>slot</p>
+<ul>
+<li>props<ul>
+<li>{String} name 插槽命名</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>teleport 移动实际 DOM 节点(非销毁重建),并保持任何组件实例的活动状态</p>
+<ul>
+<li>props<ul>
+<li>{String} to 必须是有效的查询选择器或者 HTMLElement(如果在浏览器环境中时), 指定将在其中移动 &lt;teleport&gt; 内容的目标元素</li>
+<li>{Boolean} disabled 可选属性可用于禁用 &lt;teleport&gt; 的功能</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;!-- 正确 --&gt;</span><br><span class="line">&lt;teleport to=<span class="string">&quot;#some-id&quot;</span> /&gt;</span><br><span class="line">&lt;teleport to=<span class="string">&quot;.some-class&quot;</span> /&gt;</span><br><span class="line">&lt;teleport to=<span class="string">&quot;[data-teleport]&quot;</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 错误 --&gt;</span><br><span class="line">&lt;teleport to=<span class="string">&quot;h1&quot;</span> /&gt;</span><br><span class="line">&lt;teleport to=<span class="string">&quot;some-string&quot;</span> /&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="响应性-API"><a href="#响应性-API" class="headerlink" title="响应性 API"></a>响应性 API</h2><h3 id="响应性基础-API"><a href="#响应性基础-API" class="headerlink" title="响应性基础 API"></a>响应性基础 API</h3><ul>
+<li><p>reactive 返回对象的响应式副本</p>
+<blockquote>
+<p>当将 ref 分配给 reactive property 时，ref 将被自动解构</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> count = ref(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">const</span> obj = reactive(&#123;&#125;);</span><br><span class="line">obj.count = count;</span><br><span class="line"><span class="built_in">console</span>.log(obj.count); <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.count === count.value); <span class="comment">// true</span></span><br><span class="line"><span class="comment">// 它会更新 `obj.value`</span></span><br><span class="line">count.value++;</span><br><span class="line"><span class="built_in">console</span>.log(count.value); <span class="comment">// 2</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.count); <span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 它也会更新 `count` ref</span></span><br><span class="line">obj.count++;</span><br><span class="line"><span class="built_in">console</span>.log(obj.count); <span class="comment">// 3</span></span><br><span class="line"><span class="built_in">console</span>.log(count.value); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure></li>
+<li><p>readonly 接受一个对象 (响应式或纯对象) 或 ref 并返回原始对象的只读代理, 任何被访问的嵌套 property 也是只读的</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> original = reactive(&#123; <span class="attr">count</span>: <span class="number">0</span> &#125;);</span><br><span class="line"><span class="keyword">const</span> copy = readonly(original);</span><br><span class="line">watchEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(copy.count); <span class="comment">// 用于响应性追踪</span></span><br><span class="line">&#125;);</span><br><span class="line">original.count++; <span class="comment">// 变更 original 会触发依赖于副本的侦听器</span></span><br><span class="line">copy.count++; <span class="comment">// 警告! // 变更副本将失败并导致警告</span></span><br></pre></td></tr></table></figure></li>
+<li><p>isProxy 检查对象是否是由 reactive 或 readonly 创建的 proxy</p>
+</li>
+<li><p>isReactive 检查对象是否是由 reactive 创建的响应式代理, 如果代理是由 readonly 创建的并包含了由 reactive 创建的另一个代理, 同样返回 true</p>
+</li>
+<li><p>isReadonly 检查对象是否是由 readonly 创建的只读代理</p>
+</li>
+<li><p>toRaw 返回 reactive 或 readonly 代理的原始对象</p>
+<blockquote>
+<p>可用于临时读取数据而无需承担代理访问/跟踪的开销，也可用于写入数据而避免触发更改。不建议保留对原始对象的持久引用</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> reactiveFoo = reactive(foo);</span><br><span class="line"><span class="built_in">console</span>.log(toRaw(reactiveFoo) === foo); <span class="comment">// true</span></span><br></pre></td></tr></table></figure></li>
+<li><p>markRaw 标记一个对象, 使其永远不会转换为 proxy. 返回对象本身</p>
+<ul>
+<li>有些值不应该是响应式的，例如复杂的第三方类实例或 Vue 组件对象。</li>
+<li>当渲染具有不可变数据源的大列表时，跳过 proxy 转换可以提高性能</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = markRaw(&#123;&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(isReactive(reactive(foo))); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 嵌套在其他响应式对象中时也可以使用</span></span><br><span class="line"><span class="keyword">const</span> bar = reactive(&#123; foo &#125;);</span><br><span class="line"><span class="built_in">console</span>.log(isReactive(bar.foo)); <span class="comment">// false</span></span><br></pre></td></tr></table></figure></li>
+<li><p>shallowReactive 创建一个响应式代理,它跟踪其自身 property 的响应性,但不执行嵌套对象的深层响应式转换 (暴露原始值)</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> state = shallowReactive(&#123;</span><br><span class="line">  foo: <span class="number">1</span>,</span><br><span class="line">  nested: &#123;</span><br><span class="line">    bar: <span class="number">2</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">state.foo++; <span class="comment">// 改变 state 本身的性质是响应式的</span></span><br><span class="line"><span class="comment">// ...但是不转换嵌套对象</span></span><br><span class="line">isReactive(state.nested); <span class="comment">// false</span></span><br><span class="line">state.nested.bar++; <span class="comment">// 非响应式</span></span><br></pre></td></tr></table></figure></li>
+<li><p>shallowReadonly 创建一个 proxy, 使其自身的 property 为只读, 但不执行嵌套对象的深度只读转换 (暴露原始值)</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> state = shallowReadonly(&#123;</span><br><span class="line">  foo: <span class="number">1</span>,</span><br><span class="line">  nested: &#123;</span><br><span class="line">    bar: <span class="number">2</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">state.foo++; <span class="comment">// 改变 state 本身的 property 将失败</span></span><br><span class="line"><span class="comment">// ...但适用于嵌套对象</span></span><br><span class="line">isReadonly(state.nested); <span class="comment">// false</span></span><br><span class="line">state.nested.bar++; <span class="comment">// 适用</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Refs"><a href="#Refs" class="headerlink" title="Refs"></a>Refs</h3><ul>
+<li><p>ref 接受一个内部值并返回一个响应式且可变的 ref 对象. ref 对象具有指向内部值的单个属性 .value</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> count = ref(<span class="number">0</span>);</span><br><span class="line"><span class="built_in">console</span>.log(count.value); <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line">count.value++;</span><br><span class="line"><span class="built_in">console</span>.log(count.value); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure></li>
+<li><p>unref 如果参数是一个 ref, 则返回内部值, 否则返回参数本身</p>
+<blockquote>
+<p>val = isRef(val) ? val.value : val 的语法糖函数</p>
+</blockquote>
+</li>
+<li><p>toRef 为源响应式对象上的某个 property 新创建一个 ref, 然后 ref 可以被传递,它会保持对其源 property 的响应式连接</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> state = reactive(&#123;</span><br><span class="line">  foo: <span class="number">1</span>,</span><br><span class="line">  bar: <span class="number">2</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> fooRef = toRef(state, <span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line">fooRef.value++;</span><br><span class="line"><span class="built_in">console</span>.log(state.foo); <span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line">state.foo++;</span><br><span class="line"><span class="built_in">console</span>.log(fooRef.value); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure></li>
+<li><p>toRefs 将响应式对象转换为普通对象, 其中结果对象的每个 property 都是指向原始对象相应 property 的 ref</p>
+<blockquote>
+<p>方便消费组件可以在不丢失响应性的情况下对返回的对象进行分解/扩散</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> state = reactive(&#123;</span><br><span class="line">  foo: <span class="number">1</span>,</span><br><span class="line">  bar: <span class="number">2</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> stateAsRefs = toRefs(state);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">stateAsRefs 的类型:</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  foo: Ref&lt;number&gt;,</span></span><br><span class="line"><span class="comment">  bar: Ref&lt;number&gt;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ref 和原始 property 已经“链接”起来了</span></span><br><span class="line">state.foo++;</span><br><span class="line"><span class="built_in">console</span>.log(stateAsRefs.foo.value); <span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line">stateAsRefs.foo.value++;</span><br><span class="line"><span class="built_in">console</span>.log(state.foo); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure></li>
+<li><p>isRef 检查值是否为一个 ref 对象</p>
+</li>
+<li><p>customRef 创建一个自定义的 ref, 并对其依赖项跟踪和更新触发进行显式控制</p>
+<blockquote>
+<p>它需要一个工厂函数，该函数接收 track 和 trigger 函数作为参数，并且应该返回一个带有 get 和 set 的对象</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;input v-model=<span class="string">&#x27;text&#x27;</span> /&gt;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useDebouncedRef</span>(<span class="params">value, delay = <span class="number">200</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> timeout;</span><br><span class="line">  <span class="keyword">return</span> customRef(<span class="function">(<span class="params">track, trigger</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="function"><span class="title">get</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        track();</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="function"><span class="title">set</span>(<span class="params">newValue</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">clearTimeout</span>(timeout);</span><br><span class="line">        timeout = <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">          value = newValue;</span><br><span class="line">          trigger();</span><br><span class="line">        &#125;, delay);</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">setup</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      text: useDebouncedRef(<span class="string">&#x27;hello&#x27;</span>),</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>shallowRef 创建一个跟踪自身 .value 变化的 ref, 但不会使其值也变成响应式的</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = shallowRef(&#123;&#125;);</span><br><span class="line"><span class="comment">// 改变 ref 的值是响应式的</span></span><br><span class="line">foo.value = &#123;&#125;;</span><br><span class="line"><span class="comment">// 但是这个值不会被转换。</span></span><br><span class="line">isReactive(foo.value); <span class="comment">// false</span></span><br></pre></td></tr></table></figure></li>
+<li><p>triggerRef 手动执行与 shallowRef 关联的任何副作用</p>
+</li>
+</ul>
+<h3 id="Computed-watch"><a href="#Computed-watch" class="headerlink" title="Computed | watch"></a>Computed | watch</h3><ul>
+<li><p>computed 接受一个 getter 函数,并为从 getter 返回的值返回一个不变的响应式 ref 对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1.</span></span><br><span class="line"><span class="keyword">const</span> count = ref(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">const</span> plusOne = computed(<span class="function">() =&gt;</span> count.value + <span class="number">1</span>);</span><br><span class="line"><span class="built_in">console</span>.log(plusOne.value); <span class="comment">// 2</span></span><br><span class="line">plusOne.value++; <span class="comment">// 错误</span></span><br><span class="line"><span class="comment">// 2.</span></span><br><span class="line"><span class="keyword">const</span> count = ref(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">const</span> plusOne = computed(&#123;</span><br><span class="line">  get: <span class="function">() =&gt;</span> count.value + <span class="number">1</span>,</span><br><span class="line">  set: <span class="function">(<span class="params">val</span>) =&gt;</span> &#123;</span><br><span class="line">    count.value = val - <span class="number">1</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">plusOne.value = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">console</span>.log(count.value); <span class="comment">// 0</span></span><br></pre></td></tr></table></figure></li>
+<li><p>watchEffect 在响应式地跟踪其依赖项时立即运行一个函数, 并在更改依赖项时重新运行它</p>
+<ul>
+<li><p>停止侦听器</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> stop = watchEffect(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">stop();</span><br></pre></td></tr></table></figure></li>
+<li><p>清除副作用时回调 onInvalidate</p>
+<ul>
+<li>副作用即将重新执行时</li>
+<li>侦听器被停止(setup 或 lifeCycle Hooks 中使用过, 则在组件卸载时)</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">watchEffect(<span class="function">(<span class="params">onInvalidate</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> token = performAsyncOperation(id.value);</span><br><span class="line">  onInvalidate(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// id has changed or watcher is stopped.</span></span><br><span class="line">    <span class="comment">// invalidate previously pending async operation</span></span><br><span class="line">    token.cancel();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>副作用刷新时机, 会在组件更新之前执行副作用</p>
+<ul>
+<li>如果需要在组件更新后重新运行侦听器副作用</li>
+<li>flush<ul>
+<li>pre: ‘默认值’, 指定的回调应该在渲染前被调用</li>
+<li>post: 将回调推迟到渲染之后调用</li>
+<li>sync: ‘始终同步触发’, 低效</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在组件更新后触发，这样你就可以访问更新的 DOM。</span></span><br><span class="line"><span class="comment">// 注意：这也将推迟副作用的初始运行，直到组件的首次渲染完成。</span></span><br><span class="line">watchEffect(<span class="function">() =&gt;</span> &#123;&#125;, &#123;</span><br><span class="line">  flush: <span class="string">&#x27;post&#x27;</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>侦听器调试, 只能用于开发模式下</p>
+<ul>
+<li>onTrack 响应式 property 和 ref 作为依赖项被追踪时被调用</li>
+<li>onTrigger 依赖项变更导致副作用被触发时被调用</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">watchEffect(<span class="function">() =&gt;</span> &#123;&#125;, &#123; <span class="function"><span class="title">onTrack</span>(<span class="params">e</span>)</span> &#123;&#125;, <span class="function"><span class="title">onTrigger</span>(<span class="params">e</span>)</span> &#123;&#125; &#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> count = ref(<span class="number">0</span>);</span><br><span class="line">watchEffect(<span class="function">() =&gt;</span> <span class="built_in">console</span>.log(count.value));</span><br><span class="line"><span class="comment">// -&gt; logs 0</span></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  count.value++;</span><br><span class="line">  <span class="comment">// -&gt; logs 1</span></span><br><span class="line">&#125;, <span class="number">100</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>watch 使用方式和 this.$watch 和 watch 选项完全等效</p>
+<ul>
+<li><p>与 watchEffect 的区别</p>
+<ul>
+<li>惰性地执行副作用</li>
+<li>更具体地说明应触发侦听器重新运行的状态</li>
+<li>访问被侦听状态的先前值和当前值</li>
+</ul>
+</li>
+<li><p>侦听单一源</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 侦听一个 getter</span></span><br><span class="line"><span class="keyword">const</span> state = reactive(&#123; <span class="attr">count</span>: <span class="number">0</span> &#125;);</span><br><span class="line">watch(</span><br><span class="line">  () =&gt; state.count,</span><br><span class="line">  (count, prevCount) =&gt; &#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"><span class="comment">// 直接侦听一个 ref</span></span><br><span class="line"><span class="keyword">const</span> count = ref(<span class="number">0</span>);</span><br><span class="line">watch(count, <span class="function">(<span class="params">count, prevCount</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/* ... */</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>侦听多个源</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">watch([fooRef, barRef], <span class="function">(<span class="params">[foo, bar], [prevFoo, prevBar]</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/* ... */</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h2 id="组合式-API"><a href="#组合式-API" class="headerlink" title="组合式 API"></a>组合式 API</h2><ul>
+<li><p>setup 组件选项，在创建组件之前执行</p>
+<ul>
+<li>参数<ul>
+<li>{Data} props</li>
+<li>{SetupContext} context<ul>
+<li>attrs</li>
+<li>slots</li>
+<li>emit</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> MyComponent = defineComponent(&#123;</span><br><span class="line">  <span class="function"><span class="title">setup</span>(<span class="params">props, &#123; attrs, slots, emit &#125;</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>生命周期钩子</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> MyComponent = defineComponent(&#123;</span><br><span class="line">  <span class="function"><span class="title">setup</span>(<span class="params">props, &#123; attrs, slots, emit &#125;</span>)</span> &#123;</span><br><span class="line">    onBeforeMount(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    onMounted(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    onBeforeUnmount(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    onUnmounted(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>Provide / Inject</p>
+</li>
+<li><p>getCurrentInstance</p>
+<ul>
+<li>支持访问内部组件实例，用于高阶用法或库的开发</li>
+<li>只能在 setup 或生命周期钩子中调用</li>
+</ul>
+</li>
+</ul>
+<h2 id="Migration"><a href="#Migration" class="headerlink" title="Migration"></a>Migration</h2><h3 id="v-for-中的-Ref-数组"><a href="#v-for-中的-Ref-数组" class="headerlink" title="v-for 中的 Ref 数组"></a>v-for 中的 Ref 数组</h3><ul>
+<li>Vue 3.x 中 不再在 $ref 中自动创建数组填充相应的 $refs property</li>
+</ul>
+<h3 id="异步组件"><a href="#异步组件" class="headerlink" title="异步组件"></a>异步组件</h3><ul>
+<li><p>新的 defineAsyncComponent 助手方法，用于显式地定义异步组件</p>
+</li>
+<li><p>component 选项重命名为 loader</p>
+</li>
+<li><p>Loader 函数本身不再接收 resolve 和 reject 参数，且必须返回一个 Promise</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line"><span class="keyword">const</span> asyncPage = <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> asyncPage = &#123;</span><br><span class="line">  component: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>),</span><br><span class="line">  delay: <span class="number">200</span>,</span><br><span class="line">  timeout: <span class="number">3000</span>,</span><br><span class="line">  error: ErrorComponent,</span><br><span class="line">  loading: LoadingComponent,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="comment">// 不带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPage = defineAsyncComponent(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>));</span><br><span class="line"><span class="comment">// 带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPageWithOptions = defineAsyncComponent(&#123;</span><br><span class="line">  loader: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>),</span><br><span class="line">  delay: <span class="number">200</span>,</span><br><span class="line">  timeout: <span class="number">3000</span>,</span><br><span class="line">  errorComponent: ErrorComponent,</span><br><span class="line">  loadingComponent: LoadingComponent,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="attribute-强制行为"><a href="#attribute-强制行为" class="headerlink" title="attribute 强制行为"></a>attribute 强制行为</h3><ul>
+<li>Vue 3.x 中, 移除 attribute 使用 null 或者 undefined</li>
+<li>非布尔 attribute, 如果 attribute 为 false, 将停止删除它们, 相反强制它们为 ‘false’</li>
+</ul>
+<h3 id="attrs-包括-class-和-style"><a href="#attrs-包括-class-和-style" class="headerlink" title="$attrs 包括 class 和 style"></a>$attrs 包括 class 和 style</h3><ul>
+<li>$attrs 中的 attribute 不再自动添加到根元素中,而是由开发者决定</li>
+</ul>
+<h3 id="children-移除"><a href="#children-移除" class="headerlink" title="$children 移除"></a>$children 移除</h3><h3 id="自定义指令"><a href="#自定义指令" class="headerlink" title="自定义指令"></a>自定义指令</h3><ul>
+<li>特定 is prop 用法仅限于保留的 component 标签</li>
+<li>新增 v-is 指令来处理原生 HTML 解析限制</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line">Vue.directive(<span class="string">&#x27;my-directive&#x27;</span>, &#123;</span><br><span class="line">  <span class="function"><span class="title">bind</span>(<span class="params"></span>)</span> &#123;&#125;, <span class="comment">// - 指令绑定到元素后发生。只发生一次。</span></span><br><span class="line">  <span class="function"><span class="title">inserted</span>(<span class="params"></span>)</span> &#123;&#125;, <span class="comment">// - 元素插入父 DOM 后发生。</span></span><br><span class="line">  <span class="function"><span class="title">update</span>(<span class="params"></span>)</span> &#123;&#125;, <span class="comment">// - 当元素更新，但子元素尚未更新时，将调用此钩子。</span></span><br><span class="line">  <span class="function"><span class="title">componentUpdated</span>(<span class="params"></span>)</span> &#123;&#125;, <span class="comment">// - 一旦组件和子级被更新，就会调用这个钩子。</span></span><br><span class="line">  <span class="function"><span class="title">unbind</span>(<span class="params"></span>)</span> &#123;&#125;, <span class="comment">// - 一旦指令被移除，就会调用这个钩子。也只调用一次</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line">app.directive(<span class="string">&#x27;my-directive&#x27;</span>, &#123;</span><br><span class="line">  <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="function"><span class="title">beforeMount</span>(<span class="params"></span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="function"><span class="title">mounted</span>(<span class="params"></span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="function"><span class="title">beforeUpdate</span>(<span class="params"></span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="function"><span class="title">updated</span>(<span class="params"></span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="function"><span class="title">beforeUnmount</span>(<span class="params"></span>)</span> &#123;&#125;,</span><br><span class="line">  <span class="function"><span class="title">unmounted</span>(<span class="params"></span>)</span> &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Data-选项"><a href="#Data-选项" class="headerlink" title="Data 选项"></a>Data 选项</h3><blockquote>
+<p>标准化只接受返回的 Object 的 function</p>
+</blockquote>
+<h3 id="emits"><a href="#emits" class="headerlink" title="emits"></a>emits</h3><h3 id="事件-API"><a href="#事件-API" class="headerlink" title="事件 API"></a>事件 API</h3><blockquote>
+<p>$on，$off 和 $once 实例方法已被移除，应用实例不再实现事件触发接口</p>
+</blockquote>
+<h3 id="过滤器-移除"><a href="#过滤器-移除" class="headerlink" title="过滤器 移除"></a>过滤器 移除</h3><h3 id="片段"><a href="#片段" class="headerlink" title="片段"></a>片段</h3><ul>
+<li><p>组件可以包含多个根节点, 需要显示定义 attribute 的位置</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;header&gt;...&lt;/header&gt;</span><br><span class="line">  &lt;main v-bind=<span class="string">&#x27;$attrs&#x27;</span>&gt;...&lt;/main&gt;</span><br><span class="line">  &lt;footer&gt;...&lt;/footer&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="函数式组件"><a href="#函数式组件" class="headerlink" title="函数式组件"></a>函数式组件</h3><ul>
+<li><p>单文件组件的 functional attribute 被移除</p>
+</li>
+<li><p>{ functional: true} 选项通过函数创建组件不推荐使用,和状态组件的性能差别不大</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> DynamicHeading = <span class="function">(<span class="params">props, context</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> h(<span class="string">`h<span class="subst">$&#123;props.level&#125;</span>`</span>, context.attrs, context.slots);</span><br><span class="line">&#125;;</span><br><span class="line">DynamicHeading.props = [<span class="string">&#x27;level&#x27;</span>];</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> DynamicHeading;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="全局-API-变更"><a href="#全局-API-变更" class="headerlink" title="全局 API 变更"></a>全局 API 变更</h3><ul>
+<li><p>测试期间,全局配置很容易意外地污染其他测试用例, Vue.use | Vue.mixin 无恢复效果的方法</p>
+</li>
+<li><p>全局配置使同一页面的多个 app 之间共享同一个 Vue 副本非常困难</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> Foo <span class="keyword">from</span> <span class="string">&#x27;./Foo.vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> Bar <span class="keyword">from</span> <span class="string">&#x27;./Bar.vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> createMyApp = <span class="function">(<span class="params">options</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> app = createApp(options);</span><br><span class="line">  app.directive(<span class="string">&#x27;focus&#x27;</span> <span class="comment">/* ... */</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> app;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">createMyApp(Foo).mount(<span class="string">&#x27;#foo&#x27;</span>);</span><br><span class="line">createMyApp(Bar).mount(<span class="string">&#x27;#bar&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="全局-API-Treeshaking"><a href="#全局-API-Treeshaking" class="headerlink" title="全局 API Treeshaking"></a>全局 API Treeshaking</h3><ul>
+<li><p>全局 API 现在只能作为 ES 模块构建的命名导出进行访问, Vue 应用程序将从未使用的 api 从最终捆绑包中消除,从而获得最佳的文件大小</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;transition&gt;</span><br><span class="line">  &lt;div v-show=<span class="string">&#x27;ok&#x27;</span>&gt;hello&lt;/div&gt;</span><br><span class="line">&lt;/transition&gt;;</span><br><span class="line"><span class="keyword">import</span> &#123; h, Transition, withDirectives, vShow &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> h(Transition, [withDirectives(h(<span class="string">&#x27;div&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>), [[vShow, <span class="built_in">this</span>.ok]])]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="内联模板-Attribute-移除"><a href="#内联模板-Attribute-移除" class="headerlink" title="内联模板 Attribute 移除"></a>内联模板 Attribute 移除</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;my-component inline-template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;p&gt;它们被编译为组件自己的模板&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;不是父级所包含的内容。&lt;/p&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/my-component&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="key-attribute"><a href="#key-attribute" class="headerlink" title="key attribute"></a>key attribute</h3><ul>
+<li>条件判断分支项不再必须 key</li>
+</ul>
+<h3 id="按键修饰符"><a href="#按键修饰符" class="headerlink" title="按键修饰符"></a>按键修饰符</h3><ul>
+<li>不再支持使用数字(即键码)作为 v-on 修饰符</li>
+<li>不再支持 config.keyCodes</li>
+</ul>
+<h3 id="listeners-移除"><a href="#listeners-移除" class="headerlink" title="$listeners 移除"></a>$listeners 移除</h3><ul>
+<li>事件监听器作为 $attrs 的一部分</li>
+</ul>
+<h3 id="在-prop-的默认函数中不能再访问-this"><a href="#在-prop-的默认函数中不能再访问-this" class="headerlink" title="在 prop 的默认函数中不能再访问 this"></a>在 prop 的默认函数中不能再访问 this</h3><ul>
+<li><p>组件接收到的原始 prop 作为参数传递给默认函数</p>
+</li>
+<li><p>inject API 在默认函数中使用</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; inject &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    theme: &#123;</span><br><span class="line">      <span class="function"><span class="title">default</span>(<span class="params">props</span>)</span> &#123;</span><br><span class="line">        <span class="comment">// `props` 是传递给组件的原始值。</span></span><br><span class="line">        <span class="comment">// 在任何类型/默认强制转换之前</span></span><br><span class="line">        <span class="comment">// 也可以使用 `inject` 来访问注入的 property</span></span><br><span class="line">        <span class="keyword">return</span> inject(<span class="string">&#x27;theme&#x27;</span>, <span class="string">&#x27;default-theme&#x27;</span>);</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="渲染函数-API"><a href="#渲染函数-API" class="headerlink" title="渲染函数 API"></a>渲染函数 API</h3><ul>
+<li><p>h 全局导入, 不再作为参数传递给渲染函数</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">render</span>(<span class="params">h</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> h();</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">render</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> h();</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>渲染函数参数更改以在有状态组件和函数组件之间更加一致</p>
+</li>
+<li><p>VNode Prop 格式化</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 2.x</span></span><br><span class="line">&#123;</span><br><span class="line">  staticClass: <span class="string">&#x27;button&#x27;</span>,</span><br><span class="line">  class: &#123; &#x27;is-outlined&#x27;: isOutlined &#125;,</span><br><span class="line">  staticStyle: &#123; <span class="attr">color</span>: <span class="string">&#x27;#34495E&#x27;</span> &#125;,</span><br><span class="line">  style: &#123; <span class="attr">backgroundColor</span>: buttonColor &#125;,</span><br><span class="line">  attrs: &#123; <span class="attr">id</span>: <span class="string">&#x27;submit&#x27;</span> &#125;,</span><br><span class="line">  domProps: &#123; <span class="attr">innerHTML</span>: <span class="string">&#x27;&#x27;</span> &#125;,</span><br><span class="line">  on: &#123; <span class="attr">click</span>: submitForm &#125;,</span><br><span class="line">  key: <span class="string">&#x27;submit-button&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 3.x 语法</span></span><br><span class="line">&#123;</span><br><span class="line">  class: [&#x27;button&#x27;, &#123; &#x27;is-outlined&#x27;: isOutlined &#125;],</span><br><span class="line">  style: [&#123; <span class="attr">color</span>: <span class="string">&#x27;#34495E&#x27;</span> &#125;, &#123; <span class="attr">backgroundColor</span>: buttonColor &#125;],</span><br><span class="line">  id: <span class="string">&#x27;submit&#x27;</span>,</span><br><span class="line">  innerHTML: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">  onClick: submitForm,</span><br><span class="line">  key: <span class="string">&#x27;submit-button&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>注册组件, 需要借助 resolveComponent API</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line">Vue.component(<span class="string">&#x27;my-component&#x27;</span>, &#123;</span><br><span class="line">  <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      count: <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  template: <span class="string">`&lt;button @click=&quot;count++&quot;&gt;</span></span><br><span class="line"><span class="string">    Clicked &#123;&#123; count &#125;&#125; times.</span></span><br><span class="line"><span class="string">  &lt;/button&gt;`</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">render</span>(<span class="params">h</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> h(<span class="string">&#x27;my-component&#x27;</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="keyword">import</span> &#123; h, resolveComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="comment">// resolveComponent,resolveDynamicComponent,resolveDirective,withDirectives</span></span><br><span class="line"><span class="comment">// 全局API只能在 render 或 setup 函数中使用</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">setup</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> MyComponent = resolveComponent(<span class="string">&#x27;my-component&#x27;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> h(MyComponent);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="插槽统一"><a href="#插槽统一" class="headerlink" title="插槽统一"></a>插槽统一</h3><ul>
+<li><p>this.$slots 插槽作为函数公开</p>
+</li>
+<li><p>移除 this.$scopedSlots</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 2.x 语法</span></span><br><span class="line"><span class="built_in">this</span>.$scopedSlots.header;</span><br><span class="line"><span class="comment">// 3.x 语法</span></span><br><span class="line"><span class="built_in">this</span>.$slots.header();</span><br></pre></td></tr></table></figure></li>
+<li><p>见指令 v-slot</p>
+</li>
+<li><p>解构插槽 prop</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 解构并且重命名</span></span><br><span class="line">&lt;todo-list v-slot=<span class="string">&#x27;&#123; item: todo &#125;&#x27;</span>&gt;</span><br><span class="line">  &lt;i <span class="class"><span class="keyword">class</span></span>=<span class="string">&#x27;fas fa-check&#x27;</span>&gt;&lt;/i&gt;</span><br><span class="line">  &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&#x27;green&#x27;</span>&gt;&#123;&#123; todo &#125;&#125;&lt;/span&gt;</span><br><span class="line">&lt;/todo-list&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>动态插槽名</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;base-layout&gt;</span><br><span class="line">  &lt;template v-slot:[dynamicSlotName]&gt;</span><br><span class="line">    ...</span><br><span class="line">  &lt;/template&gt;</span><br><span class="line">&lt;/base-layout&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="过渡的-class-名更改"><a href="#过渡的-class-名更改" class="headerlink" title="过渡的 class 名更改"></a>过渡的 class 名更改</h3><ul>
+<li>过渡类名 v-enter 修改为 v-enter-from</li>
+<li>过渡类名 v-leave 修改为 v-leave-from</li>
+</ul>
+<h3 id="Transition-Group-根元素"><a href="#Transition-Group-根元素" class="headerlink" title="Transition Group 根元素"></a>Transition Group 根元素</h3><blockquote>
+<p>不再默认渲染根元素, 仍然可以用 tag prop 创建根元素</p>
+</blockquote>
+<h3 id="v-on-native-修饰符-移除"><a href="#v-on-native-修饰符-移除" class="headerlink" title="v-on.native 修饰符 移除"></a>v-on.native 修饰符 移除</h3><p>新增 emits 选项允许子组件定义真正会被触发的事件</p>
+<h3 id="v-model"><a href="#v-model" class="headerlink" title="v-model"></a>v-model</h3><ul>
+<li><p>v-bind 的 .sync 修饰符和组件的 model 选项被移除, 使用 v-model 代替</p>
+</li>
+<li><p>同一组件上可以使用多个 v-model 进行双向绑定</p>
+</li>
+<li><p>可自定义 v-model 修饰符</p>
+</li>
+<li><p>自定义组件时 v-model prop 和事件默认名称已更改</p>
+<ul>
+<li><p>prop: value -&gt; modelValue</p>
+</li>
+<li><p>event: input -&gt; update:modelValue</p>
+</li>
+<li><p>Vue 2.0 v-model 只能使用 value 作为 prop, 并接收抛出的 input 事件, 如果使用其他 prop, 必须使用 v-bind.sync 同步</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;my-component :value=<span class="string">&quot;pageTitle&quot;</span> @input=<span class="string">&quot;pageTitle = $event&quot;</span> /&gt;</span><br><span class="line"><span class="comment">// 简写方式</span></span><br><span class="line">&lt;my-component v-model=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>.sync 修饰符 2.3.0 新增</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;my-component :title=<span class="string">&quot;pageTitle&quot;</span> @update:title=<span class="string">&quot;pageTitle = $event&quot;</span> /&gt;</span><br><span class="line"><span class="comment">// 简写方式</span></span><br><span class="line">&lt;my-component :title.sync=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>Vue 2.2 增加组件选项 model, 允许自定义 v-model 的 prop 和事件,只能在组件上使用一个 model</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;my-component :value=<span class="string">&quot;pageTitle&quot;</span> @input=<span class="string">&quot;pageTitle = $event&quot;</span> /&gt;</span><br><span class="line"><span class="comment">// 简写方式</span></span><br><span class="line">&lt;my-component v-model=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  model: &#123;</span><br><span class="line">    prop: <span class="string">&#x27;title&#x27;</span>,</span><br><span class="line">    event: <span class="string">&#x27;change&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    <span class="comment">// 这将允许 `value` 属性用于其他用途</span></span><br><span class="line">    value: <span class="built_in">String</span>,</span><br><span class="line">    <span class="comment">// 使用 `title` 代替 `value` 作为 model 的 prop</span></span><br><span class="line">    title: &#123;</span><br><span class="line">      type: <span class="built_in">String</span>,</span><br><span class="line">      <span class="keyword">default</span>: <span class="string">&#x27;Default title&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>Vue 3.x v-model 传递 modelValue prop 并接收抛出的 update:modelValue 事件</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;my-component :modelValue=<span class="string">&quot;pageTitle&quot;</span> @update:modelValue=<span class="string">&quot;pageTitle = $event&quot;</span>/&gt;</span><br><span class="line"><span class="comment">// 简写方式</span></span><br><span class="line">&lt;my-component v-model=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改名称，使用多个 v-model</span></span><br><span class="line">&lt;my-component :title=<span class="string">&quot;pageTitle&quot;</span> @update:title=<span class="string">&quot;pageTitle = $event&quot;</span> :content=<span class="string">&quot;pageContent&quot;</span> @update:content=<span class="string">&quot;pageContent = $event&quot;</span>/&gt;</span><br><span class="line"><span class="comment">// 简写方式</span></span><br><span class="line">&lt;my-component v-model:title=<span class="string">&quot;pageTitle&quot;</span> v-model:content=<span class="string">&quot;pageContent&quot;</span>/&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>migration</p>
+<ul>
+<li>所有子组件 .sync 修饰符的替换为 v-model</li>
+<li>未带参数的 v-model, 修改子组件的 prop 和 event 命令为 modelValue 和 update:modelValue</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;my-component :title.sync=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span><br><span class="line"><span class="comment">// 替换为</span></span><br><span class="line">&lt;my-component v-model:title=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 未带参数的 v-model</span></span><br><span class="line">&lt;ChildComponent v-model=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    modelValue: <span class="built_in">String</span> <span class="comment">// 以前是`value：String`</span></span><br><span class="line">  &#125;,</span><br><span class="line">  emits: [<span class="string">&#x27;update:modelValue&#x27;</span>],</span><br><span class="line">  methods: &#123;</span><br><span class="line">    <span class="function"><span class="title">changePageTitle</span>(<span class="params">title</span>)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.$emit(<span class="string">&#x27;update:modelValue&#x27;</span>, title) <span class="comment">// 以前是 `this.$emit(&#x27;input&#x27;, title)`</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>处理 v-model 修饰符</p>
+<ul>
+<li>不带参数: Vue 3.x 通过 modelModifiers 提供给 prop</li>
+<li>带参数: 生成的 prop 名称将为 arg + ‘Modifiers’</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 不带参数的 v-model</span></span><br><span class="line">&lt;my-component v-model.capitalize=<span class="string">&quot;myText&quot;</span> /&gt;</span><br><span class="line">app.component(<span class="string">&#x27;my-component&#x27;</span>, &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    modelValue: <span class="built_in">String</span>,</span><br><span class="line">    modelModifiers: &#123;</span><br><span class="line">      <span class="keyword">default</span>: <span class="function">() =&gt;</span> (&#123;&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  emits: [<span class="string">&#x27;update:modelValue&#x27;</span>],</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;input type=&quot;text&quot;</span></span><br><span class="line"><span class="string">      :value=&quot;modelValue&quot;</span></span><br><span class="line"><span class="string">      @input=&quot;$emit(&#x27;update:modelValue&#x27;, $event.target.value)&quot;&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">  <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.modelModifiers) <span class="comment">// &#123; capitalize: true &#125;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 带参 v-model</span></span><br><span class="line">&lt;my-component v-model:description.capitalize=<span class="string">&quot;myText&quot;</span> /&gt;</span><br><span class="line">app.component(<span class="string">&#x27;my-component&#x27;</span>, &#123;</span><br><span class="line">  props: [<span class="string">&#x27;description&#x27;</span>, <span class="string">&#x27;descriptionModifiers&#x27;</span>],</span><br><span class="line">  emits: [<span class="string">&#x27;update:description&#x27;</span>],</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;input type=&quot;text&quot;</span></span><br><span class="line"><span class="string">      :value=&quot;description&quot;</span></span><br><span class="line"><span class="string">      @input=&quot;$emit(&#x27;update:description&#x27;, $event.target.value)&quot;&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">  <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.descriptionModifiers) <span class="comment">// &#123; capitalize: true &#125;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="v-if-与-v-for-的优先级对比"><a href="#v-if-与-v-for-的优先级对比" class="headerlink" title="v-if 与 v-for 的优先级对比"></a>v-if 与 v-for 的优先级对比</h3><blockquote>
+<p>两者作用于同一个元素上时，v-if 会拥有比 v-for 更高的优先级</p>
+</blockquote>
+<h3 id="v-bind-合并行为"><a href="#v-bind-合并行为" class="headerlink" title="v-bind 合并行为"></a>v-bind 合并行为</h3><blockquote>
+<p>声明绑定的顺序决定了合并顺序</p>
+</blockquote>
+<h3 id="Watch-on-Arrays"><a href="#Watch-on-Arrays" class="headerlink" title="Watch on Arrays"></a>Watch on Arrays</h3><blockquote>
+<p>当侦听一个数组时，只有当数组被替换时才会触发回调。如果你需要在数组改变时触发回调，必须指定 deep 选项</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Vue</category>
+      </categories>
+      <tags>
+        <tag>Vue3.0</tag>
+      </tags>
   </entry>
 </search>

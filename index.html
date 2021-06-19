@@ -209,20 +209,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -277,6 +277,148 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/Vue/8019b94eb3b7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/Vue/8019b94eb3b7/" class="post-title-link" itemprop="url">Vue3.0知识点</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-06-19 15:19:26 / 修改时间：15:39:43" itemprop="dateCreated datePublished" datetime="2021-06-19T15:19:26+08:00">2021-06-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>30k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>28 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Vue 3.0.11</p>
+</blockquote>
+<h2 id="应用配置"><a href="#应用配置" class="headerlink" title="应用配置"></a>应用配置</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 每个 Vue 应用会暴露一个 config 对象, 在挂载应用之前, 可修改其属性</span></span><br><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(app.config);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>errorHandler 处理组件渲染过程中抛出的未捕获错误</p>
+<ul>
+<li>类型: Function</li>
+<li>默认: undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.config.errorHandler = <span class="function">(<span class="params">err, vm, info</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 处理错误</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>warnHandler 处理 Vue 运行中的警告, 开发环境下有效</p>
+<ul>
+<li>类型: Function</li>
+<li>默认: undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.config.warnHandler = <span class="function">(<span class="params">msg, vm, trace</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 处理警告</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>globalProperties 添加应用程序内任何组件实例都可访问的全局 property, 属性名冲突时,组件内 property 优先</p>
+<ul>
+<li>类型: [key: string]: any</li>
+<li>默认: undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line">Vue.prototype.$xhr = <span class="function">() =&gt;</span> &#123;&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line">app.config.globalProperties.$xhr = <span class="function">() =&gt;</span> &#123;&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>isCustomElement 指定一个方法, 用来识别在 Vue 之外定义的自定义元素, 如果组件符合此条件, 则不需要本地或全局注册</p>
+<blockquote>
+<p>注意, 所有原生 HTML 和 SVG 标记不需要在此函数中匹配——Vue 解析器自动执行此检查</p>
+</blockquote>
+<ul>
+<li>类型: (tag: string) =&gt; boolean</li>
+<li>默认: undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.config.isCustomElement = <span class="function">(<span class="params">tag</span>) =&gt;</span> tag.startsWith(<span class="string">&#x27;icon-&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>optionMergeStrategies 合并策略选项分别接收在父实例和子实例上定义的该选项的值作为第一个和第二个参数, 引用上下文实例被作为第三个参数传入</p>
+<ul>
+<li>类型: { [key: string]: Function }</li>
+<li>默认: {}</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = Vue.createApp(&#123;</span><br><span class="line">  <span class="function"><span class="title">mounted</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">this</span>.$options.hello);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">app.config.optionMergeStrategies.hello = <span class="function">(<span class="params">parent, child, vm</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`Hello, <span class="subst">$&#123;child&#125;</span>`</span>;</span><br><span class="line">&#125;;</span><br><span class="line">app.mixin(&#123;</span><br><span class="line">  hello: <span class="string">&#x27;Vue&#x27;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// &#x27;Hello, Vue&#x27;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>performance 启用对组件初始化、编译、渲染和更新的性能追踪</p>
+<ul>
+<li>类型: boolean</li>
+<li>默认: false</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.config.performance = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Vue/8019b94eb3b7/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -536,7 +678,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-05-10 10:57:57" itemprop="dateModified" datetime="2021-05-10T10:57:57+08:00">2021-05-10</time>
+        <time title="修改时间：2021-05-29 11:58:05" itemprop="dateModified" datetime="2021-05-29T11:58:05+08:00">2021-05-29</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -756,13 +898,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">8k</span>
+    <span title="站点总字数">38k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7 分钟</span>
+    <span title="站点阅读时长">35 分钟</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
