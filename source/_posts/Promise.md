@@ -126,6 +126,8 @@ var p = new MyPromise((resolve, reject) => {
 // 5秒后输出: 'res' gg
 ```
 
+<!-- more -->
+
 ##### 静态方法
 
 ```javascript
