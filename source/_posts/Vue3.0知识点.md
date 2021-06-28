@@ -499,6 +499,34 @@ console.log(app.config);
   };
   ```
 
+- useCssModule 允许在 setup 的单文件组件函数中访问 CSS 模块
+
+  > useCssModule 只能在 render 或 setup 函数中使用
+
+  - 参数
+    - {String} name CSS 模块的名称, 默认为 '$style'
+
+  ```javascript
+  <script>
+  import { h, useCssModule } from 'vue'
+  export default {
+    setup () {
+      const style = useCssModule()
+      return () => h('div', {
+        class: style.success
+      }, 'Task complete!')
+    }
+  }
+  </script>
+  <style module>
+  .success {
+    color: #090;
+  }
+  </style>
+  ```
+
+- version 以字符串形式提供已安装的 Vue 的版本号
+
 ## 选项
 
 ### Data
