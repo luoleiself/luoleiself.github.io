@@ -1,0 +1,11 @@
+---
+title: 即将废弃或已经废弃的API
+date: 2021-07-05 12:38:23
+categories:
+  - Tips
+tags:
+  - tips
+---
+
+- [String.prototype.substr()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr)
+  > 并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替
