@@ -4,7 +4,8 @@ date: 2021-07-05 12:38:23
 categories:
   - Tips
 tags:
-  - tips
+  - Tips
+  - API
 ---
 
 - [String.prototype.substr()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr)
