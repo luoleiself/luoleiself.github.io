@@ -31,6 +31,8 @@ p.then((res) => {
 });
 ```
 
+<!-- more -->
+
 #### 手动实现
 
 ##### 基础代码
@@ -125,8 +127,6 @@ var p = new MyPromise((resolve, reject) => {
 );
 // 5秒后输出: 'res' gg
 ```
-
-<!-- more -->
 
 ##### 静态方法
 
