@@ -193,6 +193,14 @@ tags:
     git checkout [commit] [file]
   ```
 
+- 恢复上次提交的文件到暂存区
+
+  ```bash
+    git reset -- files
+  ```
+
+![git-checkout-1.png](../../images/git-checkout-1.png)
+
 ##### 提交
 
 - a|all: git add -A 的缩写
