@@ -9,4 +9,8 @@ tags:
 ---
 
 - [String.prototype.substr()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr)
+
   > 并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替
+
+- [arguments.callee](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee)
+  > ES5 严格模式下禁止使用此方法，建议使用方法名调用自己
