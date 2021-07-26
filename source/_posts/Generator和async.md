@@ -40,6 +40,8 @@ gen.next();
 3. 如果没有再遇到新的 yield 表达式, 就一直运行到函数结束, 直到 return 语句为止, 并将 return 语句后面的表达式的值作为返回的对象的 value 属性值
 4. 如果该函数没有 return 语句, 则返回的对象的 value 属性值为 undefined
 
+<!-- more -->
+
 #### 与 Iterator 接口的关系
 
 > 任意数据结构的 Symbol.iterator 方法,等于该数据结构的迭代器生成函数,调用该方法会返回一个该数据结构的迭代器对象
@@ -98,4 +100,142 @@ for (let v of foo()) {
 // 1 2 3 4
 ```
 
+#### throw
+
+迭代器对象的 throw 方法可以在函数体外抛出错误异常, 在 Generator 函数体内捕获
+
+```javascript
+function* foo() {
+  try {
+    yield;
+  } catch (err) {
+    console.log('内部捕获', err);
+  }
+}
+var gen = foo();
+gen.next();
+try {
+  gen.throw('err1');
+  gen.throw('err2');
+} catch (err) {
+  console.log('外部捕获', err);
+}
+// 内部捕获 err1
+// 外部捕获 err2
+```
+
+#### return
+
+迭代器对象的 return 方法返回给定的值并且中止遍历 Generator 函数, 如果 Generator 函数内部有 try...finally, 并且正在执行 try 内部代码, 则立刻进入 finally 执行直到函数结束
+
+```javascript
+function* numbers() {
+  yield 1;
+  try {
+    yield 2;
+    yield 3;
+  } finally {
+    yield 4;
+    yield 5;
+  }
+  yield 6;
+}
+var g = numbers();
+g.next(); // { value: 1, done: false }
+g.next(); // { value: 2, done: false }
+g.return(7); // { value: 4, done: false }
+g.next(); // { value: 5, done: false }
+g.next(); // { value: 7, done: true }
+```
+
+#### next throw return 的共同点
+
+> 此三个方法本质上是一件事, 共同的作用是让 Generator 函数恢复执行并且使用不同的语句替换 yield 表达式
+
+- next 将 yield 表达式替换成一个值
+- throw 将 yield 表达式替换成一个 throw 语句
+- return 将 yield 表达式替换成一个 return 语句
+
+#### yield\* 表达式
+
+用于在一个 Generator 函数内执行另外一个 Generator 函数
+
+```javascript
+function* bar() {
+  yield 'x';
+  yield* foo();
+  yield 'y';
+}
+
+// 等同于
+function* bar() {
+  yield 'x';
+  yield 'a';
+  yield 'b';
+  yield 'y';
+}
+
+// 等同于
+function* bar() {
+  yield 'x';
+  for (let v of foo()) {
+    yield v;
+  }
+  yield 'y';
+}
+
+for (let v of bar()) {
+  console.log(v);
+}
+// "x"
+// "a"
+// "b"
+// "y"
+```
+
 ### async
+
+> ES8 标准, Generator 函数的语法糖
+
+#### 与 Generator 函数的区别
+
+##### 内置执行器
+
+Generator 函数的自动执行需要依赖执行器 co 模块, async 函数自带执行器只要调用即可
+
+##### 更好的语义
+
+async 表示函数内有异步操作, await 表示后面的表达式需要等待结果
+
+##### 更广的适用性
+
+co 模块规定 yield 命令后面只能是 thunk 函数或者 Promise 对象, async 函数的 await 命令后面可以是 Promise 对象和原始类型的值(数值、字符串和布尔值,此时会自动转成 Resolve 的 Promise 对象)
+
+##### 返回值是 Promise
+
+async 的返回值是 Promise, 可以使用 then 方法指定下一步的操作
+
+```javascript
+async function(){
+  await '1';
+  await '2';
+}
+```
+
+#### async 的实现原理
+
+将 Generator 函数和自动执行器包装在一个函数内
+
+#### await
+
+##### Promise 对象
+
+返回该对象的结果
+
+##### 定义了 then 方法的对象
+
+await 将当作 Promise 对象执行
+
+##### reject 状态
+
+如果 Promise 对象变成 reject 状态,则整个 async 函数都会中断执行
