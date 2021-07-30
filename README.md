@@ -1,7 +1,8 @@
 # Hexo blog
 
 ```bash
-  npm start # 启动服务器,开发环境
+  npm run dev # 启动开发环境
+  npm start # 启动开发环境
   npm run build # 生成静态文件
   npm run clean # 清除缓存文件(db.json)和静态文件(public)
   npm run deploy # 生成静态文件并部署
