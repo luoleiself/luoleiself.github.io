@@ -7,7 +7,7 @@ tags:
   - API
 ---
 
-MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录在数组之中, 统一进行回调通知
+MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是:事件是同步触发,即DOM发生变动会立刻触发相应事件,MutationObserver则是异步触发,DOM发生变动以后,并不会马上触发,而是要等到当前所有DOM操作都结束后才触发,所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录在数组之中, 统一进行回调通知
 
 #### 构造函数 MutationObserver
 
