@@ -7,7 +7,7 @@ tags:
   - API
 ---
 
-MutationObserver 接口提供监视对 DOM 树所做更改的能力
+MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录在数组之中, 统一进行回调通知
 
 #### 构造函数 MutationObserver
 
@@ -21,7 +21,7 @@ MutationObserver 接口提供监视对 DOM 树所做更改的能力
   - MutationObserver 调用该函数的 MutationObserver 对象
 
 ```javascript
-function callback(MutationRecord, observer) {
+var observer = new MutationObserver(function (MutationRecord, observer) {
   console.log(MutationRecord, observer);
   // [{
   //   addedNodes: NodeList []
@@ -34,8 +34,7 @@ function callback(MutationRecord, observer) {
   //   target:
   //   type: "attributes"
   // }]
-}
-var observer = new MutationObserver(callback);
+});
 ```
 
 - 返回值 MutationObserver 对象
