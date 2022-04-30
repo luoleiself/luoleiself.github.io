@@ -53,8 +53,10 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 
 ### 镜像操作
 
-- images 查看本地镜像列表
-- rmi 删除本地镜像
+镜像的操作命令可直接跟在 `docker` 命令后使用, 也可以跟在 `docker image` 命令后使用
+
+- images 查看本地镜像列表, 作用同 `image ls`
+- rmi 删除本地镜像, 作用同 `image rm`
 - tag 给镜像文件创建标签
 - build 从 Dockerfile 构建镜像
 - load|import 导入镜像归档文件
@@ -135,15 +137,22 @@ docker build -f /path/to/Dockerfile -t name:tag .
 
 ### 容器操作
 
+容器的操作命令可直接跟在 `docker` 命令后使用, 也可以跟在 `docker container` 命令后使用
+
 - create 创建新容器
 - start 启动容器
 - stop|kill 停止容器
 - pause 暂停容器
 - restart 重启容器
 - rename 重命名容器
-- ps 查看容器列表
+- ps 查看容器列表, 作用同 `container ls`
 - inspect 查看容器详细信息
-- logs 输入容器运行日志
+- logs 输出容器运行日志
+
+  - -f, \-\-follow 实时输出容器运行日志
+  - -n, \-\-tail 查看指定行数
+  - -t, \-\-timestamps 输出日志添加时间戳
+
 - port 查看容器映射端口
 - export 导出容器为归档文件
 
@@ -263,10 +272,12 @@ Accept-Ranges: bytes
 
 #### exec 和 attach
 
-- exec 进入容器打开一个新的终端
-- attach 进入容器打开正在运行的终端
-- exec 退出容器, 容器正常运行
-- attach 退出容器, 容器自动停止
+- exec
+  - 进入容器打开一个新的终端
+  - 退出容器, 容器正常运行
+- attach
+  - 进入容器打开正在运行的终端
+  - 退出容器, 容器自动停止
 
 ```shell
 vagrant@ubuntu-docker:~$ docker ps -a # 查看所有容器信息
@@ -287,11 +298,15 @@ CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                    
 a441e0564165   centos    "/bin/bash"   25 hours ago   Exited (0) 2 seconds ago             vigorous_turing
 ```
 
-### 文件拷贝
+### 文件拷贝 cp
 
 - -a|archive 复制文档的所有信息
 
-#### 拷贝宿主机文件到容器中
+#### 拷贝宿主机到容器内
+
+```shell
+docker cp [宿主机路径] [容器标识]:[容器内路径]
+```
 
 ```shell
 # 拷贝宿主机文件到 a441e0564165 /user/local 下
@@ -300,7 +315,11 @@ vagrant@ubuntu-docker:~$ docker exec -it a441e0564165 ls /usr/local
 bin  etc  games  include  lib  lib64  libexec  sbin  share  src  v12.22.1
 ```
 
-#### 拷贝容器文件到宿主机中
+#### 拷贝容器内到宿主机
+
+```shell
+docker cp [容器标识]:[容器内路径] [宿主机路径]
+```
 
 ```shell
 vagrant@ubuntu-docker:~$ ls /home/
