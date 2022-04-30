@@ -7,6 +7,14 @@ tags:
   - nginx
 ---
 
+## 敲黑板
+
+### 启动 nginx 失败
+
+命令行提示错误 98: address already in use
+
+查找系统进程中已存在的 nginx 进程号, 使用 `kill -9 $PID` 关闭进程后重启
+
 ## 变量
 
 - $uri 当前请求的 URI

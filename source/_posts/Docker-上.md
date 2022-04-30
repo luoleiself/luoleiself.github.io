@@ -37,6 +37,8 @@ usermod -aG docker $USER # 给用户添加一个新的附属组
 newgrp docker # 重新登陆组
 
 systemctl restart docker # 重启 docker 服务
+
+systemctl enable docker # 设置 docker 守护进程开机启动
 ```
 
 ## 架构
