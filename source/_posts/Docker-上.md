@@ -51,6 +51,8 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 
 镜像由多个层组成, 每层叠加之后, 从外部看来就如一个独立的对象
 
+### UnionFS 联合文件系统
+
 ### 镜像操作
 
 镜像的操作命令可直接跟在 `docker` 命令后使用, 也可以跟在 `docker image` 命令后使用
@@ -146,7 +148,7 @@ docker build -f /path/to/Dockerfile -t name:tag .
 - restart 重启容器
 - rename 重命名容器
 - ps 查看容器列表, 作用同 `container ls`
-- inspect 查看容器详细信息
+- inspect 查看容器详细信息, 作用同 `container inspect`
 - logs 输出容器运行日志
 
   - -f, \-\-follow 实时输出容器运行日志
@@ -300,7 +302,7 @@ a441e0564165   centos    "/bin/bash"   25 hours ago   Exited (0) 2 seconds ago  
 
 ### 文件拷贝 cp
 
-- -a|archive 复制文档的所有信息
+- -a, \-\-archive 复制文档的所有信息
 
 #### 拷贝宿主机到容器内
 
@@ -351,6 +353,10 @@ vagrant@ubuntu-docker:~$ docker exec -it -w /usr/local centos01  pwd
 
 ### 容器导入和导出
 
+- export 从容器中导出为归档文件
+
+- import 从归档文件中导入为镜像文件
+
 ```shell
 vagrant@ubuntu-docker:~$ docker [container] export -o centos01.tar.gz centos01 # 归档容器
 
@@ -393,7 +399,7 @@ a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB
 - 数据卷中的更改不会包含在镜像的更新中
 - 数据卷的生命周期一直持续到没有容器使用它为止
 
-### 挂载数据卷方式
+### 数据卷类型
 
 - \-\-mount 不指定 type 选项默认为 volume
 - -v 只能建立 bind mount
@@ -464,6 +470,8 @@ vagrant@ubuntu-docker:~$ docker container inspect centos01
 
 ##### -v 卷名:容器内路径 具名挂载
 
+- 如果 `不需要` 对容器内的数据卷挂载点进行 `写操作` 时, 使用具名挂载方式备份容器内数据到宿主机中
+
 ```shell
 vagrant@ubuntu-docker:~$ docker run -tid --name centos02 -v summary:/myVolume centos /bin/bash
 vagrant@ubuntu-docker:~$ docker container inspect centos02
@@ -482,6 +490,8 @@ vagrant@ubuntu-docker:~$ docker container inspect centos02
 ```
 
 ##### -v /宿主机路径:容器内路径 指定路劲挂载
+
+- 如果 `需要` 对容器内的数据卷挂载点进行 `写操作` 时, 使用指定路径挂载方式, 此方式会将宿主机中的数据卷挂载点数据覆盖容器内指定路径
 
 ```shell
 vagrant@ubuntu-docker:~$ docker run -tid --name centos03 -v $PWD/react-app/:/containerVolume centos /bin/bash
