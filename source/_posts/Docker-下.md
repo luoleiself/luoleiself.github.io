@@ -57,7 +57,7 @@ veth-pair 就是一对的虚拟设备接口，和 tap/tun 设备不同的是，�
 
 ![docker-2](/images/docker-2.png)
 
-### 网络模式
+### [网络模式](https://docs.docker.com/network/)
 
 ```shell
 [root@localhost ~]# docker network ls
@@ -75,6 +75,8 @@ b2f23805b5e5   none      null      local
 ![docker-4](/images/docker-4.png)
 
 #### bridge 模式
+
+桥接模式一般使用于单机模式
 
 - 默认的桥接网络模式 `docker0` 不支持通过 Docker DNS 服务进行域名解析
 - 自定义的桥接网络模式可以支持, 具体例子可见下方的 [自定义网络模式](#zidingyiwangluomoshi)
@@ -104,6 +106,10 @@ docker run ... --network none ...
 ```shell
 docker run ... centos02 --network centos01 ...
 ```
+
+#### overlay 模式
+
+将多个 docker 守护进程连接起来, 使 swarm 服务之间能够互相通信, 一般用于 swarm 集群
 
 ### 容器互联通信
 
@@ -205,7 +211,7 @@ b2f23805b5e5   none            null      local
 [root@localhost ~]# docker run -tid --name my-docker-net02 --net my-docker-net centos /bin/bash
 ```
 
-3. 查看 ip 相关信息
+3. 查看宿主机 ip 相关信息
 
 ```shell
 [root@localhost ~]# ip addr
@@ -559,7 +565,8 @@ version: 3.9 # 版本
 services:
   web: # 服务
     build: .
-    dockerfile: Dockerfile
+      context: "./web" # 指定构建 web 服务的镜像的上下文环境目录
+      dockerfile: Dockerfile # 指定构建镜像的配置文件名称
     ports:
       - '5000:5000'
     container_name: my-web
@@ -616,10 +623,6 @@ networks:
 
 - 当前服务启动的依赖优先于当前服务启动
 - 当前服务关闭优先于当前服务的依赖关闭
-
-#### deploy 部署应用
-
-### 部署微服务
 
 ## Docker Swarm
 
