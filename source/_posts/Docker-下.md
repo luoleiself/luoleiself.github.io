@@ -462,9 +462,9 @@ server {
 # 创建 html/index.html 文件
 
 [root@localhost workspace]# docker run -id --name c_nginx -p 80:80 \
-> -v $PWD/nginx/conf.d:/etc/nginx/conf.d \
-> -v $PWD/nginx/log:/var/log/nginx \
-> -v $PWD/html:/usr/share/nginx/html nginx
+> -v ${PWD}/nginx/conf.d:/etc/nginx/conf.d \
+> -v ${PWD}/nginx/log:/var/log/nginx \
+> -v ${PWD}/html:/usr/share/nginx/html nginx
 ```
 
 ### 部署 mysql
@@ -488,11 +488,11 @@ skip-character-set-client-handshake
 skip-name-resolve
 
 [root@localhost workspace]# docker run -tid -p 3306:3306 --name c_mysql \
--e MYSQL_ROOT_PASSWORD=123456 \
--v $PWD/mysql/db:/var/lib/mysql \
--v $PWD/mysql/log:/var/log/mysql \
--v $PWD/mysql/conf:/etc/mysql \
-mysql:5.7
+> -e MYSQL_ROOT_PASSWORD=123456 \
+> -v ${PWD}/mysql/db:/var/lib/mysql \
+> -v ${PWD}/mysql/log:/var/log/mysql \
+> -v ${PWD}/mysql/conf:/etc/mysql \
+> mysql:5.7
 ```
 
 ```mysql
