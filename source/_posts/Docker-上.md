@@ -70,8 +70,8 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 ### 镜像导入和导出
 
 ```shell
-vagrant@ubuntu-docker:~$ docker [image] save -o  # 归档一个或多个镜像文件
-vagrant@ubuntu-docker:~$ docker [image] load  # 从归档文件加载镜像文件
+[root@localhost ~]# docker [image] save -o  # 归档一个或多个镜像文件
+[root@localhost ~]# docker [image] load  # 从归档文件加载镜像文件
 ```
 
 ### 批量删除多个镜像
@@ -87,17 +87,17 @@ docker image rm -f $(docker image ls -aq) # 功能同上
 docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]] # 从容器构建镜像, 提交到本地仓库
 ```
 
-- -a|author 提交作者
-- -m|message 提交信息
-- -p|pause 提交过程中是否中断容器运行, 默认为 true
+- -a, \-\-author 提交作者
+- -m, \-\-message 提交信息
+- -p, \-\-pause 提交过程中是否中断容器运行, 默认为 true
 
 ```shell
-vagrant@ubuntu-docker:~$ docker images  # 显示所有镜像
+[root@localhost ~]# docker images  # 显示所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
 nginx        latest    12766a6745ee   2 days ago     142MB
 centos       latest    5d0da3dc9764   6 months ago   231MB
-vagrant@ubuntu-docker:~$ docker run -d -p 6666:80 nginx # 后台运行nginx并配置端口映射
-vagrant@ubuntu-docker:~$ curl -I localhost:6666 # 测试服务
+[root@localhost ~]# docker run -d -p 6666:80 nginx # 后台运行nginx并配置端口映射
+[root@localhost ~]# curl -I localhost:6666 # 测试服务
 HTTP/1.1 200 OK
 Server: nginx/1.21.6
 Date: Fri, 01 Apr 2022 08:44:03 GMT
@@ -108,12 +108,12 @@ Connection: keep-alive
 ETag: "61f01158-267"
 Accept-Ranges: bytes
 
-vagrant@ubuntu-docker:~$ docker ps -a # 查看所有容器信息
+[root@localhost ~]# docker ps -a # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                   NAMES
 91b34829d2d8   nginx     "/docker-entrypoint.…"   38 seconds ago   Up 36 seconds   0.0.0.0:6666->80/tcp, :::6666->80/tcp   laughing_kowalevski
 a441e0564165   centos    "/bin/bash"              2 days ago       Up 2 hours                                              vigorous_turing
-vagrant@ubuntu-docker:~$ docker commit -a 'll' -m 'nginx 01' 91b34829d2d8 nginx01:1.0 # 提交指定容器的镜像并添加作者,提交信息,版本号等
-vagrant@ubuntu-docker:~$ docker images # 查看所有镜像
+[root@localhost ~]# docker commit -a 'll' -m 'nginx 01' 91b34829d2d8 nginx01:1.0 # 提交指定容器的镜像并添加作者,提交信息,版本号等
+[root@localhost ~]# docker images # 查看所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
 nginx01      1.0       9e81333043cc   2 seconds ago   142MB
 nginx        latest    12766a6745ee   2 days ago      142MB
@@ -159,7 +159,7 @@ docker build -f /path/to/Dockerfile -t name:tag .
 - export 导出容器为归档文件
 
 ```shell
-vagrant@ubuntu-docker:~$ docker ps -a # 查看所有容器信息
+[root@localhost ~]# docker ps -a # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                   PORTS     NAMES
 a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago             vigorous_turing
 ```
@@ -203,15 +203,15 @@ docker run -d --rm -p 6666:80 --name nginx01 nginx
 ```
 
 ```shell
-vagrant@ubuntu-docker:~$ docker images # 查看本地所有镜像
+[root@localhost ~]# docker images # 查看本地所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
 nginx        latest    12766a6745ee   44 hours ago   142MB
 centos       latest    5d0da3dc9764   6 months ago   231MB
-vagrant@ubuntu-docker:~$ docker ps -a  # 查看所有容器信息
+[root@localhost ~]# docker ps -a  # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES
 a441e0564165   centos    "/bin/bash"   29 hours ago   Up 27 minutes             vigorous_turing
-vagrant@ubuntu-docker:~$ docker run -d --rm -p 6666:80 nginx # 后台运行容器同时配置端口映射
-vagrant@ubuntu-docker:~$ curl -I localhost:6666 # 测试 nginx 服务
+[root@localhost ~]# docker run -d --rm -p 6666:80 nginx # 后台运行容器同时配置端口映射
+[root@localhost ~]# curl -I localhost:6666 # 测试 nginx 服务
 HTTP/1.1 200 OK
 Server: nginx/1.21.6
 Date: Thu, 31 Mar 2022 11:52:34 GMT
@@ -222,13 +222,13 @@ Connection: keep-alive
 ETag: "61f01158-267"
 Accept-Ranges: bytes
 
-vagrant@ubuntu-docker:~$ docker ps -a  # 查看所有容器信息
+[root@localhost ~]# docker ps -a  # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                   NAMES
 2ccf4c0204ab   nginx     "/docker-entrypoint.…"   11 seconds ago   Up 10 seconds   0.0.0.0:6666->80/tcp, :::6666->80/tcp   thirsty_ishizaka
 a441e0564165   centos    "/bin/bash"              29 hours ago     Up 28 minutes                                           vigorous_turing
-vagrant@ubuntu-docker:~$ docker stop 2ccf4c0204ab  # 停止指定容器
+[root@localhost ~]# docker stop 2ccf4c0204ab  # 停止指定容器
 2ccf4c0204ab
-vagrant@ubuntu-docker:~$ docker ps -a  # 查看所有容器信息
+[root@localhost ~]# docker ps -a  # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES
 a441e0564165   centos    "/bin/bash"   29 hours ago   Up 28 minutes             vigorous_turing
 ```
@@ -236,18 +236,18 @@ a441e0564165   centos    "/bin/bash"   29 hours ago   Up 28 minutes             
 - 示例：最简单的 nginx 服务集群
 
 ```shell
-vagrant@ubuntu-docker:~$ docker images # 查看所有镜像
+[root@localhost ~]# docker images # 查看所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
 nginx        latest    12766a6745ee   3 days ago     142MB
 centos       latest    5d0da3dc9764   6 months ago   231MB
-vagrant@ubuntu-docker:~$ docker run -d --name 'nginx01' -p 6666:80 nginx # 后台启动 nginx 服务配置端口映射
-vagrant@ubuntu-docker:~$ docker run -d --name 'nginx02' -p 7777:80 nginx # 后台启动 nginx 服务配置端口映射
-vagrant@ubuntu-docker:~$ docker ps -a  # 查看所有容器信息
+[root@localhost ~]# docker run -d --name 'nginx01' -p 6666:80 nginx # 后台启动 nginx 服务配置端口映射
+[root@localhost ~]# docker run -d --name 'nginx02' -p 7777:80 nginx # 后台启动 nginx 服务配置端口映射
+[root@localhost ~]# docker ps -a  # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS                    PORTS                                   NAMES
 335120e70611   nginx     "/docker-entrypoint.…"   6 seconds ago    Up 5 seconds              0.0.0.0:7777->80/tcp, :::7777->80/tcp   nginx02
 771fd45df0ef   nginx     "/docker-entrypoint.…"   47 seconds ago   Up 46 seconds             0.0.0.0:6666->80/tcp, :::6666->80/tcp   nginx01
 a441e0564165   centos    "/bin/bash"              3 days ago       Exited (0) 22 hours ago                                           vigorous_turing
-vagrant@ubuntu-docker:~$ curl -I localhost:6666  # 测试 nginx 服务
+[root@localhost ~]# curl -I localhost:6666  # 测试 nginx 服务
 HTTP/1.1 200 OK
 Server: nginx/1.21.6
 Date: Sat, 02 Apr 2022 10:42:29 GMT
@@ -258,7 +258,7 @@ Connection: keep-alive
 ETag: "61f01158-267"
 Accept-Ranges: bytes
 
-vagrant@ubuntu-docker:~$ curl -I localhost:7777  # 测试 nginx 服务
+[root@localhost ~]# curl -I localhost:7777  # 测试 nginx 服务
 HTTP/1.1 200 OK
 Server: nginx/1.21.6
 Date: Sat, 02 Apr 2022 10:42:37 GMT
@@ -282,20 +282,20 @@ Accept-Ranges: bytes
   - 退出容器, 容器自动停止
 
 ```shell
-vagrant@ubuntu-docker:~$ docker ps -a # 查看所有容器信息
+[root@localhost ~]# docker ps -a # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES
 a441e0564165   centos    "/bin/bash"   25 hours ago   Up 31 minutes             vigorous_turing
-vagrant@ubuntu-docker:~$ docker exec -it a441e0564165 /bin/bash # 交互方式进入容器
+[root@localhost ~]# docker exec -it a441e0564165 /bin/bash # 交互方式进入容器
 [root@a441e0564165 /]# exit # 退出
 exit
-vagrant@ubuntu-docker:~$ docker ps -a # 查看所有容器信息
+[root@localhost ~]# docker ps -a # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES
 a441e0564165   centos    "/bin/bash"   25 hours ago   Up 32 minutes             vigorous_turing
 
-vagrant@ubuntu-docker:~$ docker attach a441e0564165 # 进入容器
+[root@localhost ~]# docker attach a441e0564165 # 进入容器
 [root@a441e0564165 /]# exit # 退出
 exit
-vagrant@ubuntu-docker:~$ docker ps -a # 查看所有容器信息
+[root@localhost ~]# docker ps -a # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                     PORTS     NAMES
 a441e0564165   centos    "/bin/bash"   25 hours ago   Exited (0) 2 seconds ago             vigorous_turing
 ```
@@ -312,8 +312,8 @@ docker cp [宿主机路径] [容器标识]:[容器内路径]
 
 ```shell
 # 拷贝宿主机文件到 a441e0564165 /user/local 下
-vagrant@ubuntu-docker:~$ docker cp -a .nvm/versions/node/v12.22.1/ a441e0564165:/usr/local/v12.22.1/
-vagrant@ubuntu-docker:~$ docker exec -it a441e0564165 ls /usr/local
+[root@localhost ~]# docker cp -a .nvm/versions/node/v12.22.1/ a441e0564165:/usr/local/v12.22.1/
+[root@localhost ~]# docker exec -it a441e0564165 ls /usr/local
 bin  etc  games  include  lib  lib64  libexec  sbin  share  src  v12.22.1
 ```
 
@@ -324,18 +324,18 @@ docker cp [容器标识]:[容器内路径] [宿主机路径]
 ```
 
 ```shell
-vagrant@ubuntu-docker:~$ ls /home/
+[root@localhost ~]# ls /home/
 ubuntu  vagrant
 
-vagrant@ubuntu-docker:~$ docker exec -it a441e0564165 /bin/bash # 进入 a441e0564165
+[root@localhost ~]# docker exec -it a441e0564165 /bin/bash # 进入 a441e0564165
 [root@a441e0564165 /]# ls -al /home
 total 8
 drwxr-xr-x 2 root root 4096 Nov  3  2020 .
 drwxr-xr-x 1 root root 4096 Apr 10 08:06 ..
 [root@a441e0564165 /]# touch hello docker > /home/hello.txt # 创建文件
 
-vagrant@ubuntu-docker:~$ docker cp -a a441e0564165:/home/hello.txt /home/vagrant
-vagrant@ubuntu-docker:~$ ls
+[root@localhost ~]# docker cp -a a441e0564165:/home/hello.txt /home/vagrant
+[root@localhost ~]# ls
 centos01  description-pak  hello.txt
 ```
 
@@ -345,9 +345,9 @@ centos01  description-pak  hello.txt
 - -w 容器工作目录
 
 ```shell
-vagrant@ubuntu-docker:~$ docker exec -it -e PATH=/usr/local/v12.22.1/bin:$PATH centos01 node -v
+[root@localhost ~]# docker exec -it -e PATH=/usr/local/v12.22.1/bin:$PATH centos01 node -v
 v12.22.1
-vagrant@ubuntu-docker:~$ docker exec -it -w /usr/local centos01  pwd
+[root@localhost ~]# docker exec -it -w /usr/local centos01  pwd
 /usr/local
 ```
 
@@ -358,10 +358,10 @@ vagrant@ubuntu-docker:~$ docker exec -it -w /usr/local centos01  pwd
 - import 从归档文件中导入为镜像文件
 
 ```shell
-vagrant@ubuntu-docker:~$ docker [container] export -o centos01.tar.gz centos01 # 归档容器
+[root@localhost ~]# docker [container] export -o centos01.tar.gz centos01 # 归档容器
 
 # 导入归档文件为镜像
-vagrant@ubuntu-docker:~$ docker [image] import centos01.tar.gz [REPOSITORY[:TAG]]
+[root@localhost ~]# docker [image] import centos01.tar.gz [REPOSITORY[:TAG]]
 ```
 
 ![docker-3](/images/docker-3.png)
@@ -377,7 +377,7 @@ docker rm -f $(docker ps -aq)
 ```shell
 docker stats
 
-vagrant@ubuntu-docker:~$ docker stats
+[root@localhost ~]# docker stats
 CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I/O      BLOCK I/O     PIDS
 a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB / 0B   6.79MB / 0B   1
 ```
@@ -452,8 +452,8 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 ##### -v 容器内路径 匿名挂载 <em id="nimingguazai"></em>
 
 ```shell
-vagrant@ubuntu-docker:~$ docker run -tid --name centos01 -v /centosVolume centos /bin/bash
-vagrant@ubuntu-docker:~$ docker container inspect centos01
+[root@localhost ~]# docker run -tid --name centos01 -v /centosVolume centos /bin/bash
+[root@localhost ~]# docker container inspect centos01
 "Mounts": [
   {
     "Type": "volume",
@@ -473,8 +473,8 @@ vagrant@ubuntu-docker:~$ docker container inspect centos01
 - 如果 `不需要` 对容器内的数据卷挂载点进行 `写操作` 时, 使用具名挂载方式备份容器内数据到宿主机中
 
 ```shell
-vagrant@ubuntu-docker:~$ docker run -tid --name centos02 -v summary:/myVolume centos /bin/bash
-vagrant@ubuntu-docker:~$ docker container inspect centos02
+[root@localhost ~]# docker run -tid --name centos02 -v summary:/myVolume centos /bin/bash
+[root@localhost ~]# docker container inspect centos02
 "Mounts": [
   {
     "Type": "volume",
@@ -494,8 +494,8 @@ vagrant@ubuntu-docker:~$ docker container inspect centos02
 - 如果 `需要` 对容器内的数据卷挂载点进行 `写操作` 时, 使用指定路径挂载方式, 此方式会将宿主机中的数据卷挂载点数据覆盖容器内指定路径
 
 ```shell
-vagrant@ubuntu-docker:~$ docker run -tid --name centos03 -v $PWD/react-app/:/containerVolume centos /bin/bash
-vagrant@ubuntu-docker:~$ docker container inspect centos03
+[root@localhost ~]# docker run -tid --name centos03 -v $PWD/react-app/:/containerVolume centos /bin/bash
+[root@localhost ~]# docker container inspect centos03
 "Mounts": [
   {
     "Type": "bind",
@@ -513,8 +513,8 @@ vagrant@ubuntu-docker:~$ docker container inspect centos03
 ##### \-\-mount 具名挂载
 
 ```shell
-vagrant@ubuntu-docker:~$ docker run -tid --name centos04 --mount type=volume,source=applet_ui,destination=/appletVolume centos /bin/bash
-vagrant@ubuntu-docker:~$ docker container inspect centos04
+[root@localhost ~]# docker run -tid --name centos04 --mount type=volume,source=applet_ui,destination=/appletVolume centos /bin/bash
+[root@localhost ~]# docker container inspect centos04
 "Mounts": [
   {
     "Type": "volume",
@@ -532,8 +532,8 @@ vagrant@ubuntu-docker:~$ docker container inspect centos04
 ##### \-\-mount 指定路径挂载
 
 ```shell
-vagrant@ubuntu-docker:~$ docker run -tid --name centos05 --mount type=bind,source=$PWD/applet_uni,destination=/uniVolume centos /bin/bash
-vagrant@ubuntu-docker:~$ docker container inspect centos05
+[root@localhost ~]# docker run -tid --name centos05 --mount type=bind,source=$PWD/applet_uni,destination=/uniVolume centos /bin/bash
+[root@localhost ~]# docker container inspect centos05
 "Mounts": [
   {
     "Type": "bind",
@@ -552,22 +552,22 @@ vagrant@ubuntu-docker:~$ docker container inspect centos05
 
 ```shell
 # 创建容器并挂载数据卷
-vagrant@ubuntu-docker:~$ docker run -tid --name centos01 -v /home/vagrant/centos01:/home/vagrant/centos01 centos /bin/bash
+[root@localhost ~]# docker run -tid --name centos01 -v /home/vagrant/centos01:/home/vagrant/centos01 centos /bin/bash
 # 容器数据卷共享数据
-vagrant@ubuntu-docker:~$ docker run -tid --name centos02 --volumes-from centos01 centos /bin/bash
-vagrant@ubuntu-docker:~$ docker ps -a  # 查看容器信息
+[root@localhost ~]# docker run -tid --name centos02 --volumes-from centos01 centos /bin/bash
+[root@localhost ~]# docker ps -a  # 查看容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS          PORTS     NAMES
 7e2097a1476d   centos    "/bin/bash"   4 seconds ago    Up 2 seconds              centos02
 ac564d66b6d4   centos    "/bin/bash"   16 minutes ago   Up 16 minutes             centos01
 # 宿主机中创建文件
-vagrant@ubuntu-docker:~$ touch /home/vagrant/centos01/hello.txt
-vagrant@ubuntu-docker:~$ docker exec -it centos02 ls /home/vagrant/centos01 # 查看 centos02 文件状态
+[root@localhost ~]# touch /home/vagrant/centos01/hello.txt
+[root@localhost ~]# docker exec -it centos02 ls /home/vagrant/centos01 # 查看 centos02 文件状态
 hello.txt
-vagrant@ubuntu-docker:~$ docker rm -f centos01 # 删除 centos01
-vagrant@ubuntu-docker:~$ docker ps -a
+[root@localhost ~]# docker rm -f centos01 # 删除 centos01
+[root@localhost ~]# docker ps -a
 CONTAINER ID   IMAGE     COMMAND       CREATED              STATUS              PORTS     NAMES
 7e2097a1476d   centos    "/bin/bash"   About a minute ago   Up About a minute             centos02
-vagrant@ubuntu-docker:~$ ls /home/vagrant/centos01/ # 查看宿主机文件状态
+[root@localhost ~]# ls /home/vagrant/centos01/ # 查看宿主机文件状态
 hello.txt
 ```
 

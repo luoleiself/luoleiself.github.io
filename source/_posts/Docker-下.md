@@ -18,9 +18,9 @@ docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对
 - network 自定义网络模式
 
 ```shell
-vagrant@ubuntu-docker:~$ docker run -tid --name centos01 centos /bin/bash
-vagrant@ubuntu-docker:~$ docker run -tid --name centos02 centos /bin/bash
-vagrant@ubuntu-docker:~$ ip addr
+[root@localhost ~]# docker run -tid --name centos01 centos /bin/bash
+[root@localhost ~]# docker run -tid --name centos02 centos /bin/bash
+[root@localhost ~]# ip addr
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -60,7 +60,7 @@ veth-pair 就是一对的虚拟设备接口，和 tap/tun 设备不同的是，�
 ### 网络模式
 
 ```shell
-vagrant@ubuntu-docker:~$ docker network ls
+[root@localhost ~]# docker network ls
 NETWORK ID     NAME      DRIVER    SCOPE
 2cad59b7f47d   bridge    bridge    local
 1db6eddeb99f   host      host      local
@@ -113,14 +113,14 @@ docker run ... centos02 --network centos01 ...
 
 ```shell
 # 查看 centos01 的 ip 信息
-vagrant@ubuntu-docker:~$ docker exec -it centos01 ip addr
+[root@localhost ~]# docker exec -it centos01 ip addr
 ... 172.17.0.2
 # 查看 centos02 的 ip 信息
-vagrant@ubuntu-docker:~$ docker exec -it centos02 ip addr
+[root@localhost ~]# docker exec -it centos02 ip addr
 ... 172.17.0.3
 
 # centos01 ping centos02 只能通过 ip 测试
-vagrant@ubuntu-docker:~$ docker exec -it centos01 ping 172.17.0.3
+[root@localhost ~]# docker exec -it centos01 ping 172.17.0.3
 PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
 64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.065 ms
 64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.047 ms
@@ -142,8 +142,8 @@ rtt min/avg/max/mdev = 0.041/0.048/0.065/0.012 ms
 
 ```shell
 # 创建 centos02 连接到 centos01
-vagrant@ubuntu-docker:~$ docker run -tid --name centos02 --link centos01 centos /bin/bash
-vagrant@ubuntu-docker:~$ docker exec -it centos02 ping centos01 # centos02 ping centos01
+[root@localhost ~]# docker run -tid --name centos02 --link centos01 centos /bin/bash
+[root@localhost ~]# docker exec -it centos02 ping centos01 # centos02 ping centos01
 PING centos01 (172.17.0.2) 56(84) bytes of data.
 64 bytes from centos01 (172.17.0.2): icmp_seq=1 ttl=64 time=0.076 ms
 64 bytes from centos01 (172.17.0.2): icmp_seq=2 ttl=64 time=0.044 ms
@@ -152,7 +152,7 @@ PING centos01 (172.17.0.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.044/0.060/0.076/0.016 ms
 
 # 查看 centos02 的 hosts
-vagrant@ubuntu-docker:~$ docker exec -it centos02 cat /etc/hosts
+[root@localhost ~]# docker exec -it centos02 cat /etc/hosts
 127.0.0.1       localhost
 ::1     localhost ip6-localhost ip6-loopback
 fe00::0 ip6-localnet
@@ -163,7 +163,7 @@ ff02::2 ip6-allrouters
 172.17.0.3      8f49dabd3c2c
 
 # centos01 ping centos02 失败
-vagrant@ubuntu-docker:~$ docker exec -it centos01 ping centos02
+[root@localhost ~]# docker exec -it centos01 ping centos02
 ping: centos02: Name or service not known
 ```
 
@@ -189,8 +189,8 @@ ping: centos02: Name or service not known
 1. 创建自定义网络
 
 ```shell
-vagrant@ubuntu-docker:~$ docker network create --subnet 192.168.0.0/16 --gateway 192.168.0.1 my-docker-net
-vagrant@ubuntu-docker:~$ docker network ls
+[root@localhost ~]# docker network create --subnet 192.168.0.0/16 --gateway 192.168.0.1 my-docker-net
+[root@localhost ~]# docker network ls
 NETWORK ID     NAME            DRIVER    SCOPE
 2cad59b7f47d   bridge          bridge    local
 1db6eddeb99f   host            host      local
@@ -201,14 +201,14 @@ b2f23805b5e5   none            null      local
 2. 创建基于自定义网络模式容器
 
 ```shell
-vagrant@ubuntu-docker:~$ docker run -tid --name my-docker-net01 --net my-docker-net centos /bin/bash
-vagrant@ubuntu-docker:~$ docker run -tid --name my-docker-net02 --net my-docker-net centos /bin/bash
+[root@localhost ~]# docker run -tid --name my-docker-net01 --net my-docker-net centos /bin/bash
+[root@localhost ~]# docker run -tid --name my-docker-net02 --net my-docker-net centos /bin/bash
 ```
 
 3. 查看 ip 相关信息
 
 ```shell
-vagrant@ubuntu-docker:~$ ip addr
+[root@localhost ~]# ip addr
 ...
 3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
   link/ether 02:42:c2:ab:51:b5 brd ff:ff:ff:ff:ff:ff
@@ -235,7 +235,7 @@ vagrant@ubuntu-docker:~$ ip addr
 4. 查看自定义网络信息
 
 ```shell
-vagrant@ubuntu-docker:~$ docker network inspect my-docker-net
+[root@localhost ~]# docker network inspect my-docker-net
 [{
   "Name": "my-docker-net",
   "Id": "8d4dbf9c3f5609303ef88f5e964ee47fd05b2ed27f6a8b2c49ddff0a9602e701",
@@ -276,7 +276,7 @@ vagrant@ubuntu-docker:~$ docker network inspect my-docker-net
 5. 自定义网络内容器通信
 
 ```shell
-vagrant@ubuntu-docker:~$ docker exec -it my-docker-net01 ping my-docker-net02
+[root@localhost ~]# docker exec -it my-docker-net01 ping my-docker-net02
 PING my-docker-net02 (192.168.0.3) 56(84) bytes of data.
 64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=1 ttl=64 time=0.110 ms
 64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=2 ttl=64 time=0.046 ms
@@ -287,7 +287,7 @@ PING my-docker-net02 (192.168.0.3) 56(84) bytes of data.
 4 packets transmitted, 4 received, 0% packet loss, time 3043ms
 rtt min/avg/max/mdev = 0.046/0.062/0.110/0.027 ms
 
-vagrant@ubuntu-docker:~$ docker exec -it my-docker-net02 ping my-docker-net01
+[root@localhost ~]# docker exec -it my-docker-net02 ping my-docker-net01
 PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
 64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=1 ttl=64 time=0.045 ms
 64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=2 ttl=64 time=0.095 ms
@@ -306,7 +306,7 @@ rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 1. 查看自定义网络模式信息
 
 ```shell
-vagrant@ubuntu-docker:~$ docker network inspect my-docker-net
+[root@localhost ~]# docker network inspect my-docker-net
 ...
 "Containers": {
   "ad9cdd7a0edf2c76710388fcc71de4df129b8fddd9d5e816795689022a62b141": {
@@ -327,8 +327,8 @@ vagrant@ubuntu-docker:~$ docker network inspect my-docker-net
 ...
 
 # 创建基于 docker0 容器
-vagrant@ubuntu-docker:~$ docker run -tid --name centos01 centos
-vagrant@ubuntu-docker:~$ docker ps -a
+[root@localhost ~]# docker run -tid --name centos01 centos
+[root@localhost ~]# docker ps -a
 CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS        PORTS     NAMES
 e2a9d9f19bd3   centos    "/bin/bash"   3 seconds ago   Up 1 second             centos01
 d0f5bf60fb85   centos    "/bin/bash"   22 hours ago    Up 6 hours              my-docker-net02
@@ -339,9 +339,9 @@ ad9cdd7a0edf   centos    "/bin/bash"   22 hours ago    Up 6 hours              m
 
 ```shell
 # 连接 centos01 到 自定义网络 my-docker-net
-vagrant@ubuntu-docker:~$ docker network connect my-docker-net centos01
+[root@localhost ~]# docker network connect my-docker-net centos01
 # 查看自定义网络状态
-vagrant@ubuntu-docker:~$ docker network inspect my-docker-net
+[root@localhost ~]# docker network inspect my-docker-net
 ...
 "Containers": {
   "ad9cdd7a0edf2c76710388fcc71de4df129b8fddd9d5e816795689022a62b141": {
@@ -369,7 +369,7 @@ vagrant@ubuntu-docker:~$ docker network inspect my-docker-net
 ...
 
 # 查看 centos01 ip 信息
-vagrant@ubuntu-docker:~$ docker exec -it centos01 ip addr
+[root@localhost ~]# docker exec -it centos01 ip addr
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -388,7 +388,7 @@ vagrant@ubuntu-docker:~$ docker exec -it centos01 ip addr
 
 ```shell
 # 默认网络模式中容器 ping 自定义网络模式中容器
-vagrant@ubuntu-docker:~$ docker exec -it centos01 ping my-docker-net01
+[root@localhost ~]# docker exec -it centos01 ping my-docker-net01
 PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
 64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=1 ttl=64 time=0.060 ms
 64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=2 ttl=64 time=0.056 ms
@@ -396,7 +396,7 @@ PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
 --- my-docker-net01 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1002ms
 rtt min/avg/max/mdev = 0.056/0.058/0.060/0.002 ms
-vagrant@ubuntu-docker:~$ docker exec -it centos01 ping my-docker-net02
+[root@localhost ~]# docker exec -it centos01 ping my-docker-net02
 PING my-docker-net02 (192.168.0.3) 56(84) bytes of data.
 64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=1 ttl=64 time=0.049 ms
 64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=2 ttl=64 time=0.115 ms
@@ -407,7 +407,7 @@ PING my-docker-net02 (192.168.0.3) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.044/0.069/0.115/0.033 ms
 
 # 自定义网络模式中容器 ping 默认网络模式中容器
-vagrant@ubuntu-docker:~$ docker exec -it my-docker-net01 ping centos01
+[root@localhost ~]# docker exec -it my-docker-net01 ping centos01
 PING centos01 (192.168.0.4) 56(84) bytes of data.
 64 bytes from centos01.my-docker-net (192.168.0.4): icmp_seq=1 ttl=64 time=0.066 ms
 64 bytes from centos01.my-docker-net (192.168.0.4): icmp_seq=2 ttl=64 time=0.050 ms
@@ -415,7 +415,7 @@ PING centos01 (192.168.0.4) 56(84) bytes of data.
 --- centos01 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1027ms
 rtt min/avg/max/mdev = 0.050/0.058/0.066/0.008 ms
-vagrant@ubuntu-docker:~$ docker exec -it my-docker-net02 ping centos01
+[root@localhost ~]# docker exec -it my-docker-net02 ping centos01
 PING centos01 (192.168.0.4) 56(84) bytes of data.
 64 bytes from centos01.my-docker-net (192.168.0.4): icmp_seq=1 ttl=64 time=0.000 ms
 64 bytes from centos01.my-docker-net (192.168.0.4): icmp_seq=2 ttl=64 time=0.048 ms
@@ -430,8 +430,8 @@ rtt min/avg/max/mdev = 0.000/0.031/0.048/0.021 ms
 
 ```shell
 # 断开自定义网络和 centos01 的连接
-vagrant@ubuntu-docker:~$ docker network disconnect my-docker-net centos01
-vagrant@ubuntu-docker:~$ docker exec -it centos01 ping my-docker-net01
+[root@localhost ~]# docker network disconnect my-docker-net centos01
+[root@localhost ~]# docker exec -it centos01 ping my-docker-net01
 ping: my-docker-net01: Name or service not known
 ```
 
@@ -506,9 +506,22 @@ Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行�
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
+### 参数
+
+- -f, \-\-file 指定配置文件
+- -p, \-\-project-name 指定项目名称
+- \-\-project-directory 指定项目工作目录
+- -c, \-\-context 指定上下文环境名称
+- \-\-env-file 指定环境变量配置文件
+
+### 命令
+
+- version 查看版本信息
 - build 构建服务
 - config 验证 docker-compose 配置文件
 - create 创建服务, deprecated, Use the `up` command with `--no-start` instead
+- events 接收一个来自容器的真实的事件
+- exec 在运行的容器中打开命令行
 - down 停止并移除资源
 - up 创建服务并启动容器
   
@@ -520,25 +533,23 @@ yaml 文件中不能使用 tab 缩进, 只能使用空格
 
 - kill 关闭容器
 - top 显示运行的进程信息
-- events 接收一个来自容器的真实的事件
-- exec 在运行的容器中打开命令行
+- images 查看所有镜像
+- logs 查看容器日志
+- ps 查看所有容器
+- port 查看公共端口绑定信息
+- pull 拉取服务镜像
+- push 推送服务镜像
 - start 启动服务
 - stop 停止服务
 - restart 重启服务
 - rm 移除已经停止的容器
+- run 运行命令
+- scale 服务扩缩容
+- pause 暂停服务
+- unpasue 取消暂停服务
 
 ```shell
-# 官网示例
-vagrant@ubuntu-docker:~$ mkdir composetest && cd composetest
-vagrant@ubuntu-docker:~/composetest$ vi app.py
-vagrant@ubuntu-docker:~/composetest$ vi requirements.txt
-vagrant@ubuntu-docker:~/composetest$ vi Dockerfile
-vagrant@ubuntu-docker:~/composetest$ vi docker-compose.yml
-vagrant@ubuntu-docker:~/composetest$ docker-compose up --build -d
-vagrant@ubuntu-docker:~$ curl localhost:8000
-Hello World! I have been seen 1 times.
-vagrant@ubuntu-docker:~$ curl localhost:8000
-Hello World! I have been seen 2 times.
+[root@localhost ~]# docker-compose up service_id # 启动指定服务 
 ```
 
 ### 配置文件
@@ -578,16 +589,28 @@ services:
     networks:
       - my-web-network
   db:
-    image: postgres
-  networks:
-    - my-web-network
+    image: mysql
+    volumes:
+      - dbata:/var/lib/mysql
+    networks:
+      - my-web-network
 volumes:
-  dbData: {}
+  dbData: # 声明卷名, compose 自动创建该卷名并会添加项目名前缀
+    external: # 使用自定义卷名
+      true # true 确定使用指定卷名, 该卷名需要手动创建, 否则 compose 会报错
 networks:
-  my-web-network: {}
+  my-web-network:
+    external:
+      true # 作用同上方的数据卷的配置方式
 ```
 
 #### version 支持的 Docker 引擎版本
+
+#### volumes
+
+- 使用路径方式挂载数据卷
+
+- 使用卷名方式挂载数据卷, 需要在 `一级配置项` 中声明, compose 会自动创建以项目名为前缀的卷名, 如果不需要卷名前缀, 则使用 `external: true` 指定卷名, 但是需要手动创建该卷名
 
 #### depends_on 服务启动依赖
 
@@ -606,7 +629,7 @@ networks:
 - \-\-listen-addr 监听地址
 
 ```shell
-vagrant@ubuntu-docker:~$ docker swarm init --advertise-addr 192.168.1.2
+[root@localhost ~]# docker swarm init --advertise-addr 192.168.1.2
 Swarm initialized: current node (5r1q8c5jaawi9w1wd8yr7w3u2) is now a manager.
 
 To add a worker to this swarm, run the following command:
@@ -620,13 +643,13 @@ To add a manager to this swarm, run 'docker swarm join-token manager' and follow
 
 ```shell
 # 生成工作节点令牌
-vagrant@ubuntu-docker:~$ docker swarm join-token worker
+[root@localhost ~]# docker swarm join-token worker
 To add a worker to this swarm, run the following command:
 
   docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh 192.168.1.2:2377
 
 # 生成管理节点令牌
-vagrant@ubuntu-docker:~$ docker swarm join-token manager
+[root@localhost ~]# docker swarm join-token manager
 To add a manager to this swarm, run the following command:
 
   docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-58yur8457jq0ghy45qnvislbi 192.168.1.2:2377
@@ -637,11 +660,11 @@ To add a manager to this swarm, run the following command:
 - \-\-token
 
 ```shell
-vagrant@ubuntu-docker:~$ docker swarm join --token TOKEN HOST:PORT
+[root@localhost ~]# docker swarm join --token TOKEN HOST:PORT
 ```
 
 ### 移除节点
 
 ```shell
-vagrant@ubuntu-docker:~$ docker swarm leave
+[root@localhost ~]# docker swarm leave
 ```
