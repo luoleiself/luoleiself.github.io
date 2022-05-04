@@ -71,7 +71,7 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 
 ```shell
 [root@localhost ~]# docker [image] save -o  # 归档一个或多个镜像文件
-[root@localhost ~]# docker [image] load  # 从归档文件加载镜像文件
+[root@localhost ~]# docker [image] load -i  # 从归档文件加载镜像文件
 ```
 
 ### 批量删除多个镜像
