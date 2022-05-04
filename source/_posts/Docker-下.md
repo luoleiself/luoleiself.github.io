@@ -111,7 +111,7 @@ docker run ... centos02 --network centos01 ...
 
 将多个 docker 守护进程连接起来, 使 swarm 服务之间能够互相通信, 一般用于 swarm 集群
 
-### 容器互联通信
+### bridge 容器互联通信
 
 #### 借助 docker0 路由功能
 
@@ -137,7 +137,7 @@ PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.041/0.048/0.065/0.012 ms
 ```
 
-#### link 参数方式
+#### \-\-link 参数方式
 
 本质上是在容器内部 hosts 文件中添加 ip 映射, 可以单向使用容器别名通信
 
@@ -183,7 +183,7 @@ ping: centos02: Name or service not known
 - connect 连接容器到另一个网络
 - disconnect 断开容器到另一个网络的连接
 
-#### bridge 桥接模式
+#### bridge 模式
 
 - \-\-driver 网络模式, 默认 bridge
 - \-\-subnet CIDR 格式的子网网段
@@ -305,7 +305,21 @@ PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 ```
 
+#### overlay 模式
+
+- docker 运行在 swarm 模式
+- 使用键值存储的 docker 主机集群
+
 ### 跨网络模式容器通信
+
+#### 自定义 bridge 和 docker0 结合使用
+
+- my-docker-net01 和 my-docker-net02 运行在 my-docker-net 下
+- centos01 运行在 docker0 下
+
+```shell
+docker network connect my-docker-net centos01 # 使用命令将不同网络模式中的容器加入到当前网络模式中
+```
 
 原理: 自定义网络模式分配 ip 信息给连接到此网络的容器
 
@@ -512,6 +526,13 @@ Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行�
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
+```shell
+# 启动指定服务, 不加参数则默认启动所有服务
+docker-compose -f -p -c --env-file up [service_name] 
+
+# 以下的命令不带服务名称则默认对所有服务执行相同操作
+```
+
 ### 参数
 
 - -f, \-\-file 指定配置文件
@@ -563,42 +584,41 @@ yaml 文件中不能使用 tab 缩进, 只能使用空格
 ```yaml
 version: 3.9 # 版本
 services:
-  web: # 服务
+  web: # 服务名称
     build: .
       context: "./web" # 指定构建 web 服务的镜像的上下文环境目录
       dockerfile: Dockerfile # 指定构建镜像的配置文件名称
-    ports:
+    ports: # 端口映射
       - '5000:5000'
-    container_name: my-web
-    environment:
+    container_name: my-web # 容器名称
+    environment: # 环境变量
       RACK_ENV: development
       SHOW: 'true'
       USER_INPUT:
-    # 指定路径挂载
-    volumes:
+    volumes: # 挂载数据卷
       - type: bind
         source: /home/workspace
         target: /home/workVolume
-      - /home/workspace:/var/workspace
-    # 自定义网络模式
-    networks:
+      - /home/workspace:/var/workspace # 定义指定路径数据卷
+    networks: # 自定义网络模式
       - my-web-network
     depends_on: # 服务启动依赖
       - db
       - redis
     deploy: # 部署
       replicas: 6 # 副本
-  # 服务
-  redis:
+  redis: # 服务名称
     image: redis
-    volumes:
-      - /home/workspace
-    networks:
+    volumes: # 挂载数据卷
+      - /home/workspace # 定义匿名数据卷
+    networks: # 自定义网络模式
       - my-web-network
+    links: # 定义网络连接另一个服务的容器
+      - db:mysql # 可以直接使用 服务名, 或者使用 服务名:别名 方式
   db:
     image: mysql
     volumes:
-      - dbata:/var/lib/mysql
+      - dbata:/var/lib/mysql # 定义具名数据卷
     networks:
       - my-web-network
 volumes:
@@ -606,7 +626,7 @@ volumes:
     external: # 使用自定义卷名
       true # true 确定使用指定卷名, 该卷名需要手动创建, 否则 compose 会报错
 networks:
-  my-web-network:
+  my-web-network: # 声明自定义网络模式, compose 自动创建该网络并会添加项目名前缀
     external:
       true # 作用同上方的数据卷的配置方式
 ```

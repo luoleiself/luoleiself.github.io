@@ -423,8 +423,8 @@ a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB
 
 ```shell
 docker volume create [OPTIONS] [VOLUME] # 创建数据卷
-docker run --mount type=volume,source=$PWD/$CONTAINER_NAME/app,destination=/app centos01 /bin/bash
-docker run -v $PWD/$CONTAINER_NAME/app:/app # 作用同上一行
+docker run --mount type=volume,source=${PWD}/${CONTAINER_NAME}/app,destination=/app centos01 /bin/bash
+docker run -v ${PWD}/${CONTAINER_NAME}/app:/app # 作用同上一行
 ```
 
 #### bind mounts
@@ -432,9 +432,9 @@ docker run -v $PWD/$CONTAINER_NAME/app:/app # 作用同上一行
 是宿主机任意文件系统, 可以存储在宿主机系统的任意位置
 
 ```shell
-docker run --mount type=bind,source=$PWD/$CONTAINER_NAME/app,destination=/app centos01 /bin/bash
+docker run --mount type=bind,source=${PWD}/${CONTAINER_NAME}/app,destination=/app centos01 /bin/bash
 # 如果挂载到容器中的非空目录, 则会隐藏容器中非空目录中的文件
-docker run -v $PWD/$CONTAINER_NAME/app:/app # 作用同上一行
+docker run -v ${PWD}/${CONTAINER_NAME}/app:/app # 作用同上一行
 ```
 
 #### tmpfs mounts
@@ -494,7 +494,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 - 如果 `需要` 对容器内的数据卷挂载点进行 `写操作` 时, 使用指定路径挂载方式, 此方式会将宿主机中的数据卷挂载点数据覆盖容器内指定路径
 
 ```shell
-[root@localhost ~]# docker run -tid --name centos03 -v $PWD/react-app/:/containerVolume centos /bin/bash
+[root@localhost ~]# docker run -tid --name centos03 -v ${PWD}/react-app/:/containerVolume centos /bin/bash
 [root@localhost ~]# docker container inspect centos03
 "Mounts": [
   {
@@ -532,7 +532,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 ##### \-\-mount 指定路径挂载
 
 ```shell
-[root@localhost ~]# docker run -tid --name centos05 --mount type=bind,source=$PWD/applet_uni,destination=/uniVolume centos /bin/bash
+[root@localhost ~]# docker run -tid --name centos05 --mount type=bind,source=${PWD}/applet_uni,destination=/uniVolume centos /bin/bash
 [root@localhost ~]# docker container inspect centos05
 "Mounts": [
   {
@@ -638,6 +638,11 @@ hello.txt
 
 - SHELL 允许重写默认的 shell
 - LABEL 给镜像添加元数据
+
+- STOPSIGNAL 设置当容器退出时系统调用的指令
+
+- ONBUILD 当前镜像作为其他镜像的基础镜像构建时触发
+
 - HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式
 
 ### 区分是否新建镜像层
@@ -671,7 +676,7 @@ docker run -it ubuntu /bin/bash ls -al
 /bin/bash ls -al
 ```
 
-- ENTRYPOINT 情况下, run 后面的参数将作为 ENTRYPOINT 配置项指令的一部分
+- ENTRYPOINT 情况下, `docker run` 后面的参数将作为 ENTRYPOINT 配置项指令的一部分
 
 ```conf
 # Dockerfile
@@ -688,7 +693,7 @@ docker run -it ubuntu -a
 /bin/bash ls -al
 ```
 
-- CMD 和 ENTRYPOINT 同时存在时, CMD 作为 ENTRYPOINT 配置项命令的一部分
+- CMD 和 ENTRYPOINT 同时存在时, CMD 作为 ENTRYPOINT 配置项命令的一部分, 与书写位置没有关系
 
 ```conf
 # Dockerfile
