@@ -10,7 +10,7 @@ tags:
 
 ## Docker 网络
 
-docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay等. 
+docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay 等.
 
 - link 使用参数方式添加连接到另一个容器，不再推荐使用
   - 自定义网络 不适用 docker0
@@ -522,13 +522,13 @@ c136f18229c3   mysql:5.7   "docker-entrypoint.s…"   15 hours ago     Up About 
 
 ## Docker Compose
 
-Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 docker-compose yaml 文件所在目录中, 以应用目录名_服务名_服务名数量编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式. 
+Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 docker-compose yaml 文件所在目录中, 以应用目录名*服务名*服务名数量编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
 ```shell
 # 启动指定服务, 不加参数则默认启动所有服务
-docker-compose -f -p -c --env-file up [service_name] 
+docker-compose -f -p -c --env-file up [service_name]
 
 # 以下的命令不带服务名称则默认对所有服务执行相同操作
 ```
@@ -551,7 +551,7 @@ docker-compose -f -p -c --env-file up [service_name]
 - exec 在运行的容器中打开命令行
 - down 停止并移除资源
 - up 创建服务并启动容器
-  
+
   - -f 指定配置文件
   - \-\-build 启动容器之前构建镜像
   - -d, \-\-detach 后台运行容器
@@ -576,7 +576,7 @@ docker-compose -f -p -c --env-file up [service_name]
 - unpasue 取消暂停服务
 
 ```shell
-[root@localhost ~]# docker-compose up service_id # 启动指定服务 
+[root@localhost ~]# docker-compose up service_id # 启动指定服务
 ```
 
 ### 配置文件
@@ -646,6 +646,19 @@ networks:
 
 ## Docker Swarm
 
+### 令牌格式
+
+```shell
+PREFIX - VERSION - SWARM ID - TOKEN
+
+SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh
+```
+
+- PREFIX 令牌前缀,便于区分 固定为 SWMTKN
+- VERSION Swarm 的版本信息
+- SWARM ID Swarm 认证信息的一个哈希值
+- TOKEN 标识管理节点还是工作节点的准入令牌
+
 ### 初始化 init
 
 - \-\-advertise-addr 设置管理节点入口地址
@@ -676,6 +689,16 @@ To add a worker to this swarm, run the following command:
 To add a manager to this swarm, run the following command:
 
   docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-58yur8457jq0ghy45qnvislbi 192.168.1.2:2377
+```
+
+### 更新节点令牌
+
+```shell
+# 更新管理节点令牌
+[root@localhost ~]# docker swarm join-token --rotate manager
+
+# 更新工作节点令牌
+[root@localhost ~]# docker swarm join-token --rotate worker
 ```
 
 ### 添加工作/管理节点 join
