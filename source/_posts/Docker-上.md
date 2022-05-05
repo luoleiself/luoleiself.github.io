@@ -573,10 +573,12 @@ hello.txt
 
 ## Dockerfile
 
+- .dockerignore 根目录上下文忽略文件
+
 用来构建镜像的文本文件, 文本内容包含一条条构建镜像所需要的指令和说明, 指令每执行一次都会在 docker 上新建一层
 
 - FROM 构建镜像时的基础镜像层
-- MAINTAINER(deprecated) 维护者信息
+- MAINTAINER(deprecated) 维护者信息, 使用 LABEL 指令代替
 - EXPOSE 对外暴露端口
 
   ```conf
@@ -636,8 +638,9 @@ hello.txt
   USER <用户名>[:<用户组>]
   ```
 
-- SHELL 允许重写默认的 shell
 - LABEL 给镜像添加元数据
+
+- SHELL 允许重写默认的 shell
 
 - STOPSIGNAL 设置当容器退出时系统调用的指令
 

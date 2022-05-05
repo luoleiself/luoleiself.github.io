@@ -582,53 +582,81 @@ docker-compose -f -p -c --env-file up [service_name]
 ### 配置文件
 
 ```yaml
-version: 3.9 # 版本
+version: 3.9   # 版本
 services:
-  web: # 服务名称
+  web:   # 服务名称
     build: .
-      context: "./web" # 指定构建 web 服务的镜像的上下文环境目录
-      dockerfile: Dockerfile # 指定构建镜像的配置文件名称
+      context: "./web"  # 指定构建 web 服务的镜像的上下文环境目录
+      dockerfile: Dockerfile  # 指定构建镜像的配置文件名称
     ports: # 端口映射
       - '5000:5000'
-    container_name: my-web # 容器名称
-    environment: # 环境变量
+    privileged: true   # 配置容器目录权限
+    read_only: true    # 设计容器文件系统模式
+    restart: always    # 定义容器重启模式
+    container_name: my-web  # 容器名称
+    environment:  # 环境变量
       RACK_ENV: development
       SHOW: 'true'
       USER_INPUT:
+    env_file: .env # 环境变量配置文件
+    command: [ "bundle", "exec", "thin", "-p", "3000" ]   # 覆盖镜像配置文件(Dockerfile)中的 CMD 指令
+    entrypoint:    # 覆盖镜像配置文件(Dockerfile)中的 ENTRYPOINT 指令
+      - php
+      - -d
+      - vendor/bin/phpunit
     volumes: # 挂载数据卷
       - type: bind
         source: /home/workspace
         target: /home/workVolume
-      - /home/workspace:/var/workspace # 定义指定路径数据卷
-    networks: # 自定义网络模式
+      - /home/workspace:/var/workspace  # 定义指定路径数据卷
+    tmpfs:
+      - /run  # 挂载容器内临时文件系统
+    volumes_from:     # 挂载共享数据卷
+      - service_name
+      - service_name:ro
+      - container:container_name
+      - container:container_name:rw
+    networks:  # 自定义网络模式
       - my-web-network
-    depends_on: # 服务启动依赖
+    depends_on:  # 服务启动依赖
       - db
       - redis
-    deploy: # 部署
+    deploy:  # 部署
       replicas: 6 # 副本
+    dns:
+      - 8.8.8.8  # 自定义网络的 DNS 服务器
+    extends:
+      file: common.yml   # 当前配置中扩展另一个服务
+    labels:    # 添加容器元数据
+      - "com.example.description=Accounting webapp"
   redis: # 服务名称
     image: redis
-    volumes: # 挂载数据卷
-      - /home/workspace # 定义匿名数据卷
-    networks: # 自定义网络模式
+    volumes:   # 挂载数据卷
+      - /home/workspace   # 定义匿名数据卷
+    networks:   # 自定义网络模式
       - my-web-network
-    links: # 定义网络连接另一个服务的容器
-      - db:mysql # 可以直接使用 服务名, 或者使用 服务名:别名 方式
+    links:    # 定义网络连接另一个服务的容器
+      - db:mysql   # 可以直接使用 服务名, 或者使用 服务名:别名 方式
   db:
     image: mysql
     volumes:
-      - dbata:/var/lib/mysql # 定义具名数据卷
+      - dbata:/var/lib/mysql   # 定义具名数据卷
     networks:
       - my-web-network
 volumes:
-  dbData: # 声明卷名, compose 自动创建该卷名并会添加项目名前缀
-    external: # 使用自定义卷名
-      true # true 确定使用指定卷名, 该卷名需要手动创建, 否则 compose 会报错
+  dbData:   # 声明卷名, compose 自动创建该卷名并会添加项目名前缀
+    external:   # 使用自定义卷名
+      true   # true 确定使用指定卷名, 该卷名需要手动创建, 否则 compose 会报错
 networks:
-  my-web-network: # 声明自定义网络模式, compose 自动创建该网络并会添加项目名前缀
+  my-web-network:   # 声明自定义网络模式, compose 自动创建该网络并会添加项目名前缀
     external:
-      true # 作用同上方的数据卷的配置方式
+      true   # 作用同上方的数据卷的配置方式
+external_links:   # 将服务容器连接到 compose 应用管理以外的服务, 作用同 links
+  - database:mysql
+  - database:postgresql
+extra_hosts:  # 添加主机 ip 映射关系到容器网络接口配置中(/etc/hosts)
+  - "somehost:162.242.195.82"
+  - "otherhost:50.31.209.229
 ```
 
 #### version 支持的 Docker 引擎版本
