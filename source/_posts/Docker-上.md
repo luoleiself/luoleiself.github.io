@@ -126,6 +126,10 @@ centos       latest    5d0da3dc9764   6 months ago    231MB
 
 - -f 指定配置文件, 默认 PATH/Dockerfile
 - -t 创建镜像命名
+- \-\-no-cache 构建镜像时不使用缓存
+- \-\-compress 使用 gzip 压缩构建上下文环境
+- \-\-label 设置镜像元数据
+- \-\-network 设置构建过程中 `RUN` 指令的网络模式
 
 ```shell
 docker build -f /path/to/Dockerfile -t name:tag .
