@@ -28,7 +28,6 @@ tags:
 
 - $content_length 请求头字段 `Content-Length`
 - $content_type 请求头字段 `Content-Type`
-- $cookie_name cookie 名称
 
 - $document_uri 同 $uri
 - $document_root 当前请求的文档根目录或别名
@@ -42,7 +41,8 @@ tags:
 - $hostname 主机名
 
 - $http_user_agent 客户端 agent 信息
-- $http_cookie 客户端 cookie 信息
+- $http_cookie 客户端所有的 cookie 信息
+- $cookie_NAME 获取指定 cookie, 后面的 `NAME` 为 cookie 的 key
 
 - $http_referer 引用地址
 
