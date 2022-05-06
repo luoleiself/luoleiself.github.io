@@ -11,7 +11,9 @@ tags:
 
 ### 敲黑板
 
-#### [onMenuShareAppMessage](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html) (微信提示: 即将废弃) jweixin-1.4.0.js
+#### [onMenuShareAppMessage](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html) (微信提示: 即将废弃)
+
+- jweixin-1.4.0.js
 
 ##### 企微(4.0.6) 中使用此 API 的位置
 
@@ -25,7 +27,9 @@ tags:
 
 <!-- more -->
 
-#### [updateAppMessageShareData](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html) jweixin-1.4.0.js
+#### [updateAppMessageShareData](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html)
+
+- jweixin-1.4.0.js
 
 - 企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function
 
@@ -39,7 +43,9 @@ wx.updateAppMessageShareData({
 });
 ```
 
-#### [updateTimelineShareData](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html) jweixin-1.4.0.js
+#### [updateTimelineShareData](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html)
+
+- jweixin-1.4.0.js
 
 - 企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function
 
@@ -53,7 +59,9 @@ wx.updateTimelineShareData({
 });
 ```
 
-#### [wx.invoke](https://developer.work.weixin.qq.com/document/path/90490) jweixin-1.4.0.js
+#### [wx.invoke](https://developer.work.weixin.qq.com/document/path/90490)
+
+- jweixin-1.4.0.js
 
 ```javascript
 wx.invoke(
