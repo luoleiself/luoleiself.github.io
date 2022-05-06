@@ -26,6 +26,8 @@ tags:
 - unset 删除变量
 - local 声明局部变量,一般用于函数内部
 
+<!-- more -->
+
 ### 运算符
 
 #### [ ] | [[]]
@@ -66,8 +68,6 @@ echo $[$a+$b*$c]
 ```bash
 [root@localhost ~]# docker rm -f $(docker ps -aq) # 移除所有容器
 ```
-
-<!-- more -->
 
 #### 算术运算符
 

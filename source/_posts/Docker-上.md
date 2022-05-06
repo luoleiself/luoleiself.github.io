@@ -45,6 +45,8 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 
 ![docker-1](/images/docker-1.jpg)
 
+<!-- more -->
+
 ## 镜像
 
 是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）
@@ -64,8 +66,6 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 - load|import 导入镜像归档文件
 - save 保存镜像到归档文件
 - history 查看镜像的历史信息
-
-<!-- more -->
 
 ### 镜像导入和导出
 

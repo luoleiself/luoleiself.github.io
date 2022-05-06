@@ -17,11 +17,75 @@ tags:
 
 ## 变量
 
+- $nginx_version nginx 版本
+
+- $connection_requests TCP 链接当前的请求数量
+
+- $proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串
+<!-- more -->
+
+### $request
+
+- $content_length 请求头字段 `Content-Length`
+- $content_type 请求头字段 `Content-Type`
+- $cookie_name cookie 名称
+
+- $document_uri 同 $uri
+- $document_root 当前请求的文档根目录或别名
+- $realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径
+
+- $remote_addr 客户端的 IP 地址
+- $remote_port 客户端的端口号
+- $remote_user 用于 HTTP 基础认证服务的用户名
+
+- $host 请求信息中的 `Host`, 如果请求中没有 Host 行，则等于设置的服务器名;
+- $hostname 主机名
+
+- $http_user_agent 客户端 agent 信息
+- $http_cookie 客户端 cookie 信息
+
+- $http_referer 引用地址
+
+- $http_via 最后一个访问服务器的 Ip 地址
+
+- $http_x_forwarded_for 相当于网络访问路径
+
+#### $request_uri
+
+- $request 代表客户端的请求地址
+- $request_uri 包含请求参数的原始 URI, 不包含主机名
+- $request_body 客户端的请求主体
+- $request_method HTTP 请求方法，一般为 `GET` 或 `POST`
+- $request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除
+- $request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成
+- $request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)
+- $request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时
+
 - $uri 当前请求的 URI
+
 - $arg_name 请求中的的参数名, 即"?"后面的 arg_name=arg_value 形式的 arg_name
 - $args 请求中的参数值
 - $is_args 如果请求中有参数, 值为 "?", 否则为空字符串
 - $query_string 同$args
+
+### $server
+
+- $time_local 服务器时间(LOG Format 格式)
+
+- $sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替
+
+  - $sent_http_content_type 'text/html'
+  - $sent_http_content_length 1024
+
+#### $server_uri
+
+- $scheme HTTP 方法(如 http, https)
+- $server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1
+- $server_addr 服务器地址
+- $server_name 服务器名称
+- $server_port 服务器端口号
+
+- $status HTTP 响应代码
 
 ## 指令
 
@@ -60,8 +124,6 @@ location @backend {
   proxy_pass http://backend.example.com;
 }
 ```
-
-<!-- more -->
 
 ### [location 路径匹配](http://nginx.org/en/docs/http/ngx_http_core_module.html#location)
 
