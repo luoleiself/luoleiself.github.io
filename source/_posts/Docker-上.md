@@ -582,7 +582,7 @@ hello.txt
 用来构建镜像的文本文件, 文本内容包含一条条构建镜像所需要的指令和说明, 指令每执行一次都会在 docker 上新建一层
 
 - FROM 构建镜像时的基础镜像层
-- MAINTAINER(deprecated) 维护者信息, 使用 LABEL 指令代替
+- MAINTAINER(deprecated) 维护者信息, 使用 `LABEL` 指令代替
 - EXPOSE 对外暴露端口
 
   ```conf
@@ -590,7 +590,7 @@ hello.txt
   EXPOSE 80/udp
   ```
 
-- ADD 复制指令, 增强版的 COPY 指令, 支持文件解压和远程 URL 资源
+- ADD 复制指令, 增强版的 `COPY` 指令, 支持文件解压和远程 URL 资源
 - COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径
 
   ```conf
@@ -599,8 +599,8 @@ hello.txt
   ```
 
 - RUN 构建镜像时执行的命令 可以存在多条指令
-- CMD 容器运行时执行的命令, 如果存在多个 CMD 指令, 仅最后一个生效
-- ENTRYPOINT 参数不会被 docker run 的命令行参数覆盖, 如果存在多个 ENTRYPOINT 指令，仅最后一个生效
+- CMD 容器运行时执行的命令, 如果存在多个 `CMD` 指令, 仅最后一个生效
+- ENTRYPOINT 容器运行时执行的命令, 参数不会被 `docker run` 的命令行参数覆盖, 如果存在多个 `ENTRYPOINT` 指令，仅最后一个生效
 
   ```conf
   RUN yum -y install vim
@@ -615,8 +615,8 @@ hello.txt
   CMD ["<可执行文件或命令>","<param1>","<param2>",...]
   ```
 
-- ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅对 Dockerfile 内有效
-- ENV 设置环境变量
+- ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
+- ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
 
   ```conf
   ARG VERSION1 1
@@ -633,7 +633,7 @@ hello.txt
   VOLUME <路径> <路径>
   ```
 
-- WORKDIR 指定工作目录
+- WORKDIR 为 `RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
 - USER 指定执行后续命令的用户和用户组, 用户名和用户组必须提前存在
 
   ```conf
@@ -666,7 +666,7 @@ hello.txt
 
 #### 区别
 
-- CMD 情况下, run 后面的参数将作为整体替换 CMD 配置项中的命令
+- CMD 情况下, run 后面的参数将作为整体替换 `CMD` 配置项中的命令
 
 ```conf
 # Dockerfile
