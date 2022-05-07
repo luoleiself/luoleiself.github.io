@@ -657,10 +657,22 @@ ONBUILD ADD . /app/src
 
 - HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式
 
+<!-- 不知道为什么要写这块内容
 ### 区分是否新建镜像层
 
 - 如果指令的作用是向镜像中增添新的文件或者程序，那么这条指令就会新建镜像层, FROM、RUN 以及 COPY
 - 如果只是告诉 Docker 如何完成构建或者如何运行应用程序，那么就只会增加镜像的元数据 EXPOSE、WORKDIR、ENV、CMD 以及 ENTRYPOINT
+-->
+
+### ADD 和 COPY
+
+- ADD 复制指令, 增强版的 `COPY` 指令, 支持文件解压和远程 URL 资源
+- COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径
+
+### ARG 和 ENV
+
+- ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
+- ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
 
 ### VOLUME
 
