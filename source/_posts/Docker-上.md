@@ -130,6 +130,7 @@ centos       latest    5d0da3dc9764   6 months ago    231MB
 - \-\-compress 使用 gzip 压缩构建上下文环境
 - \-\-label 设置镜像元数据
 - \-\-network 设置构建过程中 `RUN` 指令的网络模式
+- \-\-build-arg 通过命令行设置构建镜像过程中的参数, 可以覆盖 `ARG` 设置的参数
 
 ```shell
 docker build -f /path/to/Dockerfile -t name:tag .
@@ -633,7 +634,7 @@ hello.txt
   VOLUME <路径> <路径>
   ```
 
-- WORKDIR 为 `RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
+- WORKDIR 为`RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
 - USER 指定执行后续命令的用户和用户组, 用户名和用户组必须提前存在
 
   ```conf
@@ -649,6 +650,10 @@ hello.txt
 - STOPSIGNAL 设置当容器退出时系统调用的指令
 
 - ONBUILD 当前镜像作为其他镜像的基础镜像构建时触发
+
+```conf
+ONBUILD ADD . /app/src
+```
 
 - HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式
 
@@ -722,9 +727,119 @@ CMD ['/etc/nginx/nginx.conf']
 - CMD 应该用作为 ENTRYPOINT 命令定义默认参数或在容器中执行临时命令的一种方式
 - CMD 使用替代参数运行容器时将被覆盖
 
-|                            | No ENTRYPOINT              | ENTRYPOINT exec_entry p1_entry | ENTRYPOINT [“exec_entry”, “p1_entry”]          |
+|                            | No ENTRYPOINT              | ENTRYPOINT exec_entry p1_entry | ENTRYPOINT ['exec_entry', 'p1_entry']          |
 | -------------------------- | -------------------------- | ------------------------------ | ---------------------------------------------- |
 | No CMD                     | error, not allowed         | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry                            |
-| CMD [“exec_cmd”, “p1_cmd”] | exec_cmd p1_cmd            | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry exec_cmd p1_cmd            |
-| CMD [“p1_cmd”, “p2_cmd”]   | p1_cmd p2_cmd              | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry p1_cmd p2_cmd              |
+| CMD ['exec_cmd', 'p1_cmd'] | exec_cmd p1_cmd            | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry exec_cmd p1_cmd            |
+| CMD ['p1_cmd', 'p2_cmd']   | p1_cmd p2_cmd              | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry p1_cmd p2_cmd              |
 | CMD exec_cmd p1_cmd        | /bin/sh -c exec_cmd p1_cmd | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry /bin/sh -c exec_cmd p1_cmd |
+
+### 应用
+
+#### Dockerfile 配置文件
+
+```conf
+# Dockerfile
+FROM centos:7 # 基础镜像
+
+LABEL maintainer=luoleiself<luoleiself@163.com> # 镜像元数据
+
+WORKDIR /usr/local/   # 设置工作目录
+COPY hello.txt $PWD   # 复制文件
+
+VOLUME ["/var/log"] # 挂载匿名数据卷
+
+CMD ["cat", "/usr/local/hello.txt"]   # 容器运行时执行的命令
+```
+
+#### 构建镜像
+
+```shell
+[root@localhost workspace]# docker build -t hello:v1.0 .
+Sending build context to Docker daemon  3.072kB
+Step 1/6 : FROM centos:7
+ ---> eeb6ee3f44bd
+Step 2/6 : LABEL maintainer=luoleiself<luoleiself@163.com>
+ ---> Running in 42aee4c83238
+Removing intermediate container 42aee4c83238
+ ---> c0a8427ea1ca
+Step 3/6 : WORKDIR /usr/local/
+ ---> Running in 0b1c0da5bfdb                   # 启动临时容器
+Removing intermediate container 0b1c0da5bfdb    # 修改元数据内部使用 `docker commit` 提交镜像后, 立即删除临时容器
+ ---> 63cd399d1589
+Step 4/6 : COPY hello.txt $PWD
+ ---> 2e6fe81c553d
+Step 5/6 : VOLUME ["/var/log"]                  # 挂载匿名数据卷
+ ---> Running in 35e67913cfb2
+Removing intermediate container 35e67913cfb2
+ ---> 60419e54ac19
+Step 6/6 : CMD ["cat", "/usr/local/hello.txt"]
+ ---> Running in 1785744ac7aa
+Removing intermediate container 1785744ac7aa
+ ---> 4cd89659cce0
+Successfully built 4cd89659cce0
+Successfully tagged hello:v1.0
+
+[root@localhost workspace]# docker run --name hello-v1 hello:v1.0
+hello docker
+```
+
+#### 查看镜像信息
+
+##### 镜像配置信息
+
+```shell
+[root@localhost workspace]# docker image inspect hello:v1.0
+...
+"Config": {
+  "Env": [
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  ],
+  "Cmd": [
+    "cat",
+    "/usr/local/hello.txt"
+  ],
+  "Image": "sha256:60419e54ac191ef9170c15d90ab3e0a040ae75ab0c15b320918977336710f17e",
+  "Volumes": {
+    "/var/log": {}
+  },
+  "WorkingDir": "/usr/local/",
+  "Entrypoint": null,
+}
+...
+```
+
+##### 镜像历史信息
+
+```shell
+[root@localhost workspace]# docker image history hello:v1.0
+IMAGE          CREATED          CREATED BY                                      SIZE      COMMENT
+4cd89659cce0   25 minutes ago   /bin/sh -c #(nop)  CMD ["cat" "/usr/local/he…   0B
+60419e54ac19   25 minutes ago   /bin/sh -c #(nop)  VOLUME [/var/log]            0B
+2e6fe81c553d   25 minutes ago   /bin/sh -c #(nop) COPY file:f5a7cb03621adea9…   13B
+63cd399d1589   25 minutes ago   /bin/sh -c #(nop) WORKDIR /usr/local/           0B
+c0a8427ea1ca   25 minutes ago   /bin/sh -c #(nop)  LABEL maintainer=luoleise…   0B
+eeb6ee3f44bd   7 months ago     /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>      7 months ago     /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+<missing>      7 months ago     /bin/sh -c #(nop) ADD file:b3ebbe8bd304723d4…   204MB
+```
+
+#### 查看容器状态
+
+```shell
+[root@localhost workspace]# docker container inspect hello-v1
+...
+"Mounts": [
+  {
+    "Type": "volume",
+    "Name": "08785005cb382a42f41b8f7230564cf468d38be82ce74c94fb3a277ef5a64f66",
+    "Source": "/var/lib/docker/volumes/08785005cb382a42f41b8f7230564cf468d38be82ce74c94fb3a277ef5a64f66/_data",
+    "Destination": "/var/log",
+    "Driver": "local",
+    "Mode": "",
+    "RW": true,
+    "Propagation": ""
+  }
+]
+...
+```
