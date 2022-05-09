@@ -455,6 +455,13 @@ rtt min/avg/max/mdev = 0.000/0.031/0.048/0.021 ms
 ping: my-docker-net01: Name or service not known
 ```
 
+### 容器与外部网络互联
+
+- 容器访问外网使用宿主机 `NAT` 转换 IP
+- 外网访问容器使用 `docker proxy` 代理监听宿主机容端口映射容器端口
+
+![docker-6](/images/docker-6.jpg)
+
 ## 应用
 
 ### 部署 nginx

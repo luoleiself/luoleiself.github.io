@@ -193,7 +193,7 @@ docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命�
 - -v 设置容器数据卷映射
 - -w 设置容器内部的工作目录
 - -h, \-\-hostname 设置容器的主机名
-- \-\-ip 设置容器IP地址
+- \-\-ip 设置容器 IP 地址
 - \-\-net 指定容器的网络模式
 
 - \-\-privileged 授予此容器扩展权限
@@ -390,7 +390,7 @@ a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB
 
 ## 数据卷
 
-卷就是目录或者文件,存在于一个或多个容器中,由 docker 挂载到容器中,卷的设计目的就是数据的持久化,完全独立于容器的生存周期, 因此 Docker 不会再容器删除时删除其挂载的数据
+卷就是目录或者文件,存在于一个或多个容器中,由 docker 挂载到容器中,卷的设计目的就是数据的持久化,完全独立于容器的生存周期, 因此 Docker 不会在容器删除时删除其挂载的数据
 
 - create 创建数据卷
 - inspect 显示数据卷的详细信息
@@ -408,7 +408,7 @@ a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB
 ### 数据卷类型
 
 - \-\-mount 不指定 type 选项默认为 volume
-- -v 只能建立 bind mount
+- -v 不能建立 tmpfs mounts
 
 |       对比项       | --volume 或 -v | --mount type=bind |
 | :----------------: | :------------: | :---------------: |
@@ -450,6 +450,8 @@ docker run -v ${PWD}/${CONTAINER_NAME}/app:/app # 作用同上一行
 ```shell
 docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 ```
+
+![docker-5](/images/docker-5.jpg)
 
 ### 挂载数据卷 <em id="guazaishujujuan"></em>
 
