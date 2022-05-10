@@ -111,7 +111,7 @@ docker run ... centos02 --network centos01 ...
 
 将多个 docker 守护进程连接起来, 使 swarm 服务之间能够互相通信, 一般用于 swarm 集群
 
-### bridge 容器互联通信
+### bridge 容器通信
 
 #### 借助 docker0 路由功能
 
@@ -455,12 +455,14 @@ rtt min/avg/max/mdev = 0.000/0.031/0.048/0.021 ms
 ping: my-docker-net01: Name or service not known
 ```
 
-### 容器与外部网络互联
+### 容器与外网互联
 
 - 容器访问外网使用宿主机 `NAT` 转换 IP
 - 外网访问容器使用 `docker proxy` 代理监听宿主机容端口映射容器端口
 
 ![docker-6](/images/docker-6.jpg)
+
+### 跨主机容器通信
 
 ## 应用
 
