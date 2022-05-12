@@ -3,6 +3,7 @@ title: Vue3.0知识点
 date: 2021-06-19 15:19:26
 categories:
   - ES
+  - VueJs
 tags:
   - js
   - VueJs

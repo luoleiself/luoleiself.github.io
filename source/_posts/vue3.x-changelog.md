@@ -3,6 +3,7 @@ title: vue3.x-changelog
 date: 2021-08-17 18:06:52
 categories:
   - ES
+  - VueJs
 tags:
   - js
   - VueJs
