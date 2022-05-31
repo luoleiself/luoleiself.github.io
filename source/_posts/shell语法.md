@@ -1,8 +1,8 @@
 ---
-title: shell
+title: shell语法
 date: 2022-04-28 19:55:46
 categories:
-  - linux
+  - [linux, shell]
 tags:
   - linux
   - shell
