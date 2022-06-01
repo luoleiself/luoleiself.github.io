@@ -48,6 +48,23 @@ tags:
 #### 批量删除本地关联的 git 远程分支
 
 - awk 和 xargs 命令结合使用
+
+  - xargs -t 执行命令之前先打印执行命令
+  - xargs -n 指定传递给执行命令的参数个数, 默认是所有
+  - xargs -I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数
+
+    ```shell
+    echo "file1 file2 file3"| xargs -t -I % sh -c 'touch %;ls -l %'
+    sh -c touch file1 file2 file3;ls -l file1 file2 file3
+    ```
+
+  - xargs -d 设置自定义分隔符
+
+    ```shell
+    echo -n file1#file2#file3#file4|xargs -d \# -t touch
+    touch file1 file2 file3 file4
+    ```
+
 - 不带主机名的过滤
 
 ```shell
@@ -78,13 +95,13 @@ FS    / OFS      NF    2 NR    7 $0   origin/feature_BUSINESS-0707 $1   origin
 $ git branch -r | \
   grep 'origin/revert*' | \
   awk '{printf "%4s\n",$0;}' | \
-  xargs -It {} git branch -dr {}
+  xargs -t -I {} git branch -dr {}
 Deleted remote-tracking branch origin/revert-0946083d (was 795de8b941).
 Deleted remote-tracking branch origin/revert-4835d8ea (was eac88d3e28).
 ## 或
 $ git branch -r | \
   awk 'BEGIN{IGNORECASE=1}/origin\/revert/{printf "%4s\n",$0}' | \
-  xargs -It {} git branch -dr {}
+  xargs -t -I {} git branch -dr {}
 ```
 
 - 包含主机名的过滤
@@ -100,5 +117,5 @@ $ git branch -a | \
       printf "%4s\n",$0; \
     } \
   }' | \
-  xargs -It {} git branch -dr {}
+  xargs -t -I {} git branch -dr {}
 ```
