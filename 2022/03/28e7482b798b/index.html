@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="改变原数组的方法 pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度 1arr.pop(); push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度 1arr.push(element1, ..., elementN); shift 从数组中删除第一个元素,并返回该元素的值(数组为空则返回 undefined). 此方法更改">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS小结">
+<meta property="og:url" content="https://luoleiself.github.io/2022/03/28e7482b798b/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="改变原数组的方法 pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度 1arr.pop(); push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度 1arr.push(element1, ..., elementN); shift 从数组中删除第一个元素,并返回该元素的值(数组为空则返回 undefined). 此方法更改">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-05T02:35:34.000Z">
+<meta property="article:modified_time" content="2022-05-12T11:39:12.366Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="ES6">
+<meta property="article:tag" content="js">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/03/28e7482b798b/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JS小结 | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/03/28e7482b798b/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JS小结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-05 10:35:34" itemprop="dateCreated datePublished" datetime="2022-03-05T10:35:34+08:00">2022-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-12 19:39:12" itemprop="dateModified" datetime="2022-05-12T19:39:12+08:00">2022-05-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>7.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="改变原数组的方法"><a href="#改变原数组的方法" class="headerlink" title="改变原数组的方法"></a>改变原数组的方法</h3><ul>
+<li><p>pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.<span class="title function_">pop</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.<span class="title function_">push</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure></li>
+<li><p>shift 从数组中删除第一个元素,并返回该元素的值(数组为空则返回 undefined). 此方法更改数组的长度</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.<span class="title function_">shift</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>unshift 将一个或多个元素添加到数组的开头. 并返回该数组的新长度(该方法修改原有数组)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.<span class="title function_">unshift</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span></li>
+<li><p>reverse 将数组中元素的位置颠倒, 并返回该数组. 该方法会改变原数组</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.<span class="title function_">reverse</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>sort 用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/In-place_algorithm">原地算法</a>对数组的元素进行排序, 并返回数组</p>
+<ul>
+<li>compareFunction 用来指定按某种顺序进行排列的函数, 省略则按照转换为的字符串的 unicode 位点进行排序<ul>
+<li>firstEl 第一个用于比较的元素</li>
+<li>secondEl 第二个用于比较的元素</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.<span class="title function_">sort</span>([compareFunction]);</span><br></pre></td></tr></table></figure></li>
+<li><p>splice 通过删除或替换现有元素或者原地添加新的元素来修改数组, 并以数组形式返回被修改的内容. 此方法会改变原数组</p>
+<ul>
+<li>start 指定修改的开始位置</li>
+<li>deleteCount 整数, 表示要移除的数组元素的个数, 如果为 0 或者负数, 则不移除元素</li>
+<li>item1, item2 要添加进数组的元素,从 start 位置开始, 不指定则删除数组元素</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array.<span class="title function_">splice</span>(start[, deleteCount[, item1[, item2[, ...]]]]);</span><br></pre></td></tr></table></figure></li>
+<li><p>fill 用一个固定值填充一个数组中从起始索引到终止索引内的全部元素. 不包括终止索引. 返回修改后的数组</p>
+<ul>
+<li>value 用来填充数组元素的值</li>
+<li>start 起始索引, 默认值为 0</li>
+<li>end 终止索引, 默认值为 this.length</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">arr.<span class="title function_">fill</span>(value[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"><span class="comment">// fill with 0 from position 2 until position 4</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 2, 0, 0]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// fill with 5 from position 1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">5</span>, <span class="number">1</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 5, 5, 5]</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">6</span>));</span><br><span class="line"><span class="comment">// expected output: [6, 6, 6, 6]</span></span><br></pre></td></tr></table></figure></li>
+<li><p>copyWithin 浅复制数组的一部分到同一数组中的另一个位置, 并返回它, 不会改变原数组的长度. 返回改变后的数组</p>
+<ul>
+<li>target 整数, 复制序列到该位置, 如果是负数, target 将从末尾开始计算. 如果 target 大于等于 arr.length, 将会不发生拷贝</li>
+<li>start 整数, 开始复制元素的起始位置, 如果是负数, start 将从末尾开始计算. 如果 start 被忽略, copyWithin 将会从 0 开始复制</li>
+<li>end 整数, 开始复制元素的结束位置, copyWithin 将会拷贝到该位置, 但不包括 end 这个位置的元素. 如果是负数, end 将从末尾开始计算. 如果忽略则复制到数组结尾</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">arr.<span class="title function_">copyWithin</span>(target[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;d&#x27;</span>, <span class="string">&#x27;e&#x27;</span>];</span><br><span class="line"><span class="comment">// copy to index 0 the element at index 3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// copy to index 1 all elements from index 3 to the end</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">1</span>, <span class="number">3</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;d&quot;, &quot;e&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="表单-accept-属性"><a href="#表单-accept-属性" class="headerlink" title="表单 accept 属性"></a>表单 accept 属性</h3><p>表单 input type=”file” 上传图片时，accept 属性以文件名结尾格式在部分手机上使用时会提示 ‘没有应用可执行此操作’, 将文件名结尾的格式改为 MIME 类型的格式</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;.png,.jpg,.jpeg&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/png,image/jpeg&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="检测浏览器版本号"><a href="#检测浏览器版本号" class="headerlink" title="检测浏览器版本号"></a>检测浏览器版本号</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VersionDiff</span> &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@property</span> &#123;<span class="type">private</span>&#125; #_comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #_comparator = <span class="string">&#x27;gt:0.0.0&#x27;</span>;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #greaterThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">greaterThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &gt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &gt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &gt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #lessThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">lessThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &lt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &lt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &lt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #equalTo</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">equalTo</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] == arr1[<span class="number">2</span>] ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #notEqual</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">notEqual</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] != arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] != arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] != arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #versionDiff</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; version 版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">RegExp</span>&#125; reg 匹配正则</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">versionDiff</span>(<span class="params">version, reg, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator == <span class="literal">null</span> || comparator == <span class="literal">undefined</span>) &#123;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator != <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;TypeError: params comparator must be string...&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> regExp = reg ? reg : <span class="regexp">/(wxwork)\/([^\s]*)/i</span>;</span><br><span class="line">    <span class="keyword">let</span> _version = version ? version.<span class="title function_">match</span>(regExp) : navigator.<span class="property">userAgent</span>.<span class="title function_">match</span>(regExp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title class_">Array</span>.<span class="title function_">isArray</span>(_version)) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123; <span class="attr">version</span>: <span class="number">0</span>, [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> [operator, baseVersion] = comparator.<span class="title function_">split</span>(<span class="string">&#x27;:&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> result = &#123; <span class="attr">version</span>: _version[<span class="number">2</span>], [_version[<span class="number">1</span>].<span class="title function_">toString</span>()]: <span class="literal">true</span> &#125;;</span><br><span class="line">    <span class="keyword">let</span> _ver = _version[<span class="number">2</span>].<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> _baseVer = baseVersion.<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_ver.<span class="property">length</span> != _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (_ver.<span class="property">length</span> &lt; _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _baseVer.<span class="property">length</span> - _ver.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _ver.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _ver.<span class="property">length</span> - _baseVer.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _baseVer.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (operator.<span class="title function_">toLowerCase</span>()) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;gt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ge&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;lt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;le&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;eq&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ne&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">notEqual</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="attr">default</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态测试方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; browser 浏览器型号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">test</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(</span><br><span class="line">      <span class="string">`<span class="subst">$&#123;browser&#125;</span>/<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>`</span>,</span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>),</span><br><span class="line">      comparator</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态比较方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">diff</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>), comparator);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试方式：使用 类名.test 调用</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;eq:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;eq:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;ne:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;ne:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;gt:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;gt:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;le:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;le:5.3.2&#x27;</span>));</span><br><span class="line"><span class="comment">// 使用方式: 使用 类名.diff 调用方式</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.diff(&#x27;gt:3.2.0&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">diff</span>(<span class="string">&#x27;gt:3.2.0&#x27;</span>));</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2021\12\2f42f14b8489\" rel="bookmark">BABELRC</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2021\07\bc748f2ea976\" rel="bookmark">Generator和async</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/03/28e7482b798b/" title="JS小结">https://luoleiself.github.io/2022/03/28e7482b798b/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ES6/" rel="tag"># ES6</a>
+              <a href="/tags/js/" rel="tag"># js</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/18f2de6d45f9/" rel="prev" title="JSUtils">
+      <i class="fa fa-chevron-left"></i> JSUtils
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/27a05caca8fb/" rel="next" title="Docker-上">
+      Docker-上 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E5%8F%98%E5%8E%9F%E6%95%B0%E7%BB%84%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">改变原数组的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E5%8D%95-accept-%E5%B1%9E%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">表单 accept 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E6%B5%8F%E8%A7%88%E5%99%A8%E7%89%88%E6%9C%AC%E5%8F%B7"><span class="nav-number">3.</span> <span class="nav-text">检测浏览器版本号</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">160k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:26</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
