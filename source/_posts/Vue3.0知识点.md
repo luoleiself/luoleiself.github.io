@@ -106,7 +106,7 @@ console.log(app.config);
   };
   ```
 
-  - isCustomElement 作用同上
+  - isCustomElement 作用同上, 换用 compilerOptions.isCustomElement
   - whitespace 默认情况下，Vue 会移除/压缩模板元素之间的空格以产生更高效的编译结果
 
     1. 元素内的多个开头/结尾空格会被压缩成一个空格
@@ -349,14 +349,18 @@ console.log(app.config);
      ```javascript
      // 全局注册
      import { defineAsyncComponent } from 'vue';
-     const AsyncComp = defineAsyncComponent(() => import('./components/AsyncComponent.vue'));
+     const AsyncComp = defineAsyncComponent(() =>
+       import('./components/AsyncComponent.vue')
+     );
      app.component('async-component', AsyncComp);
      // 局部注册
      import { createApp, defineAsyncComponent } from 'vue';
      createApp({
        // ...
        components: {
-         AsyncComponent: defineAsyncComponent(() => import('./components/AsyncComponent.vue')),
+         AsyncComponent: defineAsyncComponent(() =>
+           import('./components/AsyncComponent.vue')
+         ),
        },
      });
      ```
@@ -398,6 +402,10 @@ console.log(app.config);
         }
       })
      ```
+
+- defineCustomElement
+
+  - 3.2 新增
 
 - resolveComponent 允许按名称解析 component
 
@@ -471,7 +479,9 @@ console.log(app.config);
 
         ```javascript
         const MyDirective = resolveDirective('MyDirective');
-        const nodeWithDirectives = withDirectives(h('div'), [[MyDirective, 100, 'click', { prevent: true }]]);
+        const nodeWithDirectives = withDirectives(h('div'), [
+          [MyDirective, 100, 'click', { prevent: true }],
+        ]);
         ```
 
   ```javascript
@@ -617,6 +627,10 @@ console.log(app.config);
     },
   });
   ```
+
+#### expose
+
+- 3.2 新增, 暴露在公共组件实例上的 property 列表
 
 ### DOM
 
@@ -778,6 +792,7 @@ const Child = {
 #### delimiters (3.1 废弃)
 
 - 默认值: ['{{', '}}'] 模板文本插值的分隔符
+- 换用 compilerOptions.delimiters
 
 #### compilerOptions (3.1 新增) 配置运行时编译器的选项
 
@@ -816,6 +831,7 @@ const Child = {
 - v-pre 跳过这个元素和它的子元素的编译过程
 - v-cloak 这个指令保持在元素上直到关联组件实例结束编译
 - v-once
+- v-memo 3.2 新增
 - v-is (3.1 废弃) 对于某些 HTML 元素只能出现在固定位置的解析规则的重定义
 
   > 注意：本节仅影响直接在页面的 HTML 中写入 Vue 模板的情况
@@ -1301,7 +1317,13 @@ const Child = {
 - 生命周期钩子
 
   ```javascript
-  import { defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted } from 'vue';
+  import {
+    defineComponent,
+    onBeforeMount,
+    onMounted,
+    onBeforeUnmount,
+    onUnmounted,
+  } from 'vue';
   const MyComponent = defineComponent({
     setup(props, { attrs, slots, emit }) {
       onBeforeMount(() => {});
@@ -1460,7 +1482,9 @@ app.directive('my-directive', {
   </transition>;
   import { h, Transition, withDirectives, vShow } from 'vue';
   export function render() {
-    return h(Transition, [withDirectives(h('div', 'hello'), [[vShow, this.ok]])]);
+    return h(Transition, [
+      withDirectives(h('div', 'hello'), [[vShow, this.ok]]),
+    ]);
   }
   ```
 

@@ -103,6 +103,10 @@ tags:
   document.body.append(new MyElement(/* 初始化 prop */));
   ```
 
+- expose
+
+  - 暴露在公共组件实例上的 property 列表
+
 - v-bind 修饰符
 
   - .camel 将 kebab-case attribute 名转换为 camelCase, 3.2 之前新增
