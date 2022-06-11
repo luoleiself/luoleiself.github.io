@@ -28,7 +28,7 @@
 <meta property="og:description" content="Vue 3.x 迭代 新增或者废弃的语法和 API源码优化代码管理方式 monorepo(monolithic repository) vue 2.x 源码托管在 src 目录下, 然后根据功能拆分出不同的目录 compiler, core, platforms, server, sfc, shared  vue 3.0 通过 monorepo 方式管理代码结构,按功能拆分到不同的 package">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-17T10:06:52.000Z">
-<meta property="article:modified_time" content="2022-05-12T02:46:04.385Z">
+<meta property="article:modified_time" content="2022-06-11T10:29:35.258Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="js">
 <meta property="article:tag" content="VueJs">
@@ -240,7 +240,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-12 10:46:04" itemprop="dateModified" datetime="2022-05-12T10:46:04+08:00">2022-05-12</time>
+                <time title="修改时间：2022-06-11 18:29:35" itemprop="dateModified" datetime="2022-06-11T18:29:35+08:00">2022-06-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -329,6 +329,11 @@
 <h3 id="vue-3-2"><a href="#vue-3-2" class="headerlink" title="vue 3.2"></a>vue 3.2</h3><h4 id="新增-1"><a href="#新增-1" class="headerlink" title="新增"></a>新增</h4><ul>
 <li><p>defineCustomElement 接受和 defineComponent 相同的参数, 但是返回一个原生的自定义元素, 该元素可以用于任意框架或不基于框架使用</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineCustomElement &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="comment">// &lt;my-element&gt;&lt;/my-element&gt;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyElement</span> = <span class="title function_">defineCustomElement</span>(&#123;&#125;);</span><br><span class="line">customElements.<span class="title function_">define</span>(<span class="string">&#x27;my-element&#x27;</span>, <span class="title class_">MyElement</span>); <span class="comment">// 注册该自定义元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">append</span>(<span class="keyword">new</span> <span class="title class_">MyElement</span>(<span class="comment">/* 初始化 prop */</span>));</span><br></pre></td></tr></table></figure></li>
+<li><p>expose</p>
+<ul>
+<li>暴露在公共组件实例上的 property 列表</li>
+</ul>
+</li>
 <li><p>v-bind 修饰符</p>
 <ul>
 <li><p>.camel 将 kebab-case attribute 名转换为 camelCase, 3.2 之前新增</p>
