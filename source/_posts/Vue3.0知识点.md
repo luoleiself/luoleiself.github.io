@@ -1796,6 +1796,52 @@ app.directive('my-directive', {
 
 > 声明绑定的顺序决定了合并顺序
 
+```html
+<!-- 模板 -->
+<div id="red" v-bind="{ id: 'blue' }"></div>
+<!-- 结果 -->
+<div id="blue"></div>
+
+<!-- 模板 -->
+<div v-bind="{ id: 'blue' }" id="red"></div>
+<!-- 结果 -->
+<div id="red"></div>
+```
+
+### VNode 生命周期事件
+
+- 2.x
+
+```html
+<template>
+  <child-component @hook:updated="onUpdated">
+</template>
+```
+
+- 3.x
+  - 绝大多数情况下只需要修改前缀. 生命周期钩子 beforeDestroy 和 destroyed 已经分别被重命名为 beforeUnmount 和 unmounted,所以相应的事件名也需要更新
+
+```html
+<template>
+  <child-component @vnode-updated="onUpdated">
+</template>
+<!-- 或者使用驼峰命名法 -->
+<template>
+  <child-component @vnodeUpdated="onUpdated">
+</template>
+```
+
 ### Watch on Arrays
 
 > 当侦听一个数组时，只有当数组被替换时才会触发回调。如果你需要在数组改变时触发回调，必须指定 deep 选项
+
+```js
+watch: {
+  bookList: {
+    handler(val, oldVal) {
+      console.log('book list changed')
+    },
+    deep: true
+  },
+}
+```
