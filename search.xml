@@ -3338,6 +3338,8 @@
 <h4 id="expose"><a href="#expose" class="headerlink" title="expose"></a>expose</h4><ul>
 <li>3.2 新增, 暴露在公共组件实例上的 property 列表</li>
 </ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">expose</span>: [<span class="string">&#x27;increment&#x27;</span>],</span><br><span class="line">  <span class="title function_">data</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
 <h3 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h3><h4 id="template"><a href="#template" class="headerlink" title="template"></a>template</h4><blockquote>
 <p>如果 Vue 选项中包含渲染函数，该模板将被忽略</p>
 </blockquote>
@@ -3413,7 +3415,7 @@
 <li><p>参数</p>
 <ul>
 <li>props 接收父组件传入的属性, 不要结构 props 对象,会失去响应式</li>
-<li>ctx 上下文对象, 包含了 attrs, slots, emit</li>
+<li>ctx 上下文对象, 包含了 attrs, slots, emit, expose</li>
 </ul>
 </li>
 <li><p>返回值</p>
@@ -3677,19 +3679,20 @@
 <li>attrs</li>
 <li>slots</li>
 <li>emit</li>
+<li>expose</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyComponent</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; attrs, slots, emit &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyComponent</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; attrs, slots, emit, expose &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>attrs 和 slots 是非响应式的, 如果需要根据 attrs 或者 slots 更改应用的的副作用, 需要在 onUpdated 钩子中执行此操作</li>
 </ul>
 </li>
 <li><p>生命周期钩子</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  defineComponent,</span><br><span class="line">  onBeforeMount,</span><br><span class="line">  onMounted,</span><br><span class="line">  onBeforeUnmount,</span><br><span class="line">  onUnmounted,</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyComponent</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; attrs, slots, emit &#125;</span>) &#123;</span><br><span class="line">    <span class="title function_">onBeforeMount</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onMounted</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onBeforeUnmount</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onUnmounted</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  defineComponent,</span><br><span class="line">  onBeforeMount,</span><br><span class="line">  onMounted,</span><br><span class="line">  onBeforeUnmount,</span><br><span class="line">  onUnmounted,</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyComponent</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; attrs, slots, emit, expose &#125;</span>) &#123;</span><br><span class="line">    <span class="title function_">onBeforeMount</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onMounted</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onBeforeUnmount</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onUnmounted</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
 <li><p>Provide / Inject</p>
 </li>
 <li><p>getCurrentInstance</p>
@@ -3737,7 +3740,7 @@
 <li><p>单文件组件的 functional attribute 被移除</p>
 </li>
 <li><p>{ functional: true} 选项通过函数创建组件不推荐使用,和状态组件的性能差别不大</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">DynamicHeading</span> = (<span class="params">props, &#123; attrs, slots, emit &#125;</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">h</span>(<span class="string">`h<span class="subst">$&#123;props.level&#125;</span>`</span>, attrs, slots);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="title class_">DynamicHeading</span>.<span class="property">props</span> = [<span class="string">&#x27;level&#x27;</span>];</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">DynamicHeading</span>;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">DynamicHeading</span> = (<span class="params">props, &#123; attrs, slots, emit, expose &#125;</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">h</span>(<span class="string">`h<span class="subst">$&#123;props.level&#125;</span>`</span>, attrs, slots);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="title class_">DynamicHeading</span>.<span class="property">props</span> = [<span class="string">&#x27;level&#x27;</span>];</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">DynamicHeading</span>;</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h3 id="全局-API-变更"><a href="#全局-API-变更" class="headerlink" title="全局 API 变更"></a>全局 API 变更</h3><ul>
 <li><p>测试期间,全局配置很容易意外地污染其他测试用例, Vue.use | Vue.mixin 无恢复效果的方法</p>
