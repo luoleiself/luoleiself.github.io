@@ -632,6 +632,15 @@ console.log(app.config);
 
 - 3.2 新增, 暴露在公共组件实例上的 property 列表
 
+```javascript
+export default {
+  expose: ['increment'],
+  data() {
+    return {};
+  },
+};
+```
+
 ### DOM
 
 #### template
@@ -764,7 +773,7 @@ const Child = {
 - 在生命周期方面, 在 beforeCreate 钩子之前调用
 - 参数
   - props 接收父组件传入的属性, 不要结构 props 对象,会失去响应式
-  - ctx 上下文对象, 包含了 attrs, slots, emit
+  - ctx 上下文对象, 包含了 attrs, slots, emit, expose
 - 返回值
 
   - Object 对象的属性合并到组件实例的上下文
@@ -1302,11 +1311,12 @@ const Child = {
       - attrs
       - slots
       - emit
+      - expose
 
   ```javascript
   import { defineComponent } from 'vue';
   const MyComponent = defineComponent({
-    setup(props, { attrs, slots, emit }) {
+    setup(props, { attrs, slots, emit, expose }) {
       return {};
     },
   });
@@ -1325,7 +1335,7 @@ const Child = {
     onUnmounted,
   } from 'vue';
   const MyComponent = defineComponent({
-    setup(props, { attrs, slots, emit }) {
+    setup(props, { attrs, slots, emit, expose }) {
       onBeforeMount(() => {});
       onMounted(() => {});
       onBeforeUnmount(() => {});
@@ -1444,7 +1454,7 @@ app.directive('my-directive', {
 
   ```javascript
   import { h } from 'vue';
-  const DynamicHeading = (props, { attrs, slots, emit }) => {
+  const DynamicHeading = (props, { attrs, slots, emit, expose }) => {
     return h(`h${props.level}`, attrs, slots);
   };
   DynamicHeading.props = ['level'];
