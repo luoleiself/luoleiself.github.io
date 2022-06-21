@@ -1,9 +1,8 @@
 ---
-title: vue3.x-changelog
+title: vue3.x-Changelog
 date: 2021-08-17 18:06:52
 categories:
-  - ES
-  - VueJs
+  - [ES, VueJs]
 tags:
   - js
   - VueJs
@@ -211,6 +210,31 @@ tags:
     <button @click="count++">{{count}}</button>
     <MyComponent />
   </template>
+  ```
+
+- &lt;style scoped&gt;
+
+  - 深度选择器
+
+  ```scss
+  .a :deep(.b) {
+  }
+  ```
+
+  - 插槽选择器
+
+  ```css
+  :slotted(div) {
+    color: red;
+  }
+  ```
+
+  - 全局选择器
+
+  ```css
+  :global(.red) {
+    color: red;
+  }
   ```
 
 #### 废弃
