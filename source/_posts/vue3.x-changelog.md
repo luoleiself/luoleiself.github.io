@@ -162,6 +162,8 @@ tags:
 
   - defineExpose 明确向外暴露出去的属性
 
+    - 不需要导入直接使用
+
   - useSlots 和 useAttrs
 
     - 在 SFC 中使用的辅助函数获取 slots 和 attrs

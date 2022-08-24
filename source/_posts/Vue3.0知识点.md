@@ -1028,10 +1028,10 @@ const Child = {
   copy.count++; // 警告! // 变更副本将失败并导致警告
   ```
 
-- isProxy 检查对象是否是由 reactive 或 readonly 创建的 proxy
-- isReactive 检查对象是否是由 reactive 创建的响应式代理, 如果代理是由 readonly 创建的并包含了由 reactive 创建的另一个代理, 同样返回 true
-- isReadonly 检查对象是否是由 readonly 创建的只读代理
-- toRaw 返回 reactive 或 readonly 代理的原始对象
+- isProxy 检查对象是否是由 `reactive` `readonly` `shallowReactive` `shallowReadonly` 创建的 proxy
+- isReactive 检查对象是否是由 `reactive` `shallowReactive` 创建的响应式代理, 如果代理是由 readonly 创建的并包含了由 reactive 创建的另一个代理, 同样返回 true
+- isReadonly 检查对象是否是由 `readonly` `shallowReadonly` 创建的只读代理
+- toRaw 返回 `reactive` `readonly` `shallowReactive` `shallowReadonly` 代理的原始对象
 
   > 可用于临时读取数据而无需承担代理访问/跟踪的开销，也可用于写入数据而避免触发更改。不建议保留对原始对象的持久引用
 
@@ -1548,6 +1548,10 @@ app.directive('my-directive', {
 
 ### 渲染函数 API
 
+- 如果组件中定义了 setup 配置项并且返回值是一个函数, 则其返回值作为该组件的渲染函数
+- 如果组件中定义了 render 配置项, 则将其作为渲染函数
+- 如果以上条件都不满足, 当前组件包含 template 配置项, 则将其作为模板进行编译成可执行的渲染函数
+- 如果以上条件都不满足, 则使用容器的 innerHTML 作为模板
 - h 全局导入, 不再作为参数传递给渲染函数
 
   ```javascript
