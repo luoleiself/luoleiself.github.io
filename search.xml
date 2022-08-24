@@ -172,6 +172,64 @@
       </tags>
   </entry>
   <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Generator和async</title>
     <url>/2021/07/bc748f2ea976/</url>
     <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
@@ -246,201 +304,6 @@
       </categories>
       <tags>
         <tag>ES6</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令配置篇</title>
-    <url>/2021/04/00ea2bbb2db0/</url>
-    <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
-<h3 id="配置篇"><a href="#配置篇" class="headerlink" title="配置篇"></a>配置篇</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><h5 id="结构型概念"><a href="#结构型概念" class="headerlink" title="结构型概念"></a>结构型概念</h5><h6 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h6><p>远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步</p>
-<h6 id="Repository"><a href="#Repository" class="headerlink" title="Repository"></a>Repository</h6><p>本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本</p>
-<h6 id="Index-Stage"><a href="#Index-Stage" class="headerlink" title="Index / Stage"></a>Index / Stage</h6><p>暂存区, 临时存放改动的需要被提交的文件列表信息</p>
-<h6 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h6><p>工作区, 当前可见的随时可以进行操作的区域</p>
-<h5 id="功能型概念"><a href="#功能型概念" class="headerlink" title="功能型概念"></a>功能型概念</h5><h6 id="文件状态"><a href="#文件状态" class="headerlink" title="文件状态"></a>文件状态</h6><ul>
-<li>修改: Git 可以感知到工作目录中的文件的变化, 然后通过 add 命令可以将变更的文件添加到暂存区</li>
-<li>暂存: 通过 add 命令将工作目录中的变更的文件提交到暂存区, 等候被 commit</li>
-<li>提交: 将暂存区的文件 commit 至 Git 版本库中永久保存</li>
-</ul>
-<h6 id="commit-节点"><a href="#commit-节点" class="headerlink" title="commit 节点"></a>commit 节点</h6><p>Git 中每次的提交都会对提交的文件生成快照并生成一个 hash 值作为唯一标识的节点, 不管 HEAD 或者 Branch 都是对 commit 节点的引用</p>
-<h6 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h6><blockquote>
-<p>指针或者引用, 一个仓库中只能有一个 HEAD, 指向任意一个节点/分支,并且指向的节点始终为当前工作目录</p>
-</blockquote>
-<hr>
-<span id="more"></span>
-
-<h4 id="Git-仓库用户凭据"><a href="#Git-仓库用户凭据" class="headerlink" title="Git 仓库用户凭据"></a>Git 仓库用户凭据</h4><p>场景: 使用 https 方式与远程仓库同步时, 不想每次都在提示框中输入用户名和密码确认, 此方式在用户家目录下创建(修改) .git-credentials 文件, 存储用户名和密码</p>
-<ul>
-<li><p>清除本地存储的用户名和密码凭据</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --system --<span class="built_in">unset</span> credential.helper</span><br></pre></td></tr></table></figure></li>
-<li><p>存储凭据, 在第一次 push 时提示输入</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Git-环境定制"><a href="#Git-环境定制" class="headerlink" title="Git 环境定制"></a>Git 环境定制</h4><ul>
-<li>local: 读取仓库配置文件 <code>.git/config</code></li>
-<li>global: 读取用户配置文件 <code>.gitconfig</code>, 不加默认为仓库配置</li>
-</ul>
-<h5 id="显示配置项"><a href="#显示配置项" class="headerlink" title="显示配置项"></a>显示配置项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -l|--list</span><br></pre></td></tr></table></figure>
-
-<h5 id="使用-vim-编辑配置文件"><a href="#使用-vim-编辑配置文件" class="headerlink" title="使用 vim 编辑配置文件"></a>使用 vim 编辑配置文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -e|--edit</span><br></pre></td></tr></table></figure>
-
-<h5 id="unset-重置"><a href="#unset-重置" class="headerlink" title="unset 重置"></a>unset 重置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --<span class="built_in">unset</span> [key]</span><br></pre></td></tr></table></figure>
-
-<h5 id="add-添加配置"><a href="#add-添加配置" class="headerlink" title="add 添加配置"></a>add 添加配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --add key value</span><br><span class="line">git config --add user.name Tom</span><br></pre></td></tr></table></figure>
-
-<h5 id="get-获取配置"><a href="#get-获取配置" class="headerlink" title="get 获取配置"></a>get 获取配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --get key</span><br><span class="line">git config --get user.name</span><br></pre></td></tr></table></figure>
-
-<h5 id="alias-命令缩写"><a href="#alias-命令缩写" class="headerlink" title="alias 命令缩写"></a>alias 命令缩写</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] <span class="built_in">alias</span>.* value</span><br><span class="line">git config alias.co checkout</span><br></pre></td></tr></table></figure>
-
-<h6 id="alias-log-美化"><a href="#alias-log-美化" class="headerlink" title="alias.log 美化"></a>alias.log 美化</h6><ul>
-<li><p>%H commit hash</p>
-</li>
-<li><p>%h commit short hash</p>
-</li>
-<li><p>%T tree hash</p>
-</li>
-<li><p>%t tree short hash</p>
-</li>
-<li><p>%P parent hash</p>
-</li>
-<li><p>%p parent short hash</p>
-</li>
-<li><p>%a[n|N] 作者名字</p>
-</li>
-<li><p>%a[e|E] 作者邮箱</p>
-</li>
-<li><p>%a[d|D|r|t|i] 日期格式</p>
-</li>
-<li><p>%c[n|N] 提交者名字</p>
-</li>
-<li><p>%c[e|E] 提交者邮箱</p>
-</li>
-<li><p>%c[d|D|r|t|i] 提交的日期格式</p>
-</li>
-<li><p>%d ref 名称</p>
-</li>
-<li><p>%e encoding</p>
-</li>
-<li><p>%s commit 信息标题</p>
-</li>
-<li><p>%f 过滤 commit 信息的标题使之可以作为文件名</p>
-</li>
-<li><p>%b commit 信息内容</p>
-</li>
-<li><p>%N commit notes</p>
-</li>
-<li><p>%g[D|d] reflog selector</p>
-</li>
-<li><p>%gs reflog subject</p>
-</li>
-<li><p>%Cred 切换至红色</p>
-</li>
-<li><p>%Cgreen 切换至绿色</p>
-</li>
-<li><p>%Cblue 切换至蓝色</p>
-</li>
-<li><p>%Creset 重设颜色</p>
-</li>
-<li><p>%C(color) 指定颜色</p>
-</li>
-<li><p>%n 换行</p>
-</li>
-<li><p>%m left right or boundary mark</p>
-</li>
-<li><p>%%a raw %</p>
-</li>
-<li><p>%x00 print a byte from a hex code</p>
-</li>
-<li><p>%w([[,[,]]]) switch line wrapping, like the -w option of git-shortlog(1).</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<p><img data-src="/images/git-config-1.jpg" alt="配置1"></p>
-<h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose</span><br></pre></td></tr></table></figure>
-
-<h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url</span><br></pre></td></tr></table></figure>
-
-<h6 id="remove-删除"><a href="#remove-删除" class="headerlink" title="remove 删除"></a>remove 删除</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote remove name</span><br></pre></td></tr></table></figure>
-
-<h6 id="rename-修改关联仓库名称"><a href="#rename-修改关联仓库名称" class="headerlink" title="rename 修改关联仓库名称"></a>rename 修改关联仓库名称</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rename old new</span><br></pre></td></tr></table></figure>
-
-<h6 id="set-url-设置关联仓库地址"><a href="#set-url-设置关联仓库地址" class="headerlink" title="set-url 设置关联仓库地址"></a>set-url 设置关联仓库地址</h6><ul>
-<li><p>push: 设置推送 url</p>
-</li>
-<li><p>add: 保持当前的 url,并添加一个新的 url</p>
-</li>
-<li><p>delete: 将删除匹配到的 url, 并添加一个新的 url</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote set-url [--push|--add|--delete] name url</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h6 id="get-url-获取关联仓库地址"><a href="#get-url-获取关联仓库地址" class="headerlink" title="get-url 获取关联仓库地址"></a>get-url 获取关联仓库地址</h6><ul>
-<li><p>push: 获取推送 url</p>
-</li>
-<li><p>all: 获取所有 url</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -699,6 +562,143 @@
       </tags>
   </entry>
   <entry>
+    <title>Git命令配置篇</title>
+    <url>/2021/04/00ea2bbb2db0/</url>
+    <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
+<h3 id="配置篇"><a href="#配置篇" class="headerlink" title="配置篇"></a>配置篇</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><h5 id="结构型概念"><a href="#结构型概念" class="headerlink" title="结构型概念"></a>结构型概念</h5><h6 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h6><p>远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步</p>
+<h6 id="Repository"><a href="#Repository" class="headerlink" title="Repository"></a>Repository</h6><p>本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本</p>
+<h6 id="Index-Stage"><a href="#Index-Stage" class="headerlink" title="Index / Stage"></a>Index / Stage</h6><p>暂存区, 临时存放改动的需要被提交的文件列表信息</p>
+<h6 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h6><p>工作区, 当前可见的随时可以进行操作的区域</p>
+<h5 id="功能型概念"><a href="#功能型概念" class="headerlink" title="功能型概念"></a>功能型概念</h5><h6 id="文件状态"><a href="#文件状态" class="headerlink" title="文件状态"></a>文件状态</h6><ul>
+<li>修改: Git 可以感知到工作目录中的文件的变化, 然后通过 add 命令可以将变更的文件添加到暂存区</li>
+<li>暂存: 通过 add 命令将工作目录中的变更的文件提交到暂存区, 等候被 commit</li>
+<li>提交: 将暂存区的文件 commit 至 Git 版本库中永久保存</li>
+</ul>
+<h6 id="commit-节点"><a href="#commit-节点" class="headerlink" title="commit 节点"></a>commit 节点</h6><p>Git 中每次的提交都会对提交的文件生成快照并生成一个 hash 值作为唯一标识的节点, 不管 HEAD 或者 Branch 都是对 commit 节点的引用</p>
+<h6 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h6><blockquote>
+<p>指针或者引用, 一个仓库中只能有一个 HEAD, 指向任意一个节点/分支,并且指向的节点始终为当前工作目录</p>
+</blockquote>
+<hr>
+<span id="more"></span>
+
+<h4 id="Git-仓库用户凭据"><a href="#Git-仓库用户凭据" class="headerlink" title="Git 仓库用户凭据"></a>Git 仓库用户凭据</h4><p>场景: 使用 https 方式与远程仓库同步时, 不想每次都在提示框中输入用户名和密码确认, 此方式在用户家目录下创建(修改) .git-credentials 文件, 存储用户名和密码</p>
+<ul>
+<li><p>清除本地存储的用户名和密码凭据</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --system --<span class="built_in">unset</span> credential.helper</span><br></pre></td></tr></table></figure></li>
+<li><p>存储凭据, 在第一次 push 时提示输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="Git-环境定制"><a href="#Git-环境定制" class="headerlink" title="Git 环境定制"></a>Git 环境定制</h4><ul>
+<li>local: 读取仓库配置文件 <code>.git/config</code></li>
+<li>global: 读取用户配置文件 <code>.gitconfig</code>, 不加默认为仓库配置</li>
+</ul>
+<h5 id="显示配置项"><a href="#显示配置项" class="headerlink" title="显示配置项"></a>显示配置项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -l|--list</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用-vim-编辑配置文件"><a href="#使用-vim-编辑配置文件" class="headerlink" title="使用 vim 编辑配置文件"></a>使用 vim 编辑配置文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -e|--edit</span><br></pre></td></tr></table></figure>
+
+<h5 id="unset-重置"><a href="#unset-重置" class="headerlink" title="unset 重置"></a>unset 重置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --<span class="built_in">unset</span> [key]</span><br></pre></td></tr></table></figure>
+
+<h5 id="add-添加配置"><a href="#add-添加配置" class="headerlink" title="add 添加配置"></a>add 添加配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --add key value</span><br><span class="line">git config --add user.name Tom</span><br></pre></td></tr></table></figure>
+
+<h5 id="get-获取配置"><a href="#get-获取配置" class="headerlink" title="get 获取配置"></a>get 获取配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --get key</span><br><span class="line">git config --get user.name</span><br></pre></td></tr></table></figure>
+
+<h5 id="alias-命令缩写"><a href="#alias-命令缩写" class="headerlink" title="alias 命令缩写"></a>alias 命令缩写</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] <span class="built_in">alias</span>.* value</span><br><span class="line">git config alias.co checkout</span><br></pre></td></tr></table></figure>
+
+<h6 id="alias-log-美化"><a href="#alias-log-美化" class="headerlink" title="alias.log 美化"></a>alias.log 美化</h6><ul>
+<li><p>%H commit hash</p>
+</li>
+<li><p>%h commit short hash</p>
+</li>
+<li><p>%T tree hash</p>
+</li>
+<li><p>%t tree short hash</p>
+</li>
+<li><p>%P parent hash</p>
+</li>
+<li><p>%p parent short hash</p>
+</li>
+<li><p>%a[n|N] 作者名字</p>
+</li>
+<li><p>%a[e|E] 作者邮箱</p>
+</li>
+<li><p>%a[d|D|r|t|i] 日期格式</p>
+</li>
+<li><p>%c[n|N] 提交者名字</p>
+</li>
+<li><p>%c[e|E] 提交者邮箱</p>
+</li>
+<li><p>%c[d|D|r|t|i] 提交的日期格式</p>
+</li>
+<li><p>%d ref 名称</p>
+</li>
+<li><p>%e encoding</p>
+</li>
+<li><p>%s commit 信息标题</p>
+</li>
+<li><p>%f 过滤 commit 信息的标题使之可以作为文件名</p>
+</li>
+<li><p>%b commit 信息内容</p>
+</li>
+<li><p>%N commit notes</p>
+</li>
+<li><p>%g[D|d] reflog selector</p>
+</li>
+<li><p>%gs reflog subject</p>
+</li>
+<li><p>%Cred 切换至红色</p>
+</li>
+<li><p>%Cgreen 切换至绿色</p>
+</li>
+<li><p>%Cblue 切换至蓝色</p>
+</li>
+<li><p>%Creset 重设颜色</p>
+</li>
+<li><p>%C(color) 指定颜色</p>
+</li>
+<li><p>%n 换行</p>
+</li>
+<li><p>%m left right or boundary mark</p>
+</li>
+<li><p>%%a raw %</p>
+</li>
+<li><p>%x00 print a byte from a hex code</p>
+</li>
+<li><p>%w([[,[,]]]) switch line wrapping, like the -w option of git-shortlog(1).</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><img data-src="/images/git-config-1.jpg" alt="配置1"></p>
+<h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose</span><br></pre></td></tr></table></figure>
+
+<h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url</span><br></pre></td></tr></table></figure>
+
+<h6 id="remove-删除"><a href="#remove-删除" class="headerlink" title="remove 删除"></a>remove 删除</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote remove name</span><br></pre></td></tr></table></figure>
+
+<h6 id="rename-修改关联仓库名称"><a href="#rename-修改关联仓库名称" class="headerlink" title="rename 修改关联仓库名称"></a>rename 修改关联仓库名称</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rename old new</span><br></pre></td></tr></table></figure>
+
+<h6 id="set-url-设置关联仓库地址"><a href="#set-url-设置关联仓库地址" class="headerlink" title="set-url 设置关联仓库地址"></a>set-url 设置关联仓库地址</h6><ul>
+<li><p>push: 设置推送 url</p>
+</li>
+<li><p>add: 保持当前的 url,并添加一个新的 url</p>
+</li>
+<li><p>delete: 将删除匹配到的 url, 并添加一个新的 url</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote set-url [--push|--add|--delete] name url</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h6 id="get-url-获取关联仓库地址"><a href="#get-url-获取关联仓库地址" class="headerlink" title="get-url 获取关联仓库地址"></a>get-url 获取关联仓库地址</h6><ul>
+<li><p>push: 获取推送 url</p>
+</li>
+<li><p>all: 获取所有 url</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HTTP</title>
     <url>/2021/07/1ddfb1010b19/</url>
     <content><![CDATA[<h4 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h4><ul>
@@ -778,104 +778,6 @@
       </categories>
       <tags>
         <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MutationObserver</title>
-    <url>/2021/07/f148f882ba3d/</url>
-    <content><![CDATA[<p>MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知</p>
-<h4 id="构造函数-MutationObserver"><a href="#构造函数-MutationObserver" class="headerlink" title="构造函数 MutationObserver"></a>构造函数 MutationObserver</h4><p>创建并返回一个新的 MutationObserver 会在指定的 DOM 发生变化时被调用</p>
-<ul>
-<li><p>参数 callback</p>
-<p>当被指定的节点或子树以及配置项有 Dom 变化时会被调用, 回调函数有两个参数:</p>
-<ul>
-<li>MutationRecord 描述所有被触发改动的记录对象数组</li>
-<li>MutationObserver 调用该函数的 MutationObserver 对象</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> <span class="title class_">MutationObserver</span>(<span class="keyword">function</span> (<span class="params">MutationRecord, observer</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">MutationRecord</span>, observer);</span><br><span class="line">  <span class="comment">// [&#123;</span></span><br><span class="line">  <span class="comment">//   addedNodes: NodeList []</span></span><br><span class="line">  <span class="comment">//   attributeName: &quot;&quot;</span></span><br><span class="line">  <span class="comment">//   attributeNamespace: null</span></span><br><span class="line">  <span class="comment">//   nextSibling: null</span></span><br><span class="line">  <span class="comment">//   oldValue: &quot;&quot;</span></span><br><span class="line">  <span class="comment">//   previousSibling: null</span></span><br><span class="line">  <span class="comment">//   removedNodes: NodeList []</span></span><br><span class="line">  <span class="comment">//   target:</span></span><br><span class="line">  <span class="comment">//   type: &quot;attributes&quot;</span></span><br><span class="line">  <span class="comment">// &#125;]</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>返回值 MutationObserver 对象</li>
-</ul>
-<span id="more"></span>
-
-<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><h5 id="disconnect"><a href="#disconnect" class="headerlink" title="disconnect"></a>disconnect</h5><p>阻止 MutationObserver 实例继续接收的通知, 直到再次调用其 observe 方法, 该观察者对象包含的回调函数都不会再被调用</p>
-<ul>
-<li>参数 无</li>
-<li>返回值 undefined</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">observer.<span class="title function_">disconnect</span>();</span><br></pre></td></tr></table></figure>
-
-<h5 id="observe"><a href="#observe" class="headerlink" title="observe"></a>observe</h5><p>配置 MutationObserver 在 DOM 更改匹配给定选项时, 通过其回调函数开始接收通知</p>
-<ul>
-<li>参数<ul>
-<li>target DOM 树种一个要观察变化的 DOM Node</li>
-<li>options 可选, 一个可选的 MutationObserverInit 对象, 此对象的配置描述了 DOM 的哪些变化应该提供给当前观察者的 callback</li>
-</ul>
-</li>
-<li>返回值 undefined</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">observer.<span class="title function_">observe</span>(<span class="title class_">Element</span>, &#123; <span class="attr">subtree</span>: <span class="literal">true</span>, <span class="attr">childList</span>: <span class="literal">true</span>, <span class="attr">attributes</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
-
-<h5 id="takeRecords"><a href="#takeRecords" class="headerlink" title="takeRecords"></a>takeRecords</h5><p>返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表, 使变更队列保持为空<br>使用场景是在断开观察者之前立即获取所有未处理的更改记录, 以便在停止观察者时可以处理任何未处理的更改</p>
-<ul>
-<li>参数 无</li>
-<li>返回值 MutationRecord 对象列表, 每个对象都描述了应用于 DOM 树某部分的一次改动</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> mutations = observer.<span class="title function_">takeRecords</span>();</span><br></pre></td></tr></table></figure>
-
-<h4 id="MutationObserverInit"><a href="#MutationObserverInit" class="headerlink" title="MutationObserverInit"></a>MutationObserverInit</h4><p>描述了 MutationObserver 的配置, 主要被用作 observe 方法的参数模型</p>
-<h5 id="参数属性"><a href="#参数属性" class="headerlink" title="参数属性"></a>参数属性</h5><ul>
-<li><p>attributeFilter 可选, 要监视的特定属性名称的数组, 未包含此属性则对所有属性的更改都会触发变动通知, 无默认值</p>
-</li>
-<li><p>attributeOldValue 可选, 当监视节点的属性改动时, 将此属性设为 true 将记录任何有改动的属性的上一个值, 无默认值</p>
-</li>
-<li><p>attributes 三选一,设为 true 以观察受监视元素的属性值变更, 默认 false</p>
-</li>
-<li><p>characterData 三选一, 设为 true 以监视指定目标节点或子节点树中节点所包含的字符数据的变化, 无默认值</p>
-</li>
-<li><p>characterDataOldValue 设为 true 以在文本在受监视节点上发生更改时记录节点文本的先前值, 无默认值</p>
-</li>
-<li><p>childList 三选一, 设为 true 以监视目标节点(如果 subtree 为 true, 则包含子孙节点)添加或删除新的子节点, 默认 false</p>
-</li>
-<li><p>subtree 设为 true 以将监视范围扩展至目标节点整个节点树中的所有节点, 默认 false</p>
-</li>
-</ul>
-<h5 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h5><p>当调用 observe 方法时, childList, attributes, characterData 三个属性之中, 至少有一个必须为 true, 否则抛出 TypeError 异常</p>
-<h4 id="MutationRecord"><a href="#MutationRecord" class="headerlink" title="MutationRecord"></a>MutationRecord</h4><p>每个 MutationRecord 代表一个独立的 DOM 变化在每次随 DOM 变化时作为 MutationObserver 回调函数的参数传入</p>
-<h5 id="record-属性"><a href="#record-属性" class="headerlink" title="record 属性"></a>record 属性</h5><ul>
-<li>type String,<ul>
-<li>如果是属性变化, 则返回 “attributes”</li>
-<li>如果是 characterData 节点变化, 则返回 “characterData”</li>
-<li>如果是子节点树 childList 变化, 则返回 “childList”</li>
-</ul>
-</li>
-<li>target Node,<ul>
-<li>根据 type 类型返回变化所影响的节点</li>
-</ul>
-</li>
-<li>addedNodes NodeList, 返回被添加的节点,如果无则为空的 NodeList</li>
-<li>removedNodes NodeList, 返回被移除的节点, 如果无则为空的 NodeList</li>
-<li>previousSibling Node, 返回被添加或移除的节点之前的兄弟节点, 或者 null</li>
-<li>nextSibling Node, 返回被添加或移除的节点之后的兄弟节点,或者 null</li>
-<li>attributeName String, 返回被修改的属性的属性名, 或者 null</li>
-<li>attributeNamespace String, 返回被修改属性的命名空间, 或者 null</li>
-<li>oldValue String, 如果使当前属性有效,则需要在 MutationObserverInit 参数中配置 attributeOldValue 或者 characterDataOldValue 为 true<ul>
-<li>如果属性 attributes 变化, 返回变化之前的属性值</li>
-<li>如果 characterData 变化, 返回变化之前的数据</li>
-<li>如果子节点树 childList 变化, 返回 null</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#root&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> <span class="title class_">MutationObserver</span>(<span class="function">(<span class="params">mutationRecord, observer</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(mutationRecord, observer);</span><br><span class="line">&#125;);</span><br><span class="line">observer.<span class="title function_">observe</span>(root, &#123;</span><br><span class="line">  <span class="attr">attributes</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">attributeOldValue</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">attributeFilter</span>: [<span class="string">&#x27;title&#x27;</span>],</span><br><span class="line">  <span class="attr">characterData</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">characterDataOldValue</span>: <span class="literal">true</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// [&#123;</span></span><br><span class="line"><span class="comment">//   addedNodes: NodeList []</span></span><br><span class="line"><span class="comment">//   attributeName: &quot;title&quot;</span></span><br><span class="line"><span class="comment">//   attributeNamespace: null</span></span><br><span class="line"><span class="comment">//   nextSibling: null</span></span><br><span class="line"><span class="comment">//   oldValue: &quot;hello new root 1&quot;</span></span><br><span class="line"><span class="comment">//   previousSibling: null</span></span><br><span class="line"><span class="comment">//   removedNodes: NodeList []</span></span><br><span class="line"><span class="comment">//   target: &quot;div#root.helloRoothelloRoot1.helloRoot1&quot;</span></span><br><span class="line"><span class="comment">//   type: &quot;attributes&quot;</span></span><br><span class="line"><span class="comment">// &#125;]</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>WebAPI</category>
-      </categories>
-      <tags>
-        <tag>API</tag>
       </tags>
   </entry>
   <entry>
@@ -1021,6 +923,104 @@
       <tags>
         <tag>ES6</tag>
         <tag>js</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MutationObserver</title>
+    <url>/2021/07/f148f882ba3d/</url>
+    <content><![CDATA[<p>MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知</p>
+<h4 id="构造函数-MutationObserver"><a href="#构造函数-MutationObserver" class="headerlink" title="构造函数 MutationObserver"></a>构造函数 MutationObserver</h4><p>创建并返回一个新的 MutationObserver 会在指定的 DOM 发生变化时被调用</p>
+<ul>
+<li><p>参数 callback</p>
+<p>当被指定的节点或子树以及配置项有 Dom 变化时会被调用, 回调函数有两个参数:</p>
+<ul>
+<li>MutationRecord 描述所有被触发改动的记录对象数组</li>
+<li>MutationObserver 调用该函数的 MutationObserver 对象</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> <span class="title class_">MutationObserver</span>(<span class="keyword">function</span> (<span class="params">MutationRecord, observer</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">MutationRecord</span>, observer);</span><br><span class="line">  <span class="comment">// [&#123;</span></span><br><span class="line">  <span class="comment">//   addedNodes: NodeList []</span></span><br><span class="line">  <span class="comment">//   attributeName: &quot;&quot;</span></span><br><span class="line">  <span class="comment">//   attributeNamespace: null</span></span><br><span class="line">  <span class="comment">//   nextSibling: null</span></span><br><span class="line">  <span class="comment">//   oldValue: &quot;&quot;</span></span><br><span class="line">  <span class="comment">//   previousSibling: null</span></span><br><span class="line">  <span class="comment">//   removedNodes: NodeList []</span></span><br><span class="line">  <span class="comment">//   target:</span></span><br><span class="line">  <span class="comment">//   type: &quot;attributes&quot;</span></span><br><span class="line">  <span class="comment">// &#125;]</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>返回值 MutationObserver 对象</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><h5 id="disconnect"><a href="#disconnect" class="headerlink" title="disconnect"></a>disconnect</h5><p>阻止 MutationObserver 实例继续接收的通知, 直到再次调用其 observe 方法, 该观察者对象包含的回调函数都不会再被调用</p>
+<ul>
+<li>参数 无</li>
+<li>返回值 undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">observer.<span class="title function_">disconnect</span>();</span><br></pre></td></tr></table></figure>
+
+<h5 id="observe"><a href="#observe" class="headerlink" title="observe"></a>observe</h5><p>配置 MutationObserver 在 DOM 更改匹配给定选项时, 通过其回调函数开始接收通知</p>
+<ul>
+<li>参数<ul>
+<li>target DOM 树种一个要观察变化的 DOM Node</li>
+<li>options 可选, 一个可选的 MutationObserverInit 对象, 此对象的配置描述了 DOM 的哪些变化应该提供给当前观察者的 callback</li>
+</ul>
+</li>
+<li>返回值 undefined</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">observer.<span class="title function_">observe</span>(<span class="title class_">Element</span>, &#123; <span class="attr">subtree</span>: <span class="literal">true</span>, <span class="attr">childList</span>: <span class="literal">true</span>, <span class="attr">attributes</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+
+<h5 id="takeRecords"><a href="#takeRecords" class="headerlink" title="takeRecords"></a>takeRecords</h5><p>返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表, 使变更队列保持为空<br>使用场景是在断开观察者之前立即获取所有未处理的更改记录, 以便在停止观察者时可以处理任何未处理的更改</p>
+<ul>
+<li>参数 无</li>
+<li>返回值 MutationRecord 对象列表, 每个对象都描述了应用于 DOM 树某部分的一次改动</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> mutations = observer.<span class="title function_">takeRecords</span>();</span><br></pre></td></tr></table></figure>
+
+<h4 id="MutationObserverInit"><a href="#MutationObserverInit" class="headerlink" title="MutationObserverInit"></a>MutationObserverInit</h4><p>描述了 MutationObserver 的配置, 主要被用作 observe 方法的参数模型</p>
+<h5 id="参数属性"><a href="#参数属性" class="headerlink" title="参数属性"></a>参数属性</h5><ul>
+<li><p>attributeFilter 可选, 要监视的特定属性名称的数组, 未包含此属性则对所有属性的更改都会触发变动通知, 无默认值</p>
+</li>
+<li><p>attributeOldValue 可选, 当监视节点的属性改动时, 将此属性设为 true 将记录任何有改动的属性的上一个值, 无默认值</p>
+</li>
+<li><p>attributes 三选一,设为 true 以观察受监视元素的属性值变更, 默认 false</p>
+</li>
+<li><p>characterData 三选一, 设为 true 以监视指定目标节点或子节点树中节点所包含的字符数据的变化, 无默认值</p>
+</li>
+<li><p>characterDataOldValue 设为 true 以在文本在受监视节点上发生更改时记录节点文本的先前值, 无默认值</p>
+</li>
+<li><p>childList 三选一, 设为 true 以监视目标节点(如果 subtree 为 true, 则包含子孙节点)添加或删除新的子节点, 默认 false</p>
+</li>
+<li><p>subtree 设为 true 以将监视范围扩展至目标节点整个节点树中的所有节点, 默认 false</p>
+</li>
+</ul>
+<h5 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h5><p>当调用 observe 方法时, childList, attributes, characterData 三个属性之中, 至少有一个必须为 true, 否则抛出 TypeError 异常</p>
+<h4 id="MutationRecord"><a href="#MutationRecord" class="headerlink" title="MutationRecord"></a>MutationRecord</h4><p>每个 MutationRecord 代表一个独立的 DOM 变化在每次随 DOM 变化时作为 MutationObserver 回调函数的参数传入</p>
+<h5 id="record-属性"><a href="#record-属性" class="headerlink" title="record 属性"></a>record 属性</h5><ul>
+<li>type String,<ul>
+<li>如果是属性变化, 则返回 “attributes”</li>
+<li>如果是 characterData 节点变化, 则返回 “characterData”</li>
+<li>如果是子节点树 childList 变化, 则返回 “childList”</li>
+</ul>
+</li>
+<li>target Node,<ul>
+<li>根据 type 类型返回变化所影响的节点</li>
+</ul>
+</li>
+<li>addedNodes NodeList, 返回被添加的节点,如果无则为空的 NodeList</li>
+<li>removedNodes NodeList, 返回被移除的节点, 如果无则为空的 NodeList</li>
+<li>previousSibling Node, 返回被添加或移除的节点之前的兄弟节点, 或者 null</li>
+<li>nextSibling Node, 返回被添加或移除的节点之后的兄弟节点,或者 null</li>
+<li>attributeName String, 返回被修改的属性的属性名, 或者 null</li>
+<li>attributeNamespace String, 返回被修改属性的命名空间, 或者 null</li>
+<li>oldValue String, 如果使当前属性有效,则需要在 MutationObserverInit 参数中配置 attributeOldValue 或者 characterDataOldValue 为 true<ul>
+<li>如果属性 attributes 变化, 返回变化之前的属性值</li>
+<li>如果 characterData 变化, 返回变化之前的数据</li>
+<li>如果子节点树 childList 变化, 返回 null</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#root&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> <span class="title class_">MutationObserver</span>(<span class="function">(<span class="params">mutationRecord, observer</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(mutationRecord, observer);</span><br><span class="line">&#125;);</span><br><span class="line">observer.<span class="title function_">observe</span>(root, &#123;</span><br><span class="line">  <span class="attr">attributes</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">attributeOldValue</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">attributeFilter</span>: [<span class="string">&#x27;title&#x27;</span>],</span><br><span class="line">  <span class="attr">characterData</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">characterDataOldValue</span>: <span class="literal">true</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// [&#123;</span></span><br><span class="line"><span class="comment">//   addedNodes: NodeList []</span></span><br><span class="line"><span class="comment">//   attributeName: &quot;title&quot;</span></span><br><span class="line"><span class="comment">//   attributeNamespace: null</span></span><br><span class="line"><span class="comment">//   nextSibling: null</span></span><br><span class="line"><span class="comment">//   oldValue: &quot;hello new root 1&quot;</span></span><br><span class="line"><span class="comment">//   previousSibling: null</span></span><br><span class="line"><span class="comment">//   removedNodes: NodeList []</span></span><br><span class="line"><span class="comment">//   target: &quot;div#root.helloRoothelloRoot1.helloRoot1&quot;</span></span><br><span class="line"><span class="comment">//   type: &quot;attributes&quot;</span></span><br><span class="line"><span class="comment">// &#125;]</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
       </tags>
   </entry>
   <entry>
@@ -1177,6 +1177,9 @@
 </ul>
 </li>
 <li><p>defineExpose 明确向外暴露出去的属性</p>
+<ul>
+<li>不需要导入直接使用</li>
+</ul>
 </li>
 <li><p>useSlots 和 useAttrs</p>
 <ul>
@@ -1236,95 +1239,6 @@
       <categories>
         <category>tools</category>
       </categories>
-  </entry>
-  <entry>
-    <title>shell工具</title>
-    <url>/2022/05/4881d8683e6d/</url>
-    <content><![CDATA[<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
-<li><p>OFMT 输出数字格式(默认%.6g)</p>
-</li>
-<li><p>CONVFMT 数字转换格式(默认值为%.6g)ENVIRON 环境变量关联数组</p>
-</li>
-<li><p>ENVIRON 数组, 存储当前系统的环境变量, ENVIRON[‘PATH’]</p>
-</li>
-<li><p>ERRNO 最后一个系统错误的描述</p>
-</li>
-<li><p>FILENAME 当前正在处理的文件名</p>
-</li>
-<li><p>FIELDWIDTHS 以空格分隔的字段宽度</p>
-</li>
-<li><p>PROCINFO 数组, 存储当前系统运行时信息, PROCINFO[‘uid’]</p>
-</li>
-<li><p>IGNORECASE 如果为真, 则进行忽略大小写的匹配</p>
-</li>
-<li><p>字段分隔符</p>
-<ul>
-<li>FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置</li>
-<li>OFS 输出的字段分隔符, 默认为空格</li>
-</ul>
-</li>
-<li><p>记录分隔符</p>
-<ul>
-<li>RS 输入记录的分隔符, 默认为换行符</li>
-<li>ORS 输出的记录分隔符, 默认为换行符</li>
-</ul>
-</li>
-</ul>
-<span id="more"></span>
-
-<ul>
-<li>记录统计<ul>
-<li>$0 完整的输入记录</li>
-<li>$1-$n 表示当前行第几个字段, $(NF - n) 动态计算第几个字段</li>
-<li>NF 当前记录中的字段个数</li>
-<li>NR 已经读出的记录数(默认从 1 开始)</li>
-<li>FNR 当前处理的记录号</li>
-</ul>
-</li>
-<li>参数<ul>
-<li>ARGC 命令行参数个数(不包括 awk 的选项和 awk 的程序内容)</li>
-<li>ARGV 命令行参数序列数组,下标从 0 开始</li>
-<li>ARGIND 命令行中当前文件的位置(从 0 开始算)</li>
-</ul>
-</li>
-<li>流程控制<ul>
-<li>BEGIN { 这里面放的是执行前的语句 }</li>
-<li>END { 这里面放的是处理完所有的行后要执行的语句 }</li>
-<li>{ 这里面放的是处理每一行时要执行的语句 }</li>
-</ul>
-</li>
-</ul>
-<h4 id="批量删除本地关联的-git-远程分支"><a href="#批量删除本地关联的-git-远程分支" class="headerlink" title="批量删除本地关联的 git 远程分支"></a>批量删除本地关联的 git 远程分支</h4><ul>
-<li><p>awk 和 xargs 命令结合使用</p>
-<ul>
-<li><p>xargs -t 执行命令之前先打印执行命令</p>
-</li>
-<li><p>xargs -n 指定传递给执行命令的参数个数, 默认是所有</p>
-</li>
-<li><p>xargs -I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo &quot;file1 file2 file3&quot;| xargs -t -I % sh -c &#x27;touch %;ls -l %&#x27;</span><br><span class="line">sh -c touch file1 file2 file3;ls -l file1 file2 file3</span><br></pre></td></tr></table></figure></li>
-<li><p>xargs -d 设置自定义分隔符</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo -n file1#file2#file3#file4|xargs -d \# -t touch</span><br><span class="line">touch file1 file2 file3 file4</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>不带主机名的过滤</p>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">格式化输出所有本地关联的分支名</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -r | \</span></span><br><span class="line"><span class="language-bash">  grep <span class="string">&#x27;origin/feature*&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;&#123;FS=&quot;/&quot;; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">  &#125;&#x27;</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">或</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -r | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    /origin\/feature/&#123; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">      FS=&quot;/&quot;; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">      printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    &#125;&#x27;</span></span></span><br><span class="line">FS    / OFS      NF    1 NR    1 $0   origin/feature-BUSINESS-11269 $1 origin/feature-BUSINESS-11269</span><br><span class="line">FS    / OFS      NF    2 NR    2 $0   origin/feature-BUSINESS-11374 $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    3 $0   origin/feature-mall-20220406 $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    4 $0   origin/feature-mall-entry $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    5 $0   origin/feature-privacy-20220329 $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    6 $0   origin/feature-service_tpl-20220418 $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    7 $0   origin/feature_BUSINESS-0707 $1   origin</span><br><span class="line">...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行删除分支操作</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">BEGIN&#123;<span class="built_in">printf</span> <span class="string">&quot;\nawk begin filtering\n\n&quot;</span>;&#125;END&#123;<span class="built_in">printf</span> <span class="string">&quot;\ndelete successfully\n&quot;</span>;&#125;</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -r | \</span></span><br><span class="line"><span class="language-bash">  grep <span class="string">&#x27;origin/revert*&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;&#123;printf &quot;%4s\n&quot;,$0;&#125;&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span></span><br><span class="line">Deleted remote-tracking branch origin/revert-0946083d (was 795de8b941).</span><br><span class="line">Deleted remote-tracking branch origin/revert-4835d8ea (was eac88d3e28).</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 或</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -r | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;/origin\/revert/&#123;printf &quot;%4s\n&quot;,$0&#125;&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>包含主机名的过滤</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">IGNORECASE=1 开启忽略大小写</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="variable">$0</span>~/origin\/feature/ 判断分支名是否包含 origin/feature</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用内置函数 gsub 全局替换 remotes 为空</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -a | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;&#123; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    if($0~/origin\/feature/)&#123; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">      gsub(/remotes\//, &quot; &quot;, $0); \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">      printf &quot;%4s\n&quot;,$0; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    &#125; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">  &#125;&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>linux</category>
-        <category>shell</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-        <tag>shell</tag>
-      </tags>
   </entry>
   <entry>
     <title>nginx.md</title>
@@ -1485,6 +1399,109 @@
       </categories>
       <tags>
         <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shell工具</title>
+    <url>/2022/05/4881d8683e6d/</url>
+    <content><![CDATA[<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
+<li><p>OFMT 输出数字格式(默认%.6g)</p>
+</li>
+<li><p>CONVFMT 数字转换格式(默认值为%.6g)ENVIRON 环境变量关联数组</p>
+</li>
+<li><p>ENVIRON 数组, 存储当前系统的环境变量, ENVIRON[‘PATH’]</p>
+</li>
+<li><p>ERRNO 最后一个系统错误的描述</p>
+</li>
+<li><p>FILENAME 当前正在处理的文件名</p>
+</li>
+<li><p>FIELDWIDTHS 以空格分隔的字段宽度</p>
+</li>
+<li><p>PROCINFO 数组, 存储当前系统运行时信息, PROCINFO[‘uid’]</p>
+</li>
+<li><p>IGNORECASE 如果为真, 则进行忽略大小写的匹配</p>
+</li>
+<li><p>字段分隔符</p>
+<ul>
+<li>FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置</li>
+<li>OFS 输出的字段分隔符, 默认为空格</li>
+</ul>
+</li>
+<li><p>记录分隔符</p>
+<ul>
+<li>RS 输入记录的分隔符, 默认为换行符</li>
+<li>ORS 输出的记录分隔符, 默认为换行符</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<ul>
+<li>记录统计<ul>
+<li>$0 完整的输入记录</li>
+<li>$1-$n 表示当前行第几个字段, $(NF - n) 动态计算第几个字段</li>
+<li>NF 当前记录中的字段个数</li>
+<li>NR 已经读出的记录数(默认从 1 开始)</li>
+<li>FNR 当前处理的记录号</li>
+</ul>
+</li>
+<li>参数<ul>
+<li>ARGC 命令行参数个数(不包括 awk 的选项和 awk 的程序内容)</li>
+<li>ARGV 命令行参数序列数组,下标从 0 开始</li>
+<li>ARGIND 命令行中当前文件的位置(从 0 开始算)</li>
+</ul>
+</li>
+<li>流程控制<ul>
+<li>BEGIN { 这里面放的是执行前的语句 }</li>
+<li>END { 这里面放的是处理完所有的行后要执行的语句 }</li>
+<li>{ 这里面放的是处理每一行时要执行的语句 }</li>
+</ul>
+</li>
+</ul>
+<h4 id="批量删除本地关联的-git-远程分支"><a href="#批量删除本地关联的-git-远程分支" class="headerlink" title="批量删除本地关联的 git 远程分支"></a>批量删除本地关联的 git 远程分支</h4><ul>
+<li><p>awk 和 xargs 命令结合使用</p>
+<ul>
+<li><p>xargs -t 执行命令之前先打印执行命令</p>
+</li>
+<li><p>xargs -n 指定传递给执行命令的参数个数, 默认是所有</p>
+</li>
+<li><p>xargs -I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo &quot;file1 file2 file3&quot;| xargs -t -I % sh -c &#x27;touch %;ls -l %&#x27;</span><br><span class="line">sh -c touch file1 file2 file3;ls -l file1 file2 file3</span><br></pre></td></tr></table></figure></li>
+<li><p>xargs -d 设置自定义分隔符</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo -n file1#file2#file3#file4|xargs -d \# -t touch</span><br><span class="line">touch file1 file2 file3 file4</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>不带主机名的过滤</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">格式化输出所有本地关联的分支名</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -r | \</span></span><br><span class="line"><span class="language-bash">  grep <span class="string">&#x27;origin/feature*&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;&#123;FS=&quot;/&quot;; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">  &#125;&#x27;</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">或</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -r | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    /origin\/feature/&#123; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">      FS=&quot;/&quot;; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">      printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    &#125;&#x27;</span></span></span><br><span class="line">FS    / OFS      NF    1 NR    1 $0   origin/feature-BUSINESS-11269 $1 origin/feature-BUSINESS-11269</span><br><span class="line">FS    / OFS      NF    2 NR    2 $0   origin/feature-BUSINESS-11374 $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    3 $0   origin/feature-mall-20220406 $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    4 $0   origin/feature-mall-entry $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    5 $0   origin/feature-privacy-20220329 $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    6 $0   origin/feature-service_tpl-20220418 $1   origin</span><br><span class="line">FS    / OFS      NF    2 NR    7 $0   origin/feature_BUSINESS-0707 $1   origin</span><br><span class="line">...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行删除分支操作</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">BEGIN&#123;<span class="built_in">printf</span> <span class="string">&quot;\nawk begin filtering\n\n&quot;</span>;&#125;END&#123;<span class="built_in">printf</span> <span class="string">&quot;\ndelete successfully\n&quot;</span>;&#125;</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -r | \</span></span><br><span class="line"><span class="language-bash">  grep <span class="string">&#x27;origin/revert*&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;&#123;printf &quot;%4s\n&quot;,$0;&#125;&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span></span><br><span class="line">Deleted remote-tracking branch origin/revert-0946083d (was 795de8b941).</span><br><span class="line">Deleted remote-tracking branch origin/revert-4835d8ea (was eac88d3e28).</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 或</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -r | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;/origin\/revert/&#123;printf &quot;%4s\n&quot;,$0&#125;&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>包含主机名的过滤</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">IGNORECASE=1 开启忽略大小写</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="variable">$0</span>~/origin\/feature/ 判断分支名是否包含 origin/feature</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用内置函数 gsub 全局替换 remotes 为空</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git branch -a | \</span></span><br><span class="line"><span class="language-bash">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;&#123; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    if($0~/origin\/feature/)&#123; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">      gsub(/remotes\//, &quot; &quot;, $0); \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">      printf &quot;%4s\n&quot;,$0; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">    &#125; \</span></span></span><br><span class="line"><span class="string"><span class="language-bash">  &#125;&#x27;</span> | \</span></span><br><span class="line"><span class="language-bash">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>linux</category>
+        <category>shell</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vagrant</title>
+    <url>/2022/04/6a14bcf31f14/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
+<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
+<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>vagrant</tag>
       </tags>
   </entry>
   <entry>
@@ -1788,20 +1805,6 @@
       <tags>
         <tag>linux</tag>
         <tag>shell</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>vagrant</title>
-    <url>/2022/04/6a14bcf31f14/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
-<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
-<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>vagrant</tag>
       </tags>
   </entry>
   <entry>
@@ -3588,13 +3591,13 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">const</span> obj = <span class="title function_">reactive</span>(&#123;&#125;);</span><br><span class="line">obj.<span class="property">count</span> = count;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="property">count</span>); <span class="comment">// 1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="property">count</span> === count.<span class="property">value</span>); <span class="comment">// true</span></span><br><span class="line"><span class="comment">// 它会更新 `obj.value`</span></span><br><span class="line">count.<span class="property">value</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>); <span class="comment">// 2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="property">count</span>); <span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 它也会更新 `count` ref</span></span><br><span class="line">obj.<span class="property">count</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="property">count</span>); <span class="comment">// 3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure></li>
 <li><p>readonly 接受一个对象 (响应式或纯对象) 或 ref 并返回原始对象的只读代理, 任何被访问的嵌套 property 也是只读的</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> original = <span class="title function_">reactive</span>(&#123; <span class="attr">count</span>: <span class="number">0</span> &#125;);</span><br><span class="line"><span class="keyword">const</span> copy = <span class="title function_">readonly</span>(original);</span><br><span class="line"><span class="title function_">watchEffect</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(copy.<span class="property">count</span>); <span class="comment">// 用于响应性追踪</span></span><br><span class="line">&#125;);</span><br><span class="line">original.<span class="property">count</span>++; <span class="comment">// 变更 original 会触发依赖于副本的侦听器</span></span><br><span class="line">copy.<span class="property">count</span>++; <span class="comment">// 警告! // 变更副本将失败并导致警告</span></span><br></pre></td></tr></table></figure></li>
-<li><p>isProxy 检查对象是否是由 reactive 或 readonly 创建的 proxy</p>
+<li><p>isProxy 检查对象是否是由 <code>reactive</code> <code>readonly</code> <code>shallowReactive</code> <code>shallowReadonly</code> 创建的 proxy</p>
 </li>
-<li><p>isReactive 检查对象是否是由 reactive 创建的响应式代理, 如果代理是由 readonly 创建的并包含了由 reactive 创建的另一个代理, 同样返回 true</p>
+<li><p>isReactive 检查对象是否是由 <code>reactive</code> <code>shallowReactive</code> 创建的响应式代理, 如果代理是由 readonly 创建的并包含了由 reactive 创建的另一个代理, 同样返回 true</p>
 </li>
-<li><p>isReadonly 检查对象是否是由 readonly 创建的只读代理</p>
+<li><p>isReadonly 检查对象是否是由 <code>readonly</code> <code>shallowReadonly</code> 创建的只读代理</p>
 </li>
-<li><p>toRaw 返回 reactive 或 readonly 代理的原始对象</p>
+<li><p>toRaw 返回 <code>reactive</code> <code>readonly</code> <code>shallowReactive</code> <code>shallowReadonly</code> 代理的原始对象</p>
 <blockquote>
 <p>可用于临时读取数据而无需承担代理访问/跟踪的开销，也可用于写入数据而避免触发更改。不建议保留对原始对象的持久引用</p>
 </blockquote>
@@ -3789,6 +3792,14 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; inject &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">props</span>: &#123;</span><br><span class="line">    <span class="attr">theme</span>: &#123;</span><br><span class="line">      <span class="title function_">default</span>(<span class="params">props</span>) &#123;</span><br><span class="line">        <span class="comment">// `props` 是传递给组件的原始值。</span></span><br><span class="line">        <span class="comment">// 在任何类型/默认强制转换之前</span></span><br><span class="line">        <span class="comment">// 也可以使用 `inject` 来访问注入的 property</span></span><br><span class="line">        <span class="keyword">return</span> <span class="title function_">inject</span>(<span class="string">&#x27;theme&#x27;</span>, <span class="string">&#x27;default-theme&#x27;</span>);</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h3 id="渲染函数-API"><a href="#渲染函数-API" class="headerlink" title="渲染函数 API"></a>渲染函数 API</h3><ul>
+<li><p>如果组件中定义了 setup 配置项并且返回值是一个函数, 则其返回值作为该组件的渲染函数</p>
+</li>
+<li><p>如果组件中定义了 render 配置项, 则将其作为渲染函数</p>
+</li>
+<li><p>如果以上条件都不满足, 当前组件包含 template 配置项, 则将其作为模板进行编译成可执行的渲染函数</p>
+</li>
+<li><p>如果以上条件都不满足, 则使用容器的 innerHTML 作为模板</p>
+</li>
 <li><p>h 全局导入, 不再作为参数传递给渲染函数</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="title function_">render</span>(<span class="params">h</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">h</span>();</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">h</span>();</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
 <li><p>渲染函数参数更改以在有状态组件和函数组件之间更加一致</p>
