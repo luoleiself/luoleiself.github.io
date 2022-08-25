@@ -582,13 +582,13 @@ console.log(app.config);
 
 #### props 用于接收来自父组件的数据
 
-#### computed 计算属性
+#### [computed](#computedWatchEffect) 计算属性
 
 - 计算属性的结果会被缓存,依赖的响应式 property 变化才会重新计算
 
 #### methods
 
-#### watch
+#### [watch](#computedWatchEffect)
 
 #### emits 定义组件触发的自定义事件
 
@@ -1000,6 +1000,10 @@ const Child = {
 
   > 当将 ref 分配给 reactive property 时，ref 将被自动解构
 
+  - 仅对对象类型有效(对象、数组、Map、Set 这样的集合类型), 而对 `string` `number` `boolean`这样的原始类型无效
+  - 因为 Vue 的响应式系统是通过属性访问进行追踪的, 因此需要始终保持对响应式对象的相同引用
+  - 对同一个原始对象调用 `reactive()` 总是返回同样的代理对象, 对一个已存在的代理对象调用 `reactive()` 总是返回其本身
+
   ```javascript
   const count = ref(1);
   const obj = reactive({});
@@ -1186,7 +1190,7 @@ const Child = {
 
 - triggerRef 手动执行与 shallowRef 关联的任何副作用
 
-### Computed | watch
+### Computed | watch <em id="computedWatchEffect"></em>
 
 - computed 接受一个 getter 函数,并为从 getter 返回的值返回一个不变的响应式 ref 对象
 
@@ -1208,7 +1212,53 @@ const Child = {
   console.log(count.value); // 0
   ```
 
+- watch 使用方式和 this.$watch 和 watch 选项完全等效
+
+  - 第一个参数支持函数、ref、响应式对象、或者以上类型组成的数组
+  - 第二个参数发生变化时调用的回调函数
+  - 第三个参数
+
+    - immediate 在侦听器创建时立即触发回调, 第一次调用时旧值为 `undefined`
+    - deep 如果源是对象, 强制深度遍历
+    - flush 调整回调函数的刷新时机
+    - onTrack/onTrigger 调试侦听器的依赖
+
+  - 与 watchEffect 的区别
+
+    - 惰性地执行副作用
+    - 更具体地说明应触发侦听器重新运行的状态
+    - 访问被侦听状态的先前值和当前值
+    - 侦听单一源
+
+    ```javascript
+    // 侦听一个 getter
+    const state = reactive({ count: 0 });
+    watch(
+      () => state.count,
+      (count, prevCount) => {
+        /* ... */
+      }
+    );
+    // 直接侦听一个 ref
+    const count = ref(0);
+    watch(count, (count, prevCount) => {
+      /* ... */
+    });
+    ```
+
+    - 侦听多个源
+
+    ```javascript
+    watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
+      /* ... */
+    });
+    ```
+
 - watchEffect 在响应式地跟踪其依赖项时立即运行一个函数, 并在更改依赖项时重新运行它
+
+  - 第一个参数是要运行的副作用函数
+  - 第二个参数是可选项, 可以用来调整副作用的刷新时机或调试副作用的依赖
+  - 返回值是一个用来停止该副作用的函数
 
   - 停止侦听器
 
@@ -1268,37 +1318,10 @@ const Child = {
   }, 100);
   ```
 
-- watch 使用方式和 this.$watch 和 watch 选项完全等效
-
-  - 与 watchEffect 的区别
-    - 惰性地执行副作用
-    - 更具体地说明应触发侦听器重新运行的状态
-    - 访问被侦听状态的先前值和当前值
-  - 侦听单一源
-
-    ```javascript
-    // 侦听一个 getter
-    const state = reactive({ count: 0 });
-    watch(
-      () => state.count,
-      (count, prevCount) => {
-        /* ... */
-      }
-    );
-    // 直接侦听一个 ref
-    const count = ref(0);
-    watch(count, (count, prevCount) => {
-      /* ... */
-    });
-    ```
-
-  - 侦听多个源
-
-    ```javascript
-    watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
-      /* ... */
-    });
-    ```
+- watchPostEffect `watchEffect()` 使用 flush: 'post' 选项时的别名
+  Vue 3.2 新增
+- watchSyncEffect `watchEffect()` 使用 flush: 'sync' 选项时的别名
+  Vue 3.2 新增
 
 ## 组合式 API
 
