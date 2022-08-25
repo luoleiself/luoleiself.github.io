@@ -9,7 +9,7 @@ tags:
   - Vue3.0
 ---
 
-> Vue 3.0.11
+> 3.0.11 -> 3.2.37
 
 ## 应用配置
 
@@ -902,6 +902,9 @@ const Child = {
 
 - component
   - is 渲染一个元组件为动态组件
+- slot
+  - props
+    - {String} name 插槽命名
 - transition
 
   - props
@@ -970,11 +973,6 @@ const Child = {
   </keep-alive>
   ```
 
-- slot
-
-  - props
-    - {String} name 插槽命名
-
 - teleport 移动实际 DOM 节点(非销毁重建),并保持任何组件实例的活动状态
 
   - props
@@ -991,6 +989,15 @@ const Child = {
   <teleport to="h1" />
   <teleport to="some-string" />
   ```
+
+- suspense 用于协调对组件树中嵌套的异步依赖的处理
+  - 事件
+    - @resolve
+    - @pending
+    - @fallback
+  - 插槽
+    - #default
+    - #fallback
 
 ## 响应性 API
 
@@ -1594,6 +1601,9 @@ app.directive('my-directive', {
   ```
 
 - 渲染函数参数更改以在有状态组件和函数组件之间更加一致
+
+- cloneVNode 克隆一个 vnode
+- isVNode 判断一个值是否为 vnode 类型
 - VNode Prop 格式化
 
   ```javascript
@@ -1650,6 +1660,19 @@ app.directive('my-directive', {
   };
   ```
 
+- withModifiers 用于向事件处理函数添加内置 `v-on` 修饰符
+
+  ```javascript
+  import { h, withModifiers } from 'vue';
+
+  const vnode = h('button', {
+    // 等价于 v-on.stop.prevent
+    onClick: withModifiers(() => {
+      // ...
+    }, ['stop', 'prevent']),
+  });
+  ```
+
 ### 插槽统一
 
 - this.$slots 插槽作为函数公开
@@ -1661,6 +1684,8 @@ app.directive('my-directive', {
   // 3.x 语法
   this.$slots.header();
   ```
+
+````
 
 - 见指令 v-slot
 - 解构插槽 prop
@@ -1881,3 +1906,4 @@ watch: {
   },
 }
 ```
+````
