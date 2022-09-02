@@ -23,11 +23,6 @@ CNM 定义了 3 个基本要素：沙盒(Sandbox)、终端(Endpoint)和网络(Ne
 
 docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay 等.
 
-- link 使用参数方式添加连接到另一个容器，不再推荐使用
-  - 自定义网络 不适用 docker0
-  - docker0 不支持容器名别名连接访问
-- network 自定义网络模式
-
 ```shell
 [root@localhost ~]# docker run -tid --name centos01 centos /bin/bash
 [root@localhost ~]# docker run -tid --name centos02 centos /bin/bash
@@ -87,6 +82,11 @@ b2f23805b5e5   none      null      local
 
 #### bridge 模式
 
+- link 使用参数方式添加连接到另一个容器，不再推荐使用
+  - 自定义网络 不适用 docker0
+  - docker0 不支持容器名别名连接访问
+- network 自定义网络模式
+
 桥接模式一般使用于单机模式
 
 - 默认的桥接网络模式 `docker0` 不支持通过 Docker DNS 服务进行域名解析
@@ -126,7 +126,8 @@ docker run ... centos02 --network centos01 ...
 
 #### 借助 docker0 路由功能
 
-此方式需要查看容器的 ip 信息
+- 此方式需要查看容器的 ip 信息
+- docker0 不支持容器名别名连接访问
 
 ```shell
 # 查看 centos01 的 ip 信息
