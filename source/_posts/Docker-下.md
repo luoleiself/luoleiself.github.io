@@ -112,7 +112,7 @@ docker run ... --network none ...
 
 新创建的容器不会创建自己的网卡和配置自己的 IP, 而是共享一个指定容器的 IP 和端口等
 
-- \-\-network 连接一个容器的网络
+- \-\-network 指定容器运行的网络模式, 默认为 docker0
 
 ```shell
 docker run ... centos02 --network centos01 ...
@@ -368,6 +368,10 @@ ad9cdd7a0edf   centos    "/bin/bash"   22 hours ago    Up 6 hours              m
 ```
 
 2. connect 命令连接容器到自定义网络
+
+```shell
+docker network connect [OPTIONS] NETWORK CONTAINER
+```
 
 ```shell
 # 连接 centos01 到 自定义网络 my-docker-net
