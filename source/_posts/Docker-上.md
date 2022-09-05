@@ -776,6 +776,7 @@ CMD ["cat", "/usr/local/hello.txt"]   # 容器运行时执行的命令
 #### 构建镜像
 
 ```shell
+# 构建镜像并指定镜像名称和版本号, 最后的 . 很重要,表示在当前目录下进行构建, 可以使用
 [root@localhost workspace]# docker build -t hello:v1.0 .
 Sending build context to Docker daemon  3.072kB
 Step 1/6 : FROM centos:7
@@ -801,7 +802,7 @@ Removing intermediate container 1785744ac7aa
 Successfully built 4cd89659cce0
 Successfully tagged hello:v1.0
 
-[root@localhost workspace]# docker run --name hello-v1 hello:v1.0
+[root@localhost workspace]# docker run --name hello-v1 hello:v1.0 # 基于镜像创建容器
 hello docker
 ```
 
