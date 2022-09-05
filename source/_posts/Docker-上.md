@@ -748,12 +748,12 @@ CMD ['/etc/nginx/nginx.conf']
 - CMD 应该用作为 ENTRYPOINT 命令定义默认参数或在容器中执行临时命令的一种方式
 - CMD 使用替代参数运行容器时将被覆盖
 
-|                            | No ENTRYPOINT              | ENTRYPOINT exec_entry p1_entry | ENTRYPOINT ['exec_entry', 'p1_entry']          |
-| -------------------------- | -------------------------- | ------------------------------ | ---------------------------------------------- |
-| No CMD                     | error, not allowed         | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry                            |
-| CMD ['exec_cmd', 'p1_cmd'] | exec_cmd p1_cmd            | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry exec_cmd p1_cmd            |
-| CMD ['p1_cmd', 'p2_cmd']   | p1_cmd p2_cmd              | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry p1_cmd p2_cmd              |
-| CMD exec_cmd p1_cmd        | /bin/sh -c exec_cmd p1_cmd | /bin/sh -c exec_entry p1_entry | exec_entry p1_entry /bin/sh -c exec_cmd p1_cmd |
+|                         | No ENTRYPOINT         | ENTRYPOINT entry p1_entry | ENTRYPOINT ['entry','p1_entry']      |
+| ----------------------- | --------------------- | ------------------------- | ------------------------------------ |
+| No CMD                  | error, not allowed    | /bin/sh -c entry p1_entry | entry p1_entry                       |
+| CMD ['cmd','p1_cmd']    | cmd p1_cmd            | /bin/sh -c entry p1_entry | entry p1_entry cmd p1_cmd            |
+| CMD ['p1_cmd','p2_cmd'] | p1_cmd p2_cmd         | /bin/sh -c entry p1_entry | entry p1_entry p1_cmd p2_cmd         |
+| CMD cmd p1_cmd          | /bin/sh -c cmd p1_cmd | /bin/sh -c entry p1_entry | entry p1_entry /bin/sh -c cmd p1_cmd |
 
 ### 应用
 
