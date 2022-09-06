@@ -143,6 +143,12 @@ docker build -f /path/to/Dockerfile -t name:tag .
 
 - 应用容器化 将应用整合到容器中并且运行起来的这个过程
 
+```shell
+[root@localhost ~]# docker ps -a # 查看所有容器信息
+CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                   PORTS     NAMES
+a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago             vigorous_turing
+```
+
 ### 容器操作
 
 容器的操作命令可直接跟在 `docker` 命令后使用, 也可以跟在 `docker container` 命令后使用
@@ -166,12 +172,11 @@ docker build -f /path/to/Dockerfile -t name:tag .
 - rm 删除容器
 - port 查看容器映射端口
 - export 导出容器为归档文件
-- wait 阻塞一个容器, 直到容器停止运行
+- wait 阻塞一个或多个容器直到停止运行, 并打印容器的退出码
 
 ```shell
-[root@localhost ~]# docker ps -a # 查看所有容器信息
-CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                   PORTS     NAMES
-a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago             vigorous_turing
+[root@localhost ~]# docker wait centos01 # 阻塞一个或多个容器直到停止运行, 并打印容器的退出码
+0
 ```
 
 <!-- more -->
@@ -312,7 +317,7 @@ CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                    
 a441e0564165   centos    "/bin/bash"   25 hours ago   Exited (0) 2 seconds ago             vigorous_turing
 ```
 
-### 文件拷贝 cp
+### 文件拷贝 cp <em id="dockercp"></em>
 
 - -a, \-\-archive 复制文档的所有信息
 
