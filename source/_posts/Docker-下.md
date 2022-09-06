@@ -212,42 +212,37 @@ ping: centos02: Name or service not known
 NETWORK ID     NAME            DRIVER    SCOPE
 2cad59b7f47d   bridge          bridge    local
 1db6eddeb99f   host            host      local
-8d4dbf9c3f56   my-docker-net   bridge    local
+b97686d7890c   my-docker-net   bridge    local
 b2f23805b5e5   none            null      local
 ```
 
-2. 创建基于自定义网络模式容器
+2. 查看宿主机 ip 相关信息
+
+```shell
+[root@localhost ~]# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:d3:b5:cd brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic eth0
+       valid_lft 83646sec preferred_lft 83646sec
+3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:71:92:ec:8c brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+4: br-b97686d7890c: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:58:8d:a4:42 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.1/16 brd 192.168.255.255 scope global br-b97686d7890c
+       valid_lft forever preferred_lft forever
+```
+
+3. 创建基于自定义网络模式容器
 
 ```shell
 [root@localhost ~]# docker run -tid --name my-docker-net01 --net my-docker-net centos /bin/bash
 [root@localhost ~]# docker run -tid --name my-docker-net02 --net my-docker-net centos /bin/bash
-```
-
-3. 查看宿主机 ip 相关信息
-
-```shell
-[root@localhost ~]# ip addr
-...
-3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
-  link/ether 02:42:c2:ab:51:b5 brd ff:ff:ff:ff:ff:ff
-  inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
-    valid_lft forever preferred_lft forever
-  inet6 fe80::42:c2ff:feab:51b5/64 scope link
-    valid_lft forever preferred_lft forever
-14: br-8d4dbf9c3f56: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
-  link/ether 02:42:f5:dc:26:98 brd ff:ff:ff:ff:ff:ff
-  inet 192.168.0.1/16 brd 192.168.255.255 scope global br-8d4dbf9c3f56
-    valid_lft forever preferred_lft forever
-  inet6 fe80::42:f5ff:fedc:2698/64 scope link
-    valid_lft forever preferred_lft forever
-16: veth3b7468a@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-8d4dbf9c3f56 state UP group default
-  link/ether 76:ba:b8:12:ae:25 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-  inet6 fe80::74ba:b8ff:fe12:ae25/64 scope link
-    valid_lft forever preferred_lft forever
-18: veth076162b@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-8d4dbf9c3f56 state UP group default
-  link/ether 92:5d:7d:23:d1:de brd ff:ff:ff:ff:ff:ff link-netnsid 1
-  inet6 fe80::905d:7dff:fe23:d1de/64 scope link
-    valid_lft forever preferred_lft forever
 ```
 
 4. 查看自定义网络信息
@@ -256,7 +251,7 @@ b2f23805b5e5   none            null      local
 [root@localhost ~]# docker network inspect my-docker-net
 [{
   "Name": "my-docker-net",
-  "Id": "8d4dbf9c3f5609303ef88f5e964ee47fd05b2ed27f6a8b2c49ddff0a9602e701",
+  "Id": "b97686d7890ce2da3ce1e53927a4f5c02f898f18e22d9c4766a5e761d4275568",
   "Created": "2022-04-08T10:52:46.474584772Z",
   "Scope": "local",
   "Driver": "bridge",
