@@ -185,7 +185,7 @@ ff02::2 ip6-allrouters
 ping: centos02: Name or service not known
 ```
 
-### network 自定义网络模式 <em id="zidingyiwangluomoshi"></em>
+### 自定义网络模式 <em id="zidingyiwangluomoshi"></em>
 
 - ls 显示所有网络模式状态
 - create 创建网络模式
@@ -319,10 +319,10 @@ rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 
 ### 跨网络模式容器通信
 
-#### 自定义 bridge 和 docker0 结合使用
+> 自定义 bridge 和 docker0 结合使用
 
-- my-docker-net01 和 my-docker-net02 运行在 my-docker-net 下
-- centos01 运行在 docker0 下
+- my-docker-net01 和 my-docker-net02 运行在 my-docker-net 网络模式下
+- centos01 运行在 docker0 网络模式下
 
 ```shell
 docker network connect my-docker-net centos01 # 使用命令将不同网络模式中的容器加入到当前网络模式中
