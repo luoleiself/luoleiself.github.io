@@ -1462,7 +1462,7 @@ app.directive('my-directive', {
 
 > $on，$off 和 $once 实例方法已被移除，应用实例不再实现事件触发接口
 
-### 过滤器 移除
+### 过滤器(filter) 移除
 
 ### 片段
 
@@ -1685,8 +1685,6 @@ app.directive('my-directive', {
   this.$slots.header();
   ```
 
-````
-
 - 见指令 v-slot
 - 解构插槽 prop
 
@@ -1742,7 +1740,7 @@ app.directive('my-directive', {
   - Vue 2.2 增加组件选项 model, 允许自定义 v-model 的 prop 和事件,只能在组件上使用一个 model
 
     ```javascript
-    <my-component :value="pageTitle" @input="pageTitle = $event" />
+    <my-component :value="pageTitle" @change="pageTitle = $event" />
     // 简写方式
     <my-component v-model="pageTitle" />
     export default {
@@ -1762,7 +1760,7 @@ app.directive('my-directive', {
     }
     ```
 
-  - .sync 修饰符 2.3.0 新增
+  - Vue 2.3 增加 .sync 修饰符
 
     ```javascript
     <my-component :title="pageTitle" @update:title="pageTitle = $event" />
@@ -1770,7 +1768,7 @@ app.directive('my-directive', {
     <my-component :title.sync="pageTitle" />
     ```
 
-  - Vue 3.x v-model 传递 modelValue prop 并接收抛出的 update:modelValue 事件
+  - Vue 3.x v-model 传递 `modelValue` prop 并接收抛出的 `update:modelValue` 事件
 
     ```javascript
     <my-component :modelValue="pageTitle" @update:modelValue="pageTitle = $event"/>
@@ -1906,4 +1904,3 @@ watch: {
   },
 }
 ```
-````
