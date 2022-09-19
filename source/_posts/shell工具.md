@@ -52,6 +52,9 @@ tags:
   - xargs -t 执行命令之前先打印执行命令
   - xargs -n 指定传递给执行命令的参数个数, 默认是所有
   - xargs -I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数
+  - xargs -p 每执行一个 argument 时询问一次用户
+  - xargs -a file 从文件中读入作为 stdin
+  - xargs -s num 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
 
     ```shell
     echo "file1 file2 file3"| xargs -t -I % sh -c 'touch %;ls -l %'
