@@ -41,9 +41,22 @@ tags:
   - ARGV 命令行参数序列数组,下标从 0 开始
   - ARGIND 命令行中当前文件的位置(从 0 开始算)
 - 流程控制
+
   - BEGIN { 这里面放的是执行前的语句 }
   - END { 这里面放的是处理完所有的行后要执行的语句 }
   - { 这里面放的是处理每一行时要执行的语句 }
+
+- 内置函数
+  - gsub(r, s) 在整个 $0 中用 s 替换 r
+  - gsub(r, s, t) 在整个 t 中用 s 替换 r
+  - index(s, t) 返回 s 中字符串 t 的第一位置
+  - length(s) 返回 s 的长度
+  - match(s, r) 测试 s 是否包含匹配 r 的字符串
+  - split(s, a, fs) 在 fs 上将 s 分成序列 a
+  - sprint(fmt, exp) 返回经 fmt 格式化后的 exp
+  - sub(r, s) 用 $0 中最左边最长的子串代替 s
+  - substr(r, p) 返回字符串 s 中从 p 开始的后缀部分
+  - substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分
 
 #### 批量删除本地关联的 git 远程分支
 
