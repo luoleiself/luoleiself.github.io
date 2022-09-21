@@ -69,21 +69,21 @@ tags:
   - xargs -a file 从文件中读入作为 stdin
   - xargs -s num 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
 
-    ```shell
+    ```bash
     echo "file1 file2 file3"| xargs -t -I % sh -c 'touch %;ls -l %'
     sh -c touch file1 file2 file3;ls -l file1 file2 file3
     ```
 
   - xargs -d 设置自定义分隔符
 
-    ```shell
+    ```bash
     echo -n file1#file2#file3#file4|xargs -d \# -t touch
     touch file1 file2 file3 file4
     ```
 
 - 不带主机名的过滤
 
-```shell
+```bash
 # 格式化输出所有本地关联的分支名
 $ git branch -r | \
   grep 'origin/feature*' | \
@@ -122,7 +122,7 @@ $ git branch -r | \
 
 - 包含主机名的过滤
 
-```shell
+```bash
 # IGNORECASE=1 开启忽略大小写
 # $0~/origin\/feature/ 判断分支名是否包含 origin/feature
 # 使用内置函数 gsub 全局替换 remotes 为空
@@ -134,4 +134,34 @@ $ git branch -a | \
     } \
   }' | \
   xargs -t -I {} git branch -dr {}
+```
+
+### scp 主机之间复制文件
+
+- -C 传输过程中允许压缩文件
+- -p 保留源文件的修改时间, 访问时间, 访问权限
+- -q 不显示传输进度条
+- -r 递归复制整个目录
+- -v 详细方式显示输出
+- -P 指定数据传输的端口号
+- -l 限制传输带宽 KB/s
+
+#### 本地复制到远程
+
+```bash
+scp local_file remote_username@remote_ip:remote_folder
+# 拷贝文件, 可以使用原文件名也可以重新命名文件
+scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/
+
+# 拷贝目录
+scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/
+```
+
+#### 远程复制到本地
+
+```bash
+# 拷贝文件, 可以使用原文件名也可以重新命名文件
+scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/
+# 拷贝目录
+scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 ```
