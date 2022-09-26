@@ -979,7 +979,7 @@ const Child = {
     - {String} to 必须是有效的查询选择器或者 HTMLElement(如果在浏览器环境中时), 指定将在其中移动 &lt;teleport&gt; 内容的目标元素
     - {Boolean} disabled 可选属性可用于禁用 &lt;teleport&gt; 的功能
 
-  ```javascript
+  ```html
   <!-- 正确 -->
   <teleport to="#some-id" />
   <teleport to=".some-class" />
@@ -991,13 +991,23 @@ const Child = {
   ```
 
 - suspense 用于协调对组件树中嵌套的异步依赖的处理
+
   - 事件
-    - @resolve
-    - @pending
-    - @fallback
+    - @resolve 在 default 插槽完成获取新内容时触发
+    - @pending 在 suspense 进入挂起状态时触发
+    - @fallback 在 fallback 插槽的内容显示时触发
   - 插槽
     - #default
     - #fallback
+
+  ```html
+  <Suspense>
+    <!-- 具有深层异步依赖的组件 -->
+    <Dashboard />
+    <!-- 在 #fallback 插槽中显示 “正在加载中” -->
+    <template #fallback> Loading... </template>
+  </Suspense>
+  ```
 
 ## 响应性 API
 
