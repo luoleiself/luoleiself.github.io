@@ -208,28 +208,36 @@ console.log(app.config);
     - {boolean} isHydrate
   - 返回值: 根组件实例
 
-  ```javascript
-  <body>
-    <div id='my-app'></div>
-  </body>;
-  import { createApp } from 'vue';
-  const app = createApp({});
-  // 做一些必要的准备
-  app.mount('#my-app');
+  ```html
+  <template>
+    <body>
+      <div id="my-app"></div>
+    </body>
+  </template>
+  <script>
+    import { createApp } from 'vue';
+    const app = createApp({});
+    // 做一些必要的准备
+    app.mount('#my-app');
+  </script>
   ```
 
 - unmount 卸载应用实例的根组件
 
-  ```javascript
-  <body>
-    <div id='my-app'></div>
-  </body>;
-  import { createApp } from 'vue';
-  const app = createApp({});
-  // 做一些必要的准备
-  app.mount('#my-app');
-  // 挂载5秒后，应用将被卸载
-  setTimeout(() => app.unmount(), 5000);
+  ```html
+  <template>
+    <body>
+      <div id="my-app"></div>
+    </body>
+  </template>
+  <script>
+    import { createApp } from 'vue';
+    const app = createApp({});
+    // 做一些必要的准备
+    app.mount('#my-app');
+    // 挂载5秒后，应用将被卸载
+    setTimeout(() => app.unmount(), 5000);
+  </script>
   ```
 
 - provide 设置一个可以被注入到应用范围内所有组件中的值
@@ -367,39 +375,39 @@ console.log(app.config);
   2. 接受一个对象
 
      ```javascript
-      import { defineAsyncComponent } from 'vue'
-      const AsyncComp = defineAsyncComponent({
-        // 工厂函数
-        loader: () => import('./Foo.vue')
-        // 加载异步组件时要使用的组件
-        loadingComponent: LoadingComponent,
-        // 加载失败时要使用的组件
-        errorComponent: ErrorComponent,
-        // 在显示 loadingComponent 之前的延迟 | 默认值：200（单位 ms）
-        delay: 200,
-        // 如果提供了 timeout ，并且加载组件的时间超过了设定值，将显示错误组件
-        // 默认值：Infinity（即永不超时，单位 ms）
-        timeout: 3000,
-        // 定义组件是否可挂起 | 默认值：true
-        suspensible: false,
-        /**
-        *
-        * @param {*} error 错误信息对象
-        * @param {*} retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试
-        * @param {*} fail  一个函数，指示加载程序结束退出
-        * @param {*} attempts 允许的最大重试次数
-        */
-        onError(error, retry, fail, attempts) {
-          if (error.message.match(/fetch/) && attempts <= 3) {
-            // 请求发生错误时重试，最多可尝试 3 次
-            retry()
-          } else {
-            // 注意，retry/fail 就像 promise 的 resolve/reject 一样：
-            // 必须调用其中一个才能继续错误处理。
-            fail()
-          }
+     import { defineAsyncComponent } from 'vue'
+     const AsyncComp = defineAsyncComponent({
+      // 工厂函数
+      loader: () => import('./Foo.vue')
+      // 加载异步组件时要使用的组件
+      loadingComponent: LoadingComponent,
+      // 加载失败时要使用的组件
+      errorComponent: ErrorComponent,
+      // 在显示 loadingComponent 之前的延迟 | 默认值：200（单位 ms）
+      delay: 200,
+      // 如果提供了 timeout ，并且加载组件的时间超过了设定值，将显示错误组件
+      // 默认值：Infinity（即永不超时，单位 ms）
+      timeout: 3000,
+      // 定义组件是否可挂起 | 默认值：true
+      suspensible: false,
+      /**
+      *
+      * @param {*} error 错误信息对象
+      * @param {*} retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试
+      * @param {*} fail  一个函数，指示加载程序结束退出
+      * @param {*} attempts 允许的最大重试次数
+      */
+      onError(error, retry, fail, attempts) {
+        if (error.message.match(/fetch/) && attempts <= 3) {
+          // 请求发生错误时重试，最多可尝试 3 次
+          retry()
+        } else {
+          // 注意，retry/fail 就像 promise 的 resolve/reject 一样：
+          // 必须调用其中一个才能继续错误处理。
+          fail()
         }
-      })
+      }
+     })
      ```
 
 - defineCustomElement
@@ -550,22 +558,27 @@ console.log(app.config);
   - 参数
     - {String} name CSS 模块的名称, 默认为 '$style'
 
-  ```javascript
+  ```html
   <script>
-  import { h, useCssModule } from 'vue'
-  export default {
-    setup () {
-      const style = useCssModule()
-      return () => h('div', {
-        class: style.success
-      }, 'Task complete!')
-    }
-  }
+    import { h, useCssModule } from 'vue';
+    export default {
+      setup() {
+        const style = useCssModule();
+        return () =>
+          h(
+            'div',
+            {
+              class: style.success,
+            },
+            'Task complete!'
+          );
+      },
+    };
   </script>
   <style module>
-  .success {
-    color: #090;
-  }
+    .success {
+      color: #090;
+    }
   </style>
   ```
 
@@ -867,33 +880,33 @@ const Child = {
 - key
 - ref
 
-  ```javascript
-    <template>
-      <div ref="root">This is a root element</div>
-      <div v-for="(item, i) in list" :ref="el => { if (el) divs[i] = el }">
-        {{ item }}
-      </div
-    </template>
-    <script>
-      import { ref, onMounted } from 'vue';
+  ```html
+  <template>
+    <div ref="root">This is a root element</div>
+    <div v-for="(item, i) in list" :ref="el => { if (el) divs[i] = el }">
+      {{ item }}
+    </div
+  </template>
+  <script>
+    import { ref, onMounted } from 'vue';
 
-      export default {
-        setup() {
-          const root = ref(null);
-          const divs = ref([]);
-          // 确保在每次更新之前重置ref
-          onBeforeUpdate(() => {
-            divs.value = [];
-          });
+    export default {
+      setup() {
+        const root = ref(null);
+        const divs = ref([]);
+        // 确保在每次更新之前重置ref
+        onBeforeUpdate(() => {
+          divs.value = [];
+        });
 
-          onMounted(() => {
-            // DOM元素将在初始渲染后分配给ref
-            console.log(root.value); // <div>这是根元素</div>
-          });
-          return { root, divs }
-        }
+        onMounted(() => {
+          // DOM元素将在初始渲染后分配给ref
+          console.log(root.value); // <div>这是根元素</div>
+        });
+        return { root, divs }
       }
-    </script>
+    }
+  </script>
   ```
 
 - is
@@ -925,7 +938,7 @@ const Child = {
     - after-enter/leave/appear
     - enter/leave/appear-cancelled
 
-  ```javascript
+  ```html
   <!-- 单个元素 -->
   <transition>
     <div v-if="ok">toggled content</div>
@@ -956,7 +969,7 @@ const Child = {
     - {String|RegExp|Array} exclude 哪些组件实例不被缓存
     - {String|Number} max 最多可以缓存多少组件实例
 
-  ```javascript
+  ```html
   <!-- 逗号分隔字符串 -->
   <keep-alive include="a,b">
     <component :is="view"></component>
@@ -1166,33 +1179,36 @@ const Child = {
 
   > 它需要一个工厂函数，该函数接收 track 和 trigger 函数作为参数，并且应该返回一个带有 get 和 set 的对象
 
-  ```javascript
-  <input v-model='text' />;
-  function useDebouncedRef(value, delay = 200) {
-    let timeout;
-    return customRef((track, trigger) => {
-      return {
-        get() {
-          track();
-          return value;
-        },
-        set(newValue) {
-          clearTimeout(timeout);
-          timeout = setTimeout(() => {
-            value = newValue;
-            trigger();
-          }, delay);
-        },
-      };
-    });
-  }
-  export default {
-    setup() {
-      return {
-        text: useDebouncedRef('hello'),
-      };
-    },
-  };
+  ```html
+  <template> <input v-model="text" /> </template>
+  <script>
+    function useDebouncedRef(value, delay = 200) {
+      let timeout;
+      return customRef((track, trigger) => {
+        return {
+          get() {
+            track();
+            return value;
+          },
+          set(newValue) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+              value = newValue;
+              trigger();
+            }, delay);
+          },
+        };
+      });
+    }
+
+    export default {
+      setup() {
+        return {
+          text: useDebouncedRef('hello'),
+        };
+      },
+    };
+  </script>
   ```
 
 - shallowRef 创建一个跟踪自身 .value 变化的 ref, 但不会使其值也变成响应式的
@@ -1478,10 +1494,10 @@ app.directive('my-directive', {
 
 - 组件可以包含多个根节点, 需要显示定义 attribute 的位置
 
-  ```javascript
+  ```html
   <template>
     <header>...</header>
-    <main v-bind='$attrs'>...</main>
+    <main v-bind="$attrs">...</main>
     <footer>...</footer>
   </template>
   ```
@@ -1525,21 +1541,23 @@ app.directive('my-directive', {
 
 - 全局 API 现在只能作为 ES 模块构建的命名导出进行访问, Vue 应用程序将从未使用的 api 从最终捆绑包中消除,从而获得最佳的文件大小
 
-  ```javascript
-  <transition>
-    <div v-show='ok'>hello</div>
-  </transition>;
-  import { h, Transition, withDirectives, vShow } from 'vue';
-  export function render() {
-    return h(Transition, [
-      withDirectives(h('div', 'hello'), [[vShow, this.ok]]),
-    ]);
-  }
+  ```html
+  <template>
+    <transition> <div v-show="ok">hello</div> </transition>;
+  </template>
+  <script>
+    import { h, Transition, withDirectives, vShow } from 'vue';
+    export function render() {
+      return h(Transition, [
+        withDirectives(h('div', 'hello'), [[vShow, this.ok]]),
+      ]);
+    }
+  </script>
   ```
 
 ### 内联模板 Attribute 移除
 
-```javascript
+```html
 <my-component inline-template>
   <div>
     <p>它们被编译为组件自己的模板</p>
@@ -1698,21 +1716,19 @@ app.directive('my-directive', {
 - 见指令 v-slot
 - 解构插槽 prop
 
-  ```javascript
-  // 解构并且重命名
-  <todo-list v-slot='{ item: todo }'>
-    <i class='fas fa-check'></i>
-    <span class='green'>{{ todo }}</span>
+  ```html
+  <!-- 解构并且重命名 -->
+  <todo-list v-slot="{ item: todo }">
+    <i class="fas fa-check"></i>
+    <span class="green">{{ todo }}</span>
   </todo-list>
   ```
 
 - 动态插槽名
 
-  ```javascript
+  ```html
   <base-layout>
-    <template v-slot:[dynamicSlotName]>
-      ...
-    </template>
+    <template v-slot:[dynamicSlotName]> ... </template>
   </base-layout>
   ```
 
@@ -1741,54 +1757,66 @@ app.directive('my-directive', {
 
   - Vue 2.0 v-model 只能使用 value 作为 prop, 并接收抛出的 input 事件, 如果使用其他 prop, 必须使用 v-bind.sync 同步
 
-    ```javascript
+    ```html
     <my-component :value="pageTitle" @input="pageTitle = $event" />
-    // 简写方式
+    <!-- 简写方式 -->
     <my-component v-model="pageTitle" />
     ```
 
   - Vue 2.2 增加组件选项 model, 允许自定义 v-model 的 prop 和事件,只能在组件上使用一个 model
 
-    ```javascript
-    <my-component :value="pageTitle" @change="pageTitle = $event" />
-    // 简写方式
-    <my-component v-model="pageTitle" />
-    export default {
-      model: {
-        prop: 'title',
-        event: 'change'
-      },
-      props: {
-        // 这将允许 `value` 属性用于其他用途
-        value: String,
-        // 使用 `title` 代替 `value` 作为 model 的 prop
-        title: {
-          type: String,
-          default: 'Default title'
-        }
-      }
-    }
+    ```html
+    <template>
+      <my-component :value="pageTitle" @change="pageTitle = $event" />
+      <!-- 简写方式 -->
+      <my-component v-model="pageTitle" />
+    </template>
+    <script>
+      export default {
+        model: {
+          prop: 'title',
+          event: 'change',
+        },
+        props: {
+          // 这将允许 `value` 属性用于其他用途
+          value: String,
+          // 使用 `title` 代替 `value` 作为 model 的 prop
+          title: {
+            type: String,
+            default: 'Default title',
+          },
+        },
+      };
+    </script>
     ```
 
   - Vue 2.3 增加 .sync 修饰符
 
-    ```javascript
+    ```html
     <my-component :title="pageTitle" @update:title="pageTitle = $event" />
-    // 简写方式
+    <!-- 简写方式 -->
     <my-component :title.sync="pageTitle" />
     ```
 
   - Vue 3.x v-model 传递 `modelValue` prop 并接收抛出的 `update:modelValue` 事件
 
-    ```javascript
-    <my-component :modelValue="pageTitle" @update:modelValue="pageTitle = $event"/>
-    // 简写方式
+    ```html
+    <my-component
+      :modelValue="pageTitle"
+      @update:modelValue="pageTitle = $event"
+    />
+    <!-- 简写方式 -->
     <my-component v-model="pageTitle" />
 
-    // 修改名称，使用多个 v-model
-    <my-component :title="pageTitle" @update:title="pageTitle = $event" :content="pageContent" @update:content="pageContent = $event"/>
-    // 简写方式
-    <my-component v-model:title="pageTitle" v-model:content="pageContent"/>
+    <!-- 修改名称，使用多个 v-model -->
+    <my-component
+      :title="pageTitle"
+      @update:title="pageTitle = $event"
+      :content="pageContent"
+      @update:content="pageContent = $event"
+    />
+    <!-- 简写方式 -->
+    <my-component v-model:title="pageTitle" v-model:content="pageContent" />
     ```
 
   - migration
@@ -1796,24 +1824,28 @@ app.directive('my-directive', {
     - 所有子组件 .sync 修饰符的替换为 v-model
     - 未带参数的 v-model, 修改子组件的 prop 和 event 命令为 modelValue 和 update:modelValue
 
-    ```javascript
-    <my-component :title.sync="pageTitle" />
-    // 替换为
-    <my-component v-model:title="pageTitle" />
+    ```html
+    <template>
+      <my-component :title.sync="pageTitle" />
+      <!-- 替换为 -->
+      <my-component v-model:title="pageTitle" />
 
-    // 未带参数的 v-model
-    <ChildComponent v-model="pageTitle" />
-    export default {
-      props: {
-        modelValue: String // 以前是`value：String`
-      },
-      emits: ['update:modelValue'],
-      methods: {
-        changePageTitle(title) {
-          this.$emit('update:modelValue', title) // 以前是 `this.$emit('input', title)`
-        }
-      }
-    }
+      <!-- 未带参数的 v-model -->
+      <ChildComponent v-model="pageTitle" />
+    </template>
+    <script>
+      export default {
+        props: {
+          modelValue: String, // 以前是`value：String`
+        },
+        emits: ['update:modelValue'],
+        methods: {
+          changePageTitle(title) {
+            this.$emit('update:modelValue', title); // 以前是 `this.$emit('input', title)`
+          },
+        },
+      };
+    </script>
     ```
 
 - 处理 v-model 修饰符
@@ -1821,40 +1853,48 @@ app.directive('my-directive', {
   - 不带参数: Vue 3.x 通过 modelModifiers 提供给 prop
   - 带参数: 生成的 prop 名称将为 arg + 'Modifiers'
 
-  ```javascript
-  // 不带参数的 v-model
-  <my-component v-model.capitalize="myText" />
-  app.component('my-component', {
-    props: {
-      modelValue: String,
-      modelModifiers: {
-        default: () => ({})
-      }
-    },
-    emits: ['update:modelValue'],
-    template: `
+  ```html
+  <template>
+    <!-- 不带参数的 v-model -->
+    <my-component v-model.capitalize="myText" />
+  </template>
+  <script>
+    app.component('my-component', {
+      props: {
+        modelValue: String,
+        modelModifiers: {
+          default: () => ({}),
+        },
+      },
+      emits: ['update:modelValue'],
+      template: `
       <input type="text"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)">
     `,
-    created() {
-      console.log(this.modelModifiers) // { capitalize: true }
-    }
-  });
-  // 带参 v-model
-  <my-component v-model:description.capitalize="myText" />
-  app.component('my-component', {
-    props: ['description', 'descriptionModifiers'],
-    emits: ['update:description'],
-    template: `
+      created() {
+        console.log(this.modelModifiers); // { capitalize: true }
+      },
+    });
+  </script>
+  <template>
+    <!-- 带参 v-model -->
+    <my-component v-model:description.capitalize="myText" />
+  </template>
+  <script>
+    app.component('my-component', {
+      props: ['description', 'descriptionModifiers'],
+      emits: ['update:description'],
+      template: `
       <input type="text"
         :value="description"
         @input="$emit('update:description', $event.target.value)">
     `,
-    created() {
-      console.log(this.descriptionModifiers) // { capitalize: true }
-    }
-  })
+      created() {
+        console.log(this.descriptionModifiers); // { capitalize: true }
+      },
+    });
+  </script>
   ```
 
 ### v-if 与 v-for 的优先级对比
@@ -1882,35 +1922,31 @@ app.directive('my-directive', {
 - 2.x
 
 ```html
-<template>
-  <child-component @hook:updated="onUpdated">
-</template>
+<child-component @hook:updated="onUpdated"></child-component>
 ```
 
 - 3.x
   - 绝大多数情况下只需要修改前缀. 生命周期钩子 beforeDestroy 和 destroyed 已经分别被重命名为 beforeUnmount 和 unmounted,所以相应的事件名也需要更新
 
 ```html
-<template>
-  <child-component @vnode-updated="onUpdated">
-</template>
+<child-component @vnode-updated="onUpdated"></child-component>
 <!-- 或者使用驼峰命名法 -->
-<template>
-  <child-component @vnodeUpdated="onUpdated">
-</template>
+<child-component @vnodeUpdated="onUpdated"></child-component>
 ```
 
 ### Watch on Arrays
 
 > 当侦听一个数组时，只有当数组被替换时才会触发回调。如果你需要在数组改变时触发回调，必须指定 deep 选项
 
-```js
-watch: {
-  bookList: {
-    handler(val, oldVal) {
-      console.log('book list changed')
+```javascript
+export default {
+  watch: {
+    bookList: {
+      handler(val, oldVal) {
+        console.log('book list changed');
+      },
+      deep: true,
     },
-    deep: true
   },
-}
+};
 ```
