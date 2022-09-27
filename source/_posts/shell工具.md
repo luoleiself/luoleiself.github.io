@@ -58,35 +58,58 @@ tags:
   - substr(r, p) 返回字符串 s 中从 p 开始的后缀部分
   - substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分
 
-#### 批量删除本地关联的 git 远程分支
+### xargs
+
+- -t 执行命令之前先打印执行命令
+- -n 指定传递给执行命令的参数个数, 默认是所有
+- -I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数
+- -p 每执行一个 argument 时询问一次用户
+- -a file 从文件中读入作为 stdin
+- -s num 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
+
+```bash
+echo "file1 file2 file3"| xargs -t -I % sh -c 'touch %;ls -l %'
+sh -c touch file1 file2 file3;ls -l file1 file2 file3
+```
+
+- -d 设置自定义分隔符
+
+```bash
+echo -n file1#file2#file3#file4|xargs -d \# -t touch
+touch file1 file2 file3 file4
+```
+
+### grep
+
+- -V,\-\-version 显示版本信息
+- -c,\-\-count 统计符合字符串条件的行数
+- -i,\-\-ignore-case 忽略大小写
+- -e,\-\-regexp=PATTERN 使用正则表达式匹配
+- -E,\-\-extended-regexp 使用扩展正则表达式匹配(ERE)
+- -G,\-\-basic-regexp 使用基础正则表达式(BRE)
+- -A{NUM},\-\-after-context=NUM 查找某些字符的内容, 并向下延伸 `NUM` 行
+- -B{NUM},\-\-before-context=NUM 查找某些字符的内容, 并向上延伸 `NUM` 行
+- -C{NUM},\-\-context=NUM 查找某些字符的内容, 并向上和向下各延伸 `NUM` 行
+- -f File,\-\-file=File 从文件中提取模板
+- -h,\-\-no-filename 当搜索多个文件时, 不显示匹配文件名前缀
+- -o,\-\-only-matching 只显示正则表达式匹配的部分
+- -q,\-\-quiet 取消显示,只返回退出状态, `0` 表示找到了匹配的行
+- -l,\-\-files-with-matches 打印匹配模板的文件清单
+- -L,\-\-files-without-match 打印不匹配模板的文件清单
+- -n,\-\-line-number 在匹配的行前面打印行号
+- -v,\-\-invert-match 显示不包括文本的所有信息
+- -R,-r,\-\-recursive 递归的读取目录下的所有文件,包括子目录
+
+### 批量删除本地关联的 git 远程分支
 
 - awk 和 xargs 命令结合使用
 
-  - xargs -t 执行命令之前先打印执行命令
-  - xargs -n 指定传递给执行命令的参数个数, 默认是所有
-  - xargs -I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数
-  - xargs -p 每执行一个 argument 时询问一次用户
-  - xargs -a file 从文件中读入作为 stdin
-  - xargs -s num 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
-
-    ```bash
-    echo "file1 file2 file3"| xargs -t -I % sh -c 'touch %;ls -l %'
-    sh -c touch file1 file2 file3;ls -l file1 file2 file3
-    ```
-
-  - xargs -d 设置自定义分隔符
-
-    ```bash
-    echo -n file1#file2#file3#file4|xargs -d \# -t touch
-    touch file1 file2 file3 file4
-    ```
-
-- 不带主机名的过滤
+- 不带远程名称的过滤
 
 ```bash
 # 格式化输出所有本地关联的分支名
 $ git branch -r | \
-  grep 'origin/feature*' | \
+  grep -i 'origin/feature*' | \
   awk '{FS="/"; \
     printf "FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n",FS,OFS,NF,NR,$0,$1; \
   }'
@@ -109,8 +132,8 @@ FS    / OFS      NF    2 NR    7 $0   origin/feature_BUSINESS-0707 $1   origin
 # 执行删除分支操作
 # BEGIN{printf "\nawk begin filtering\n\n";}END{printf "\ndelete successfully\n";}
 $ git branch -r | \
-  grep 'origin/revert*' | \
-  awk '{printf "%4s\n",$0;}' | \
+  grep -i 'origin/revert*' | \
+  awk '{printf "%4s\n",$0;}' | \  # awk '{printf $0 "\n";}'
   xargs -t -I {} git branch -dr {}
 Deleted remote-tracking branch origin/revert-0946083d (was 795de8b941).
 Deleted remote-tracking branch origin/revert-4835d8ea (was eac88d3e28).
