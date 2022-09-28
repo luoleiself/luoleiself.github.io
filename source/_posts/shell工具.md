@@ -81,11 +81,24 @@ touch file1 file2 file3 file4
 
 ### grep
 
+> BRE 定义了 4 组元字符 `[ ]` `.` `^` `$`
+> ERE 增加了 3 组元字符 `{ }` `()` `|`
+
 - -V,\-\-version 显示版本信息
 - -c,\-\-count 统计符合字符串条件的行数
 - -i,\-\-ignore-case 忽略大小写
 - -e,\-\-regexp=PATTERN 使用正则表达式匹配
+
+  ```bash
+  grep -i -e "foo\|bar" # 使用 -e 参数 需要将正则中的部分字符转义才能使用
+  ```
+
 - -E,\-\-extended-regexp 使用扩展正则表达式匹配(ERE)
+
+  ```bash
+  grep -i -E "foo|bar" # 此处不需要进行字符转义
+  ```
+
 - -G,\-\-basic-regexp 使用基础正则表达式(BRE)
 - -A{NUM},\-\-after-context=NUM 查找某些字符的内容, 并向下延伸 `NUM` 行
 - -B{NUM},\-\-before-context=NUM 查找某些字符的内容, 并向上延伸 `NUM` 行
