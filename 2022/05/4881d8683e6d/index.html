@@ -28,7 +28,7 @@
 <meta property="og:description" content="awk内建变量 OFMT 输出数字格式(默认%.6g)  CONVFMT 数字转换格式(默认值为%.6g)ENVIRON 环境变量关联数组  ENVIRON 数组, 存储当前系统的环境变量, ENVIRON[‘PATH’]  ERRNO 最后一个系统错误的描述  FILENAME 当前正在处理的文件名  FIELDWIDTHS 以空格分隔的字段宽度  PROCINFO 数组, 存储当前系统运行时信">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-31T06:40:43.000Z">
-<meta property="article:modified_time" content="2022-09-27T10:54:46.101Z">
+<meta property="article:modified_time" content="2022-09-28T11:27:01.661Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="shell">
@@ -239,7 +239,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-27 18:54:46" itemprop="dateModified" datetime="2022-09-27T18:54:46+08:00">2022-09-27</time>
+                <time title="修改时间：2022-09-28 19:27:01" itemprop="dateModified" datetime="2022-09-28T19:27:01+08:00">2022-09-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -260,7 +260,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>4k</span>
+              <span>4.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -365,24 +365,42 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> -n file1<span class="comment">#file2#file3#file4|xargs -d \# -t touch</span></span><br><span class="line"><span class="built_in">touch</span> file1 file2 file3 file4</span><br></pre></td></tr></table></figure>
 
 <h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><ul>
-<li>-V,--version 显示版本信息</li>
-<li>-c,--count 统计符合字符串条件的行数</li>
-<li>-i,--ignore-case 忽略大小写</li>
-<li>-e,--regexp=PATTERN 使用正则表达式匹配</li>
-<li>-E,--extended-regexp 使用扩展正则表达式匹配(ERE)</li>
-<li>-G,--basic-regexp 使用基础正则表达式(BRE)</li>
-<li>-A{NUM},--after-context=NUM 查找某些字符的内容, 并向下延伸 <code>NUM</code> 行</li>
-<li>-B{NUM},--before-context=NUM 查找某些字符的内容, 并向上延伸 <code>NUM</code> 行</li>
-<li>-C{NUM},--context=NUM 查找某些字符的内容, 并向上和向下各延伸 <code>NUM</code> 行</li>
-<li>-f File,--file=File 从文件中提取模板</li>
-<li>-h,--no-filename 当搜索多个文件时, 不显示匹配文件名前缀</li>
-<li>-o,--only-matching 只显示正则表达式匹配的部分</li>
-<li>-q,--quiet 取消显示,只返回退出状态, <code>0</code> 表示找到了匹配的行</li>
-<li>-l,--files-with-matches 打印匹配模板的文件清单</li>
-<li>-L,--files-without-match 打印不匹配模板的文件清单</li>
-<li>-n,--line-number 在匹配的行前面打印行号</li>
-<li>-v,--invert-match 显示不包括文本的所有信息</li>
-<li>-R,-r,--recursive 递归的读取目录下的所有文件,包括子目录</li>
+<li><p>-V,--version 显示版本信息</p>
+</li>
+<li><p>-c,--count 统计符合字符串条件的行数</p>
+</li>
+<li><p>-i,--ignore-case 忽略大小写</p>
+</li>
+<li><p>-e,--regexp=PATTERN 使用正则表达式匹配</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -i -e <span class="string">&quot;foo\|bar&quot;</span> <span class="comment"># 使用 -e 参数 需要将正则中的部分字符转义才能使用</span></span><br></pre></td></tr></table></figure></li>
+<li><p>-E,--extended-regexp 使用扩展正则表达式匹配(ERE)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -i -E <span class="string">&quot;foo|bar&quot;</span> <span class="comment"># 此处不需要进行字符转义</span></span><br></pre></td></tr></table></figure></li>
+<li><p>-G,--basic-regexp 使用基础正则表达式(BRE)</p>
+</li>
+<li><p>-A{NUM},--after-context=NUM 查找某些字符的内容, 并向下延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-B{NUM},--before-context=NUM 查找某些字符的内容, 并向上延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-C{NUM},--context=NUM 查找某些字符的内容, 并向上和向下各延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-f File,--file=File 从文件中提取模板</p>
+</li>
+<li><p>-h,--no-filename 当搜索多个文件时, 不显示匹配文件名前缀</p>
+</li>
+<li><p>-o,--only-matching 只显示正则表达式匹配的部分</p>
+</li>
+<li><p>-q,--quiet 取消显示,只返回退出状态, <code>0</code> 表示找到了匹配的行</p>
+</li>
+<li><p>-l,--files-with-matches 打印匹配模板的文件清单</p>
+</li>
+<li><p>-L,--files-without-match 打印不匹配模板的文件清单</p>
+</li>
+<li><p>-n,--line-number 在匹配的行前面打印行号</p>
+</li>
+<li><p>-v,--invert-match 显示不包括文本的所有信息</p>
+</li>
+<li><p>-R,-r,--recursive 递归的读取目录下的所有文件,包括子目录</p>
+</li>
 </ul>
 <h3 id="批量删除本地关联的-git-远程分支"><a href="#批量删除本地关联的-git-远程分支" class="headerlink" title="批量删除本地关联的 git 远程分支"></a>批量删除本地关联的 git 远程分支</h3><ul>
 <li><p>awk 和 xargs 命令结合使用</p>
