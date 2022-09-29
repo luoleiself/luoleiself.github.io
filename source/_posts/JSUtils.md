@@ -226,7 +226,7 @@ const calcImgRatio = function (width, height) {
  * @param {String} param1.timeSeparator 时间部分分隔符, 默认 :
  * @returns
  */
-function dateFormat(paramDate, { type = 0, isShowSeparator = true, dateSeparator = '-', timeSeparator = ':' } = {}) {
+function dateFormat(paramDate, { type = 0, isShowSeparator = true, dateSeparator = '/', timeSeparator = ':' } = {}) {
   let _date = null;
   if (Object.prototype.toString.call(paramDate) == '[object Date]') {
     _date = paramDate;
