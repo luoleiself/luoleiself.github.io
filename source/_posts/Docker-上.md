@@ -22,14 +22,14 @@ tags:
 
   - 将当前用户加入到 docker 组中
 
-```shell
+```bash
 [root@localhost ~]# cat /etc/group | grep docker
 docker:x:994:vagrant
 [root@localhost ~]# cat /etc/gshadow | grep docker
 docker:!::vagrant
 ```
 
-```shell
+```bash
 groupadd docker # 添加 docker 用户组
 gpasswd -a $USER docker # 添加登陆用户到 docker 用户组中
 newgrp docker # 更新用户组
@@ -70,21 +70,21 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 
 ### 镜像导入和导出
 
-```shell
+```bash
 [root@localhost ~]# docker [image] save -o  # 归档一个或多个镜像文件
 [root@localhost ~]# docker [image] load -i  # 从归档文件加载镜像文件
 ```
 
 ### 批量删除多个镜像
 
-```shell
+```bash
 docker rmi -f $(docker images -aq)
 docker image rm -f $(docker image ls -aq) # 功能同上
 ```
 
 ### 从容器构建镜像
 
-```shell
+```bash
 docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]] # 从容器构建镜像, 提交到本地仓库
 ```
 
@@ -92,7 +92,7 @@ docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]] # 从容器构建镜像, �
 - -m, \-\-message 提交信息
 - -p, \-\-pause 提交过程中是否中断容器运行, 默认为 true
 
-```shell
+```bash
 [root@localhost ~]# docker images  # 显示所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
 nginx        latest    12766a6745ee   2 days ago     142MB
@@ -133,7 +133,7 @@ centos       latest    5d0da3dc9764   6 months ago    231MB
 - \-\-network 设置构建过程中 `RUN` 指令的网络模式
 - \-\-build-arg 通过命令行设置构建镜像过程中的参数, 可以覆盖 `ARG` 设置的参数
 
-```shell
+```bash
 docker build -f /path/to/Dockerfile -t name:tag .
 ```
 
@@ -143,7 +143,7 @@ docker build -f /path/to/Dockerfile -t name:tag .
 
 - 应用容器化 将应用整合到容器中并且运行起来的这个过程
 
-```shell
+```bash
 [root@localhost ~]# docker ps -a # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                   PORTS     NAMES
 a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago             vigorous_turing
@@ -174,7 +174,7 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
 - export 导出容器为归档文件
 - wait 阻塞一个或多个容器直到停止运行, 并打印容器的退出码
 
-```shell
+```bash
 [root@localhost ~]# docker wait centos01 # 阻塞一个或多个容器直到停止运行, 并打印容器的退出码
 0
 ```
@@ -185,7 +185,7 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
 
 如果本地不存在镜像时则先从远程拉取镜像(docker pull 镜像名)
 
-```shell
+```bash
 docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命令
 ```
 
@@ -216,11 +216,11 @@ docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命�
 
 - \-\-rm 测试时临时运行容器关闭后自动删除容器
 
-```shell
+```bash
 docker run -d --rm -p 6666:80 --name nginx01 nginx
 ```
 
-```shell
+```bash
 [root@localhost ~]# docker images # 查看本地所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
 nginx        latest    12766a6745ee   44 hours ago   142MB
@@ -253,7 +253,7 @@ a441e0564165   centos    "/bin/bash"   29 hours ago   Up 28 minutes             
 
 - 示例：最简单的 nginx 服务集群
 
-```shell
+```bash
 [root@localhost ~]# docker images # 查看所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
 nginx        latest    12766a6745ee   3 days ago     142MB
@@ -299,7 +299,7 @@ Accept-Ranges: bytes
   - 进入容器打开正在运行的终端
   - 退出容器, 容器自动停止
 
-```shell
+```bash
 [root@localhost ~]# docker ps -a # 查看所有容器信息
 CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES
 a441e0564165   centos    "/bin/bash"   25 hours ago   Up 31 minutes             vigorous_turing
@@ -324,11 +324,11 @@ a441e0564165   centos    "/bin/bash"   25 hours ago   Exited (0) 2 seconds ago  
 
 #### 拷贝宿主机到容器内
 
-```shell
+```bash
 docker cp [宿主机路径] [容器标识]:[容器内路径]
 ```
 
-```shell
+```bash
 # 拷贝宿主机文件到 a441e0564165 /user/local 下
 [root@localhost ~]# docker cp -a .nvm/versions/node/v12.22.1/ a441e0564165:/usr/local/v12.22.1/
 [root@localhost ~]# docker exec -it a441e0564165 ls /usr/local
@@ -337,11 +337,11 @@ bin  etc  games  include  lib  lib64  libexec  sbin  share  src  v12.22.1
 
 #### 拷贝容器内到宿主机
 
-```shell
+```bash
 docker cp [容器标识]:[容器内路径] [宿主机路径]
 ```
 
-```shell
+```bash
 [root@localhost ~]# ls /home/
 ubuntu  vagrant
 
@@ -362,7 +362,7 @@ centos01  description-pak  hello.txt
 - -e 运行容器时指定环境变量
 - -w 容器工作目录
 
-```shell
+```bash
 [root@localhost ~]# docker exec -it -e PATH=/usr/local/v12.22.1/bin:$PATH centos01 node -v
 v12.22.1
 [root@localhost ~]# docker exec -it -w /usr/local centos01  pwd
@@ -375,7 +375,7 @@ v12.22.1
 
 - import 从归档文件中导入为镜像文件
 
-```shell
+```bash
 [root@localhost ~]# docker [container] export -o centos01.tar.gz centos01 # 归档容器
 
 # 导入归档文件为镜像
@@ -386,13 +386,13 @@ v12.22.1
 
 ### 删除所有容器
 
-```shell
+```bash
 docker rm -f $(docker ps -aq)
 ```
 
 ### 查看容器资源使用情况统计
 
-```shell
+```bash
 docker stats
 
 [root@localhost ~]# docker stats
@@ -439,7 +439,7 @@ a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB
 
 指定 docker 挂载区域, Docker 管理宿主机文件系统的一部分(/var/lib/docker/volumes)
 
-```shell
+```bash
 docker volume create [OPTIONS] [VOLUME] # 创建数据卷
 docker run --mount type=volume,source=${PWD}/${CONTAINER_NAME}/app,destination=/app centos01 /bin/bash
 docker run -v ${PWD}/${CONTAINER_NAME}/app:/app # 作用同上一行
@@ -449,7 +449,7 @@ docker run -v ${PWD}/${CONTAINER_NAME}/app:/app # 作用同上一行
 
 是宿主机任意文件系统, 可以存储在宿主机系统的任意位置
 
-```shell
+```bash
 docker run --mount type=bind,source=${PWD}/${CONTAINER_NAME}/app,destination=/app centos01 /bin/bash
 # 如果挂载到容器中的非空目录, 则会隐藏容器中非空目录中的文件
 docker run -v ${PWD}/${CONTAINER_NAME}/app:/app # 作用同上一行
@@ -459,7 +459,7 @@ docker run -v ${PWD}/${CONTAINER_NAME}/app:/app # 作用同上一行
 
 是临时挂载 放在内存, 挂载存储在宿主机系统的内存中, 不会写入宿主机的文件系统
 
-```shell
+```bash
 docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 ```
 
@@ -471,7 +471,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 
 ##### -v 容器内路径 匿名挂载 <em id="nimingguazai"></em>
 
-```shell
+```bash
 [root@localhost ~]# docker run -tid --name centos01 -v /centosVolume centos /bin/bash
 [root@localhost ~]# docker container inspect centos01
 "Mounts": [
@@ -492,7 +492,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 
 - 如果 `不需要` 对容器内的数据卷挂载点进行 `写操作` 时, 使用具名挂载方式备份容器内数据到宿主机中
 
-```shell
+```bash
 [root@localhost ~]# docker run -tid --name centos02 -v summary:/myVolume centos /bin/bash
 [root@localhost ~]# docker container inspect centos02
 "Mounts": [
@@ -513,7 +513,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 
 - 如果 `需要` 对容器内的数据卷挂载点进行 `写操作` 时, 使用指定路径挂载方式, 此方式会将宿主机中的数据卷挂载点数据覆盖容器内指定路径
 
-```shell
+```bash
 [root@localhost ~]# docker run -tid --name centos03 -v ${PWD}/react-app/:/containerVolume centos /bin/bash
 [root@localhost ~]# docker container inspect centos03
 "Mounts": [
@@ -532,7 +532,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 
 ##### \-\-mount 具名挂载
 
-```shell
+```bash
 [root@localhost ~]# docker run -tid --name centos04 --mount type=volume,source=applet_ui,destination=/appletVolume centos /bin/bash
 [root@localhost ~]# docker container inspect centos04
 "Mounts": [
@@ -551,7 +551,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 
 ##### \-\-mount 指定路径挂载
 
-```shell
+```bash
 [root@localhost ~]# docker run -tid --name centos05 --mount type=bind,source=${PWD}/applet_uni,destination=/uniVolume centos /bin/bash
 [root@localhost ~]# docker container inspect centos05
 "Mounts": [
@@ -570,7 +570,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 
 - \-\-volumes-from 创建数据卷容器共享数据
 
-```shell
+```bash
 # 创建容器并挂载数据卷
 [root@localhost ~]# docker run -tid --name centos01 -v /home/vagrant/centos01:/home/vagrant/centos01 centos /bin/bash
 # 容器数据卷共享数据
@@ -707,7 +707,7 @@ FROM ubuntu
 CMD ['/bin/bash', 'cat', '/etc/hosts']
 ```
 
-```shell
+```bash
 # /bin/bash ls -al 命令会整体替换 Dockerfile 中的 CMD 指令
 docker run -it ubuntu /bin/bash ls -al
 
@@ -724,7 +724,7 @@ FROM ubuntu
 ENTRYPOINT ['/bin/bash', 'ls', '-l']
 ```
 
-```shell
+```bash
 # run 后面的参数作为 ENTRYPOINT 配置项命令参数的一部分
 docker run -it ubuntu -a
 
@@ -781,7 +781,7 @@ CMD ["cat", "/usr/local/hello.txt"]   # 容器运行时执行的命令
 
 #### 构建镜像
 
-```shell
+```bash
 # 构建镜像并指定镜像名称和版本号, 最后的 . 很重要,表示在当前目录下进行构建, 可以使用
 [root@localhost workspace]# docker build -t hello:v1.0 .
 Sending build context to Docker daemon  3.072kB
@@ -816,7 +816,7 @@ hello docker
 
 ##### 镜像配置信息
 
-```shell
+```bash
 [root@localhost workspace]# docker image inspect hello:v1.0
 ...
 "Config": {
@@ -839,7 +839,7 @@ hello docker
 
 ##### 镜像历史信息
 
-```shell
+```bash
 [root@localhost workspace]# docker image history hello:v1.0
 IMAGE          CREATED          CREATED BY                                      SIZE      COMMENT
 4cd89659cce0   25 minutes ago   /bin/sh -c #(nop)  CMD ["cat" "/usr/local/he…   0B
@@ -854,7 +854,7 @@ eeb6ee3f44bd   7 months ago     /bin/sh -c #(nop)  CMD ["/bin/bash"]            
 
 #### 查看容器状态
 
-```shell
+```bash
 [root@localhost workspace]# docker container inspect hello-v1
 ...
 "Mounts": [

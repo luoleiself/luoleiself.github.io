@@ -201,3 +201,16 @@ scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/
 # 拷贝目录
 scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 ```
+
+### firewall-cmd 防火墙
+
+- \-\-permanent # 永久修改
+- \-\-reload # 重新加载防火墙配置
+
+```bash
+[root@centos7 ~]firewall-cmd --list-all # 显示所有信息
+[root@centos7 ~]firewall-cmd --list-ports # 显示端口信息
+[root@centos7 ~]firewall-cmd --remove-ports=<port>/<protocol> # 显示端口信息
+
+[root@centos7 ~]firewall-cmd --add-port=<port>/<protocol> --permanent # 永久修改防火墙配置
+```
