@@ -125,8 +125,8 @@ centos       latest    5d0da3dc9764   6 months ago    231MB
 
 . 上下文路径
 
-- -f 指定配置文件, 默认 PATH/Dockerfile
-- -t 创建镜像命名
+- -f 指定配置文件, 默认 PWD/Dockerfile
+- -t 指定新创建的镜像名称和标签
 - \-\-no-cache 构建镜像时不使用缓存
 - \-\-compress 使用 gzip 压缩构建上下文环境
 - \-\-label 设置镜像元数据
@@ -191,7 +191,8 @@ docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命�
 
 - \-\-name 容器名称
 - -d 后台方式运行
-- -it 指定交互方式运行
+- -i,\-\-interactive 即使没有附加也保持 STDIN 打开, 如果需要执行命令则需要开启这个选项
+- -t,\-\-tty 分配一个伪终端进行执行, 一个连接用户的终端与容器 stdin 和 stdout 的桥梁
 - -P 将容器内部使用的网络端口映射到宿主机随机端口上
 - -p 指定容器的端口
 

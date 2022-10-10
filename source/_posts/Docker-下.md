@@ -615,6 +615,7 @@ services:
       dockerfile: Dockerfile  # 指定构建镜像的配置文件名称
     ports: # 端口映射
       - '5000:5000'
+      - '0.0.0.0:80:80/tcp' # 指定端口映射的 ip 地址和 协议, 或者可以修改 /etc/docker/daemon.json 配置项 "ipv6": false 
     privileged: true   # 配置容器目录权限
     read_only: true    # 设计容器文件系统模式
     restart: always    # 定义容器重启模式
