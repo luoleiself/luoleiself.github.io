@@ -36,6 +36,10 @@ const {
 
 ### 钩子分类
 
+#### 参数
+
+所有 Hook 构造函数都接收一个由参数名称为字符串组成的列表作为可选参数
+
 #### 执行方式
 
 ##### Basic Hook (基础)
@@ -48,11 +52,11 @@ const {
 
 ##### Bail (保证)
 
-钩子函数执行中, 只要其中有一个钩子返回 非 undefined 时, 则剩余的钩子函数不再执行
+钩子函数执行中, 只要其中有一个钩子返回 非 `undefined` 时, 则剩余的钩子函数不再执行
 
 ##### Loop (循环)
 
-循环执行钩子, 当循环钩子函数返回 非 undefined 时, 则从第一个钩子重新启动, 直到所有的钩子返回 undefined 时结束
+循环执行钩子, 当循环钩子函数返回 非 `undefined` 时, 则从第一个钩子重新启动, 直到所有的钩子返回 `undefined` 时结束
 
 <!-- more -->
 
@@ -60,7 +64,7 @@ const {
 
 ##### Sync 同步
 
-同步钩子只能使用 tap 注册钩子, 使用 call | callAsync 调用钩子
+同步钩子只能使用 `tap` 注册钩子, 使用 `call` | `callAsync` 调用钩子
 
 ```javascript
 myHooks.tap('x', () => {});
@@ -70,7 +74,7 @@ myHooks.callAsync('x', () => {});
 
 ##### AsyncSeries 异步串行
 
-异步串行钩子可以使用 tap | tapSync | tapPromise 注册钩子, 使用 call | callAsync | promise 调用钩子
+异步串行钩子可以使用 `tap` | `tapAsync` | `tapPromise` 注册钩子, 使用 `call` | `callAsync` | `promise` 调用钩子
 
 ```javascript
 myHooks.tapAsync('x', (callback) => {
@@ -81,7 +85,7 @@ myHooks.callAsync('x', () => {});
 
 ##### AsyncParallel 异步并行
 
-异步并行钩子可以使用 tap | tapSync | tapPromise 注册钩子, 使用 call | callAsync | promise 调用钩子
+异步并行钩子可以使用 `tap` | `tapAsync` | `tapPromise` 注册钩子, 使用 `call` | `callAsync` | `promise` 调用钩子
 
 ```javascript
 myHooks.tapPromise('x', () => {
@@ -98,30 +102,34 @@ myHooks.promise('x').then((res) => {});
 
 ##### SyncHook
 
-钩子函数依次全部执行，如果有 hook 回调，则最后执行
+钩子函数依次全部执行, 如果有 hook 回调, 则最后执行
 
 ```javascript
 const { SyncHook } = require('tapable');
 
-const syncHook = new SyncHook(['name']);
+var syncHook = new SyncHook(['name', 'age']);
 // 钩子函数依次全部执行，如果有 hook 回调，则最后执行
-syncHook.tap('x', (name) => {
-  console.log('x done ', name);
+syncHook.tap('x', (name, age) => {
+  console.log('x done ', name, age);
 });
-syncHook.tap('y', (name) => {
-  console.log('y done ', name);
+syncHook.tap('y', (name, age) => {
+  console.log('y done ', name, age);
 });
-syncHook.call('call');
-syncHook.callAsync('callAsync', () => {
-  console.log('syncHook.callAsync');
+syncHook.call('call', 18, () => {
+  console.log(
+    'syncHook.call callback 此处不执行, call 传入参数个数大于构造函数参数列表长度的会被忽略'
+  );
+});
+syncHook.callAsync('callAsync', 19, () => {
+  console.log('syncHook.callAsync callback');
 });
 /*
 $ node SyncHook.js
-x done  call
-y done  call
-x done  callAsync
-y done  callAsync
-syncHook.callAsync
+x done  call 18
+y done  call 18
+x done  callAsync 19
+y done  callAsync 19
+syncHook.callAsync callback
 */
 // 模拟 SyncHook 类
 class MySyncHook {
@@ -147,7 +155,7 @@ class MySyncHook {
 
 ##### SyncBailHook
 
-钩子函数依次执行, 如果某个钩子函数的返回值为 非 undefined，则后面的钩子不再执行，如果有 hook 回调，则最后执行
+钩子函数依次执行, 如果某个钩子函数的返回值为 非 `undefined`, 则后面的钩子不再执行, 如果有 hook 回调, 则最后执行
 
 ```javascript
 const { SyncBailHook } = require('tapable');
@@ -158,18 +166,19 @@ syncBailHook.tap('x', (name) => {
   console.log('x done ', name);
   return 'undefined'; // 返回值为非 undefined 不再执行其他 hooks
 });
+// 此 hook 不会被执行
 syncBailHook.tap('y', (name) => {
   console.log('y done ', name);
 });
 syncBailHook.call('call');
 syncBailHook.callAsync('callAsync', () => {
-  console.log('syncBailHook.callAsync');
+  console.log('syncBailHook.callAsync callback');
 });
 /*
 $ node SyncBailHook.js
 x done  call
 x done  callAsync
-syncBailHook.callAsync
+syncBailHook.callAsync callback
 */
 // 模拟 SyncBailHook 类
 class MySyncBailHook {
@@ -201,26 +210,26 @@ class MySyncBailHook {
 ```javascript
 const { SyncWaterfallHook } = require('tapable');
 
-const syncWaterfallHook = new SyncWaterfallHook(['name']);
+var syncWaterfallHook = new SyncWaterfallHook(['name']);
 // 钩子函数依次全部执行，上一个钩子函数的返回值作为下一个钩子函数的参数，如果有 hook 回调，则最后执行
 syncWaterfallHook.tap('x', (name) => {
   console.log('x done ', name);
-  return `${name} from x...`;
+  return `from x...${name}`;
 });
 syncWaterfallHook.tap('y', (name) => {
   console.log('y done ', name);
 });
 syncWaterfallHook.call('call');
 syncWaterfallHook.callAsync('callAsync', () => {
-  console.log('syncWaterfallHook.callAsync');
+  console.log('syncWaterfallHook.callAsync callback');
 });
 /*
 $ node SyncWaterfallHook.js
 x done  call
-y done  call from x...
+y done  from x...call
 x done  callAsync
-y done  callAsync from x...
-syncWaterfallHook.callAsync
+y done  from x...callAsync
+syncWaterfallHook.callAsync callback
 */
 // 模拟 SyncWaterfallHook 类
 class MySyncWaterfallHook {
@@ -244,7 +253,7 @@ class MySyncWaterfallHook {
 
 ##### SyncLoopHook
 
-钩子函数依次全部执行，当循环钩子中回调函数返回非 undefined 时，钩子将从第一个重新启动，直到所有的钩子返回非 undefined 时结束 如果有 hook 回调，则最后执行
+钩子函数依次全部执行,当循环钩子中回调函数返回 非 `undefined` 时, 钩子将从第一个重新启动,直到所有的钩子返回 非 `undefined` 时结束 如果有 hook 回调, 则最后执行
 
 ```javascript
 const { SyncLoopHook } = require('tapable');
@@ -255,29 +264,29 @@ syncLoopHook.tap('x', (name) => {
   let flag = Math.floor(Math.random() * 10);
   if (flag > 5) {
     console.log('x done ', name, flag);
-    return undefined;
+    return undefined; // 执行此处时, 执行下一个 y
   } else {
     console.log('x loop ', name, flag);
-    return 'undefined';
+    return 'undefined'; // 执行此处时, 重置并从 x 重新执行
   }
 });
 syncLoopHook.tap('y', (name) => {
   let flag = Math.floor(Math.random() * 15);
   if (flag > 10) {
     console.log('y done ', name, flag);
-    return undefined;
+    return undefined; // 执行此处时, 执行下一个 z
   } else {
     console.log('y loop ', name, flag);
-    return 'undefined';
+    return 'undefined'; // 执行此处时, 重置并从 x 重新执行
   }
 });
 syncLoopHook.tap('z', (name) => {
   console.log('z done ', name);
-  return undefined;
+  return undefined; // 此处返回固定值 undefined 执行下一个 hook
 });
 syncLoopHook.call('call');
 syncLoopHook.callAsync('callAsync', () => {
-  console.log('syncLoopHook.callAsync');
+  console.log('syncLoopHook.callAsync callback');
 });
 /*
 $ node SyncLoopHook.js
@@ -298,7 +307,7 @@ x loop  callAsync 2
 x done  callAsync 8
 y done  callAsync 13
 z done  callAsync
-syncLoopHook.callAsync
+syncLoopHook.callAsync callback
 */
 // 模拟 SyncLoopHook 类
 class MySyncLoopHook {
@@ -329,7 +338,7 @@ class MySyncLoopHook {
 
 ##### AsyncParallelHook
 
-钩子函数异步并行全部执行，所有钩子回调执行完后，hook 回调执行
+钩子函数异步并行全部执行, 所有钩子回调执行完后, hook 回调执行
 
 ```javascript
 const { AsyncParallelHook } = require('tapable');
@@ -769,7 +778,10 @@ key1-y  call
 // 示例:
 const { MultiHook, SyncHook, SyncBailHook } = require('tapable');
 
-const multiHook = new MultiHook([new SyncHook(['name']), new SyncBailHook(['name'])]);
+const multiHook = new MultiHook([
+  new SyncHook(['name']),
+  new SyncBailHook(['name']),
+]);
 // 向 hook 批量注册钩子函数
 multiHook.tap('plugin', (name) => {
   console.log('multiHook plugin ');
