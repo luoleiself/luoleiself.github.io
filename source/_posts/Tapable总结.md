@@ -253,13 +253,13 @@ class MySyncWaterfallHook {
 
 ##### SyncLoopHook
 
-钩子函数依次全部执行,当循环钩子中回调函数返回 非 `undefined` 时, 钩子将从第一个重新启动,直到所有的钩子返回 非 `undefined` 时结束 如果有 hook 回调, 则最后执行
+钩子函数依次全部执行, 当循环钩子中回调函数返回 非 `undefined` 时, 钩子将从第一个重新启动, 直到所有的钩子返回 `undefined` 时结束 如果有 hook 回调, 则最后执行
 
 ```javascript
 const { SyncLoopHook } = require('tapable');
 
 const syncLoopHook = new SyncLoopHook(['name']);
-// 钩子函数依次全部执行，当循环钩子中回调函数返回非 undefined 时，钩子将从第一个重新启动，直到所有的钩子返回非 undefined 时结束 如果有 hook 回调，则最后执行
+// 钩子函数依次全部执行，当循环钩子中回调函数返回非 undefined 时，钩子将从第一个重新启动，直到所有的钩子返回 undefined 时结束 如果有 hook 回调，则最后执行
 syncLoopHook.tap('x', (name) => {
   let flag = Math.floor(Math.random() * 10);
   if (flag > 5) {
@@ -407,10 +407,10 @@ class MyAsyncParallelHook {
     // 先取出最后传入的回调函数
     let finalCallback = args.pop();
 
-    // 传入参数严格对应创建实例传入数组中的规定的参数，执行时多余的参数为 undefined
+    // 传入参数严格对应创建实例传入数组中的规定的参数, 执行时多余的参数为 undefined
     args = args.slice(0, this.args.length);
 
-    // 定义一个 i 变量和 done 函数，每次执行检测 i 值和队列长度，决定是否执行 callAsync 的回调函数
+    // 定义一个 i 变量和 done 函数, 每次执行检测 i 值和队列长度, 决定是否执行 callAsync 的回调函数
     let i = 0;
     let done = () => {
       if (++i === this.tasks.length) {
@@ -426,13 +426,13 @@ class MyAsyncParallelHook {
 
 ##### AsyncParallelBailHook
 
-钩子函数全部异步并行执行, 只要有一个钩子返回了非 undefined 值时， hook 回调会立即执行
+钩子函数全部异步并行执行, 只要有一个钩子返回了 非 `undefined` 值时, hook 回调会立即执行
 
 ```javascript
 const { AsyncParallelBailHook } = require('tapable');
 
 const asyncParallelBailHook = new AsyncParallelBailHook(['name']);
-// 钩子函数全部异步并行执行, 只要有一个钩子返回了非 undefined 值时， hook 回调会立即执行
+// 钩子函数全部异步并行执行, 只要有一个钩子返回了非 undefined 值时, hook 回调会立即执行
 asyncParallelBailHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -444,7 +444,7 @@ asyncParallelBailHook.tapAsync('y', (name, callback) => {
   console.log('y done ', name);
   setTimeout(() => {
     console.log('y done setTimeout 2s');
-    callback('undefined');
+    callback('undefined'); // 此处执行后立刻执行 hook 回调
   }, 2000);
 });
 asyncParallelBailHook.tapAsync('z', (name, callback) => {
@@ -473,13 +473,13 @@ z done setTimeout 3s
 
 ##### AsyncSeriesHook
 
-钩子函数全部异步串行执行，执行顺序按照注册顺序执行，上一个钩子执行结束后下一个执行开始, hook 回调最后执行
+钩子函数全部异步串行执行, 执行顺序按照注册顺序执行, 上一个钩子执行结束后下一个执行开始, hook 回调最后执行
 
 ```javascript
 const { AsyncSeriesHook } = require('tapable');
 
 const asyncSeriesHook = new AsyncSeriesHook(['name']);
-// 钩子函数全部异步串行执行，执行顺序按照注册顺序执行，上一个钩子执行结束后下一个执行开始, hook 回调最后执行
+// 钩子函数全部异步串行执行, 执行顺序按照注册顺序执行, 上一个钩子执行结束后下一个执行开始, hook 回调最后执行
 asyncSeriesHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -518,13 +518,13 @@ asyncSeriesHook.callAsync
 
 ##### AsyncSeriesBailHook
 
-钩子函数全部异步串行执行，只要有一个钩子返回了 非 undefined 值时，hook 回调立即执行，其他钩子有可能不再执行
+钩子函数全部异步串行执行, 只要有一个钩子返回了 非 `undefined` 值时, hook 回调立即执行, 其他钩子有可能不再执行
 
 ```javascript
 const { AsyncSeriesBailHook } = require('tapable');
 
 const asyncSeriesBailHook = new AsyncSeriesBailHook(['name']);
-// 钩子函数全部异步串行执行，只要有一个钩子返回了 非 undefined 值时，hook 回调立即执行，其他钩子有可能不再执行
+// 钩子函数全部异步串行执行, 只要有一个钩子返回了 非 undefined 值时, hook 回调立即执行, 其他钩子有可能不再执行
 asyncSeriesBailHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -561,7 +561,7 @@ asyncSeriesBailHook.callAsync
 
 ##### AsyncSeriesWaterfallHook
 
-钩子函数全部异步串行执行, 上一个钩子的返回的结果作为下一个钩子的参数，hook 回调在所有钩子回调返回后执行
+钩子函数全部异步串行执行, 上一个钩子的返回的结果作为下一个钩子的参数, hook 回调在所有钩子回调返回后执行
 
 ```javascript
 const { AsyncSeriesWaterfallHook } = require('tapable');
@@ -603,13 +603,13 @@ asyncSeriesWaterfallHook.callAsync [ ' from z...' ]
 
 ##### AsyncSeriesLoopHook
 
-钩子函数全部异步串行执行，当循环钩子中回调函数返回非 undefined 时，钩子将从第一个重新启动，直到所有的钩子返回非 undefined 时结束，hook 回调最后执行
+钩子函数全部异步串行执行, 当循环钩子中回调函数返回 非 `undefined` 时, 钩子将从第一个重新启动, 直到所有的钩子返回 `undefined` 时结束, hook 回调最后执行
 
 ```javascript
 const { AsyncSeriesLoopHook } = require('tapable');
 
 const asyncSeriesLoopHook = new AsyncSeriesLoopHook(['name']);
-// 钩子函数全部异步串行执行，当循环钩子中回调函数返回非 undefined 时，钩子将从第一个重新启动，直到所有的钩子返回非 undefined 时结束，hook 回调最后执行
+// 钩子函数全部异步串行执行,当循环钩子中回调函数返回非 undefined 时, 钩子将从第一个重新启动, 直到所有的钩子返回 undefined 时结束, hook 回调最后执行
 asyncSeriesLoopHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -745,7 +745,7 @@ asyncParallelHook.callAsync
 
 #### HookMap
 
-将 hook 分组，方便 hook 组批量调用
+将 hook 分组, 方便 hook 组批量调用
 
 ```javascript
 // 示例:
