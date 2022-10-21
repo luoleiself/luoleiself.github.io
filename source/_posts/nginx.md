@@ -89,6 +89,29 @@ tags:
 
 ## 指令
 
+### add_header 添加响应头字段
+
+```nginx
+add_header name value [always]; # 基础语法
+```
+
+#### 作用场景
+
+- http
+- server
+- location
+- if in location
+
+#### 如果当前层添加了 `add_header`, 则不能从上层继承
+
+#### 仅当状态码为 `ngx_http_headers_module` 模块列出时, `add_header` 添加的标头字段有效
+
+200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308
+
+#### 如果设置一个非有效状态码, 则会忽略 `add_header` 添加的标头字段
+
+#### always 忽略状态码强制添加标头字段
+
 ### rewrite 重写请求中的 URI
 
 至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)
@@ -96,14 +119,14 @@ tags:
 - last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置
 - break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令
 
-```conf
+```nginx
 rewrite ^(/download/.*)/media/(\w+)\.?.*$ $1/mp3/$2.mp3 last;
 rewrite ^/users/(.*)$ /show?user=$1 break;
 ```
 
 ### try_files 尝试检查文件
 
-```conf
+```nginx
 # 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif
 location /images/ {
   root /www/data;
