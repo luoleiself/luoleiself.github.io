@@ -214,3 +214,42 @@ scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 
 [root@centos7 ~]firewall-cmd --add-port=<port>/<protocol> --permanent # 永久修改防火墙配置
 ```
+
+### tar 归档压缩工具
+
+```shell
+tar [option...] [files]...
+```
+
+- \-c,\-\-create 创建新的 tar 文件
+- \-x,\-\-extract 解开 tar 文件
+- \-r,\-\-append 添加文件到已经压缩的文件
+- \-t,\-\-list 列出压缩文件中的信息
+- \-u,\-\-update 用已打包的文件的较新版本更新 tar 文件
+- \-d,\-\-diff,\-\-compare 将文件系统里的文件和 tar 文件里的文件进行比较
+- \-\-delete 删除 tar 文件里面的文件, 不能用于已保存在磁带上的 tar 文件
+- \-v,\-\-verbose 列出每一步处理涉及的文件的信息
+- \-k,\-\-keep-old-files 不覆盖文件系统上已有的文件
+- \-f,\-\-file 指定要处理的文件名
+- \-w 每一步都要求确认
+
+- \-\-atime-preserve 不改变转储文件的存取时间
+- \-m,\-\-modification-time 当从一个档案中恢复文件时, 不使用新的时间标签
+- \-C,\-\-directory DIR 转到指定的目录
+
+- \-j,\-\-bzip2 调用 bzip2 执行压缩或解压缩
+- \-J,\-\-xz,\-\-lzma 调用 XZ Utils 执行压缩或解压缩
+- \-z,\-\-gzip,\-\-gunzip,\-\-ungzip 调用 gzip 执行压缩或解压缩
+- \-Z,\-\-compress,\-\-uncompress 调用 compress 执行压缩或解压缩
+
+#### 归档压缩
+
+```shell
+[root@centos7 ~]tar -czvf workspace.tar.gz ./workspace  # 使用 gzip 压缩归档 workspace 目录
+```
+
+#### 解压缩
+
+```shell
+[root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable  # 使用 gzip 解压缩到当前目录下的 redis-stable 目录
+```
