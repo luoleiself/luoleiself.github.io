@@ -1,6 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Charles-手机代理-Https-证书管理</title>
+    <url>/2021/12/a521f7947aed/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
+<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
+</ul>
+<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
+<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img data-src="/images/charles-11.jpg" alt="charles-11"></li>
+<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img data-src="/images/charles-12.png" alt="charles-12"></li>
+</ol>
+<span id="more"></span>
+
+<ol start="3">
+<li>在弹框中左侧列表选择 “证书”, 点击 “添加” 按钮, 在弹出的对话框选择 “我的用户账户” 点击 “完成” 后, 右侧列表会出现 证书 选项, 最后点击 “确定”<br><img data-src="/images/charles-13.jpg" alt="charles-13"><br><img data-src="/images/charles-14.jpg" alt="charles-14"></li>
+<li>在第 2 步的窗口中会出现证书菜单, 依次展开这些菜单, 中间窗口会出现所有已安装的证书<br><img data-src="/images/charles-15.jpg" alt="charles-15"></li>
+<li>选择需要删除的证书 “右键单击”, 选择 “删除”, 在弹出的对话框中选择 “是”, 完成证书删除<br><img data-src="/images/charles-16.jpg" alt="charles-16"></li>
+<li>点击右上角的 “关闭” 按钮关闭控制台, 在弹出的对话框中选择 “否” 不存入控制台配置, 如果有需要也可以选择 “是” 存入控制台配置<br><img data-src="/images/charles-17.jpg" alt="charles-17"></li>
+</ol>
+<h3 id="电脑安装-charles-证书"><a href="#电脑安装-charles-证书" class="headerlink" title="电脑安装 charles 证书"></a>电脑安装 charles 证书</h3><ol>
+<li><p>打开 charles, 选择 Help -&gt; SSL Proxing -&gt; Install Charles Root Certificate<br><img data-src="/images/charles-1.png" alt="charles-1"></p>
+</li>
+<li><p>在 “证书” 对话框中点击 “安装证书”<br><img data-src="/images/charles-2.jpg" alt="charles-2"></p>
+</li>
+<li><p>在 “证书导入向导” 对话框中选择 “本地计算机”, 点击 “下一步”<br><img data-src="/images/charles-3.jpg" alt="charles-3"></p>
+</li>
+<li><p>在 “证书导入向导” 对话框中选择 “将所有的证书都放入下列存储”, 点击 “浏览”<br><img data-src="/images/charles-4.jpg" alt="charles-4"></p>
+</li>
+<li><p>在 “选择证书存储” 对话框中选择 “受信任的根证书颁发机构”, 点击 “确认”<br><img data-src="/images/charles-5.jpg" alt="charles-5"></p>
+</li>
+<li><p>在弹出的对话框选择 “是” 将证书导入到浏览器的证书列表中<br><img data-src="/images/charles-10.jpg" alt="charles-10"></p>
+</li>
+<li><p>点击 “确定” 完成证书添加<br><img data-src="/images/charles-6.jpg" alt="charles-6"></p>
+</li>
+</ol>
+<h3 id="手机添加-charles-证书"><a href="#手机添加-charles-证书" class="headerlink" title="手机添加 charles 证书"></a>手机添加 charles 证书</h3><ol>
+<li>手机绑定 charles 代理(电脑 IP 和端口):<ol>
+<li>WLAN -&gt; 修改已连接网络</li>
+<li>代理改为 “手动”</li>
+<li>服务器主机名添加电脑 IP</li>
+<li>服务器端口添加 charles 监听端口</li>
+<li>保存后连接 wifi</li>
+</ol>
+</li>
+<li>安卓手机使用 Chrome, 苹果手机使用 safari</li>
+<li>浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理</li>
+<li>安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定<ol>
+<li>输入 “证明名称(可任意起名)”, 后期删除证书时可根据此名称查找</li>
+<li>凭证用途 默认为 “VPN 和应用”, 如果改为 WLAN 会导致无效</li>
+</ol>
+</li>
+<li>苹果手机打开设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置 -&gt; 找到已下载的 charles 证书打开信任</li>
+<li>使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试<br><img data-src="/images/charles-7.jpg" alt="charles-7"></li>
+</ol>
+<h3 id="电脑使用-charles-无法访问百度等其他页面"><a href="#电脑使用-charles-无法访问百度等其他页面" class="headerlink" title="电脑使用 charles 无法访问百度等其他页面"></a>电脑使用 charles 无法访问百度等其他页面</h3><p>黑名单和白名单设置</p>
+<ol>
+<li>打开 charles, 选择 Tools -&gt; Block List | Allow List( 部分版本为 White List)<br><img data-src="/images/charles-8.png" alt="charles-8"></li>
+<li>此配置为黑名单和白名单设置<br><img data-src="/images/charles-9.jpg" alt="charles-9"></li>
+</ol>
+<h3 id="手机微信扫码后显示白屏"><a href="#手机微信扫码后显示白屏" class="headerlink" title="手机微信扫码后显示白屏"></a>手机微信扫码后显示白屏</h3><ul>
+<li>手机未安装 charles 证书会显示白屏</li>
+<li>其他部分浏览器会在 地址栏 中出现非安全链接的提示图标</li>
+</ul>
+<h3 id="手机卸载安装的-charles-证书"><a href="#手机卸载安装的-charles-证书" class="headerlink" title="手机卸载安装的 charles 证书"></a>手机卸载安装的 charles 证书</h3><ol>
+<li>打开手机 设置 -&gt; 安全 -&gt; 更多安全设置 -&gt; 加密和凭据 -&gt; 用户凭据</li>
+<li>根据安装手机证书时填写的证明名称找到指定项, 点击后选择 “删除”</li>
+</ol>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>charles</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BABELRC</title>
     <url>/2021/12/2f42f14b8489/</url>
     <content><![CDATA[<h1 id="babel-cli"><a href="#babel-cli" class="headerlink" title="@babel/cli"></a>@babel/cli</h1><h2 id="install"><a href="#install" class="headerlink" title="install"></a>install</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -D @babel/cli @babel/core</span><br></pre></td></tr></table></figure>
@@ -98,138 +172,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Charles-手机代理-Https-证书管理</title>
-    <url>/2021/12/a521f7947aed/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
-<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
-</ul>
-<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
-<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img data-src="/images/charles-11.jpg" alt="charles-11"></li>
-<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img data-src="/images/charles-12.png" alt="charles-12"></li>
-</ol>
-<span id="more"></span>
-
-<ol start="3">
-<li>在弹框中左侧列表选择 “证书”, 点击 “添加” 按钮, 在弹出的对话框选择 “我的用户账户” 点击 “完成” 后, 右侧列表会出现 证书 选项, 最后点击 “确定”<br><img data-src="/images/charles-13.jpg" alt="charles-13"><br><img data-src="/images/charles-14.jpg" alt="charles-14"></li>
-<li>在第 2 步的窗口中会出现证书菜单, 依次展开这些菜单, 中间窗口会出现所有已安装的证书<br><img data-src="/images/charles-15.jpg" alt="charles-15"></li>
-<li>选择需要删除的证书 “右键单击”, 选择 “删除”, 在弹出的对话框中选择 “是”, 完成证书删除<br><img data-src="/images/charles-16.jpg" alt="charles-16"></li>
-<li>点击右上角的 “关闭” 按钮关闭控制台, 在弹出的对话框中选择 “否” 不存入控制台配置, 如果有需要也可以选择 “是” 存入控制台配置<br><img data-src="/images/charles-17.jpg" alt="charles-17"></li>
-</ol>
-<h3 id="电脑安装-charles-证书"><a href="#电脑安装-charles-证书" class="headerlink" title="电脑安装 charles 证书"></a>电脑安装 charles 证书</h3><ol>
-<li><p>打开 charles, 选择 Help -&gt; SSL Proxing -&gt; Install Charles Root Certificate<br><img data-src="/images/charles-1.png" alt="charles-1"></p>
-</li>
-<li><p>在 “证书” 对话框中点击 “安装证书”<br><img data-src="/images/charles-2.jpg" alt="charles-2"></p>
-</li>
-<li><p>在 “证书导入向导” 对话框中选择 “本地计算机”, 点击 “下一步”<br><img data-src="/images/charles-3.jpg" alt="charles-3"></p>
-</li>
-<li><p>在 “证书导入向导” 对话框中选择 “将所有的证书都放入下列存储”, 点击 “浏览”<br><img data-src="/images/charles-4.jpg" alt="charles-4"></p>
-</li>
-<li><p>在 “选择证书存储” 对话框中选择 “受信任的根证书颁发机构”, 点击 “确认”<br><img data-src="/images/charles-5.jpg" alt="charles-5"></p>
-</li>
-<li><p>在弹出的对话框选择 “是” 将证书导入到浏览器的证书列表中<br><img data-src="/images/charles-10.jpg" alt="charles-10"></p>
-</li>
-<li><p>点击 “确定” 完成证书添加<br><img data-src="/images/charles-6.jpg" alt="charles-6"></p>
-</li>
-</ol>
-<h3 id="手机添加-charles-证书"><a href="#手机添加-charles-证书" class="headerlink" title="手机添加 charles 证书"></a>手机添加 charles 证书</h3><ol>
-<li>手机绑定 charles 代理(电脑 IP 和端口):<ol>
-<li>WLAN -&gt; 修改已连接网络</li>
-<li>代理改为 “手动”</li>
-<li>服务器主机名添加电脑 IP</li>
-<li>服务器端口添加 charles 监听端口</li>
-<li>保存后连接 wifi</li>
-</ol>
-</li>
-<li>安卓手机使用 Chrome, 苹果手机使用 safari</li>
-<li>浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理</li>
-<li>安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定<ol>
-<li>输入 “证明名称(可任意起名)”, 后期删除证书时可根据此名称查找</li>
-<li>凭证用途 默认为 “VPN 和应用”, 如果改为 WLAN 会导致无效</li>
-</ol>
-</li>
-<li>苹果手机打开设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置 -&gt; 找到已下载的 charles 证书打开信任</li>
-<li>使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试<br><img data-src="/images/charles-7.jpg" alt="charles-7"></li>
-</ol>
-<h3 id="电脑使用-charles-无法访问百度等其他页面"><a href="#电脑使用-charles-无法访问百度等其他页面" class="headerlink" title="电脑使用 charles 无法访问百度等其他页面"></a>电脑使用 charles 无法访问百度等其他页面</h3><p>黑名单和白名单设置</p>
-<ol>
-<li>打开 charles, 选择 Tools -&gt; Block List | Allow List( 部分版本为 White List)<br><img data-src="/images/charles-8.png" alt="charles-8"></li>
-<li>此配置为黑名单和白名单设置<br><img data-src="/images/charles-9.jpg" alt="charles-9"></li>
-</ol>
-<h3 id="手机微信扫码后显示白屏"><a href="#手机微信扫码后显示白屏" class="headerlink" title="手机微信扫码后显示白屏"></a>手机微信扫码后显示白屏</h3><ul>
-<li>手机未安装 charles 证书会显示白屏</li>
-<li>其他部分浏览器会在 地址栏 中出现非安全链接的提示图标</li>
-</ul>
-<h3 id="手机卸载安装的-charles-证书"><a href="#手机卸载安装的-charles-证书" class="headerlink" title="手机卸载安装的 charles 证书"></a>手机卸载安装的 charles 证书</h3><ol>
-<li>打开手机 设置 -&gt; 安全 -&gt; 更多安全设置 -&gt; 加密和凭据 -&gt; 用户凭据</li>
-<li>根据安装手机证书时填写的证明名称找到指定项, 点击后选择 “删除”</li>
-</ol>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>charles</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Generator和async</title>
     <url>/2021/07/bc748f2ea976/</url>
     <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
@@ -304,6 +246,64 @@
       </categories>
       <tags>
         <tag>ES6</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -699,60 +699,6 @@
       </tags>
   </entry>
   <entry>
-    <title>JSSDK</title>
-    <url>/2022/05/2261dfd57ebf/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
-<li>转发</li>
-<li>转发给客户</li>
-<li>群发到客户群</li>
-<li>发表到客户的朋友圈</li>
-<li>分享到同事吧</li>
-<li>分享到微信</li>
-<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
-</ul>
-<span id="more"></span>
-
-<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>shareAppMessage 自定义转发到会话</li>
-<li>shareWechatMessage 自定义转发到微信</li>
-<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
-<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>wx</category>
-      </categories>
-      <tags>
-        <tag>wx</tag>
-        <tag>jweixin</tag>
-        <tag>JSSDK</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>HTTP</title>
     <url>/2021/07/1ddfb1010b19/</url>
     <content><![CDATA[<h4 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h4><ul>
@@ -866,6 +812,120 @@
       </tags>
   </entry>
   <entry>
+    <title>JSSDK</title>
+    <url>/2022/05/2261dfd57ebf/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
+<li>转发</li>
+<li>转发给客户</li>
+<li>群发到客户群</li>
+<li>发表到客户的朋友圈</li>
+<li>分享到同事吧</li>
+<li>分享到微信</li>
+<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>shareAppMessage 自定义转发到会话</li>
+<li>shareWechatMessage 自定义转发到微信</li>
+<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
+<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>wx</category>
+      </categories>
+      <tags>
+        <tag>wx</tag>
+        <tag>jweixin</tag>
+        <tag>JSSDK</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JS小结</title>
+    <url>/2022/03/28e7482b798b/</url>
+    <content><![CDATA[<h3 id="改变原数组的方法"><a href="#改变原数组的方法" class="headerlink" title="改变原数组的方法"></a>改变原数组的方法</h3><ul>
+<li><p>pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">pop</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">push</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure></li>
+<li><p>shift 从数组中删除第一个元素,并返回该元素的值(数组为空则返回 undefined). 此方法更改数组的长度</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">shift</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>unshift 将一个或多个元素添加到数组的开头. 并返回该数组的新长度(该方法修改原有数组)</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">unshift</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span></li>
+<li><p>reverse 将数组中元素的位置颠倒, 并返回该数组. 该方法会改变原数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">reverse</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>sort 用<a href="https://en.wikipedia.org/wiki/In-place_algorithm">原地算法</a>对数组的元素进行排序, 并返回数组</p>
+<ul>
+<li>compareFunction 用来指定按某种顺序进行排列的函数, 省略则按照转换为的字符串的 unicode 位点进行排序<ul>
+<li>firstEl 第一个用于比较的元素</li>
+<li>secondEl 第二个用于比较的元素</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">sort</span>([compareFunction]);</span><br></pre></td></tr></table></figure></li>
+<li><p>splice 通过删除或替换现有元素或者原地添加新的元素来修改数组, 并以数组形式返回被修改的内容. 此方法会改变原数组</p>
+<ul>
+<li>start 指定修改的开始位置</li>
+<li>deleteCount 整数, 表示要移除的数组元素的个数, 如果为 0 或者负数, 则不移除元素</li>
+<li>item1, item2 要添加进数组的元素,从 start 位置开始, 不指定则删除数组元素</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">array.<span class="title function_">splice</span>(start[, deleteCount[, item1[, item2[, ...]]]]);</span><br></pre></td></tr></table></figure></li>
+<li><p>fill 用一个固定值填充一个数组中从起始索引到终止索引内的全部元素. 不包括终止索引. 返回修改后的数组</p>
+<ul>
+<li>value 用来填充数组元素的值</li>
+<li>start 起始索引, 默认值为 0</li>
+<li>end 终止索引, 默认值为 this.length</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">fill</span>(value[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"><span class="comment">// fill with 0 from position 2 until position 4</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 2, 0, 0]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// fill with 5 from position 1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">5</span>, <span class="number">1</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 5, 5, 5]</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">6</span>));</span><br><span class="line"><span class="comment">// expected output: [6, 6, 6, 6]</span></span><br></pre></td></tr></table></figure></li>
+<li><p>copyWithin 浅复制数组的一部分到同一数组中的另一个位置, 并返回它, 不会改变原数组的长度. 返回改变后的数组</p>
+<ul>
+<li>target 整数, 复制序列到该位置, 如果是负数, target 将从末尾开始计算. 如果 target 大于等于 arr.length, 将会不发生拷贝</li>
+<li>start 整数, 开始复制元素的起始位置, 如果是负数, start 将从末尾开始计算. 如果 start 被忽略, copyWithin 将会从 0 开始复制</li>
+<li>end 整数, 开始复制元素的结束位置, copyWithin 将会拷贝到该位置, 但不包括 end 这个位置的元素. 如果是负数, end 将从末尾开始计算. 如果忽略则复制到数组结尾</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">copyWithin</span>(target[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;d&#x27;</span>, <span class="string">&#x27;e&#x27;</span>];</span><br><span class="line"><span class="comment">// copy to index 0 the element at index 3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// copy to index 1 all elements from index 3 to the end</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">1</span>, <span class="number">3</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;d&quot;, &quot;e&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="表单-accept-属性"><a href="#表单-accept-属性" class="headerlink" title="表单 accept 属性"></a>表单 accept 属性</h3><p>表单 input type=”file” 上传图片时，accept 属性以文件名结尾格式在部分手机上使用时会提示 ‘没有应用可执行此操作’, 将文件名结尾的格式改为 MIME 类型的格式</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;.png,.jpg,.jpeg&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/png,image/jpeg&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="检测浏览器版本号"><a href="#检测浏览器版本号" class="headerlink" title="检测浏览器版本号"></a>检测浏览器版本号</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VersionDiff</span> &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@property</span> &#123;<span class="type">private</span>&#125; #_comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #_comparator = <span class="string">&#x27;gt:0.0.0&#x27;</span>;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #greaterThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">greaterThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &gt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &gt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &gt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #lessThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">lessThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &lt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &lt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &lt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #equalTo</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">equalTo</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] == arr1[<span class="number">2</span>] ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #notEqual</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">notEqual</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] != arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] != arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] != arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #versionDiff</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; version 版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">RegExp</span>&#125; reg 匹配正则</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">versionDiff</span>(<span class="params">version, reg, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator == <span class="literal">null</span> || comparator == <span class="literal">undefined</span>) &#123;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator != <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;TypeError: params comparator must be string...&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> regExp = reg ? reg : <span class="regexp">/(wxwork)\/([^\s]*)/i</span>;</span><br><span class="line">    <span class="keyword">let</span> _version = version ? version.<span class="title function_">match</span>(regExp) : navigator.<span class="property">userAgent</span>.<span class="title function_">match</span>(regExp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title class_">Array</span>.<span class="title function_">isArray</span>(_version)) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123; <span class="attr">version</span>: <span class="number">0</span>, [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> [operator, baseVersion] = comparator.<span class="title function_">split</span>(<span class="string">&#x27;:&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> result = &#123; <span class="attr">version</span>: _version[<span class="number">2</span>], [_version[<span class="number">1</span>].<span class="title function_">toString</span>()]: <span class="literal">true</span> &#125;;</span><br><span class="line">    <span class="keyword">let</span> _ver = _version[<span class="number">2</span>].<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> _baseVer = baseVersion.<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_ver.<span class="property">length</span> != _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (_ver.<span class="property">length</span> &lt; _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _baseVer.<span class="property">length</span> - _ver.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _ver.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _ver.<span class="property">length</span> - _baseVer.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _baseVer.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (operator.<span class="title function_">toLowerCase</span>()) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;gt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ge&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;lt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;le&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;eq&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ne&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">notEqual</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="attr">default</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态测试方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; browser 浏览器型号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">test</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(</span><br><span class="line">      <span class="string">`<span class="subst">$&#123;browser&#125;</span>/<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>`</span>,</span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>),</span><br><span class="line">      comparator</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态比较方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">diff</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>), comparator);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试方式：使用 类名.test 调用</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;eq:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;eq:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;ne:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;ne:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;gt:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;gt:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;le:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;le:5.3.2&#x27;</span>));</span><br><span class="line"><span class="comment">// 使用方式: 使用 类名.diff 调用方式</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.diff(&#x27;gt:3.2.0&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">diff</span>(<span class="string">&#x27;gt:3.2.0&#x27;</span>));</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>ES</category>
+      </categories>
+      <tags>
+        <tag>ES6</tag>
+        <tag>js</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MutationObserver</title>
     <url>/2021/07/f148f882ba3d/</url>
     <content><![CDATA[<p>MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知</p>
@@ -961,66 +1021,6 @@
       </categories>
       <tags>
         <tag>API</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JS小结</title>
-    <url>/2022/03/28e7482b798b/</url>
-    <content><![CDATA[<h3 id="改变原数组的方法"><a href="#改变原数组的方法" class="headerlink" title="改变原数组的方法"></a>改变原数组的方法</h3><ul>
-<li><p>pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">pop</span>();</span><br></pre></td></tr></table></figure></li>
-<li><p>push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">push</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure></li>
-<li><p>shift 从数组中删除第一个元素,并返回该元素的值(数组为空则返回 undefined). 此方法更改数组的长度</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">shift</span>();</span><br></pre></td></tr></table></figure></li>
-<li><p>unshift 将一个或多个元素添加到数组的开头. 并返回该数组的新长度(该方法修改原有数组)</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">unshift</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span></li>
-<li><p>reverse 将数组中元素的位置颠倒, 并返回该数组. 该方法会改变原数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">reverse</span>();</span><br></pre></td></tr></table></figure></li>
-<li><p>sort 用<a href="https://en.wikipedia.org/wiki/In-place_algorithm">原地算法</a>对数组的元素进行排序, 并返回数组</p>
-<ul>
-<li>compareFunction 用来指定按某种顺序进行排列的函数, 省略则按照转换为的字符串的 unicode 位点进行排序<ul>
-<li>firstEl 第一个用于比较的元素</li>
-<li>secondEl 第二个用于比较的元素</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">sort</span>([compareFunction]);</span><br></pre></td></tr></table></figure></li>
-<li><p>splice 通过删除或替换现有元素或者原地添加新的元素来修改数组, 并以数组形式返回被修改的内容. 此方法会改变原数组</p>
-<ul>
-<li>start 指定修改的开始位置</li>
-<li>deleteCount 整数, 表示要移除的数组元素的个数, 如果为 0 或者负数, 则不移除元素</li>
-<li>item1, item2 要添加进数组的元素,从 start 位置开始, 不指定则删除数组元素</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">array.<span class="title function_">splice</span>(start[, deleteCount[, item1[, item2[, ...]]]]);</span><br></pre></td></tr></table></figure></li>
-<li><p>fill 用一个固定值填充一个数组中从起始索引到终止索引内的全部元素. 不包括终止索引. 返回修改后的数组</p>
-<ul>
-<li>value 用来填充数组元素的值</li>
-<li>start 起始索引, 默认值为 0</li>
-<li>end 终止索引, 默认值为 this.length</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">fill</span>(value[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"><span class="comment">// fill with 0 from position 2 until position 4</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 2, 0, 0]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// fill with 5 from position 1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">5</span>, <span class="number">1</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 5, 5, 5]</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">6</span>));</span><br><span class="line"><span class="comment">// expected output: [6, 6, 6, 6]</span></span><br></pre></td></tr></table></figure></li>
-<li><p>copyWithin 浅复制数组的一部分到同一数组中的另一个位置, 并返回它, 不会改变原数组的长度. 返回改变后的数组</p>
-<ul>
-<li>target 整数, 复制序列到该位置, 如果是负数, target 将从末尾开始计算. 如果 target 大于等于 arr.length, 将会不发生拷贝</li>
-<li>start 整数, 开始复制元素的起始位置, 如果是负数, start 将从末尾开始计算. 如果 start 被忽略, copyWithin 将会从 0 开始复制</li>
-<li>end 整数, 开始复制元素的结束位置, copyWithin 将会拷贝到该位置, 但不包括 end 这个位置的元素. 如果是负数, end 将从末尾开始计算. 如果忽略则复制到数组结尾</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">copyWithin</span>(target[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;d&#x27;</span>, <span class="string">&#x27;e&#x27;</span>];</span><br><span class="line"><span class="comment">// copy to index 0 the element at index 3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// copy to index 1 all elements from index 3 to the end</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">1</span>, <span class="number">3</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;d&quot;, &quot;e&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="表单-accept-属性"><a href="#表单-accept-属性" class="headerlink" title="表单 accept 属性"></a>表单 accept 属性</h3><p>表单 input type=”file” 上传图片时，accept 属性以文件名结尾格式在部分手机上使用时会提示 ‘没有应用可执行此操作’, 将文件名结尾的格式改为 MIME 类型的格式</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;.png,.jpg,.jpeg&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/png,image/jpeg&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="检测浏览器版本号"><a href="#检测浏览器版本号" class="headerlink" title="检测浏览器版本号"></a>检测浏览器版本号</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VersionDiff</span> &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@property</span> &#123;<span class="type">private</span>&#125; #_comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #_comparator = <span class="string">&#x27;gt:0.0.0&#x27;</span>;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #greaterThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">greaterThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &gt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &gt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &gt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #lessThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">lessThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &lt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &lt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &lt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #equalTo</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">equalTo</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] == arr1[<span class="number">2</span>] ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #notEqual</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">notEqual</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] != arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] != arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] != arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #versionDiff</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; version 版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">RegExp</span>&#125; reg 匹配正则</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">versionDiff</span>(<span class="params">version, reg, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator == <span class="literal">null</span> || comparator == <span class="literal">undefined</span>) &#123;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator != <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;TypeError: params comparator must be string...&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> regExp = reg ? reg : <span class="regexp">/(wxwork)\/([^\s]*)/i</span>;</span><br><span class="line">    <span class="keyword">let</span> _version = version ? version.<span class="title function_">match</span>(regExp) : navigator.<span class="property">userAgent</span>.<span class="title function_">match</span>(regExp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title class_">Array</span>.<span class="title function_">isArray</span>(_version)) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123; <span class="attr">version</span>: <span class="number">0</span>, [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> [operator, baseVersion] = comparator.<span class="title function_">split</span>(<span class="string">&#x27;:&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> result = &#123; <span class="attr">version</span>: _version[<span class="number">2</span>], [_version[<span class="number">1</span>].<span class="title function_">toString</span>()]: <span class="literal">true</span> &#125;;</span><br><span class="line">    <span class="keyword">let</span> _ver = _version[<span class="number">2</span>].<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> _baseVer = baseVersion.<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_ver.<span class="property">length</span> != _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (_ver.<span class="property">length</span> &lt; _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _baseVer.<span class="property">length</span> - _ver.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _ver.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _ver.<span class="property">length</span> - _baseVer.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _baseVer.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (operator.<span class="title function_">toLowerCase</span>()) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;gt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ge&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;lt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;le&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;eq&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ne&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">notEqual</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="attr">default</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态测试方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; browser 浏览器型号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">test</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(</span><br><span class="line">      <span class="string">`<span class="subst">$&#123;browser&#125;</span>/<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>`</span>,</span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>),</span><br><span class="line">      comparator</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态比较方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">diff</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>), comparator);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试方式：使用 类名.test 调用</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;eq:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;eq:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;ne:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;ne:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;gt:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;gt:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;le:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;le:5.3.2&#x27;</span>));</span><br><span class="line"><span class="comment">// 使用方式: 使用 类名.diff 调用方式</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.diff(&#x27;gt:3.2.0&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">diff</span>(<span class="string">&#x27;gt:3.2.0&#x27;</span>));</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>ES</category>
-      </categories>
-      <tags>
-        <tag>ES6</tag>
-        <tag>js</tag>
       </tags>
   </entry>
   <entry>
@@ -1248,6 +1248,242 @@
       </tags>
   </entry>
   <entry>
+    <title>shell工具</title>
+    <url>/2022/05/4881d8683e6d/</url>
+    <content><![CDATA[<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
+<li><p>OFMT 输出数字格式(默认%.6g)</p>
+</li>
+<li><p>CONVFMT 数字转换格式(默认值为%.6g)ENVIRON 环境变量关联数组</p>
+</li>
+<li><p>ENVIRON 数组, 存储当前系统的环境变量, ENVIRON[‘PATH’]</p>
+</li>
+<li><p>ERRNO 最后一个系统错误的描述</p>
+</li>
+<li><p>FILENAME 当前正在处理的文件名</p>
+</li>
+<li><p>FIELDWIDTHS 以空格分隔的字段宽度</p>
+</li>
+<li><p>PROCINFO 数组, 存储当前系统运行时信息, PROCINFO[‘uid’]</p>
+</li>
+<li><p>IGNORECASE 如果为真, 则进行忽略大小写的匹配</p>
+</li>
+<li><p>字段分隔符</p>
+<ul>
+<li>FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置</li>
+<li>OFS 输出的字段分隔符, 默认为空格</li>
+</ul>
+</li>
+<li><p>记录分隔符</p>
+<ul>
+<li>RS 输入记录的分隔符, 默认为换行符</li>
+<li>ORS 输出的记录分隔符, 默认为换行符</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<ul>
+<li><p>记录统计</p>
+<ul>
+<li>$0 完整的输入记录</li>
+<li>$1-$n 表示当前行第几个字段, $(NF - n) 动态计算第几个字段</li>
+<li>NF 当前记录中的字段个数</li>
+<li>NR 已经读出的记录数(默认从 1 开始)</li>
+<li>FNR 当前处理的记录号</li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li>ARGC 命令行参数个数(不包括 awk 的选项和 awk 的程序内容)</li>
+<li>ARGV 命令行参数序列数组,下标从 0 开始</li>
+<li>ARGIND 命令行中当前文件的位置(从 0 开始算)</li>
+</ul>
+</li>
+<li><p>流程控制</p>
+<ul>
+<li>BEGIN { 这里面放的是执行前的语句 }</li>
+<li>END { 这里面放的是处理完所有的行后要执行的语句 }</li>
+<li>{ 这里面放的是处理每一行时要执行的语句 }</li>
+</ul>
+</li>
+<li><p>内置函数</p>
+<ul>
+<li>gsub(r, s) 在整个 $0 中用 s 替换 r</li>
+<li>gsub(r, s, t) 在整个 t 中用 s 替换 r</li>
+<li>index(s, t) 返回 s 中字符串 t 的第一位置</li>
+<li>length(s) 返回 s 的长度</li>
+<li>match(s, r) 测试 s 是否包含匹配 r 的字符串</li>
+<li>split(s, a, fs) 在 fs 上将 s 分成序列 a</li>
+<li>sprint(fmt, exp) 返回经 fmt 格式化后的 exp</li>
+<li>sub(r, s) 用 $0 中最左边最长的子串代替 s</li>
+<li>substr(r, p) 返回字符串 s 中从 p 开始的后缀部分</li>
+<li>substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分</li>
+</ul>
+</li>
+</ul>
+<h3 id="xargs"><a href="#xargs" class="headerlink" title="xargs"></a>xargs</h3><ul>
+<li>-t 执行命令之前先打印执行命令</li>
+<li>-n 指定传递给执行命令的参数个数, 默认是所有</li>
+<li>-I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数</li>
+<li>-p 每执行一个 argument 时询问一次用户</li>
+<li>-a file 从文件中读入作为 stdin</li>
+<li>-s num 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;file1 file2 file3&quot;</span>| xargs -t -I % sh -c <span class="string">&#x27;touch %;ls -l %&#x27;</span></span><br><span class="line">sh -c <span class="built_in">touch</span> file1 file2 file3;<span class="built_in">ls</span> -l file1 file2 file3</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-d 设置自定义分隔符</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> -n file1<span class="comment">#file2#file3#file4|xargs -d \# -t touch</span></span><br><span class="line"><span class="built_in">touch</span> file1 file2 file3 file4</span><br></pre></td></tr></table></figure>
+
+<h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><blockquote>
+<p>BRE 定义了 4 组元字符 <code>[ ]</code> <code>.</code> <code>^</code> <code>$</code><br>ERE 增加了 3 组元字符 <code>&#123; &#125;</code> <code>()</code> <code>|</code></p>
+</blockquote>
+<ul>
+<li><p>-V,--version 显示版本信息</p>
+</li>
+<li><p>-c,--count 统计符合字符串条件的行数</p>
+</li>
+<li><p>-i,--ignore-case 忽略大小写</p>
+</li>
+<li><p>-e,--regexp=PATTERN 使用正则表达式匹配</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep -i -e <span class="string">&quot;foo\|bar&quot;</span> <span class="comment"># 使用 -e 参数 需要将正则中的部分字符转义才能使用</span></span><br></pre></td></tr></table></figure></li>
+<li><p>-E,--extended-regexp 使用扩展正则表达式匹配(ERE)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep -i -E <span class="string">&quot;foo|bar&quot;</span> <span class="comment"># 此处不需要进行字符转义</span></span><br></pre></td></tr></table></figure></li>
+<li><p>-G,--basic-regexp 使用基础正则表达式(BRE)</p>
+</li>
+<li><p>-A{NUM},--after-context=NUM 查找某些字符的内容, 并向下延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-B{NUM},--before-context=NUM 查找某些字符的内容, 并向上延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-C{NUM},--context=NUM 查找某些字符的内容, 并向上和向下各延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-f File,--file=File 从文件中提取模板</p>
+</li>
+<li><p>-h,--no-filename 当搜索多个文件时, 不显示匹配文件名前缀</p>
+</li>
+<li><p>-o,--only-matching 只显示正则表达式匹配的部分</p>
+</li>
+<li><p>-q,--quiet 取消显示,只返回退出状态, <code>0</code> 表示找到了匹配的行</p>
+</li>
+<li><p>-l,--files-with-matches 打印匹配模板的文件清单</p>
+</li>
+<li><p>-L,--files-without-match 打印不匹配模板的文件清单</p>
+</li>
+<li><p>-n,--line-number 在匹配的行前面打印行号</p>
+</li>
+<li><p>-v,--invert-match 显示不包括文本的所有信息</p>
+</li>
+<li><p>-R,-r,--recursive 递归的读取目录下的所有文件,包括子目录</p>
+</li>
+</ul>
+<h3 id="批量删除本地关联的-git-远程分支"><a href="#批量删除本地关联的-git-远程分支" class="headerlink" title="批量删除本地关联的 git 远程分支"></a>批量删除本地关联的 git 远程分支</h3><ul>
+<li><p>awk 和 xargs 命令结合使用</p>
+</li>
+<li><p>不带远程名称的过滤</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 格式化输出所有本地关联的分支名</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  grep -i <span class="string">&#x27;origin/feature*&#x27;</span> | \</span><br><span class="line">  awk <span class="string">&#x27;&#123;FS=&quot;/&quot;; \</span></span><br><span class="line"><span class="string">    printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125; \</span></span><br><span class="line"><span class="string">    /origin\/feature/&#123; \</span></span><br><span class="line"><span class="string">      FS=&quot;/&quot;; \</span></span><br><span class="line"><span class="string">      printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span><br><span class="line"><span class="string">    &#125;&#x27;</span></span><br><span class="line">FS    / OFS      NF    1 NR    1 <span class="variable">$0</span>   origin/feature-BUSINESS-11269 <span class="variable">$1</span> origin/feature-BUSINESS-11269</span><br><span class="line">FS    / OFS      NF    2 NR    2 <span class="variable">$0</span>   origin/feature-BUSINESS-11374 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    3 <span class="variable">$0</span>   origin/feature-mall-20220406 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    4 <span class="variable">$0</span>   origin/feature-mall-entry <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    5 <span class="variable">$0</span>   origin/feature-privacy-20220329 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    6 <span class="variable">$0</span>   origin/feature-service_tpl-20220418 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    7 <span class="variable">$0</span>   origin/feature_BUSINESS-0707 <span class="variable">$1</span>   origin</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行删除分支操作</span></span><br><span class="line"><span class="comment"># BEGIN&#123;printf &quot;\nawk begin filtering\n\n&quot;;&#125;END&#123;printf &quot;\ndelete successfully\n&quot;;&#125;</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  grep -i <span class="string">&#x27;origin/revert*&#x27;</span> | \</span><br><span class="line">  awk <span class="string">&#x27;&#123;printf &quot;%4s\n&quot;,$0;&#125;&#x27;</span> | \  <span class="comment"># awk &#x27;&#123;printf $0 &quot;\n&quot;;&#125;&#x27;</span></span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br><span class="line">Deleted remote-tracking branch origin/revert-0946083d (was 795de8b941).</span><br><span class="line">Deleted remote-tracking branch origin/revert-4835d8ea (was eac88d3e28).</span><br><span class="line"><span class="comment">## 或</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;/origin\/revert/&#123;printf &quot;%4s\n&quot;,$0&#125;&#x27;</span> | \</span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>包含主机名的过滤</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># IGNORECASE=1 开启忽略大小写</span></span><br><span class="line"><span class="comment"># $0~/origin\/feature/ 判断分支名是否包含 origin/feature</span></span><br><span class="line"><span class="comment"># 使用内置函数 gsub 全局替换 remotes 为空</span></span><br><span class="line">$ git branch -a | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;&#123; \</span></span><br><span class="line"><span class="string">    if($0~/origin\/feature/)&#123; \</span></span><br><span class="line"><span class="string">      gsub(/remotes\//, &quot; &quot;, $0); \</span></span><br><span class="line"><span class="string">      printf &quot;%4s\n&quot;,$0; \</span></span><br><span class="line"><span class="string">    &#125; \</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span> | \</span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="scp-主机之间复制文件"><a href="#scp-主机之间复制文件" class="headerlink" title="scp 主机之间复制文件"></a>scp 主机之间复制文件</h3><ul>
+<li>-C 传输过程中允许压缩文件</li>
+<li>-p 保留源文件的修改时间, 访问时间, 访问权限</li>
+<li>-q 不显示传输进度条</li>
+<li>-r 递归复制整个目录</li>
+<li>-v 详细方式显示输出</li>
+<li>-P 指定数据传输的端口号</li>
+<li>-l 限制传输带宽 KB/s</li>
+</ul>
+<h4 id="本地复制到远程"><a href="#本地复制到远程" class="headerlink" title="本地复制到远程"></a>本地复制到远程</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp local_file remote_username@remote_ip:remote_folder</span><br><span class="line"><span class="comment"># 拷贝文件, 可以使用原文件名也可以重新命名文件</span></span><br><span class="line">scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝目录</span></span><br><span class="line">scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/</span><br></pre></td></tr></table></figure>
+
+<h4 id="远程复制到本地"><a href="#远程复制到本地" class="headerlink" title="远程复制到本地"></a>远程复制到本地</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 拷贝文件, 可以使用原文件名也可以重新命名文件</span></span><br><span class="line">scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/</span><br><span class="line"><span class="comment"># 拷贝目录</span></span><br><span class="line">scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace</span><br></pre></td></tr></table></figure>
+
+<h3 id="firewall-cmd-防火墙"><a href="#firewall-cmd-防火墙" class="headerlink" title="firewall-cmd 防火墙"></a>firewall-cmd 防火墙</h3><ul>
+<li>--permanent # 永久修改</li>
+<li>--reload # 重新加载防火墙配置</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@centos7 ~]firewall-cmd --list-all <span class="comment"># 显示所有信息</span></span><br><span class="line">[root@centos7 ~]firewall-cmd --list-ports <span class="comment"># 显示端口信息</span></span><br><span class="line">[root@centos7 ~]firewall-cmd --remove-ports=&lt;port&gt;/&lt;protocol&gt; <span class="comment"># 显示端口信息</span></span><br><span class="line"></span><br><span class="line">[root@centos7 ~]firewall-cmd --add-port=&lt;port&gt;/&lt;protocol&gt; --permanent <span class="comment"># 永久修改防火墙配置</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="tar-归档压缩工具"><a href="#tar-归档压缩工具" class="headerlink" title="tar 归档压缩工具"></a>tar 归档压缩工具</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar [option...] [files]...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>-c,--create 创建新的 tar 文件</p>
+</li>
+<li><p>-x,--extract 解开 tar 文件</p>
+</li>
+<li><p>-r,--append 添加文件到已经压缩的文件</p>
+</li>
+<li><p>-t,--list 列出压缩文件中的信息</p>
+</li>
+<li><p>-u,--update 用已打包的文件的较新版本更新 tar 文件</p>
+</li>
+<li><p>-d,--diff,--compare 将文件系统里的文件和 tar 文件里的文件进行比较</p>
+</li>
+<li><p>--delete 删除 tar 文件里面的文件, 不能用于已保存在磁带上的 tar 文件</p>
+</li>
+<li><p>-v,--verbose 列出每一步处理涉及的文件的信息</p>
+</li>
+<li><p>-k,--keep-old-files 不覆盖文件系统上已有的文件</p>
+</li>
+<li><p>-f,--file 指定要处理的文件名</p>
+</li>
+<li><p>-w 每一步都要求确认</p>
+</li>
+<li><p>--atime-preserve 不改变转储文件的存取时间</p>
+</li>
+<li><p>-m,--modification-time 当从一个档案中恢复文件时, 不使用新的时间标签</p>
+</li>
+<li><p>-C,--directory DIR 转到指定的目录</p>
+</li>
+<li><p>-j,--bzip2 调用 bzip2 执行压缩或解压缩</p>
+</li>
+<li><p>-J,--xz,--lzma 调用 XZ Utils 执行压缩或解压缩</p>
+</li>
+<li><p>-z,--gzip,--gunzip,--ungzip 调用 gzip 执行压缩或解压缩</p>
+</li>
+<li><p>-Z,--compress,--uncompress 调用 compress 执行压缩或解压缩</p>
+</li>
+</ul>
+<h4 id="归档压缩"><a href="#归档压缩" class="headerlink" title="归档压缩"></a>归档压缩</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@centos7 ~]tar -czvf workspace.tar.gz ./workspace  # 使用 gzip 压缩归档 workspace 目录</span><br></pre></td></tr></table></figure>
+
+<h4 id="解压缩"><a href="#解压缩" class="headerlink" title="解压缩"></a>解压缩</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable  # 使用 gzip 解压缩到当前目录下的 redis-stable 目录</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>linux</category>
+        <category>shell</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/04/7df03390b905/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+  </entry>
+  <entry>
     <title>nginx.md</title>
     <url>/2022/04/1e58889c42cf/</url>
     <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
@@ -1418,25 +1654,18 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2021/04/7df03390b905/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+    <title>vagrant</title>
+    <url>/2022/04/6a14bcf31f14/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
+<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
+<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
 ]]></content>
       <categories>
         <category>tools</category>
       </categories>
+      <tags>
+        <tag>vagrant</tag>
+      </tags>
   </entry>
   <entry>
     <title>shell语法</title>
@@ -1739,191 +1968,6 @@
       <tags>
         <tag>linux</tag>
         <tag>shell</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>shell工具</title>
-    <url>/2022/05/4881d8683e6d/</url>
-    <content><![CDATA[<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
-<li><p>OFMT 输出数字格式(默认%.6g)</p>
-</li>
-<li><p>CONVFMT 数字转换格式(默认值为%.6g)ENVIRON 环境变量关联数组</p>
-</li>
-<li><p>ENVIRON 数组, 存储当前系统的环境变量, ENVIRON[‘PATH’]</p>
-</li>
-<li><p>ERRNO 最后一个系统错误的描述</p>
-</li>
-<li><p>FILENAME 当前正在处理的文件名</p>
-</li>
-<li><p>FIELDWIDTHS 以空格分隔的字段宽度</p>
-</li>
-<li><p>PROCINFO 数组, 存储当前系统运行时信息, PROCINFO[‘uid’]</p>
-</li>
-<li><p>IGNORECASE 如果为真, 则进行忽略大小写的匹配</p>
-</li>
-<li><p>字段分隔符</p>
-<ul>
-<li>FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置</li>
-<li>OFS 输出的字段分隔符, 默认为空格</li>
-</ul>
-</li>
-<li><p>记录分隔符</p>
-<ul>
-<li>RS 输入记录的分隔符, 默认为换行符</li>
-<li>ORS 输出的记录分隔符, 默认为换行符</li>
-</ul>
-</li>
-</ul>
-<span id="more"></span>
-
-<ul>
-<li><p>记录统计</p>
-<ul>
-<li>$0 完整的输入记录</li>
-<li>$1-$n 表示当前行第几个字段, $(NF - n) 动态计算第几个字段</li>
-<li>NF 当前记录中的字段个数</li>
-<li>NR 已经读出的记录数(默认从 1 开始)</li>
-<li>FNR 当前处理的记录号</li>
-</ul>
-</li>
-<li><p>参数</p>
-<ul>
-<li>ARGC 命令行参数个数(不包括 awk 的选项和 awk 的程序内容)</li>
-<li>ARGV 命令行参数序列数组,下标从 0 开始</li>
-<li>ARGIND 命令行中当前文件的位置(从 0 开始算)</li>
-</ul>
-</li>
-<li><p>流程控制</p>
-<ul>
-<li>BEGIN { 这里面放的是执行前的语句 }</li>
-<li>END { 这里面放的是处理完所有的行后要执行的语句 }</li>
-<li>{ 这里面放的是处理每一行时要执行的语句 }</li>
-</ul>
-</li>
-<li><p>内置函数</p>
-<ul>
-<li>gsub(r, s) 在整个 $0 中用 s 替换 r</li>
-<li>gsub(r, s, t) 在整个 t 中用 s 替换 r</li>
-<li>index(s, t) 返回 s 中字符串 t 的第一位置</li>
-<li>length(s) 返回 s 的长度</li>
-<li>match(s, r) 测试 s 是否包含匹配 r 的字符串</li>
-<li>split(s, a, fs) 在 fs 上将 s 分成序列 a</li>
-<li>sprint(fmt, exp) 返回经 fmt 格式化后的 exp</li>
-<li>sub(r, s) 用 $0 中最左边最长的子串代替 s</li>
-<li>substr(r, p) 返回字符串 s 中从 p 开始的后缀部分</li>
-<li>substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分</li>
-</ul>
-</li>
-</ul>
-<h3 id="xargs"><a href="#xargs" class="headerlink" title="xargs"></a>xargs</h3><ul>
-<li>-t 执行命令之前先打印执行命令</li>
-<li>-n 指定传递给执行命令的参数个数, 默认是所有</li>
-<li>-I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数</li>
-<li>-p 每执行一个 argument 时询问一次用户</li>
-<li>-a file 从文件中读入作为 stdin</li>
-<li>-s num 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;file1 file2 file3&quot;</span>| xargs -t -I % sh -c <span class="string">&#x27;touch %;ls -l %&#x27;</span></span><br><span class="line">sh -c <span class="built_in">touch</span> file1 file2 file3;<span class="built_in">ls</span> -l file1 file2 file3</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>-d 设置自定义分隔符</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> -n file1<span class="comment">#file2#file3#file4|xargs -d \# -t touch</span></span><br><span class="line"><span class="built_in">touch</span> file1 file2 file3 file4</span><br></pre></td></tr></table></figure>
-
-<h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><blockquote>
-<p>BRE 定义了 4 组元字符 <code>[ ]</code> <code>.</code> <code>^</code> <code>$</code><br>ERE 增加了 3 组元字符 <code>&#123; &#125;</code> <code>()</code> <code>|</code></p>
-</blockquote>
-<ul>
-<li><p>-V,--version 显示版本信息</p>
-</li>
-<li><p>-c,--count 统计符合字符串条件的行数</p>
-</li>
-<li><p>-i,--ignore-case 忽略大小写</p>
-</li>
-<li><p>-e,--regexp=PATTERN 使用正则表达式匹配</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep -i -e <span class="string">&quot;foo\|bar&quot;</span> <span class="comment"># 使用 -e 参数 需要将正则中的部分字符转义才能使用</span></span><br></pre></td></tr></table></figure></li>
-<li><p>-E,--extended-regexp 使用扩展正则表达式匹配(ERE)</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep -i -E <span class="string">&quot;foo|bar&quot;</span> <span class="comment"># 此处不需要进行字符转义</span></span><br></pre></td></tr></table></figure></li>
-<li><p>-G,--basic-regexp 使用基础正则表达式(BRE)</p>
-</li>
-<li><p>-A{NUM},--after-context=NUM 查找某些字符的内容, 并向下延伸 <code>NUM</code> 行</p>
-</li>
-<li><p>-B{NUM},--before-context=NUM 查找某些字符的内容, 并向上延伸 <code>NUM</code> 行</p>
-</li>
-<li><p>-C{NUM},--context=NUM 查找某些字符的内容, 并向上和向下各延伸 <code>NUM</code> 行</p>
-</li>
-<li><p>-f File,--file=File 从文件中提取模板</p>
-</li>
-<li><p>-h,--no-filename 当搜索多个文件时, 不显示匹配文件名前缀</p>
-</li>
-<li><p>-o,--only-matching 只显示正则表达式匹配的部分</p>
-</li>
-<li><p>-q,--quiet 取消显示,只返回退出状态, <code>0</code> 表示找到了匹配的行</p>
-</li>
-<li><p>-l,--files-with-matches 打印匹配模板的文件清单</p>
-</li>
-<li><p>-L,--files-without-match 打印不匹配模板的文件清单</p>
-</li>
-<li><p>-n,--line-number 在匹配的行前面打印行号</p>
-</li>
-<li><p>-v,--invert-match 显示不包括文本的所有信息</p>
-</li>
-<li><p>-R,-r,--recursive 递归的读取目录下的所有文件,包括子目录</p>
-</li>
-</ul>
-<h3 id="批量删除本地关联的-git-远程分支"><a href="#批量删除本地关联的-git-远程分支" class="headerlink" title="批量删除本地关联的 git 远程分支"></a>批量删除本地关联的 git 远程分支</h3><ul>
-<li><p>awk 和 xargs 命令结合使用</p>
-</li>
-<li><p>不带远程名称的过滤</p>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 格式化输出所有本地关联的分支名</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  grep -i <span class="string">&#x27;origin/feature*&#x27;</span> | \</span><br><span class="line">  awk <span class="string">&#x27;&#123;FS=&quot;/&quot;; \</span></span><br><span class="line"><span class="string">    printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125; \</span></span><br><span class="line"><span class="string">    /origin\/feature/&#123; \</span></span><br><span class="line"><span class="string">      FS=&quot;/&quot;; \</span></span><br><span class="line"><span class="string">      printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span><br><span class="line"><span class="string">    &#125;&#x27;</span></span><br><span class="line">FS    / OFS      NF    1 NR    1 <span class="variable">$0</span>   origin/feature-BUSINESS-11269 <span class="variable">$1</span> origin/feature-BUSINESS-11269</span><br><span class="line">FS    / OFS      NF    2 NR    2 <span class="variable">$0</span>   origin/feature-BUSINESS-11374 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    3 <span class="variable">$0</span>   origin/feature-mall-20220406 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    4 <span class="variable">$0</span>   origin/feature-mall-entry <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    5 <span class="variable">$0</span>   origin/feature-privacy-20220329 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    6 <span class="variable">$0</span>   origin/feature-service_tpl-20220418 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    7 <span class="variable">$0</span>   origin/feature_BUSINESS-0707 <span class="variable">$1</span>   origin</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行删除分支操作</span></span><br><span class="line"><span class="comment"># BEGIN&#123;printf &quot;\nawk begin filtering\n\n&quot;;&#125;END&#123;printf &quot;\ndelete successfully\n&quot;;&#125;</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  grep -i <span class="string">&#x27;origin/revert*&#x27;</span> | \</span><br><span class="line">  awk <span class="string">&#x27;&#123;printf &quot;%4s\n&quot;,$0;&#125;&#x27;</span> | \  <span class="comment"># awk &#x27;&#123;printf $0 &quot;\n&quot;;&#125;&#x27;</span></span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br><span class="line">Deleted remote-tracking branch origin/revert-0946083d (was 795de8b941).</span><br><span class="line">Deleted remote-tracking branch origin/revert-4835d8ea (was eac88d3e28).</span><br><span class="line"><span class="comment">## 或</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;/origin\/revert/&#123;printf &quot;%4s\n&quot;,$0&#125;&#x27;</span> | \</span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>包含主机名的过滤</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># IGNORECASE=1 开启忽略大小写</span></span><br><span class="line"><span class="comment"># $0~/origin\/feature/ 判断分支名是否包含 origin/feature</span></span><br><span class="line"><span class="comment"># 使用内置函数 gsub 全局替换 remotes 为空</span></span><br><span class="line">$ git branch -a | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;&#123; \</span></span><br><span class="line"><span class="string">    if($0~/origin\/feature/)&#123; \</span></span><br><span class="line"><span class="string">      gsub(/remotes\//, &quot; &quot;, $0); \</span></span><br><span class="line"><span class="string">      printf &quot;%4s\n&quot;,$0; \</span></span><br><span class="line"><span class="string">    &#125; \</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span> | \</span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="scp-主机之间复制文件"><a href="#scp-主机之间复制文件" class="headerlink" title="scp 主机之间复制文件"></a>scp 主机之间复制文件</h3><ul>
-<li>-C 传输过程中允许压缩文件</li>
-<li>-p 保留源文件的修改时间, 访问时间, 访问权限</li>
-<li>-q 不显示传输进度条</li>
-<li>-r 递归复制整个目录</li>
-<li>-v 详细方式显示输出</li>
-<li>-P 指定数据传输的端口号</li>
-<li>-l 限制传输带宽 KB/s</li>
-</ul>
-<h4 id="本地复制到远程"><a href="#本地复制到远程" class="headerlink" title="本地复制到远程"></a>本地复制到远程</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp local_file remote_username@remote_ip:remote_folder</span><br><span class="line"><span class="comment"># 拷贝文件, 可以使用原文件名也可以重新命名文件</span></span><br><span class="line">scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝目录</span></span><br><span class="line">scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/</span><br></pre></td></tr></table></figure>
-
-<h4 id="远程复制到本地"><a href="#远程复制到本地" class="headerlink" title="远程复制到本地"></a>远程复制到本地</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 拷贝文件, 可以使用原文件名也可以重新命名文件</span></span><br><span class="line">scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/</span><br><span class="line"><span class="comment"># 拷贝目录</span></span><br><span class="line">scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace</span><br></pre></td></tr></table></figure>
-
-<h3 id="firewall-cmd-防火墙"><a href="#firewall-cmd-防火墙" class="headerlink" title="firewall-cmd 防火墙"></a>firewall-cmd 防火墙</h3><ul>
-<li>--permanent # 永久修改</li>
-<li>--reload # 重新加载防火墙配置</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@centos7 ~]firewall-cmd --list-all <span class="comment"># 显示所有信息</span></span><br><span class="line">[root@centos7 ~]firewall-cmd --list-ports <span class="comment"># 显示端口信息</span></span><br><span class="line">[root@centos7 ~]firewall-cmd --remove-ports=&lt;port&gt;/&lt;protocol&gt; <span class="comment"># 显示端口信息</span></span><br><span class="line"></span><br><span class="line">[root@centos7 ~]firewall-cmd --add-port=&lt;port&gt;/&lt;protocol&gt; --permanent <span class="comment"># 永久修改防火墙配置</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>linux</category>
-        <category>shell</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-        <tag>shell</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>vagrant</title>
-    <url>/2022/04/6a14bcf31f14/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
-<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
-<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>vagrant</tag>
       </tags>
   </entry>
   <entry>
