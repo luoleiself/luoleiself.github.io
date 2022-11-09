@@ -1,5 +1,5 @@
 ---
-title: nginx.md
+title: nginx
 date: 2022-04-15 11:15:45
 categories:
   - server
