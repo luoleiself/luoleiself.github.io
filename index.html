@@ -227,10 +227,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-11-09 18:03:19 / 修改时间：19:48:06" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-10 19:59:15" itemprop="dateModified" datetime="2022-11-10T19:59:15+08:00">2022-11-10</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -250,13 +256,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>915</span>
+              <span>4.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>1 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -268,40 +274,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h3><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API</p>
-<h4 id="Keys-命令"><a href="#Keys-命令" class="headerlink" title="Keys 命令"></a>Keys 命令</h4><ul>
-<li>DEL key [key…] 删除 key, 1 成功, 0 失败</li>
-<li>DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;</li>
-<li>EXISTS key 检查指定 key 是否存在, 1 存在, 0 不存在</li>
-<li>EXPIRE key seconds 为指定 key 设置过期时间(单位秒), 1 成功, 0 失败</li>
-<li>EXPIREAT key unix-time-seconds 为指定 key 设置过期使用 unix 时间戳, 1 成功, 0 失败</li>
-<li>PEXPIRE key milliseconds 为指定 key 设置过期时间(单位毫秒), 1 成功, 0 失败</li>
-<li>PEXPIREAT key unix-time-milliseconds 为指定 key 设置过期时间使用 unix 时间戳, 1 成功, 0 失败</li>
-<li>KEYS pattern 查找给定模式(pattern)的 key, 返回列表</li>
-<li>MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中</li>
-<li>PERSIST key 移除指定 key 的过期时间, key 将永久保持, 1 成功, 0 失败</li>
-<li>PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间<ul>
+          <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API</p>
+<h3 id="Keys-命令"><a href="#Keys-命令" class="headerlink" title="Keys 命令"></a>Keys 命令</h3><ul>
+<li><p>HELP command 显示命令的帮助信息</p>
+</li>
+<li><p>DEL key [key…] 删除 key, 1 成功, 0 不存在</p>
+</li>
+<li><p>DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>EXISTS key 检查指定 key 是否存在, 1 存在, 0 不存在</p>
+</li>
+<li><p>KEYS pattern 查找给定模式(pattern)的 key, 返回列表</p>
+</li>
+<li><p>EXPIRE key seconds 为指定 key 设置过期时间(单位秒), 1 成功, 0 失败</p>
+</li>
+<li><p>EXPIREAT key unix-time-seconds 为指定 key 设置过期使用 unix 时间戳, 1 成功, 0 失败</p>
+</li>
+<li><p>PEXPIRE key milliseconds 为指定 key 设置过期时间(单位毫秒), 1 成功, 0 失败</p>
+</li>
+<li><p>PEXPIREAT key unix-time-milliseconds 为指定 key 设置过期时间使用 unix 时间戳, 1 成功, 0 失败</p>
+</li>
+<li><p>MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中</p>
+</li>
+<li><p>PERSIST key 移除指定 key 的过期时间, key 将永久保持, 1 成功, 0 失败</p>
+</li>
+<li><p>PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间</p>
+<ul>
 <li>-2 key 不存在</li>
 <li>-1 key 存在但没有设置剩余生存时间</li>
 </ul>
 </li>
-<li>TTL key 以秒为单位返回指定 key 的剩余生存时间<ul>
+<li><p>TTL key 以秒为单位返回指定 key 的剩余生存时间</p>
+<ul>
 <li>-2 key 不存在</li>
 <li>-1 key 存在但没有设置剩余生存时间</li>
 </ul>
 </li>
-<li>RANDOMKEY 从当前数据库随机返回一个 key, 如果当前数据库为空则返回 &lt;nil&gt;</li>
-<li>RENAME key newKey 修改 key 的名称, ok 成功, ERR no such key 失败</li>
-<li>TYPE key 返回指定 key 的类型, none 表示 key 不存在</li>
 </ul>
-<h4 id="CONFIG-命令"><a href="#CONFIG-命令" class="headerlink" title="CONFIG 命令"></a>CONFIG 命令</h4><ul>
-<li>CONFIG GET parameter [parameter…] 获取指定配置项的值</li>
-<li>CONFIG HELP 显示 CONFIG 命令的帮助信息</li>
-<li>CONFIG RESETSTAT 重置 INFO 返回的统计信息, ok 成功</li>
-<li>CONFIG REWRITE 使用内存配置重写配置文件</li>
-<li>CONFIG SET parameter value [parameter value …] 设置配置项</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/819f95816ecc/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1414,12 +1431,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">168k</span>
+    <span title="站点总字数">172k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:33</span>
+    <span title="站点阅读时长">2:36</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

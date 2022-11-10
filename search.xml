@@ -1,6 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Charles-手机代理-Https-证书管理</title>
+    <url>/2021/12/a521f7947aed/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
+<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
+</ul>
+<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
+<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img data-src="/images/charles-11.jpg" alt="charles-11"></li>
+<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img data-src="/images/charles-12.png" alt="charles-12"></li>
+</ol>
+<span id="more"></span>
+
+<ol start="3">
+<li>在弹框中左侧列表选择 “证书”, 点击 “添加” 按钮, 在弹出的对话框选择 “我的用户账户” 点击 “完成” 后, 右侧列表会出现 证书 选项, 最后点击 “确定”<br><img data-src="/images/charles-13.jpg" alt="charles-13"><br><img data-src="/images/charles-14.jpg" alt="charles-14"></li>
+<li>在第 2 步的窗口中会出现证书菜单, 依次展开这些菜单, 中间窗口会出现所有已安装的证书<br><img data-src="/images/charles-15.jpg" alt="charles-15"></li>
+<li>选择需要删除的证书 “右键单击”, 选择 “删除”, 在弹出的对话框中选择 “是”, 完成证书删除<br><img data-src="/images/charles-16.jpg" alt="charles-16"></li>
+<li>点击右上角的 “关闭” 按钮关闭控制台, 在弹出的对话框中选择 “否” 不存入控制台配置, 如果有需要也可以选择 “是” 存入控制台配置<br><img data-src="/images/charles-17.jpg" alt="charles-17"></li>
+</ol>
+<h3 id="电脑安装-charles-证书"><a href="#电脑安装-charles-证书" class="headerlink" title="电脑安装 charles 证书"></a>电脑安装 charles 证书</h3><ol>
+<li><p>打开 charles, 选择 Help -&gt; SSL Proxing -&gt; Install Charles Root Certificate<br><img data-src="/images/charles-1.png" alt="charles-1"></p>
+</li>
+<li><p>在 “证书” 对话框中点击 “安装证书”<br><img data-src="/images/charles-2.jpg" alt="charles-2"></p>
+</li>
+<li><p>在 “证书导入向导” 对话框中选择 “本地计算机”, 点击 “下一步”<br><img data-src="/images/charles-3.jpg" alt="charles-3"></p>
+</li>
+<li><p>在 “证书导入向导” 对话框中选择 “将所有的证书都放入下列存储”, 点击 “浏览”<br><img data-src="/images/charles-4.jpg" alt="charles-4"></p>
+</li>
+<li><p>在 “选择证书存储” 对话框中选择 “受信任的根证书颁发机构”, 点击 “确认”<br><img data-src="/images/charles-5.jpg" alt="charles-5"></p>
+</li>
+<li><p>在弹出的对话框选择 “是” 将证书导入到浏览器的证书列表中<br><img data-src="/images/charles-10.jpg" alt="charles-10"></p>
+</li>
+<li><p>点击 “确定” 完成证书添加<br><img data-src="/images/charles-6.jpg" alt="charles-6"></p>
+</li>
+</ol>
+<h3 id="手机添加-charles-证书"><a href="#手机添加-charles-证书" class="headerlink" title="手机添加 charles 证书"></a>手机添加 charles 证书</h3><ol>
+<li>手机绑定 charles 代理(电脑 IP 和端口):<ol>
+<li>WLAN -&gt; 修改已连接网络</li>
+<li>代理改为 “手动”</li>
+<li>服务器主机名添加电脑 IP</li>
+<li>服务器端口添加 charles 监听端口</li>
+<li>保存后连接 wifi</li>
+</ol>
+</li>
+<li>安卓手机使用 Chrome, 苹果手机使用 safari</li>
+<li>浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理</li>
+<li>安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定<ol>
+<li>输入 “证明名称(可任意起名)”, 后期删除证书时可根据此名称查找</li>
+<li>凭证用途 默认为 “VPN 和应用”, 如果改为 WLAN 会导致无效</li>
+</ol>
+</li>
+<li>苹果手机打开设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置 -&gt; 找到已下载的 charles 证书打开信任</li>
+<li>使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试<br><img data-src="/images/charles-7.jpg" alt="charles-7"></li>
+</ol>
+<h3 id="电脑使用-charles-无法访问百度等其他页面"><a href="#电脑使用-charles-无法访问百度等其他页面" class="headerlink" title="电脑使用 charles 无法访问百度等其他页面"></a>电脑使用 charles 无法访问百度等其他页面</h3><p>黑名单和白名单设置</p>
+<ol>
+<li>打开 charles, 选择 Tools -&gt; Block List | Allow List( 部分版本为 White List)<br><img data-src="/images/charles-8.png" alt="charles-8"></li>
+<li>此配置为黑名单和白名单设置<br><img data-src="/images/charles-9.jpg" alt="charles-9"></li>
+</ol>
+<h3 id="手机微信扫码后显示白屏"><a href="#手机微信扫码后显示白屏" class="headerlink" title="手机微信扫码后显示白屏"></a>手机微信扫码后显示白屏</h3><ul>
+<li>手机未安装 charles 证书会显示白屏</li>
+<li>其他部分浏览器会在 地址栏 中出现非安全链接的提示图标</li>
+</ul>
+<h3 id="手机卸载安装的-charles-证书"><a href="#手机卸载安装的-charles-证书" class="headerlink" title="手机卸载安装的 charles 证书"></a>手机卸载安装的 charles 证书</h3><ol>
+<li>打开手机 设置 -&gt; 安全 -&gt; 更多安全设置 -&gt; 加密和凭据 -&gt; 用户凭据</li>
+<li>根据安装手机证书时填写的证明名称找到指定项, 点击后选择 “删除”</li>
+</ol>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>charles</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BABELRC</title>
     <url>/2021/12/2f42f14b8489/</url>
     <content><![CDATA[<h1 id="babel-cli"><a href="#babel-cli" class="headerlink" title="@babel/cli"></a>@babel/cli</h1><h2 id="install"><a href="#install" class="headerlink" title="install"></a>install</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -D @babel/cli @babel/core</span><br></pre></td></tr></table></figure>
@@ -98,80 +172,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Charles-手机代理-Https-证书管理</title>
-    <url>/2021/12/a521f7947aed/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
-<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
-</ul>
-<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
-<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img data-src="/images/charles-11.jpg" alt="charles-11"></li>
-<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img data-src="/images/charles-12.png" alt="charles-12"></li>
-</ol>
-<span id="more"></span>
-
-<ol start="3">
-<li>在弹框中左侧列表选择 “证书”, 点击 “添加” 按钮, 在弹出的对话框选择 “我的用户账户” 点击 “完成” 后, 右侧列表会出现 证书 选项, 最后点击 “确定”<br><img data-src="/images/charles-13.jpg" alt="charles-13"><br><img data-src="/images/charles-14.jpg" alt="charles-14"></li>
-<li>在第 2 步的窗口中会出现证书菜单, 依次展开这些菜单, 中间窗口会出现所有已安装的证书<br><img data-src="/images/charles-15.jpg" alt="charles-15"></li>
-<li>选择需要删除的证书 “右键单击”, 选择 “删除”, 在弹出的对话框中选择 “是”, 完成证书删除<br><img data-src="/images/charles-16.jpg" alt="charles-16"></li>
-<li>点击右上角的 “关闭” 按钮关闭控制台, 在弹出的对话框中选择 “否” 不存入控制台配置, 如果有需要也可以选择 “是” 存入控制台配置<br><img data-src="/images/charles-17.jpg" alt="charles-17"></li>
-</ol>
-<h3 id="电脑安装-charles-证书"><a href="#电脑安装-charles-证书" class="headerlink" title="电脑安装 charles 证书"></a>电脑安装 charles 证书</h3><ol>
-<li><p>打开 charles, 选择 Help -&gt; SSL Proxing -&gt; Install Charles Root Certificate<br><img data-src="/images/charles-1.png" alt="charles-1"></p>
-</li>
-<li><p>在 “证书” 对话框中点击 “安装证书”<br><img data-src="/images/charles-2.jpg" alt="charles-2"></p>
-</li>
-<li><p>在 “证书导入向导” 对话框中选择 “本地计算机”, 点击 “下一步”<br><img data-src="/images/charles-3.jpg" alt="charles-3"></p>
-</li>
-<li><p>在 “证书导入向导” 对话框中选择 “将所有的证书都放入下列存储”, 点击 “浏览”<br><img data-src="/images/charles-4.jpg" alt="charles-4"></p>
-</li>
-<li><p>在 “选择证书存储” 对话框中选择 “受信任的根证书颁发机构”, 点击 “确认”<br><img data-src="/images/charles-5.jpg" alt="charles-5"></p>
-</li>
-<li><p>在弹出的对话框选择 “是” 将证书导入到浏览器的证书列表中<br><img data-src="/images/charles-10.jpg" alt="charles-10"></p>
-</li>
-<li><p>点击 “确定” 完成证书添加<br><img data-src="/images/charles-6.jpg" alt="charles-6"></p>
-</li>
-</ol>
-<h3 id="手机添加-charles-证书"><a href="#手机添加-charles-证书" class="headerlink" title="手机添加 charles 证书"></a>手机添加 charles 证书</h3><ol>
-<li>手机绑定 charles 代理(电脑 IP 和端口):<ol>
-<li>WLAN -&gt; 修改已连接网络</li>
-<li>代理改为 “手动”</li>
-<li>服务器主机名添加电脑 IP</li>
-<li>服务器端口添加 charles 监听端口</li>
-<li>保存后连接 wifi</li>
-</ol>
-</li>
-<li>安卓手机使用 Chrome, 苹果手机使用 safari</li>
-<li>浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理</li>
-<li>安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定<ol>
-<li>输入 “证明名称(可任意起名)”, 后期删除证书时可根据此名称查找</li>
-<li>凭证用途 默认为 “VPN 和应用”, 如果改为 WLAN 会导致无效</li>
-</ol>
-</li>
-<li>苹果手机打开设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置 -&gt; 找到已下载的 charles 证书打开信任</li>
-<li>使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试<br><img data-src="/images/charles-7.jpg" alt="charles-7"></li>
-</ol>
-<h3 id="电脑使用-charles-无法访问百度等其他页面"><a href="#电脑使用-charles-无法访问百度等其他页面" class="headerlink" title="电脑使用 charles 无法访问百度等其他页面"></a>电脑使用 charles 无法访问百度等其他页面</h3><p>黑名单和白名单设置</p>
-<ol>
-<li>打开 charles, 选择 Tools -&gt; Block List | Allow List( 部分版本为 White List)<br><img data-src="/images/charles-8.png" alt="charles-8"></li>
-<li>此配置为黑名单和白名单设置<br><img data-src="/images/charles-9.jpg" alt="charles-9"></li>
-</ol>
-<h3 id="手机微信扫码后显示白屏"><a href="#手机微信扫码后显示白屏" class="headerlink" title="手机微信扫码后显示白屏"></a>手机微信扫码后显示白屏</h3><ul>
-<li>手机未安装 charles 证书会显示白屏</li>
-<li>其他部分浏览器会在 地址栏 中出现非安全链接的提示图标</li>
-</ul>
-<h3 id="手机卸载安装的-charles-证书"><a href="#手机卸载安装的-charles-证书" class="headerlink" title="手机卸载安装的 charles 证书"></a>手机卸载安装的 charles 证书</h3><ol>
-<li>打开手机 设置 -&gt; 安全 -&gt; 更多安全设置 -&gt; 加密和凭据 -&gt; 用户凭据</li>
-<li>根据安装手机证书时填写的证明名称找到指定项, 点击后选择 “删除”</li>
-</ol>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>charles</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Generator和async</title>
     <url>/2021/07/bc748f2ea976/</url>
     <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
@@ -246,146 +246,6 @@
       </categories>
       <tags>
         <tag>ES6</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HTTP</title>
-    <url>/2021/07/1ddfb1010b19/</url>
-    <content><![CDATA[<h4 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h4><ul>
-<li><p>100 Continue 请求继续</p>
-</li>
-<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
-</li>
-<li><p>102 Processing 继续执行</p>
-</li>
-<li><p>200 OK 请求成功</p>
-</li>
-<li><p>204 No Content 没有响应实体</p>
-</li>
-<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
-</li>
-<li><p>301 Moved Permanently 资源永久移动</p>
-</li>
-<li><p>302 Move Temporarily 资源临时移动</p>
-</li>
-<li><p>303 See Other 参见其他</p>
-</li>
-<li><p>304 Not Modified 资源没有改动</p>
-</li>
-<li><p>305 Use Proxy 使用代理</p>
-</li>
-<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
-</li>
-<li><p>400 Bad Request 错误的请求</p>
-</li>
-<li><p>401 Unauthorized 需要验证</p>
-</li>
-<li><p>403 Forbidden 服务器拒绝执行</p>
-</li>
-<li><p>404 Not Found 资源未找到</p>
-</li>
-<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
-</li>
-<li><p>408 Request Timeout 请求超时</p>
-</li>
-<li><p>413 Request Entity Too Large 请求体超长</p>
-</li>
-<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
-</li>
-<li><p>500 Internal Server Error 服务器错误</p>
-</li>
-<li><p>502 Bad Gateway 网关错误</p>
-</li>
-<li><p>504 Gateway Timeout 网关超时</p>
-</li>
-<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
-</li>
-</ul>
-<h4 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h4><ul>
-<li>%21 !</li>
-<li>%22 “</li>
-<li>%23 #</li>
-<li>%24 $</li>
-<li>%25 %</li>
-<li>%26 &amp;</li>
-<li>%27 ‘</li>
-<li>%28 (</li>
-<li>%29 )</li>
-<li>%2F /</li>
-<li>%30-9 0..9</li>
-<li>%3A :</li>
-<li>%3B ;</li>
-<li>%3C &lt;</li>
-<li>%3D =</li>
-<li>%3E &gt;</li>
-<li>%3F ?</li>
-<li>%40 @</li>
-<li>%41 A</li>
-</ul>
-]]></content>
-      <categories>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -781,148 +641,143 @@
       </tags>
   </entry>
   <entry>
-    <title>JSSDK</title>
-    <url>/2022/05/2261dfd57ebf/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
-<li>转发</li>
-<li>转发给客户</li>
-<li>群发到客户群</li>
-<li>发表到客户的朋友圈</li>
-<li>分享到同事吧</li>
-<li>分享到微信</li>
-<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
-</ul>
-<span id="more"></span>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
 
-<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>shareAppMessage 自定义转发到会话</li>
-<li>shareWechatMessage 自定义转发到微信</li>
-<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
-<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>wx</category>
-      </categories>
-      <tags>
-        <tag>wx</tag>
-        <tag>jweixin</tag>
-        <tag>JSSDK</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JSUtils</title>
-    <url>/2022/02/18f2de6d45f9/</url>
-    <content><![CDATA[<h4 id="函数防抖"><a href="#函数防抖" class="headerlink" title="函数防抖"></a>函数防抖</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> debounce 函数防抖</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Function</span>&#125; fn 执行方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; delay 延迟时间 默认 300 毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Function</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> debounce = <span class="keyword">function</span> (<span class="params">fn, delay</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;fn is not Function&#x27;</span>);</span><br><span class="line">  delay = delay &gt;= <span class="number">0</span> ? delay : <span class="number">300</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> timer;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> context = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">let</span> args = <span class="variable language_">arguments</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (timer) <span class="built_in">clearTimeout</span>(timer);</span><br><span class="line"></span><br><span class="line">    timer = <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      fn.<span class="title function_">apply</span>(context, args);</span><br><span class="line">    &#125;, delay);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h4 id="函数节流"><a href="#函数节流" class="headerlink" title="函数节流"></a>函数节流</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> throttle 函数节流</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Function</span>&#125; fn 执行方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; delay 延迟时间 默认 300 毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Function</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> throttle = <span class="keyword">function</span> (<span class="params">fn, delay</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;fn is not Function&#x27;</span>);</span><br><span class="line">  delay = delay &gt;= <span class="number">0</span> ? delay : <span class="number">300</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> previous = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> _this = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">var</span> args = <span class="variable language_">arguments</span>;</span><br><span class="line">    <span class="keyword">var</span> now = <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">    <span class="keyword">if</span> (now - previous &gt; delay) &#123;</span><br><span class="line">      fn.<span class="title function_">apply</span>(_this, args);</span><br><span class="line">      previous = now;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
-<h4 id="复制剪贴板"><a href="#复制剪贴板" class="headerlink" title="复制剪贴板"></a>复制剪贴板</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> copyText 剪贴板方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; text 需要剪贴的内容</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Boolean</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> copyText = <span class="keyword">function</span> (<span class="params">text</span>) &#123;</span><br><span class="line">  <span class="comment">// 数字没有 .length 不能执行selectText 需要转化成字符串</span></span><br><span class="line">  <span class="keyword">const</span> textString = text.<span class="title function_">toString</span>();</span><br><span class="line">  <span class="keyword">let</span> input = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#copy-input&#x27;</span>);</span><br><span class="line">  <span class="keyword">if</span> (!input) &#123;</span><br><span class="line">    input = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;input&#x27;</span>);</span><br><span class="line">    input.<span class="property">id</span> = <span class="string">&#x27;copy-input&#x27;</span>;</span><br><span class="line">    input.<span class="property">readOnly</span> = <span class="string">&#x27;readOnly&#x27;</span>; <span class="comment">// 防止ios聚焦触发键盘事件</span></span><br><span class="line">    input.<span class="property">style</span>.<span class="property">position</span> = <span class="string">&#x27;absolute&#x27;</span>;</span><br><span class="line">    input.<span class="property">style</span>.<span class="property">left</span> = <span class="string">&#x27;-10000px&#x27;</span>;</span><br><span class="line">    input.<span class="property">style</span>.<span class="property">zIndex</span> = <span class="string">&#x27;-1000&#x27;</span>;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(input);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  input.<span class="property">value</span> = textString;</span><br><span class="line">  <span class="comment">// ios必须先选中文字且不支持 input.select();</span></span><br><span class="line">  <span class="title function_">selectText</span>(input, <span class="number">0</span>, textString.<span class="property">length</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">document</span>.<span class="title function_">execCommand</span>(<span class="string">&#x27;copy&#x27;</span>), <span class="string">&#x27;execCommand&#x27;</span>);</span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">document</span>.<span class="title function_">execCommand</span>(<span class="string">&#x27;copy&#x27;</span>)) &#123;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="title function_">execCommand</span>(<span class="string">&#x27;copy&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  input.<span class="title function_">blur</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// input自带的select()方法在苹果端无法进行选择，所以需要自己去写一个类似的方法</span></span><br><span class="line">  <span class="comment">// 选择文本。createTextRange(setSelectionRange)是input方法</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">selectText</span>(<span class="params">textbox, startIndex, stopIndex</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (textbox.<span class="property">createTextRange</span>) &#123;</span><br><span class="line">      <span class="comment">//ie</span></span><br><span class="line">      <span class="keyword">const</span> range = textbox.<span class="title function_">createTextRange</span>();</span><br><span class="line">      range.<span class="title function_">collapse</span>(<span class="literal">true</span>);</span><br><span class="line">      range.<span class="title function_">moveStart</span>(<span class="string">&#x27;character&#x27;</span>, startIndex); <span class="comment">//起始光标</span></span><br><span class="line">      range.<span class="title function_">moveEnd</span>(<span class="string">&#x27;character&#x27;</span>, stopIndex - startIndex); <span class="comment">//结束光标</span></span><br><span class="line">      range.<span class="title function_">select</span>(); <span class="comment">//不兼容苹果</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">//firefox/chrome</span></span><br><span class="line">      textbox.<span class="title function_">setSelectionRange</span>(startIndex, stopIndex);</span><br><span class="line">      textbox.<span class="title function_">focus</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
 
-<h4 id="检查身份证号"><a href="#检查身份证号" class="headerlink" title="检查身份证号"></a>检查身份证号</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> checkCardNo 剪贴板方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; value 身份证号码</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Boolean</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> checkCardNo = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> reg = <span class="regexp">/(^\d&#123;15&#125;$)|(^\d&#123;18&#125;$)|(^\d&#123;17&#125;(\d|X|x)$)/</span>;</span><br><span class="line">  <span class="keyword">return</span> reg.<span class="title function_">test</span>(value);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
 
-<h4 id="检查手机号"><a href="#检查手机号" class="headerlink" title="检查手机号"></a>检查手机号</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> checkTel 检查手机号</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String|Number</span>&#125; value 手机号</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Boolean</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> checkTel = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="regexp">/^1[3,4,5,6,7,8,9][0-9]&#123;9&#125;$/</span>.<span class="title function_">test</span>(value.<span class="title function_">toString</span>());</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
 
-<h4 id="检查邮箱"><a href="#检查邮箱" class="headerlink" title="检查邮箱"></a>检查邮箱</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> checkEmail 检查邮箱格式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; value 邮箱</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Boolean</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> checkEmail = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="regexp">/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/</span>.<span class="title function_">test</span>(value);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
 
-<h4 id="数字千分位分割"><a href="#数字千分位分割" class="headerlink" title="数字千分位分割"></a>数字千分位分割</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> numberFormat 数字千分位分割</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String|Number</span>&#125; value 数字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; delimiter 千分位分隔符, 默认为 &#x27;,&#x27;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">String</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> numberFormat = <span class="keyword">function</span> (<span class="params">value, delimiter = <span class="string">&#x27;,&#x27;</span></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> value === <span class="string">&#x27;undefined&#x27;</span> || (<span class="keyword">typeof</span> value === <span class="string">&#x27;object&#x27;</span> &amp;&amp; value === <span class="literal">null</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> num = value.<span class="title function_">toString</span>();</span><br><span class="line">    <span class="keyword">let</span> len = num.<span class="property">length</span>;</span><br><span class="line">    <span class="keyword">if</span> (len &lt;= <span class="number">3</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> num;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断数字的长度是否为 3 的倍数</span></span><br><span class="line">    <span class="keyword">let</span> remainder = len % <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">return</span> remainder &gt; <span class="number">0</span></span><br><span class="line">      ? num.<span class="title function_">slice</span>(<span class="number">0</span>, remainder) + delimiter + num.<span class="title function_">slice</span>(remainder, len).<span class="title function_">match</span>(<span class="regexp">/\d&#123;3&#125;/g</span>).<span class="title function_">join</span>(delimiter)</span><br><span class="line">      : num.<span class="title function_">slice</span>(<span class="number">0</span>, len).<span class="title function_">match</span>(<span class="regexp">/\d&#123;3&#125;/g</span>).<span class="title function_">join</span>(delimiter);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
 
-<h4 id="根据图片尺寸计算宽高比例"><a href="#根据图片尺寸计算宽高比例" class="headerlink" title="根据图片尺寸计算宽高比例"></a>根据图片尺寸计算宽高比例</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> calcImgRatio 根据图片像素计算图片宽高比例</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; width 宽度</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; height 高度</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">String</span>&#125; &#x27;16|9&#x27;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> calcImgRatio = <span class="keyword">function</span> (<span class="params">width, height</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">isNaN</span>(width) || <span class="keyword">typeof</span> width !== <span class="string">&#x27;number&#x27;</span> || <span class="built_in">isNaN</span>(height) || <span class="keyword">typeof</span> height !== <span class="string">&#x27;number&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Params are not Number type....&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> num = <span class="title function_">getMaxCommonDivisor</span>(width, height);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;width / num&#125;</span>|<span class="subst">$&#123;height / num&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取两个数的最大公约数</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">getMaxCommonDivisor</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a % b) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">getMaxCommonDivisor</span>(b, a % b);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h4 id="日期时间格式化"><a href="#日期时间格式化" class="headerlink" title="日期时间格式化"></a>日期时间格式化</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@member</span> dateFormat 日期时间格式化</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number|String|Object</span>&#125; paramDate 日期时间</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Object</span>&#125; param1 格式化参数配置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; param1.type 格式化类型, 0 默认全部, 1 只日期部分, 2 只时间部分</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Boolean</span>&#125; param1.isShowSeparator 是否保留分隔符, 默认 true</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; param1.dateSeparator 日期部分分隔符, 默认 -</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; param1.timeSeparator 时间部分分隔符, 默认 :</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">dateFormat</span>(<span class="params">paramDate, &#123; type = <span class="number">0</span>, isShowSeparator = <span class="literal">true</span>, dateSeparator = <span class="string">&#x27;/&#x27;</span>, timeSeparator = <span class="string">&#x27;:&#x27;</span> &#125; = &#123;&#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> _date = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">toString</span>.<span class="title function_">call</span>(paramDate) == <span class="string">&#x27;[object Date]&#x27;</span>) &#123;</span><br><span class="line">    _date = paramDate;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="regexp">/^\d&#123;1,&#125;$/</span>.<span class="title function_">test</span>(paramDate)) &#123;</span><br><span class="line">    _date = <span class="keyword">new</span> <span class="title class_">Date</span>(paramDate);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    _date = <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> year = _date.<span class="title function_">getFullYear</span>();</span><br><span class="line">  <span class="keyword">const</span> month = _date.<span class="title function_">getMonth</span>() + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">const</span> date = _date.<span class="title function_">getDate</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> hour = _date.<span class="title function_">getHours</span>();</span><br><span class="line">  <span class="keyword">const</span> min = _date.<span class="title function_">getMinutes</span>();</span><br><span class="line">  <span class="keyword">const</span> second = _date.<span class="title function_">getSeconds</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">gtNine</span>(<span class="params">val</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> val &gt; <span class="number">9</span> ? val : <span class="string">`0<span class="subst">$&#123;val&#125;</span>`</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> result = <span class="string">`<span class="subst">$&#123;year&#125;</span><span class="subst">$&#123;dateSeparator&#125;</span><span class="subst">$&#123;gtNine(month)&#125;</span><span class="subst">$&#123;dateSeparator&#125;</span><span class="subst">$&#123;gtNine(date)&#125;</span> <span class="subst">$&#123;gtNine(hour)&#125;</span><span class="subst">$&#123;timeSeparator&#125;</span><span class="subst">$&#123;gtNine(</span></span></span><br><span class="line"><span class="subst"><span class="string">    min</span></span></span><br><span class="line"><span class="subst"><span class="string">  )&#125;</span><span class="subst">$&#123;timeSeparator&#125;</span><span class="subst">$&#123;gtNine(second)&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> dateRegExp = <span class="keyword">new</span> <span class="title class_">RegExp</span>(dateSeparator, <span class="string">&#x27;gmi&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> timeRegExp = <span class="keyword">new</span> <span class="title class_">RegExp</span>(timeSeparator, <span class="string">&#x27;gmi&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> [dateRes, timeRes] = result.<span class="title function_">split</span>(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">      <span class="keyword">return</span> isShowSeparator ? dateRes : dateRes.<span class="title function_">replace</span>(dateRegExp, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">      <span class="keyword">return</span> isShowSeparator ? timeRes : timeRes.<span class="title function_">replace</span>(timeRegExp, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">      <span class="keyword">return</span> isShowSeparator ? result : <span class="string">`<span class="subst">$&#123;dateRes.replace(dateRegExp, <span class="string">&#x27;&#x27;</span>)&#125;</span><span class="subst">$&#123;timeRes.replace(timeRegExp, <span class="string">&#x27;&#x27;</span>)&#125;</span>`</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`dateFormat(1652441404000) `</span>, <span class="title function_">dateFormat</span>(<span class="number">1652441404000</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(new Date(), &#123;type : 0, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :false&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="keyword">new</span> <span class="title class_">Date</span>(), &#123; <span class="attr">type</span>: <span class="number">0</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">false</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(1652441404000, &#123;type : 1, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :false&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="number">1652441404000</span>, &#123; <span class="attr">type</span>: <span class="number">1</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">false</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(new Date(), &#123;type : 2, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :false&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="keyword">new</span> <span class="title class_">Date</span>(), &#123; <span class="attr">type</span>: <span class="number">2</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">false</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(new Date(), &#123;type : 3, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :false&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="keyword">new</span> <span class="title class_">Date</span>(), &#123; <span class="attr">type</span>: <span class="number">3</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">false</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(Date.now(), &#123;type : 0, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :true&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="title class_">Date</span>.<span class="title function_">now</span>(), &#123; <span class="attr">type</span>: <span class="number">0</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(new Date(), &#123;type : 1, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :true&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="keyword">new</span> <span class="title class_">Date</span>(), &#123; <span class="attr">type</span>: <span class="number">1</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(1652441404000, &#123;type : 2, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :true&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="number">1652441404000</span>, &#123; <span class="attr">type</span>: <span class="number">2</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(Date.now(), &#123;type : 3, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :true&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="title class_">Date</span>.<span class="title function_">now</span>(), &#123; <span class="attr">type</span>: <span class="number">3</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<hr>
 ]]></content>
       <categories>
         <category>tools</category>
       </categories>
       <tags>
-        <tag>API</tag>
-        <tag>js</tag>
+        <tag>git</tag>
       </tags>
   </entry>
   <entry>
-    <title>JS小结</title>
-    <url>/2022/03/28e7482b798b/</url>
-    <content><![CDATA[<h3 id="改变原数组的方法"><a href="#改变原数组的方法" class="headerlink" title="改变原数组的方法"></a>改变原数组的方法</h3><ul>
-<li><p>pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">pop</span>();</span><br></pre></td></tr></table></figure></li>
-<li><p>push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">push</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure></li>
-<li><p>shift 从数组中删除第一个元素,并返回该元素的值(数组为空则返回 undefined). 此方法更改数组的长度</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">shift</span>();</span><br></pre></td></tr></table></figure></li>
-<li><p>unshift 将一个或多个元素添加到数组的开头. 并返回该数组的新长度(该方法修改原有数组)</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">unshift</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span></li>
-<li><p>reverse 将数组中元素的位置颠倒, 并返回该数组. 该方法会改变原数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">reverse</span>();</span><br></pre></td></tr></table></figure></li>
-<li><p>sort 用<a href="https://en.wikipedia.org/wiki/In-place_algorithm">原地算法</a>对数组的元素进行排序, 并返回数组</p>
-<ul>
-<li>compareFunction 用来指定按某种顺序进行排列的函数, 省略则按照转换为的字符串的 unicode 位点进行排序<ul>
-<li>firstEl 第一个用于比较的元素</li>
-<li>secondEl 第二个用于比较的元素</li>
-</ul>
+    <title>HTTP</title>
+    <url>/2021/07/1ddfb1010b19/</url>
+    <content><![CDATA[<h4 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h4><ul>
+<li><p>100 Continue 请求继续</p>
+</li>
+<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
+</li>
+<li><p>102 Processing 继续执行</p>
+</li>
+<li><p>200 OK 请求成功</p>
+</li>
+<li><p>204 No Content 没有响应实体</p>
+</li>
+<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
+</li>
+<li><p>301 Moved Permanently 资源永久移动</p>
+</li>
+<li><p>302 Move Temporarily 资源临时移动</p>
+</li>
+<li><p>303 See Other 参见其他</p>
+</li>
+<li><p>304 Not Modified 资源没有改动</p>
+</li>
+<li><p>305 Use Proxy 使用代理</p>
+</li>
+<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
+</li>
+<li><p>400 Bad Request 错误的请求</p>
+</li>
+<li><p>401 Unauthorized 需要验证</p>
+</li>
+<li><p>403 Forbidden 服务器拒绝执行</p>
+</li>
+<li><p>404 Not Found 资源未找到</p>
+</li>
+<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
+</li>
+<li><p>408 Request Timeout 请求超时</p>
+</li>
+<li><p>413 Request Entity Too Large 请求体超长</p>
+</li>
+<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
+</li>
+<li><p>500 Internal Server Error 服务器错误</p>
+</li>
+<li><p>502 Bad Gateway 网关错误</p>
+</li>
+<li><p>504 Gateway Timeout 网关超时</p>
+</li>
+<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
 </li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">sort</span>([compareFunction]);</span><br></pre></td></tr></table></figure></li>
-<li><p>splice 通过删除或替换现有元素或者原地添加新的元素来修改数组, 并以数组形式返回被修改的内容. 此方法会改变原数组</p>
-<ul>
-<li>start 指定修改的开始位置</li>
-<li>deleteCount 整数, 表示要移除的数组元素的个数, 如果为 0 或者负数, 则不移除元素</li>
-<li>item1, item2 要添加进数组的元素,从 start 位置开始, 不指定则删除数组元素</li>
+<h4 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h4><ul>
+<li>%21 !</li>
+<li>%22 “</li>
+<li>%23 #</li>
+<li>%24 $</li>
+<li>%25 %</li>
+<li>%26 &amp;</li>
+<li>%27 ‘</li>
+<li>%28 (</li>
+<li>%29 )</li>
+<li>%2F /</li>
+<li>%30-9 0..9</li>
+<li>%3A :</li>
+<li>%3B ;</li>
+<li>%3C &lt;</li>
+<li>%3D =</li>
+<li>%3E &gt;</li>
+<li>%3F ?</li>
+<li>%40 @</li>
+<li>%41 A</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">array.<span class="title function_">splice</span>(start[, deleteCount[, item1[, item2[, ...]]]]);</span><br></pre></td></tr></table></figure></li>
-<li><p>fill 用一个固定值填充一个数组中从起始索引到终止索引内的全部元素. 不包括终止索引. 返回修改后的数组</p>
-<ul>
-<li>value 用来填充数组元素的值</li>
-<li>start 起始索引, 默认值为 0</li>
-<li>end 终止索引, 默认值为 this.length</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">fill</span>(value[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"><span class="comment">// fill with 0 from position 2 until position 4</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 2, 0, 0]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// fill with 5 from position 1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">5</span>, <span class="number">1</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 5, 5, 5]</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">6</span>));</span><br><span class="line"><span class="comment">// expected output: [6, 6, 6, 6]</span></span><br></pre></td></tr></table></figure></li>
-<li><p>copyWithin 浅复制数组的一部分到同一数组中的另一个位置, 并返回它, 不会改变原数组的长度. 返回改变后的数组</p>
-<ul>
-<li>target 整数, 复制序列到该位置, 如果是负数, target 将从末尾开始计算. 如果 target 大于等于 arr.length, 将会不发生拷贝</li>
-<li>start 整数, 开始复制元素的起始位置, 如果是负数, start 将从末尾开始计算. 如果 start 被忽略, copyWithin 将会从 0 开始复制</li>
-<li>end 整数, 开始复制元素的结束位置, copyWithin 将会拷贝到该位置, 但不包括 end 这个位置的元素. 如果是负数, end 将从末尾开始计算. 如果忽略则复制到数组结尾</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">copyWithin</span>(target[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;d&#x27;</span>, <span class="string">&#x27;e&#x27;</span>];</span><br><span class="line"><span class="comment">// copy to index 0 the element at index 3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// copy to index 1 all elements from index 3 to the end</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">1</span>, <span class="number">3</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;d&quot;, &quot;e&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="表单-accept-属性"><a href="#表单-accept-属性" class="headerlink" title="表单 accept 属性"></a>表单 accept 属性</h3><p>表单 input type=”file” 上传图片时，accept 属性以文件名结尾格式在部分手机上使用时会提示 ‘没有应用可执行此操作’, 将文件名结尾的格式改为 MIME 类型的格式</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;.png,.jpg,.jpeg&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/png,image/jpeg&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="检测浏览器版本号"><a href="#检测浏览器版本号" class="headerlink" title="检测浏览器版本号"></a>检测浏览器版本号</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VersionDiff</span> &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@property</span> &#123;<span class="type">private</span>&#125; #_comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #_comparator = <span class="string">&#x27;gt:0.0.0&#x27;</span>;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #greaterThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">greaterThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &gt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &gt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &gt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #lessThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">lessThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &lt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &lt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &lt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #equalTo</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">equalTo</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] == arr1[<span class="number">2</span>] ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #notEqual</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">notEqual</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] != arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] != arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] != arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #versionDiff</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; version 版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">RegExp</span>&#125; reg 匹配正则</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">versionDiff</span>(<span class="params">version, reg, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator == <span class="literal">null</span> || comparator == <span class="literal">undefined</span>) &#123;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator != <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;TypeError: params comparator must be string...&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> regExp = reg ? reg : <span class="regexp">/(wxwork)\/([^\s]*)/i</span>;</span><br><span class="line">    <span class="keyword">let</span> _version = version ? version.<span class="title function_">match</span>(regExp) : navigator.<span class="property">userAgent</span>.<span class="title function_">match</span>(regExp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title class_">Array</span>.<span class="title function_">isArray</span>(_version)) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123; <span class="attr">version</span>: <span class="number">0</span>, [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> [operator, baseVersion] = comparator.<span class="title function_">split</span>(<span class="string">&#x27;:&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> result = &#123; <span class="attr">version</span>: _version[<span class="number">2</span>], [_version[<span class="number">1</span>].<span class="title function_">toString</span>()]: <span class="literal">true</span> &#125;;</span><br><span class="line">    <span class="keyword">let</span> _ver = _version[<span class="number">2</span>].<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> _baseVer = baseVersion.<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_ver.<span class="property">length</span> != _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (_ver.<span class="property">length</span> &lt; _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _baseVer.<span class="property">length</span> - _ver.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _ver.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _ver.<span class="property">length</span> - _baseVer.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _baseVer.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (operator.<span class="title function_">toLowerCase</span>()) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;gt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ge&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;lt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;le&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;eq&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ne&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">notEqual</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="attr">default</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态测试方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; browser 浏览器型号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">test</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(</span><br><span class="line">      <span class="string">`<span class="subst">$&#123;browser&#125;</span>/<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>`</span>,</span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>),</span><br><span class="line">      comparator</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态比较方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">diff</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>), comparator);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试方式：使用 类名.test 调用</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;eq:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;eq:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;ne:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;ne:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;gt:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;gt:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;le:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;le:5.3.2&#x27;</span>));</span><br><span class="line"><span class="comment">// 使用方式: 使用 类名.diff 调用方式</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.diff(&#x27;gt:3.2.0&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">diff</span>(<span class="string">&#x27;gt:3.2.0&#x27;</span>));</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>ES</category>
+        <category>network</category>
       </categories>
       <tags>
-        <tag>ES6</tag>
-        <tag>js</tag>
+        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -1024,6 +879,151 @@
       </tags>
   </entry>
   <entry>
+    <title>JSSDK</title>
+    <url>/2022/05/2261dfd57ebf/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
+<li>转发</li>
+<li>转发给客户</li>
+<li>群发到客户群</li>
+<li>发表到客户的朋友圈</li>
+<li>分享到同事吧</li>
+<li>分享到微信</li>
+<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>shareAppMessage 自定义转发到会话</li>
+<li>shareWechatMessage 自定义转发到微信</li>
+<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
+<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>wx</category>
+      </categories>
+      <tags>
+        <tag>wx</tag>
+        <tag>jweixin</tag>
+        <tag>JSSDK</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JS小结</title>
+    <url>/2022/03/28e7482b798b/</url>
+    <content><![CDATA[<h3 id="改变原数组的方法"><a href="#改变原数组的方法" class="headerlink" title="改变原数组的方法"></a>改变原数组的方法</h3><ul>
+<li><p>pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">pop</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">push</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure></li>
+<li><p>shift 从数组中删除第一个元素,并返回该元素的值(数组为空则返回 undefined). 此方法更改数组的长度</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">shift</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>unshift 将一个或多个元素添加到数组的开头. 并返回该数组的新长度(该方法修改原有数组)</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">unshift</span>(element1, ..., elementN);</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span></li>
+<li><p>reverse 将数组中元素的位置颠倒, 并返回该数组. 该方法会改变原数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">reverse</span>();</span><br></pre></td></tr></table></figure></li>
+<li><p>sort 用<a href="https://en.wikipedia.org/wiki/In-place_algorithm">原地算法</a>对数组的元素进行排序, 并返回数组</p>
+<ul>
+<li>compareFunction 用来指定按某种顺序进行排列的函数, 省略则按照转换为的字符串的 unicode 位点进行排序<ul>
+<li>firstEl 第一个用于比较的元素</li>
+<li>secondEl 第二个用于比较的元素</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">sort</span>([compareFunction]);</span><br></pre></td></tr></table></figure></li>
+<li><p>splice 通过删除或替换现有元素或者原地添加新的元素来修改数组, 并以数组形式返回被修改的内容. 此方法会改变原数组</p>
+<ul>
+<li>start 指定修改的开始位置</li>
+<li>deleteCount 整数, 表示要移除的数组元素的个数, 如果为 0 或者负数, 则不移除元素</li>
+<li>item1, item2 要添加进数组的元素,从 start 位置开始, 不指定则删除数组元素</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">array.<span class="title function_">splice</span>(start[, deleteCount[, item1[, item2[, ...]]]]);</span><br></pre></td></tr></table></figure></li>
+<li><p>fill 用一个固定值填充一个数组中从起始索引到终止索引内的全部元素. 不包括终止索引. 返回修改后的数组</p>
+<ul>
+<li>value 用来填充数组元素的值</li>
+<li>start 起始索引, 默认值为 0</li>
+<li>end 终止索引, 默认值为 this.length</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">fill</span>(value[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"><span class="comment">// fill with 0 from position 2 until position 4</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 2, 0, 0]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// fill with 5 from position 1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">5</span>, <span class="number">1</span>));</span><br><span class="line"><span class="comment">// expected output: [1, 5, 5, 5]</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">fill</span>(<span class="number">6</span>));</span><br><span class="line"><span class="comment">// expected output: [6, 6, 6, 6]</span></span><br></pre></td></tr></table></figure></li>
+<li><p>copyWithin 浅复制数组的一部分到同一数组中的另一个位置, 并返回它, 不会改变原数组的长度. 返回改变后的数组</p>
+<ul>
+<li>target 整数, 复制序列到该位置, 如果是负数, target 将从末尾开始计算. 如果 target 大于等于 arr.length, 将会不发生拷贝</li>
+<li>start 整数, 开始复制元素的起始位置, 如果是负数, start 将从末尾开始计算. 如果 start 被忽略, copyWithin 将会从 0 开始复制</li>
+<li>end 整数, 开始复制元素的结束位置, copyWithin 将会拷贝到该位置, 但不包括 end 这个位置的元素. 如果是负数, end 将从末尾开始计算. 如果忽略则复制到数组结尾</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">arr.<span class="title function_">copyWithin</span>(target[, start[, end]]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> array1 = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;d&#x27;</span>, <span class="string">&#x27;e&#x27;</span>];</span><br><span class="line"><span class="comment">// copy to index 0 the element at index 3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">0</span>, <span class="number">3</span>, <span class="number">4</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// copy to index 1 all elements from index 3 to the end</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(array1.<span class="title function_">copyWithin</span>(<span class="number">1</span>, <span class="number">3</span>));</span><br><span class="line"><span class="comment">// expected output: Array [&quot;d&quot;, &quot;d&quot;, &quot;e&quot;, &quot;d&quot;, &quot;e&quot;]</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="表单-accept-属性"><a href="#表单-accept-属性" class="headerlink" title="表单 accept 属性"></a>表单 accept 属性</h3><p>表单 input type=”file” 上传图片时，accept 属性以文件名结尾格式在部分手机上使用时会提示 ‘没有应用可执行此操作’, 将文件名结尾的格式改为 MIME 类型的格式</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;.png,.jpg,.jpeg&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/png,image/jpeg&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="检测浏览器版本号"><a href="#检测浏览器版本号" class="headerlink" title="检测浏览器版本号"></a>检测浏览器版本号</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VersionDiff</span> &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@property</span> &#123;<span class="type">private</span>&#125; #_comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #_comparator = <span class="string">&#x27;gt:0.0.0&#x27;</span>;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #greaterThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">greaterThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &gt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &gt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &gt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #lessThan</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">lessThan</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] &lt; arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] &lt; arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] &lt; arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #equalTo</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">equalTo</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] == arr1[<span class="number">2</span>] ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #notEqual</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr 3位数版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">Array</span>&#125; arr1 3位数版本号,默认为关系符加版本号解析得到</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Boolean</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">notEqual</span>(<span class="params">arr, arr1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>] != arr1[<span class="number">0</span>] || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] != arr1[<span class="number">1</span>]) || (arr[<span class="number">0</span>] == arr1[<span class="number">0</span>] &amp;&amp; arr[<span class="number">1</span>] == arr1[<span class="number">1</span>] &amp;&amp; arr[<span class="number">2</span>] != arr1[<span class="number">2</span>])</span><br><span class="line">      ? <span class="literal">true</span></span><br><span class="line">      : <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> #versionDiff</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; version 版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">RegExp</span>&#125; reg 匹配正则</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> #<span class="title function_">versionDiff</span>(<span class="params">version, reg, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator == <span class="literal">null</span> || comparator == <span class="literal">undefined</span>) &#123;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> comparator != <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;TypeError: params comparator must be string...&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> regExp = reg ? reg : <span class="regexp">/(wxwork)\/([^\s]*)/i</span>;</span><br><span class="line">    <span class="keyword">let</span> _version = version ? version.<span class="title function_">match</span>(regExp) : navigator.<span class="property">userAgent</span>.<span class="title function_">match</span>(regExp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title class_">Array</span>.<span class="title function_">isArray</span>(_version)) &#123;</span><br><span class="line">      <span class="keyword">return</span> &#123; <span class="attr">version</span>: <span class="number">0</span>, [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> [operator, baseVersion] = comparator.<span class="title function_">split</span>(<span class="string">&#x27;:&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> result = &#123; <span class="attr">version</span>: _version[<span class="number">2</span>], [_version[<span class="number">1</span>].<span class="title function_">toString</span>()]: <span class="literal">true</span> &#125;;</span><br><span class="line">    <span class="keyword">let</span> _ver = _version[<span class="number">2</span>].<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">    <span class="keyword">let</span> _baseVer = baseVersion.<span class="title function_">split</span>(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_ver.<span class="property">length</span> != _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (_ver.<span class="property">length</span> &lt; _baseVer.<span class="property">length</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _baseVer.<span class="property">length</span> - _ver.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _ver.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = _ver.<span class="property">length</span> - _baseVer.<span class="property">length</span>; i &lt; len; i++) &#123;</span><br><span class="line">          _baseVer.<span class="title function_">push</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (operator.<span class="title function_">toLowerCase</span>()) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;gt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ge&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">greaterThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;lt&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;le&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123;</span><br><span class="line">          [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) ? <span class="literal">true</span> : <span class="title class_">VersionDiff</span>.#<span class="title function_">lessThan</span>(_ver, _baseVer),</span><br><span class="line">        &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;eq&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">equalTo</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;ne&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="title class_">VersionDiff</span>.#<span class="title function_">notEqual</span>(_ver, _baseVer) &#125;);</span><br><span class="line">      <span class="attr">default</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, result, &#123; [comparator]: <span class="string">&#x27;unknow&#x27;</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态测试方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; browser 浏览器型号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">test</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(</span><br><span class="line">      <span class="string">`<span class="subst">$&#123;browser&#125;</span>/<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>.<span class="subst">$&#123;<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>)&#125;</span>`</span>,</span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>),</span><br><span class="line">      comparator</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@method</span> test 静态比较方法</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; comparator 关系符加版本号</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@returns</span> <span class="variable">Object</span></span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">diff</span>(<span class="params">browser = <span class="string">&#x27;safari&#x27;</span>, comparator</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">0</span>) &#123;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">      comparator = <span class="title class_">VersionDiff</span>.#_comparator;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">arguments</span>.<span class="property">length</span> == <span class="number">1</span>) &#123;</span><br><span class="line">      comparator = browser;</span><br><span class="line">      browser = <span class="string">`safari`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">VersionDiff</span>.#<span class="title function_">versionDiff</span>(<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">RegExp</span>(<span class="string">&#x27;(&#x27;</span> + browser + <span class="string">&#x27;)/([^s]*)&#x27;</span>, <span class="string">&#x27;i&#x27;</span>), comparator);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试方式：使用 类名.test 调用</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;eq:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;eq:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;ne:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;ne:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;gt:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;gt:5.3.2&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.test(&#x27;chrome&#x27;, &#x27;le:5.3.2&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">test</span>(<span class="string">&#x27;chrome&#x27;</span>, <span class="string">&#x27;le:5.3.2&#x27;</span>));</span><br><span class="line"><span class="comment">// 使用方式: 使用 类名.diff 调用方式</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`VersionDiff.diff(&#x27;gt:3.2.0&#x27;) `</span>, <span class="title class_">VersionDiff</span>.<span class="title function_">diff</span>(<span class="string">&#x27;gt:3.2.0&#x27;</span>));</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>ES</category>
+      </categories>
+      <tags>
+        <tag>ES6</tag>
+        <tag>js</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JSUtils</title>
+    <url>/2022/02/18f2de6d45f9/</url>
+    <content><![CDATA[<h4 id="函数防抖"><a href="#函数防抖" class="headerlink" title="函数防抖"></a>函数防抖</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> debounce 函数防抖</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Function</span>&#125; fn 执行方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; delay 延迟时间 默认 300 毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Function</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> debounce = <span class="keyword">function</span> (<span class="params">fn, delay</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;fn is not Function&#x27;</span>);</span><br><span class="line">  delay = delay &gt;= <span class="number">0</span> ? delay : <span class="number">300</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> timer;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> context = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">let</span> args = <span class="variable language_">arguments</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (timer) <span class="built_in">clearTimeout</span>(timer);</span><br><span class="line"></span><br><span class="line">    timer = <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      fn.<span class="title function_">apply</span>(context, args);</span><br><span class="line">    &#125;, delay);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="函数节流"><a href="#函数节流" class="headerlink" title="函数节流"></a>函数节流</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> throttle 函数节流</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Function</span>&#125; fn 执行方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; delay 延迟时间 默认 300 毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Function</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> throttle = <span class="keyword">function</span> (<span class="params">fn, delay</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;fn is not Function&#x27;</span>);</span><br><span class="line">  delay = delay &gt;= <span class="number">0</span> ? delay : <span class="number">300</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> previous = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> _this = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">var</span> args = <span class="variable language_">arguments</span>;</span><br><span class="line">    <span class="keyword">var</span> now = <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">    <span class="keyword">if</span> (now - previous &gt; delay) &#123;</span><br><span class="line">      fn.<span class="title function_">apply</span>(_this, args);</span><br><span class="line">      previous = now;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h4 id="复制剪贴板"><a href="#复制剪贴板" class="headerlink" title="复制剪贴板"></a>复制剪贴板</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> copyText 剪贴板方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; text 需要剪贴的内容</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Boolean</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> copyText = <span class="keyword">function</span> (<span class="params">text</span>) &#123;</span><br><span class="line">  <span class="comment">// 数字没有 .length 不能执行selectText 需要转化成字符串</span></span><br><span class="line">  <span class="keyword">const</span> textString = text.<span class="title function_">toString</span>();</span><br><span class="line">  <span class="keyword">let</span> input = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#copy-input&#x27;</span>);</span><br><span class="line">  <span class="keyword">if</span> (!input) &#123;</span><br><span class="line">    input = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;input&#x27;</span>);</span><br><span class="line">    input.<span class="property">id</span> = <span class="string">&#x27;copy-input&#x27;</span>;</span><br><span class="line">    input.<span class="property">readOnly</span> = <span class="string">&#x27;readOnly&#x27;</span>; <span class="comment">// 防止ios聚焦触发键盘事件</span></span><br><span class="line">    input.<span class="property">style</span>.<span class="property">position</span> = <span class="string">&#x27;absolute&#x27;</span>;</span><br><span class="line">    input.<span class="property">style</span>.<span class="property">left</span> = <span class="string">&#x27;-10000px&#x27;</span>;</span><br><span class="line">    input.<span class="property">style</span>.<span class="property">zIndex</span> = <span class="string">&#x27;-1000&#x27;</span>;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(input);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  input.<span class="property">value</span> = textString;</span><br><span class="line">  <span class="comment">// ios必须先选中文字且不支持 input.select();</span></span><br><span class="line">  <span class="title function_">selectText</span>(input, <span class="number">0</span>, textString.<span class="property">length</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">document</span>.<span class="title function_">execCommand</span>(<span class="string">&#x27;copy&#x27;</span>), <span class="string">&#x27;execCommand&#x27;</span>);</span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">document</span>.<span class="title function_">execCommand</span>(<span class="string">&#x27;copy&#x27;</span>)) &#123;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="title function_">execCommand</span>(<span class="string">&#x27;copy&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  input.<span class="title function_">blur</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// input自带的select()方法在苹果端无法进行选择，所以需要自己去写一个类似的方法</span></span><br><span class="line">  <span class="comment">// 选择文本。createTextRange(setSelectionRange)是input方法</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">selectText</span>(<span class="params">textbox, startIndex, stopIndex</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (textbox.<span class="property">createTextRange</span>) &#123;</span><br><span class="line">      <span class="comment">//ie</span></span><br><span class="line">      <span class="keyword">const</span> range = textbox.<span class="title function_">createTextRange</span>();</span><br><span class="line">      range.<span class="title function_">collapse</span>(<span class="literal">true</span>);</span><br><span class="line">      range.<span class="title function_">moveStart</span>(<span class="string">&#x27;character&#x27;</span>, startIndex); <span class="comment">//起始光标</span></span><br><span class="line">      range.<span class="title function_">moveEnd</span>(<span class="string">&#x27;character&#x27;</span>, stopIndex - startIndex); <span class="comment">//结束光标</span></span><br><span class="line">      range.<span class="title function_">select</span>(); <span class="comment">//不兼容苹果</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">//firefox/chrome</span></span><br><span class="line">      textbox.<span class="title function_">setSelectionRange</span>(startIndex, stopIndex);</span><br><span class="line">      textbox.<span class="title function_">focus</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="检查身份证号"><a href="#检查身份证号" class="headerlink" title="检查身份证号"></a>检查身份证号</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> checkCardNo 剪贴板方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; value 身份证号码</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Boolean</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> checkCardNo = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> reg = <span class="regexp">/(^\d&#123;15&#125;$)|(^\d&#123;18&#125;$)|(^\d&#123;17&#125;(\d|X|x)$)/</span>;</span><br><span class="line">  <span class="keyword">return</span> reg.<span class="title function_">test</span>(value);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="检查手机号"><a href="#检查手机号" class="headerlink" title="检查手机号"></a>检查手机号</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> checkTel 检查手机号</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String|Number</span>&#125; value 手机号</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Boolean</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> checkTel = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="regexp">/^1[3,4,5,6,7,8,9][0-9]&#123;9&#125;$/</span>.<span class="title function_">test</span>(value.<span class="title function_">toString</span>());</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="检查邮箱"><a href="#检查邮箱" class="headerlink" title="检查邮箱"></a>检查邮箱</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> checkEmail 检查邮箱格式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; value 邮箱</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Boolean</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> checkEmail = <span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="regexp">/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/</span>.<span class="title function_">test</span>(value);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="数字千分位分割"><a href="#数字千分位分割" class="headerlink" title="数字千分位分割"></a>数字千分位分割</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> numberFormat 数字千分位分割</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String|Number</span>&#125; value 数字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; delimiter 千分位分隔符, 默认为 &#x27;,&#x27;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">String</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> numberFormat = <span class="keyword">function</span> (<span class="params">value, delimiter = <span class="string">&#x27;,&#x27;</span></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> value === <span class="string">&#x27;undefined&#x27;</span> || (<span class="keyword">typeof</span> value === <span class="string">&#x27;object&#x27;</span> &amp;&amp; value === <span class="literal">null</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> num = value.<span class="title function_">toString</span>();</span><br><span class="line">    <span class="keyword">let</span> len = num.<span class="property">length</span>;</span><br><span class="line">    <span class="keyword">if</span> (len &lt;= <span class="number">3</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> num;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断数字的长度是否为 3 的倍数</span></span><br><span class="line">    <span class="keyword">let</span> remainder = len % <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">return</span> remainder &gt; <span class="number">0</span></span><br><span class="line">      ? num.<span class="title function_">slice</span>(<span class="number">0</span>, remainder) + delimiter + num.<span class="title function_">slice</span>(remainder, len).<span class="title function_">match</span>(<span class="regexp">/\d&#123;3&#125;/g</span>).<span class="title function_">join</span>(delimiter)</span><br><span class="line">      : num.<span class="title function_">slice</span>(<span class="number">0</span>, len).<span class="title function_">match</span>(<span class="regexp">/\d&#123;3&#125;/g</span>).<span class="title function_">join</span>(delimiter);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="根据图片尺寸计算宽高比例"><a href="#根据图片尺寸计算宽高比例" class="headerlink" title="根据图片尺寸计算宽高比例"></a>根据图片尺寸计算宽高比例</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> calcImgRatio 根据图片像素计算图片宽高比例</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; width 宽度</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; height 高度</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">String</span>&#125; &#x27;16|9&#x27;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> calcImgRatio = <span class="keyword">function</span> (<span class="params">width, height</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">isNaN</span>(width) || <span class="keyword">typeof</span> width !== <span class="string">&#x27;number&#x27;</span> || <span class="built_in">isNaN</span>(height) || <span class="keyword">typeof</span> height !== <span class="string">&#x27;number&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Params are not Number type....&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> num = <span class="title function_">getMaxCommonDivisor</span>(width, height);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;width / num&#125;</span>|<span class="subst">$&#123;height / num&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取两个数的最大公约数</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">getMaxCommonDivisor</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a % b) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">getMaxCommonDivisor</span>(b, a % b);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="日期时间格式化"><a href="#日期时间格式化" class="headerlink" title="日期时间格式化"></a>日期时间格式化</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@member</span> dateFormat 日期时间格式化</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number|String|Object</span>&#125; paramDate 日期时间</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Object</span>&#125; param1 格式化参数配置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; param1.type 格式化类型, 0 默认全部, 1 只日期部分, 2 只时间部分</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Boolean</span>&#125; param1.isShowSeparator 是否保留分隔符, 默认 true</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; param1.dateSeparator 日期部分分隔符, 默认 -</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">String</span>&#125; param1.timeSeparator 时间部分分隔符, 默认 :</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">dateFormat</span>(<span class="params">paramDate, &#123; type = <span class="number">0</span>, isShowSeparator = <span class="literal">true</span>, dateSeparator = <span class="string">&#x27;/&#x27;</span>, timeSeparator = <span class="string">&#x27;:&#x27;</span> &#125; = &#123;&#125;</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> _date = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">toString</span>.<span class="title function_">call</span>(paramDate) == <span class="string">&#x27;[object Date]&#x27;</span>) &#123;</span><br><span class="line">    _date = paramDate;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="regexp">/^\d&#123;1,&#125;$/</span>.<span class="title function_">test</span>(paramDate)) &#123;</span><br><span class="line">    _date = <span class="keyword">new</span> <span class="title class_">Date</span>(paramDate);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    _date = <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> year = _date.<span class="title function_">getFullYear</span>();</span><br><span class="line">  <span class="keyword">const</span> month = _date.<span class="title function_">getMonth</span>() + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">const</span> date = _date.<span class="title function_">getDate</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> hour = _date.<span class="title function_">getHours</span>();</span><br><span class="line">  <span class="keyword">const</span> min = _date.<span class="title function_">getMinutes</span>();</span><br><span class="line">  <span class="keyword">const</span> second = _date.<span class="title function_">getSeconds</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">gtNine</span>(<span class="params">val</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> val &gt; <span class="number">9</span> ? val : <span class="string">`0<span class="subst">$&#123;val&#125;</span>`</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> result = <span class="string">`<span class="subst">$&#123;year&#125;</span><span class="subst">$&#123;dateSeparator&#125;</span><span class="subst">$&#123;gtNine(month)&#125;</span><span class="subst">$&#123;dateSeparator&#125;</span><span class="subst">$&#123;gtNine(date)&#125;</span> <span class="subst">$&#123;gtNine(hour)&#125;</span><span class="subst">$&#123;timeSeparator&#125;</span><span class="subst">$&#123;gtNine(</span></span></span><br><span class="line"><span class="subst"><span class="string">    min</span></span></span><br><span class="line"><span class="subst"><span class="string">  )&#125;</span><span class="subst">$&#123;timeSeparator&#125;</span><span class="subst">$&#123;gtNine(second)&#125;</span>`</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> dateRegExp = <span class="keyword">new</span> <span class="title class_">RegExp</span>(dateSeparator, <span class="string">&#x27;gmi&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> timeRegExp = <span class="keyword">new</span> <span class="title class_">RegExp</span>(timeSeparator, <span class="string">&#x27;gmi&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> [dateRes, timeRes] = result.<span class="title function_">split</span>(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">      <span class="keyword">return</span> isShowSeparator ? dateRes : dateRes.<span class="title function_">replace</span>(dateRegExp, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">      <span class="keyword">return</span> isShowSeparator ? timeRes : timeRes.<span class="title function_">replace</span>(timeRegExp, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">      <span class="keyword">return</span> isShowSeparator ? result : <span class="string">`<span class="subst">$&#123;dateRes.replace(dateRegExp, <span class="string">&#x27;&#x27;</span>)&#125;</span><span class="subst">$&#123;timeRes.replace(timeRegExp, <span class="string">&#x27;&#x27;</span>)&#125;</span>`</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`dateFormat(1652441404000) `</span>, <span class="title function_">dateFormat</span>(<span class="number">1652441404000</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(new Date(), &#123;type : 0, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :false&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="keyword">new</span> <span class="title class_">Date</span>(), &#123; <span class="attr">type</span>: <span class="number">0</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">false</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(1652441404000, &#123;type : 1, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :false&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="number">1652441404000</span>, &#123; <span class="attr">type</span>: <span class="number">1</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">false</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(new Date(), &#123;type : 2, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :false&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="keyword">new</span> <span class="title class_">Date</span>(), &#123; <span class="attr">type</span>: <span class="number">2</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">false</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(new Date(), &#123;type : 3, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :false&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="keyword">new</span> <span class="title class_">Date</span>(), &#123; <span class="attr">type</span>: <span class="number">3</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">false</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(Date.now(), &#123;type : 0, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :true&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="title class_">Date</span>.<span class="title function_">now</span>(), &#123; <span class="attr">type</span>: <span class="number">0</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(new Date(), &#123;type : 1, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :true&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="keyword">new</span> <span class="title class_">Date</span>(), &#123; <span class="attr">type</span>: <span class="number">1</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(1652441404000, &#123;type : 2, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :true&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="number">1652441404000</span>, &#123; <span class="attr">type</span>: <span class="number">2</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="string">`dateFormat(Date.now(), &#123;type : 3, dateSeparator : &#x27;/&#x27;, timeSeparator : &#x27;_&#x27;, isShowSeparator :true&#125;) `</span>,</span><br><span class="line">  <span class="title function_">dateFormat</span>(<span class="title class_">Date</span>.<span class="title function_">now</span>(), &#123; <span class="attr">type</span>: <span class="number">3</span>, <span class="attr">dateSeparator</span>: <span class="string">&#x27;/&#x27;</span>, <span class="attr">timeSeparator</span>: <span class="string">&#x27;_&#x27;</span>, <span class="attr">isShowSeparator</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
+        <tag>js</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Promise</title>
     <url>/2021/06/0bc450a2cb90/</url>
     <content><![CDATA[<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
@@ -1064,40 +1064,221 @@
       </tags>
   </entry>
   <entry>
+    <title>React.md</title>
+    <url>/2022/02/7ec5bd96e943/</url>
+    <content><![CDATA[<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><ul>
+<li>4 种条件判定是否可作为 state<ul>
+<li>这个变量是否通过 props 从父组件中获取，如果是，则不是一个状态</li>
+<li>这个变量是否在组件的整个生命周期中都保持不变，如果是，则不是一个状态</li>
+<li>这个变量是否可以通过其他状态(state)或者属性(props)计算得到，如果是，则不是一个状态</li>
+<li>这个变量是否在组件的 render 方法中使用，如果不在，则不是一个状态</li>
+</ul>
+</li>
+</ul>
+<h2 id="React-Component"><a href="#React-Component" class="headerlink" title="React.Component"></a>React.Component</h2><h2 id="React-PureComponent"><a href="#React-PureComponent" class="headerlink" title="React.PureComponent"></a>React.PureComponent</h2><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><h3 id="状态值"><a href="#状态值" class="headerlink" title="状态值"></a>状态值</h3><ul>
+<li>useState</li>
+<li>useReducer</li>
+</ul>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><ul>
+<li>useEffect</li>
+<li>useLayoutEffect</li>
+</ul>
+<h3 id="状态共享"><a href="#状态共享" class="headerlink" title="状态共享"></a>状态共享</h3><ul>
+<li>useContext</li>
+</ul>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
+<li>useMemo</li>
+<li>useCallback</li>
+</ul>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li>useRef</li>
+<li>useId</li>
+</ul>
+]]></content>
+      <categories>
+        <category>ES</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>jsx</tag>
+        <tag>React</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Redis</title>
     <url>/2022/11/819f95816ecc/</url>
-    <content><![CDATA[<h3 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h3><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API</p>
-<h4 id="Keys-命令"><a href="#Keys-命令" class="headerlink" title="Keys 命令"></a>Keys 命令</h4><ul>
-<li>DEL key [key…] 删除 key, 1 成功, 0 失败</li>
-<li>DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;</li>
-<li>EXISTS key 检查指定 key 是否存在, 1 存在, 0 不存在</li>
-<li>EXPIRE key seconds 为指定 key 设置过期时间(单位秒), 1 成功, 0 失败</li>
-<li>EXPIREAT key unix-time-seconds 为指定 key 设置过期使用 unix 时间戳, 1 成功, 0 失败</li>
-<li>PEXPIRE key milliseconds 为指定 key 设置过期时间(单位毫秒), 1 成功, 0 失败</li>
-<li>PEXPIREAT key unix-time-milliseconds 为指定 key 设置过期时间使用 unix 时间戳, 1 成功, 0 失败</li>
-<li>KEYS pattern 查找给定模式(pattern)的 key, 返回列表</li>
-<li>MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中</li>
-<li>PERSIST key 移除指定 key 的过期时间, key 将永久保持, 1 成功, 0 失败</li>
-<li>PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间<ul>
+    <content><![CDATA[<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API</p>
+<h3 id="Keys-命令"><a href="#Keys-命令" class="headerlink" title="Keys 命令"></a>Keys 命令</h3><ul>
+<li><p>HELP command 显示命令的帮助信息</p>
+</li>
+<li><p>DEL key [key…] 删除 key, 1 成功, 0 不存在</p>
+</li>
+<li><p>DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>EXISTS key 检查指定 key 是否存在, 1 存在, 0 不存在</p>
+</li>
+<li><p>KEYS pattern 查找给定模式(pattern)的 key, 返回列表</p>
+</li>
+<li><p>EXPIRE key seconds 为指定 key 设置过期时间(单位秒), 1 成功, 0 失败</p>
+</li>
+<li><p>EXPIREAT key unix-time-seconds 为指定 key 设置过期使用 unix 时间戳, 1 成功, 0 失败</p>
+</li>
+<li><p>PEXPIRE key milliseconds 为指定 key 设置过期时间(单位毫秒), 1 成功, 0 失败</p>
+</li>
+<li><p>PEXPIREAT key unix-time-milliseconds 为指定 key 设置过期时间使用 unix 时间戳, 1 成功, 0 失败</p>
+</li>
+<li><p>MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中</p>
+</li>
+<li><p>PERSIST key 移除指定 key 的过期时间, key 将永久保持, 1 成功, 0 失败</p>
+</li>
+<li><p>PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间</p>
+<ul>
 <li>-2 key 不存在</li>
 <li>-1 key 存在但没有设置剩余生存时间</li>
 </ul>
 </li>
-<li>TTL key 以秒为单位返回指定 key 的剩余生存时间<ul>
+<li><p>TTL key 以秒为单位返回指定 key 的剩余生存时间</p>
+<ul>
 <li>-2 key 不存在</li>
 <li>-1 key 存在但没有设置剩余生存时间</li>
 </ul>
 </li>
+</ul>
+<span id="more"></span>
+
+<ul>
 <li>RANDOMKEY 从当前数据库随机返回一个 key, 如果当前数据库为空则返回 &lt;nil&gt;</li>
 <li>RENAME key newKey 修改 key 的名称, ok 成功, ERR no such key 失败</li>
 <li>TYPE key 返回指定 key 的类型, none 表示 key 不存在</li>
+<li>SWAPDB index1 index2 切换两个数据库</li>
+<li>SELECT index 更改当前连接的选定的数据库</li>
 </ul>
-<h4 id="CONFIG-命令"><a href="#CONFIG-命令" class="headerlink" title="CONFIG 命令"></a>CONFIG 命令</h4><ul>
+<h3 id="CONFIG-命令"><a href="#CONFIG-命令" class="headerlink" title="CONFIG 命令"></a>CONFIG 命令</h3><ul>
 <li>CONFIG GET parameter [parameter…] 获取指定配置项的值</li>
 <li>CONFIG HELP 显示 CONFIG 命令的帮助信息</li>
 <li>CONFIG RESETSTAT 重置 INFO 返回的统计信息, ok 成功</li>
 <li>CONFIG REWRITE 使用内存配置重写配置文件</li>
 <li>CONFIG SET parameter value [parameter value …] 设置配置项</li>
+</ul>
+<h3 id="字符串命令"><a href="#字符串命令" class="headerlink" title="字符串命令"></a>字符串命令</h3><p>字符串是基础类型, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB</p>
+<h4 id="设置值"><a href="#设置值" class="headerlink" title="设置值"></a>设置值</h4><ul>
+<li><p>SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL] 为 key 设置字符串的值</p>
+</li>
+<li><p>SETNX key value 设置指定 key 的值且当 key 不存在时, 1 成功, 0 失败</p>
+</li>
+<li><p>APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 <code>SET</code></p>
+</li>
+</ul>
+<h5 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h5><ul>
+<li><p>SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok</p>
+</li>
+<li><p>PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok</p>
+</li>
+</ul>
+<h5 id="批量设置值"><a href="#批量设置值" class="headerlink" title="批量设置值"></a>批量设置值</h5><ul>
+<li><p>MSET key value [key value …] 批量设置 key 的值</p>
+</li>
+<li><p>MSETNX key value [key value …] 批量设置 key 的值且当 key 不存在时, 1 成功, 0 失败</p>
+</li>
+<li><p>SETRANGE key offset value 覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建</p>
+</li>
+</ul>
+<h4 id="获取值"><a href="#获取值" class="headerlink" title="获取值"></a>获取值</h4><ul>
+<li><p>GET key 获取一个 key 的值, 不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>GETSET key value 设置指定 key 的值并返回原来的值, key 不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>GETEX key [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|PERSIST] 获取指定 key 的值并设置过期时间, key 不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>GETDEL key 获取指定 key 的值并删除, key 不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>STRLEN key 返回指定 key 的长度, key 不存在返回 0</p>
+</li>
+</ul>
+<h5 id="批量获取值"><a href="#批量获取值" class="headerlink" title="批量获取值"></a>批量获取值</h5><ul>
+<li><p>MGET key [key …] 批量获取 key 的值, key 不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>GETRANGE key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 <code>&quot;&quot;</code></p>
+</li>
+<li><p>SUBSTR key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 <code>&quot;&quot;</code></p>
+</li>
+</ul>
+<h4 id="数值操作"><a href="#数值操作" class="headerlink" title="数值操作"></a>数值操作</h4><h5 id="增加"><a href="#增加" class="headerlink" title="增加"></a>增加</h5><ul>
+<li>INCR key 将 key 中存储的数字值增加 1 并返回修改后的值, 非数字值报错, key 不存在从 0 开始计算</li>
+<li>INCRBY key increment 将 key 中存储的数字值加上给定的增量值(increment), 返回值同 <code>INCR</code></li>
+<li>INCRBYFLOAT key increment 将 key 中存储的数字值加上给定的浮点增量值(increment), 返回值同 <code>INCR</code></li>
+</ul>
+<h5 id="减少"><a href="#减少" class="headerlink" title="减少"></a>减少</h5><ul>
+<li>DECR key 将 key 中存储的数字值减 1 并返回修改后的值, 非数字值或者值为浮点数会报错, key 不存在从 0 开始计算</li>
+<li>DECRBY key decrement 将 key 中存储的数字值减去给定的增量值(decrement), 返回值同 <code>DECR</code></li>
+</ul>
+<h3 id="Hash-命令"><a href="#Hash-命令" class="headerlink" title="Hash 命令"></a>Hash 命令</h3><p>hash 是一个 string 类型的 field(字段) 和 value(值)的映射表, hash 适合用于存储对象, 每个 hash 可以存储 2^32-1(40 多亿)键值对</p>
+<h4 id="哈希表存取"><a href="#哈希表存取" class="headerlink" title="哈希表存取"></a>哈希表存取</h4><ul>
+<li><p>HEXISTS key field 查看哈希表中是否存在 field, 1 表示存在, 0 表示不存在或者哈希表不存在</p>
+</li>
+<li><p>HDEL key field [field …] 批量删除多个 field 并返回删除字段成功的数量, 0 表示 field 未找到或者哈希表不存在</p>
+</li>
+<li><p>HSET key field value [field value …] 同时将多个键值对存入到哈希表中并返回新添加的数量, 如果 field 已存在则修改 field 的值</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; HSET runoob name &quot;new-redis&quot; age 19 addr &quot;beijing&quot; sex &quot;男&quot;</span><br><span class="line">(integer) 3 # 成功添加一个 field 并修改已存在的 field</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>HMSET key field value [field value …] 批量向哈希表中存入多个键值对, 如果 field 存在则修改 field 的值, 执行成功返回 ok</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; HMSET runoob name redis newname &quot;new-redis&quot; age 18 addr &quot;beijing&quot; sex &quot;男&quot;</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>HSETNX key field value 将键值对存入到哈希表中且当指定 field 不存在时, 1 成功, 0 失败(字段已存在)</p>
+</li>
+<li><p>HGET key field 获取哈希表指定 field 的值, field 或者 哈希表不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>HMGET key field [field …] 批量获取哈希表中指定 field 的值, 哈希表或者指定字段不存在返回 &lt;nil&gt;</p>
+</li>
+<li><p>HGETALL key 获取哈希表中所有的字段和值, (empty array) 表示未找到或者哈希表不存在</p>
+</li>
+</ul>
+<h4 id="获取哈希表的键、值、长度"><a href="#获取哈希表的键、值、长度" class="headerlink" title="获取哈希表的键、值、长度"></a>获取哈希表的键、值、长度</h4><ul>
+<li>HLEN key 获取哈希表中字段的数量, 0 表示哈希表为空或者不存在</li>
+<li>HSTRLEN key field 返回哈希表中指定 field 的值的字符串长度, 哈希表或者指定字段不存在返回 0</li>
+<li>HKEYS key 获取哈希表中所有的字段, (empty array) 表示哈希表为空或者不存在</li>
+<li>HVALS key 获取哈希表中所有的值, (empty array) 表示哈希表为空或者不存在</li>
+</ul>
+<h4 id="哈希表字段数值操作"><a href="#哈希表字段数值操作" class="headerlink" title="哈希表字段数值操作"></a>哈希表字段数值操作</h4><ul>
+<li>HINCRBY key field increment 为哈希表中指定的 field 的数字值加上给定的增量值(increment)并返回修改后的值, 非数字值报错, 哈希表不存在新建, 字段不存在从 0 开始计算</li>
+<li>HINCRBYFLOAT key field increment 为哈希表中指定的 field 的数字值加上给定的浮点数增量值(increment)并返回修改后的值, 非数字值报错, 哈希表不存在新建, 字段不存在从 0 开始计算</li>
+</ul>
+<h4 id="迭代哈希表"><a href="#迭代哈希表" class="headerlink" title="迭代哈希表"></a>迭代哈希表</h4><ul>
+<li>HSCAN key cursor [MATCH pattern] [COUNT count] 使用模式(pattern)匹配迭代哈希表中的键值对<ul>
+<li>cursor 游标</li>
+<li>pattern 匹配的模式</li>
+<li>count 指定从数据集里返回多少元素, 默认为 10</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; HSCAN runoob 0 MATCH *name COUNT 100</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) 1) &quot;name&quot;</span><br><span class="line">   2) &quot;redis&quot;</span><br><span class="line">   3) &quot;newname&quot;</span><br><span class="line">   4) &quot;new-redis&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取哈希表随机字段"><a href="#获取哈希表随机字段" class="headerlink" title="获取哈希表随机字段"></a>获取哈希表随机字段</h4><ul>
+<li>HRANDFIELD key [count [WITHVALUES]] 从哈希表中获取一个或多个随机字段, 哈希表为空返回 &lt;nil&gt;<ul>
+<li>count 指定返回随机的字段的数量, 默认为 1</li>
+<li>WITHVALUES 指定返回随机的字段和值</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; HRANDFIELD runoob</span><br><span class="line">&quot;age&quot;</span><br><span class="line">127.0.0.1:6379&gt; HRANDFIELD runoob 3</span><br><span class="line">1) &quot;name&quot;</span><br><span class="line">2) &quot;addr&quot;</span><br><span class="line">3) &quot;sex&quot;</span><br><span class="line">127.0.0.1:6379&gt; HRANDFIELD runoob 3 WITHVALUES</span><br><span class="line">1) &quot;newname&quot;</span><br><span class="line">2) &quot;new-redis&quot;</span><br><span class="line">3) &quot;addr&quot;</span><br><span class="line">4) &quot;beijing&quot;</span><br><span class="line">5) &quot;sex&quot;</span><br><span class="line">6) &quot;\xe7\x94\xb7&quot;</span><br><span class="line">127.0.0.1:6379&gt; HRANDFIELD newrunoob</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+
+<h3 id="List-命令"><a href="#List-命令" class="headerlink" title="List 命令"></a>List 命令</h3><p>List 是简单的字符串列表, 按照插入的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.</p>
+<ul>
+<li><p>BLPOP key [key…] timeout 移除并获取列表的第一个元素, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止, 如果列表为空或者超时返回 &lt;nil&gt;<br>否则, 返回一个含有两个元素的列表, 第一个元素是被弹出元素所属的列表, 第二个元素是被弹出元素的值</p>
+</li>
+<li><p>BRPOP key [key …] timeout 移除并获取列表的最后一个元素, 同 <code>BLPOP</code></p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; BLPOP runlist 100</span><br><span class="line">(nil)</span><br><span class="line">(100.08s)</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; RPUSH runlist a b c</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; BRPOP runlist 0</span><br><span class="line">1) &quot;runlist&quot;</span><br><span class="line">2) &quot;c&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>BRPOPLPUSH source destination timeout 从列表中取出最后一个元素, 并插入到另一个列表的头部, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止</li>
 </ul>
 ]]></content>
       <categories>
@@ -1107,6 +1288,27 @@
       <tags>
         <tag>Redis</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/04/7df03390b905/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
   </entry>
   <entry>
     <title>vue3.x-Changelog</title>
@@ -1248,218 +1450,6 @@
         <tag>js</tag>
         <tag>VueJs</tag>
         <tag>Vue3.0</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>React.md</title>
-    <url>/2022/02/7ec5bd96e943/</url>
-    <content><![CDATA[<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><ul>
-<li>4 种条件判定是否可作为 state<ul>
-<li>这个变量是否通过 props 从父组件中获取，如果是，则不是一个状态</li>
-<li>这个变量是否在组件的整个生命周期中都保持不变，如果是，则不是一个状态</li>
-<li>这个变量是否可以通过其他状态(state)或者属性(props)计算得到，如果是，则不是一个状态</li>
-<li>这个变量是否在组件的 render 方法中使用，如果不在，则不是一个状态</li>
-</ul>
-</li>
-</ul>
-<h2 id="React-Component"><a href="#React-Component" class="headerlink" title="React.Component"></a>React.Component</h2><h2 id="React-PureComponent"><a href="#React-PureComponent" class="headerlink" title="React.PureComponent"></a>React.PureComponent</h2><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><h3 id="状态值"><a href="#状态值" class="headerlink" title="状态值"></a>状态值</h3><ul>
-<li>useState</li>
-<li>useReducer</li>
-</ul>
-<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><ul>
-<li>useEffect</li>
-<li>useLayoutEffect</li>
-</ul>
-<h3 id="状态共享"><a href="#状态共享" class="headerlink" title="状态共享"></a>状态共享</h3><ul>
-<li>useContext</li>
-</ul>
-<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
-<li>useMemo</li>
-<li>useCallback</li>
-</ul>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
-<li>useRef</li>
-<li>useId</li>
-</ul>
-]]></content>
-      <categories>
-        <category>ES</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>js</tag>
-        <tag>jsx</tag>
-        <tag>React</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>nginx</title>
-    <url>/2022/04/1e58889c42cf/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
-<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
-<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ul>
-<li><p>$nginx_version nginx 版本</p>
-</li>
-<li><p>$connection_requests TCP 链接当前的请求数量</p>
-</li>
-<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
-<span id="more"></span></li>
-</ul>
-<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
-<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
-</li>
-<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
-</li>
-<li><p>$document_uri 同 $uri</p>
-</li>
-<li><p>$document_root 当前请求的文档根目录或别名</p>
-</li>
-<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
-</li>
-<li><p>$remote_addr 客户端的 IP 地址</p>
-</li>
-<li><p>$remote_port 客户端的端口号</p>
-</li>
-<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
-</li>
-<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
-</li>
-<li><p>$hostname 主机名</p>
-</li>
-<li><p>$http_user_agent 客户端 agent 信息</p>
-</li>
-<li><p>$http_cookie 客户端所有的 cookie 信息</p>
-</li>
-<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
-</li>
-<li><p>$http_referer 引用地址</p>
-</li>
-<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
-</li>
-<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
-</li>
-</ul>
-<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
-<li><p>$request 代表客户端的请求地址</p>
-</li>
-<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
-</li>
-<li><p>$request_body 客户端的请求主体</p>
-</li>
-<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
-</li>
-<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
-</li>
-<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
-</li>
-<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
-</li>
-<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
-</li>
-<li><p>$uri 当前请求的 URI</p>
-</li>
-<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
-</li>
-<li><p>$args 请求中的参数值</p>
-</li>
-<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
-</li>
-<li><p>$query_string 同$args</p>
-</li>
-</ul>
-<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
-<li><p>$time_local 服务器时间(LOG Format 格式)</p>
-</li>
-<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
-<ul>
-<li>$sent_http_content_type ‘text/html’</li>
-<li>$sent_http_content_length 1024</li>
-</ul>
-</li>
-</ul>
-<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
-<li><p>$scheme HTTP 方法(如 http, https)</p>
-</li>
-<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
-</li>
-<li><p>$server_addr 服务器地址</p>
-</li>
-<li><p>$server_name 服务器名称</p>
-</li>
-<li><p>$server_port 服务器端口号</p>
-</li>
-<li><p>$status HTTP 响应代码</p>
-</li>
-</ul>
-<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
-<li>http</li>
-<li>server</li>
-<li>location</li>
-<li>if in location</li>
-</ul>
-<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
-<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
-<ul>
-<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
-<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
-<thead>
-<tr>
-<th align="center">符号</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">~</td>
-<td>正则匹配，区分大小写</td>
-</tr>
-<tr>
-<td align="center">~*</td>
-<td>正则匹配，不区分大小写</td>
-</tr>
-<tr>
-<td align="center">^~</td>
-<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
-</tr>
-<tr>
-<td align="center">=</td>
-<td>普通字符匹配，精确匹配</td>
-</tr>
-<tr>
-<td align="center">@</td>
-<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
-</tr>
-</tbody></table>
-<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
-<li><p>精确匹配：</p>
-<p>= 前缀的指令严格匹配这个查询。</p>
-<p>如果找到，停止搜索。</p>
-</li>
-<li><p>普通字符匹配：</p>
-<p>所有剩下的常规字符串，最长的匹配。</p>
-<p>如果这个匹配使用^〜前缀，搜索停止。</p>
-</li>
-<li><p>正则匹配：</p>
-<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
-</li>
-<li><p>默认匹配：</p>
-<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
-<p>否则，如同从第 2 条规则被使用。</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>server</category>
-      </categories>
-      <tags>
-        <tag>nginx</tag>
       </tags>
   </entry>
   <entry>
@@ -1981,25 +1971,174 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2021/04/7df03390b905/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+    <title>nginx</title>
+    <url>/2022/04/1e58889c42cf/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
+<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ul>
+<li><p>$nginx_version nginx 版本</p>
+</li>
+<li><p>$connection_requests TCP 链接当前的请求数量</p>
+</li>
+<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
+<span id="more"></span></li>
+</ul>
+<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
+<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
+</li>
+<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
+</li>
+<li><p>$document_uri 同 $uri</p>
+</li>
+<li><p>$document_root 当前请求的文档根目录或别名</p>
+</li>
+<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
+</li>
+<li><p>$remote_addr 客户端的 IP 地址</p>
+</li>
+<li><p>$remote_port 客户端的端口号</p>
+</li>
+<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
+</li>
+<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
+</li>
+<li><p>$hostname 主机名</p>
+</li>
+<li><p>$http_user_agent 客户端 agent 信息</p>
+</li>
+<li><p>$http_cookie 客户端所有的 cookie 信息</p>
+</li>
+<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
+</li>
+<li><p>$http_referer 引用地址</p>
+</li>
+<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
+</li>
+<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
+</li>
+</ul>
+<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
+<li><p>$request 代表客户端的请求地址</p>
+</li>
+<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
+</li>
+<li><p>$request_body 客户端的请求主体</p>
+</li>
+<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
+</li>
+<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
+</li>
+<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
+</li>
+<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
+</li>
+<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
+</li>
+<li><p>$uri 当前请求的 URI</p>
+</li>
+<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
+</li>
+<li><p>$args 请求中的参数值</p>
+</li>
+<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
+</li>
+<li><p>$query_string 同$args</p>
+</li>
+</ul>
+<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
+<li><p>$time_local 服务器时间(LOG Format 格式)</p>
+</li>
+<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
+<ul>
+<li>$sent_http_content_type ‘text/html’</li>
+<li>$sent_http_content_length 1024</li>
+</ul>
+</li>
+</ul>
+<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
+<li><p>$scheme HTTP 方法(如 http, https)</p>
+</li>
+<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
+</li>
+<li><p>$server_addr 服务器地址</p>
+</li>
+<li><p>$server_name 服务器名称</p>
+</li>
+<li><p>$server_port 服务器端口号</p>
+</li>
+<li><p>$status HTTP 响应代码</p>
+</li>
+</ul>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
+<li>http</li>
+<li>server</li>
+<li>location</li>
+<li>if in location</li>
+</ul>
+<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
+<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
+<ul>
+<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
+<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
+<thead>
+<tr>
+<th align="center">符号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">~</td>
+<td>正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td align="center">~*</td>
+<td>正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td align="center">^~</td>
+<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
+</tr>
+<tr>
+<td align="center">=</td>
+<td>普通字符匹配，精确匹配</td>
+</tr>
+<tr>
+<td align="center">@</td>
+<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
+</tr>
+</tbody></table>
+<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
+<li><p>精确匹配：</p>
+<p>= 前缀的指令严格匹配这个查询。</p>
+<p>如果找到，停止搜索。</p>
+</li>
+<li><p>普通字符匹配：</p>
+<p>所有剩下的常规字符串，最长的匹配。</p>
+<p>如果这个匹配使用^〜前缀，搜索停止。</p>
+</li>
+<li><p>正则匹配：</p>
+<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
+</li>
+<li><p>默认匹配：</p>
+<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
+<p>否则，如同从第 2 条规则被使用。</p>
+</li>
+</ol>
 ]]></content>
       <categories>
-        <category>tools</category>
+        <category>server</category>
       </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
   </entry>
   <entry>
     <title>vagrant</title>
