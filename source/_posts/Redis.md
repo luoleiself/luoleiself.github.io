@@ -14,10 +14,10 @@ Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 
 ### Keys 命令
 
 - HELP command 显示命令的帮助信息
-- DEL key [key...] 删除 key, 1 成功, 0 不存在
+- DEL key [key...] 删除 key 并返回删除 key 的数量
 - DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;
 - EXISTS key 检查指定 key 是否存在, 1 存在, 0 不存在
-- KEYS pattern 查找给定模式(pattern)的 key, 返回列表
+- KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)
 
 - EXPIRE key seconds 为指定 key 设置过期时间(单位秒), 1 成功, 0 失败
 - EXPIREAT key unix-time-seconds 为指定 key 设置过期使用 unix 时间戳, 1 成功, 0 失败
@@ -51,7 +51,7 @@ Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 
 
 ### 字符串命令
 
-字符串是基础类型, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB
+字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB
 
 #### 设置值
 
@@ -136,14 +136,14 @@ OK
 
 - HGET key field 获取哈希表指定 field 的值, field 或者 哈希表不存在返回 &lt;nil&gt;
 - HMGET key field [field ...] 批量获取哈希表中指定 field 的值, 哈希表或者指定字段不存在返回 &lt;nil&gt;
-- HGETALL key 获取哈希表中所有的字段和值, (empty array) 表示未找到或者哈希表不存在
+- HGETALL key 获取哈希表中所有的字段和值, 未找到或者哈希表不存在返回 (empty array)
 
 #### 获取哈希表的键、值、长度
 
 - HLEN key 获取哈希表中字段的数量, 0 表示哈希表为空或者不存在
 - HSTRLEN key field 返回哈希表中指定 field 的值的字符串长度, 哈希表或者指定字段不存在返回 0
-- HKEYS key 获取哈希表中所有的字段, (empty array) 表示哈希表为空或者不存在
-- HVALS key 获取哈希表中所有的值, (empty array) 表示哈希表为空或者不存在
+- HKEYS key 获取哈希表中所有的字段, 哈希表为空或者不存在返回 (empty array)
+- HVALS key 获取哈希表中所有的值, 哈希表为空或者不存在返回 (empty array)
 
 #### 哈希表字段数值操作
 
@@ -192,7 +192,7 @@ OK
 
 ### List 命令
 
-List 是简单的字符串列表, 按照插入的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.
+List 是一个有序重复的字符串列表, 按照插入的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.
 
 - BLPOP key [key...] timeout 移除并获取列表的第一个元素, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止, 如果列表为空或者超时返回 &lt;nil&gt;
   否则, 返回一个含有两个元素的列表, 第一个元素是被弹出元素所属的列表, 第二个元素是被弹出元素的值
@@ -211,4 +211,65 @@ List 是简单的字符串列表, 按照插入的顺序排序, 可以添加一�
 2) "c"
 ```
 
-- BRPOPLPUSH source destination timeout 从列表中取出最后一个元素, 并插入到另一个列表的头部, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止
+- BRPOPLPUSH source destination timeout 移除列表的最后一个元素插入到另一个列表的头部并返回操作的元素, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止,
+
+```shell
+127.0.0.1:6379> BRPOPLPUSH list newlist 10
+(nil)
+(10.05s)
+127.0.0.1:6379> LPUSH list a b c d
+(integer) 4
+127.0.0.1:6379> RPOPLPUSH list newlist
+"a"
+```
+
+- LINDEX key index 获取列表中指定索引的元素, 如果列表或者索引不存在返回 &lt;nil&gt;
+
+- LINSERT key BEFORE|AFTER pivot element 在列表的指定元素的前或后插入元素, 列表为空或者不存在不执行任何操作, 否则未找到指定元素返回 -1, 插入成功返回列表的长度
+  - BEFORE|AFTER 插入的位置
+  - pivot 查找的基准元素
+  - element 插入的元素
+
+```shell
+127.0.0.1:6379> LINSERT list before a hello
+(integer) 5
+127.0.0.1:6379> LRANGE list 0 100
+1) "hello"
+2) "a"
+3) "d"
+4) "c"
+5) "b"
+```
+
+- LLEN key 返回列表长度, 0 表示列表为空或者不存在
+
+- LPOP key [count] 移除列表左侧指定数量的元素, count 默认为 1, 列表为空或者不存在返回 &lt;nil&gt;
+- LPUSH key element [element ...] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建
+- LPUSHX key element [element ...] 批量添加多个元素到已存在的列表头部并返回列表的长度, 列表为空或者不存在返回 0
+- LRANGE key start stop 遍历列表指定区间的元素, 列表为空或者不存在返回 (empty array)
+- LREM key count element 移除列表指定数量的元素并返回移除元素的数量, 列表为空或者不存在返回 0
+  - count > 0 从列表头部开始向尾部搜索, 移除与 element 相等的元素, 数量为 count
+  - count < 0 从列表尾部开始向头部搜索, 移除与 element 相等的元素, 数量为 count 的绝对值
+  - count = 0 移除列表中与 element 相等的所有的元素
+
+```shell
+127.0.0.1:6379> KEYS *
+1) "sex"
+2) "addr"
+3) "name"
+4) "runoob"
+5) "age"
+127.0.0.1:6379> LPUSH list a b c d a b c d a b c d a b c d
+(integer) 16
+127.0.0.1:6379> LREM list 3 a
+(integer) 3
+```
+
+- LSET key index element 设置列表指定索引的值, 操作成功返回 ok, 列表为空或者不存在或者索引参数超出范围返回错误信息
+
+- LTRIM key start stop 列表修剪, 对列表不包含在 start 到 stop 区间的元素进行删除, 执行成功返回 ok
+
+- RPOP key [count] 移除列表尾部指定数量的元素, count 默认为 1, 列表为空或者不存在返回 &lt;nil&gt;
+- RPOPLPUSH source destination 移除列表的最后一个元素插入到另一个列表的头部并返回操作的元素, 源列表为空或者不存在返回 &lt;nil&gt;
+- RPUSH key element [element ...] 批量追加多个元素到列表尾部并返回列表的长度, 列表为空或者不存在新建
+- RPUSHX key element [element ...] 批量追加多个元素到已存在的列表尾部并返回列表的长度, 列表为空或者不存在返回 0
