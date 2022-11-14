@@ -1,5 +1,5 @@
 ---
-title: Redis-Set
+title: Redis-Set-Zset
 date: 2022-11-09 18:03:19
 categories:
   - [server, Redis]
@@ -400,3 +400,189 @@ OK
 127.0.0.1:6379> SINTERCARD 2 myset newset LIMIT -1    # 偏移量不能为负数
 (error) ERR LIMIT can't be negative
 ```
+
+### Zset 命令
+
+Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成员, 不同的是每个元素都会关联一个 double 类型的分数, Redis 正是通过分数来为集合中的成员进行从小到大的排序, 有序集合的成员是唯一的,但分数(score)却可以重复, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.
+
+> 大部分 Set 的 API 将首字母 s 换成 z 就可以使用, 这里只列出部分不一致的 API
+
+#### 特殊标识符
+
+- \-inf 负无穷大
+- \+inf 正无穷大
+
+#### 添加成员
+
+- ZADD key [NX|XX] [GT|LT] [CH] [INCR] score member [score member ...] 添加新成员, 通常只返回添加的新成员的数量
+
+  - NX 仅添加新成员, 不再更新已存在的成员
+  - XX 仅更新已经存在的成员, 不再添加新成员
+  - GT 仅当新分数大于当前分数才更新已存在的成员, 此标志不阻止添加新成员
+  - LT 仅当新分数小于当前分数才更新已存在的成员, 此标志不阻止添加新成员
+  - CH 将 `zadd` 返回值统计新成员的添加数量修改为更改的元素总数, 包含更新已存在的数量和新添加的数量
+  - INCR 此选项作用类似 `ZINCRBY`, 只能指定一个成员分数对, 并返回当前成员的最终分数, 多个成员分数对会报错
+
+```shell
+127.0.0.1:6379> ZADD myz 1 zhangsan 2 lisi  # 添加成员
+(integer) 2
+127.0.0.1:6379> ZCARD myz
+(integer) 2
+127.0.0.1:6379> ZRANDMEMBER myz 2 WITHSCORES
+1) "lisi"
+2) "2"
+3) "zhangsan"
+4) "1"
+
+# XX  仅更新已存在的成员，不再添加新成员
+# 仅更新 zhangsan, 忽略添加新成员 1 wangwu 3.5 zhaoliu
+127.0.0.1:6379> ZADD myz XX 1.5 zhangsan 1 wangwu 3.5 zhaoliu
+(integer) 0
+127.0.0.1:6379> ZCARD myz
+(integer) 2
+127.0.0.1:6379> ZRANDMEMBER myz 2 WITHSCORES
+1) "lisi"
+2) "2"
+3) "zhangsan"
+4) "1.5"
+
+# NX  仅添加新成员, 不再更新已存在的成员
+# 仅添加新成员 1 wangwu 3.5 zhaoliu, 忽略更新 lisi
+127.0.0.1:6379> ZADD myz NX 2.5 lisi 1 wangwu 3.5 zhaoliu
+(integer) 2
+127.0.0.1:6379> ZCARD myz
+(integer) 4
+127.0.0.1:6379> ZRANDMEMBER myz 4 WITHSCORES
+1) "zhaoliu"
+2) "3.5"
+3) "lisi"
+4) "2"
+5) "zhangsan"
+6) "1.5"
+7) "wangwu"
+8) "1"
+
+# LT  仅当新分数小于当前分数才更新已存在的成员, 不阻止添加新成员
+127.0.0.1:6379> ZADD myz LT 0.5 lisi 4 sunqi  # 0.5 < 2 满足条件, 有新成员 4 sunqi 可添加
+(integer) 1
+127.0.0.1:6379> ZCARD myz
+(integer) 5
+127.0.0.1:6379> ZRANDMEMBER myz 5 WITHSCORES
+ 1) "sunqi"
+ 2) "4"
+ 3) "zhaoliu"
+ 4) "3.5"
+ 5) "zhangsan"
+ 6) "1.5"
+ 7) "wangwu"
+ 8) "1"
+ 9) "lisi"
+10) "0.5"
+127.0.0.1:6379> ZADD myz LT 1 lisi 8 sunqi  # 1 > 0.5, 8 > 4 不满足条件, 没有新成员可添加
+(integer) 0
+127.0.0.1:6379> ZCARD myz
+(integer) 5
+127.0.0.1:6379> ZRANDMEMBER myz 5 WITHSCORES
+ 1) "sunqi"
+ 2) "4"
+ 3) "zhaoliu"
+ 4) "3.5"
+ 5) "zhangsan"
+ 6) "1.5"
+ 7) "wangwu"
+ 8) "1"
+ 9) "lisi"
+10) "0.5"
+
+# GT 仅当新分数大于当前分数才更新已存在的成员, 不阻止添加新成员
+127.0.0.1:6379> ZADD myz GT 1 zhangsan 2 qianba # 1 < 1.5 不满足条件, 有新成员 2 qianba 可添加
+(integer) 1
+127.0.0.1:6379> ZCARD myz
+(integer) 6
+127.0.0.1:6379> ZRANDMEMBER myz 6 WITHSCORES
+ 1) "sunqi"
+ 2) "4"
+ 3) "zhaoliu"
+ 4) "3.5"
+ 5) "qianba"
+ 6) "2"
+ 7) "zhangsan"
+ 8) "1.5"
+ 9) "wangwu"
+10) "1"
+11) "lisi"
+12) "0.5"
+127.0.0.1:6379> ZADD myz GT 3 zhangsan 2 qianba # 3 > 1.5 满足条件, 2 = 2 不满足条件, 没有新成员可添加
+(integer) 0
+127.0.0.1:6379> ZCARD myz
+(integer) 6
+127.0.0.1:6379> ZRANDMEMBER myz 6 WITHSCORES
+ 1) "sunqi"
+ 2) "4"
+ 3) "zhaoliu"
+ 4) "3.5"
+ 5) "zhangsan"
+ 6) "3"
+ 7) "qianba"
+ 8) "2"
+ 9) "wangwu"
+10) "1"
+11) "lisi"
+12) "0.5"
+
+# CH 统计集合所有受影响的成员的数量, 包含更新已存在的数量和新添加的数量
+127.0.0.1:6379> ZADD myz CH 1 zhangsan 5 qianba 1 hello # zhangsan 和 qianba 已存在, hello 为新添加成员,
+(integer) 3
+
+# INCR 同时只能指定一个成员分数对, 多个会报错 (error) ERR INCR option supports a single increment-element pair
+127.0.0.1:6379> ZADD myz INCR 10 zhangsan
+"10"
+127.0.0.1:6379> ZRANDMEMBER myz 1 WITHSCORES
+1) "zhangsan"
+2) "10"
+```
+
+- ZCOUNT key min max 统计有序集合中指定分数区间的成员数量, 0 表示找到结果
+
+```shell
+127.0.0.1:6379> ZRANDMEMBER myz 6 WITHSCORES
+1) "zhaoliu"
+2) "3.5"
+3) "lisi"
+4) "2.5"
+5) "zhangsan"
+6) "1.5"
+7) "wangwu"
+8) "1"
+127.0.0.1:6379> ZCOUNT myz -inf +inf  # 获取分数 负无穷大 到 正无穷大 之间的数量
+(integer) 4
+127.0.0.1:6379> ZCOUNT myz 0 2  # 获取分数在 0 到 2 之间的数量
+(integer) 2
+127.0.0.1:6379> ZCOUNT myz 1.5 3  # 获取分数在 1.5 到 3 之间的数量
+(integer) 2
+```
+
+- ZINCRBY key increment member 对指定成员的分数加上增量并返回修改后的分数, 如果指定成员不存在则添加新成员, 等同于 `ZADD key increment member`
+
+```shell
+127.0.0.1:6379> ZINCRBY myz 2 zhangsan  # 修改 zhangsan 的分数 + 2
+"3.5"
+127.0.0.1:6379> ZINCRBY myz 2 zhangsan1 # zhangsan1 不存在, 新添加
+"2"
+127.0.0.1:6379> ZINCRBY myz -2 zhaoliu  # 修改 zhaoliu 的分数减去 - 2
+"1.5"
+127.0.0.1:6379> ZRANDMEMBER myz 6 WITHSCORES
+ 1) "zhangsan"
+ 2) "3.5"
+ 3) "lisi"
+ 4) "2.5"
+ 5) "zhangsan1"
+ 6) "2"
+ 7) "zhaoliu"
+ 8) "1.5"
+ 9) "wangwu"
+10) "1"
+```
+
+- ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] 计算多个有序集合的交集, 并将交集存储到指定的集合中, 返回保存到指定集合的成员数量
+  - WEIGHTS 指定每个排序集合的权重,

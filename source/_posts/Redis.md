@@ -11,10 +11,6 @@ tags:
 
 Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API
 
-### 配置文件
-
-- daemonize no 是否后台模式启动服务
-
 ### 工具命令
 
 - redis-benchmark 压测工具
@@ -42,6 +38,14 @@ Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 
 ```
 
 <!-- more -->
+
+### CONFIG 命令
+
+- CONFIG GET parameter [parameter...] 获取指定配置项的值
+- CONFIG HELP 显示 CONFIG 命令的帮助信息
+- CONFIG RESETSTAT 重置 INFO 返回的统计信息, ok 成功
+- CONFIG REWRITE 使用内存配置重写配置文件
+- CONFIG SET parameter value [parameter value ...] 设置配置项
 
 ### Keys 命令
 
@@ -92,10 +96,81 @@ Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 
 
 ##### ACL
 
-### CONFIG 命令
+### 配置文件
 
-- CONFIG GET parameter [parameter...] 获取指定配置项的值
-- CONFIG HELP 显示 CONFIG 命令的帮助信息
-- CONFIG RESETSTAT 重置 INFO 返回的统计信息, ok 成功
-- CONFIG REWRITE 使用内存配置重写配置文件
-- CONFIG SET parameter value [parameter value ...] 设置配置项
+- include /path/to/\*.conf # 导入其他 redis 配置文件
+
+- bind 127.0.0.1 -::1 # 默认绑定本地 127.0.0.1
+- protected-mode yes # 保护模式, 默认开启
+- port 6379 # 默认端口号
+
+- tcp-backlog 511 # tcp 连接数
+- timeout 0 # 关闭客户端连接的延迟, 0 表示禁用, 单位秒
+- tcp-keepalive 300 # 保持长连接的时间, 单位秒
+
+#### TLS/SSL
+
+安全连接配置项, 默认未开启
+
+- tls-port 6379 # 安全连接端口
+- tls-cert-file redis.cert # 安全连接证书
+- tls-key-file redis.key # 安全连接 key
+- tls-key-file-pass secret # key 文件加密摘要
+- tls-client-cert-file client.crt # 客户端安全连接证书
+- tls-client-key-file client.key # 客户端安全连接 key
+- tls-client-key-file-pass secret # 客户端安全连接 key 文件加密摘要
+- tls-ca-cert-file ca.crt # CA 证书
+- tls-ca-cert-dir /etc/ssl/certs # CA 证书目录
+- tls-auth-clients no # no 不需要也不接受客户端证书连接, optional 证书不必需, 如果提供证书则必须验证有效
+- tls-session-caching no # 默认启用 TLS 会话缓存, no 表示禁用缓存
+- tls-session-cache-size 5000 # TLS 缓存大小, 默认 20480
+- tls-session-cache-timeout 60 # TLS 缓存有效期, 默认 300 秒
+
+#### 通用设置
+
+- daemonize no 是否后台模式启动服务
+- pidfile /var/run/redis_6379.pid # 进程 id 文件
+- loglevel notice # 设置日志级别, 默认 notice
+  - debug (a lot of information, useful for development/testing)
+  - verbose (many rarely useful info, but not a mess like the debug level)
+  - notice (moderately verbose, what you want in production probably)
+  - warning (only very important / critical messages are logged)
+- logfile "" # 日志文件, 守护进程模式将指定 /dev/null
+- syslog-enabled no # 是否允许指向 系统 日志
+- syslog-ident redis # 日志标识符
+
+- databases 16 # 默认数据库数量
+
+- always-show-logo no # 是否总是显示 logo
+- set-proc-title yes # 设置进程标题
+
+#### SNAPSHOTTING
+
+- save 3600 1 300 100 60 10000 # 快照执行机制, 3600 秒后如果超过 1 次更改, 300 秒后超过 100 次更改, 60 秒后超过 10000 次更改
+
+```shell
+save <seconds> <changes> [<seconds> <changes> ...]
+```
+
+- stop-writes-on-bgsave-error yes # 是否开启停止在保存快照发生错误的时的写操作
+- rdbcompression yes # 开启 rdb 文件压缩
+- rdbchecksum yes # 开启 rdb 文件的校验检查
+- dbfilename dump.rdb # rdb 文件名称
+- dir ./ # rdb 文件存储目录
+
+- appendonly no # 是否启动 aof 备份
+- appendfilename "appendonly.aof" # aof 备份文件名
+- appenddirname "appendonlydir" # aof 备份目录
+- appendfsync everysec # aof 备份模式, 每秒中执行
+  - always 只要 key 发生改变就要备份
+  - no 不备份
+
+#### SECURITY
+
+- acllog-max-len 128 # ACL 日志在内存中时的最大条目数
+- aclfile /etc/redis/users.acl # ACL 日志文件
+- requirepass foobared # 认证密码
+
+- maxclients 10000 # 客户端最大连接数
+
+- io-threads 4 # I/O 线程
