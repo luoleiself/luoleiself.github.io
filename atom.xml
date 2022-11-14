@@ -6,7 +6,7 @@
   <link href="https://luoleiself.github.io/atom.xml" rel="self"/>
   
   <link href="https://luoleiself.github.io/"/>
-  <updated>2022-11-11T10:56:37.291Z</updated>
+  <updated>2022-11-14T05:51:58.777Z</updated>
   <id>https://luoleiself.github.io/</id>
   
   <author>
@@ -17,14 +17,96 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Redis-Set</title>
+    <link href="https://luoleiself.github.io/2022/11/c9950a796644/"/>
+    <id>https://luoleiself.github.io/2022/11/c9950a796644/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2022-11-14T05:51:58.777Z</updated>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Set-命令&quot;&gt;&lt;a href=&quot;#Set-命令&quot; class=&quot;headerlink&quot; title=&quot;Set 命令&quot;&gt;&lt;/a&gt;Set 命令&lt;/h3&gt;&lt;p&gt;Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.&lt;/p&gt;
+&lt;h4 id=&quot;成员操作&quot;&gt;&lt;a href=&quot;#成员操作&quot; class=&quot;headerlink&quot; title=&quot;成员操作&quot;&gt;&lt;/a&gt;成员操作&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&quot;是否包含成员&quot;&gt;&lt;a href=&quot;#是否包含成员&quot; class=&quot;headerlink&quot; title=&quot;是否包含成员&quot;&gt;&lt;/a&gt;是否包含成员&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在&lt;/li&gt;
+&lt;li&gt;SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *    # 查看当前数据库中的 key&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(empty array)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello hehe    # 空集合判断是否包含成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SADD myset hello world hehe haha gg    # 向 myset 添加成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello yy hehe    # 判断 myset 是否包含成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (integer) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) (integer) 1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis</title>
+    <link href="https://luoleiself.github.io/2022/11/819f95816ecc/"/>
+    <id>https://luoleiself.github.io/2022/11/819f95816ecc/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2022-11-14T05:51:40.521Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;Redis&quot;&gt;&lt;a href=&quot;#Redis&quot; class=&quot;headerlink&quot; title=&quot;Redis&quot;&gt;&lt;/a&gt;Redis&lt;/h2&gt;&lt;p&gt;Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API&lt;/p&gt;
+&lt;h3 id=&quot;配置文件&quot;&gt;&lt;a href=&quot;#配置文件&quot; class=&quot;headerlink&quot; title=&quot;配置文件&quot;&gt;&lt;/a&gt;配置文件&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;daemonize no 是否后台模式启动服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;工具命令&quot;&gt;&lt;a href=&quot;#工具命令&quot; class=&quot;headerlink&quot; title=&quot;工具命令&quot;&gt;&lt;/a&gt;工具命令&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;redis-benchmark 压测工具&lt;ul&gt;
+&lt;li&gt;-h 主机名&lt;/li&gt;
+&lt;li&gt;-p 端口号&lt;/li&gt;
+&lt;li&gt;-s socket 连接(覆盖 host 和 port)&lt;/li&gt;
+&lt;li&gt;-a 认证密码&lt;/li&gt;
+&lt;li&gt;--user 用户名&lt;/li&gt;
+&lt;li&gt;-c 客户端并发连接数(default 50)&lt;/li&gt;
+&lt;li&gt;-n 请求数(default 100000)&lt;/li&gt;
+&lt;li&gt;-d 测试数据的大小(default 3)&lt;/li&gt;
+&lt;li&gt;--dbnum 连接的数据库编号(default 0)&lt;/li&gt;
+&lt;li&gt;-k 是否保持连接&lt;/li&gt;
+&lt;li&gt;-r SET/GET/INCR 使用随机 key, SADD 使用随机值&lt;/li&gt;
+&lt;li&gt;-p 通过管道传输&lt;/li&gt;
+&lt;li&gt;-q 退出, 仅显示 query/sec 值&lt;/li&gt;
+&lt;li&gt;--csv 以 CSV 格式输出&lt;/li&gt;
+&lt;li&gt;-l 循环永远运行测试&lt;/li&gt;
+&lt;li&gt;-t 仅运行以逗号分割的命令列表&lt;/li&gt;
+&lt;li&gt;-I Idle 模式, 仅打开 N 个 idle 连接并等待&lt;/li&gt;
+&lt;li&gt;-x 从 STDIN 读取最后一个参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt;redis-benchmark -h localhost -p 6379 -c 100 -n 100000 -d 10 -t set,get,hset,hget,lpush,rpush,sadd&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Redis-List</title>
     <link href="https://luoleiself.github.io/2022/11/3f42dc25499d/"/>
     <id>https://luoleiself.github.io/2022/11/3f42dc25499d/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2022-11-11T10:56:37.291Z</updated>
+    <updated>2022-11-14T05:52:03.110Z</updated>
     
     
-    <summary type="html">&lt;h3 id=&quot;List-命令&quot;&gt;&lt;a href=&quot;#List-命令&quot; class=&quot;headerlink&quot; title=&quot;List 命令&quot;&gt;&lt;/a&gt;List 命令&lt;/h3&gt;&lt;p&gt;List 是一个有序重复的字符串列表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.&lt;/p&gt;
+    <summary type="html">&lt;h3 id=&quot;List-命令&quot;&gt;&lt;a href=&quot;#List-命令&quot; class=&quot;headerlink&quot; title=&quot;List 命令&quot;&gt;&lt;/a&gt;List 命令&lt;/h3&gt;&lt;p&gt;List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.&lt;/p&gt;
 &lt;h4 id=&quot;添加元素&quot;&gt;&lt;a href=&quot;#添加元素&quot; class=&quot;headerlink&quot; title=&quot;添加元素&quot;&gt;&lt;/a&gt;添加元素&lt;/h4&gt;&lt;ul&gt;
 &lt;li&gt;&lt;p&gt;LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建&lt;/p&gt;
 &lt;/li&gt;
@@ -46,7 +128,7 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LINSERT list BEFORE a hello   # 向 list 中第 1 次出现 a 的前面添加 hello&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LRANGE list 0 100 # 遍历 list&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &amp;quot;hello&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &amp;quot;a&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &amp;quot;d&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &amp;quot;c&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5) &amp;quot;b&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LINSERT list BEFORE a hello   # 向 list 中第 1 次出现 a 的前面添加 hello&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LRANGE list 0 -1 # 遍历 list&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &amp;quot;hello&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &amp;quot;a&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &amp;quot;d&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &amp;quot;c&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5) &amp;quot;b&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
     
     
     
@@ -60,70 +142,33 @@
   </entry>
   
   <entry>
-    <title>Redis-Set</title>
-    <link href="https://luoleiself.github.io/2022/11/c9950a796644/"/>
-    <id>https://luoleiself.github.io/2022/11/c9950a796644/</id>
+    <title>Redis-String-Hash</title>
+    <link href="https://luoleiself.github.io/2022/11/80b3dfc88923/"/>
+    <id>https://luoleiself.github.io/2022/11/80b3dfc88923/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2022-11-11T11:24:26.766Z</updated>
+    <updated>2022-11-14T05:52:01.288Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;Set-命令&quot;&gt;&lt;a href=&quot;#Set-命令&quot; class=&quot;headerlink&quot; title=&quot;Set 命令&quot;&gt;&lt;/a&gt;Set 命令&lt;/h3&gt;&lt;p&gt;Set 是无序不重复的集合&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;SCARD key 获取 set 成员的数量,</summary>
-        
-      
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis</title>
-    <link href="https://luoleiself.github.io/2022/11/819f95816ecc/"/>
-    <id>https://luoleiself.github.io/2022/11/819f95816ecc/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2022-11-11T11:58:20.712Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;Redis&quot;&gt;&lt;a href=&quot;#Redis&quot; class=&quot;headerlink&quot; title=&quot;Redis&quot;&gt;&lt;/a&gt;Redis&lt;/h2&gt;&lt;p&gt;Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API&lt;/p&gt;
-&lt;h3 id=&quot;Keys-命令&quot;&gt;&lt;a href=&quot;#Keys-命令&quot; class=&quot;headerlink&quot; title=&quot;Keys 命令&quot;&gt;&lt;/a&gt;Keys 命令&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;HELP command 显示命令的帮助信息&lt;/p&gt;
+    <summary type="html">&lt;h3 id=&quot;字符串命令&quot;&gt;&lt;a href=&quot;#字符串命令&quot; class=&quot;headerlink&quot; title=&quot;字符串命令&quot;&gt;&lt;/a&gt;字符串命令&lt;/h3&gt;&lt;p&gt;字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.&lt;/p&gt;
+&lt;h4 id=&quot;设置值&quot;&gt;&lt;a href=&quot;#设置值&quot; class=&quot;headerlink&quot; title=&quot;设置值&quot;&gt;&lt;/a&gt;设置值&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL] 为 key 设置字符串的值, 执行成功返回 ok&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;DEL key [key…] 删除 key 并返回删除 key 的数量&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;SETNX key value 设置指定 key 的值且当 key 不存在时, 1 成功, 0 失败&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &amp;lt;nil&amp;gt;&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 &lt;code&gt;SET&lt;/code&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;EXISTS key 检查指定 key 是否存在, 1 存在, 0 不存在&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;RENAME key newKey 修改 key 的名称, ok 成功, ERR no such key 失败&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;-2 key 不存在&lt;/li&gt;
-&lt;li&gt;-1 key 存在但没有设置剩余生存时间&lt;/li&gt;
 &lt;/ul&gt;
+&lt;h5 id=&quot;批量设置值&quot;&gt;&lt;a href=&quot;#批量设置值&quot; class=&quot;headerlink&quot; title=&quot;批量设置值&quot;&gt;&lt;/a&gt;批量设置值&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;MSET key value [key value …] 批量设置 key 的值&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;TTL key 以秒为单位返回指定 key 的剩余生存时间&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;-2 key 不存在&lt;/li&gt;
-&lt;li&gt;-1 key 存在但没有设置剩余生存时间&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 1 成功, 0 失败&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SETRANGE key offset value 覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/li&gt;
+&lt;h5 id=&quot;过期时间&quot;&gt;&lt;a href=&quot;#过期时间&quot; class=&quot;headerlink&quot; title=&quot;过期时间&quot;&gt;&lt;/a&gt;过期时间&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok&lt;/li&gt;
+&lt;li&gt;PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok&lt;/li&gt;
 &lt;/ul&gt;</summary>
     
     
@@ -716,43 +761,6 @@
     
     
     <category term="API" scheme="https://luoleiself.github.io/tags/API/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Generator和async</title>
-    <link href="https://luoleiself.github.io/2021/07/bc748f2ea976/"/>
-    <id>https://luoleiself.github.io/2021/07/bc748f2ea976/</id>
-    <published>2021-07-23T10:03:53.000Z</published>
-    <updated>2022-04-30T07:04:23.687Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;Generator&quot;&gt;&lt;a href=&quot;#Generator&quot; class=&quot;headerlink&quot; title=&quot;Generator&quot;&gt;&lt;/a&gt;Generator&lt;/h3&gt;&lt;blockquote&gt;
-&lt;p&gt;Generator 函数是 ES6 提供的一种异步编程解决方案, 语法行为和传统普通函数完全不同, Generator 函数是一个状态机, 封装了多个内部状态, 执行函数会返回一个迭代器对象, 返回的迭代器对象可以依次遍历 Generator 函数内部的每一个状态.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;function 关键字和函数名之间有一个星号, 星号写在哪个位置都可以&lt;/li&gt;
-&lt;li&gt;函数体内部使用 yield 表达式定义不同的状态&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;* &lt;span class=&quot;title function_&quot;&gt;helloWorld&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;#x27;hello&amp;#x27;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;#x27;world&amp;#x27;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; gen = &lt;span class=&quot;title function_&quot;&gt;helloWorld&lt;/span&gt;();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gen.&lt;span class=&quot;title function_&quot;&gt;next&lt;/span&gt;();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// &amp;#123; value: &amp;#x27;hello&amp;#x27;, done: false &amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gen.&lt;span class=&quot;title function_&quot;&gt;next&lt;/span&gt;();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// &amp;#123; value: &amp;#x27;world&amp;#x27;, done: false &amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;gen.&lt;span class=&quot;title function_&quot;&gt;next&lt;/span&gt;();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// &amp;#123; value: undefined, done: true &amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;调用 Generator 函数, 返回一个迭代器对象, 代表 Generator 函数的内部指针, 每次调用迭代器对象的 next 方法, 就会返回一个包含 value 和 done 属性的对象, value 属性表示当前的内部状态(yield 表达式)的值, done 属性表示遍历是否结束的 boolean 值&lt;/p&gt;
-&lt;h4 id=&quot;yield-表达式&quot;&gt;&lt;a href=&quot;#yield-表达式&quot; class=&quot;headerlink&quot; title=&quot;yield 表达式&quot;&gt;&lt;/a&gt;yield 表达式&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;yield 表达式只能用在 Generator 函数里面, 用在其他地方都会报错&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ol&gt;
-&lt;li&gt;遇到 yield 表达式, 就暂停执行后面的操作, 并将 yield 后面紧跟的表达式的值作为返回对象的 value 属性值&lt;/li&gt;
-&lt;li&gt;下一次调用 next 方法时, 再继续往下执行, 直到遇到下一个 yield 表达式&lt;/li&gt;
-&lt;li&gt;如果没有再遇到新的 yield 表达式, 就一直运行到函数结束, 直到 return 语句为止, 并将 return 语句后面的表达式的值作为返回的对象的 value 属性值&lt;/li&gt;
-&lt;li&gt;如果该函数没有 return 语句, 则返回的对象的 value 属性值为 undefined&lt;/li&gt;
-&lt;/ol&gt;</summary>
-    
-    
-    
-    <category term="ES" scheme="https://luoleiself.github.io/categories/ES/"/>
-    
-    
-    <category term="ES6" scheme="https://luoleiself.github.io/tags/ES6/"/>
     
   </entry>
   

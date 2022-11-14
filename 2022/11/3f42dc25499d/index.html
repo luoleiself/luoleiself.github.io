@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="List 命令List 是一个有序重复的字符串列表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素. 添加元素 LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建  LPUSHX key element [element …] 批量添">
+  <meta name="description" content="List 命令List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素. 添加元素 LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建  LPUSHX key element [element …] 批量添加">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis-List">
 <meta property="og:url" content="https://luoleiself.github.io/2022/11/3f42dc25499d/index.html">
 <meta property="og:site_name" content="luoleiself&#39;s blog">
-<meta property="og:description" content="List 命令List 是一个有序重复的字符串列表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素. 添加元素 LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建  LPUSHX key element [element …] 批量添">
+<meta property="og:description" content="List 命令List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素. 添加元素 LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建  LPUSHX key element [element …] 批量添加">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2022-11-11T10:56:37.291Z">
+<meta property="article:modified_time" content="2022-11-14T05:52:03.110Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-11 18:56:37" itemprop="dateModified" datetime="2022-11-11T18:56:37+08:00">2022-11-11</time>
+                <time title="修改时间：2022-11-14 13:52:03" itemprop="dateModified" datetime="2022-11-14T13:52:03+08:00">2022-11-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,7 +259,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>5.6k</span>
+              <span>5.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -277,7 +277,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="List-命令"><a href="#List-命令" class="headerlink" title="List 命令"></a>List 命令</h3><p>List 是一个有序重复的字符串列表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.</p>
+        <h3 id="List-命令"><a href="#List-命令" class="headerlink" title="List 命令"></a>List 命令</h3><p>List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.</p>
 <h4 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h4><ul>
 <li><p>LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建</p>
 </li>
@@ -299,7 +299,7 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; LINSERT list BEFORE a hello   # 向 list 中第 1 次出现 a 的前面添加 hello</span><br><span class="line">(integer) 5</span><br><span class="line">127.0.0.1:6379&gt; LRANGE list 0 100 # 遍历 list</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line">2) &quot;a&quot;</span><br><span class="line">3) &quot;d&quot;</span><br><span class="line">4) &quot;c&quot;</span><br><span class="line">5) &quot;b&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; LINSERT list BEFORE a hello   # 向 list 中第 1 次出现 a 的前面添加 hello</span><br><span class="line">(integer) 5</span><br><span class="line">127.0.0.1:6379&gt; LRANGE list 0 -1 # 遍历 list</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line">2) &quot;a&quot;</span><br><span class="line">3) &quot;d&quot;</span><br><span class="line">4) &quot;c&quot;</span><br><span class="line">5) &quot;b&quot;</span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
@@ -349,7 +349,7 @@
 <blockquote>
 <p>BRPOPLPUSH source destination timeout 移除列表的最后一个元素添加到另一个列表的头部并返回操作的元素, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止, 6.2 开始废弃</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; RPUSH list a b c  # 向 list 尾部添加元素</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; RPUSH newlist 1 2 3 # 向 newlist 尾部添加元素</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; BLMOVE list newlist LEFT RIGHT 0  # 从 list 头部移除一个元素添加到 newlist 的尾部</span><br><span class="line">&quot;a&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 4  # 遍历 newlist</span><br><span class="line">1) &quot;1&quot;</span><br><span class="line">2) &quot;2&quot;</span><br><span class="line">3) &quot;3&quot;</span><br><span class="line">4) &quot;a&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; BRPOPLPUSH list newlist 10  # 阻塞执行等待超时或者有可操作元素</span><br><span class="line">(nil)</span><br><span class="line">(10.05s)</span><br><span class="line">127.0.0.1:6379&gt; RPUSH list a b c d  # 向 list 尾部添加元素</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; BRPOPLPUSH list newlist  #  从 list 尾部移除一个元素添加到 newlist 的头部</span><br><span class="line">&quot;d&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; RPUSH list a b c  # 向 list 尾部添加元素</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; RPUSH newlist 1 2 3 # 向 newlist 尾部添加元素</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; BLMOVE list newlist LEFT RIGHT 0  # 从 list 头部移除一个元素添加到 newlist 的尾部</span><br><span class="line">&quot;a&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 -1  # 遍历 newlist</span><br><span class="line">1) &quot;1&quot;</span><br><span class="line">2) &quot;2&quot;</span><br><span class="line">3) &quot;3&quot;</span><br><span class="line">4) &quot;a&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; BRPOPLPUSH list newlist 10  # 阻塞执行等待超时或者有可操作元素</span><br><span class="line">(nil)</span><br><span class="line">(10.05s)</span><br><span class="line">127.0.0.1:6379&gt; RPUSH list a b c d  # 向 list 尾部添加元素</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; BRPOPLPUSH list newlist  #  从 list 尾部移除一个元素添加到 newlist 的头部</span><br><span class="line">&quot;d&quot;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>LMOVE source destination LEFT|RIGHT LEFT|RIGHT 移除源列表中的头部或者尾部的元素添加到目标列表的头部或者尾部并返回移除的元素, 源列表为空或者不存在返回 &lt;nil&gt; 6.2 开始可用代替 <code>RPOPLPUSH</code><ul>
@@ -360,7 +360,7 @@
 <blockquote>
 <p>RPOPLPUSH source destination 移除列表的最后一个元素添加到另一个列表的头部并返回操作的元素, 源列表为空或者不存在返回 &lt;nil&gt; 6.2 开始废弃</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; RPUSH list a b c d e f g  # 向 list 尾部添加元素</span><br><span class="line">(integer) 7</span><br><span class="line">127.0.0.1:6379&gt; LMOVE list newlist LEFT LEFT  # 从 list 头部移除元素 a 添加到 newlist 的头部</span><br><span class="line">&quot;a&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 100  # 遍历 newlist</span><br><span class="line">1) &quot;a&quot;</span><br><span class="line">127.0.0.1:6379&gt; LMOVE list newlist LEFT RIGHT # 从 list 头部移除元素 b 添加到 newlist 的尾部</span><br><span class="line">&quot;b&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 100  # 遍历 newlist</span><br><span class="line">1) &quot;a&quot;</span><br><span class="line">2) &quot;b&quot;</span><br><span class="line">127.0.0.1:6379&gt; LMOVE list newlist RIGHT LEFT # 从 list 尾部移除元素 g 添加到 newlist 的头部</span><br><span class="line">&quot;g&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 100  # 遍历 newlist</span><br><span class="line">1) &quot;g&quot;</span><br><span class="line">2) &quot;a&quot;</span><br><span class="line">3) &quot;b&quot;</span><br><span class="line">127.0.0.1:6379&gt; LMOVE list newlist RIGHT RIGHT  # 从 list 尾部移除元素 f 添加到 newlist 的头部</span><br><span class="line">&quot;f&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 100  # 遍历 newlist</span><br><span class="line">1) &quot;g&quot;</span><br><span class="line">2) &quot;a&quot;</span><br><span class="line">3) &quot;b&quot;</span><br><span class="line">4) &quot;f&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; RPUSH list a b c d e f g  # 向 list 尾部添加元素</span><br><span class="line">(integer) 7</span><br><span class="line">127.0.0.1:6379&gt; LMOVE list newlist LEFT LEFT  # 从 list 头部移除元素 a 添加到 newlist 的头部</span><br><span class="line">&quot;a&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 -1 # 遍历 newlist</span><br><span class="line">1) &quot;a&quot;</span><br><span class="line">127.0.0.1:6379&gt; LMOVE list newlist LEFT RIGHT # 从 list 头部移除元素 b 添加到 newlist 的尾部</span><br><span class="line">&quot;b&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 -1  # 遍历 newlist</span><br><span class="line">1) &quot;a&quot;</span><br><span class="line">2) &quot;b&quot;</span><br><span class="line">127.0.0.1:6379&gt; LMOVE list newlist RIGHT LEFT # 从 list 尾部移除元素 g 添加到 newlist 的头部</span><br><span class="line">&quot;g&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 -1  # 遍历 newlist</span><br><span class="line">1) &quot;g&quot;</span><br><span class="line">2) &quot;a&quot;</span><br><span class="line">3) &quot;b&quot;</span><br><span class="line">127.0.0.1:6379&gt; LMOVE list newlist RIGHT RIGHT  # 从 list 尾部移除元素 f 添加到 newlist 的头部</span><br><span class="line">&quot;f&quot;</span><br><span class="line">127.0.0.1:6379&gt; LRANGE newlist 0 -1  # 遍历 newlist</span><br><span class="line">1) &quot;g&quot;</span><br><span class="line">2) &quot;a&quot;</span><br><span class="line">3) &quot;b&quot;</span><br><span class="line">4) &quot;f&quot;</span><br></pre></td></tr></table></figure>
 
 <h4 id="查找遍历列表"><a href="#查找遍历列表" class="headerlink" title="查找遍历列表"></a>查找遍历列表</h4><ul>
 <li><p>LLEN key 返回列表长度, 0 表示列表为空或者不存在</p>
@@ -396,6 +396,9 @@
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\11\819f95816ecc\" rel="bookmark">Redis</a></div>
     </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\80b3dfc88923\" rel="bookmark">Redis-String-Hash</a></div>
+    </li>
   </ul>
 
         
@@ -427,10 +430,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/11/c9950a796644/" rel="prev" title="Redis-Set">
-      <i class="fa fa-chevron-left"></i> Redis-Set
+    <a href="/2022/11/80b3dfc88923/" rel="prev" title="Redis-String-Hash">
+      <i class="fa fa-chevron-left"></i> Redis-String-Hash
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/819f95816ecc/" rel="next" title="Redis">
+      Redis <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -505,7 +511,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -575,12 +581,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">177k</span>
+    <span title="站点总字数">188k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:41</span>
+    <span title="站点阅读时长">2:51</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

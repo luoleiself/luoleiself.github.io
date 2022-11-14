@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Set 命令Set 是无序不重复的集合  SCARD key 获取 set 成员的数量, set 为空或者不存在返回 0 SADD key member [member …] 向 set 中添加多个成员并返回添加成功的数量, 0 表示有重复成员">
+  <meta name="description" content="Set 命令Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员. 成员操作 SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员  SCARD key 获取集合成员的数量, 集合为空或者不存在返回">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis-Set">
 <meta property="og:url" content="https://luoleiself.github.io/2022/11/c9950a796644/index.html">
 <meta property="og:site_name" content="luoleiself&#39;s blog">
-<meta property="og:description" content="Set 命令Set 是无序不重复的集合  SCARD key 获取 set 成员的数量, set 为空或者不存在返回 0 SADD key member [member …] 向 set 中添加多个成员并返回添加成功的数量, 0 表示有重复成员">
+<meta property="og:description" content="Set 命令Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员. 成员操作 SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员  SCARD key 获取集合成员的数量, 集合为空或者不存在返回">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2022-11-11T11:24:26.766Z">
+<meta property="article:modified_time" content="2022-11-14T05:51:58.777Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-11 19:24:26" itemprop="dateModified" datetime="2022-11-11T19:24:26+08:00">2022-11-11</time>
+                <time title="修改时间：2022-11-14 13:51:58" itemprop="dateModified" datetime="2022-11-14T13:51:58+08:00">2022-11-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,13 +259,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>101</span>
+              <span>11k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>1 分钟</span>
+              <span>10 分钟</span>
             </span>
 
         </div>
@@ -277,11 +277,107 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="Set-命令"><a href="#Set-命令" class="headerlink" title="Set 命令"></a>Set 命令</h3><p>Set 是无序不重复的集合</p>
-<ul>
-<li>SCARD key 获取 set 成员的数量, set 为空或者不存在返回 0</li>
-<li>SADD key member [member …] 向 set 中添加多个成员并返回添加成功的数量, 0 表示有重复成员</li>
+        <h3 id="Set-命令"><a href="#Set-命令" class="headerlink" title="Set 命令"></a>Set 命令</h3><p>Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.</p>
+<h4 id="成员操作"><a href="#成员操作" class="headerlink" title="成员操作"></a>成员操作</h4><ul>
+<li><p>SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员</p>
+</li>
+<li><p>SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0</p>
+</li>
+<li><p>SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)</p>
+</li>
 </ul>
+<h5 id="是否包含成员"><a href="#是否包含成员" class="headerlink" title="是否包含成员"></a>是否包含成员</h5><ul>
+<li>SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在</li>
+<li>SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello hehe    # 空集合判断是否包含成员</span><br><span class="line">1) (integer) 0</span><br><span class="line">2) (integer) 0</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world hehe haha gg    # 向 myset 添加成员</span><br><span class="line">(integer)</span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello yy hehe    # 判断 myset 是否包含成员</span><br><span class="line">1) (integer) 1</span><br><span class="line">2) (integer) 0</span><br><span class="line">3) (integer) 1</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="批量移除成员"><a href="#批量移除成员" class="headerlink" title="批量移除成员"></a>批量移除成员</h5><ul>
+<li>SREM key member [member …] 批量移除集合中的成员并返回移除成功的数量, 集合为空或者不存在或者不包含移除成员返回 0</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *  # 查看当前数据库所有的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SADD set hello world gg  # 向集合添加成员</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS set  # 查看集合的所有成员</span><br><span class="line">1) &quot;gg&quot;</span><br><span class="line">2) &quot;world&quot;</span><br><span class="line">3) &quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; SREM myset a b  # 移除不存在的集合的成员</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; SREM set a b  # 移除集合不存在的成员</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; SREM set hello a  # 移除集合的成员</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS set  # 查看集合的所有成员</span><br><span class="line">1) &quot;gg&quot;</span><br><span class="line">2) &quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; SREM set world gg  # 移除集合的成员</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS key  # 查看集合为空的所有成员</span><br><span class="line">(empty array)</span><br></pre></td></tr></table></figure>
+
+<h5 id="移除成员添加到其他集合"><a href="#移除成员添加到其他集合" class="headerlink" title="移除成员添加到其他集合"></a>移除成员添加到其他集合</h5><ul>
+<li>SMOVE source destination member 将源集合中的指定成员移除并添加到指定集合中, 1 表示源集合指定成员移除成功(目标集合中可能包含该成员也可能不包含), 0 表示源集合为空或者源集合不包含指定成员</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; FLUSHALL    # 清空所有数据库</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SMOVE myset destset hello    # myset 为空集, 返回 0</span><br><span class="line">(integer) 0</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world    # 向 myset 添加成员 hello, world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SMOVE myset destset hello    # 移除 myset 包含的成员 hello 并添加到 destset 中, destset 为空, 返回 1</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS myset    # 查看 myset 成员</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS destset    # 查看 destset 成员</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; SMOVE myset destset hehe    # 移除 myset 不包含的成员 hehe, 返回 0</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS myset    # 查看 myset 成员</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS destset    # 查看 destset 成员</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; FLUSHALL    # 清空所有数据库</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world    # 向 myset 添加成员 hello, world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SADD destset hello gg    # 向 destset 添加成员 hello, gg</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SMOVE myset destset hello    # 移除 myset 包含的成员 hello 并添加到 destset 中, destset 包含 hello, 返回 1</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS myset</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS destset</span><br><span class="line">1) &quot;gg&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="随机获取成员"><a href="#随机获取成员" class="headerlink" title="随机获取成员"></a>随机获取成员</h4><ul>
+<li>SPOP key [count] 移除指定集合随机的多个成员并返回移除的成员, 改变原集合, 不带 count 如果集合为空或者不存在返回 &lt;nil&gt;, 否则返回 (empty array), count 不能为负数<ul>
+<li>count 指定随机移除的数量, 默认为 1<ul>
+<li>count &gt;= 1 时, 空集合返回 (empty array)</li>
+<li>count = 0 时, 任何集合都返回 (empty array)</li>
+<li>count &lt; 0 时, 返回错误, count must be positive</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; FLUSHALL    # 清空所有数据库</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SPOP myset    # myset 为空集合, 返回 nil</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; SPOP myset 2  # myset 为空集合, count &gt;= 0 返回 empty array</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world hehe haha gg yy    # 向 myset 添加成员 hello, world, hehe, haha, gg, yy</span><br><span class="line">(integer) 6</span><br><span class="line">127.0.0.1:6379&gt; SPOP myset 0    # count = 0, 任意集合都返回 empty array</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SPOP newset 0    # count = 0, 任意集合都返回 empty array</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SPOP myset -1    # count &lt; 0, 返回错误</span><br><span class="line">(error) ERR value is out of range, must be positive</span><br><span class="line">127.0.0.1:6379&gt; SPOP myset    # 移除 myset 随机的 1 个成员</span><br><span class="line">&quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; SPOP myset 3    # 移除 myset 随机的 3 个成员</span><br><span class="line">1) &quot;haha&quot;</span><br><span class="line">2) &quot;yy&quot;</span><br><span class="line">3) &quot;gg&quot;</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS myset    # 查看 myset 成员</span><br><span class="line">1) &quot;hehe&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SRANDMEMBER key [count] 返回指定集合随机的多个成员, 不改变原集合, 不带 count 如果集合为空或者不存在返回 &lt;nil&gt;, 否则返回 (empty array), count 为负数将会取绝对值<ul>
+<li>count 指定随机返回的数量, 默认为 1<ul>
+<li>count &gt;= 1 时, 空集合返回 (empty array)</li>
+<li>count = 0 时, 任意集合都返回 (empty array)</li>
+<li>count &lt; 0 时, 空集合返回 (empty array), 非空集合返回 count 的绝对值数量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">1) &quot;myset&quot;</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS myset    # 查看 myset 成员</span><br><span class="line">1) &quot;haha&quot;</span><br><span class="line">2) &quot;yy&quot;</span><br><span class="line">3) &quot;world&quot;</span><br><span class="line">4) &quot;hehe&quot;</span><br><span class="line">5) &quot;hello&quot;</span><br><span class="line">6) &quot;gg&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SRANDMEMBER newset    # newset 为空集合返回 nil</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; SRANDMEMBER newset 0    # newset 为空集合, count = 0, 返回 empty array</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SRANDMEMBER newset 1    # newset 为空集合, count = 1, 返回 empty array</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SRANDMEMBER newset -1    # newset 为空集合, count = -1, 返回 empty array</span><br><span class="line">(empty array)</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SRANDMEMBER myset    # 随机返回 myset 集合的 1 个成员</span><br><span class="line">&quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; SRANDMEMBER myset 0    # myset 不为空集合, count = 0, 返回 empty array</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SRANDMEMBER myset 2    # myset 不为空集合, count = 2, 随机返回 2 个成员</span><br><span class="line">1) &quot;gg&quot;</span><br><span class="line">2) &quot;yy&quot;</span><br><span class="line">127.0.0.1:6379&gt; SRANDMEMBER myset -2  # myset 不为空集合, count = -2, 随机返回 count 的绝对值个成员</span><br><span class="line">1) &quot;haha&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; SCARD myset    # 查看 myset 成员数量</span><br><span class="line">(integer) 6</span><br></pre></td></tr></table></figure>
+
+<h4 id="遍历成员"><a href="#遍历成员" class="headerlink" title="遍历成员"></a>遍历成员</h4><ul>
+<li>SSCAN key cursor [MATCH pattern] [COUNT count] 迭代集合中的元素, 返回游标的位置和结果<ul>
+<li>cursor 游标</li>
+<li>pattern 匹配的模式</li>
+<li>count 控制从数据集返回的成员数量, 默认为 10</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; FLUSHALL    # 清空所有数据库</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SSCAN myset 0 MATCH a COUNT 10    # 迭代空集合</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) (empty array)</span><br><span class="line">127.0.0.1:6379&gt; SADD myset a b c d aa ab ac ad ba bb bc bd ca cb cc cd da db dc dd    # 向 myset 添加成员</span><br><span class="line">(integer) 20</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SSCAN myset 0 MATCH a* COUNT 20    # 迭代 myset, 匹配模式 a*</span><br><span class="line">1) &quot;0&quot;</span><br><span class="line">2) 1) &quot;ad&quot;</span><br><span class="line">   2) &quot;a&quot;</span><br><span class="line">   3) &quot;ac&quot;</span><br><span class="line">   4) &quot;aa&quot;</span><br><span class="line">   5) &quot;ab&quot;</span><br><span class="line">127.0.0.1:6379&gt; SSCAN myset 0 MATCH *c COUNT 8    # 迭代 myset, 匹配模式 *c, 游标位置</span><br><span class="line">1) &quot;10&quot;</span><br><span class="line">2) 1) &quot;dc&quot;</span><br><span class="line">   2) &quot;cc&quot;</span><br><span class="line">   3) &quot;ac&quot;</span><br><span class="line">   4) &quot;c&quot;</span><br><span class="line">127.0.0.1:6379&gt; SSCAN myset 10 MATCH *c COUNT 8    # 从第 1 次返回的游标位置开始继续迭代 myset</span><br><span class="line">1) &quot;11&quot;</span><br><span class="line">2) 1) &quot;bc&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取成员差异"><a href="#获取成员差异" class="headerlink" title="获取成员差异"></a>获取成员差异</h4><ul>
+<li>SDIFF key [key …] 比较第一个集合和其他集合之间的差异并返回差异的结果, 第一个集合为空或者第一个集合的所有成员在出现在其他集合中返回(empty array)</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *  # 查看当前数据库中的 key</span><br><span class="line">1) &quot;myset&quot;</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS myset  # 查看集合 myset 的成员</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; SDIFF myset newset newset2  # 比较集合的差异, newset 和 newset2 为空, 返回 myset 的所有成员</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SADD newset hello gg  # 向集合 newset 添加成员 hello, gg</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SDIFF myset newset newset2  # 比较集合的差异, newset2 为空, 返回其他集合不包含的成员 world</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; SADD newset2 hehe  # 向集合 newset2 添加成员 hehe</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SDIFF myset newset newset2  # 比较集合的差异, 返回其他集合不包含的成员 world</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; SADD newset2 world   # 向集合 newset2 添加成员 world</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SDIFF myset newset newset2  # 比较集合的差异, myset 的成员包含在 newset 和 newset2 集合中, 返回 empty array</span><br><span class="line">(empty array)</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; DEL myset  # 删除集合 myset</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; KEYS *  # 查看当前数据库中的 key</span><br><span class="line">1) &quot;newset2&quot;</span><br><span class="line">2) &quot;newset&quot;</span><br><span class="line">127.0.0.1:6379&gt; SDIFF myset newset newset2  # 比较集合的差异, myset 集合为空, newset 和 newset2 集合有成员, 返回 empty array</span><br><span class="line">(empty array)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SDIFFSTORE destination key [key …] 比较第一个集合和其他集合之间的差异把差异结果存储到指定的集合中并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合存在则覆盖指定集合, 0 表示未找到结果</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *  # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world  # 向 myset 中添加 hello, world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SADD newset world gg   # 向 newset 中添加 world, gg</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SADD destset hehe haha  # 向 destset 中添加 hehe, haha</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; KEYS *   # 查看当前数据库中的 key</span><br><span class="line">1) &quot;destset&quot;</span><br><span class="line">2) &quot;myset&quot;</span><br><span class="line">3) &quot;newset&quot;</span><br><span class="line">127.0.0.1:6379&gt; SDIFFSTORE destset myset newset   # 比较 myset 和 newset 的差异, 将差异结果覆盖存储到 destset 中</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS destset   # 查看 destset 集合的成员</span><br><span class="line">1) &quot;hello&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取成员交集"><a href="#获取成员交集" class="headerlink" title="获取成员交集"></a>获取成员交集</h4><ul>
+<li>SINTER key [key …] 返回所有给定集合之间的交集, key 不存在被当作空集合, 当给定集合中有一个空集合时返回结果也为空集合(empty array)</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *  # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world   # 向 myset 中添加成员 hello, world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SINTER myset newset   # 获取 myset 和 newset 的交集, newset 集合为空集, 返回空集</span><br><span class="line">(empty array)</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SADD newset hehe hello   # 向 newset 中添加成员 hehe, hello</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SINTER myset newset    # 获取 myset 和 newset 的交集, 返回相同的成员 hello</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SADD newset2 world gg   # 向 newset2 中添加成员 world, gg</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SINTER myset newset newset2    # 获取 myset, newset, newset2 的交集, 没有找到相同的成员返回空集</span><br><span class="line">(empty array)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SINTERSTORE destination key [key …] 将所有给定集合之间的交集存储到指定的集合中并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合已存在则覆盖指定集合, 0 表示未找到结果</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world    # 向 myset 中添加成员 hello, world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SADD newset hello hehe    # 向 newset 中添加成员 hello, hehe</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SADD destset gg yy       # 向 destset 中添加成员 gg, yy</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SINTERSTORE destset myset newset    # 获取 myset, newset 的交集覆盖存储到 destset 中</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS destset</span><br><span class="line">1) &quot;hello&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="获取成员并集"><a href="#获取成员并集" class="headerlink" title="获取成员并集"></a>获取成员并集</h4><ul>
+<li>SUNION key [key …] 返回所有给定集合的并集并移除相同的成员只保留一个, 不存在的 key 被当作空集合, 集合都为空返回 (empty array)</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; FLUSHALL    # 清空所有数据库</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SUNION myset newset    # 返回空集合的并集</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world    # 向 myset 添加 hello, world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SUNION myset newset    # 返回 myset, newset 的并集</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; SADD newset hello hehe    # 向 newset 添加成员 hello, hehe</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SUNION myset newset    # 返回 myset, newset 的并集, 只保留相同一个成员 hello</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">2) &quot;hehe&quot;</span><br><span class="line">3) &quot;hello&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SUNIONSTORE destination key [key …] 将所有给定集合之间的并集存储到指定的集合中并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合已存在则覆盖指定集合, 0 表示未找到结果</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; FLUSHALL    # 清空所有数据库</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SUNIONSTORE destset myset newset    # myset, newset 都为空集合, 返回 0</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world    # 向 myset 添加成员 hello, world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SUNIONSTORE destset myset newset    # 获取 myset, newset 的并集新建存储到 destset 中</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS destset    # 查看 destset 成员</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; SADD newset hello hehe haha    # 向 newset 添加成员 hello, haha</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; SUNIONSTORE destset myset newset    # 获取 myset, newset 的并集覆盖存储到 destset 中</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; SMEMBERS destset    # 查看 destset 成员</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">2) &quot;hehe&quot;</span><br><span class="line">3) &quot;haha&quot;</span><br><span class="line">4) &quot;hello&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SINTERCARD numkeys key [key …] [LIMIT limit] 返回给定多个集合的交集的数量, 0 表示未找到结果, 7.0.0 支持<ul>
+<li>numkeys 指定集合的数量, 值和 key 的数量不一致时返回语法错误 syntax error</li>
+<li>limit 指定返回结果的偏移量, 默认为 0, limit &lt; 0 时, 报错不能为负数</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SINTERCARD 1 myset newset    # 语法错误</span><br><span class="line">(error) ERR syntax error</span><br><span class="line">127.0.0.1:6379&gt; SINTERCARD 2 myset newset    # 返回交集的数量</span><br><span class="line">(integer) 0</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world hehe haha gg yy    # 向 myset 添加成员</span><br><span class="line">(integer) 6</span><br><span class="line">127.0.0.1:6379&gt; SADD newset hello hehe haha yy    # 向 newset 添加成员</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; SINTERCARD 2 myset newset     # 返回交集的数量(hello, hehe, haha, yy)</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; SINTERCARD 2 myset newset LIMIT 0    # 作用同上一条命令</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; SINTERCARD 2 myset newset LIMIT 1    # 指定返回结果的偏移量</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SINTERCARD 2 myset newset LIMIT 3    # 指定返回结果的偏移量</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; SINTERCARD 2 myset newset LIMIT -1    # 偏移量不能为负数</span><br><span class="line">(error) ERR LIMIT can&#x27;t be negative</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -292,10 +388,13 @@
   <div class="popular-posts-header">相关文章推荐</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\819f95816ecc\" rel="bookmark">Redis</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\11\3f42dc25499d\" rel="bookmark">Redis-List</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\11\819f95816ecc\" rel="bookmark">Redis</a></div>
+      <div class="popular-posts-title"><a href="\2022\11\80b3dfc88923\" rel="bookmark">Redis-String-Hash</a></div>
     </li>
   </ul>
 
@@ -331,10 +430,7 @@
     <a href="/2022/11/819f95816ecc/" rel="prev" title="Redis">
       <i class="fa fa-chevron-left"></i> Redis
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/11/3f42dc25499d/" rel="next" title="Redis-List">
-      Redis-List <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -393,7 +489,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Set-%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">Set 命令</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Set-%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">Set 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%90%E5%91%98%E6%93%8D%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">成员操作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%AF%E5%90%A6%E5%8C%85%E5%90%AB%E6%88%90%E5%91%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">是否包含成员</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E7%A7%BB%E9%99%A4%E6%88%90%E5%91%98"><span class="nav-number">1.1.2.</span> <span class="nav-text">批量移除成员</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E6%88%90%E5%91%98%E6%B7%BB%E5%8A%A0%E5%88%B0%E5%85%B6%E4%BB%96%E9%9B%86%E5%90%88"><span class="nav-number">1.1.3.</span> <span class="nav-text">移除成员添加到其他集合</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E8%8E%B7%E5%8F%96%E6%88%90%E5%91%98"><span class="nav-number">1.2.</span> <span class="nav-text">随机获取成员</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E6%88%90%E5%91%98"><span class="nav-number">1.3.</span> <span class="nav-text">遍历成员</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%88%90%E5%91%98%E5%B7%AE%E5%BC%82"><span class="nav-number">1.4.</span> <span class="nav-text">获取成员差异</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%88%90%E5%91%98%E4%BA%A4%E9%9B%86"><span class="nav-number">1.5.</span> <span class="nav-text">获取成员交集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%88%90%E5%91%98%E5%B9%B6%E9%9B%86"><span class="nav-number">1.6.</span> <span class="nav-text">获取成员并集</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -409,7 +505,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -479,12 +575,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">177k</span>
+    <span title="站点总字数">188k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:41</span>
+    <span title="站点阅读时长">2:51</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
