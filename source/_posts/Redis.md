@@ -20,7 +20,7 @@ Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 
 - redis-benchmark 压测工具
   - \-h 主机名
   - \-p 端口号
-  - \-s socket连接(覆盖host和port)
+  - \-s socket 连接(覆盖 host 和 port)
   - \-a 认证密码
   - \-\-user 用户名
   - \-c 客户端并发连接数(default 50)
@@ -70,6 +70,7 @@ Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 
   - \-2 key 不存在
   - \-1 key 存在但没有设置剩余生存时间
 - TTL key 以秒为单位返回指定 key 的剩余生存时间
+
   - \-2 key 不存在
   - \-1 key 存在但没有设置剩余生存时间
 
@@ -98,4 +99,3 @@ Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 
 - CONFIG RESETSTAT 重置 INFO 返回的统计信息, ok 成功
 - CONFIG REWRITE 使用内存配置重写配置文件
 - CONFIG SET parameter value [parameter value ...] 设置配置项
-

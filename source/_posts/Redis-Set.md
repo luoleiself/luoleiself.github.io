@@ -22,7 +22,7 @@ Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码
 ##### 是否包含成员
 
 - SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在
-- SMISMEMBER key member [member ...]  批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持
+- SMISMEMBER key member [member ...] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持
 
 ```shell
 127.0.0.1:6379> KEYS *    # 查看当前数据库中的 key
@@ -114,7 +114,7 @@ OK
 
 #### 随机获取成员
 
-- SPOP key [count] 移除指定集合随机的多个成员并返回移除的成员, 改变原集合, 不带 count 如果集合为空或者不存在返回 &lt;nil&gt;, 否则返回 (empty array), count 不能为负数 
+- SPOP key [count] 移除指定集合随机的多个成员并返回移除的成员, 改变原集合, 不带 count 如果集合为空或者不存在返回 &lt;nil&gt;, 否则返回 (empty array), count 不能为负数
   - count 指定随机移除的数量, 默认为 1
     - count >= 1 时, 空集合返回 (empty array)
     - count = 0 时, 任何集合都返回 (empty array)
@@ -375,7 +375,7 @@ OK
 
 - SINTERCARD numkeys key [key ...] [LIMIT limit] 返回给定多个集合的交集的数量, 0 表示未找到结果, 7.0.0 支持
   - numkeys 指定集合的数量, 值和 key 的数量不一致时返回语法错误 syntax error
-  - limit 指定返回结果的偏移量, 默认为 0, limit < 0 时, 报错不能为负数 
+  - limit 指定返回结果的偏移量, 默认为 0, limit < 0 时, 报错不能为负数
 
 ```shell
 127.0.0.1:6379> KEYS *    # 查看当前数据库中的 key
@@ -399,4 +399,4 @@ OK
 (integer) 3
 127.0.0.1:6379> SINTERCARD 2 myset newset LIMIT -1    # 偏移量不能为负数
 (error) ERR LIMIT can't be negative
-```  
+```
