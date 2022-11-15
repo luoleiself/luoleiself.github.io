@@ -6,7 +6,7 @@
   <link href="https://luoleiself.github.io/atom.xml" rel="self"/>
   
   <link href="https://luoleiself.github.io/"/>
-  <updated>2022-11-14T05:51:58.777Z</updated>
+  <updated>2022-11-14T05:52:03.110Z</updated>
   <id>https://luoleiself.github.io/</id>
   
   <author>
@@ -15,88 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Redis-Set</title>
-    <link href="https://luoleiself.github.io/2022/11/c9950a796644/"/>
-    <id>https://luoleiself.github.io/2022/11/c9950a796644/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2022-11-14T05:51:58.777Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;Set-命令&quot;&gt;&lt;a href=&quot;#Set-命令&quot; class=&quot;headerlink&quot; title=&quot;Set 命令&quot;&gt;&lt;/a&gt;Set 命令&lt;/h3&gt;&lt;p&gt;Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.&lt;/p&gt;
-&lt;h4 id=&quot;成员操作&quot;&gt;&lt;a href=&quot;#成员操作&quot; class=&quot;headerlink&quot; title=&quot;成员操作&quot;&gt;&lt;/a&gt;成员操作&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5 id=&quot;是否包含成员&quot;&gt;&lt;a href=&quot;#是否包含成员&quot; class=&quot;headerlink&quot; title=&quot;是否包含成员&quot;&gt;&lt;/a&gt;是否包含成员&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在&lt;/li&gt;
-&lt;li&gt;SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *    # 查看当前数据库中的 key&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(empty array)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello hehe    # 空集合判断是否包含成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SADD myset hello world hehe haha gg    # 向 myset 添加成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello yy hehe    # 判断 myset 是否包含成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (integer) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) (integer) 1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis</title>
-    <link href="https://luoleiself.github.io/2022/11/819f95816ecc/"/>
-    <id>https://luoleiself.github.io/2022/11/819f95816ecc/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2022-11-14T05:51:40.521Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;Redis&quot;&gt;&lt;a href=&quot;#Redis&quot; class=&quot;headerlink&quot; title=&quot;Redis&quot;&gt;&lt;/a&gt;Redis&lt;/h2&gt;&lt;p&gt;Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API&lt;/p&gt;
-&lt;h3 id=&quot;配置文件&quot;&gt;&lt;a href=&quot;#配置文件&quot; class=&quot;headerlink&quot; title=&quot;配置文件&quot;&gt;&lt;/a&gt;配置文件&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;daemonize no 是否后台模式启动服务&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&quot;工具命令&quot;&gt;&lt;a href=&quot;#工具命令&quot; class=&quot;headerlink&quot; title=&quot;工具命令&quot;&gt;&lt;/a&gt;工具命令&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;redis-benchmark 压测工具&lt;ul&gt;
-&lt;li&gt;-h 主机名&lt;/li&gt;
-&lt;li&gt;-p 端口号&lt;/li&gt;
-&lt;li&gt;-s socket 连接(覆盖 host 和 port)&lt;/li&gt;
-&lt;li&gt;-a 认证密码&lt;/li&gt;
-&lt;li&gt;--user 用户名&lt;/li&gt;
-&lt;li&gt;-c 客户端并发连接数(default 50)&lt;/li&gt;
-&lt;li&gt;-n 请求数(default 100000)&lt;/li&gt;
-&lt;li&gt;-d 测试数据的大小(default 3)&lt;/li&gt;
-&lt;li&gt;--dbnum 连接的数据库编号(default 0)&lt;/li&gt;
-&lt;li&gt;-k 是否保持连接&lt;/li&gt;
-&lt;li&gt;-r SET/GET/INCR 使用随机 key, SADD 使用随机值&lt;/li&gt;
-&lt;li&gt;-p 通过管道传输&lt;/li&gt;
-&lt;li&gt;-q 退出, 仅显示 query/sec 值&lt;/li&gt;
-&lt;li&gt;--csv 以 CSV 格式输出&lt;/li&gt;
-&lt;li&gt;-l 循环永远运行测试&lt;/li&gt;
-&lt;li&gt;-t 仅运行以逗号分割的命令列表&lt;/li&gt;
-&lt;li&gt;-I Idle 模式, 仅打开 N 个 idle 连接并等待&lt;/li&gt;
-&lt;li&gt;-x 从 STDIN 读取最后一个参数&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt;redis-benchmark -h localhost -p 6379 -c 100 -n 100000 -d 10 -t set,get,hset,hget,lpush,rpush,sadd&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
   
   <entry>
     <title>Redis-List</title>
@@ -170,6 +88,85 @@
 &lt;li&gt;SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok&lt;/li&gt;
 &lt;li&gt;PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok&lt;/li&gt;
 &lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis</title>
+    <link href="https://luoleiself.github.io/2022/11/819f95816ecc/"/>
+    <id>https://luoleiself.github.io/2022/11/819f95816ecc/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2022-11-15T12:14:58.140Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;Redis&quot;&gt;&lt;a href=&quot;#Redis&quot; class=&quot;headerlink&quot; title=&quot;Redis&quot;&gt;&lt;/a&gt;Redis&lt;/h2&gt;&lt;p&gt;Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API&lt;/p&gt;
+&lt;h3 id=&quot;工具命令&quot;&gt;&lt;a href=&quot;#工具命令&quot; class=&quot;headerlink&quot; title=&quot;工具命令&quot;&gt;&lt;/a&gt;工具命令&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;redis-benchmark 压测工具&lt;ul&gt;
+&lt;li&gt;-h 主机名&lt;/li&gt;
+&lt;li&gt;-p 端口号&lt;/li&gt;
+&lt;li&gt;-s socket 连接(覆盖 host 和 port)&lt;/li&gt;
+&lt;li&gt;-a 认证密码&lt;/li&gt;
+&lt;li&gt;--user 用户名&lt;/li&gt;
+&lt;li&gt;-c 客户端并发连接数(default 50)&lt;/li&gt;
+&lt;li&gt;-n 请求数(default 100000)&lt;/li&gt;
+&lt;li&gt;-d 测试数据的大小(default 3)&lt;/li&gt;
+&lt;li&gt;--dbnum 连接的数据库编号(default 0)&lt;/li&gt;
+&lt;li&gt;-k 是否保持连接&lt;/li&gt;
+&lt;li&gt;-r SET/GET/INCR 使用随机 key, SADD 使用随机值&lt;/li&gt;
+&lt;li&gt;-p 通过管道传输&lt;/li&gt;
+&lt;li&gt;-q 退出, 仅显示 query/sec 值&lt;/li&gt;
+&lt;li&gt;--csv 以 CSV 格式输出&lt;/li&gt;
+&lt;li&gt;-l 循环永远运行测试&lt;/li&gt;
+&lt;li&gt;-t 仅运行以逗号分割的命令列表&lt;/li&gt;
+&lt;li&gt;-I Idle 模式, 仅打开 N 个 idle 连接并等待&lt;/li&gt;
+&lt;li&gt;-x 从 STDIN 读取最后一个参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt;redis-benchmark -h localhost -p 6379 -c 100 -n 100000 -d 10 -t set,get,hset,hget,lpush,rpush,sadd&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis-Set-Zset</title>
+    <link href="https://luoleiself.github.io/2022/11/3bfcb546cd4a/"/>
+    <id>https://luoleiself.github.io/2022/11/3bfcb546cd4a/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2022-11-15T12:44:17.912Z</updated>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Set-命令&quot;&gt;&lt;a href=&quot;#Set-命令&quot; class=&quot;headerlink&quot; title=&quot;Set 命令&quot;&gt;&lt;/a&gt;Set 命令&lt;/h3&gt;&lt;p&gt;Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.&lt;/p&gt;
+&lt;h4 id=&quot;成员操作&quot;&gt;&lt;a href=&quot;#成员操作&quot; class=&quot;headerlink&quot; title=&quot;成员操作&quot;&gt;&lt;/a&gt;成员操作&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&quot;是否包含成员&quot;&gt;&lt;a href=&quot;#是否包含成员&quot; class=&quot;headerlink&quot; title=&quot;是否包含成员&quot;&gt;&lt;/a&gt;是否包含成员&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在&lt;/li&gt;
+&lt;li&gt;SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *    # 查看当前数据库中的 key&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(empty array)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello hehe    # 空集合判断是否包含成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SADD myset hello world hehe haha gg    # 向 myset 添加成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello yy hehe    # 判断 myset 是否包含成员&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (integer) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) (integer) 1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
     
     
     

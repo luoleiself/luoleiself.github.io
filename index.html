@@ -204,240 +204,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/c9950a796644/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/c9950a796644/" class="post-title-link" itemprop="url">Redis-Set</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-14 13:51:58" itemprop="dateModified" datetime="2022-11-14T13:51:58+08:00">2022-11-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>11k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>10 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Set-命令"><a href="#Set-命令" class="headerlink" title="Set 命令"></a>Set 命令</h3><p>Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.</p>
-<h4 id="成员操作"><a href="#成员操作" class="headerlink" title="成员操作"></a>成员操作</h4><ul>
-<li><p>SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员</p>
-</li>
-<li><p>SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0</p>
-</li>
-<li><p>SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)</p>
-</li>
-</ul>
-<h5 id="是否包含成员"><a href="#是否包含成员" class="headerlink" title="是否包含成员"></a>是否包含成员</h5><ul>
-<li>SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在</li>
-<li>SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello hehe    # 空集合判断是否包含成员</span><br><span class="line">1) (integer) 0</span><br><span class="line">2) (integer) 0</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world hehe haha gg    # 向 myset 添加成员</span><br><span class="line">(integer)</span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello yy hehe    # 判断 myset 是否包含成员</span><br><span class="line">1) (integer) 1</span><br><span class="line">2) (integer) 0</span><br><span class="line">3) (integer) 1</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/c9950a796644/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/819f95816ecc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/819f95816ecc/" class="post-title-link" itemprop="url">Redis</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-14 13:51:40" itemprop="dateModified" datetime="2022-11-14T13:51:40+08:00">2022-11-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>1.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API</p>
-<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><ul>
-<li>daemonize no 是否后台模式启动服务</li>
-</ul>
-<h3 id="工具命令"><a href="#工具命令" class="headerlink" title="工具命令"></a>工具命令</h3><ul>
-<li>redis-benchmark 压测工具<ul>
-<li>-h 主机名</li>
-<li>-p 端口号</li>
-<li>-s socket 连接(覆盖 host 和 port)</li>
-<li>-a 认证密码</li>
-<li>--user 用户名</li>
-<li>-c 客户端并发连接数(default 50)</li>
-<li>-n 请求数(default 100000)</li>
-<li>-d 测试数据的大小(default 3)</li>
-<li>--dbnum 连接的数据库编号(default 0)</li>
-<li>-k 是否保持连接</li>
-<li>-r SET/GET/INCR 使用随机 key, SADD 使用随机值</li>
-<li>-p 通过管道传输</li>
-<li>-q 退出, 仅显示 query/sec 值</li>
-<li>--csv 以 CSV 格式输出</li>
-<li>-l 循环永远运行测试</li>
-<li>-t 仅运行以逗号分割的命令列表</li>
-<li>-I Idle 模式, 仅打开 N 个 idle 连接并等待</li>
-<li>-x 从 STDIN 读取最后一个参数</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt;redis-benchmark -h localhost -p 6379 -c 100 -n 100000 -d 10 -t set,get,hset,hget,lpush,rpush,sadd</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/819f95816ecc/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/3f42dc25499d/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -651,6 +417,237 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/80b3dfc88923/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/819f95816ecc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/819f95816ecc/" class="post-title-link" itemprop="url">Redis</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-15 20:14:58" itemprop="dateModified" datetime="2022-11-15T20:14:58+08:00">2022-11-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API</p>
+<h3 id="工具命令"><a href="#工具命令" class="headerlink" title="工具命令"></a>工具命令</h3><ul>
+<li>redis-benchmark 压测工具<ul>
+<li>-h 主机名</li>
+<li>-p 端口号</li>
+<li>-s socket 连接(覆盖 host 和 port)</li>
+<li>-a 认证密码</li>
+<li>--user 用户名</li>
+<li>-c 客户端并发连接数(default 50)</li>
+<li>-n 请求数(default 100000)</li>
+<li>-d 测试数据的大小(default 3)</li>
+<li>--dbnum 连接的数据库编号(default 0)</li>
+<li>-k 是否保持连接</li>
+<li>-r SET/GET/INCR 使用随机 key, SADD 使用随机值</li>
+<li>-p 通过管道传输</li>
+<li>-q 退出, 仅显示 query/sec 值</li>
+<li>--csv 以 CSV 格式输出</li>
+<li>-l 循环永远运行测试</li>
+<li>-t 仅运行以逗号分割的命令列表</li>
+<li>-I Idle 模式, 仅打开 N 个 idle 连接并等待</li>
+<li>-x 从 STDIN 读取最后一个参数</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt;redis-benchmark -h localhost -p 6379 -c 100 -n 100000 -d 10 -t set,get,hset,hget,lpush,rpush,sadd</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/819f95816ecc/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/3bfcb546cd4a/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/3bfcb546cd4a/" class="post-title-link" itemprop="url">Redis-Set-Zset</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-15 20:44:17" itemprop="dateModified" datetime="2022-11-15T20:44:17+08:00">2022-11-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Set-命令"><a href="#Set-命令" class="headerlink" title="Set 命令"></a>Set 命令</h3><p>Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.</p>
+<h4 id="成员操作"><a href="#成员操作" class="headerlink" title="成员操作"></a>成员操作</h4><ul>
+<li><p>SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员</p>
+</li>
+<li><p>SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0</p>
+</li>
+<li><p>SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)</p>
+</li>
+</ul>
+<h5 id="是否包含成员"><a href="#是否包含成员" class="headerlink" title="是否包含成员"></a>是否包含成员</h5><ul>
+<li>SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在</li>
+<li>SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *    # 查看当前数据库中的 key</span><br><span class="line">(empty array)</span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello hehe    # 空集合判断是否包含成员</span><br><span class="line">1) (integer) 0</span><br><span class="line">2) (integer) 0</span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world hehe haha gg    # 向 myset 添加成员</span><br><span class="line">(integer)</span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello yy hehe    # 判断 myset 是否包含成员</span><br><span class="line">1) (integer) 1</span><br><span class="line">2) (integer) 0</span><br><span class="line">3) (integer) 1</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/3bfcb546cd4a/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1453,12 +1450,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">188k</span>
+    <span title="站点总字数">198k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:51</span>
+    <span title="站点阅读时长">3:01</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
