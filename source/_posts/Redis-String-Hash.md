@@ -49,8 +49,30 @@ tags:
 - MGET key [key ...] 批量获取 key 的值, key 不存在返回 &lt;nil&gt;
 
 - GETRANGE key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 `""`
+  - start, end 只支持整数, 其他类型会报错
+
+```shell
+127.0.0.1:6379> GETRANGE name -inf +inf
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> GETRANGE name - +
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> GETRANGE name (1 (4
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> GETRANGE name [1 [4
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> GETRANGE name 1 4
+"uole"
+```
 
 - SUBSTR key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 `""`
+  - start, end 只支持整数, 其他类型会报错
+
+```shell
+127.0.0.1:6379> SUBSTR name -inf +inf
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> SUBSTR name (1 (4
+(error) ERR value is not an integer or out of range
+```
 
 #### 数值操作
 

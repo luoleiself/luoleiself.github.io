@@ -409,10 +409,11 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 
 #### 特殊标识符
 
-- \-inf 负无穷大
-- \+inf 正无穷大
-- ( 包含当前字符
-- [ 包含当前字符
+- \- 负
+- \+ 正
+- inf 无穷大
+- ({val} 不包含当前字符
+- [{val} 包含当前字符
 
 #### 添加成员
 
@@ -422,7 +423,7 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
   - XX 仅更新已经存在的成员, 不再添加新成员
   - GT 仅当新分数大于当前分数才更新已存在的成员, 此标志不阻止添加新成员
   - LT 仅当新分数小于当前分数才更新已存在的成员, 此标志不阻止添加新成员
-  - CH 将 `zadd` 返回值统计新成员的添加数量修改为更改的元素总数, 包含更新已存在的数量和新添加的数量
+  - CH 将 `ZADD` 返回值统计新成员的添加数量修改为更改的元素总数, 包含更新已存在的数量和新添加的数量
   - INCR 此选项作用类似 `ZINCRBY`, 只能指定一个成员分数对加上指定的增量(可以为负数), 如果成员不存在从 0 开始计算, 并返回当前成员的最终分数, 多个成员分数对会报错
 
 ```shell
@@ -430,7 +431,7 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 (integer) 2
 127.0.0.1:6379> ZCARD myz
 (integer) 2
-127.0.0.1:6379> ZRANDMEMBER myz 2 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
 1) "lisi"
 2) "2"
 3) "zhangsan"
@@ -442,7 +443,7 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 (integer) 0
 127.0.0.1:6379> ZCARD myz
 (integer) 2
-127.0.0.1:6379> ZRANDMEMBER myz 2 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
 1) "lisi"
 2) "2"
 3) "zhangsan"
@@ -454,7 +455,7 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 (integer) 2
 127.0.0.1:6379> ZCARD myz
 (integer) 4
-127.0.0.1:6379> ZRANDMEMBER myz 4 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
 1) "zhaoliu"
 2) "3.5"
 3) "lisi"
@@ -465,11 +466,12 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 8) "1"
 
 # LT  仅当新分数小于当前分数才更新已存在的成员, 不阻止添加新成员
-127.0.0.1:6379> ZADD myz LT 0.5 lisi 4 sunqi  # 0.5 < 2 满足条件, 有新成员 4 sunqi 可添加
+# 0.5 < 2 满足条件, 有新成员 4 sunqi 可添加
+127.0.0.1:6379> ZADD myz LT 0.5 lisi 4 sunqi
 (integer) 1
 127.0.0.1:6379> ZCARD myz
 (integer) 5
-127.0.0.1:6379> ZRANDMEMBER myz 5 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
  1) "sunqi"
  2) "4"
  3) "zhaoliu"
@@ -480,11 +482,12 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
  8) "1"
  9) "lisi"
 10) "0.5"
-127.0.0.1:6379> ZADD myz LT 1 lisi 8 sunqi  # 1 > 0.5, 8 > 4 不满足条件, 没有新成员可添加
+# 1 > 0.5, 8 > 4 不满足条件, 没有新成员可添加
+127.0.0.1:6379> ZADD myz LT 1 lisi 8 sunqi
 (integer) 0
 127.0.0.1:6379> ZCARD myz
 (integer) 5
-127.0.0.1:6379> ZRANDMEMBER myz 5 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
  1) "sunqi"
  2) "4"
  3) "zhaoliu"
@@ -497,11 +500,12 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 10) "0.5"
 
 # GT 仅当新分数大于当前分数才更新已存在的成员, 不阻止添加新成员
-127.0.0.1:6379> ZADD myz GT 1 zhangsan 2 qianba # 1 < 1.5 不满足条件, 有新成员 2 qianba 可添加
+# 1 < 1.5 不满足条件, 有新成员 2 qianba 可添加
+127.0.0.1:6379> ZADD myz GT 1 zhangsan 2 qianba
 (integer) 1
 127.0.0.1:6379> ZCARD myz
 (integer) 6
-127.0.0.1:6379> ZRANDMEMBER myz 6 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
  1) "sunqi"
  2) "4"
  3) "zhaoliu"
@@ -514,11 +518,12 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 10) "1"
 11) "lisi"
 12) "0.5"
-127.0.0.1:6379> ZADD myz GT 3 zhangsan 2 qianba # 3 > 1.5 满足条件, 2 = 2 不满足条件, 没有新成员可添加
+# 3 > 1.5 满足条件, 2 = 2 不满足条件, 没有新成员可添加
+127.0.0.1:6379> ZADD myz GT 3 zhangsan 2 qianba
 (integer) 0
 127.0.0.1:6379> ZCARD myz
 (integer) 6
-127.0.0.1:6379> ZRANDMEMBER myz 6 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
  1) "sunqi"
  2) "4"
  3) "zhaoliu"
@@ -533,37 +538,20 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 12) "0.5"
 
 # CH 统计集合所有受影响的成员的数量, 包含更新已存在的数量和新添加的数量
-127.0.0.1:6379> ZADD myz CH 1 zhangsan 5 qianba 1 hello # zhangsan 和 qianba 已存在, hello 为新添加成员,
+# zhangsan 和 qianba 已存在, hello 为新添加成员,
+127.0.0.1:6379> ZADD myz CH 1 zhangsan 5 qianba 1 hello
 (integer) 3
 
 # INCR 同时只能指定一个成员分数对加上指定的增量(可以为负数), 如果成员不存在从 0 开始计算
 # 多个会报错 (error) ERR INCR option supports a single increment-element pair
 127.0.0.1:6379> ZADD myz INCR 10 zhangsan
 "10"
-127.0.0.1:6379> ZRANDMEMBER myz 1 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
 1) "zhangsan"
 2) "10"
 ```
 
-- ZCOUNT key min max 统计有序集合中指定分数区间的成员数量, 0 表示找到结果
-
-```shell
-127.0.0.1:6379> ZRANDMEMBER myz 6 WITHSCORES
-1) "zhaoliu"
-2) "3.5"
-3) "lisi"
-4) "2.5"
-5) "zhangsan"
-6) "1.5"
-7) "wangwu"
-8) "1"
-127.0.0.1:6379> ZCOUNT myz -inf +inf  # 获取分数 负无穷大 到 正无穷大 之间的数量
-(integer) 4
-127.0.0.1:6379> ZCOUNT myz 0 2  # 获取分数在 0 到 2 之间的数量
-(integer) 2
-127.0.0.1:6379> ZCOUNT myz 1.5 3  # 获取分数在 1.5 到 3 之间的数量
-(integer) 2
-```
+#### 指定成员的分数增量
 
 - ZINCRBY key increment member 对指定成员的分数加上增量并返回修改后的分数, 如果指定成员不存在则添加新成员, 等同于 `ZADD key increment member`
 
@@ -574,7 +562,7 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 "2"
 127.0.0.1:6379> ZINCRBY myz -2 zhaoliu  # 修改 zhaoliu 的分数减去 - 2
 "1.5"
-127.0.0.1:6379> ZRANDMEMBER myz 6 WITHSCORES
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
  1) "zhangsan"
  2) "3.5"
  3) "lisi"
@@ -587,74 +575,51 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 10) "1"
 ```
 
-#### 获取有序集合交集
+#### 移除成员
 
-- ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] 计算多个有序集合的交集, 并将交集存储到指定的集合中, 返回保存到指定集合的成员数量
-  - numkeys 指定集合的数量, 值和 key 的数量不一致时返回语法错误 syntax error
-  - WEIGHTS 指定每个排序集合的权重, 每个集合中的成员的分数都会乘以这个权重, 默认为 1, 如果指定此项, 则值的数量必须和 numkeys 一致, 否则报语法错误
-  - AGGREATE 指定结果集聚合的条件, 默认 SUM
-    - SUM 结果集中保留以相同成员的分数的和
-    - MIN 结果集中保留最小分数
-    - MAX 结果集中保留最大分数
+- ZREM key member [member ...] 移除指定的成员并返回成功移除的数量, 如果指定成员不存在则被忽略
 
 ```shell
-127.0.0.1:6379> ZADD myz  1 a 2 b 3 c
-(integer) 3
-127.0.0.1:6379> ZADD myzz 4 b 5 c 6 d
-(integer) 3
-127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 1 # 如果存在权重, 权重数量必须和 numkeys 保持一致
-(error) ERR syntax error
-127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 1 1 # myz 和 myzz 权重都为 1
-(integer) 2
-# 结果集计算, b: myz:2 + myzz:4 = 6, c: myz:3 + myzz:5 = 8
-127.0.0.1:6379> ZRANDMEMBER destst 2 WITHSCORES
-1) "c"
-2) "8"
-3) "b"
-4) "6"
-
-# 指定 myz 集合成员分数权重为 1, myzz 集合成员分数权重为 2
-127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 1 2  # myz 权重为 1, myzz 权重为 2
-(integer) 2
-# 结果集计算, b: myz:2 + myzz:4 * 2 = 10, c: myz:3 + myzz:5 * 2 = 13
-127.0.0.1:6379> ZRANDMEMBER destst 10 WITHSCORES
-1) "c"
-2) "13"
-3) "b"
-4) "10"
-
-# 指定 myz 集合成员分数权重为 3, myzz 集合成员分数权重为 2
-127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 3 2 # myz 权重为 3, myzz 权重为 2
-(integer) 2
-# 结果集计算, b: myz:2 * 3 + myzz:4 * 2 = 14, c: myz:3 * 3 + myzz:5 * 2 = 19
-127.0.0.1:6379> ZRANDMEMBER destst 10 WITHSCORES
-1) "c"
-2) "19"
-3) "b"
-4) "14"
-
-# 指定 myz 集合成员分数权重为 3, myzz 集合成员分数权重为 2, 结果集保存最小值
-127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 3 2 AGGREGATE MIN
-(integer) 2
-# 结果集计算, b: myz:2 * 3 = 6, myz:3 * 3 = 9
-127.0.0.1:6379> ZRANDMEMBER destst 10 WITHSCORES
-1) "c"
-2) "9"
-3) "b"
-4) "6"
-
-# 指定 myz 集合成员分数权重为 3, myzz 集合成员分数权重为 2, 结果集保存最大值
-127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 3 2 AGGREGATE MAX
-(integer) 2
-# 结果集计算, b: myzz:4 * 2 = 8, myzz:5 * 2 = 10
-127.0.0.1:6379> ZRANDMEMBER destst 10 WITHSCORES
-1) "c"
-2) "10"
-3) "b"
-4) "8"
+127.0.0.1:6379> ZADD myz 1 hello 2 world 3 gg 2 yy 1 hehe 4 haha
+(integer) 6
+127.0.0.1:6379> ZREM myz YY GG
+(integer) 0
+127.0.0.1:6379> ZREM myz gg GG
+(integer) 1
 ```
 
-- ZLEXCOUNT key min max 计算有序集合中指定字典区间内成员数量
+-
+
+#### 获取成员数量
+
+##### 指定分数区间
+
+- ZCOUNT key min max 统计指定分数区间的成员数量, 0 表示找到结果
+
+```shell
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
+1) "zhaoliu"
+2) "3.5"
+3) "lisi"
+4) "2.5"
+5) "zhangsan"
+6) "1.5"
+7) "wangwu"
+8) "1"
+# 获取分数 负无穷大 到 正无穷大 之间的数量
+127.0.0.1:6379> ZCOUNT myz -inf +inf
+(integer) 4
+# 获取分数在 0 到 2 之间的数量
+127.0.0.1:6379> ZCOUNT myz 0 2
+(integer) 2
+# 获取分数在 1.5 到 3 之间的数量
+127.0.0.1:6379> ZCOUNT myz 1.5 3
+(integer) 2
+```
+
+##### 指定字典区间
+
+- ZLEXCOUNT key min max 计算指定字典区间内成员数量
 
 ```shell
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d 5 e 6 f
@@ -671,21 +636,138 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 (integer) 3
 ```
 
-#### 遍历有序集合
+#### 随机获取指定数量成员
 
-- ZRANGE key start stop [BYSCORE|BYLEX] [REV] [LIMIT offset count] [WITHSCORES] 遍历有序集合的指定区间, 并返回递增顺序的成员
-
-  - start 起始指针, 0 表示第一个成员
-  - stop 结束指针, -1 表示最后 1 个成员, -2 表示倒数第 2 个成员
-  - BYSCORE start 指针要考量最高分数, stop 指针考量最低分数, start 必须大于等于 stop 才能返回内容
-  - BYLEX 行为类似于 `ZRANGEBYLEX`, 返回 start 和 stop 字典闭合区间的成员
-  - REV 反向排序结果
-  - LIMIT 指定返回结果的偏移量, ERR syntax error, LIMIT is only supported in combination with either BYSCORE or BYLEX
+- ZRANDMEMBER key [count [WITHSCORES]] 返回指定集合随机的多个成员, 不改变原集合, 不带 count 如果集合为空或者不存在返回 &lt;nil&gt;, 否则返回 (empty array), count 为负数将会取绝对值
+  - count 指定随机返回的数量, 默认为 1
+    - count >= 1 时, 空集合返回 (empty array)
+    - count = 0 时, 任意集合都返回 (empty array)
+    - count < 0 时, 空集合返回 (empty array), 非空集合返回 count 的绝对值数量
   - WITHSCORES 返回结果的分数
 
-> ZREVRANGE 6.2.0 开始废弃, 使用 `ZRANGE REV` 代替
+```shell
+127.0.0.1:6379> ZRANDMEMBER myz1
+(nil)
+127.0.0.1:6379> ZRANDMEMBER myz1 -1
+(empty array)
+127.0.0.1:6379> ZADD myz 1 hello 2 world 3 gg 2 yy 4 hehe 5 haha
+(integer) 6
+127.0.0.1:6379> ZRANDMEMBER myz
+"world"
+127.0.0.1:6379> ZRANDMEMBER myz 0
+(empty array)
+127.0.0.1:6379> ZRANDMEMBER myz 3 WITHSCORES
+1) "hehe"
+2) "4"
+3) "gg"
+4) "3"
+5) "yy"
+6) "2"
+```
+
+#### 获取指定成员排名
+
+```shell
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
+ 1) "hello"
+ 2) "1"
+ 3) "world"
+ 4) "2"
+ 5) "yy"
+ 6) "2"
+ 7) "gg"
+ 8) "3"
+ 9) "hehe"
+10) "4"
+11) "haha"
+12) "5"
+```
+
+- ZRANK key member 返回指定成员的按递增顺序的排名, 从 0 开始计算, 如果指定成员不属于指定集合则返回 &lt;nil&gt;
+
+```shell
+127.0.0.1:6379> ZRANK myz yy
+(integer) 2
+127.0.0.1:6379> ZRANK myz world
+(integer) 1
+127.0.0.1:6379> ZRANK myz HAHA
+(nil)
+```
+
+- ZREVRANK key member 返回指定成员的按递减顺序的排名, 从 0 开始计算, 如果指定成员不属于指定集合则返回 &lt;nil&gt;
+
+```shell
+127.0.0.1:6379> ZREVRANK myz yy
+(integer) 3
+127.0.0.1:6379> ZREVRANK myz HAHA
+(nil)
+127.0.0.1:6379> ZREVRANK myz hehe
+(integer) 1
+```
+
+#### 获取分数
+
+```shell
+127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
+ 1) "hello"
+ 2) "1"
+ 3) "world"
+ 4) "2"
+ 5) "yy"
+ 6) "2"
+ 7) "gg"
+ 8) "3"
+ 9) "hehe"
+10) "4"
+11) "haha"
+12) "5"
+```
+
+##### 获取指定成员分数值
+
+- ZSCORE key member 获取指定成员的分数值, 如果集合为空或者指定成员不属于集合返回 &lt;nil&gt;
+
+```shell
+127.0.0.1:6379> ZSCORE myz1 hehe
+(nil)
+127.0.0.1:6379> ZSCORE myz HAHA
+(nil)
+127.0.0.1:6379> ZSCORE myz gg
+"3"
+```
+
+- ZMSCORE key member [member ...] 批量获取指定成员的分数值, 如果集合为空或者指定成员不属于集合返回 &lt;nil&gt;
+
+```shell
+127.0.0.1:6379> ZMSCORE myz HAHA hehe
+1) (nil)
+2) "4"
+127.0.0.1:6379> ZMSCORE myz1 hehe haha
+1) (nil)
+2) (nil)
+127.0.0.1:6379> ZMSCORE myz hello gg
+1) "1"
+2) "3"
+```
+
+#### 遍历有序集合
+
+- ZRANGE key start stop [BYSCORE|BYLEX] [REV] [LIMIT offset count] [WITHSCORES] 遍历有序集合的指定区间, 并返回默认递增顺序的成员
+
+  - start 起始指针, 默认 start 表示数字, 0 表示第一个成员
+  - stop 结束指针, 默认 stop 表示数字, -1 表示最后 1 个成员, -2 表示倒数第 2 个成员
+  - BYSCORE 成员按分数排序, 此模式 start 和 stop 代表分数, start 指针要考量最高分数, stop 指针考量最低分数, start 必须大于等于 stop 才能返回内容
+  - BYLEX 成员按字典排序, 此模式 start 和 stop 代表字典, 行为类似于 `ZRANGEBYLEX`, 返回 start 和 stop 字典闭合区间的成员
+  - REV 反向排序结果
+  - LIMIT 指定返回结果的偏移量, 需要结合 `BYSCORE` `BYLEX` 使用
+  - WITHSCORES 返回结果的分数
+
 > ZRANGEBYSCORE 6.2.0 开始废弃, 使用 `ZRANGE BYSCORE` 代替
 > ZRANGEBYLEX 6.2.0 开始废弃, 使用 `ZRANGE BYLEX` 代替
+
+> ZREVRANGE 6.2.0 开始废弃, 使用 `ZRANGE REV` 代替
+> ZREVRANGEBYSCORE 6.2.0 开始废弃, 使用 `ZRANGE BYSCORE REV` 代替
+> ZREVRANGEBYLEX 6.2.0 开始废弃, 使用 `ZRANGE BYLEX REV` 代替
 
 ```shell
 127.0.0.1:6379> ZADD myz 10 a 9 b 13 c 7 d 11 e 6 f
@@ -732,13 +814,78 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 6) "10"
 ```
 
-- ZRANK key member 返回有序集中指定成员的按递增顺序的排名, 从 0 开始计算, 如果指定成员不属于集合则返回 &lt;nil&gt;
+- ZRANGESTORE dst src min max [BYSCORE|BYLEX] [REV] [LIMIT offset count] 命令行为和 `ZRANGE` 相似, 区别是把结果集存储到指定的集合 `dst` 中
+  - dst 存储结果集的指定集合
+  - src 被操作的集合
+
+#### 获取有序集合交集
+
+- ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] 计算多个有序集合的交集, 并将交集存储到指定的集合中, 返回保存到指定集合的成员数量
+  - destination 指定存储结果集的集合名字
+  - numkeys 指定集合的数量, 值和 key 的数量不一致时返回语法错误 syntax error
+  - WEIGHTS 指定每个排序集合的权重, 每个集合中的成员的分数都会乘以这个权重, 默认为 1, 如果指定此项, 则值的数量必须和 numkeys 一致, 否则报语法错误
+  - AGGREATE 指定结果集聚合的条件, 默认 SUM
+    - SUM 结果集中保留以相同成员的分数的和
+    - MIN 结果集中保留最小分数
+    - MAX 结果集中保留最大分数
 
 ```shell
-127.0.0.1:6379> ZRANK myz h
-(nil)
-127.0.0.1:6379> zrank myz f
-(integer) 0
-127.0.0.1:6379> ZRANK myz a
+127.0.0.1:6379> ZADD myz  1 a 2 b 3 c
 (integer) 3
+127.0.0.1:6379> ZADD myzz 4 b 5 c 6 d
+(integer) 3
+127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 1 # 如果存在权重, 权重数量必须和 numkeys 保持一致
+(error) ERR syntax error
+127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 1 1 # myz 和 myzz 权重都为 1
+(integer) 2
+# 结果集计算, b: myz:2 + myzz:4 = 6, c: myz:3 + myzz:5 = 8
+127.0.0.1:6379> ZRANGE destst 0 -1 WITHSCORES
+1) "c"
+2) "8"
+3) "b"
+4) "6"
+
+# 指定 myz 集合成员分数权重为 1, myzz 集合成员分数权重为 2
+127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 1 2  # myz 权重为 1, myzz 权重为 2
+(integer) 2
+# 结果集计算, b: myz:2 + myzz:4 * 2 = 10, c: myz:3 + myzz:5 * 2 = 13
+127.0.0.1:6379> ZRANGE destst 0 -1 WITHSCORES
+1) "c"
+2) "13"
+3) "b"
+4) "10"
+
+# 指定 myz 集合成员分数权重为 3, myzz 集合成员分数权重为 2
+127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 3 2 # myz 权重为 3, myzz 权重为 2
+(integer) 2
+# 结果集计算, b: myz:2 * 3 + myzz:4 * 2 = 14, c: myz:3 * 3 + myzz:5 * 2 = 19
+127.0.0.1:6379> ZRANGE destst 0 -1 WITHSCORES
+1) "c"
+2) "19"
+3) "b"
+4) "14"
+
+# 指定 myz 集合成员分数权重为 3, myzz 集合成员分数权重为 2, 结果集保存最小值
+127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 3 2 AGGREGATE MIN
+(integer) 2
+# 结果集计算, b: myz:2 * 3 = 6, myz:3 * 3 = 9
+127.0.0.1:6379> ZRANGE destst 0 -1 WITHSCORES
+1) "c"
+2) "9"
+3) "b"
+4) "6"
+
+# 指定 myz 集合成员分数权重为 3, myzz 集合成员分数权重为 2, 结果集保存最大值
+127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 3 2 AGGREGATE MAX
+(integer) 2
+# 结果集计算, b: myzz:4 * 2 = 8, myzz:5 * 2 = 10
+127.0.0.1:6379> ZRANGE destst 0 -1 WITHSCORES
+1) "c"
+2) "10"
+3) "b"
+4) "8"
 ```
+
+#### 获取有序集合并集
+
+- ZUNION numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] [WITHSCORES]

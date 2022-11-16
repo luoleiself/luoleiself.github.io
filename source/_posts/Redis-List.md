@@ -71,6 +71,27 @@ List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以�
 ##### 修剪列表
 
 - LTRIM key start stop 对列表不包含在 start 到 stop 区间的元素进行删除, 执行成功返回 ok
+  - start, end 只支持整数, 其他类型会报错
+
+```shell
+127.0.0.1:6379> LPUSH mylist hello world gg yy hehe haha
+(integer) 6
+127.0.0.1:6379> LTRIM mylist - +
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LTRIM mylist -inf +inf
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LTRIM mylist [1 [4
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LTRIM mylist 1 4.5
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LTRIM mylist 1 4
+OK
+127.0.0.1:6379> LRANGE mylist 0 -1
+1) "hehe"
+2) "yy"
+3) "gg"
+4) "world"
+```
 
 ##### 批量移除相同元素
 
@@ -186,6 +207,27 @@ List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以�
 - LLEN key 返回列表长度, 0 表示列表为空或者不存在
 
 - LRANGE key start stop 遍历列表指定区间的元素, 列表为空或者不存在返回 (empty array)
+  - start, end 支持整数, 其他类型会报错
+
+```shell
+127.0.0.1:6379> LPUSH mylist hello world gg yy hehe haha
+(integer) 6
+127.0.0.1:6379> LRANGE mylist - +
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LRANGE mylist -inf +inf
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LRANGE mylist 1 4.5
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LRANGE mylist (1 (4
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LRANGE mylist [1 [4
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> LRANGE mylist 1 4
+1) "hehe"
+2) "yy"
+3) "gg"
+4) "world"
+```
 
 ##### 查找指定索引元素
 
