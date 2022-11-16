@@ -28,7 +28,7 @@
 <meta property="og:description" content="字符串命令字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB. 设置值 SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-mi">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2022-11-14T05:52:01.288Z">
+<meta property="article:modified_time" content="2022-11-16T02:26:57.316Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-14 13:52:01" itemprop="dateModified" datetime="2022-11-14T13:52:01+08:00">2022-11-14</time>
+                <time title="修改时间：2022-11-16 10:26:57" itemprop="dateModified" datetime="2022-11-16T10:26:57+08:00">2022-11-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,7 +259,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>3.3k</span>
+              <span>3.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -316,10 +316,21 @@
 <li><p>MGET key [key …] 批量获取 key 的值, key 不存在返回 &lt;nil&gt;</p>
 </li>
 <li><p>GETRANGE key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 <code>&quot;&quot;</code></p>
-</li>
-<li><p>SUBSTR key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 <code>&quot;&quot;</code></p>
+<ul>
+<li>start, end 只支持整数, 其他类型会报错</li>
+</ul>
 </li>
 </ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; GETRANGE name -inf +inf</span><br><span class="line">(error) ERR value is not an integer or out of range</span><br><span class="line">127.0.0.1:6379&gt; GETRANGE name - +</span><br><span class="line">(error) ERR value is not an integer or out of range</span><br><span class="line">127.0.0.1:6379&gt; GETRANGE name (1 (4</span><br><span class="line">(error) ERR value is not an integer or out of range</span><br><span class="line">127.0.0.1:6379&gt; GETRANGE name [1 [4</span><br><span class="line">(error) ERR value is not an integer or out of range</span><br><span class="line">127.0.0.1:6379&gt; GETRANGE name 1 4</span><br><span class="line">&quot;uole&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SUBSTR key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 <code>&quot;&quot;</code><ul>
+<li>start, end 只支持整数, 其他类型会报错</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SUBSTR name -inf +inf</span><br><span class="line">(error) ERR value is not an integer or out of range</span><br><span class="line">127.0.0.1:6379&gt; SUBSTR name (1 (4</span><br><span class="line">(error) ERR value is not an integer or out of range</span><br></pre></td></tr></table></figure>
+
 <h4 id="数值操作"><a href="#数值操作" class="headerlink" title="数值操作"></a>数值操作</h4><h5 id="增加"><a href="#增加" class="headerlink" title="增加"></a>增加</h5><ul>
 <li>INCR key 将 key 中存储的数字值增加 1 并返回修改后的值, 非数字值或值为浮点数报错, key 不存在从 0 开始计算</li>
 <li>INCRBY key increment 将 key 中存储的数字值加上给定的增量值(increment), 返回值同 <code>INCR</code></li>
@@ -396,6 +407,9 @@
       <div class="popular-posts-title"><a href="\2022\11\3f42dc25499d\" rel="bookmark">Redis-List</a></div>
     </li>
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\4c5a8bb1e1ca\" rel="bookmark">Redis-Other-Structs</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\11\819f95816ecc\" rel="bookmark">Redis</a></div>
     </li>
     <li class="popular-posts-item">
@@ -436,8 +450,8 @@
       <i class="fa fa-chevron-left"></i> Redis
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/11/3f42dc25499d/" rel="next" title="Redis-List">
-      Redis-List <i class="fa fa-chevron-right"></i>
+    <a href="/2022/11/4c5a8bb1e1ca/" rel="next" title="Redis-Other-Structs">
+      Redis-Other-Structs <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -513,7 +527,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -583,12 +597,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">198k</span>
+    <span title="站点总字数">213k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:01</span>
+    <span title="站点阅读时长">3:14</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
