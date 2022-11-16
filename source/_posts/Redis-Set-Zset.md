@@ -594,7 +594,7 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 
 ##### 指定分数区间
 
-- ZCOUNT key min max 统计指定分数区间的成员数量, 0 表示找到结果
+- ZCOUNT key min max 统计指定分数区间的成员数量, 0 表示未找到结果
 
 ```shell
 127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
@@ -619,7 +619,7 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 
 ##### 指定字典区间
 
-- ZLEXCOUNT key min max 计算指定字典区间内成员数量
+- ZLEXCOUNT key min max 计算指定字典区间内成员数量, 0 表示未找到结果
 
 ```shell
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d 5 e 6 f
@@ -634,6 +634,8 @@ Zset 和 set 一样也是 string 类型元素的集合, 且不允许重复的成
 (integer) 3
 127.0.0.1:6379> ZLEXCOUNT myz [a [c
 (integer) 3
+127.0.0.1:6379> ZLEXCOUNT myz [a [b
+(integer) 0
 ```
 
 #### 随机获取指定数量成员
