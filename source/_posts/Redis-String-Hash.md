@@ -7,7 +7,7 @@ tags:
   - Redis
 ---
 
-### 字符串命令
+### Strings 命令
 
 字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.
 
@@ -87,7 +87,7 @@ tags:
 - DECR key 将 key 中存储的数字值减 1 并返回修改后的值, 非数字值或者值为浮点数会报错, key 不存在从 0 开始计算
 - DECRBY key decrement 将 key 中存储的数字值减去给定的增量值(decrement), 返回值同 `DECR`
 
-### Hash 命令
+### Hashes 命令
 
 hash 是一个 string 类型的 field(字段) 和 value(值)的映射表, hash 适合用于存储对象, 每个 hash 可以存储 2^32-1(40 多亿)键值对
 
