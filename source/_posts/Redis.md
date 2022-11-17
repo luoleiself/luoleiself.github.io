@@ -58,20 +58,27 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
 - DEL key [key...] 删除 key 并返回成功删除 key 的数量
 - DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;
-- RENAME key newKey 修改 key 的名称, ok 成功, ERR no such key 失败
+- RENAME key newKey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在则覆盖
+- RENAMENX key newkey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在不执行任何操作返回 0, 否则返回 1
 - MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中
 
-- EXISTS key 检查指定 key 是否存在, 1 存在, 0 不存在
+- EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
 - KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)
 
 - SHUTDOWN [NOSAVE|SAVE] [NOW] [FORCE] [ABORT] 同步保存数据到硬盘上并关闭服务
 
 #### 设置 key 的过期时间
 
-- EXPIRE key seconds 为指定 key 设置过期时间(单位秒), 1 成功, 0 失败
-- EXPIREAT key unix-time-seconds 为指定 key 设置过期使用 unix 时间戳, 1 成功, 0 失败
-- PEXPIRE key milliseconds 为指定 key 设置过期时间(单位毫秒), 1 成功, 0 失败
-- PEXPIREAT key unix-time-milliseconds 为指定 key 设置过期时间使用 unix 时间戳, 1 成功, 0 失败
+- EXPIRE key seconds [NX|XX|GT|LT] 为指定 key 设置过期时间(单位秒), 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
+- EXPIREAT key unix-time-seconds [NX|XX|GT|LT] 为指定 key 设置过期使用 unix 时间戳, 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
+- PEXPIRE key milliseconds [NX|XX|GT|LT] 为指定 key 设置过期时间(单位毫秒), 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
+- EXPIRETIME key 返回指定 key 将过期的绝对 Unix时间戳(以秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, 7.0.0 支持
+- PEXPIREAT key unix-time-milliseconds [NX|XX|GT|LT] 为指定 key 设置过期时间使用 unix 时间戳, 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
+- PEXPIRETIME key 返回指定 key 将过期的绝对 Unix时间戳(以毫秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, 7.0.0 支持
+  - NX 以上命令该参数作用相同, 仅当指定 key 没有过期时间时
+  - XX 以上命令该参数作用相同, 仅当指定 key 存在过期时间时
+  - GT 以上命令该参数作用相同, 仅当新的过期时间大于当前的过期时间
+  - LT 以上命令该参数作用相同, 仅当新的过期时间小于当前的过期时间
 
 #### 获取 key 的过期时间
 
