@@ -172,3 +172,12 @@ OK
 127.0.0.1:6379> HRANDFIELD newrunoob
 (nil)
 ```
+
+#### 使用案例
+
+##### 存储用户的基本信息
+
+以用户 uid 作为 key, 用户的基本信息组成的 field => value 作为值, 使用 hash 存储
+
+key 的格式: {uid}
+value 的格式: {age => 18}, {addr => beijing}
