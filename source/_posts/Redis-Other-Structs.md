@@ -107,7 +107,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 (integer) 1
 
 # 使用 zcard 获取集合数量
-127.0.0.1:6379> ZCARD citys 
+127.0.0.1:6379> ZCARD citys
 (integer) 10
 # 使用 Zset 的按分值和字典统计成员数量
 127.0.0.1:6379> ZLEXCOUNT citys - +
