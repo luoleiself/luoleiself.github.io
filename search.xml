@@ -1141,6 +1141,8 @@
 </li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; RPUSH list a b c a b c b d c a b a c d b c a d  # 创建列表 list</span><br><span class="line">(integer) 18</span><br><span class="line">127.0.0.1:6379&gt; LPOS list b # 查找元素 b 第 1 次出现的下标</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; LPOS list b RANK 3  # 查找元素 b 第 3 次出现的下标</span><br><span class="line">(integer) 6</span><br><span class="line">127.0.0.1:6379&gt; LPOS list b COUNT 3 # 查找元素 b 出现 3 次的下标</span><br><span class="line">1) (integer) 1</span><br><span class="line">2) (integer) 4</span><br><span class="line">3) (integer) 6</span><br><span class="line">127.0.0.1:6379&gt; LPOS list b RANK 2 COUNT 3  # 查找元素 b 第 2 次开始出现 3 次的下标</span><br><span class="line">1) (integer) 4</span><br><span class="line">2) (integer) 6</span><br><span class="line">3) (integer) 10</span><br><span class="line">127.0.0.1:6379&gt; LPOS list b RANK 3 COUNT 4  # 查找元素 b 第 3 次开始出现 4 次的下标</span><br><span class="line">1) (integer) 6</span><br><span class="line">2) (integer) 10</span><br><span class="line">3) (integer) 14</span><br><span class="line">127.0.0.1:6379&gt; LPOS list b RANK 2 COUNT 4 MAXLEN 10  # 查找 10 次元素 b 第 2 次开始出现 4 次的下标</span><br><span class="line">1) (integer) 4</span><br><span class="line">2) (integer) 6</span><br><span class="line">127.0.0.1:6379&gt; LPOS list b RANK 3 COUNT 2 MAXLEN 15  # 查找 15 次元素 b 第 3 次开始出现 2 次的下标</span><br><span class="line">1) (integer) 6</span><br><span class="line">2) (integer) 10</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用案例"><a href="#使用案例" class="headerlink" title="使用案例"></a>使用案例</h4><h5 id="抢红包"><a href="#抢红包" class="headerlink" title="抢红包"></a>抢红包</h5><p>将抢红包的用户信息用 list 存储作为队列的形式保证先进先出的规则</p>
 ]]></content>
       <categories>
         <category>server</category>
@@ -1354,6 +1356,9 @@
 </li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; HRANDFIELD runoob</span><br><span class="line">&quot;age&quot;</span><br><span class="line">127.0.0.1:6379&gt; HRANDFIELD runoob 3</span><br><span class="line">1) &quot;name&quot;</span><br><span class="line">2) &quot;addr&quot;</span><br><span class="line">3) &quot;sex&quot;</span><br><span class="line">127.0.0.1:6379&gt; HRANDFIELD runoob 3 WITHVALUES</span><br><span class="line">1) &quot;newname&quot;</span><br><span class="line">2) &quot;new-redis&quot;</span><br><span class="line">3) &quot;addr&quot;</span><br><span class="line">4) &quot;beijing&quot;</span><br><span class="line">5) &quot;sex&quot;</span><br><span class="line">6) &quot;\xe7\x94\xb7&quot;</span><br><span class="line">127.0.0.1:6379&gt; HRANDFIELD newrunoob</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用案例"><a href="#使用案例" class="headerlink" title="使用案例"></a>使用案例</h4><h5 id="存储用户的基本信息"><a href="#存储用户的基本信息" class="headerlink" title="存储用户的基本信息"></a>存储用户的基本信息</h5><p>以用户 uid 作为 key, 用户的基本信息组成的 field =&gt; value 作为值, 使用 hash 存储</p>
+<p>key 的格式: {uid}<br>value 的格式: {age =&gt; 18}, {addr =&gt; beijing}</p>
 ]]></content>
       <categories>
         <category>server</category>
