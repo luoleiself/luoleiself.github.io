@@ -56,15 +56,22 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 
 - HELP command 显示命令的帮助信息
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
-- DEL key [key...] 删除 key 并返回成功删除 key 的数量
+- EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
+- KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)
+- DEL key [key...] 阻塞删除 key 并返回成功删除 key 的数量
+- UNLINK key [key ...] 非阻塞从键空间中取消键指定 key 的链接, 并返回成功取消 key 的数量, 如果 key 不存在则忽略
 - DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;
 - RENAME key newKey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在则覆盖
 - RENAMENX key newkey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在不执行任何操作返回 0, 否则返回 1
+
+- TOUCH key [key ...] 更改指定 key 的最后一次访问时间并返回修改成功的数量, 如果 key 不存在则忽略
+
+- WAIT numreplicas timeout 阻止当前客户端, 直到所有先前的写入命令成功传输并至少由指定数量的副本确认, 如果达到了以毫秒为单位指定的超时, 则即使尚未达到指定的副本数量, 该命令也会返回
+
 - MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中
-
-- EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
-- KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)
-
+- ECHO message 打印信息
+- PING [message] 测试连接是否正常, 通常返回 PONG, 如果传入了 message 则会输出 message
+- QUIT 关闭退出当前连接
 - SHUTDOWN [NOSAVE|SAVE] [NOW] [FORCE] [ABORT] 同步保存数据到硬盘上并关闭服务
 
 #### 设置 key 的过期时间
@@ -82,10 +89,12 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 
 #### 获取 key 的过期时间
 
-- PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间
+- TTL key 以秒为单位返回指定 key 的剩余生存时间
+
   - \-2 key 不存在
   - \-1 key 存在但没有设置剩余生存时间
-- TTL key 以秒为单位返回指定 key 的剩余生存时间
+
+- PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间
 
   - \-2 key 不存在
   - \-1 key 存在但没有设置剩余生存时间
@@ -205,3 +214,86 @@ Redis 事务执行的三个重要保证:
 - 开始事务(multi)
 - 命令入队
 - 执行事务(exec)
+
+#### 命令
+
+- MULTI 开启事务, 通常返回 ok
+- DISCARD 丢弃事务, 通常返回 ok
+  - 必须在 `MULTI` 命令之后才能调用, 否则报错 ERR DISCARD without MULTI
+- EXEC 执行事务, 通常返回 ok
+
+  - 必须在 `MULTI` 命令之后才能调用, 否则报错 ERR EXEC without MULTI
+  - 如果 `WATCH` 观察的 key 在当前的事务执行时已被修改, 则返回 &lt;nil&gt;
+
+- WATCH key [key ...] 观察指定 key, 通常返回 ok, 如果在事务执行之前观察的 key 被修改, 则事务将被打断
+  - 如果在 `MULTI` 命令后调用, 则会报错 ERR WATCH inside MULTI is not allowed
+- UNWATCH 取消所有观察的 key, 通常返回 ok, 如果调用了 `EXEC` 或 `DISCARD` 命令, 通常不再需要调用此命令
+
+```shell
+127.0.0.1:6379> GET money
+"250"
+127.0.0.1:6379> WATCH money # 观察 money
+OK
+127.0.0.1:6379> MULTI # 开启事务
+OK
+# 修改 money 加上增量 1000 命令入事务队列
+127.0.0.1:6379(TX)> INCRBY money 1000
+QUEUED
+###################################
+# 另一个客户端连接修改 money 加上增量 50
+127.0.0.1:6379> INCRBY money 50
+(integer) 300
+###################################
+127.0.0.1:6379(TX)> EXEC # 执行事务
+(nil)
+127.0.0.1:6379> GET money
+"300"
+```
+
+#### 编译时错误
+
+```shell
+127.0.0.1:6379> set key1 hello
+OK
+127.0.0.1:6379> MULTI # 开启事务
+OK
+# 此处的错误在命令加入事务队列时发现, 直接报告, 导致整个事务的执行失败
+127.0.0.1:6379(TX)> INCR key1 10
+(error) ERR wrong number of arguments for 'incr' command
+127.0.0.1:6379(TX)> set key2 key2 # 命令入队列
+QUEUED
+127.0.0.1:6379(TX)> get key2
+QUEUED
+127.0.0.1:6379(TX)> exec  # 执行事务
+(error) EXECABORT Transaction discarded because of previous errors.
+127.0.0.1:6379> get key2
+(nil)
+```
+
+#### 运行时错误
+
+```shell
+127.0.0.1:6379> MULTI # 开启事务
+OK
+127.0.0.1:6379(TX)> set key1 hello  # 命令入队列
+QUEUED
+# 此处的错误在命令运行时才能发现, 但不影响下面的命令的执行
+127.0.0.1:6379(TX)> INCR key1
+QUEUED
+127.0.0.1:6379(TX)> set key2 key2
+QUEUED
+127.0.0.1:6379(TX)> get key2  # 命令执行成功
+QUEUED
+127.0.0.1:6379(TX)> EXEC  # 执行事务
+1) OK
+2) (error) ERR value is not an integer or out of range
+3) OK
+4) "key2"
+127.0.0.1:6379> get key2
+"key2"
+```
+
+### 发布订阅
+
+Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息
+Redis 客户端可以订阅任意数量的频道

@@ -11,6 +11,8 @@ tags:
 
 字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.
 
+Strings: 键名: key, 键类型: string, 键值: string
+
 #### 设置值
 
 - SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL] 为 key 设置字符串的值, 执行成功返回 ok
@@ -90,6 +92,8 @@ tags:
 ### Hashes 命令
 
 hash 是一个 string 类型的 field(字段) 和 value(值)的映射表, hash 适合用于存储对象, 每个 hash 可以存储 2^32-1(40 多亿)键值对
+
+Hashes: 键名: key, 键类型: hash, 键值: string {field => value}
 
 #### 哈希表存取
 

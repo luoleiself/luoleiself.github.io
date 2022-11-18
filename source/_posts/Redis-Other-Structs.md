@@ -9,9 +9,7 @@ tags:
 
 ### HyperLogLog
 
-HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量或者体积非常大时, 计算基数所需的空间总是固定的、并且是很小的. 每个 HyperLogLog 键只需要花费 12KB 内存, 就可以计算接近 2^64 个不同元素的基数, 因为 HyperLogLog 只会根据输入元素来计算基数, 而不会储存输入元素本身
-
-HyperLogLog 返回的基数不精确, 近似于 0.81% 的标准误差
+HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量或者体积非常大时, 计算基数所需的空间总是固定的、并且是很小的. 每个 HyperLogLog 键只需要花费 12KB 内存, 就可以计算接近 2^64 个不同元素的基数, 并产生标准误差接近于 0.81% 的近似值, 因为 HyperLogLog 只会根据输入元素来计算基数, 而不会储存输入元素本身
 
 > 比如数据集 {1, 3, 5, 7, 5, 7, 8}, 那么这个数据集的基数集为 {1, 3, 5 ,7, 8}, 基数(不重复元素)为 5. 基数估计就是在误差可接受的范围内，快速计算基数
 
@@ -60,10 +58,18 @@ OK
 (integer) 10
 ```
 
+#### 使用示例
+
+##### 统计网站访问者的 IP 地址
+
+##### 搜索词
+
+##### 电子邮件地址
+
 ### Geospatial
 
 Redis 地理空间, 该类型就是元素的 2 维坐标, 在地图上就是经纬度. Redis 基于该类型, 提供了经纬度设置、查询、范围查询、距离查询、经纬度 Hash 等常见操作
-Geospatial 底层实现原理实现为 zset 类型, 可以使用 zset 的方法
+Geospatial 底层实现原理实现为 Zset 类型, 可以使用 Zset 的方法
 
 > 比如微信的朋友圈查找附近的人, 或者游戏中获取附近的游戏玩家
 
@@ -95,14 +101,34 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 (integer) 2
 127.0.0.1:6379> GEOADD citys 108.948024 34.263161 xian 115.892151 28.676493 nanchang
 (integer) 2
-127.0.0.1:6379> ZCARD citys # 使用 zcard 获取集合数量
-(integer) 10
 
 # 仅更新成员信息并返回更新的数量
 127.0.0.1:6379> GEOADD citys XX CH 113.88311 22.55371 shenzhen
 (integer) 1
 
-# 使用 zset 的 ZRANGE 遍历集合
+# 使用 zcard 获取集合数量
+127.0.0.1:6379> ZCARD citys 
+(integer) 10
+# 使用 Zset 的按分值和字典统计成员数量
+127.0.0.1:6379> ZLEXCOUNT citys - +
+(integer) 10
+127.0.0.1:6379> ZCOUNT citys -inf +inf
+(integer) 10
+127.0.0.1:6379> ZCOUNT citys 0 +inf
+(integer) 10
+
+127.0.0.1:6379> ZRANGE citys 0 -1
+ 1) "sansha"
+ 2) "chongqing"
+ 3) "lanzhou"
+ 4) "xian"
+ 5) "shenzhen"
+ 6) "guangzhou"
+ 7) "nanchang"
+ 8) "shanghai"
+ 9) "zhengzhou"
+10) "beijing"
+# 使用 zset 的 ZRANGE 遍历集合返回经纬度 GEOHASH 的无符号整数
 127.0.0.1:6379> ZRANGE citys 0 -1 WITHSCORES
  1) "sansha"
  2) "3974440648358025"
