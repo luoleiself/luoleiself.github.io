@@ -54,25 +54,56 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 
 ### Keys 命令
 
-- HELP command 显示命令的帮助信息
+- INFO [section [section ...]] 返回服务的相关信息, 没有参数返回所有
+  - server 返回 redis 服务的通用信息
+  - clients 返回客户端链接的信息
+  - memory 返回内存的信息
+  - persistence 返回持久化的信息 RDB 和 AOF
+  - stats 返回统计信息 
+  - replication 返回副本的信息
+  - cpu 返回 cpu 的信息
+  - commandstats 返回命令统计信息
+  - latencystats 返回命令延迟百分比统计信息
+  - cluster 返回集群信息
+  - modules 返回模块信息
+  - keyspace 返回数据库相关统计信息
+  - errorstats 返回错误统计信息
+  - all 返回所有信息(除了 modules)
+  - default 返回默认配置信息
+  - everything 返回所有信息(包含all 和 modules)
+
+- help command 显示命令的帮助信息
+- ECHO message 打印信息
+
+- SAVE 保存数据到本地磁盘
+- WAIT numreplicas timeout 阻止当前客户端, 直到所有先前的写入命令成功传输并至少由指定数量的副本确认, 如果达到了以毫秒为单位指定的超时, 则即使尚未达到指定的副本数量, 该命令也会返回
+
+- PING [message] 测试连接是否正常, 通常返回 PONG, 如果传入了 message 则会输出 message
+- QUIT 关闭退出当前连接
+- SHUTDOWN [NOSAVE|SAVE] [NOW] [FORCE] [ABORT] 同步保存数据到硬盘上并关闭服务
+
+#### 操作 key
+
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
 - EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
 - KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)
 - DEL key [key...] 阻塞删除 key 并返回成功删除 key 的数量
 - UNLINK key [key ...] 非阻塞从键空间中取消键指定 key 的链接, 并返回成功取消 key 的数量, 如果 key 不存在则忽略
-- DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;
+
 - RENAME key newKey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在则覆盖
 - RENAMENX key newkey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在不执行任何操作返回 0, 否则返回 1
 
+- MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中
+
+- DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;
+
 - TOUCH key [key ...] 更改指定 key 的最后一次访问时间并返回修改成功的数量, 如果 key 不存在则忽略
 
-- WAIT numreplicas timeout 阻止当前客户端, 直到所有先前的写入命令成功传输并至少由指定数量的副本确认, 如果达到了以毫秒为单位指定的超时, 则即使尚未达到指定的副本数量, 该命令也会返回
+#### 副本
 
-- MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中
-- ECHO message 打印信息
-- PING [message] 测试连接是否正常, 通常返回 PONG, 如果传入了 message 则会输出 message
-- QUIT 关闭退出当前连接
-- SHUTDOWN [NOSAVE|SAVE] [NOW] [FORCE] [ABORT] 同步保存数据到硬盘上并关闭服务
+- REPLICAOF host port 将当前服务器设置为指定主机端口上服务器的副本, 通常返回 ok, 5.0.0 开始代替 `SLAVEOF`
+  - 如果当前服务器已经是某个服务器的副本, 则取消对旧服务器的连接同步, 并开始对新服务器同步, 丢弃旧有数据集
+  - NO ONE 如果当前服务器已经是副本, 此参数将当前服务器变为 master, 并停止与主服务器的连接同步
 
 #### 设置 key 的过期时间
 
@@ -296,4 +327,304 @@ QUEUED
 ### 发布订阅
 
 Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息
-Redis 客户端可以订阅任意数量的频道
+它采用事件作为基本的通信机制，提供大规模系统所要求的松散耦合的交互模式: 订阅者(如客户端)以事件订阅的方式表达出它有兴趣接收的一个事件或一类事件;发布者(如服务器)可将订阅者感兴趣的事件随时通知相关订阅者
+订阅者对一个或多个频道感兴趣,只需接收感兴趣的消息,不需要知道什么样的发布者发布的. 这种发布者和订阅者的解耦合可以带来更大的扩展性和更加动态的网络拓扑
+
+- 发布者: 无需独占链接, 可以在 publish 发布消息的同时, 使用同一个链接进行其他操作
+- 订阅者: 需要独占链接, 在 subscribe 期间, 以阻塞的方式等待消息
+
+#### 普通订阅
+
+- SUBSCRIBE channel [channel ...] 订阅指定频道立即进入阻塞状态等待接收消息
+- UNSUBSCRIBE [channel [channel ...]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅
+
+#### 碎片频道订阅 
+
+- SSUBSCRIBE shardchannel [shardchannel ...] 订阅指定的碎片频道, 7.0.0 支持
+- SUNSUBSCRIBE [shardchannel [shardchannel ...]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持
+
+#### 模式订阅
+
+- PSUBSCRIBE pattern [pattern ...] 根据给定模式订阅频道立即进入阻塞状态等待接收消息
+  - pattern 可以使用正则表达式匹配多个频道
+- PUNSUBSCRIBE [pattern [pattern ...]] 根据给定模式取消客户端订阅, 如果未指定则取消所有模式订阅
+
+#### 发布消息
+
+- PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者
+- SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持
+
+```shell
+# 订阅频道
+127.0.0.1:6379> PSUBSCRIBE h?llo
+Reading messages... (press Ctrl-C to quit)
+1) "psubscribe"
+2) "h?llo"
+3) (integer) 1
+# 接收到的消息
+1) "pmessage"
+2) "h?llo"
+3) "hello"
+4) "hello,world"
+# 接收到的消息
+1) "pmessage" 
+2) "h?llo"
+3) "hallo"
+4) "hallo,world"
+# 发布消息到 hello 和 hallo 频道
+127.0.0.1:6379> PUBLISH hello hello,world
+(integer) 0
+127.0.0.1:6379> PUBLISH hello hello,world
+(integer) 2
+127.0.0.1:6379> PUBLISH hallo hallo,world
+(integer) 2
+```
+
+#### 统计订阅信息
+
+- PUBSUB CHANNELS [pattern] 返回当前活跃频道列表(不包含使用模式订阅的频道)
+
+```shell
+127.0.0.1:6379> PUBSUB CHANNELS
+1) "conn"
+```
+
+- PUBSUB NUMSUB [channel [channel ...]] 返回订阅者的数量(不包含使用模式订阅的频道)
+  - 如果不指定 channel 将返回 (empty array)
+
+```shell
+127.0.0.1:6379> PUBSUB NUMSUB hello conn
+1) "hello"
+2) (integer) 1
+3) "conn"
+4) (integer) 1
+```
+
+- PUBSUB NUMPAT 返回订阅者通过模式订阅的频道的数量
+
+```shell
+127.0.0.1:6379> PUBSUB NUMPAT
+(integer) 0
+127.0.0.1:6379> PUBSUB NUMPAT
+(integer) 1
+```
+
+- PUBSUB SHARDCHANNELS [pattern] 返回当前活动的碎片频道, 未找到返回 empty array, 7.0.0 支持
+- PUBSUB SHARDNUMSUB [shardchannel [shardchannel ...]] 返回指定的碎片频道的订阅者数量, 未找到返回 empty arryay, 7.0.0 支持
+
+```shell
+127.0.0.1:6379> PUBSUB SHARDNUMSUB conn
+1) "conn"
+2) (integer) 0
+```
+
+### 持久化
+
+Redis 是基于内存的数据库, 遇到断电就会丢失数据, 持久化就是将内存中的数据保存到磁盘中便于以后使用, Redis 提供了 RDB 和 AOF 两种持久化方式, 默认使用 RDB 方式持久化数据
+Redis 在持久化的过程中, 会先将数据写入到一个临时的文件中, 待持久化过程结束后, 才会用这个临时文件替换赏赐持久化生成的文件
+
+#### 触发方式
+
+- 通过配置文件配置项会触发持久化操作
+
+```shell
+# 3600秒至少有 1 次修改, 300秒至少有 100 次修改, 60秒至少有 10000 次修改
+save 3600 1 300 100 60 10000 
+```
+
+- 通过 `FLUSHALL` 命令主动触发
+- 通过 `SAVE` 命令主动触发
+
+#### RDB
+
+RDB(Redis Database), 在某一时刻将 Redis 中的数据生成一份快照保存到磁盘中
+Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任何 I/O 操作, 这样就保证了 Redis 极高的性能, 如果需要进行大规模数据的恢复,且对于数据恢复的完整性不是非常敏感, 此方式比 AOF 方式更加的高效
+
+`dbfilename dump.rdb` 默认文件名
+`dir ./` 默认存储目录
+
+- redis-check-rdb 检查 RDB 文件
+
+#### AOF
+
+AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍, 默认 AOF 的持久化策略在开启后是每秒钟 sync 一次, 可以修改配置文件的 `appendfsync` 项 
+
+`appendonly yes` 启动 AOF 模式
+`appendfilename appendonly.aof` 默认文件名
+`appenddirname appendonlydir` 默认存储目录
+`appendfsync everysec` 持久化策略, 每秒钟执行一次, 可以修改为 `always` 和 `no`
+
+如果 appendonly.aof 文件有错误, Redis 服务将会启动失败
+
+- redis-check-aof 检查 AOF 文件, --fix 参数修复文件的错误, 通常会丢弃文件中无法识别的命令
+
+### 主从复制
+
+将一台 Redis 服务器的数据,复制到其他的 Redis 服务器. 前者称为主节点(Master/Leader),后者称为从节点(Slave/Follower), 数据的复制是单向的！只能由主节点复制到从节点(主节点以写为主、从节点以读为主)—— 读写分离.
+===每台Redis服务器都是主节点===
+一个主节点可以有0个或者多个从节点, 但每个从节点只能由一个主节点
+
+```shell
+127.0.0.1:6379> INFO replication # 当前副本的信息
+# Replication
+role:master
+connected_slaves:0
+master_failover_state:no-failover
+master_replid:e49c9c650c72cd6e3f369365808da6de6efd3825
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:0
+second_repl_offset:-1
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+```
+
+#### 作用
+
+- 数据冗余: 主从复制实现了数据的热备份, 是持久化之外的一种数据冗余的方式
+- 故障恢复: 当主节点故障时, 从节点可以暂时替代主节点提供服务, 是一种服务冗余的方式
+- 负载均衡: 在主从复制的基础上, 配合读写分离, 由主节点进行写操作, 从节点进行读操作, 分担服务器的负载; 尤其是在多读少写的场景下, 通过多个从节点分担负载, 提高并发量
+- 高可用(集群)基石: 主从复制还是哨兵和集群能够实施的基础
+
+#### 复制原理
+
+- 从服务器向主服务器发送 `SYNC` 命令
+- 接到 `SYNC` 命令的主服务器会调用 `BGSAVE` 命令, 创建一个 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令
+- 当主服务器执行完 `BGSAVE` 命令时, 它会向从服务器发送 RDB 文件, 而从服务器则会接收并载入这个文件
+- 主服务器将缓冲区储存的所有写命令发送给从服务器执行
+
+##### 全量复制
+
+从服务器接收到数据库文件后, 将其全部加载到内存中
+
+##### 增量复制
+
+主服务器将新的所有收集到的修改命令依次传给从服务器, 完成同步
+
+#### 命令配置
+
+===每台Redis服务器都是主节点===, 只用配置从服务器即可, 使用命令 `REPLICAOF`
+使用命令配置只能在本次服务器运行时有效, 重启服务器后将会丢失配置信息, 可以使用配置文件
+
+单机集群: 新建多个 Redis 服务器配置文件并修改其中关键项
+
+- `bind 127.0.0.1` 修改绑定的 ip
+- `port 6379` 修改绑定的端口号
+- `daemonize yes` 开启后台运行, 默认为 no
+- `pidfile /var/run/redis_6379.pid` 修改进程文件, 默认为 redis_6379.pid
+- `logfile "6379.log"` 修改日志文件名, 默认为空
+- `dbfilename dump6379.rdb` 修改持久化文件名, 默认为 dump.rdb
+
+```shell
+# 设置从服务器
+127.0.0.1:6380> REPLICAOF 127.0.0.1 6379
+OK
+127.0.0.1:6381> REPLICAOF 127.0.0.1 6379
+OK
+# 查看主服务器配置信息
+127.0.0.1:6379> INFO replication
+# Replication
+role:master
+connected_slaves:2
+slave0:ip=127.0.0.1,port=6380,state=online,offset=1069,lag=1
+slave1:ip=127.0.0.1,port=6381,state=online,offset=1069,lag=0
+master_failover_state:no-failover
+master_replid:7e2058a426e70b6d1d55a826f3da3e59914cfdbc
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:1069
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:1
+repl_backlog_histlen:1069
+# 查看从服务器配置信息
+127.0.0.1:6380> INFO replication
+# Replication
+role:slave
+master_host:127.0.0.1
+master_port:6379
+master_link_status:up
+master_last_io_seconds_ago:5
+master_sync_in_progress:0
+slave_read_repl_offset:1139
+slave_repl_offset:1139
+slave_priority:100
+slave_read_only:1
+replica_announced:1
+connected_slaves:0
+master_failover_state:no-failover
+master_replid:7e2058a426e70b6d1d55a826f3da3e59914cfdbc
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:1139
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:1
+repl_backlog_histlen:1139
+```
+
+- 读写数据
+
+```shell
+# 主机写入数据
+127.0.0.1:6379> SET name helloworld
+OK
+# 从机读取数据
+127.0.0.1:6380> GET name
+"helloworld"
+127.0.0.1:6380> SET age 18 # 从机写入数据报错
+(error) READONLY You can't write against a read only replica.
+# 从机读取数据
+127.0.0.1:6381> GET name
+"helloworld"
+127.0.0.1:6381> SET age 18 # 从机写入数据报错
+(error) READONLY You can't write against a read only replica.
+```
+
+#### 配置文件配置
+
+- replicaof &lt;masterip&gt; &lt;masterport&gt; 配置主服务器 ip 和 port
+- masterauth &lt;master-password&gt; 主服务器认证密码, 如果需要
+- masteruser &lt;username&gt; 主服务器用户
+- replica-read-only yes 只读模式, 默认开启
+- repl-diskless-sync yes 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件
+- repl-diskless-sync-delay 5 同步延迟, 默认 5 秒
+
+#### 哨兵模式配置
+
+哨兵模式是一种特殊的模式, 首先 Redis 提供了哨兵的命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行
+
+- 通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器
+- 当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件, 让它们切换主机
+
+默认配置文件
+
+```shell
+protected-mode no # 保护模式, 默认不开启
+port 26379 # 端口号
+daemonize no # 是否后台运行模式
+pidfile /var/run/redis-sentinel.pid # 进程文件
+# sentinel announce-ip <ip> # 广播地址
+# sentinel announce-port <port> # 广播端口
+logfile "" # 日志文件
+dir /tmp # 工作目录
+sentinel monitor mymaster 127.0.0.1 6379 2 # 监测服务器配置
+# sentinel auth-pass <master-name> <password> # 认证配置
+sentinel down-after-milliseconds mymaster 30000 # 不可触达的超时时间, 默认 30 s
+sentinel parallel-syncs mymaster 1 # 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1
+sentinel failover-timeout mymaster 180000 # 当服务器宕机后等待再次重启的时间, 默认 3 min
+# sentinel notification-script <master-name> <script-path> # 服务器唤起脚本文件
+sentinel deny-scripts-reconfig yes # 拒绝脚本配置, 默认拒绝
+```
+
+使用 `redis-sentinel` 命令开启哨兵模式监测服务器的状态
+
+```shell
+# sentinel.conf
+sentinel monitor myredis 127.0.0.1 6379 1
+```
+
+![redis-2](/images/redis-2.png)
+![redis-3](/images/redis-3.png)
+
