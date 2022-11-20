@@ -146,7 +146,106 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 
 - AUTH [username] password 对当前连接的认证
 
-##### ACL
+### ACL
+
+ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis 客户端在访问 Redis 服务器时, 能够执行的命令和能够获取的 key, 提高操作安全性, 避免对数据造成损坏
+
+#### 规则分类
+
+|参数|说明|
+|:--:|--|
+|on|表示启动该用户, 默认为 off|
+|nopass|删除所有与用户关联的密码|
+|reset|移除用户的所有功能, 并关闭用户|
+|+[command]|将命令添加到用户可以调用的命令列表中|
+|-[command]|将命令从用户可以调用的命令列表中移除|
+|+[command]\|subcommand|允许使用已禁用命令的特定子命令|
+|+@[category]|允许用户调用 category 类别中的所有命令, 可以使用 `ACL CAT` 命令查看所有类别|
+|-@[category]|禁止用户调用 category 类别中的所有命令|
+|allcommands|+@all 的别名|
+|nocommands|-@all 的别名|
+|~\*|允许用户可以访问的 key(正则匹配), 例如: ~foo:\* ~bar:\* 只允许访问 foo:\* bar:\* 的键模式|
+|allkeys|~\* 的别名|
+|resetkeys|移除所有的 key 匹配模式|
+|&\<pattern\>|允许用户可使用的 Pub/Sub 通道(正则匹配)|
+|allchannels|&\* 的别名|
+|resetchannels|移除所有的通道匹配模式|
+|\>\<password\>|为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: >123456|
+|\<\<password\>|从有效密码列表中删除密码|
+|#\<hashedpassword\>|为用户添加 hash 密码, 例如: #cab3...c4f2|
+|\!\<hashedpassword\>|从有效密码列表中删除密码|
+
+- ACL HELP 显示 ACL 的帮助信息
+
+```shell
+127.0.0.1:6379> ACL HELP
+ 1) ACL <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
+ 2) CAT [<category>]
+ 3)     List all commands that belong to <category>, or all command categories
+ 4)     when no category is specified.
+ 5) DELUSER <username> [<username> ...]
+ 6)     Delete a list of users.
+ 7) DRYRUN <username> <command> [<arg> ...]
+ 8)     Returns whether the user can execute the given command without executing the command.
+ 9) GETUSER <username>
+10)     Get the user's details.
+11) GENPASS [<bits>]
+12)     Generate a secure 256-bit user password. The optional `bits` argument can
+13)     be used to specify a different size.
+14) LIST
+15)     Show users details in config file format.
+16) LOAD
+17)     Reload users from the ACL file.
+18) LOG [<count> | RESET]
+19)     Show the ACL log entries.
+20) SAVE
+21)     Save the current config to the ACL file.
+22) SETUSER <username> <attribute> [<attribute> ...]
+23)     Create or modify a user with the specified attributes.
+24) USERS
+25)     List all the registered usernames.
+26) WHOAMI
+27)     Return the current connection username.
+28) HELP
+29)     Prints this help.
+```
+
+- ACL SETUSER 设置用户访问权限
+- ACL GETUSER username 获取指定用户的权限
+
+```shell
+127.0.0.1:6379> ACL SETUSER lisi >123456 off +@all
+OK
+127.0.0.1:6379> ACL GETUSER lisi
+ 1) "flags"
+ 2) 1) "off"
+ 3) "passwords"
+ 4) 1) "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+ 5) "commands"
+ 6) "+@all"
+ 7) "keys"
+ 8) ""
+ 9) "channels"
+10) ""
+11) "selectors"
+12) (empty array)
+
+127.0.0.1:6379> ACL SETUSER zhangsan off +@string +@hash +@list +@set ~zhang:* &zhang:*
+OK
+127.0.0.1:6379> ACL GETUSER zhangsan
+ 1) "flags"
+ 2) 1) "off"
+ 3) "passwords"
+ 4) 1) "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+ 5) "commands"
+ 6) "-@all +@list +@string +@hash +@set"
+ 7) "keys"
+ 8) "~zhang:*"
+ 9) "channels"
+10) "&zhang:*"
+11) "selectors"
+12) (empty array)
+```
 
 ### 配置文件
 
@@ -338,7 +437,7 @@ Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消
 - SUBSCRIBE channel [channel ...] 订阅指定频道立即进入阻塞状态等待接收消息
 - UNSUBSCRIBE [channel [channel ...]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅
 
-#### 碎片频道订阅 
+#### 碎片频道订阅
 
 - SSUBSCRIBE shardchannel [shardchannel ...] 订阅指定的碎片频道, 7.0.0 支持
 - SUNSUBSCRIBE [shardchannel [shardchannel ...]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持
