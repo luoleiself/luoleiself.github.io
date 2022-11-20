@@ -502,10 +502,13 @@ repl_backlog_histlen:0
 
 主服务器将新的所有收集到的修改命令依次传给从服务器, 完成同步
 
-#### 命令配置
+#### 命令模式配置
 
-===每台Redis服务器都是主节点===, 只用配置从服务器即可, 使用命令 `REPLICAOF`
-使用命令配置只能在本次服务器运行时有效, 重启服务器后将会丢失配置信息, 可以使用配置文件
+===每台Redis服务器都是主节点===, 只用配置从服务器即可
+使用命令配置只能在本次服务器运行时有效, 重启服务器后将会丢失配置信息, 使用配置文件永久生效
+
+- 启动 Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
+- 客户端连接服务器后使用内置命令 `REPLICAOF host port`
 
 单机集群: 新建多个 Redis 服务器配置文件并修改其中关键项
 
@@ -517,7 +520,7 @@ repl_backlog_histlen:0
 - `dbfilename dump6379.rdb` 修改持久化文件名, 默认为 dump.rdb
 
 ```shell
-# 设置从服务器
+# 设置关联主服务器
 127.0.0.1:6380> REPLICAOF 127.0.0.1 6379
 OK
 127.0.0.1:6381> REPLICAOF 127.0.0.1 6379
@@ -527,41 +530,17 @@ OK
 # Replication
 role:master
 connected_slaves:2
-slave0:ip=127.0.0.1,port=6380,state=online,offset=1069,lag=1
-slave1:ip=127.0.0.1,port=6381,state=online,offset=1069,lag=0
+slave0:ip=127.0.0.1,port=6380,state=online,offset=153689,lag=0
+slave1:ip=127.0.0.1,port=6381,state=online,offset=153557,lag=0
 master_failover_state:no-failover
-master_replid:7e2058a426e70b6d1d55a826f3da3e59914cfdbc
-master_replid2:0000000000000000000000000000000000000000
-master_repl_offset:1069
-second_repl_offset:-1
+master_replid:749aaed3f58b97f7c01d3732a6f6c55be205c4b2
+master_replid2:451a270c3954af29f43878dd9bfeac579d011972
+master_repl_offset:153689
+second_repl_offset:133525
 repl_backlog_active:1
 repl_backlog_size:1048576
-repl_backlog_first_byte_offset:1
-repl_backlog_histlen:1069
-# 查看从服务器配置信息
-127.0.0.1:6380> INFO replication
-# Replication
-role:slave
-master_host:127.0.0.1
-master_port:6379
-master_link_status:up
-master_last_io_seconds_ago:5
-master_sync_in_progress:0
-slave_read_repl_offset:1139
-slave_repl_offset:1139
-slave_priority:100
-slave_read_only:1
-replica_announced:1
-connected_slaves:0
-master_failover_state:no-failover
-master_replid:7e2058a426e70b6d1d55a826f3da3e59914cfdbc
-master_replid2:0000000000000000000000000000000000000000
-master_repl_offset:1139
-second_repl_offset:-1
-repl_backlog_active:1
-repl_backlog_size:1048576
-repl_backlog_first_byte_offset:1
-repl_backlog_histlen:1139
+repl_backlog_first_byte_offset:133525
+repl_backlog_histlen:20165
 ```
 
 - 读写数据
@@ -584,6 +563,8 @@ OK
 
 #### 配置文件配置
 
+redis.conf
+
 - replicaof &lt;masterip&gt; &lt;masterport&gt; 配置主服务器 ip 和 port
 - masterauth &lt;master-password&gt; 主服务器认证密码, 如果需要
 - masteruser &lt;username&gt; 主服务器用户
@@ -598,18 +579,18 @@ OK
 - 通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器
 - 当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件, 让它们切换主机
 
-默认配置文件
+默认配置文件 `sentinel.conf`
 
 ```shell
 protected-mode no # 保护模式, 默认不开启
-port 26379 # 端口号
+port 26379 # 服务端口号
 daemonize no # 是否后台运行模式
 pidfile /var/run/redis-sentinel.pid # 进程文件
 # sentinel announce-ip <ip> # 广播地址
 # sentinel announce-port <port> # 广播端口
 logfile "" # 日志文件
 dir /tmp # 工作目录
-sentinel monitor mymaster 127.0.0.1 6379 2 # 监测服务器配置
+sentinel monitor mymaster 127.0.0.1 6379 2 # 监测服务器配置, 数字表示确认主服务器宕机的票数
 # sentinel auth-pass <master-name> <password> # 认证配置
 sentinel down-after-milliseconds mymaster 30000 # 不可触达的超时时间, 默认 30 s
 sentinel parallel-syncs mymaster 1 # 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1
@@ -618,11 +599,37 @@ sentinel failover-timeout mymaster 180000 # 当服务器宕机后等待再次重
 sentinel deny-scripts-reconfig yes # 拒绝脚本配置, 默认拒绝
 ```
 
-使用 `redis-sentinel` 命令开启哨兵模式监测服务器的状态
+- 使用命令 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
+- 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
 
 ```shell
 # sentinel.conf
 sentinel monitor myredis 127.0.0.1 6379 1
+```
+
+一主三从哨兵配置
+
+```shell
+# sentinel.conf
+port 26379
+pidfile /var/run/redis-sentinel-26379.pid
+logfile "26379.log"
+dir /tmp
+sentinel monitor myredis 127.0.0.1 6379 2
+
+# sentinel.conf
+port 36379
+pidfile /var/run/redis-sentinel-36379.pid
+logfile "36379.log"
+dir /tmp
+sentinel monitor myredis 127.0.0.1 6379 2
+
+# sentinel.conf
+port 46379
+pidfile /var/run/redis-sentinel-46379.pid
+logfile "46379.log"
+dir /tmp
+sentinel monitor myredis 127.0.0.1 6379 2
 ```
 
 ![redis-2](/images/redis-2.png)
