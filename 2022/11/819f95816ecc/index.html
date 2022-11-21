@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-2.png">
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-3.png">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2022-11-21T03:29:55.634Z">
+<meta property="article:modified_time" content="2022-11-21T12:53:10.680Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -242,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-21 11:29:55" itemprop="dateModified" datetime="2022-11-21T11:29:55+08:00">2022-11-21</time>
+                <time title="修改时间：2022-11-21 20:53:10" itemprop="dateModified" datetime="2022-11-21T20:53:10+08:00">2022-11-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -263,13 +263,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>17k</span>
+              <span>19k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>16 分钟</span>
+              <span>17 分钟</span>
             </span>
 
         </div>
@@ -364,11 +364,13 @@
 </li>
 <li><p>DEL key [key…] 阻塞删除 key 并返回成功删除 key 的数量</p>
 </li>
-<li><p>UNLINK key [key …] 非阻塞从键空间中取消键指定 key 的链接, 并返回成功取消 key 的数量, 如果 key 不存在则忽略</p>
+<li><p>UNLINK key [key …] 非阻塞从键空间中取消键指定 key 的链接(在其他线程中执行实际的内存回收), 并返回成功取消 key 的数量, 如果 key 不存在则忽略</p>
 </li>
 <li><p>RENAME key newKey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在则覆盖</p>
 </li>
 <li><p>RENAMENX key newkey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在不执行任何操作返回 0, 否则返回 1</p>
+</li>
+<li><p>SORT key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern …]] [ASC|DESC] [ALPHA] [STORE destination] 对 list、set、zset 集合中的元素进行排序, 默认是按照数字或者元素的双精度浮点数去比较</p>
 </li>
 <li><p>MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中</p>
 </li>
@@ -758,12 +760,32 @@
 <ul>
 <li>redis-check-rdb 检查 RDB 文件</li>
 </ul>
-<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4><p>AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍, 默认 AOF 的持久化策略在开启后是每秒钟 sync 一次, 可以修改配置文件的 <code>appendfsync</code> 项</p>
-<p><code>appendonly yes</code> 启动 AOF 模式<br><code>appendfilename appendonly.aof</code> 默认文件名<br><code>appenddirname appendonlydir</code> 默认存储目录<br><code>appendfsync everysec</code> 持久化策略, 每秒钟执行一次, 可以修改为 <code>always</code> 和 <code>no</code></p>
+<h5 id="RDB-优点"><a href="#RDB-优点" class="headerlink" title="RDB 优点"></a>RDB 优点</h5><ul>
+<li>每隔一段时间完全备份一次</li>
+<li>容灾简单, 可远程传输</li>
+<li>RDB 最大限度地提高了 Redis 的性能</li>
+<li>文件较大时重启和恢复速度要快</li>
+</ul>
+<h5 id="RDB-缺点"><a href="#RDB-缺点" class="headerlink" title="RDB 缺点"></a>RDB 缺点</h5><ul>
+<li>如果发生故障, 最后备份的数据可能会丢失, 无法处理实时备份</li>
+<li>RDB 需要经常 fork() 以便使用子进程在磁盘上持久化, 增加 CPU 的负担</li>
+</ul>
+<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4><p>AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍, AOF 的持久化策略在开启后默认是每秒钟 sync 一次</p>
+<p><code>appendonly yes</code> 启动 AOF 模式<br><code>appendfilename appendonly.aof</code> 默认文件名<br><code>appenddirname appendonlydir</code> 默认存储目录<br><code>appendfsync everysec</code> 持久化策略, 每秒钟执行一次, 可以修改为 <code>always</code> 和 <code>no</code><br><code>appendfsync always</code> 每次将新命令附加到 AOF 时, 速度慢, 但是最安全<br><code>appendfsync no</code> 将写入策略权交给操作系统, 速度快, 但是不安全</p>
 <p>如果 appendonly.aof 文件有错误, Redis 服务将会启动失败</p>
 <ul>
 <li>redis-check-aof 检查 AOF 文件, –fix 参数修复文件的错误, 通常会丢弃文件中无法识别的命令</li>
 </ul>
+<h5 id="AOF-优点"><a href="#AOF-优点" class="headerlink" title="AOF 优点"></a>AOF 优点</h5><ul>
+<li>AOF 更耐用, 可以在几秒钟内完成备份</li>
+<li>当数据过大时, Redis 可以在后台自动重写 AOF, 节省空间</li>
+<li>AOF 实时性比较好, 并且支持配置写入策略</li>
+</ul>
+<h5 id="AOF-缺点"><a href="#AOF-缺点" class="headerlink" title="AOF 缺点"></a>AOF 缺点</h5><ul>
+<li>AOF 文件一半大于 RDB 的文件</li>
+<li>即使 AOF 有写入策略, 但是本质上速度还是慢于 RDB</li>
+</ul>
+<h4 id="RDB-和-AOF-组合"><a href="#RDB-和-AOF-组合" class="headerlink" title="RDB 和 AOF 组合"></a>RDB 和 AOF 组合</h4><p><code>aof-use-rdb-preamble yes</code></p>
 <h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>将一台 Redis 服务器的数据,复制到其他的 Redis 服务器. 前者称为主节点(Master/Leader),后者称为从节点(Slave/Follower), 数据的复制是单向的！只能由主节点复制到从节点(主节点以写为主、从节点以读为主)—— 读写分离.<br>===每台 Redis 服务器都是主节点===<br>一个主节点可以有 0 个或者多个从节点, 但每个从节点只能由一个主节点</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; INFO replication # 当前副本的信息</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:e49c9c650c72cd6e3f369365808da6de6efd3825</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:0</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:0</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:0</span><br><span class="line">repl_backlog_histlen:0</span><br></pre></td></tr></table></figure>
 
@@ -829,6 +851,38 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel.conf</span></span><br><span class="line">port 26379</span><br><span class="line">pidfile /var/run/redis-sentinel-26379.pid</span><br><span class="line">logfile &quot;26379.log&quot;</span><br><span class="line">dir /tmp</span><br><span class="line">sentinel monitor myredis 127.0.0.1 6379 2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel.conf</span></span><br><span class="line">port 36379</span><br><span class="line">pidfile /var/run/redis-sentinel-36379.pid</span><br><span class="line">logfile &quot;36379.log&quot;</span><br><span class="line">dir /tmp</span><br><span class="line">sentinel monitor myredis 127.0.0.1 6379 2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel.conf</span></span><br><span class="line">port 46379</span><br><span class="line">pidfile /var/run/redis-sentinel-46379.pid</span><br><span class="line">logfile &quot;46379.log&quot;</span><br><span class="line">dir /tmp</span><br><span class="line">sentinel monitor myredis 127.0.0.1 6379 2</span><br></pre></td></tr></table></figure>
 
 <p><img data-src="/images/redis-2.png" alt="redis-2"><br><img data-src="/images/redis-3.png" alt="redis-3"></p>
+<h3 id="慢查询"><a href="#慢查询" class="headerlink" title="慢查询"></a>慢查询</h3><p>Redis 慢查询和 Redis 定义慢查询的 <code>阈值</code> 有关</p>
+<p><code>slowlog-log-slower-than 10000</code> 单位微秒, 当 Redis 命令的执行时间超过该值时, Redis 将其记录在 Redis 的慢查询日志中<br><code>slowlog-max-len 128</code> 记录的条数超过时会只存储最新的 slowlog-max-len 条</p>
+<h4 id="使用复杂度过高的命令"><a href="#使用复杂度过高的命令" class="headerlink" title="使用复杂度过高的命令"></a>使用复杂度过高的命令</h4><p>复杂的命令一般指 O(N)以上的命令, 如 sort、sunion、zunionstore 聚合类的命令, 或是 O(N)类的命令, 对于 O(N)以上的命令, Redis 在操作内存数据时耗时过高, 会耗费更多的 CPU 资源, 导致查询变慢<br>Redis 是单线程处理客户端请求的, 如果遇到处理上面的请求时, 就会导致后面的请求发生排队, 对于客户端来说响应时间就会变长</p>
+<p>解决问题的原则</p>
+<ul>
+<li>尽量不使用 O(N)以上的命令, 某些数据需要排序或者聚合操作时, 可以放在客户端处理</li>
+<li>执行 O(N)命令时, 保证 N 尽量的小(推荐 N &lt;= 300), 每次获取尽量少的数据, 让 Redis 可以及时处理返回</li>
+</ul>
+<h4 id="大-Key-问题"><a href="#大-Key-问题" class="headerlink" title="大 Key 问题"></a>大 Key 问题</h4><p>通常是 key 对应的 value 值过大, 此类问题在 SET/DEL 这类命令中也会出现慢查询<br>SET/DEL 的过程</p>
+<ul>
+<li>写入数据: 为该数据分配内存空间</li>
+<li>删除数据: 释放该数据对应的内存空间</li>
+</ul>
+<p>当数据值较大时, Redis 分配数据内存和释放内存空间都比较耗时</p>
+<p>解决问题的原则</p>
+<ul>
+<li>尽量避免写入大 Key(不要写入无关的数据, 数据实在过大进行拆分, 通过多 key 存储)</li>
+<li>如果 Redis 是 4.0 以上版本, 尽量使用 <code>UNLINK</code>代替 <code>DEL</code>命令, 此命令将删除 key 和内存回收放到其他线程执行, 从而降低对 Redis 的影响</li>
+<li>如果 Redis 是 6.0 以上版本, 可以开启 lazy-free, 在执行 DEL 命令时、释放内存也会放到其他线程中执行</li>
+</ul>
+<p><code>lazyfree-lazy-user-del no</code> 修改 <code>DEL</code> 默认命令的行为使其更接近于 <code>UNLINK</code>命令, 默认不开启</p>
+<h4 id="集中过期"><a href="#集中过期" class="headerlink" title="集中过期"></a>集中过期</h4><p>Redis 过期策略</p>
+<ul>
+<li>被动过期: 只有当访问某个 key 时, 才会检测该 key 是否已经过期, 如果已经过期则从实例删除该 key</li>
+<li>主动过期: Redis 内部存在一个定时任务, 默认每间隔 100 毫秒就会从全局的过期哈希表中随机取出 20 个 key, 然后删除其中过期的 key, 如果过期 key 的比例超过了 25%, 则继续重复此过程, 直到过期 key 的比例下降到 25% 以下, 或者这次任务的执行耗时超过了 25 毫秒, 才会退出循环</li>
+</ul>
+<p>主动过期 key 的定时任务是在 Redis 主线程中执行的, 如果在执行主动过期的过程中, 出现了集中过期, 就需要大量删除过期 key, 如果此时应用程序在访问 Redis 时, 必须等待这个过期任务执行结束, 此时 Redis 就有可能产生慢查询</p>
+<p>解决问题的原则</p>
+<ul>
+<li>避免集中过期, 比如将过期时间随机化, 添加一个随机的值, 分散集中过期 key 的过期时间, 降低 Redis 清理过期 key 的压力</li>
+<li>如果 Redis 是 4.0 以上版本, 可以开启 lazy-free, 当删除过期 key 时, 把释放内存的操作放到其他线程中执行, 避免阻塞主线程</li>
+</ul>
 
     </div>
 
@@ -881,12 +935,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/11/3bfcb546cd4a/" rel="prev" title="Redis-Set-Zset">
-      <i class="fa fa-chevron-left"></i> Redis-Set-Zset
+    <a href="/2022/05/4881d8683e6d/" rel="prev" title="shell工具">
+      <i class="fa fa-chevron-left"></i> shell工具
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/11/4c5a8bb1e1ca/" rel="next" title="Redis-Other-Structs">
-      Redis-Other-Structs <i class="fa fa-chevron-right"></i>
+    <a href="/2022/11/3bfcb546cd4a/" rel="next" title="Redis-Set-Zset">
+      Redis-Set-Zset <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -946,7 +1000,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis"><span class="nav-number">1.</span> <span class="nav-text">Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">工具命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CONFIG-%E5%91%BD%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">CONFIG 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keys-%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">Keys 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C-key"><span class="nav-number">1.4.1.</span> <span class="nav-text">操作 key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC"><span class="nav-number">1.4.2.</span> <span class="nav-text">副本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-key-%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">1.4.3.</span> <span class="nav-text">设置 key 的过期时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-key-%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">1.4.4.</span> <span class="nav-text">获取 key 的过期时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.5.</span> <span class="nav-text">数据库操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81"><span class="nav-number">1.4.6.</span> <span class="nav-text">安全认证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ACL"><span class="nav-number">1.5.</span> <span class="nav-text">ACL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E5%88%86%E7%B1%BB"><span class="nav-number">1.5.1.</span> <span class="nav-text">规则分类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.6.</span> <span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TLS-SSL"><span class="nav-number">1.6.1.</span> <span class="nav-text">TLS&#x2F;SSL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.6.2.</span> <span class="nav-text">通用设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SNAPSHOTTING"><span class="nav-number">1.6.3.</span> <span class="nav-text">SNAPSHOTTING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SECURITY"><span class="nav-number">1.6.4.</span> <span class="nav-text">SECURITY</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">1.7.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">1.7.1.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">1.7.2.</span> <span class="nav-text">编译时错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">1.7.3.</span> <span class="nav-text">运行时错误</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85"><span class="nav-number">1.8.</span> <span class="nav-text">发布订阅</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E8%AE%A2%E9%98%85"><span class="nav-number">1.8.1.</span> <span class="nav-text">普通订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A2%8E%E7%89%87%E9%A2%91%E9%81%93%E8%AE%A2%E9%98%85"><span class="nav-number">1.8.2.</span> <span class="nav-text">碎片频道订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E8%AE%A2%E9%98%85"><span class="nav-number">1.8.3.</span> <span class="nav-text">模式订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E6%B6%88%E6%81%AF"><span class="nav-number">1.8.4.</span> <span class="nav-text">发布消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E8%AE%A2%E9%98%85%E4%BF%A1%E6%81%AF"><span class="nav-number">1.8.5.</span> <span class="nav-text">统计订阅信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.9.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="nav-number">1.9.1.</span> <span class="nav-text">触发方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB"><span class="nav-number">1.9.2.</span> <span class="nav-text">RDB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF"><span class="nav-number">1.9.3.</span> <span class="nav-text">AOF</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-number">1.10.</span> <span class="nav-text">主从复制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">1.10.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">1.10.2.</span> <span class="nav-text">复制原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">1.10.2.1.</span> <span class="nav-text">全量复制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">1.10.2.2.</span> <span class="nav-text">增量复制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE"><span class="nav-number">1.10.3.</span> <span class="nav-text">命令模式配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="nav-number">1.10.4.</span> <span class="nav-text">配置文件配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE"><span class="nav-number">1.10.5.</span> <span class="nav-text">哨兵模式配置</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis"><span class="nav-number">1.</span> <span class="nav-text">Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">工具命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CONFIG-%E5%91%BD%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">CONFIG 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keys-%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">Keys 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C-key"><span class="nav-number">1.4.1.</span> <span class="nav-text">操作 key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC"><span class="nav-number">1.4.2.</span> <span class="nav-text">副本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-key-%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">1.4.3.</span> <span class="nav-text">设置 key 的过期时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-key-%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">1.4.4.</span> <span class="nav-text">获取 key 的过期时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.5.</span> <span class="nav-text">数据库操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81"><span class="nav-number">1.4.6.</span> <span class="nav-text">安全认证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ACL"><span class="nav-number">1.5.</span> <span class="nav-text">ACL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E5%88%86%E7%B1%BB"><span class="nav-number">1.5.1.</span> <span class="nav-text">规则分类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.6.</span> <span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TLS-SSL"><span class="nav-number">1.6.1.</span> <span class="nav-text">TLS&#x2F;SSL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.6.2.</span> <span class="nav-text">通用设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SNAPSHOTTING"><span class="nav-number">1.6.3.</span> <span class="nav-text">SNAPSHOTTING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SECURITY"><span class="nav-number">1.6.4.</span> <span class="nav-text">SECURITY</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">1.7.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">1.7.1.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">1.7.2.</span> <span class="nav-text">编译时错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">1.7.3.</span> <span class="nav-text">运行时错误</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85"><span class="nav-number">1.8.</span> <span class="nav-text">发布订阅</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E8%AE%A2%E9%98%85"><span class="nav-number">1.8.1.</span> <span class="nav-text">普通订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A2%8E%E7%89%87%E9%A2%91%E9%81%93%E8%AE%A2%E9%98%85"><span class="nav-number">1.8.2.</span> <span class="nav-text">碎片频道订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E8%AE%A2%E9%98%85"><span class="nav-number">1.8.3.</span> <span class="nav-text">模式订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E6%B6%88%E6%81%AF"><span class="nav-number">1.8.4.</span> <span class="nav-text">发布消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E8%AE%A2%E9%98%85%E4%BF%A1%E6%81%AF"><span class="nav-number">1.8.5.</span> <span class="nav-text">统计订阅信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.9.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="nav-number">1.9.1.</span> <span class="nav-text">触发方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB"><span class="nav-number">1.9.2.</span> <span class="nav-text">RDB</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RDB-%E4%BC%98%E7%82%B9"><span class="nav-number">1.9.2.1.</span> <span class="nav-text">RDB 优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDB-%E7%BC%BA%E7%82%B9"><span class="nav-number">1.9.2.2.</span> <span class="nav-text">RDB 缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF"><span class="nav-number">1.9.3.</span> <span class="nav-text">AOF</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF-%E4%BC%98%E7%82%B9"><span class="nav-number">1.9.3.1.</span> <span class="nav-text">AOF 优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF-%E7%BC%BA%E7%82%B9"><span class="nav-number">1.9.3.2.</span> <span class="nav-text">AOF 缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB-%E5%92%8C-AOF-%E7%BB%84%E5%90%88"><span class="nav-number">1.9.4.</span> <span class="nav-text">RDB 和 AOF 组合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-number">1.10.</span> <span class="nav-text">主从复制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">1.10.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">1.10.2.</span> <span class="nav-text">复制原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">1.10.2.1.</span> <span class="nav-text">全量复制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">1.10.2.2.</span> <span class="nav-text">增量复制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE"><span class="nav-number">1.10.3.</span> <span class="nav-text">命令模式配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="nav-number">1.10.4.</span> <span class="nav-text">配置文件配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE"><span class="nav-number">1.10.5.</span> <span class="nav-text">哨兵模式配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.11.</span> <span class="nav-text">慢查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%8D%E6%9D%82%E5%BA%A6%E8%BF%87%E9%AB%98%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="nav-number">1.11.1.</span> <span class="nav-text">使用复杂度过高的命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%A7-Key-%E9%97%AE%E9%A2%98"><span class="nav-number">1.11.2.</span> <span class="nav-text">大 Key 问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E8%BF%87%E6%9C%9F"><span class="nav-number">1.11.3.</span> <span class="nav-text">集中过期</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1032,12 +1086,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">237k</span>
+    <span title="站点总字数">239k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:36</span>
+    <span title="站点阅读时长">3:37</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
