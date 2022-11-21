@@ -91,10 +91,12 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
 - KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)
 - DEL key [key...] 阻塞删除 key 并返回成功删除 key 的数量
-- UNLINK key [key ...] 非阻塞从键空间中取消键指定 key 的链接, 并返回成功取消 key 的数量, 如果 key 不存在则忽略
+- UNLINK key [key ...] 非阻塞从键空间中取消键指定 key 的链接(在其他线程中执行实际的内存回收), 并返回成功取消 key 的数量, 如果 key 不存在则忽略
 
 - RENAME key newKey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在则覆盖
 - RENAMENX key newkey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在不执行任何操作返回 0, 否则返回 1
+
+- SORT key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE destination] 对 list、set、zset 集合中的元素进行排序, 默认是按照数字或者元素的双精度浮点数去比较
 
 - MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中
 
@@ -571,18 +573,47 @@ Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任
 
 - redis-check-rdb 检查 RDB 文件
 
+##### RDB 优点
+
+- 每隔一段时间完全备份一次
+- 容灾简单, 可远程传输
+- RDB 最大限度地提高了 Redis 的性能
+- 文件较大时重启和恢复速度要快
+
+##### RDB 缺点
+
+- 如果发生故障, 最后备份的数据可能会丢失, 无法处理实时备份
+- RDB 需要经常 fork() 以便使用子进程在磁盘上持久化, 增加 CPU 的负担
+
 #### AOF
 
-AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍, 默认 AOF 的持久化策略在开启后是每秒钟 sync 一次, 可以修改配置文件的 `appendfsync` 项
+AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍, AOF 的持久化策略在开启后默认是每秒钟 sync 一次
 
 `appendonly yes` 启动 AOF 模式
 `appendfilename appendonly.aof` 默认文件名
 `appenddirname appendonlydir` 默认存储目录
 `appendfsync everysec` 持久化策略, 每秒钟执行一次, 可以修改为 `always` 和 `no`
+`appendfsync always` 每次将新命令附加到 AOF 时, 速度慢, 但是最安全
+`appendfsync no` 将写入策略权交给操作系统, 速度快, 但是不安全
 
 如果 appendonly.aof 文件有错误, Redis 服务将会启动失败
 
 - redis-check-aof 检查 AOF 文件, --fix 参数修复文件的错误, 通常会丢弃文件中无法识别的命令
+
+##### AOF 优点
+
+- AOF 更耐用, 可以在几秒钟内完成备份
+- 当数据过大时, Redis 可以在后台自动重写 AOF, 节省空间
+- AOF 实时性比较好, 并且支持配置写入策略
+
+##### AOF 缺点
+
+- AOF 文件一半大于 RDB 的文件
+- 即使 AOF 有写入策略, 但是本质上速度还是慢于 RDB
+
+#### RDB 和 AOF 组合
+
+`aof-use-rdb-preamble yes`
 
 ### 主从复制
 
@@ -760,3 +791,52 @@ sentinel monitor myredis 127.0.0.1 6379 2
 
 ![redis-2](/images/redis-2.png)
 ![redis-3](/images/redis-3.png)
+
+### 慢查询
+
+Redis 慢查询和 Redis 定义慢查询的 `阈值` 有关
+
+`slowlog-log-slower-than 10000` 单位微秒, 当 Redis 命令的执行时间超过该值时, Redis 将其记录在 Redis 的慢查询日志中
+`slowlog-max-len 128` 记录的条数超过时会只存储最新的 slowlog-max-len 条
+
+#### 使用复杂度过高的命令
+
+复杂的命令一般指 O(N)以上的命令, 如 sort、sunion、zunionstore 聚合类的命令, 或是 O(N)类的命令, 对于 O(N)以上的命令, Redis 在操作内存数据时耗时过高, 会耗费更多的 CPU 资源, 导致查询变慢
+Redis 是单线程处理客户端请求的, 如果遇到处理上面的请求时, 就会导致后面的请求发生排队, 对于客户端来说响应时间就会变长
+
+解决问题的原则
+
+- 尽量不使用 O(N)以上的命令, 某些数据需要排序或者聚合操作时, 可以放在客户端处理
+- 执行 O(N)命令时, 保证 N 尽量的小(推荐 N <= 300), 每次获取尽量少的数据, 让 Redis 可以及时处理返回
+
+#### 大 Key 问题
+
+通常是 key 对应的 value 值过大, 此类问题在 SET/DEL 这类命令中也会出现慢查询
+SET/DEL 的过程
+
+- 写入数据: 为该数据分配内存空间
+- 删除数据: 释放该数据对应的内存空间
+
+当数据值较大时, Redis 分配数据内存和释放内存空间都比较耗时
+
+解决问题的原则
+
+- 尽量避免写入大 Key(不要写入无关的数据, 数据实在过大进行拆分, 通过多 key 存储)
+- 如果 Redis 是 4.0 以上版本, 尽量使用 `UNLINK`代替 `DEL`命令, 此命令将删除 key 和内存回收放到其他线程执行, 从而降低对 Redis 的影响
+- 如果 Redis 是 6.0 以上版本, 可以开启 lazy-free, 在执行 DEL 命令时、释放内存也会放到其他线程中执行
+
+`lazyfree-lazy-user-del no` 修改 `DEL` 默认命令的行为使其更接近于 `UNLINK`命令, 默认不开启
+
+#### 集中过期
+
+Redis 过期策略
+
+- 被动过期: 只有当访问某个 key 时, 才会检测该 key 是否已经过期, 如果已经过期则从实例删除该 key
+- 主动过期: Redis 内部存在一个定时任务, 默认每间隔 100 毫秒就会从全局的过期哈希表中随机取出 20 个 key, 然后删除其中过期的 key, 如果过期 key 的比例超过了 25%, 则继续重复此过程, 直到过期 key 的比例下降到 25% 以下, 或者这次任务的执行耗时超过了 25 毫秒, 才会退出循环
+
+主动过期 key 的定时任务是在 Redis 主线程中执行的, 如果在执行主动过期的过程中, 出现了集中过期, 就需要大量删除过期 key, 如果此时应用程序在访问 Redis 时, 必须等待这个过期任务执行结束, 此时 Redis 就有可能产生慢查询
+
+解决问题的原则
+
+- 避免集中过期, 比如将过期时间随机化, 添加一个随机的值, 分散集中过期 key 的过期时间, 降低 Redis 清理过期 key 的压力
+- 如果 Redis 是 4.0 以上版本, 可以开启 lazy-free, 当删除过期 key 时, 把释放内存的操作放到其他线程中执行, 避免阻塞主线程
