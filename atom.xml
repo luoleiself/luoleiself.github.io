@@ -103,33 +103,11 @@
   </entry>
   
   <entry>
-    <title>Redis</title>
-    <link href="https://luoleiself.github.io/2022/11/819f95816ecc/"/>
-    <id>https://luoleiself.github.io/2022/11/819f95816ecc/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2022-11-18T11:38:30.678Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;Redis&quot;&gt;&lt;a href=&quot;#Redis&quot; class=&quot;headerlink&quot; title=&quot;Redis&quot;&gt;&lt;/a&gt;Redis&lt;/h2&gt;&lt;p&gt;Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API&lt;br&gt;Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能&lt;/p&gt;
-&lt;h3 id=&quot;数据类型&quot;&gt;&lt;a href=&quot;#数据类型&quot; class=&quot;headerlink&quot; title=&quot;数据类型&quot;&gt;&lt;/a&gt;数据类型&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/redis-1.jpg&quot; alt=&quot;redis-1&quot;&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Redis-Other-Structs</title>
     <link href="https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/"/>
     <id>https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2022-11-18T11:38:26.454Z</updated>
+    <updated>2022-11-18T11:42:29.350Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;HyperLogLog&quot;&gt;&lt;a href=&quot;#HyperLogLog&quot; class=&quot;headerlink&quot; title=&quot;HyperLogLog&quot;&gt;&lt;/a&gt;HyperLogLog&lt;/h3&gt;&lt;p&gt;HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量或者体积非常大时, 计算基数所需的空间总是固定的、并且是很小的. 每个 HyperLogLog 键只需要花费 12KB 内存, 就可以计算接近 2^64 个不同元素的基数, 并产生标准误差接近于 0.81% 的近似值, 因为 HyperLogLog 只会根据输入元素来计算基数, 而不会储存输入元素本身&lt;/p&gt;
@@ -143,6 +121,28 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFADD hll foo bar zap&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFADD hll zap zap zap&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFADD hll foo bar&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFCOUNT hll&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFADD other-hll 1 2 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFCOUNT hll other-hll&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis</title>
+    <link href="https://luoleiself.github.io/2022/11/819f95816ecc/"/>
+    <id>https://luoleiself.github.io/2022/11/819f95816ecc/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2022-11-21T03:29:55.634Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;Redis&quot;&gt;&lt;a href=&quot;#Redis&quot; class=&quot;headerlink&quot; title=&quot;Redis&quot;&gt;&lt;/a&gt;Redis&lt;/h2&gt;&lt;p&gt;Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API&lt;br&gt;Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能&lt;/p&gt;
+&lt;h3 id=&quot;数据类型&quot;&gt;&lt;a href=&quot;#数据类型&quot; class=&quot;headerlink&quot; title=&quot;数据类型&quot;&gt;&lt;/a&gt;数据类型&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/redis-1.jpg&quot; alt=&quot;redis-1&quot;&gt;&lt;/p&gt;</summary>
     
     
     
