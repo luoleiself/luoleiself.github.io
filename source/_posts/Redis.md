@@ -90,6 +90,7 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
 - EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
 - KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)
+- SCAN cursor [MATCH pattern] [COUNT count] [TYPE type] 查找给定模式(pattern)的 key, 返回列表和上次遍历时的游标
 - DEL key [key...] 阻塞删除 key 并返回成功删除 key 的数量
 - UNLINK key [key ...] 非阻塞从键空间中取消键指定 key 的链接(在其他线程中执行实际的内存回收), 并返回成功取消 key 的数量, 如果 key 不存在则忽略
 
