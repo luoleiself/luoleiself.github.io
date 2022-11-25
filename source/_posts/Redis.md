@@ -165,7 +165,7 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 |         reset          | 移除用户的所有功能, 并关闭用户                                                          |
 |       +[command]       | 将命令添加到用户可以调用的命令列表中                                                    |
 |       -[command]       | 将命令从用户可以调用的命令列表中移除                                                    |
-| +[command]\|subcommand | 允许使用已禁用命令的特定子命令                                                          |
+|   +[command]\|subcmd   | 允许使用已禁用命令的特定子命令                                                          |
 |      +@[category]      | 允许用户调用 category 类别中的所有命令, 可以使用 `ACL CAT` 命令查看所有类别             |
 |      -@[category]      | 禁止用户调用 category 类别中的所有命令                                                  |
 |      allcommands       | +@all 的别名                                                                            |
