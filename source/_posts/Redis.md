@@ -310,7 +310,7 @@ OK
 #### 通用设置
 
 - daemonize no 是否后台模式启动服务
-- pidfile /var/run/redis_6379.pid # 进程 id 文件
+- pidfile /var/run/redis\_6379.pid # 进程 id 文件
 - loglevel notice # 设置日志级别, 默认 notice
   - debug (a lot of information, useful for development/testing)
   - verbose (many rarely useful info, but not a mess like the debug level)
@@ -324,6 +324,39 @@ OK
 
 - always-show-logo no # 是否总是显示 logo
 - set-proc-title yes # 设置进程标题
+
+#### REPLICATION
+
+- replicaof \<masterip\> \<masterport\> 设置主服务器的 IP 和 Port
+- masterauth \<master-password\> 设置主服务器的认证密码
+- masteruser \<username\> 设置主服务器的用户名
+- replica-read-only yes 只读模式, 默认开启
+- repl-diskless-sync-delay 5 服务器同步延迟, 默认 5 秒
+- replica-priority 100 哨兵模式下被选为主服务器的优先级, 值越小优先级越高
+- replica-ignore-maxmemory yes 副本忽略最大内存限制
+
+#### CLUSTER
+
+- cluster-enabled yes 打开集群模式
+- cluster-config-file nodes-6379.conf 设置节点配置文件
+- cluster-node-timeout 15000 设置节点失联时间, 超过该时间集群自动主从切换, 默认毫秒
+- cluster-allow-replica-migration yes 允许集群副本迁移
+- cluster-require-full-coverage yes 当某一段插槽主从服务器都宕机, 设置 yes 则整个集群都挂掉, 设置 no 则只是该插槽不可用
+- cluster-allow-pubsubshard-when-down yes 允许集群服务器宕机时发布/订阅
+
+#### MEMORY
+
+- maxmemory \<bytes\> # 设置内存容量
+- maxmemory-policy noeviction # 内存管理策略
+  - volatile-lru 使用 LRU 算法移除 key, 只对设置了过期时间的 key
+  - allkeys-lru 在所有集合 key 中, 使用 LRU 算法移除 key
+  - volatile-lfu 使用 LFU 算法移除 key, 只对设置了过期时间的 key
+  - allkeys-lfu 在所有集合 key 中, 使用 LFU 算法移除 key
+  - volatile-random 在过期集合 key 中, 移除随机的 key, 只对设置了过期时间的 key
+  - allkeys-random 在所有集合 key 中, 移除随机的 key
+  - volatile-ttl 移除那些 TTL 值最小的 key, 即那些最近要过期的 key
+  - noeviction 不进行移除, 针对写操作, 只是返回错误信息
+- maxmemory-samples 5 # 设置 Redis 移除 key 时的样本数量, 10 接近 LRU 算法但非常消耗内存, 3 最快却不是精确的
 
 #### SNAPSHOTTING
 
@@ -569,10 +602,10 @@ save 3600 1 300 100 60 10000
 RDB(Redis Database), 在某一时刻将 Redis 中的数据生成一份快照保存到磁盘中
 Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任何 I/O 操作, 这样就保证了 Redis 极高的性能, 如果需要进行大规模数据的恢复,且对于数据恢复的完整性不是非常敏感, 此方式比 AOF 方式更加的高效
 
-`dbfilename dump.rdb` 默认文件名
-`dir ./` 默认存储目录
+- `dbfilename dump.rdb` 默认文件名
+- `dir ./` 默认存储目录
 
-- redis-check-rdb 检查 RDB 文件
+检查 RDB 文件的命令 `redis-check-rdb`
 
 ##### RDB 优点
 
@@ -590,16 +623,18 @@ Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任
 
 AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍, AOF 的持久化策略在开启后默认是每秒钟 sync 一次
 
-`appendonly yes` 启动 AOF 模式
-`appendfilename appendonly.aof` 默认文件名
-`appenddirname appendonlydir` 默认存储目录
-`appendfsync everysec` 持久化策略, 每秒钟执行一次, 可以修改为 `always` 和 `no`
-`appendfsync always` 每次将新命令附加到 AOF 时, 速度慢, 但是最安全
-`appendfsync no` 将写入策略权交给操作系统, 速度快, 但是不安全
+- `appendonly yes` 启动 AOF 模式
+- `appendfilename appendonly.aof` 默认文件名
+- `appenddirname appendonlydir` 默认存储目录
+- `appendfsync everysec` 持久化策略, 每秒钟执行一次, 可以修改为 `always` 和 `no`
+  - `always` 每次将新命令附加到 AOF 时, 速度慢, 但是最安全
+  - `no` 将写入策略权交给操作系统, 速度快, 但是不安全
+- `auto-aof-rewrite-percentage 100` aof 重写的基准值, 当达到 100% 时重写
+- `auto-aof-rewrite-min-size 64mb` 当文件大小达到 64mb 的 100% 时重写
 
 如果 appendonly.aof 文件有错误, Redis 服务将会启动失败
 
-- redis-check-aof 检查 AOF 文件, --fix 参数修复文件的错误, 通常会丢弃文件中无法识别的命令
+- redis-check-aof 检查 AOF 文件, \-\-fix 参数修复文件的错误, 通常会丢弃文件中无法识别的命令
 
 ##### AOF 优点
 
@@ -668,12 +703,12 @@ repl_backlog_histlen:0
 - 启动 Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
 - 客户端连接服务器后使用内置命令 `REPLICAOF host port`
 
-单机集群: 新建多个 Redis 服务器配置文件并修改其中关键项
+单机主从配置: 新建多个 Redis 服务器配置文件并修改其中关键项
 
 - `bind 127.0.0.1` 修改绑定的 ip
 - `port 6379` 修改绑定的端口号
 - `daemonize yes` 开启后台运行, 默认为 no
-- `pidfile /var/run/redis_6379.pid` 修改进程文件, 默认为 redis_6379.pid
+- `pidfile /var/run/redis_6379.pid` 修改进程文件, 默认为 redis\_6379.pid
 - `logfile "6379.log"` 修改日志文件名, 默认为空
 - `dbfilename dump6379.rdb` 修改持久化文件名, 默认为 dump.rdb
 
@@ -719,6 +754,10 @@ OK
 (error) READONLY You can't write against a read only replica.
 ```
 
+##### 提升从服务器角色
+
+- REPLICAOF NO ONE 将从服务器更改为主服务器
+
 #### 配置文件配置
 
 redis.conf
@@ -729,6 +768,7 @@ redis.conf
 - replica-read-only yes 只读模式, 默认开启
 - repl-diskless-sync yes 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件
 - repl-diskless-sync-delay 5 同步延迟, 默认 5 秒
+- replica-priority 100 哨兵模式下被选为主服务器的优先级, 值越小优先级越高
 
 #### 哨兵模式配置
 
@@ -792,6 +832,58 @@ sentinel monitor myredis 127.0.0.1 6379 2
 
 ![redis-2](/images/redis-2.png)
 ![redis-3](/images/redis-3.png)
+
+### 集群
+
+Redis Cluster是一种服务器 Sharding 技术, Redis 3.0版本开始支持
+在Redis Cluster中, Sharding采用slot的概念, 一共分成16384个槽, 对于每个进入Redis的键值对, 根据key进行散列, 分配到这16384个slot中的某一个slot中. 使用的hash算法也比较简单, 就是CRC16后16384取模
+Redis集群中的每个node负责分摊这16384个slot中的一部分, 当动态添加或减少node时, 需要将16384个slot再分配, slot中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个node发生故障, 则此node负责的slot也就失效, 整个集群将不能工作
+官方推荐的方案是将node配置成主从结构, 即1:n, 如果主节点失效, Redis Cluster会根据选举算法从slave节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则转换角色作为新的主节点的从节点
+
+- redis-cli \-\-cluster help # 查看集群命令帮助信息
+- redis-cli \-\-cluster create --cluster-replicas host1:port1 ... hostN:portN # 创建指定 IP 和 Port 的服务器作为集群
+- redis-cli \-\-cluster add-node new\_host:new\_port existing\_host:existing\_port # 添加集群节点
+  - \-\-cluster-slave # 添加集群节点从服务器
+  - \-\-cluster-master-id \<arg\> # 添加到指定主服务器下
+- redis-cli \-\-cluster reshard \<host:port\> # 重新分配节点的 hash 插槽
+  - \-\-cluster-from \<arg\> # 已有节点id, 多个 id 之间使用半角逗号分隔
+  - \-\-cluster-to \<arg\> # 新节点id
+  - \-\-cluster-slots \<arg\> # 新节点的 hash 槽数量
+- redis-cli \-\-cluster info \<host:port\> # 查看指定节点信息
+- redis-cli \-\-cluster check \<host:port\> # 检查指定节点
+- redis-cli \-\-cluster del-node host:port node\_id # 删除集群节点
+- redis-cli \-\-cluster call host:port command arg arg ... arg # 集群节点执行指定命令
+
+编辑 redis 服务器配置文件, 打开集群模式, 并将服务器名称作为节点配置文件名称(cluster-config-file)
+
+```shell
+# bind 127.0.0.1 # 修改绑定的 ip 为其他机器 IP
+port 6379 # 修改绑定的端口号
+protected-mode no # 关闭保护模式, 默认为 yes
+daemonize yes # 开启后台运行, 默认为 no
+pidfile /var/run/redis_6379.pid # 修改进程文件, 默认为 redis_6379.pid
+logfile "6379.log" # 修改日志文件名, 默认为空
+dbfilename dump6379.rdb # 修改持久化文件名, 默认为 dump.rdb
+cluster-enabled yes # 打开集群模式
+cluster-config-file nodes-6379.conf # 设置节点配置文件
+cluster-node-timeout 15000 # 设置节点失联时间, 超过该时间集群自动主从切换, 默认毫秒
+cluster-require-full-coverage no # 当某一段插槽主从服务器都宕机, 设置 yes 则整个集群都挂掉, 设置 no 则只是该插槽不可用 
+```
+
+命令行进入 Redis 服务器使用 `redis-cli -c -p port` 由集群自动分配接入点
+
+#### 优点
+
+- 实现扩容
+- 分担压力
+- 无中心配置相对简单
+
+#### 缺点
+
+- 多建操作不支持, 例如 `MSET` 命令设置多个键不支持, 需要使用分组方式 `MSET name{user} zhangsan age{user} 20 addr{user} beijing`
+- 多键的 Redis 事务不支持
+- Lua 脚本不支持
+- 迁移方案需要整体迁移而不是逐步过渡, 复杂度较大
 
 ### 慢查询
 

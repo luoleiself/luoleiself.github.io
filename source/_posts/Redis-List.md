@@ -45,31 +45,6 @@ List: 键名: key, 键类型: list, 键值: string
 
 #### 删除元素
 
-- LPOP key [count] 移除并返回列表头部指定数量的元素, count 默认为 1, 列表为空或者不存在返回 &lt;nil&gt;
-- RPOP key [count] 移除并返回列表尾部指定数量的元素, count 默认为 1, 列表为空或者不存在返回 &lt;nil&gt;
-
-- BLPOP key [key...] timeout 从多个列表中第 1 个非空列表中的头部移除并返回 1 个元素, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止, 如果列表为空或者超时返回 &lt;nil&gt;
-  否则, 返回 1 个含有两个元素的列表, 第 1 个元素是被弹出元素所属的列表, 第 2 个元素是被弹出的元素
-- BRPOP key [key ...] timeout 从多个列表中第 1 个非空列表中的尾部移除并返回 1 个元素, 返回值 `BLPOP`
-
-```shell
-127.0.0.1:6379> RPUSH list c d e  # 向 list 尾部添加元素
-(integer) 3
-127.0.0.1:6379> BRPOP newlist list 0  # newlist 为空或者不存在, 会删除 list 的尾部的元素
-1) "list"
-2) "e"
-127.0.0.1:6379> RPUSH newlist g a b f # 向 newlist 尾部添加元素
-(integer) 4
-127.0.0.1:6379> BLPOP list newlist 0  # list 和 newlist 都是非空的列表, 会删除返回 list 的头部的元素
-1) "list"
-2) "c"
-127.0.0.1:6379> del list  # 删除 list
-(integer) 1
-127.0.0.1:6379> BLPOP list newlist 0  # list 为空或者不存在, 会删除返回 newlist 的头部的元素
-1) "newlist"
-2) "g"
-```
-
 ##### 修剪列表
 
 - LTRIM key start stop 对列表不包含在 start 到 stop 区间的元素进行删除, 执行成功返回 ok
@@ -117,11 +92,36 @@ OK
 
 ##### 批量移除相邻元素
 
-- BLMPOP timeout numkeys key [key ...] LEFT|RIGHT [COUNT count] 阻塞版的 `LMPOP`, 列表为空时会阻塞直到等待超时或发现可弹出元素为止, 7.0.0 支持
+- LPOP key [count] 移除并返回列表头部指定数量的元素, count 默认为 1, 列表为空或者不存在返回 &lt;nil&gt;
+- BLPOP key [key...] timeout 阻塞版的 `LPOP`, 从多个列表中第 1 个非空列表中的头部移除并返回 1 个元素, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止, 如果列表为空或者超时返回 &lt;nil&gt;
+  否则, 返回 1 个含有两个元素的列表, 第 1 个元素是被弹出元素所属的列表, 第 2 个元素是被弹出的元素
+
+- RPOP key [count] 移除并返回列表尾部指定数量的元素, count 默认为 1, 列表为空或者不存在返回 &lt;nil&gt;
+- BRPOP key [key ...] timeout 阻塞版的 `RPOP`, 从多个列表中第 1 个非空列表中的尾部移除并返回 1 个元素, 返回值 `BLPOP`
+
+```shell
+127.0.0.1:6379> RPUSH list c d e  # 向 list 尾部添加元素
+(integer) 3
+127.0.0.1:6379> BRPOP newlist list 0  # newlist 为空或者不存在, 会删除 list 的尾部的元素
+1) "list"
+2) "e"
+127.0.0.1:6379> RPUSH newlist g a b f # 向 newlist 尾部添加元素
+(integer) 4
+127.0.0.1:6379> BLPOP list newlist 0  # list 和 newlist 都是非空的列表, 会删除返回 list 的头部的元素
+1) "list"
+2) "c"
+127.0.0.1:6379> del list  # 删除 list
+(integer) 1
+127.0.0.1:6379> BLPOP list newlist 0  # list 为空或者不存在, 会删除返回 newlist 的头部的元素
+1) "newlist"
+2) "g"
+```
+
 - LMPOP numkeys key [key ...] LEFT|RIGHT [COUNT count] 从多个列表中第 1 个非空列表中指定位置批量移除指定数量的元素并返回操作成功的 key 和移除的元素, 如果列表都为空或者不存在返回 &lt;nil&gt;, 7.0.0 支持
   - numkeys 指定列表名的数量, 值和 key 的数量不一致时返回语法错误
   - LEFT|RIGHT 移除元素的位置
   - COUNT count 移除元素的数量, 默认为 1
+- BLMPOP timeout numkeys key [key ...] LEFT|RIGHT [COUNT count] 阻塞版的 `LMPOP`, 列表为空时会阻塞直到等待超时或发现可弹出元素为止, 7.0.0 支持
 
 ```shell
 127.0.0.1:6379> RPUSH list a b c d e f  # 创建列表 list
