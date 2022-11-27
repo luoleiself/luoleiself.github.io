@@ -152,6 +152,212 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 
 - AUTH [username] password 对当前连接的认证
 
+### 发布订阅
+
+Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息
+它采用事件作为基本的通信机制，提供大规模系统所要求的松散耦合的交互模式: 订阅者(如客户端)以事件订阅的方式表达出它有兴趣接收的一个事件或一类事件;发布者(如服务器)可将订阅者感兴趣的事件随时通知相关订阅者
+订阅者对一个或多个频道感兴趣,只需接收感兴趣的消息,不需要知道什么样的发布者发布的. 这种发布者和订阅者的解耦合可以带来更大的扩展性和更加动态的网络拓扑
+
+- 发布者: 无需独占链接, 可以在 publish 发布消息的同时, 使用同一个链接进行其他操作
+- 订阅者: 需要独占链接, 在 subscribe 期间, 以阻塞的方式等待消息
+
+#### 普通订阅
+
+- SUBSCRIBE channel [channel ...] 订阅指定频道立即进入阻塞状态等待接收消息
+- UNSUBSCRIBE [channel [channel ...]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅
+
+#### 碎片频道订阅
+
+- SSUBSCRIBE shardchannel [shardchannel ...] 订阅指定的碎片频道, 7.0.0 支持
+- SUNSUBSCRIBE [shardchannel [shardchannel ...]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持
+
+#### 模式订阅
+
+- PSUBSCRIBE pattern [pattern ...] 根据给定模式订阅频道立即进入阻塞状态等待接收消息
+  - pattern 可以使用正则表达式匹配多个频道
+- PUNSUBSCRIBE [pattern [pattern ...]] 根据给定模式取消客户端订阅, 如果未指定则取消所有模式订阅
+
+#### 发布消息
+
+- PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者
+- SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持
+
+```shell
+# 订阅频道
+127.0.0.1:6379> PSUBSCRIBE h?llo
+Reading messages... (press Ctrl-C to quit)
+1) "psubscribe"
+2) "h?llo"
+3) (integer) 1
+# 接收到的消息
+1) "pmessage"
+2) "h?llo"
+3) "hello"
+4) "hello,world"
+# 接收到的消息
+1) "pmessage"
+2) "h?llo"
+3) "hallo"
+4) "hallo,world"
+# 发布消息到 hello 和 hallo 频道
+127.0.0.1:6379> PUBLISH hello hello,world
+(integer) 0
+127.0.0.1:6379> PUBLISH hello hello,world
+(integer) 2
+127.0.0.1:6379> PUBLISH hallo hallo,world
+(integer) 2
+```
+
+#### 统计订阅信息
+
+- PUBSUB CHANNELS [pattern] 返回当前活跃频道列表(不包含使用模式订阅的频道)
+
+```shell
+127.0.0.1:6379> PUBSUB CHANNELS
+1) "conn"
+```
+
+- PUBSUB NUMSUB [channel [channel ...]] 返回订阅者的数量(不包含使用模式订阅的频道)
+  - 如果不指定 channel 将返回 (empty array)
+
+```shell
+127.0.0.1:6379> PUBSUB NUMSUB hello conn
+1) "hello"
+2) (integer) 1
+3) "conn"
+4) (integer) 1
+```
+
+- PUBSUB NUMPAT 返回订阅者通过模式订阅的频道的数量
+
+```shell
+127.0.0.1:6379> PUBSUB NUMPAT
+(integer) 0
+127.0.0.1:6379> PUBSUB NUMPAT
+(integer) 1
+```
+
+- PUBSUB SHARDCHANNELS [pattern] 返回当前活动的碎片频道, 未找到返回 empty array, 7.0.0 支持
+- PUBSUB SHARDNUMSUB [shardchannel [shardchannel ...]] 返回指定的碎片频道的订阅者数量, 未找到返回 empty arryay, 7.0.0 支持
+
+```shell
+127.0.0.1:6379> PUBSUB SHARDNUMSUB conn
+1) "conn"
+2) (integer) 0
+```
+
+### 配置文件
+
+- include /path/to/\*.conf # 导入其他 redis 配置文件
+
+- bind 127.0.0.1 -::1 # 默认绑定本地 127.0.0.1
+- protected-mode yes # 保护模式, 默认开启
+- port 6379 # 默认端口号
+
+- tcp-backlog 511 # tcp 连接数
+- timeout 0 # 关闭客户端连接的延迟, 0 表示禁用, 单位秒
+- tcp-keepalive 300 # 保持长连接的时间, 单位秒
+
+#### TLS/SSL
+
+安全连接配置项, 默认未开启
+
+- tls-port 6379 # 安全连接端口
+- tls-cert-file redis.cert # 安全连接证书
+- tls-key-file redis.key # 安全连接 key
+- tls-key-file-pass secret # key 文件加密摘要
+- tls-client-cert-file client.crt # 客户端安全连接证书
+- tls-client-key-file client.key # 客户端安全连接 key
+- tls-client-key-file-pass secret # 客户端安全连接 key 文件加密摘要
+- tls-ca-cert-file ca.crt # CA 证书
+- tls-ca-cert-dir /etc/ssl/certs # CA 证书目录
+- tls-auth-clients no # no 不需要也不接受客户端证书连接, optional 证书不必需, 如果提供证书则必须验证有效
+- tls-session-caching no # 默认启用 TLS 会话缓存, no 表示禁用缓存
+- tls-session-cache-size 5000 # TLS 缓存大小, 默认 20480
+- tls-session-cache-timeout 60 # TLS 缓存有效期, 默认 300 秒
+
+#### 通用设置
+
+- daemonize no 是否后台模式启动服务
+- pidfile /var/run/redis\_6379.pid # 进程 id 文件
+- loglevel notice # 设置日志级别, 默认 notice
+  - debug (a lot of information, useful for development/testing)
+  - verbose (many rarely useful info, but not a mess like the debug level)
+  - notice (moderately verbose, what you want in production probably)
+  - warning (only very important / critical messages are logged)
+- logfile "" # 日志文件, 守护进程模式将指定 /dev/null
+- syslog-enabled no # 是否允许指向 系统 日志
+- syslog-ident redis # 日志标识符
+
+- databases 16 # 默认数据库数量
+
+- always-show-logo no # 是否总是显示 logo
+- set-proc-title yes # 设置进程标题
+
+#### REPLICATION
+
+- replicaof \<masterip\> \<masterport\> 设置主服务器的 IP 和 Port
+- masterauth \<master-password\> 设置主服务器的认证密码
+- masteruser \<username\> 设置主服务器的用户名
+- replica-read-only yes 只读模式, 默认开启
+- repl-diskless-sync-delay 5 服务器同步延迟, 默认 5 秒
+- replica-priority 100 哨兵模式下被选为主服务器的优先级, 值越小优先级越高
+- replica-ignore-maxmemory yes 副本忽略最大内存限制
+
+#### CLUSTER
+
+- cluster-enabled yes 打开集群模式
+- cluster-config-file nodes-6379.conf 设置节点配置文件
+- cluster-node-timeout 15000 设置节点失联时间, 超过该时间集群自动主从切换, 默认毫秒
+- cluster-allow-replica-migration yes 允许集群副本迁移
+- cluster-require-full-coverage yes 当某一段插槽主从服务器都宕机, 设置 yes 则整个集群都挂掉, 设置 no 则只是该插槽不可用
+- cluster-allow-pubsubshard-when-down yes 允许集群服务器宕机时发布/订阅
+
+#### MEMORY
+
+- maxmemory \<bytes\> # 设置内存容量
+- maxmemory-policy noeviction # 内存管理策略
+  - volatile-lru 使用 LRU 算法移除 key, 只对设置了过期时间的 key
+  - allkeys-lru 在所有集合 key 中, 使用 LRU 算法移除 key
+  - volatile-lfu 使用 LFU 算法移除 key, 只对设置了过期时间的 key
+  - allkeys-lfu 在所有集合 key 中, 使用 LFU 算法移除 key
+  - volatile-random 在过期集合 key 中, 移除随机的 key, 只对设置了过期时间的 key
+  - allkeys-random 在所有集合 key 中, 移除随机的 key
+  - volatile-ttl 移除那些 TTL 值最小的 key, 即那些最近要过期的 key
+  - noeviction 不进行移除, 针对写操作, 只是返回错误信息
+- maxmemory-samples 5 # 设置 Redis 移除 key 时的样本数量, 10 接近 LRU 算法但非常消耗内存, 3 最快却不是精确的
+
+#### SNAPSHOTTING
+
+- save 3600 1 300 100 60 10000 # 快照执行机制, 3600 秒后如果超过 1 次更改, 300 秒后超过 100 次更改, 60 秒后超过 10000 次更改
+
+```shell
+save <seconds> <changes> [<seconds> <changes> ...]
+```
+
+- stop-writes-on-bgsave-error yes # 是否开启停止在保存快照发生错误的时的写操作
+- rdbcompression yes # 开启 rdb 文件压缩
+- rdbchecksum yes # 开启 rdb 文件的校验检查
+- dbfilename dump.rdb # rdb 文件名称
+- dir ./ # rdb 文件存储目录
+
+- appendonly no # 是否启动 aof 备份
+- appendfilename "appendonly.aof" # aof 备份文件名
+- appenddirname "appendonlydir" # aof 备份目录
+- appendfsync everysec # aof 备份模式, 每秒中执行
+  - always 只要 key 发生改变就要备份
+  - no 不备份
+
+#### SECURITY
+
+- acllog-max-len 128 # ACL 日志在内存中时的最大条目数
+- aclfile /etc/redis/users.acl # 默认 ACL 配置文件
+- requirepass foobared # 认证密码
+
+- maxclients 10000 # 客户端最大连接数
+
+- io-threads 4 # I/O 线程
+
 ### ACL
 
 ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis 客户端在访问 Redis 服务器时, 能够执行的命令和能够获取的 key, 提高操作安全性, 避免对数据造成损坏
@@ -277,118 +483,6 @@ OK
 OK
 ```
 
-### 配置文件
-
-- include /path/to/\*.conf # 导入其他 redis 配置文件
-
-- bind 127.0.0.1 -::1 # 默认绑定本地 127.0.0.1
-- protected-mode yes # 保护模式, 默认开启
-- port 6379 # 默认端口号
-
-- tcp-backlog 511 # tcp 连接数
-- timeout 0 # 关闭客户端连接的延迟, 0 表示禁用, 单位秒
-- tcp-keepalive 300 # 保持长连接的时间, 单位秒
-
-#### TLS/SSL
-
-安全连接配置项, 默认未开启
-
-- tls-port 6379 # 安全连接端口
-- tls-cert-file redis.cert # 安全连接证书
-- tls-key-file redis.key # 安全连接 key
-- tls-key-file-pass secret # key 文件加密摘要
-- tls-client-cert-file client.crt # 客户端安全连接证书
-- tls-client-key-file client.key # 客户端安全连接 key
-- tls-client-key-file-pass secret # 客户端安全连接 key 文件加密摘要
-- tls-ca-cert-file ca.crt # CA 证书
-- tls-ca-cert-dir /etc/ssl/certs # CA 证书目录
-- tls-auth-clients no # no 不需要也不接受客户端证书连接, optional 证书不必需, 如果提供证书则必须验证有效
-- tls-session-caching no # 默认启用 TLS 会话缓存, no 表示禁用缓存
-- tls-session-cache-size 5000 # TLS 缓存大小, 默认 20480
-- tls-session-cache-timeout 60 # TLS 缓存有效期, 默认 300 秒
-
-#### 通用设置
-
-- daemonize no 是否后台模式启动服务
-- pidfile /var/run/redis\_6379.pid # 进程 id 文件
-- loglevel notice # 设置日志级别, 默认 notice
-  - debug (a lot of information, useful for development/testing)
-  - verbose (many rarely useful info, but not a mess like the debug level)
-  - notice (moderately verbose, what you want in production probably)
-  - warning (only very important / critical messages are logged)
-- logfile "" # 日志文件, 守护进程模式将指定 /dev/null
-- syslog-enabled no # 是否允许指向 系统 日志
-- syslog-ident redis # 日志标识符
-
-- databases 16 # 默认数据库数量
-
-- always-show-logo no # 是否总是显示 logo
-- set-proc-title yes # 设置进程标题
-
-#### REPLICATION
-
-- replicaof \<masterip\> \<masterport\> 设置主服务器的 IP 和 Port
-- masterauth \<master-password\> 设置主服务器的认证密码
-- masteruser \<username\> 设置主服务器的用户名
-- replica-read-only yes 只读模式, 默认开启
-- repl-diskless-sync-delay 5 服务器同步延迟, 默认 5 秒
-- replica-priority 100 哨兵模式下被选为主服务器的优先级, 值越小优先级越高
-- replica-ignore-maxmemory yes 副本忽略最大内存限制
-
-#### CLUSTER
-
-- cluster-enabled yes 打开集群模式
-- cluster-config-file nodes-6379.conf 设置节点配置文件
-- cluster-node-timeout 15000 设置节点失联时间, 超过该时间集群自动主从切换, 默认毫秒
-- cluster-allow-replica-migration yes 允许集群副本迁移
-- cluster-require-full-coverage yes 当某一段插槽主从服务器都宕机, 设置 yes 则整个集群都挂掉, 设置 no 则只是该插槽不可用
-- cluster-allow-pubsubshard-when-down yes 允许集群服务器宕机时发布/订阅
-
-#### MEMORY
-
-- maxmemory \<bytes\> # 设置内存容量
-- maxmemory-policy noeviction # 内存管理策略
-  - volatile-lru 使用 LRU 算法移除 key, 只对设置了过期时间的 key
-  - allkeys-lru 在所有集合 key 中, 使用 LRU 算法移除 key
-  - volatile-lfu 使用 LFU 算法移除 key, 只对设置了过期时间的 key
-  - allkeys-lfu 在所有集合 key 中, 使用 LFU 算法移除 key
-  - volatile-random 在过期集合 key 中, 移除随机的 key, 只对设置了过期时间的 key
-  - allkeys-random 在所有集合 key 中, 移除随机的 key
-  - volatile-ttl 移除那些 TTL 值最小的 key, 即那些最近要过期的 key
-  - noeviction 不进行移除, 针对写操作, 只是返回错误信息
-- maxmemory-samples 5 # 设置 Redis 移除 key 时的样本数量, 10 接近 LRU 算法但非常消耗内存, 3 最快却不是精确的
-
-#### SNAPSHOTTING
-
-- save 3600 1 300 100 60 10000 # 快照执行机制, 3600 秒后如果超过 1 次更改, 300 秒后超过 100 次更改, 60 秒后超过 10000 次更改
-
-```shell
-save <seconds> <changes> [<seconds> <changes> ...]
-```
-
-- stop-writes-on-bgsave-error yes # 是否开启停止在保存快照发生错误的时的写操作
-- rdbcompression yes # 开启 rdb 文件压缩
-- rdbchecksum yes # 开启 rdb 文件的校验检查
-- dbfilename dump.rdb # rdb 文件名称
-- dir ./ # rdb 文件存储目录
-
-- appendonly no # 是否启动 aof 备份
-- appendfilename "appendonly.aof" # aof 备份文件名
-- appenddirname "appendonlydir" # aof 备份目录
-- appendfsync everysec # aof 备份模式, 每秒中执行
-  - always 只要 key 发生改变就要备份
-  - no 不备份
-
-#### SECURITY
-
-- acllog-max-len 128 # ACL 日志在内存中时的最大条目数
-- aclfile /etc/redis/users.acl # 默认 ACL 配置文件
-- requirepass foobared # 认证密码
-
-- maxclients 10000 # 客户端最大连接数
-
-- io-threads 4 # I/O 线程
-
 ### 事务
 
 === Redis 单条命令是保证原子性的, 但是 Redis 事务不保证原子性 ===
@@ -484,100 +578,6 @@ QUEUED
 4) "key2"
 127.0.0.1:6379> get key2
 "key2"
-```
-
-### 发布订阅
-
-Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息
-它采用事件作为基本的通信机制，提供大规模系统所要求的松散耦合的交互模式: 订阅者(如客户端)以事件订阅的方式表达出它有兴趣接收的一个事件或一类事件;发布者(如服务器)可将订阅者感兴趣的事件随时通知相关订阅者
-订阅者对一个或多个频道感兴趣,只需接收感兴趣的消息,不需要知道什么样的发布者发布的. 这种发布者和订阅者的解耦合可以带来更大的扩展性和更加动态的网络拓扑
-
-- 发布者: 无需独占链接, 可以在 publish 发布消息的同时, 使用同一个链接进行其他操作
-- 订阅者: 需要独占链接, 在 subscribe 期间, 以阻塞的方式等待消息
-
-#### 普通订阅
-
-- SUBSCRIBE channel [channel ...] 订阅指定频道立即进入阻塞状态等待接收消息
-- UNSUBSCRIBE [channel [channel ...]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅
-
-#### 碎片频道订阅
-
-- SSUBSCRIBE shardchannel [shardchannel ...] 订阅指定的碎片频道, 7.0.0 支持
-- SUNSUBSCRIBE [shardchannel [shardchannel ...]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持
-
-#### 模式订阅
-
-- PSUBSCRIBE pattern [pattern ...] 根据给定模式订阅频道立即进入阻塞状态等待接收消息
-  - pattern 可以使用正则表达式匹配多个频道
-- PUNSUBSCRIBE [pattern [pattern ...]] 根据给定模式取消客户端订阅, 如果未指定则取消所有模式订阅
-
-#### 发布消息
-
-- PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者
-- SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持
-
-```shell
-# 订阅频道
-127.0.0.1:6379> PSUBSCRIBE h?llo
-Reading messages... (press Ctrl-C to quit)
-1) "psubscribe"
-2) "h?llo"
-3) (integer) 1
-# 接收到的消息
-1) "pmessage"
-2) "h?llo"
-3) "hello"
-4) "hello,world"
-# 接收到的消息
-1) "pmessage"
-2) "h?llo"
-3) "hallo"
-4) "hallo,world"
-# 发布消息到 hello 和 hallo 频道
-127.0.0.1:6379> PUBLISH hello hello,world
-(integer) 0
-127.0.0.1:6379> PUBLISH hello hello,world
-(integer) 2
-127.0.0.1:6379> PUBLISH hallo hallo,world
-(integer) 2
-```
-
-#### 统计订阅信息
-
-- PUBSUB CHANNELS [pattern] 返回当前活跃频道列表(不包含使用模式订阅的频道)
-
-```shell
-127.0.0.1:6379> PUBSUB CHANNELS
-1) "conn"
-```
-
-- PUBSUB NUMSUB [channel [channel ...]] 返回订阅者的数量(不包含使用模式订阅的频道)
-  - 如果不指定 channel 将返回 (empty array)
-
-```shell
-127.0.0.1:6379> PUBSUB NUMSUB hello conn
-1) "hello"
-2) (integer) 1
-3) "conn"
-4) (integer) 1
-```
-
-- PUBSUB NUMPAT 返回订阅者通过模式订阅的频道的数量
-
-```shell
-127.0.0.1:6379> PUBSUB NUMPAT
-(integer) 0
-127.0.0.1:6379> PUBSUB NUMPAT
-(integer) 1
-```
-
-- PUBSUB SHARDCHANNELS [pattern] 返回当前活动的碎片频道, 未找到返回 empty array, 7.0.0 支持
-- PUBSUB SHARDNUMSUB [shardchannel [shardchannel ...]] 返回指定的碎片频道的订阅者数量, 未找到返回 empty arryay, 7.0.0 支持
-
-```shell
-127.0.0.1:6379> PUBSUB SHARDNUMSUB conn
-1) "conn"
-2) (integer) 0
 ```
 
 ### 持久化
@@ -700,8 +700,8 @@ repl_backlog_histlen:0
 ===每台 Redis 服务器都是主节点===, 只用配置从服务器即可
 使用命令配置只能在本次服务器运行时有效, 重启服务器后将会丢失配置信息, 使用配置文件永久生效
 
-- 启动 Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
-- 客户端连接服务器后使用内置命令 `REPLICAOF host port`
+- 方式一: 启动 Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
+- 方式二: 客户端连接服务器后使用内置命令 `REPLICAOF host port`
 
 单机主从配置: 新建多个 Redis 服务器配置文件并修改其中关键项
 
@@ -841,7 +841,8 @@ Redis集群中的每个node负责分摊这16384个slot中的一部分, 当动态
 官方推荐的方案是将node配置成主从结构, 即1:n, 如果主节点失效, Redis Cluster会根据选举算法从slave节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则转换角色作为新的主节点的从节点
 
 - redis-cli \-\-cluster help # 查看集群命令帮助信息
-- redis-cli \-\-cluster create --cluster-replicas host1:port1 ... hostN:portN # 创建指定 IP 和 Port 的服务器作为集群
+- redis-cli \-\-cluster create host1:port1 ... hostN:portN # 创建指定 IP 和 Port 的服务器作为集群
+  - \-\-cluster-replicas \<arg\> # 指定集群中主节点和从节点数量的比例, 1 表示 1:1
 - redis-cli \-\-cluster add-node new\_host:new\_port existing\_host:existing\_port # 添加集群节点
   - \-\-cluster-slave # 添加集群节点从服务器
   - \-\-cluster-master-id \<arg\> # 添加到指定主服务器下
@@ -849,36 +850,360 @@ Redis集群中的每个node负责分摊这16384个slot中的一部分, 当动态
   - \-\-cluster-from \<arg\> # 已有节点id, 多个 id 之间使用半角逗号分隔
   - \-\-cluster-to \<arg\> # 新节点id
   - \-\-cluster-slots \<arg\> # 新节点的 hash 槽数量
+- redis-clis \-\-cluster rebalance \<host:port\> # 重新分配节点
+  - \-\-cluster-weight \<node1=w1...nodeN=wN\> # 分配节点权重
+  - \-\-cluster-timeout \<arg\> # 节点超时时间
+  - \-\-cluster-threshold \<arg\> # 节点阈值
+- redis-cli \-\-cluster import host:port # 导入指定节点
+  - \-\-cluster-from \<arg\> # 从指定 id
+  - \-\-cluster-from-user \<arg\> # 指定用户名
+  - \-\-cluster-from-pass \<arg\> # 指定密码
 - redis-cli \-\-cluster info \<host:port\> # 查看指定节点信息
 - redis-cli \-\-cluster check \<host:port\> # 检查指定节点
 - redis-cli \-\-cluster del-node host:port node\_id # 删除集群节点
 - redis-cli \-\-cluster call host:port command arg arg ... arg # 集群节点执行指定命令
+- redis-cli \-\-cluster set-timeout host:port milliseconds # 设置节点的超时时间
+- redis-cli \-\-cluster backup host:port backup\_directory # 备份节点数据到指定目录
 
-编辑 redis 服务器配置文件, 打开集群模式, 并将服务器名称作为节点配置文件名称(cluster-config-file)
+使用 `redis-cli -c -p port` 命令接入集群节点
 
+#### 集群部署
+
+##### 编辑配置文件 <em id="bjpzwj"></em>
+
+创建 Redis 服务器配置文件, 引入默认配置文件并覆盖默认配置项, 开启集群模式
+创建 `redis6379.conf`, `redis6380.conf`, `redis6381.conf`, `redis6382.conf`, `redis6383.conf`, `redis6384.conf` 6 个文件
+修改其中的 ip, port, pidfile, cluster-config-file
+  
 ```shell
-# bind 127.0.0.1 # 修改绑定的 ip 为其他机器 IP
-port 6379 # 修改绑定的端口号
-protected-mode no # 关闭保护模式, 默认为 yes
-daemonize yes # 开启后台运行, 默认为 no
-pidfile /var/run/redis_6379.pid # 修改进程文件, 默认为 redis_6379.pid
-logfile "6379.log" # 修改日志文件名, 默认为空
-dbfilename dump6379.rdb # 修改持久化文件名, 默认为 dump.rdb
-cluster-enabled yes # 打开集群模式
-cluster-config-file nodes-6379.conf # 设置节点配置文件
-cluster-node-timeout 15000 # 设置节点失联时间, 超过该时间集群自动主从切换, 默认毫秒
-cluster-require-full-coverage no # 当某一段插槽主从服务器都宕机, 设置 yes 则整个集群都挂掉, 设置 no 则只是该插槽不可用 
+# 引入 redis 默认配置文件
+include /root/redis-cluster/redis.conf
+# 修改绑定 ip, 此处演示全为本机
+bind 127.0.0.1
+# 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用
+port 6379
+# 关闭保护模式, 默认 yes
+protected-mode no
+# 开启后台运行, 默认 no
+daemonize yes
+# 修改 redis 进程文件名
+pidfile /var/run/redis_6379.pid
+# 开启集群模式
+cluster-enabled yes
+# 修改集群节点文件名, 默认在存储在当前目录下
+cluster-config-file nodes-6379.conf
+# 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒
+cluster-node-timeout 15000
+# 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes
+cluster-require-full-coverage no
 ```
 
-命令行进入 Redis 服务器使用 `redis-cli -c -p port` 由集群自动分配接入点
+##### 启动 Redis 服务器
 
-#### 优点
+分别启动所有的 redis 服务器, 使用 `ps -ef | grep redis` 命令查看 redis 进程
+
+```shell
+[root@centos7 redis-cluster]# redis-server redis6379.conf
+[root@centos7 redis-cluster]# redis-server redis6380.conf
+[root@centos7 redis-cluster]# redis-server redis6381.conf
+[root@centos7 redis-cluster]# redis-server redis6382.conf
+[root@centos7 redis-cluster]# redis-server redis6383.conf
+[root@centos7 redis-cluster]# redis-server redis6384.conf
+[root@centos7 redis-cluster]# ps -ef | grep redis
+root      3731     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6379 [cluster]
+root      3737     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6380 [cluster]
+root      3743     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6381 [cluster]
+root      3749     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6382 [cluster]
+root      3755     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6383 [cluster]
+root      3761     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6384 [cluster]
+```
+
+##### 创建集群节点
+
+使用 `redis-cli --cluster create --cluster-replicas arg hostN:portN` 命令创建集群节点
+arg 参数表示集群主从节点的数量比例, 1 表示 1:1
+创建过程中提示输入 `yes` 表示接受当前配置并生成配置信息, 最后输出 `[OK] All 16384 slots covered.` 表示集群创建完成
+
+```shell
+[root@centos7 redis-cluster]# redis-cli --cluster create --cluster-replicas 1 127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384
+>>> Performing hash slots allocation on 6 nodes...
+Master[0] -> Slots 0 - 5460
+Master[1] -> Slots 5461 - 10922
+Master[2] -> Slots 10923 - 16383
+Adding replica 127.0.0.1:6383 to 127.0.0.1:6379
+Adding replica 127.0.0.1:6384 to 127.0.0.1:6380
+Adding replica 127.0.0.1:6382 to 127.0.0.1:6381
+>>> Trying to optimize slaves allocation for anti-affinity
+[WARNING] Some slaves are in the same host as their master
+M: 2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379
+   slots:[0-5460] (5461 slots) master
+M: a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380
+   slots:[5461-10922] (5462 slots) master
+M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
+   slots:[10923-16383] (5461 slots) master
+S: 6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382
+   replicates 2b144f1d7bdb31000a519492be980c6634576462
+S: 4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383
+   replicates a770892444fbbe4b7d9391b458ac04d6bcba26f0
+S: eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384
+   replicates 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d
+Can I set the above configuration? (type 'yes' to accept): yes
+>>> Nodes configuration updated
+>>> Assign a different config epoch to each node
+>>> Sending CLUSTER MEET messages to join the cluster
+Waiting for the cluster to join
+.
+>>> Performing Cluster Check (using node 127.0.0.1:6379)
+M: 2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379
+   slots:[0-5460] (5461 slots) master
+   1 additional replica(s)
+S: 6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382
+   slots: (0 slots) slave
+   replicates 2b144f1d7bdb31000a519492be980c6634576462
+M: a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380
+   slots:[5461-10922] (5462 slots) master
+   1 additional replica(s)
+S: eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d
+S: 4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383
+   slots: (0 slots) slave
+   replicates a770892444fbbe4b7d9391b458ac04d6bcba26f0
+M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
+   slots:[10923-16383] (5461 slots) master
+   1 additional replica(s)
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+```
+
+##### 连接 Redis 服务器
+
+使用 `redis-cli -c -p port` 命令接入集群节点
+
+- -c 允许集群模式接入
+
+```shell
+[root@centos7 redis-cluster]# redis-cli -c -p 6379
+```
+
+##### 集群命令
+
+- CLUSTER HELP # 在 Redis 命令行中查看所有集群操作命令
+
+```shell
+127.0.0.1:6380> CLUSTER HELP
+```
+
+##### 查看节点信息
+
+方式一: 命令行中使用 `redis-cli --cluster info host:port` 命令查看指定节点的信息
+
+```shell
+[root@centos7 redis-cluster]# redis-cli --cluster info 127.0.0.1:6380
+127.0.0.1:6380 (a7708924...) -> 3 keys | 5462 slots | 1 slaves.
+127.0.0.1:6382 (6c982390...) -> 0 keys | 5461 slots | 0 slaves.
+127.0.0.1:6381 (76cb8ea9...) -> 0 keys | 5461 slots | 1 slaves.
+[OK] 3 keys in 3 masters.
+0.00 keys per slot on average.
+```
+
+方式二: 在 Redis 命令行中使用 `CLUSTER INFO` 查看节点信息
+
+```shell
+# 查看当前节点信息
+127.0.0.1:6380> CLUSTER INFO
+cluster_state:ok
+cluster_slots_assigned:16384
+cluster_slots_ok:16384
+cluster_slots_pfail:0
+cluster_slots_fail:0
+cluster_known_nodes:6
+cluster_size:3
+cluster_current_epoch:7
+cluster_my_epoch:2
+cluster_stats_messages_ping_sent:468
+cluster_stats_messages_pong_sent:473
+cluster_stats_messages_meet_sent:1
+cluster_stats_messages_auth-ack_sent:1
+cluster_stats_messages_sent:943
+cluster_stats_messages_ping_received:473
+cluster_stats_messages_pong_received:469
+cluster_stats_messages_fail_received:1
+cluster_stats_messages_auth-req_received:1
+cluster_stats_messages_received:944
+total_cluster_links_buffer_limit_exceeded:0
+
+# 查看所有插槽信息
+127.0.0.1:6380> CLUSTER SLOTS
+1) 1) (integer) 0
+   2) (integer) 5460
+   3) 1) "127.0.0.1"
+      2) (integer) 6382
+      3) "6c9823906baa11aba873a798cce3a3b3c95465f2"
+      4) (empty array)
+   4) 1) "127.0.0.1"
+      2) (integer) 6379
+      3) "2b144f1d7bdb31000a519492be980c6634576462"
+      4) (empty array)
+2) 1) (integer) 5461
+   2) (integer) 10922
+   3) 1) "127.0.0.1"
+      2) (integer) 6380
+      3) "a770892444fbbe4b7d9391b458ac04d6bcba26f0"
+      4) (empty array)
+   4) 1) "127.0.0.1"
+      2) (integer) 6383
+      3) "4a56b76a379da615b606a499ae475e986eda3efd"
+      4) (empty array)
+3) 1) (integer) 10923
+   2) (integer) 16383
+   3) 1) "127.0.0.1"
+      2) (integer) 6381
+      3) "76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d"
+      4) (empty array)
+   4) 1) "127.0.0.1"
+      2) (integer) 6384
+      3) "eaf9833aa105e36b22f6330585a972239bab9f50"
+      4) (empty array)
+
+# 查看所有节点信息
+127.0.0.1:6379> CLUSTER NODES
+2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 myself,slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529164000 7 connected
+eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384@16384 slave 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 0 1669529164744 3 connected
+a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529165776 2 connected 5461-10922
+6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382@16382 master - 0 1669529166000 7 connected 0-5460
+76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381@16381 master - 0 1669529166792 3 connected 10923-16383
+4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529165000 2 connected
+```
+
+##### 数据操作
+
+设置键时, 根据键计算后的值所在的插槽位置自动切换到插槽所在的节点上
+
+```shell
+127.0.0.1:6379> KEYS *
+(empty array)
+127.0.0.1:6379> SET name zhangsan
+-> Redirected to slot [5798] located at 127.0.0.1:6380
+OK
+127.0.0.1:6380> GET name
+"zhangsan"
+
+# 集群不支持设置多个键, 需要使用分组的方式
+127.0.0.1:6380> MSET age 18 addr beijing
+(error) CROSSSLOT Keys in request don't hash to the same slot
+127.0.0.1:6380> MSET age{user} 18 addr{user} beijing
+OK
+127.0.0.1:6380> KEYS *
+1) "age{user}"
+2) "addr{user}"
+3) "name"
+127.0.0.1:6379> GET age{user}
+-> Redirected to slot [5474] located at 127.0.0.1:6380
+"18"
+127.0.0.1:6380> GET addr{user}
+"beijing"
+```
+
+##### 测试节点
+
+使用 `kill` 命令停止端口号为 6381 的 redis 进程时, 集群切换 6381 的状态为失联, 同时将从节点 6384 升级为主节点, 等到 6381 恢复后变为 6384 的从节点
+
+```shell
+127.0.0.1:6379> CLUSTER NODES
+2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 myself,slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529208000 7 connected
+eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384@16384 slave 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 0 1669529208000 3 connected
+a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529207000 2 connected 5461-10922
+6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382@16382 master - 0 1669529206000 7 connected 0-5460
+76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381@16381 master - 1669529208334 1669529202178 3 disconnected 10923-16383
+4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529209355 2 connected
+
+# 6381 恢复后变为 6384 的从节点
+127.0.0.1:6379> CLUSTER NODES
+2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 myself,slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529245000 7 connected
+eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384@16384 master - 0 1669529243086 8 connected 10923-16383
+a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529244194 2 connected 5461-10922
+6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382@16382 master - 0 1669529245227 7 connected 0-5460
+76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381@16381 slave eaf9833aa105e36b22f6330585a972239bab9f50 0 1669529243552 8 connected
+4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529244000 2 connected
+```
+
+##### 查看节点配置文件
+
+```shell
+[root@centos7 redis-cluster]# cat nodes-6381.conf
+76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381@16381 myself,slave eaf9833aa105e36b22f6330585a972239bab9f50 0 1669529243521 8 connected
+2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529243524 7 connected
+4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529243524 2 connected
+eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384@16384 master - 0 1669529243529 8 connected 10923-16383
+6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382@16382 master - 0 1669529243529 7 connected 0-5460
+a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529243524 2 connected 5461-10922
+vars currentEpoch 8 lastVoteEpoch 7
+```
+
+##### 添加新节点
+
+按照 <a href="#bjpzwj">编辑配置文件</a> 创建并修改 `redis6385.conf` 文件
+启动服务器 `redis-server redis6385.conf`, 同时查看服务器是否正常启动
+
+使用命令 `redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379` 将 6385 添加为 6379 的从节点
+
+```shell
+# 向 6379 节点添加新的从节点
+[root@centos7 redis-cluster]# redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379
+>>> Adding node 127.0.0.1:6385 to cluster 127.0.0.1:6379
+>>> Performing Cluster Check (using node 127.0.0.1:6379)
+M: 8e20e97a99e1abed4eb568079d63538439d39382 127.0.0.1:6379
+   slots:[0-5460] (5461 slots) master
+   1 additional replica(s)
+M: fba8c2aefddd1cb4b694f7f29ade77b9309f0359 127.0.0.1:6381
+   slots:[10923-16383] (5461 slots) master
+   1 additional replica(s)
+S: c1a6f2b05266dd2c99a21e8ec715b5760828bd05 127.0.0.1:6384
+   slots: (0 slots) slave
+   replicates fba8c2aefddd1cb4b694f7f29ade77b9309f0359
+S: 6750e7cf044954b21381c074d0a3a89f8d9e211b 127.0.0.1:6383
+   slots: (0 slots) slave
+   replicates 57c53adcc0a7d8ddcc79487a7386837b364044fb
+M: 57c53adcc0a7d8ddcc79487a7386837b364044fb 127.0.0.1:6380
+   slots:[5461-10922] (5462 slots) master
+   1 additional replica(s)
+S: ae1e820f675956a281404de626a7e2194bede899 127.0.0.1:6382
+   slots: (0 slots) slave
+   replicates 8e20e97a99e1abed4eb568079d63538439d39382
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+Automatically selected master 127.0.0.1:6379
+>>> Send CLUSTER MEET to node 127.0.0.1:6385 to make it join the cluster.
+Waiting for the cluster to join
+
+>>> Configure node as replica of 127.0.0.1:6379.
+[OK] New node added correctly.
+```
+
+查看节点 6379 的信息, 显示 2 个从节点
+
+```shell
+# 查看节点信息
+[root@centos7 redis-cluster]# redis-cli --cluster info 127.0.0.1:6379
+127.0.0.1:6379 (8e20e97a...) -> 0 keys | 5461 slots | 2 slaves.
+127.0.0.1:6381 (fba8c2ae...) -> 0 keys | 5461 slots | 1 slaves.
+127.0.0.1:6380 (57c53adc...) -> 0 keys | 5462 slots | 1 slaves.
+[OK] 0 keys in 3 masters.
+0.00 keys per slot on average.
+```
+
+#### 集群优点
 
 - 实现扩容
 - 分担压力
 - 无中心配置相对简单
 
-#### 缺点
+#### 集群缺点
 
 - 多建操作不支持, 例如 `MSET` 命令设置多个键不支持, 需要使用分组方式 `MSET name{user} zhangsan age{user} 20 addr{user} beijing`
 - 多键的 Redis 事务不支持
@@ -933,3 +1258,4 @@ Redis 过期策略
 
 - 避免集中过期, 比如将过期时间随机化, 添加一个随机的值, 分散集中过期 key 的过期时间, 降低 Redis 清理过期 key 的压力
 - 如果 Redis 是 4.0 以上版本, 可以开启 lazy-free, 当删除过期 key 时, 把释放内存的操作放到其他线程中执行, 避免阻塞主线程
+
