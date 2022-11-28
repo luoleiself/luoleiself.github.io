@@ -704,7 +704,7 @@ repl_backlog_histlen:0
 使用命令配置只能在本次服务器运行时有效, 重启服务器后将会丢失配置信息, 使用配置文件永久生效
 
 - 方式一: 启动 Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
-- 方式二: 客户端连接服务器后使用内置命令 `REPLICAOF host port`
+- 方式二: 连接服务器使用内置命令 `REPLICAOF host port`
 
 单机主从配置: 新建多个 Redis 服务器配置文件并修改其中关键项
 
@@ -775,10 +775,10 @@ redis.conf
 
 #### 哨兵模式配置
 
-哨兵模式是一种特殊的模式, 首先 Redis 提供了哨兵的命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行
+哨兵模式是一种特殊的模式, 首先 Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行
 
-- 通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器
-- 当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件, 让它们切换主机
+- 哨兵通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器
+- 当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件并关联新的主服务器
 
 默认配置文件 `sentinel.conf`
 
@@ -839,9 +839,9 @@ sentinel monitor myredis 127.0.0.1 6379 2
 ### 集群
 
 Redis Cluster 是一种服务器 Sharding 技术, Redis 3.0 版本开始支持
-在 Redis Cluster 中, Sharding 采用 slot 的概念, 一共分成 16384 个槽, 对于每个进入 Redis 的键值对, 根据 key 进行散列, 分配到这 16384 个 slot 中的某一个 slot 中. 使用的 hash 算法也比较简单, 就是 CRC16 后 16384 取模
+在 Redis Cluster 中, Sharding 采用 slot 的概念, 一共分成 16384 个 slot, 对于每个进入 Redis 的键值对, 对 key 执行 CRC16 算法然后再对 16384 取模, 得到的结果就是对应的 slot.
 Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, 当动态添加或减少 node 时, 需要将 16384 个 slot 再分配, slot 中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个 node 发生故障, 则此 node 负责的 slot 也就失效, 整个集群将不能工作
-官方推荐的方案是将 node 配置成主从结构, 即 1:n, 如果主节点失效, Redis Cluster 会根据选举算法从 slave 节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则转换角色作为新的主节点的从节点
+官方推荐的方案是将 node 配置成主从结构, 即 1:n, 如果主节点失效, Redis Cluster 根据选举算法从 slave 节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则作为新的主节点的从节点
 
 - redis-cli \-\-cluster help # 查看集群命令帮助信息
 - redis-cli \-\-cluster create host1:port1 ... hostN:portN # 创建指定 IP 和 Port 的服务器作为集群
@@ -874,9 +874,9 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 
 ##### 编辑配置文件 <em id="bjpzwj"></em>
 
-创建 Redis 服务器配置文件, 引入默认配置文件并覆盖默认配置项, 开启集群模式
+创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式
 创建 `redis6379.conf`, `redis6380.conf`, `redis6381.conf`, `redis6382.conf`, `redis6383.conf`, `redis6384.conf` 6 个文件
-修改其中的 ip, port, pidfile, cluster-config-file
+修改其中的 ip, port, pidfile, cluster-enabled, cluster-config-file
 
 ```shell
 # 引入 redis 默认配置文件
@@ -903,7 +903,7 @@ cluster-require-full-coverage no
 
 ##### 启动 Redis 服务器
 
-分别启动所有的 redis 服务器, 使用 `ps -ef | grep redis` 命令查看 redis 进程
+启动所有的 redis 服务器, 使用 `ps -ef | grep redis` 命令查看 redis 服务器进程
 
 ```shell
 [root@centos7 redis-cluster]# redis-server redis6379.conf
@@ -923,12 +923,13 @@ root      3761     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6384 [clu
 
 ##### 创建集群节点
 
-使用 `redis-cli --cluster create --cluster-replicas arg hostN:portN` 命令创建集群节点
-arg 参数表示集群主从节点的数量比例, 1 表示 1:1
-创建过程中提示输入 `yes` 表示接受当前配置并生成配置信息, 最后输出 `[OK] All 16384 slots covered.` 表示集群创建完成
+使用 `redis-cli --cluster create --cluster-replicas arg hostN:portN` 命令创建集群节点, arg 参数表示集群主从节点的数量比例, 1 表示 1:1
+创建过程中提示输入 `yes` 表示接受当前配置信息并写入指定文件中, 最后输出 `[OK] All 16384 slots covered.` 表示集群创建完成
 
 ```shell
-[root@centos7 redis-cluster]# redis-cli --cluster create --cluster-replicas 1 127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384
+[root@centos7 redis-cluster]# redis-cli --cluster create --cluster-replicas 1 \
+> 127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 \
+> 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384
 >>> Performing hash slots allocation on 6 nodes...
 Master[0] -> Slots 0 - 5460
 Master[1] -> Slots 5461 - 10922
@@ -1083,7 +1084,7 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 
 ##### 数据操作
 
-设置键时, 根据键计算后的值所在的插槽位置自动切换到插槽所在的节点上
+设置键时, 根据键散列后的值所在的插槽位置自动切换到插槽所在的节点上
 
 ```shell
 127.0.0.1:6379> KEYS *
@@ -1155,7 +1156,8 @@ vars currentEpoch 8 lastVoteEpoch 7
 
 ```shell
 # 向 6379 节点添加新的从节点
-[root@centos7 redis-cluster]# redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379
+[root@centos7 redis-cluster]# redis-cli --cluster add-node --cluster-slave \
+> 127.0.0.1:6385 127.0.0.1:6379
 >>> Adding node 127.0.0.1:6385 to cluster 127.0.0.1:6379
 >>> Performing Cluster Check (using node 127.0.0.1:6379)
 M: 8e20e97a99e1abed4eb568079d63538439d39382 127.0.0.1:6379
