@@ -44,6 +44,9 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 127.0.0.1:6379>redis-benchmark -h localhost -p 6379 -c 100 -n 100000 -d 10 -t set,get,hset,hget,lpush,rpush,sadd
 ```
 
+- redis-check-aof 检查 aof 备份文件
+- redis-check-rdb 检查 rdb 备份文件
+
 ### CONFIG 命令
 
 - CONFIG GET parameter [parameter...] 获取指定配置项的值
@@ -279,7 +282,7 @@ Reading messages... (press Ctrl-C to quit)
 #### 通用设置
 
 - daemonize no 是否后台模式启动服务
-- pidfile /var/run/redis\_6379.pid # 进程 id 文件
+- pidfile /var/run/redis_6379.pid # 进程 id 文件
 - loglevel notice # 设置日志级别, 默认 notice
   - debug (a lot of information, useful for development/testing)
   - verbose (many rarely useful info, but not a mess like the debug level)
@@ -364,31 +367,31 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 
 #### 规则分类
 
-|          参数          | 说明                                                                                    |
-| :--------------------: | --------------------------------------------------------------------------------------- |
-|           on           | 表示启动该用户, 默认为 off                                                              |
-|         nopass         | 删除所有与用户关联的密码                                                                |
-|         reset          | 移除用户的所有功能, 并关闭用户                                                          |
-|       +[command]       | 将命令添加到用户可以调用的命令列表中                                                    |
-|       -[command]       | 将命令从用户可以调用的命令列表中移除                                                    |
-|   +[command]\|subcmd   | 允许使用已禁用命令的特定子命令                                                          |
-|      +@[category]      | 允许用户调用 category 类别中的所有命令, 可以使用 `ACL CAT` 命令查看所有类别             |
-|      -@[category]      | 禁止用户调用 category 类别中的所有命令                                                  |
-|      allcommands       | +@all 的别名                                                                            |
-|       nocommands       | -@all 的别名                                                                            |
-|      ~\<pattern\>      | 允许用户可以访问的 key(正则匹配), 例如: ~foo:\* 只允许访问 foo:\* 的 key                |
-|     %R~\<pattern\>     | 添加指定的只读 key(正则匹配), 例如: %R~app:\* 只允许读 app:\* 的 key, 7.0 支持          |
-|     %W~\<pattern\>     | 添加指定的只写 key(正则匹配), 例如: %W~app:\* 只允许写 app:\* 的 key, 7.0 支持          |
-|    %RW~\<pattern\>     | 添加指定的可读可写的 key(正则匹配), 例如: %RW~app:\* 只允许读写 app:\* 的 key, 7.0 支持 |
-|        allkeys         | ~\* 的别名                                                                              |
-|       resetkeys        | 移除所有的 key 匹配模式                                                                 |
-|      &\<pattern\>      | 允许用户可使用的 Pub/Sub 通道(正则匹配)                                                 |
-|      allchannels       | &\* 的别名                                                                              |
-|     resetchannels      | 移除所有的通道匹配模式                                                                  |
-|     \>\<password\>     | 为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: >123456                           |
-|     \<\<password\>     | 从有效密码列表中删除密码                                                                |
-|  #\<hashedpassword\>   | 为用户添加 hash 密码, 例如: #cab3...c4f2                                                |
-|  \!\<hashedpassword\>  | 从有效密码列表中删除密码                                                                |
+|         参数         | 说明                                                                                    |
+| :------------------: | --------------------------------------------------------------------------------------- |
+|          on          | 表示启动该用户, 默认为 off                                                              |
+|        nopass        | 删除所有与用户关联的密码                                                                |
+|        reset         | 移除用户的所有功能, 并关闭用户                                                          |
+|      +[command]      | 将命令添加到用户可以调用的命令列表中                                                    |
+|      -[command]      | 将命令从用户可以调用的命令列表中移除                                                    |
+|  +[command]\|subcmd  | 允许使用已禁用命令的特定子命令                                                          |
+|     +@[category]     | 允许用户调用 category 类别中的所有命令, 可以使用 `ACL CAT` 命令查看所有类别             |
+|     -@[category]     | 禁止用户调用 category 类别中的所有命令                                                  |
+|     allcommands      | +@all 的别名                                                                            |
+|      nocommands      | -@all 的别名                                                                            |
+|     ~\<pattern\>     | 允许用户可以访问的 key(正则匹配), 例如: ~foo:\* 只允许访问 foo:\* 的 key                |
+|    %R~\<pattern\>    | 添加指定的只读 key(正则匹配), 例如: %R~app:\* 只允许读 app:\* 的 key, 7.0 支持          |
+|    %W~\<pattern\>    | 添加指定的只写 key(正则匹配), 例如: %W~app:\* 只允许写 app:\* 的 key, 7.0 支持          |
+|   %RW~\<pattern\>    | 添加指定的可读可写的 key(正则匹配), 例如: %RW~app:\* 只允许读写 app:\* 的 key, 7.0 支持 |
+|       allkeys        | ~\* 的别名                                                                              |
+|      resetkeys       | 移除所有的 key 匹配模式                                                                 |
+|     &\<pattern\>     | 允许用户可使用的 Pub/Sub 通道(正则匹配)                                                 |
+|     allchannels      | &\* 的别名                                                                              |
+|    resetchannels     | 移除所有的通道匹配模式                                                                  |
+|    \>\<password\>    | 为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: >123456                           |
+|    \<\<password\>    | 从有效密码列表中删除密码                                                                |
+| #\<hashedpassword\>  | 为用户添加 hash 密码, 例如: #cab3...c4f2                                                |
+| \!\<hashedpassword\> | 从有效密码列表中删除密码                                                                |
 
 - ACL HELP 显示 ACL 的帮助信息
 
@@ -708,7 +711,7 @@ repl_backlog_histlen:0
 - `bind 127.0.0.1` 修改绑定的 ip
 - `port 6379` 修改绑定的端口号
 - `daemonize yes` 开启后台运行, 默认为 no
-- `pidfile /var/run/redis_6379.pid` 修改进程文件, 默认为 redis\_6379.pid
+- `pidfile /var/run/redis_6379.pid` 修改进程文件, 默认为 redis_6379.pid
 - `logfile "6379.log"` 修改日志文件名, 默认为空
 - `dbfilename dump6379.rdb` 修改持久化文件名, 默认为 dump.rdb
 
@@ -835,20 +838,20 @@ sentinel monitor myredis 127.0.0.1 6379 2
 
 ### 集群
 
-Redis Cluster是一种服务器 Sharding 技术, Redis 3.0版本开始支持
-在Redis Cluster中, Sharding采用slot的概念, 一共分成16384个槽, 对于每个进入Redis的键值对, 根据key进行散列, 分配到这16384个slot中的某一个slot中. 使用的hash算法也比较简单, 就是CRC16后16384取模
-Redis集群中的每个node负责分摊这16384个slot中的一部分, 当动态添加或减少node时, 需要将16384个slot再分配, slot中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个node发生故障, 则此node负责的slot也就失效, 整个集群将不能工作
-官方推荐的方案是将node配置成主从结构, 即1:n, 如果主节点失效, Redis Cluster会根据选举算法从slave节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则转换角色作为新的主节点的从节点
+Redis Cluster 是一种服务器 Sharding 技术, Redis 3.0 版本开始支持
+在 Redis Cluster 中, Sharding 采用 slot 的概念, 一共分成 16384 个槽, 对于每个进入 Redis 的键值对, 根据 key 进行散列, 分配到这 16384 个 slot 中的某一个 slot 中. 使用的 hash 算法也比较简单, 就是 CRC16 后 16384 取模
+Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, 当动态添加或减少 node 时, 需要将 16384 个 slot 再分配, slot 中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个 node 发生故障, 则此 node 负责的 slot 也就失效, 整个集群将不能工作
+官方推荐的方案是将 node 配置成主从结构, 即 1:n, 如果主节点失效, Redis Cluster 会根据选举算法从 slave 节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则转换角色作为新的主节点的从节点
 
 - redis-cli \-\-cluster help # 查看集群命令帮助信息
 - redis-cli \-\-cluster create host1:port1 ... hostN:portN # 创建指定 IP 和 Port 的服务器作为集群
   - \-\-cluster-replicas \<arg\> # 指定集群中主节点和从节点数量的比例, 1 表示 1:1
-- redis-cli \-\-cluster add-node new\_host:new\_port existing\_host:existing\_port # 添加集群节点
+- redis-cli \-\-cluster add-node new_host:new_port existing_host:existing_port # 添加集群节点
   - \-\-cluster-slave # 添加集群节点从服务器
   - \-\-cluster-master-id \<arg\> # 添加到指定主服务器下
 - redis-cli \-\-cluster reshard \<host:port\> # 重新分配节点的 hash 插槽
-  - \-\-cluster-from \<arg\> # 已有节点id, 多个 id 之间使用半角逗号分隔
-  - \-\-cluster-to \<arg\> # 新节点id
+  - \-\-cluster-from \<arg\> # 已有节点 id, 多个 id 之间使用半角逗号分隔
+  - \-\-cluster-to \<arg\> # 新节点 id
   - \-\-cluster-slots \<arg\> # 新节点的 hash 槽数量
 - redis-clis \-\-cluster rebalance \<host:port\> # 重新分配节点
   - \-\-cluster-weight \<node1=w1...nodeN=wN\> # 分配节点权重
@@ -860,10 +863,10 @@ Redis集群中的每个node负责分摊这16384个slot中的一部分, 当动态
   - \-\-cluster-from-pass \<arg\> # 指定密码
 - redis-cli \-\-cluster info \<host:port\> # 查看指定节点信息
 - redis-cli \-\-cluster check \<host:port\> # 检查指定节点
-- redis-cli \-\-cluster del-node host:port node\_id # 删除集群节点
+- redis-cli \-\-cluster del-node host:port node_id # 删除集群节点
 - redis-cli \-\-cluster call host:port command arg arg ... arg # 集群节点执行指定命令
 - redis-cli \-\-cluster set-timeout host:port milliseconds # 设置节点的超时时间
-- redis-cli \-\-cluster backup host:port backup\_directory # 备份节点数据到指定目录
+- redis-cli \-\-cluster backup host:port backup_directory # 备份节点数据到指定目录
 
 使用 `redis-cli -c -p port` 命令接入集群节点
 
@@ -874,7 +877,7 @@ Redis集群中的每个node负责分摊这16384个slot中的一部分, 当动态
 创建 Redis 服务器配置文件, 引入默认配置文件并覆盖默认配置项, 开启集群模式
 创建 `redis6379.conf`, `redis6380.conf`, `redis6381.conf`, `redis6382.conf`, `redis6383.conf`, `redis6384.conf` 6 个文件
 修改其中的 ip, port, pidfile, cluster-config-file
-  
+
 ```shell
 # 引入 redis 默认配置文件
 include /root/redis-cluster/redis.conf
@@ -1258,4 +1261,3 @@ Redis 过期策略
 
 - 避免集中过期, 比如将过期时间随机化, 添加一个随机的值, 分散集中过期 key 的过期时间, 降低 Redis 清理过期 key 的压力
 - 如果 Redis 是 4.0 以上版本, 可以开启 lazy-free, 当删除过期 key 时, 把释放内存的操作放到其他线程中执行, 避免阻塞主线程
-
