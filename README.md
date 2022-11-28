@@ -8,6 +8,22 @@
   npm run deploy # 生成静态文件并部署
 ```
 
+## Snippets
+
+```markdown
+演示内容 <!-- markdownlint-disable-line -->
+```
+
+- `markdownlint-disable`
+- `markdownlint-enable`
+- `markdownlint-disable-line`
+- `markdownlint-disable-next-line`
+- `markdownlint-capture`
+- `markdownlint-restore`
+- `markdownlint-disable-file`
+- `markdownlint-enable-file`
+- `markdownlint-configure-file`
+
 ## 一键部署
 
 hexo-deployer-git

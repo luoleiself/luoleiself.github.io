@@ -872,7 +872,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 
 #### 集群部署
 
-##### 编辑配置文件 <em id="bjpzwj"></em>
+##### 编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line -->
 
 创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式
 创建 `redis6379.conf`, `redis6380.conf`, `redis6381.conf`, `redis6382.conf`, `redis6383.conf`, `redis6384.conf` 6 个文件
@@ -1149,7 +1149,7 @@ vars currentEpoch 8 lastVoteEpoch 7
 
 ##### 添加新节点
 
-按照 <a href="#bjpzwj">编辑配置文件</a> 创建并修改 `redis6385.conf` 文件
+按照 <a href="#bjpzwj">编辑配置文件</a> 创建并修改 `redis6385.conf` 文件 <!-- markdownlint-disable-line -->
 启动服务器 `redis-server redis6385.conf`, 同时查看服务器是否正常启动
 
 使用命令 `redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379` 将 6385 添加为 6379 的从节点
