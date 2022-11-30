@@ -350,6 +350,8 @@ save <seconds> <changes> [<seconds> <changes> ...]
 - appendfsync everysec # aof 备份模式, 每秒中执行
   - always 只要 key 发生改变就要备份
   - no 不备份
+- auto-aof-rewrite-percentage 100 # 代表当前 AOF 文件大小和上一次重写后 AOF 文件大小的比值
+- auto-aof-rewrite-min-size 64mb # 触发 AOF 重写的文件最小值, 默认 64MB
 
 #### SECURITY
 
