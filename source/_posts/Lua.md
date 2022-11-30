@@ -151,5 +151,128 @@ print("for 遍历 tb2")
 for key, val in pairs(tb2) do
         print(key, ":", val) -- 1:beijing  age:18  name:zhangsan
 end
+print("-------------------")
+print("元素(metatable), 改变 table 的行为, 每个行为关联的对应的元方法")
+print("setmetatable(table, metatable) 对 table 设置元表")
+print("getmetatable(table) 返回对象的元表")
+print("__add 对应的操作符 +")
+print("__sub 对应的操作符 -")
+print("__mul 对应的操作符 *")
+print("__div 对应的操作符 /")
+print("__mod 对应的操作符 %")
+print("__unm 对应的操作符 -")
+print("__concat 对应的操作符 ..")
+print("__eq 对应的操作符 ==")
+print("__lt 对应的操作符 <")
+print("__le 对应的操作符 <=")
+print("__gt 对应的操作符 >")
+print("__ge 对应的操作符 >=")
+print("__tostring 元方法用于修改表的输出行为(自定义输出内容)")
+local mtstringstr = [[
+mtstring = setmetatable({ 10, 20, 30}, {
+        __tostring = function (t)
+            local sum = 0
+            for k, v in pairs(t) do
+                sum = sum + v
+            end
+            return "表中所有元素的和为 "..sum
+        end
+})
+print(mtstring) -- 表中所有元素的和为 60
+]]
+print(mtstringstr)
+mtstring = setmetatable({ 10, 20, 30}, {
+        __tostring = function (t)
+            local sum = 0
+            for k, v in pairs(t) do
+                sum = sum + v
+            end
+            return "表中所有元素的和为 "..sum
+        end
+})
+print(mtstring) -- 表中所有元素的和为 60
+print("__call 元方法在 lua 调用一个值时调用")
+print("__newindex 元方法用来对 table 更新")
+print("\t", "如果给 table 不存在的 key 赋值, 解释器就会查找  __newindex 元方法如果存在则会调用这个函数而不进行赋值操作")
+print("\t", "如果给 table 已存在的 key 赋值, 则不会调用 __newindex 元方法")
+print("-------__newindex是table---------")
+local mtnewmtstr = [[
+mtnewmt = {}
+mtnew = setmetatable({ name = "hello world" }, { __newindex = mtnewmt})
+print(mtnew.name) -- hello world
+mtnew.name = "hello lua"
+print(mtnew.name, mtnewmt.name) -- hello lua  nil
+mtnew.addr = "beijing"
+print(mtnew.addr, mtnewmt.addr) -- nil  beijing
+]]
+print(mtnewmtstr)
+mtnewmt = {}
+mtnew = setmetatable({ name = "hello world" }, { __newindex = mtnewmt})
+print(mtnew.name) -- hello world
+mtnew.name = "hello lua"
+print(mtnew.name, mtnewmt.name) -- hello lua  nil
+mtnew.addr = "beijing"
+print(mtnew.addr, mtnewmt.addr) -- nil beijing
+print("-------__newindex是函数---------")
+local mtnewmt2str = [[
+mtnewmt2 = setmetatable({ name = "hello world" }, {
+        __newindex = function(t, k, v)
+                rawset(t, k, "gg_".."\""..v.."\"".."_gg")
+        end
+})
+mtnewmt2.age = 18
+mtnewmt2.addr = "beijing"
+print(mtnewmt2.name, mtnewmt2.age, mtnewmt2.addr) -- hello world     gg_"18"_gg      gg_"beijing"_gg
+]]
+mtnewmt2 = setmetatable({ name = "hello world" }, {
+        __newindex = function(t, k, v)
+                rawset(t, k, "gg_".."\""..v.."\"".."_gg")
+        end
+})
+mtnewmt2.age = 18
+mtnewmt2.addr = "beijing"
+print(mtnewmt2.name, mtnewmt2.age, mtnewmt2.addr) -- hello world     gg_"18"_gg      gg_"beijing"_gg
+
+print("__index 元方法用来对 table 访问, 当通过 key 访问 table 时, 如果 key 不存在, lua 则会寻找该 metatable 中的 __index 键")
+print("\t", "如果 __index 键包含一个 table, lua 则会在这个 table 中查找相应的 key")
+print("\t", "如果 __index 键包含一个函数时, lua 则会调用这个函数, table 和 key 作为参数传递给函数, 并接收函数的返回值作为结果")
+print("查找顺序:")
+print("\t", "1. 在 table 中查找, 如果找到则返回该元素, 否则继续")
+print("\t", "2. 判断该 table 是否有元表, 如果没有则返回 nil, 否则继续")
+print("\t", "3. 判断元表是否有 __index 键, 如果没有则返回 nil, 如果 __index 是一个 table, 则重复 1. 2. 3, 如果 __index 是一个函数, 则返回调用该函数的返回值")
+print("-------__index是table---------")
+t = setmetatable({}, {__index = { name = "hello world" }})
+print("t = setmetatable({}, {__index = { name = \"hello world\" }})")
+print("print(t.name)", t.name) -- hello world
+print("print(t.foo)", t.foo) -- nil
+print("-------__index是函数---------")
+mytable = setmetatable({foo = "bar"},{
+        __index = function(t, k)
+                if k == "baz" then
+                        return "baz = baz"
+                else
+                        return nil
+                end
+       end
+})
+local mytableStr = [[
+mytable = setmetatable({foo = "bar"},{
+        __index = function(t, k)
+                if k == "baz" then
+                        return "baz = baz"
+                else
+                        return nil
+                end
+       end
+})
+]]
+print(mytableStr)
+print("print(mytable.foo, mytable.baz)", mytable.foo, mytable.baz) -- bar     baz = baz
+print("---------------------------------------")
+
+print("模块: 封装公用的代码以 API 接口的形式在其他地方调用")
+print("简单理解是将变量、常量、函数放在一个table里面，然后 return 返回")
+print("使用 require 方法加载模块, require(\"模块名\") 或者 require \"模块名\"")
+print("模块的加载机制: require 用于搜索 lua 文件的路径是存放在全局变量 package.path 中, 当 lua 启动后, 会以环境变量 LUA_PATH 的值来初始这个环境变量, 如果没有找到该环境变量, 则使用一个编译时定义的默认路径来初始化, 此环境变量也可以自定义设置, 在搜索过程中, 如果找到该文件, 则使用 pacakge.loadfile 来加载模块, 否则就去找 C 程序库, 搜索的文件路径是从全局变量 package.cpath 获取, 而这个变量则是通过环境变量 LUA_CPATH 来初始, 此时搜索的文件是 so 或 dll 类型的文件, 如果找到了则使用 package.loadlib 来加载")
 print("---------------------------------------")
 ```
