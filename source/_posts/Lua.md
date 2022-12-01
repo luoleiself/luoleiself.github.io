@@ -152,7 +152,7 @@ for key, val in pairs(tb2) do
         print(key, ":", val) -- 1:beijing  age:18  name:zhangsan
 end
 print("-------------------")
-print("元素(metatable), 改变 table 的行为, 每个行为关联的对应的元方法")
+print("元表(metatable), 改变 table 的行为, 每个行为关联的对应的元方法")
 print("setmetatable(table, metatable) 对 table 设置元表")
 print("getmetatable(table) 返回对象的元表")
 print("__add 对应的操作符 +")
@@ -268,6 +268,7 @@ mytable = setmetatable({foo = "bar"},{
 ]]
 print(mytableStr)
 print("print(mytable.foo, mytable.baz)", mytable.foo, mytable.baz) -- bar     baz = baz
+print("获取元表 getmetatable(mytable)", getmetatable(mytable))
 print("---------------------------------------")
 
 print("模块: 封装公用的代码以 API 接口的形式在其他地方调用")
@@ -275,4 +276,131 @@ print("简单理解是将变量、常量、函数放在一个table里面，然�
 print("使用 require 方法加载模块, require(\"模块名\") 或者 require \"模块名\"")
 print("模块的加载机制: require 用于搜索 lua 文件的路径是存放在全局变量 package.path 中, 当 lua 启动后, 会以环境变量 LUA_PATH 的值来初始这个环境变量, 如果没有找到该环境变量, 则使用一个编译时定义的默认路径来初始化, 此环境变量也可以自定义设置, 在搜索过程中, 如果找到该文件, 则使用 pacakge.loadfile 来加载模块, 否则就去找 C 程序库, 搜索的文件路径是从全局变量 package.cpath 获取, 而这个变量则是通过环境变量 LUA_CPATH 来初始, 此时搜索的文件是 so 或 dll 类型的文件, 如果找到了则使用 package.loadlib 来加载")
 print("---------------------------------------")
+
+print("协程(coroutine): 拥有独立的堆栈, 独立的局部变量, 独立的指令指针, 同时又与其他协程共享全局变量和其他大部分东西")
+print("与线程的主要区别: 一个具有多个线程的程序可以同时运行多个线程, 协程却需要彼此协作的运行, 在任一指定时刻只有一个协程在运行, 并且这个正在运行的协程只有在明确的被要求挂起时才会被挂起")
+print("coroutine.create() 创建并返回一个 coroutine, 参数为一个函数, 当和 resume 配合使用时就唤醒函数调用")
+print("coroutine.resume() 重启 coroutine, 和 create 配合使用")
+print("coroutine.yield() 挂起 coroutine")
+print("coroutine.status() 查看 coroutine 的状态")
+print("coroutine.wrap() 创建 coroutine, 并返回一个函数, 一旦手动调用这个函数, 就进入 coroutine, 和 create 功能重复")
+print("coroutine.running() 返回正在运行的 coroutine")
+local costr = [[
+co = coroutine.create(
+        function (i)
+                print(i)
+        end
+)
+coroutine.resume(co, 100) -- 100
+print(coroutine.status(co)) -- dead
+print(coroutine.running()) -- thread: 0x149b018  true
+print("---------------")
+co = coroutine.wrap(
+        function (i)
+                print(i)
+        end
+)
+co(250) -- 250
+print("---------------")
+co = coroutine.create(
+        function ()
+                for i = 1, 10 do
+                        print(i) -- 1 2 3
+                        if i == 3 then
+                                print(coroutine.status(co)) -- running
+                                print(coroutine.running()) -- 返回正在运行的 coroutine thread: 0x14ab788       false
+                         end
+                         coroutine.yield() -- 挂起 coroutine
+                end
+        end
+)
+coroutine.resume(co)
+coroutine.resume(co)
+coroutine.resume(co)
+]]
+print(costr)
+print("---------------")
+co = coroutine.create(
+        function (i)
+                print(i)
+        end
+)
+coroutine.resume(co, 100) -- 100
+print(coroutine.status(co)) -- dead
+print(coroutine.running()) -- thread: 0x149b018  true
+print("---------------")
+co = coroutine.wrap(
+        function (i)
+                print(i)
+        end
+)
+co(250) -- 250
+print("---------------")
+co = coroutine.create(
+        function ()
+                for i = 1, 10 do
+                        print(i) -- 1 2 3
+                        if i == 3 then
+                                print(coroutine.status(co)) -- running
+                                print(coroutine.running()) -- 返回正在运行的 coroutine thread: 0x14ab788       false
+                         end
+                         coroutine.yield() -- 挂起 coroutine
+                end
+        end
+)
+coroutine.resume(co)
+coroutine.resume(co)
+coroutine.resume(co)
+print("---------------------------------------")
+print("生产者和消费者")
+local prodstr = [[
+local newProductor
+function productor()
+        local i = 0
+        while true do
+                i = i + 1
+                send(i) -- 生产者发送数据
+        end
+end
+function consumer()
+        while true do
+                local i = receive() -- 消费者接收数据
+                print(i)
+        end
+end
+function receive()
+        local status, value = coroutine.resume(newProductor) -- 唤起 coroutine
+        return value
+end
+function send(v)
+        coroutine.yield(v) -- 发送数据后就挂起 coroutine
+end
+newProductor = coroutine.create(productor)
+consumer()
+]]
+print(prodstr)
+print("---------------")
+local newProductor
+function productor()
+        local i = 0
+        while true do
+                i = i + 1
+                send(i) -- 生产者发送数据
+        end
+end
+function consumer()
+        while true do
+                local i = receive() -- 消费者接收数据
+                print(i)
+        end
+end
+function receive()
+        local status, value = coroutine.resume(newProductor) -- 唤起 coroutine
+        return value
+end
+function send(v)
+        coroutine.yield(v) -- 发送数据后就挂起 coroutine
+end
+newProductor = coroutine.create(productor)
+consumer()
 ```
