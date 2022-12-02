@@ -298,3 +298,61 @@ console.log(
   dateFormat(Date.now(), { type: 3, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
 );
 ```
+
+```javascript
+(function () {
+  if (Object.hasOwn && Object.hasOwn(Date.prototype, 'leftDown') || Date.prototype.hasOwnProperty('leftDown')) {
+    throw new Error("倒计时方法名重复了,无法提供支持...想别的招儿吧!");
+  }
+
+  var timer = null;
+  Date.prototype.leftDown = function (callback) {
+    var getDiff = function () {
+      var now = Date.now();
+      var end = this.getTime();
+      return end - now;
+    }.bind(this);
+
+    var obj = { days: '00', hours: '00', minutes: '00', seconds: '00', status: true };
+    if (getDiff() <= 0) {
+      return callback && typeof (callback) === 'function' && callback(Object.assign(obj, { status: false }));
+    }
+
+    var gtNine = function (val) {
+      return val > 9 ? `${val}` : `0${val}`;
+    }
+
+    var calcFn = function () {
+      var leftTime = getDiff();
+      if (leftTime < 0) {
+        clearInterval(timer);
+        timer = null;
+        return callback && typeof (callback) === 'function' && callback(Object.assign(obj, { status: false }));
+      }
+      var d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
+      var h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
+      var m = Math.floor(leftTime / 1000 / 60 % 60);
+      var s = Math.floor(leftTime / 1000 % 60);
+
+      obj['days'] = gtNine(d);
+      obj['hours'] = gtNine(h);
+      obj['minutes'] = gtNine(m);
+      obj['seconds'] = gtNine(s);
+      if (!obj['status']) {
+        obj['status'] = true;
+      }
+
+      if (callback && typeof (callback) === 'function') {
+        callback(obj);
+      }
+    }
+
+    timer = setInterval(calcFn.bind(this), 1000);
+  }
+
+  // var date = new Date((Math.floor(Date.now() / 1000) + 10) * 1000);
+  // date.leftDown(function (obj) {
+  //   console.log(obj);
+  // });
+})();
+```
