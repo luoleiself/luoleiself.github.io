@@ -165,8 +165,7 @@ print("__concat 对应的操作符 ..")
 print("__eq 对应的操作符 ==")
 print("__lt 对应的操作符 <")
 print("__le 对应的操作符 <=")
-print("__gt 对应的操作符 >")
-print("__ge 对应的操作符 >=")
+print("__len 对应的操作符 #")
 print("__tostring 元方法用于修改表的输出行为(自定义输出内容)")
 local mtstringstr = [[
 mtstring = setmetatable({ 10, 20, 30}, {
@@ -275,6 +274,18 @@ print("模块: 封装公用的代码以 API 接口的形式在其他地方调用
 print("简单理解是将变量、常量、函数放在一个table里面，然后 return 返回")
 print("使用 require 方法加载模块, require(\"模块名\") 或者 require \"模块名\"")
 print("模块的加载机制: require 用于搜索 lua 文件的路径是存放在全局变量 package.path 中, 当 lua 启动后, 会以环境变量 LUA_PATH 的值来初始这个环境变量, 如果没有找到该环境变量, 则使用一个编译时定义的默认路径来初始化, 此环境变量也可以自定义设置, 在搜索过程中, 如果找到该文件, 则使用 pacakge.loadfile 来加载模块, 否则就去找 C 程序库, 搜索的文件路径是从全局变量 package.cpath 获取, 而这个变量则是通过环境变量 LUA_CPATH 来初始, 此时搜索的文件是 so 或 dll 类型的文件, 如果找到了则使用 package.loadlib 来加载")
+local modulestr = [[
+local tst = {}
+local name = "hello world"
+function tst.getName()
+  return name
+end
+return tst
+
+local tst = require("tst")
+print(tst.getName())
+]]
+print(modulestr)
 print("---------------------------------------")
 
 print("协程(coroutine): 拥有独立的堆栈, 独立的局部变量, 独立的指令指针, 同时又与其他协程共享全局变量和其他大部分东西")
@@ -489,5 +500,116 @@ print("collectgarbage('setpause') 将 arg 设置为收集器的间歇率, 返回
 print("collectgarbage('setstepmul') 返回步进倍率的前一个值")
 print("collectgarbage('step') 单步运行垃圾收集器, 步长大小由 arg 决定")
 print("collectgarbage('stop') 停止垃圾收集器的运行")
+print("---------------------------------------")
+
+print("面向对象: lua 使用 table 描述对象的属性, 使用 function 描述方法, 使用 table + function 模拟面向对象")
+local oopstr = [[
+-- 冒号语法可以用来定义方法, 使函数有一个隐形的形参 self, 代表函数自己
+-- Meta class
+Shape = {area = 0}
+-- 基础类方法 new
+function Shape:new (o,side)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+  side = side or 0
+  self.area = side*side;
+  return o
+end
+-- 基础类方法 printArea
+function Shape:printArea ()
+  print("面积为 ",self.area)
+end
+-- 创建对象
+myshape = Shape:new(nil,10)
+myshape:printArea()
+print("---------------")
+Square = Shape:new()
+-- 派生类方法 new
+function Square:new (o,side)
+  o = o or Shape:new(o,side)
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+-- 派生类方法 printArea
+function Square:printArea ()
+  print("正方形面积为 ",self.area)
+end
+-- 创建对象
+mysquare = Square:new(nil,10)
+mysquare:printArea()
+print("---------------")
+Rectangle = Shape:new()
+-- 派生类方法 new
+function Rectangle:new (o,length,breadth)
+  o = o or Shape:new(o)
+  setmetatable(o, self)
+  self.__index = self
+  self.area = length * breadth
+  return o
+end
+-- 派生类方法 printArea
+function Rectangle:printArea ()
+  print("矩形面积为 ",self.area)
+end
+-- 创建对象
+myrectangle = Rectangle:new(nil,10,20)
+myrectangle:printArea()
+]]
+print(oopstr)
+print("---------------------------------------")
+-- 冒号语法可以用来定义方法, 使函数有一个隐形的形参 self, 代表函数自己
+-- Meta class
+Shape = {area = 0}
+-- 基础类方法 new
+function Shape:new (o,side)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+  side = side or 0
+  self.area = side*side;
+  return o
+end
+-- 基础类方法 printArea
+function Shape:printArea ()
+  print("面积为 ",self.area)
+end
+-- 创建对象
+myshape = Shape:new(nil,10)
+myshape:printArea()
+print("---------------")
+Square = Shape:new()
+-- 派生类方法 new
+function Square:new (o,side)
+  o = o or Shape:new(o,side)
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+-- 派生类方法 printArea
+function Square:printArea ()
+  print("正方形面积为 ",self.area)
+end
+-- 创建对象
+mysquare = Square:new(nil,10)
+mysquare:printArea()
+print("---------------")
+Rectangle = Shape:new()
+-- 派生类方法 new
+function Rectangle:new (o,length,breadth)
+  o = o or Shape:new(o)
+  setmetatable(o, self)
+  self.__index = self
+  self.area = length * breadth
+  return o
+end
+-- 派生类方法 printArea
+function Rectangle:printArea ()
+  print("矩形面积为 ",self.area)
+end
+-- 创建对象
+myrectangle = Rectangle:new(nil,10,20)
+myrectangle:printArea()
 print("---------------------------------------")
 ```
