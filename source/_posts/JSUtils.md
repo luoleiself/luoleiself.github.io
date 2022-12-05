@@ -164,7 +164,10 @@ const checkEmail = function (value) {
  * @returns {String}
  */
 const numberFormat = function (value, delimiter = ',') {
-  if (typeof value === 'undefined' || (typeof value === 'object' && value === null)) {
+  if (
+    typeof value === 'undefined' ||
+    (typeof value === 'object' && value === null)
+  ) {
     return value;
   }
 
@@ -177,7 +180,9 @@ const numberFormat = function (value, delimiter = ',') {
     // 判断数字的长度是否为 3 的倍数
     let remainder = len % 3;
     return remainder > 0
-      ? num.slice(0, remainder) + delimiter + num.slice(remainder, len).match(/\d{3}/g).join(delimiter)
+      ? num.slice(0, remainder) +
+          delimiter +
+          num.slice(remainder, len).match(/\d{3}/g).join(delimiter)
       : num.slice(0, len).match(/\d{3}/g).join(delimiter);
   } catch (error) {
     return value;
@@ -195,7 +200,12 @@ const numberFormat = function (value, delimiter = ',') {
  * @returns {String} '16|9'
  */
 const calcImgRatio = function (width, height) {
-  if (isNaN(width) || typeof width !== 'number' || isNaN(height) || typeof height !== 'number') {
+  if (
+    isNaN(width) ||
+    typeof width !== 'number' ||
+    isNaN(height) ||
+    typeof height !== 'number'
+  ) {
     throw new TypeError('Params are not Number type....');
   }
 
@@ -213,126 +223,91 @@ const calcImgRatio = function (width, height) {
 };
 ```
 
-#### 日期时间格式化
-
-```javascript
-/**
- * @member dateFormat 日期时间格式化
- * @param {Number|String|Object} paramDate 日期时间
- * @param {Object} param1 格式化参数配置
- * @param {Number} param1.type 格式化类型, 0 默认全部, 1 只日期部分, 2 只时间部分
- * @param {Boolean} param1.isShowSeparator 是否保留分隔符, 默认 true
- * @param {String} param1.dateSeparator 日期部分分隔符, 默认 -
- * @param {String} param1.timeSeparator 时间部分分隔符, 默认 :
- * @returns
- */
-function dateFormat(paramDate, { type = 0, isShowSeparator = true, dateSeparator = '/', timeSeparator = ':' } = {}) {
-  let _date = null;
-  if (Object.prototype.toString.call(paramDate) == '[object Date]') {
-    _date = paramDate;
-  } else if (/^\d{1,}$/.test(paramDate)) {
-    _date = new Date(paramDate);
-  } else {
-    _date = new Date();
-  }
-  const year = _date.getFullYear();
-  const month = _date.getMonth() + 1;
-  const date = _date.getDate();
-
-  const hour = _date.getHours();
-  const min = _date.getMinutes();
-  const second = _date.getSeconds();
-
-  function gtNine(val) {
-    return val > 9 ? val : `0${val}`;
-  }
-  let result = `${year}${dateSeparator}${gtNine(month)}${dateSeparator}${gtNine(date)} ${gtNine(hour)}${timeSeparator}${gtNine(
-    min
-  )}${timeSeparator}${gtNine(second)}`;
-
-  const dateRegExp = new RegExp(dateSeparator, 'gmi');
-  const timeRegExp = new RegExp(timeSeparator, 'gmi');
-
-  let [dateRes, timeRes] = result.split(' ');
-
-  switch (type) {
-    case 1:
-      return isShowSeparator ? dateRes : dateRes.replace(dateRegExp, '');
-    case 2:
-      return isShowSeparator ? timeRes : timeRes.replace(timeRegExp, '');
-    default:
-      return isShowSeparator ? result : `${dateRes.replace(dateRegExp, '')}${timeRes.replace(timeRegExp, '')}`;
-  }
-}
-console.log(`dateFormat(1652441404000) `, dateFormat(1652441404000));
-console.log(
-  `dateFormat(new Date(), {type : 0, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
-  dateFormat(new Date(), { type: 0, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
-);
-console.log(
-  `dateFormat(1652441404000, {type : 1, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
-  dateFormat(1652441404000, { type: 1, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
-);
-console.log(
-  `dateFormat(new Date(), {type : 2, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
-  dateFormat(new Date(), { type: 2, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
-);
-console.log(
-  `dateFormat(new Date(), {type : 3, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
-  dateFormat(new Date(), { type: 3, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
-);
-console.log(
-  `dateFormat(Date.now(), {type : 0, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
-  dateFormat(Date.now(), { type: 0, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
-);
-console.log(
-  `dateFormat(new Date(), {type : 1, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
-  dateFormat(new Date(), { type: 1, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
-);
-console.log(
-  `dateFormat(1652441404000, {type : 2, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
-  dateFormat(1652441404000, { type: 2, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
-);
-console.log(
-  `dateFormat(Date.now(), {type : 3, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
-  dateFormat(Date.now(), { type: 3, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
-);
-```
+#### 日期倒计时
 
 ```javascript
 (function () {
-  if (Object.hasOwn && Object.hasOwn(Date.prototype, 'leftDown') || Date.prototype.hasOwnProperty('leftDown')) {
-    throw new Error("倒计时方法名重复了,无法提供支持...想别的招儿吧!");
+  if (
+    (Object.hasOwn && Object.hasOwn(Date.prototype, 'leftDown')) ||
+    Date.prototype.hasOwnProperty('leftDown')
+  ) {
+    throw new Error('倒计时方法名重复了...想别的招儿吧!');
   }
 
   var timer = null;
+  var evt = new Event('leftDown', { bubbles: true, cancelable: true });
+  var gtNine = function (val) {
+    return val > 9 ? `${val}` : `0${val}`;
+  };
   Date.prototype.leftDown = function (callback) {
+    var date = { now: Date.now(), end: this.getTime(), flag: true };
     var getDiff = function () {
-      var now = Date.now();
-      var end = this.getTime();
-      return end - now;
+      if (date.flag) {
+        date.now = Date.now();
+      } else {
+        date.now += 1000;
+      }
+      return date.end - date.now;
     }.bind(this);
 
-    var obj = { days: '00', hours: '00', minutes: '00', seconds: '00', status: true };
+    var obj = {
+      days: '00',
+      hours: '00',
+      minutes: '00',
+      seconds: '00',
+      status: true,
+    };
+    evt.leftDown = obj;
     if (getDiff() <= 0) {
-      return callback && typeof (callback) === 'function' && callback(Object.assign(obj, { status: false }));
+      dispatchEvent(evt);
+      return (
+        callback &&
+        typeof callback === 'function' &&
+        callback(Object.assign(obj, { status: false }))
+      );
     }
 
-    var gtNine = function (val) {
-      return val > 9 ? `${val}` : `0${val}`;
-    }
+    var pause = function () {
+      date.flag = false;
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+      if (!Object.hasOwn(evt, 'leftDown')) {
+        evt.leftDown = obj;
+      }
+      dispatchEvent(evt);
+      callback && typeof callback === 'function' && callback(obj);
+    }.bind(this);
+
+    var resume = function () {
+      if (getDiff() < 0 || timer > 0) {
+        return false;
+      }
+      if (timer == null) {
+        if (!date.flag) {
+          date.now -= 1000;
+        }
+        calcFn();
+        timer = setInterval(calcFn.bind(this), 1000);
+      }
+    }.bind(this);
 
     var calcFn = function () {
       var leftTime = getDiff();
       if (leftTime < 0) {
         clearInterval(timer);
         timer = null;
-        return callback && typeof (callback) === 'function' && callback(Object.assign(obj, { status: false }));
+        return (
+          callback &&
+          typeof callback === 'function' &&
+          callback(Object.assign(obj, { status: false }))
+        );
       }
       var d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
-      var h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
-      var m = Math.floor(leftTime / 1000 / 60 % 60);
-      var s = Math.floor(leftTime / 1000 % 60);
+      var h = Math.floor((leftTime / 1000 / 60 / 60) % 24);
+      var m = Math.floor((leftTime / 1000 / 60) % 60);
+      var s = Math.floor((leftTime / 1000) % 60);
 
       obj['days'] = gtNine(d);
       obj['hours'] = gtNine(h);
@@ -341,18 +316,34 @@ console.log(
       if (!obj['status']) {
         obj['status'] = true;
       }
-
-      if (callback && typeof (callback) === 'function') {
-        callback(obj);
-      }
-    }
+      evt.leftDown = obj;
+      dispatchEvent(evt);
+      callback && typeof callback === 'function' && callback(obj);
+    };
 
     timer = setInterval(calcFn.bind(this), 1000);
-  }
 
-  // var date = new Date((Math.floor(Date.now() / 1000) + 10) * 1000);
-  // date.leftDown(function (obj) {
-  //   console.log(obj);
+    return [pause, resume];
+  };
+
+  // var date = new Date(Date.now() + 1000000);
+  // // 方式一：回调函数的参数
+  // var [pause, resume] = date.leftDown(function (obj) {
+  //  console.log(obj);
+  //  $('body').css({'color': randRGBA(1)});
   // });
+
+  // 方式二：事件监听回调函数参数的 leftDown 字段获取
+  // window.addEventListener('leftDown', function (evt) {
+  //   console.log(evt)
+  // });
+
+  // function randRGBA(a) {
+  //   let r = Math.floor(Math.random() * 256);
+  //   let g = Math.floor(Math.random() * 256);
+  //   let b = Math.floor(Math.random() * 256);
+  //   a = a >= 1 ? 1 : Math.random().toString().match(/\d\.\d{1}/)[0]
+  //   return `rgba(${r},${g},${b},${a})`;
+  // }
 })();
 ```
