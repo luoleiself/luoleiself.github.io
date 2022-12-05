@@ -9,6 +9,33 @@ tags:
 
 ### Lua
 
+Lua 是一门强大、快速、轻量的嵌入式动态类型脚本语言, 使用 ANSI C 语言编写并以源代码形式开放, 其设计目的是为了嵌入应用程序中, 从而为应用程序提供灵活的扩展和定制功能
+
+Lua 有八种基本数据类型: nil、boolean、number、string、function、userdata、 thread、table
+
+- nil 表示一个有意义的值不存在时的状态, nil 和 false 逻辑表达式中都表示假, 其他任何值都表示真
+- userdata 表示任意存储在变量中的 C 数据, 完全用户数据: 指一块由 Lua 管理的内存对应的对象; 轻量用户数据: 指一个简单的 C 指针
+- table 本质是一个关联数组, 数组的索引可以是数字、字符串或表类型, 下标默认从 1 开始, table 可以包含任何类型的值(nil 除外), 任何键的值若为 nil 就不会被记入表内, table 的创建通过 `构造表达式 {}` 完成
+
+table、function、thread、userdata 在 Lua 中是引用类型, 对其操作都是针对引用而不是针对值的操作
+
+```lua
+print("数据类型: nil boolean number string userdata function trhead table")
+print("nil 表示一个无效值(在条件表达式中相当于false)")
+print("boolean 表示 true 和 false, 除了 nil 和 false 值表示为 false, 其他值(包括0)都为 true, ")
+print("number 表示双精度类型的实浮点数, 数字字符串相加将转换成数字相加")
+print("string 表示一对双引号或者单引号包含的内容, [[ 内容 ]] 表示块字符串, .. 字符串拼接, # 计算字符串或表的长度")
+print("userdata 表示任意存储在变量中的 C 数据结构")
+print("function 由 C 或 Lua 编写的函数")
+print("thread 表示执行的独立线程, 用于执行协同程序")
+print("table 其实是一个关联数组, 数组的索引可以是数字、字符串或者表类型, 下标默认从 1 开始, table 的创建通过'构造表达式'完成, 空表: {}")
+print("---------------------------------------")
+
+print("变量的三种类型: 全局变量, 局部变量(local 声明), 表中的域")
+print("变量批量赋值时, 多余的变量会赋值为 nil, 多余的值会被忽略")
+print("---------------------------------------")
+```
+
 ```lua
 #!/usr/local/bin/lua
 print("hello world")
@@ -31,21 +58,6 @@ print("关键字: and break do else elseif end false for function if in local ni
 print("默认声明的变量都是全局变量, 给一个变量赋值即创建了一个全局变量, 访问一个未初始化的全局变量返回 nil, 删除全局变量赋值为 nil 即可")
 a = 100
 print(a)
-print("---------------------------------------")
-
-print("数据类型: nil boolean number string userdata function trhead table")
-print("nil 表示一个无效值(在条件表达式中相当于false)")
-print("boolean 表示 true 和 false, 除了 nil 和 false 值表示为 false, 其他值(包括0)都为 true, ")
-print("number 表示双精度类型的实浮点数, 数字字符串相加将转换成数字相加")
-print("string 表示一对双引号或者单引号包含的内容, [[ 内容 ]] 表示块字符串, .. 字符串拼接, # 计算字符串或表的长度")
-print("userdata 表示任意存储在变量中的 C 数据结构")
-print("function 由 C 或 Lua 编写的函数")
-print("thread 表示执行的独立线程, 用于执行协同程序")
-print("table 其实是一个关联数组, 数组的索引可以是数字、字符串或者表类型, 下标默认从 1 开始, table 的创建通过'构造表达式'完成, 空表: {}")
-print("---------------------------------------")
-
-print("变量的三种类型: 全局变量, 局部变量(local 声明), 表中的域")
-print("变量批量赋值时, 多余的变量会赋值为 nil, 多余的值会被忽略")
 print("---------------------------------------")
 
 html = [[
