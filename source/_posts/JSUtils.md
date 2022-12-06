@@ -223,6 +223,201 @@ const calcImgRatio = function (width, height) {
 };
 ```
 
+### 检测浏览器版本号
+
+```javascript
+class VersionDiff {
+  /**
+   * @property {private} #_comparator 关系符加版本号
+   */
+  static #_comparator = 'gt:0.0.0';
+  /**
+   * @method #greaterThan
+   * @param {Array} arr 3位数版本号
+   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
+   * @returns Boolean
+   */
+  static #greaterThan(arr, arr1) {
+    return arr[0] > arr1[0] ||
+      (arr[0] == arr1[0] && arr[1] > arr1[1]) ||
+      (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] > arr1[2])
+      ? true
+      : false;
+  }
+  /**
+   * @method #lessThan
+   * @param {Array} arr 3位数版本号
+   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
+   * @returns Boolean
+   */
+  static #lessThan(arr, arr1) {
+    return arr[0] < arr1[0] ||
+      (arr[0] == arr1[0] && arr[1] < arr1[1]) ||
+      (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] < arr1[2])
+      ? true
+      : false;
+  }
+  /**
+   * @method #equalTo
+   * @param {Array} arr 3位数版本号
+   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
+   * @returns Boolean
+   */
+  static #equalTo(arr, arr1) {
+    return arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] == arr1[2]
+      ? true
+      : false;
+  }
+  /**
+   * @method #notEqual
+   * @param {Array} arr 3位数版本号
+   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
+   * @returns Boolean
+   */
+  static #notEqual(arr, arr1) {
+    return arr[0] != arr1[0] ||
+      (arr[0] == arr1[0] && arr[1] != arr1[1]) ||
+      (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] != arr1[2])
+      ? true
+      : false;
+  }
+  /**
+   * @method #versionDiff
+   * @param {String} version 版本号
+   * @param {RegExp} reg 匹配正则
+   * @param {String} comparator 关系符加版本号
+   * @returns Object
+   */
+  static #versionDiff(version, reg, comparator) {
+    if (comparator == null || comparator == undefined) {
+      comparator = VersionDiff.#_comparator;
+    }
+    if (typeof comparator != 'string') {
+      return new Error('TypeError: params comparator must be string...');
+    }
+    let regExp = reg ? reg : /(wxwork)\/([^\s]*)/i;
+    let _version = version
+      ? version.match(regExp)
+      : navigator.userAgent.match(regExp);
+
+    if (!Array.isArray(_version)) {
+      return { version: 0, [comparator]: 'unknow' };
+    }
+
+    let [operator, baseVersion] = comparator.split(':');
+    let result = { version: _version[2], [_version[1].toString()]: true };
+    let _ver = _version[2].split('.');
+    let _baseVer = baseVersion.split('.');
+
+    if (_ver.length != _baseVer.length) {
+      if (_ver.length < _baseVer.length) {
+        for (let i = 0, len = _baseVer.length - _ver.length; i < len; i++) {
+          _ver.push(0);
+        }
+      } else {
+        for (let i = 0, len = _ver.length - _baseVer.length; i < len; i++) {
+          _baseVer.push(0);
+        }
+      }
+    }
+
+    switch (operator.toLowerCase()) {
+      case 'gt':
+        return Object.assign({}, result, {
+          [comparator]: VersionDiff.#greaterThan(_ver, _baseVer),
+        });
+      case 'ge':
+        return Object.assign({}, result, {
+          [comparator]: VersionDiff.#equalTo(_ver, _baseVer)
+            ? true
+            : VersionDiff.#greaterThan(_ver, _baseVer),
+        });
+      case 'lt':
+        return Object.assign({}, result, {
+          [comparator]: VersionDiff.#lessThan(_ver, _baseVer),
+        });
+      case 'le':
+        return Object.assign({}, result, {
+          [comparator]: VersionDiff.#equalTo(_ver, _baseVer)
+            ? true
+            : VersionDiff.#lessThan(_ver, _baseVer),
+        });
+      case 'eq':
+        return Object.assign({}, result, {
+          [comparator]: VersionDiff.#equalTo(_ver, _baseVer),
+        });
+      case 'ne':
+        return Object.assign({}, result, {
+          [comparator]: VersionDiff.#notEqual(_ver, _baseVer),
+        });
+      default:
+        return Object.assign({}, result, { [comparator]: 'unknow' });
+    }
+  }
+  /**
+   * @method test 静态测试方法
+   * @param {String} browser 浏览器型号
+   * @param {String} comparator 关系符加版本号
+   * @returns Object
+   */
+  static test(browser = 'safari', comparator) {
+    if (arguments.length == 0) {
+      browser = `safari`;
+      comparator = VersionDiff.#_comparator;
+    } else if (arguments.length == 1) {
+      comparator = browser;
+      browser = `safari`;
+    }
+    return VersionDiff.#versionDiff(
+      `${browser}/${Math.floor(Math.random() * 10)}.${Math.floor(
+        Math.random() * 10
+      )}.${Math.floor(Math.random() * 10)}`,
+      new RegExp('(' + browser + ')/([^s]*)', 'i'),
+      comparator
+    );
+  }
+  /**
+   * @method test 静态比较方法
+   * @param {String} comparator 关系符加版本号
+   * @returns Object
+   */
+  static diff(browser = 'safari', comparator) {
+    if (arguments.length == 0) {
+      browser = `safari`;
+      comparator = VersionDiff.#_comparator;
+    } else if (arguments.length == 1) {
+      comparator = browser;
+      browser = `safari`;
+    }
+    return VersionDiff.#versionDiff(
+      null,
+      new RegExp('(' + browser + ')/([^s]*)', 'i'),
+      comparator
+    );
+  }
+}
+
+// 测试方式：使用 类名.test 调用
+console.log(
+  `VersionDiff.test('chrome', 'eq:5.3.2') `,
+  VersionDiff.test('chrome', 'eq:5.3.2')
+);
+console.log(
+  `VersionDiff.test('chrome', 'ne:5.3.2') `,
+  VersionDiff.test('chrome', 'ne:5.3.2')
+);
+console.log(
+  `VersionDiff.test('chrome', 'gt:5.3.2') `,
+  VersionDiff.test('chrome', 'gt:5.3.2')
+);
+console.log(
+  `VersionDiff.test('chrome', 'le:5.3.2') `,
+  VersionDiff.test('chrome', 'le:5.3.2')
+);
+// 使用方式: 使用 类名.diff 调用方式
+console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
+```
+
 #### 日期倒计时
 
 ```javascript

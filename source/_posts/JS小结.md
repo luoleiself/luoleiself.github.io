@@ -113,157 +113,147 @@ tags:
 <input type="file" accept="image/png,image/jpeg" />
 ```
 
-### 检测浏览器版本号
+### ArrayBuffer
+
+ArrayBuffer 对象用来表示通用的、固定长度的原始二进制数据缓冲区, 可以理解为一个字节数组. 不能直接操作 ArrayBuffer, 需要通过 `类型化数组对象(TypedArray)`或 `DataView` 操作
+ArrayBuffer 构造函数创建一个以字节为单位的固定长度的新 ArrayBuffer, 或者从现有的数据中获取数组缓冲区(例如: Base64 字符串或者 Blob 类文件对象 )
 
 ```javascript
-class VersionDiff {
-  /**
-   * @property {private} #_comparator 关系符加版本号
-   */
-  static #_comparator = 'gt:0.0.0';
-  /**
-   * @method #greaterThan
-   * @param {Array} arr 3位数版本号
-   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
-   * @returns Boolean
-   */
-  static #greaterThan(arr, arr1) {
-    return arr[0] > arr1[0] || (arr[0] == arr1[0] && arr[1] > arr1[1]) || (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] > arr1[2])
-      ? true
-      : false;
-  }
-  /**
-   * @method #lessThan
-   * @param {Array} arr 3位数版本号
-   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
-   * @returns Boolean
-   */
-  static #lessThan(arr, arr1) {
-    return arr[0] < arr1[0] || (arr[0] == arr1[0] && arr[1] < arr1[1]) || (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] < arr1[2])
-      ? true
-      : false;
-  }
-  /**
-   * @method #equalTo
-   * @param {Array} arr 3位数版本号
-   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
-   * @returns Boolean
-   */
-  static #equalTo(arr, arr1) {
-    return arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] == arr1[2] ? true : false;
-  }
-  /**
-   * @method #notEqual
-   * @param {Array} arr 3位数版本号
-   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
-   * @returns Boolean
-   */
-  static #notEqual(arr, arr1) {
-    return arr[0] != arr1[0] || (arr[0] == arr1[0] && arr[1] != arr1[1]) || (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] != arr1[2])
-      ? true
-      : false;
-  }
-  /**
-   * @method #versionDiff
-   * @param {String} version 版本号
-   * @param {RegExp} reg 匹配正则
-   * @param {String} comparator 关系符加版本号
-   * @returns Object
-   */
-  static #versionDiff(version, reg, comparator) {
-    if (comparator == null || comparator == undefined) {
-      comparator = VersionDiff.#_comparator;
-    }
-    if (typeof comparator != 'string') {
-      return new Error('TypeError: params comparator must be string...');
-    }
-    let regExp = reg ? reg : /(wxwork)\/([^\s]*)/i;
-    let _version = version ? version.match(regExp) : navigator.userAgent.match(regExp);
-
-    if (!Array.isArray(_version)) {
-      return { version: 0, [comparator]: 'unknow' };
-    }
-
-    let [operator, baseVersion] = comparator.split(':');
-    let result = { version: _version[2], [_version[1].toString()]: true };
-    let _ver = _version[2].split('.');
-    let _baseVer = baseVersion.split('.');
-
-    if (_ver.length != _baseVer.length) {
-      if (_ver.length < _baseVer.length) {
-        for (let i = 0, len = _baseVer.length - _ver.length; i < len; i++) {
-          _ver.push(0);
-        }
-      } else {
-        for (let i = 0, len = _ver.length - _baseVer.length; i < len; i++) {
-          _baseVer.push(0);
-        }
-      }
-    }
-
-    switch (operator.toLowerCase()) {
-      case 'gt':
-        return Object.assign({}, result, { [comparator]: VersionDiff.#greaterThan(_ver, _baseVer) });
-      case 'ge':
-        return Object.assign({}, result, {
-          [comparator]: VersionDiff.#equalTo(_ver, _baseVer) ? true : VersionDiff.#greaterThan(_ver, _baseVer),
-        });
-      case 'lt':
-        return Object.assign({}, result, { [comparator]: VersionDiff.#lessThan(_ver, _baseVer) });
-      case 'le':
-        return Object.assign({}, result, {
-          [comparator]: VersionDiff.#equalTo(_ver, _baseVer) ? true : VersionDiff.#lessThan(_ver, _baseVer),
-        });
-      case 'eq':
-        return Object.assign({}, result, { [comparator]: VersionDiff.#equalTo(_ver, _baseVer) });
-      case 'ne':
-        return Object.assign({}, result, { [comparator]: VersionDiff.#notEqual(_ver, _baseVer) });
-      default:
-        return Object.assign({}, result, { [comparator]: 'unknow' });
-    }
-  }
-  /**
-   * @method test 静态测试方法
-   * @param {String} browser 浏览器型号
-   * @param {String} comparator 关系符加版本号
-   * @returns Object
-   */
-  static test(browser = 'safari', comparator) {
-    if (arguments.length == 0) {
-      browser = `safari`;
-      comparator = VersionDiff.#_comparator;
-    } else if (arguments.length == 1) {
-      comparator = browser;
-      browser = `safari`;
-    }
-    return VersionDiff.#versionDiff(
-      `${browser}/${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 10)}`,
-      new RegExp('(' + browser + ')/([^s]*)', 'i'),
-      comparator
-    );
-  }
-  /**
-   * @method test 静态比较方法
-   * @param {String} comparator 关系符加版本号
-   * @returns Object
-   */
-  static diff(browser = 'safari', comparator) {
-    if (arguments.length == 0) {
-      browser = `safari`;
-      comparator = VersionDiff.#_comparator;
-    } else if (arguments.length == 1) {
-      comparator = browser;
-      browser = `safari`;
-    }
-    return VersionDiff.#versionDiff(null, new RegExp('(' + browser + ')/([^s]*)', 'i'), comparator);
-  }
-}
-
-// 测试方式：使用 类名.test 调用
-console.log(`VersionDiff.test('chrome', 'eq:5.3.2') `, VersionDiff.test('chrome', 'eq:5.3.2'));
-console.log(`VersionDiff.test('chrome', 'ne:5.3.2') `, VersionDiff.test('chrome', 'ne:5.3.2'));
-console.log(`VersionDiff.test('chrome', 'gt:5.3.2') `, VersionDiff.test('chrome', 'gt:5.3.2'));
-console.log(`VersionDiff.test('chrome', 'le:5.3.2') `, VersionDiff.test('chrome', 'le:5.3.2'));
-// 使用方式: 使用 类名.diff 调用方式
-console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
+var buffer = new ArrayBuffer(10); // 创建一个 10 字节的缓冲区
+var i8a = new Int32Array(buffer); // 并使用 Int32Array 视图引用它
 ```
+
+#### TypedArray
+
+描述底层 `二进制数据缓冲区(ArrayBuffer)` 的类数组视图, 没有可用的 TypedArray 全局属性和 TypedArray 构造函数, 其为所有类型化数组的子类提供了实用方法的通用接口, 当创建 TypedArray 子类(例如 Int8Array) 的实例时, 在内存中会创建数组缓冲区, 如果将 ArrayBuffer 实例作为构造函数参数时, 则使用该 ArrayBuffer.
+
+- Int8Array -128 到 127, 1 字节, 8 位有符号整型(补码)
+- Uint8Array 0 到 255, 1 字节, 8 位无符号整型
+- Uint8ClampedArray 0 到 255, 1 字节, 8 位无符号整型(一定在 0 - 255 之间)
+- Int16Array -32768 到 32767, 2 字节, 16 位有符号整型(补码)
+- Uint16Array 0 到 65535, 2 字节, 16 位无符号整型
+- Int32Array -2147483648 到 2147483647, 4 字节, 32 位有符号整型(补码)
+- Uint32Array 0 到 4294967295, 4 字节, 32 位无符号整型
+- Float32Array -3.4E38 到 3.4E38 并且 1.2E-38 是最小的正数, 4 字节, 32 位 IEEE 浮点数(7 位有效数字，例如 1.234567)
+- Float64Array -1.8E308 到 1.8E308 并且 5E-324 是最小的正数, 8 字节, 64 位 IEEE 浮点数(16 位有效数字，例如 1.23456789012345)
+- BigInt64Array -263 到 263 - 1, 8 字节, 64 位有符号整型(补码)
+- BigUint64Array 0 到 264 - 1, 8 字节, 64 位无符号整型
+
+```javascript
+var ia = new Int8Array(10);
+ia[0] = 42;
+```
+
+#### DataView
+
+DataView 是一个可以从二进制 `ArrayBuffer` 对象中读写多种数值类型的底层接口, 使用它时, 不需要考虑不同平台的字节序问题
+DataView 构造函数可以传入一个已经存在的 `ArrayBuffer` 或 `SharedArrayBuffer` 作为数据源, 第二个参数可以指定 buffer 中的字节偏移, 第三个参数可以指定 DataView 对象的字节长度, 返回表示指定数据缓冲区的新 DataView 对象
+
+```javascript
+var buffer = new ArrayBuffer(16);
+var view = new DataView(buffer);
+
+view.setUint8(0, 42); // 设置指定偏移量的值
+view.getUint8(0); // 获取指定偏移量的值
+
+view.setInt32(1, 2147483647);
+view.getInt32(1);
+```
+
+### Stream
+
+Streams API 允许 JavaScript 以编程方式访问从网络接收的数据流, 并且允许根据需要处理它们
+
+#### 可读流
+
+##### ReadableStream
+
+创建并从给定的 Handler 返回一个可读流对象
+
+- ReadableStream.locked 只读属性, 返回该可读流是否被锁定到一个 reader
+- ReadableStream.cancel() 取消读取流, 可以传入 reason 参数表示取消原因, 该参数将回传给调用方
+- ReadableStream.getReader() 创建一个读取器并将流锁定其上, 一旦流被锁定, 其他读取器将不能读取它直到释放
+- ReadableStream.pipeThrough() 提供当前流管道输出到一个 transform 流或 writable/readable 流对的链式方法
+- ReadableStream.pipeTo() 将当前 `ReadableStream` 管道输出到给定的 `WritableStream`, 并返回一个 Promise
+- ReadableStream.tee() 返回包含两个 `ReadableStream` 实例分支的数组, 每个元素接收了相同的传输数据
+
+```javascript
+var rs = new ReadableStream(
+  {
+    // 当每个对象被构造时立刻调用的方法, 可以返回一个 Promise
+    start(controller) {
+      interval = setInterval(() => {
+        let string = randomChars();
+
+        // Add the string to the stream
+        controller.enqueue(string);
+
+        // show it on the screen
+        let listItem = document.createElement('li');
+        listItem.textContent = string;
+        list1.appendChild(listItem);
+      }, 1000);
+
+      button.addEventListener('click', function () {
+        clearInterval(interval);
+        fetchStream();
+        controller.close();
+      });
+    },
+    // // 当流的内部队列不满时, 会重复调用这个方法, 直到队列补满, 如果返回一个 promise, 此方法将不会再被调用
+    // pull(controller) {
+    //   // We don't really need a pull in this example
+    // },
+    // // 应用程序调用此方法将该流取消, 可以返回一个 Promise
+    // cancel() {
+    //   // This is called if the reader cancels,
+    //   // so we should stop generating strings
+    //   clearInterval(interval);
+    // },
+    // type: '', // 表示该流的类型
+    // autoAllocateChunkSize: '', // 开启流自动分配缓冲区
+  }
+  // {
+  //   highWaterMark: 1, // 非负整数, 定义了在应用程序之前可以包含在内部队列中的块的总数
+  //   size(chunk) {}, // 表示每个分块使用的大小(以字节为单位)
+  // }
+);
+```
+
+##### ReadableStreamDefaultReader
+
+表示一个用于读取来自网络提供的流数据(例如 fetch 请求)的默认读取器
+`ReadableStreamDefaultReader` 可以用于读取底层为任意类型源的 `ReadableStream`(与 ReadableStreamBYOBReader 不同, 后者仅可以与底层为字节源的可读流一起使用)
+构造方法创建并返回一个 `ReadableStreamDefaultReader` 实例, 通常不需要手动创建, 可以使用 `ReadableStream.getReader()` 方法代替
+
+- ReadableStreamDefaultReader.closed 返回一个 Promise, 在流关闭时兑现
+- ReadableStreamDefaultReader.cancel() 返回一个 Promise, 当流被取消时兑现, 调用此方法取消流可传入 reason 参数表示取消原因
+- ReadableStreamDefaultReader.read() 返回一个 Promise, 提供对流内部队列中下一个分块的访问权限
+- ReadableStreamDefaultReader.releaseLock() 释放读取这个流的锁
+
+##### ReadableStreamDefaultController
+
+是一个控制器, 允许控制 `ReadableStream` 的状态和内部队列, 默认控制器用于不是字节流的流
+无构造函数, `ReadableStreamDefaultController` 实例会在构造 `ReadableStream` 时被自动创建
+
+- ReadableStreamDefaultController.desiredSize 只读属性, 返回填充满流的内部队列所需要的大小
+- ReadableStreamDefaultController.close() 关闭关联的流
+- ReadableStreamDefaultController.enqueue() 将给定的块加入关联的流
+- ReadableStreamDefaultController.error() 导致未来任何与关联流的交互都会出错
+
+#### 可写流
+
+##### WritableStream
+
+##### WritableStreamDefaultWriter
+
+##### WritableStreamDefaultController
+
+是一个控制器, 允许控制 `WritableStream` 状态的控制器, 当构造 `WritableStream` 时, 会为底层的 sink 提供一个相应的`WritableStreamDefaultController`实例进行操作
+无构造函数, `WritableStreamDefaultController` 实例会在构造 `WritableStream` 时被自动创建
+
+- WritableStreamDefaultController.error() 导致未来任何与关联流的交互都会出错
+
+#### 转换流
+
+##### TransformStream

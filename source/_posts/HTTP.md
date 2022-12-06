@@ -7,7 +7,7 @@ tags:
   - http
 ---
 
-#### 状态码
+### 状态码
 
 - 100 Continue 请求继续
 - 101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议
@@ -38,7 +38,7 @@ tags:
 - 504 Gateway Timeout 网关超时
 - 505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本
 
-#### URL 编码常用
+### URL 编码常用
 
 - %21 !
 - %22 "
