@@ -88,6 +88,8 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - QUIT 关闭退出当前连接
 - SHUTDOWN [NOSAVE|SAVE] [NOW] [FORCE] [ABORT] 同步保存数据到硬盘上并关闭服务
 
+- MONITOR 启动监听模式输出服务器执行的每条命令
+
 #### 操作 key
 
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
