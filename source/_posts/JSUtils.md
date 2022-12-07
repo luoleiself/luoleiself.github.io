@@ -429,75 +429,54 @@ console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
     throw new Error('倒计时方法名重复了...想别的招儿吧!');
   }
 
-  var timer = null;
-  var evt = new Event('leftDown', { bubbles: true, cancelable: true });
   var gtNine = function (val) {
     return val > 9 ? `${val}` : `0${val}`;
   };
+
+  /**
+   * @method leftDown 倒计时方法
+   * @description Date原型对象的方法, 所有的日期时间对象都可调用
+   * @param {function} callback 时间计算过程返回的差值对象
+   *    @javascript {days: '00', hours: '00', minutes: '00', seconds: '00'}
+   * @returns Object
+   *    @javascript { cancel: cancel, pause: pause, resume: resume }
+   *    @method cancel 取消倒计时
+   *    @method pause 暂停倒计时
+   *    @method resume 恢复倒计时
+   */
   Date.prototype.leftDown = function (callback) {
-    var date = { now: Date.now(), end: this.getTime(), flag: true };
+    var _timer = null;
+    var _referrerTime = Date.now();
+    var _paused = false; // 是否暂停
+    var _canceled = false; // 是否取消
+    var _resumed = false; // 是否恢复
+    var _keep = false; // 是否跟随原时间计算
+    var obj = { days: '00', hours: '00', minutes: '00', seconds: '00' };
+    var evt = new Event('leftDown', { bubbles: true, cancelable: true });
+    evt.leftDown = obj;
+
     var getDiff = function () {
-      if (date.flag) {
-        date.now = Date.now();
+      if (_keep) {
+        _referrerTime += 1000;
       } else {
-        date.now += 1000;
+        _referrerTime = Date.now();
       }
-      return date.end - date.now;
+      return this.getTime() - _referrerTime;
     }.bind(this);
 
-    var obj = {
-      days: '00',
-      hours: '00',
-      minutes: '00',
-      seconds: '00',
-      status: true,
-    };
-    evt.leftDown = obj;
     if (getDiff() <= 0) {
-      dispatchEvent(evt);
-      return (
-        callback &&
-        typeof callback === 'function' &&
-        callback(Object.assign(obj, { status: false }))
-      );
+      window && window.dispatchEvent(evt);
+      return typeof callback === 'function' && callback(obj);
     }
 
-    var pause = function () {
-      date.flag = false;
-      if (timer) {
-        clearInterval(timer);
-        timer = null;
-      }
-      if (!Object.hasOwn(evt, 'leftDown')) {
-        evt.leftDown = obj;
-      }
-      dispatchEvent(evt);
-      callback && typeof callback === 'function' && callback(obj);
-    }.bind(this);
-
-    var resume = function () {
-      if (getDiff() < 0 || timer > 0) {
-        return false;
-      }
-      if (timer == null) {
-        if (!date.flag) {
-          date.now -= 1000;
-        }
-        calcFn();
-        timer = setInterval(calcFn.bind(this), 1000);
-      }
-    }.bind(this);
-
-    var calcFn = function () {
+    var calcLeftTimeFn = function () {
       var leftTime = getDiff();
       if (leftTime < 0) {
-        clearInterval(timer);
-        timer = null;
-        return (
-          callback &&
-          typeof callback === 'function' &&
-          callback(Object.assign(obj, { status: false }))
-        );
+        clearInterval(_timer);
+        _timer = null;
+        _canceled = true;
+        _paused = _resumed = _keep = false;
+        return typeof callback === 'function' && callback(obj);
       }
       var d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
       var h = Math.floor((leftTime / 1000 / 60 / 60) % 24);
@@ -508,37 +487,112 @@ console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
       obj['hours'] = gtNine(h);
       obj['minutes'] = gtNine(m);
       obj['seconds'] = gtNine(s);
-      if (!obj['status']) {
-        obj['status'] = true;
-      }
       evt.leftDown = obj;
-      dispatchEvent(evt);
-      callback && typeof callback === 'function' && callback(obj);
+      window && window.dispatchEvent(evt);
+      typeof callback === 'function' && callback(obj);
     };
 
-    timer = setInterval(calcFn.bind(this), 1000);
+    _timer = setInterval(calcLeftTimeFn.bind(this), 1000);
 
-    return [pause, resume];
+    Object.defineProperties(this, {
+      paused: {
+        get() {
+          return _paused;
+        },
+        set(newVal) {
+          console.log('paused is the read-only property');
+          return 'paused is the read-only property';
+        },
+      },
+      resumed: {
+        get() {
+          return _resumed;
+        },
+        set(newVal) {
+          console.log('resumed is the read-only property');
+          return 'resumed is the read-only property';
+        },
+      },
+      canceled: {
+        get() {
+          return _canceled;
+        },
+        set(newVal) {
+          console.log('canceled is the read-only property');
+          return 'canceled is the read-only property';
+        },
+      },
+    });
+    /**
+     * @method cancel 取消倒计时
+     * @returns undefined
+     */
+    var cancel = function () {
+      _referrerTime = this.getTime();
+      _canceled = true;
+      _paused = _resumed = _keep = false;
+      if (_timer) {
+        clearInterval(_timer);
+        _timer = null;
+      }
+    }.bind(this);
+    /**
+     * @method pause 暂停倒计时
+     * @returns undefined
+     */
+    var pause = function () {
+      _paused = _keep = true;
+      _canceled = _resumed = false;
+      if (_timer) {
+        clearInterval(_timer);
+        _timer = null;
+      }
+    }.bind(this);
+    /**
+     * @method resume 恢复倒计时
+     * @param {boolean} keep 跟随上一次暂停时间继续计算, 默认 true, 如果为 false, 则按照当前恢复时间重新计算
+     * @returns undefined
+     */
+    var resume = function (keep = true) {
+      if (this.getTime() <= _referrerTime) {
+        return;
+      }
+      if (_timer == null) {
+        _keep = keep == true ? true : false;
+        _resumed = true;
+        _canceled = _paused = false;
+        calcLeftTimeFn();
+        _timer = setInterval(calcLeftTimeFn.bind(this), 1000);
+      }
+    }.bind(this);
+
+    return { cancel: cancel, pause: pause, resume: resume };
   };
 
-  // var date = new Date(Date.now() + 1000000);
-  // // 方式一：回调函数的参数
-  // var [pause, resume] = date.leftDown(function (obj) {
-  //  console.log(obj);
-  //  $('body').css({'color': randRGBA(1)});
-  // });
-
-  // 方式二：事件监听回调函数参数的 leftDown 字段获取
-  // window.addEventListener('leftDown', function (evt) {
-  //   console.log(evt)
-  // });
-
-  // function randRGBA(a) {
-  //   let r = Math.floor(Math.random() * 256);
-  //   let g = Math.floor(Math.random() * 256);
-  //   let b = Math.floor(Math.random() * 256);
-  //   a = a >= 1 ? 1 : Math.random().toString().match(/\d\.\d{1}/)[0]
-  //   return `rgba(${r},${g},${b},${a})`;
-  // }
+  // 演示用效果方法
+  window.randRGBA = function (a) {
+    let r = Math.floor(Math.random() * 256);
+    let g = Math.floor(Math.random() * 256);
+    let b = Math.floor(Math.random() * 256);
+    a =
+      a >= 1
+        ? 1
+        : Math.random()
+            .toString()
+            .match(/\d\.\d{1}/)[0];
+    return `rgba(${r},${g},${b},${a})`;
+  };
 })();
+
+var date = new Date(Date.now() + 1000000);
+// 方式一：回调函数的参数
+var { pause, resume, cancel } = date.leftDown(function (obj) {
+  console.log(obj);
+  document.body.style.color = randRGBA(1);
+});
+
+// // 方式二：事件监听回调函数参数的 leftDown 字段获取
+// window.addEventListener('leftDown', function (evt) {
+//   console.log(evt)
+// });
 ```
