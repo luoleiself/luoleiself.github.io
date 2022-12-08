@@ -6,7 +6,7 @@
   <link href="https://luoleiself.github.io/atom.xml" rel="self"/>
   
   <link href="https://luoleiself.github.io/"/>
-  <updated>2022-11-28T02:51:00.335Z</updated>
+  <updated>2022-12-08T11:55:34.545Z</updated>
   <id>https://luoleiself.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Lua</title>
+    <link href="https://luoleiself.github.io/2022/11/5ad9dd804c02/"/>
+    <id>https://luoleiself.github.io/2022/11/5ad9dd804c02/</id>
+    <published>2022-11-28T08:45:19.000Z</published>
+    <updated>2022-12-08T11:55:34.545Z</updated>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Lua&quot;&gt;&lt;a href=&quot;#Lua&quot; class=&quot;headerlink&quot; title=&quot;Lua&quot;&gt;&lt;/a&gt;Lua&lt;/h3&gt;&lt;p&gt;Lua 是一门强大、快速、轻量的嵌入式动态类型脚本语言, 使用 ANSI C 语言编写并以源代码形式开放, 其设计目的是为了嵌入应用程序中, 从而为应用程序提供灵活的扩展和定制功能&lt;/p&gt;
+&lt;h4 id=&quot;数据类型&quot;&gt;&lt;a href=&quot;#数据类型&quot; class=&quot;headerlink&quot; title=&quot;数据类型&quot;&gt;&lt;/a&gt;数据类型&lt;/h4&gt;&lt;p&gt;Lua 有八种基本数据类型: nil、boolean、number、string、function、userdata、thread、table&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;nil 表示一个有意义的值不存在时的状态, nil 和 false 逻辑表达式中都表示假, 其他任何值都表示真&lt;/li&gt;
+&lt;li&gt;userdata 表示任意存储在变量中的 C 数据, 完全用户数据: 指一块由 Lua 管理的内存对应的对象; 轻量用户数据: 指一个简单的 C 指针&lt;/li&gt;
+&lt;li&gt;table 本质是一个关联数组, 数组的索引可以是数字、字符串或表类型, 下标默认从 1 开始, table 可以包含任何类型的值(nil 除外), 任何键的值若为 nil 就不会被记入表内, table 的创建通过 &lt;code&gt;构造表达式 &amp;#123;&amp;#125;&lt;/code&gt; 完成&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;table、function、thread、userdata 在 Lua 中是引用类型, 对其操作都是针对引用而不是针对值的操作&lt;/p&gt;
+&lt;figure class=&quot;highlight lua&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;数据类型: nil boolean number string userdata function trhead table&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;nil 表示一个无效值(在条件表达式中相当于false)&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;boolean 表示 true 和 false, 除了 nil 和 false 值表示为 false, 其他值(包括0)都为 true, &amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;number 表示双精度类型的实浮点数, 数字字符串相加将转换成数字相加&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;string 表示一对双引号或者单引号包含的内容, [[ 内容 ]] 表示块字符串, .. 字符串拼接, # 计算字符串或表的长度&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;userdata 表示任意存储在变量中的 C 数据结构&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;function 由 C 或 Lua 编写的函数&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;thread 表示执行的独立线程, 用于执行协同程序&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;table 其实是一个关联数组, 数组的索引可以是数字、字符串或者表类型, 下标默认从 1 开始, table 的创建通过&amp;#x27;构造表达式&amp;#x27;完成, 空表: &amp;#123;&amp;#125;&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;---------------------------------------&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;变量的三种类型: 全局变量, 局部变量(local 声明), 表中的域&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;变量批量赋值时, 多余的变量会赋值为 nil, 多余的值会被忽略&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;quot;---------------------------------------&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Lua" scheme="https://luoleiself.github.io/categories/server/Lua/"/>
+    
+    
+    <category term="Lua" scheme="https://luoleiself.github.io/tags/Lua/"/>
+    
+  </entry>
   
   <entry>
     <title>Redis-List</title>
@@ -173,7 +202,7 @@
     <link href="https://luoleiself.github.io/2022/11/819f95816ecc/"/>
     <id>https://luoleiself.github.io/2022/11/819f95816ecc/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2022-11-28T07:22:38.029Z</updated>
+    <updated>2022-12-07T04:07:20.205Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;Redis&quot;&gt;&lt;a href=&quot;#Redis&quot; class=&quot;headerlink&quot; title=&quot;Redis&quot;&gt;&lt;/a&gt;Redis&lt;/h2&gt;&lt;p&gt;Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API&lt;br&gt;Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能&lt;/p&gt;
@@ -281,7 +310,7 @@
     <link href="https://luoleiself.github.io/2022/04/2c0c514706b8/"/>
     <id>https://luoleiself.github.io/2022/04/2c0c514706b8/</id>
     <published>2022-04-30T03:11:58.000Z</published>
-    <updated>2022-10-10T09:51:06.453Z</updated>
+    <updated>2022-11-28T11:37:04.815Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;Docker-网络&quot;&gt;&lt;a href=&quot;#Docker-网络&quot; class=&quot;headerlink&quot; title=&quot;Docker 网络&quot;&gt;&lt;/a&gt;Docker 网络&lt;/h2&gt;&lt;p&gt;Docker 网络架构源自一种叫作容器网络模型(CNM)的方案, 该方案是开源的并且支持插接式连接&lt;/p&gt;
@@ -445,7 +474,7 @@
     <link href="https://luoleiself.github.io/2022/03/28e7482b798b/"/>
     <id>https://luoleiself.github.io/2022/03/28e7482b798b/</id>
     <published>2022-03-05T02:35:34.000Z</published>
-    <updated>2022-05-12T11:39:12.366Z</updated>
+    <updated>2022-12-07T04:02:48.794Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;改变原数组的方法&quot;&gt;&lt;a href=&quot;#改变原数组的方法&quot; class=&quot;headerlink&quot; title=&quot;改变原数组的方法&quot;&gt;&lt;/a&gt;改变原数组的方法&lt;/h3&gt;&lt;ul&gt;
@@ -474,7 +503,7 @@
     <link href="https://luoleiself.github.io/2022/02/18f2de6d45f9/"/>
     <id>https://luoleiself.github.io/2022/02/18f2de6d45f9/</id>
     <published>2022-02-19T09:54:09.000Z</published>
-    <updated>2022-09-29T11:08:30.525Z</updated>
+    <updated>2022-12-08T08:07:27.282Z</updated>
     
     
     <summary type="html">&lt;h4 id=&quot;函数防抖&quot;&gt;&lt;a href=&quot;#函数防抖&quot; class=&quot;headerlink&quot; title=&quot;函数防抖&quot;&gt;&lt;/a&gt;函数防抖&lt;/h4&gt;&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;/**&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; * &lt;span class=&quot;doctag&quot;&gt;@method&lt;/span&gt; debounce 函数防抖&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; * &lt;span class=&quot;doctag&quot;&gt;@param&lt;/span&gt; &amp;#123;&lt;span class=&quot;type&quot;&gt;Function&lt;/span&gt;&amp;#125; fn 执行方法&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; * &lt;span class=&quot;doctag&quot;&gt;@param&lt;/span&gt; &amp;#123;&lt;span class=&quot;type&quot;&gt;Number&lt;/span&gt;&amp;#125; delay 延迟时间 默认 300 毫秒&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; * &lt;span class=&quot;doctag&quot;&gt;@returns&lt;/span&gt; &amp;#123;&lt;span class=&quot;type&quot;&gt;Function&lt;/span&gt;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; debounce = &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;fn, delay&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;typeof&lt;/span&gt; fn !== &lt;span class=&quot;string&quot;&gt;&amp;#x27;function&amp;#x27;&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;title class_&quot;&gt;Error&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&amp;#x27;fn is not Function&amp;#x27;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  delay = delay &amp;gt;= &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt; ? delay : &lt;span class=&quot;number&quot;&gt;300&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; timer;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; context = &lt;span class=&quot;variable language_&quot;&gt;this&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; args = &lt;span class=&quot;variable language_&quot;&gt;arguments&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (timer) &lt;span class=&quot;built_in&quot;&gt;clearTimeout&lt;/span&gt;(timer);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    timer = &lt;span class=&quot;built_in&quot;&gt;setTimeout&lt;/span&gt;(&lt;span class=&quot;function&quot;&gt;() =&amp;gt;&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      fn.&lt;span class=&quot;title function_&quot;&gt;apply&lt;/span&gt;(context, args);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;, delay);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
@@ -707,34 +736,6 @@
     <category term="VueJs" scheme="https://luoleiself.github.io/tags/VueJs/"/>
     
     <category term="Vue3.0" scheme="https://luoleiself.github.io/tags/Vue3-0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HTTP</title>
-    <link href="https://luoleiself.github.io/2021/07/1ddfb1010b19/"/>
-    <id>https://luoleiself.github.io/2021/07/1ddfb1010b19/</id>
-    <published>2021-07-26T11:12:29.000Z</published>
-    <updated>2022-04-30T07:04:23.689Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h4 id=&quot;状态码&quot;&gt;&lt;a href=&quot;#状态码&quot; class=&quot;headerlink&quot; title=&quot;状态码&quot;&gt;&lt;/a&gt;状态码&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;100 Continue 请求继续&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;101 Switching</summary>
-        
-      
-    
-    
-    
-    <category term="network" scheme="https://luoleiself.github.io/categories/network/"/>
-    
-    
-    <category term="http" scheme="https://luoleiself.github.io/tags/http/"/>
     
   </entry>
   
