@@ -445,6 +445,7 @@ console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
    * @property resumed 只读属性, 是否恢复倒计时
    * @property canceled 只读属性, 是否取消倒计时
    * @property kept 只读属性, 是否跟随上一次暂停时间继续计算
+   * @property left 只读属性, 获取倒计时当前计算后的差值
    * @returns Object
    *    @javascript { cancel: cancel, pause: pause, resume: resume }
    *    @method cancel 取消倒计时
@@ -548,6 +549,15 @@ console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
         set(newVal) {
           console.log('kept is the read-only property');
           return 'kept is the read-only property';
+        },
+      },
+      left: {
+        get() {
+          return obj;
+        },
+        set() {
+          console.log('left is the read-only property');
+          return 'left is the read-only property';
         },
       },
     });
