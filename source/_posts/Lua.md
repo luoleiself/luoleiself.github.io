@@ -11,7 +11,9 @@ tags:
 
 Lua 是一门强大、快速、轻量的嵌入式动态类型脚本语言, 使用 ANSI C 语言编写并以源代码形式开放, 其设计目的是为了嵌入应用程序中, 从而为应用程序提供灵活的扩展和定制功能
 
-Lua 有八种基本数据类型: nil、boolean、number、string、function、userdata、 thread、table
+#### 数据类型
+
+Lua 有八种基本数据类型: nil、boolean、number、string、function、userdata、thread、table
 
 - nil 表示一个有意义的值不存在时的状态, nil 和 false 逻辑表达式中都表示假, 其他任何值都表示真
 - userdata 表示任意存储在变量中的 C 数据, 完全用户数据: 指一块由 Lua 管理的内存对应的对象; 轻量用户数据: 指一个简单的 C 指针
@@ -34,6 +36,241 @@ print("---------------------------------------")
 print("变量的三种类型: 全局变量, 局部变量(local 声明), 表中的域")
 print("变量批量赋值时, 多余的变量会赋值为 nil, 多余的值会被忽略")
 print("---------------------------------------")
+```
+
+<!-- more -->
+
+#### 元表
+
+lua 中的每个值都可以有一个元表, 元表就是一个普通的 lua 表, 它用于定义原始值再特定操作下的行为
+
+元表决定了一个对象在数学运算、位运算、比较、连接、取长度、调用、索引时的行为, 元表还可以定义一个函数, 当表对象或用户数据对象在垃圾回收时调用它
+
+元表中的键对应着不同的事件名, 键关联的值被称为 元方法, 通过 `getmetatable` 方法获取任何值的元表, 通过 `setmetatable` 方法设置元表
+
+lua 中不能改变改变 table 以外其他类型的值的元表, 如果需要使用 C API
+
+- \_\_add '+' 操作, 如果任何值不是数值类型(包括不能转换数值的字符串)做加法, lua 就会尝试调用此方法, lua 查找两个操作数是否定义此元方法, 只要有一个操作数包含, 则将两个操作数作为参数传入元方法, 元方法的结果作为这个操作的结果, 如果找不到元方法, 则抛出一个错误
+- \_\_sub, '-' 操作, 行为和 `add` 操作类似
+- \_\_mul, '\*' 操作, 行为和 `add` 操作类似
+- \_\_div, '/' 操作, 行为和 `add` 操作类似
+- \_\_mod, '%' 操作, 行为和 `add` 操作类似
+- \_\_pow, '^' 幂操作, 行为和 `add` 操作类似
+- \_\_unm, '-' 取负操作, 行为和 `add` 操作类似
+- \_\_idiv, '//' 向下取整除法, 行为和 `add` 操作类似
+- \_\_band, '&' 按位与运算, 行为和 `add` 操作类似, 不同的是 lua 会在任何一个操作数无法转换为整数时尝试取元方法
+- \_\_bor, '|' 按位或运算, 行为和 `band` 操作类似
+- \_\_bxor, '~' 按位异或运算, 行为和 `band` 操作类似
+- \_\_bnot, '!' 按位非运算, 行为和 `band` 操作类似
+- \_\_shl, '<<' 左移操作, 行为和 `band` 操作类似
+- \_\_shr, '>>' 右移操作, 行为和 `band` 操作类似
+- \_\_concat, '..' 连接操作, 行为和 `add` 操作类似, 不同的是 lua 在任何操作数即不是字符串也不是数字(数字总能转换为对应的字符串)的情况下尝试取元方法
+- \_\_len, '#' 取长度操作, 如果对象不是字符串, lua 尝试取元方法, 如果有元方法, 则调用并将对象以参数形式传入, 返回值作为结果, 如果对象是一张表且没有元方法, lua 使用表的取长度操作, 其他情况均抛出错误
+- \_\_eq, '==' 操作, 行为和 `add` 操作类似, 不同的是 lua 仅在两个值都是 table 或都是完全用户数据, 且它们不是同一个对象时才尝试取元方法, 调用的结果总是会被转换为布尔值
+- \_\_lt, '<' 操作, 行为和 `add` 操作类似, 不同的是 lua 仅在两个值不全为整数也不全为字符串时才尝试取元方法, 调用的结果总是会被转换为布尔值
+- \_\_le, '<=' 操作, 和其他操作不同, 此元方法可能用到两个不同的事件, 首先查找两个操作数的 `__le` 元方法, 如果找不到则再次查找 `__lt` 元方法, 它会假设 a <= b 等价于 not(b < a), 调用的结果总是会被转换为布尔值
+
+```lua
+-- metatable.lua
+myTable = {k1 = 1, k2 = 2}
+newTable = {k1 = 3, k2 = 4}
+setmetatable(myTable, {
+    __add = function(t1, t2)
+        print("__add was called...")
+        for k, v in pairs(t1) do
+                print(k, v)
+        end
+        for k, v in pairs(t2) do
+                print(k, v)
+        end
+        return -1
+    end,
+    __sub = function(t1, t2)
+        print("__sub was called...")
+        print(t2.k1 - t1.k1, t2.k2 - t1.k2)
+        return 1000
+    end,
+    __pow = function(t1, t2)
+        print("__pow was called...")
+        return 10 ^ 2
+    end,
+    __mod = function(t1, t2)
+        print("__mod was called...")
+        return 10 % 3
+    end,
+    __band = function(t1, t2)
+        print("__band was called...")
+        return 10 & 5
+    end,
+    __shl = function(t1, t2)
+        print("__shl was called...")
+        return t1.k2 << 1
+    end,
+    __lt = function(t1, t2)
+        print("__lt was called...")
+        return t1.k2 < t2.k2
+    end
+})
+print(myTable + newTable) -- __add 操作
+print(myTable - newTable) -- __sub 操作
+print(myTable ^ newTable) -- __pow 操作
+print(myTable % newTable) -- __mod 操作
+print(myTable & newTable) -- __band 操作
+print(myTable << newTable) -- __shl 操作
+print(myTable < newTable) -- __lt 操作
+[root@centos7 workspace]# lua metatable.lua
+__add was called...	-- __add 操作	<!-- markdownlint-disable-line -->
+k1      1
+k2      2
+k1      3
+k2      4
+-1
+__sub was called...	-- __sub 操作	<!-- markdownlint-disable-line -->
+2       2
+1000
+__pow was called...	-- __pow 操作 	<!-- markdownlint-disable-line -->
+100.0
+__mod was called...	-- __mod 操作	<!-- markdownlint-disable-line -->
+1
+__band was called...	-- __band 操作	<!-- markdownlint-disable-line -->
+0
+__shl was called...	-- __shl 操作	<!-- markdownlint-disable-line -->
+4
+__lt was called...	-- __lt 操作	<!-- markdownlint-disable-line -->
+true
+```
+
+- \_\_tostring, 元方法用于修改表的输出行为(自定义输出内容)
+
+```lua
+local mtstringstr = [[
+mtstring = setmetatable({ 10, 20, 30}, {
+    __tostring = function (t)
+        local sum = 0
+        for k, v in pairs(t) do
+            sum = sum + v
+        end
+        return "表中所有元素的和为 "..sum
+    end
+})
+print(mtstring) -- 表中所有元素的和为 60
+]]
+print(mtstringstr)
+mtstring = setmetatable({ 10, 20, 30}, {
+    __tostring = function (t)
+        for k, v in pairs(t) do
+            sum = sum + v
+        end
+        return "表中所有元素的和为 "..sum
+    end
+})
+print(mtstring) -- 表中所有元素的和为 60
+```
+
+- \_\_call, 函数调用操作 func(args), 当 lua 尝试调用一个非函数的值时会尝试取元方法, 如果存在元方法则调用该方法, func 作为第一个参数传入, 原来调用的参数一次排在后面
+
+```lua
+myTable = {k1 = 1, k2 = 2, 5}
+newTable = {k1 = 3, k2 = 4}
+setmetatable(myTable, {
+    __call = function(t1, t2)
+        local num = 0
+        for k, v in pairs(t1) do
+            num = num + v
+        end
+        for k, v in pairs(t2) do
+            num = num + v
+        end
+        return num
+    end
+})
+print(myTable(newTable))
+[root@centos7 workspace]# lua metatable.lua
+15
+```
+
+- \_\_index, table[key] 查找操作, 当 table 不是表或者 table 中不存在 key 这个键时, lua 会尝试取元方法
+  - 如果 \_\_index 键包含一个 table 时, lua 则会在这个 table 中查找相应的 key
+  - 如果 \_\_index 键包含一个函数时, lua 则会调用这个函数, table 和 key 作为参数传递给函数并接收函数的返回值作为结果
+
+查找顺序:
+
+1. 在 table 中查找, 如果找到则返回该元素, 否则继续
+2. 判断该 table 是否有元表, 如果没有则返回 nil, 否则继续
+3. 判断元表是否有 \_\_index 键, 如果没有则返回 nil, 如果 \_\_index 键包含一个 table, 则重复 1. 2. 3, 如果 \_\_index 键包含一个函数, 则返回调用该函数的返回值
+
+```lua
+print("-------__index是table---------")
+t = setmetatable({}, {__index = { name = "hello world" }})
+print("t = setmetatable({}, {__index = { name = \"hello world\" }})")
+print("print(t.name)", t.name) -- hello world
+print("print(t.foo)", t.foo) -- nil
+print("-------__index是函数---------")
+mytable = setmetatable({foo = "bar"},{
+    __index = function(t, k)
+        if k == "baz" then
+            return "baz = baz"
+        else
+            return nil
+        end
+    end
+})
+local mytableStr = [[
+mytable = setmetatable({foo = "bar"},{
+    __index = function(t, k)
+        if k == "baz" then
+            return "baz = baz"
+        else
+            return nil
+        end
+    end
+})]]
+print(mytableStr)
+print("print(mytable.foo, mytable.baz)", mytable.foo, mytable.baz) -- bar     baz = baz
+```
+
+- \_\_newindex, table[key] = value 索引赋值操作, 发生在 table 不是表或者 table 中不存在 key 这个键时, lua 会尝试取元方法
+  - 如果 \_\_newindex 键包含一个 table 时, lua 则会对这个 table 做索引赋值操作, 索引过程有可能会引发另一次元方法
+  - 如果 \_\_newindex 键包含一个 函数时, lua 会调用这个函数而不进行赋值操作, table、key、value 将作为函数的参数传入
+
+```lua
+print("-------__newindex是table---------")
+local mtnewmtstr = [[
+mtnewmt = {}
+mtnew = setmetatable({ name = "hello world" }, { __newindex = mtnewmt})
+print(mtnew.name) -- hello world
+mtnew.name = "hello lua"
+print(mtnew.name, mtnewmt.name) -- hello lua  nil
+mtnew.addr = "beijing"
+print(mtnew.addr, mtnewmt.addr) -- nil  beijing
+]]
+print(mtnewmtstr)
+mtnewmt = {}
+mtnew = setmetatable({ name = "hello world" }, { __newindex = mtnewmt})
+print(mtnew.name) -- hello world
+mtnew.name = "hello lua"
+print(mtnew.name, mtnewmt.name) -- hello lua  nil
+mtnew.addr = "beijing"
+print(mtnew.addr, mtnewmt.addr) -- nil beijing
+print("-------__newindex是函数---------")
+local mtnewmt2str = [[
+mtnewmt2 = setmetatable({ name = "hello world" }, {
+    __newindex = function(t, k, v)
+        rawset(t, k, "gg_".."\""..v.."\"".."_gg")
+    end
+})
+mtnewmt2.age = 18
+mtnewmt2.addr = "beijing"
+print(mtnewmt2.name, mtnewmt2.age, mtnewmt2.addr) -- hello world     gg_"18"_gg      gg_"beijing"_gg
+]]
+mtnewmt2 = setmetatable({ name = "hello world" }, {
+    __newindex = function(t, k, v)
+        rawset(t, k, "gg_".."\""..v.."\"".."_gg")
+    end
+})
+mtnewmt2.age = 18
+mtnewmt2.addr = "beijing"
+print(mtnewmt2.name, mtnewmt2.age, mtnewmt2.addr) -- hello world     gg_"18"_gg      gg_"beijing"_gg
 ```
 
 ```lua
@@ -164,123 +401,6 @@ for key, val in pairs(tb2) do
         print(key, ":", val) -- 1:beijing  age:18  name:zhangsan
 end
 print("-------------------")
-print("元表(metatable), 改变 table 的行为, 每个行为关联的对应的元方法")
-print("setmetatable(table, metatable) 对 table 设置元表")
-print("getmetatable(table) 返回对象的元表")
-print("__add 对应的操作符 +")
-print("__sub 对应的操作符 -")
-print("__mul 对应的操作符 *")
-print("__div 对应的操作符 /")
-print("__mod 对应的操作符 %")
-print("__unm 对应的操作符 -")
-print("__concat 对应的操作符 ..")
-print("__eq 对应的操作符 ==")
-print("__lt 对应的操作符 <")
-print("__le 对应的操作符 <=")
-print("__len 对应的操作符 #")
-print("__tostring 元方法用于修改表的输出行为(自定义输出内容)")
-local mtstringstr = [[
-mtstring = setmetatable({ 10, 20, 30}, {
-        __tostring = function (t)
-            local sum = 0
-            for k, v in pairs(t) do
-                sum = sum + v
-            end
-            return "表中所有元素的和为 "..sum
-        end
-})
-print(mtstring) -- 表中所有元素的和为 60
-]]
-print(mtstringstr)
-mtstring = setmetatable({ 10, 20, 30}, {
-        __tostring = function (t)
-            local sum = 0
-            for k, v in pairs(t) do
-                sum = sum + v
-            end
-            return "表中所有元素的和为 "..sum
-        end
-})
-print(mtstring) -- 表中所有元素的和为 60
-print("__call 元方法在 lua 调用一个值时调用")
-print("__newindex 元方法用来对 table 更新")
-print("\t", "如果给 table 不存在的 key 赋值, 解释器就会查找  __newindex 元方法如果存在则会调用这个函数而不进行赋值操作")
-print("\t", "如果给 table 已存在的 key 赋值, 则不会调用 __newindex 元方法")
-print("-------__newindex是table---------")
-local mtnewmtstr = [[
-mtnewmt = {}
-mtnew = setmetatable({ name = "hello world" }, { __newindex = mtnewmt})
-print(mtnew.name) -- hello world
-mtnew.name = "hello lua"
-print(mtnew.name, mtnewmt.name) -- hello lua  nil
-mtnew.addr = "beijing"
-print(mtnew.addr, mtnewmt.addr) -- nil  beijing
-]]
-print(mtnewmtstr)
-mtnewmt = {}
-mtnew = setmetatable({ name = "hello world" }, { __newindex = mtnewmt})
-print(mtnew.name) -- hello world
-mtnew.name = "hello lua"
-print(mtnew.name, mtnewmt.name) -- hello lua  nil
-mtnew.addr = "beijing"
-print(mtnew.addr, mtnewmt.addr) -- nil beijing
-print("-------__newindex是函数---------")
-local mtnewmt2str = [[
-mtnewmt2 = setmetatable({ name = "hello world" }, {
-        __newindex = function(t, k, v)
-                rawset(t, k, "gg_".."\""..v.."\"".."_gg")
-        end
-})
-mtnewmt2.age = 18
-mtnewmt2.addr = "beijing"
-print(mtnewmt2.name, mtnewmt2.age, mtnewmt2.addr) -- hello world     gg_"18"_gg      gg_"beijing"_gg
-]]
-mtnewmt2 = setmetatable({ name = "hello world" }, {
-        __newindex = function(t, k, v)
-                rawset(t, k, "gg_".."\""..v.."\"".."_gg")
-        end
-})
-mtnewmt2.age = 18
-mtnewmt2.addr = "beijing"
-print(mtnewmt2.name, mtnewmt2.age, mtnewmt2.addr) -- hello world     gg_"18"_gg      gg_"beijing"_gg
-
-print("__index 元方法用来对 table 访问, 当通过 key 访问 table 时, 如果 key 不存在, lua 则会寻找该 metatable 中的 __index 键")
-print("\t", "如果 __index 键包含一个 table, lua 则会在这个 table 中查找相应的 key")
-print("\t", "如果 __index 键包含一个函数时, lua 则会调用这个函数, table 和 key 作为参数传递给函数, 并接收函数的返回值作为结果")
-print("查找顺序:")
-print("\t", "1. 在 table 中查找, 如果找到则返回该元素, 否则继续")
-print("\t", "2. 判断该 table 是否有元表, 如果没有则返回 nil, 否则继续")
-print("\t", "3. 判断元表是否有 __index 键, 如果没有则返回 nil, 如果 __index 是一个 table, 则重复 1. 2. 3, 如果 __index 是一个函数, 则返回调用该函数的返回值")
-print("-------__index是table---------")
-t = setmetatable({}, {__index = { name = "hello world" }})
-print("t = setmetatable({}, {__index = { name = \"hello world\" }})")
-print("print(t.name)", t.name) -- hello world
-print("print(t.foo)", t.foo) -- nil
-print("-------__index是函数---------")
-mytable = setmetatable({foo = "bar"},{
-        __index = function(t, k)
-                if k == "baz" then
-                        return "baz = baz"
-                else
-                        return nil
-                end
-       end
-})
-local mytableStr = [[
-mytable = setmetatable({foo = "bar"},{
-        __index = function(t, k)
-                if k == "baz" then
-                        return "baz = baz"
-                else
-                        return nil
-                end
-       end
-})
-]]
-print(mytableStr)
-print("print(mytable.foo, mytable.baz)", mytable.foo, mytable.baz) -- bar     baz = baz
-print("获取元表 getmetatable(mytable)", getmetatable(mytable))
-print("---------------------------------------")
 
 print("模块: 封装公用的代码以 API 接口的形式在其他地方调用")
 print("简单理解是将变量、常量、函数放在一个table里面，然后 return 返回")
