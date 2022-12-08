@@ -429,28 +429,47 @@ console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
     throw new Error('倒计时方法名重复了...想别的招儿吧!');
   }
 
-  var gtNine = function (val) {
+  function gtNine(val) {
     return val > 9 ? `${val}` : `0${val}`;
-  };
+  }
 
+  function hasOwnProp(obj, prop) {
+    return obj != null && typeof obj === 'object' && obj.hasOwnProperty(prop);
+  }
   /**
    * @method leftDown 倒计时方法
    * @description Date原型对象的方法, 所有的日期时间对象都可调用
    * @param {function} callback 时间计算过程返回的差值对象
    *    @javascript {days: '00', hours: '00', minutes: '00', seconds: '00'}
+   * @property paused 只读属性, 是否暂停倒计时
+   * @property resumed 只读属性, 是否恢复倒计时
+   * @property canceled 只读属性, 是否取消倒计时
+   * @property kept 只读属性, 是否跟随上一次暂停时间继续计算
    * @returns Object
    *    @javascript { cancel: cancel, pause: pause, resume: resume }
    *    @method cancel 取消倒计时
    *    @method pause 暂停倒计时
-   *    @method resume 恢复倒计时
+   *    @method resume 恢复倒计时,  keep 参数控制是否跟随上一次暂停时间继续计算, 默认为 true
    */
   Date.prototype.leftDown = function (callback) {
+    if (
+      hasOwnProp(this, 'paused') &&
+      hasOwnProp(this, 'resumed') &&
+      hasOwnProp(this, 'canceled') &&
+      hasOwnProp(this, 'kept')
+    ) {
+      console.log(
+        'leftDown 方法不能在一个实例上重复调用, 可以使用返回的 pause, cancel, resume 方法控制当前倒计时, 或者创建新的 Date 实例调用此方法'
+      );
+      return;
+    }
+
     var _timer = null;
     var _referrerTime = Date.now();
     var _paused = false; // 是否暂停
     var _canceled = false; // 是否取消
     var _resumed = false; // 是否恢复
-    var _keep = false; // 是否跟随原时间计算
+    var _keep = false; // 是否跟随上一次暂停时间继续计算
     var obj = { days: '00', hours: '00', minutes: '00', seconds: '00' };
     var evt = new Event('leftDown', { bubbles: true, cancelable: true });
     evt.leftDown = obj;
@@ -520,6 +539,15 @@ console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
         set(newVal) {
           console.log('canceled is the read-only property');
           return 'canceled is the read-only property';
+        },
+      },
+      kept: {
+        get() {
+          return _keep;
+        },
+        set(newVal) {
+          console.log('kept is the read-only property');
+          return 'kept is the read-only property';
         },
       },
     });
