@@ -48,7 +48,7 @@ lua 中的每个值都可以有一个元表, 元表就是一个普通的 lua 表
 
 元表中的键对应着不同的事件名, 键关联的值被称为 元方法, 通过 `getmetatable` 方法获取任何值的元表, 通过 `setmetatable` 方法设置元表
 
-lua 中不能改变改变 table 以外其他类型的值的元表, 如果需要使用 C API
+lua 中不能改变 table 以外其他类型的值的元表, 如果需要使用 C API
 
 - \_\_add '+' 操作, 如果任何值不是数值类型(包括不能转换数值的字符串)做加法, lua 就会尝试调用此方法, lua 查找两个操作数是否定义此元方法, 只要有一个操作数包含, 则将两个操作数作为参数传入元方法, 元方法的结果作为这个操作的结果, 如果找不到元方法, 则抛出一个错误
 - \_\_sub, '-' 操作, 行为和 `add` 操作类似
@@ -273,6 +273,135 @@ mtnewmt2.addr = "beijing"
 print(mtnewmt2.name, mtnewmt2.age, mtnewmt2.addr) -- hello world     gg_"18"_gg      gg_"beijing"_gg
 ```
 
+- \_\_gc, 垃圾收集元方法, 当垃圾收集循环时触发
+
+```lua
+-- metatable.lua
+myTable = {k1 = 1, k2 = 2, 5}
+setmetatable(myTable, {
+    __gc = function()
+        print("__gc was called...")
+    end
+})
+myTable = nil
+[root@centos7 workspace]# lua metatable.lua
+__gc was called...
+```
+
+#### 协程
+
+lua 支持协程(协同式多线程), 一个协程在 lua 中代表了一段独立的执行线程, 协程拥有独立的堆栈, 独立的局部变量, 同时又与其他协程共享全局变量和其他大部分东西,
+
+协程和线程的主要区别：
+
+一个具有多个线程的程序可以同时运行多个线程, 协程却需要彼此协作的运行, 在任一指定时刻只有一个协程在运行, 并且这个正在运行的协程只有在明确的被要求挂起时才会被挂起
+
+协程的运行可能被两种方式终止, 正常途径是主函数返回(显式返回或者执行完最后一条指令), 非正常途径是发生了一个未捕获的错误, 对于正常结束, `coroutine.resume()` 将返回 true 和协程主函数的返回值, 当错误发生时, `coroutine.resume()` 将返回 false 和错误信息
+
+- coroutine.create(func) 创建 coroutine 并返回协程句柄, 当和 resume 配合使用时就唤醒函数调用
+- coroutine.resume(co [, val1, ...]) 重启 coroutine 并将参数传入, 协程正常运行返回 true 和 传给 yield 的所有值(当协程让出)或者主体函数的所有返回值(当协程中止), 有错误发生时返回 false 和错误信息
+- coroutine.isyieldable() 判断正在运行的协程是否可以让出, 可以返回 1, 否则返回 0
+- coroutine.yield(args) 挂起 coroutine, 如果有参数则将参数返回给调用线程
+- coroutine.status(co) 查看 coroutine 的状态, 通常返回 dead, suspended, running
+- coroutine.wrap(f) 创建 coroutine 并返回一个函数, 启动协程需要手动调用这个函数
+- coroutine.running() 返回当前正在运行的 coroutine 和一个布尔值, 如果当前运行的协程是主线程, 布尔值为 true, 否则为 false
+
+```lua
+-- coroutine.lua
+co = coroutine.create(
+    function(i)
+        print(i)
+    end
+)
+coroutine.resume(co, 120) -- 120
+print(coroutine.status(co)) -- dead
+print(coroutine.running()) -- thread:0xef8018 true
+print("---------------")
+co = coroutine.wrap(
+    function(i)
+        print(i)
+    end
+)
+co(110) -- 110
+print(coroutine.running()) -- thread:0xef8018 true
+print("---------------")
+[root@centos7 workspace]# lua coroutine.lua
+120
+dead
+thread: 0xef8018        true
+---------------
+110
+thread: 0xef8018        true
+("---------------")
+```
+
+```lua
+-- coroutine.lua
+function foo (a)
+    -- 4. 执行打印 foo 2
+    print("foo", a)
+    -- 5. 挂起协程返回结果 4
+    return coroutine.yield(2*a)
+end
+co = coroutine.create(
+    function (a,b)
+        -- 2. 执行打印 co-body 1 10
+        print("co-body", a, b)
+        -- 3. 调用 foo 函数传入参数 2
+        -- 8. 执行赋值操作将 resume 的参数 r 赋值给局部变量 r
+        local r = foo(a+1)
+        -- 9. 执行打印 co-body r
+        print("co-body", r)
+        -- 10. 挂起协程返回结果 11 -9
+        -- 13. 执行赋值操作将 resume 的参数 x y 赋值给局部变量 r s
+        local r, s = coroutine.yield(a+b, a-b)
+        -- 14. 执行打印 co-body x y
+        print("co-body", r, s)
+        -- 15. 返回结果 10 end, 协程执行完成退出
+        return b, "end"
+    end
+)
+-- 1. 唤起协程传入参数 1 10  -- 6. 输出结果 main true 4
+print("main", coroutine.resume(co, 1, 10))
+-- 7. 唤起协程传入参数 r  -- 11. 输出结果 main true 11 -9
+print("main", coroutine.resume(co, "r"))
+-- 12. 唤起协程传入参数 x y  -- 16. 输出结果 main true 10 end
+print("main", coroutine.resume(co, "x", "y"))
+-- 17. 唤起协程传入参数 x y, 协程执行完毕输出结果 main false cannot resume dead coroutine
+print("main", coroutine.resume(co, "x", "y"))
+[root@centos7 workspace]# lua coroutine.lua
+co-body 1       10
+foo     2
+main    true    4
+co-body r
+main    true    11      -9
+co-body x       y
+main    true    10      end
+main    false   cannot resume dead coroutine
+```
+
+##### 生产者与消费者
+
+```lua
+local newProducer
+function producer()
+    local i = 0
+    while true do
+        i = i + 1
+        coroutine.yield(v) -- 发送数据后就挂起 coroutine
+    end
+end
+function consumer()
+    while true do
+        -- 唤起 coroutine, 接收 coroutine 挂起时返回的结果
+        local status, value = coroutine.resume(newProducer)
+        print(value)
+    end
+end
+newProducer = coroutine.create(producer)
+consumer()
+```
+
 ```lua
 #!/usr/local/bin/lua
 print("hello world")
@@ -418,134 +547,6 @@ local tst = require("tst")
 print(tst.getName())
 ]]
 print(modulestr)
-print("---------------------------------------")
-
-print("协程(coroutine): 拥有独立的堆栈, 独立的局部变量, 独立的指令指针, 同时又与其他协程共享全局变量和其他大部分东西")
-print("与线程的主要区别: 一个具有多个线程的程序可以同时运行多个线程, 协程却需要彼此协作的运行, 在任一指定时刻只有一个协程在运行, 并且这个正在运行的协程只有在明确的被要求挂起时才会被挂起")
-print("coroutine.create() 创建并返回一个 coroutine, 参数为一个函数, 当和 resume 配合使用时就唤醒函数调用")
-print("coroutine.resume() 重启 coroutine, 和 create 配合使用")
-print("coroutine.yield() 挂起 coroutine, 如果有参数, 则将参数返回给调用线程")
-print("coroutine.status() 查看 coroutine 的状态, 通常返回 dead, suspended, running")
-print("coroutine.wrap() 创建 coroutine, 并返回一个函数, 一旦手动调用这个函数, 就进入 coroutine, 和 create 功能重复")
-print("coroutine.running() 返回正在运行的 coroutine")
-local costr = [[
-co = coroutine.create(
-        function (i)
-                print(i)
-        end
-)
-coroutine.resume(co, 100) -- 100
-print(coroutine.status(co)) -- dead
-print(coroutine.running()) -- thread: 0x149b018  true
-print("---------------")
-co = coroutine.wrap(
-        function (i)
-                print(i)
-        end
-)
-co(250) -- 250
-print("---------------")
-co = coroutine.create(
-        function ()
-                for i = 1, 10 do
-                        print(i) -- 1 2 3
-                        if i == 3 then
-                                print(coroutine.status(co)) -- running
-                                print(coroutine.running()) -- 返回正在运行的 coroutine thread: 0x14ab788       false
-                         end
-                         coroutine.yield() -- 挂起 coroutine
-                end
-        end
-)
-coroutine.resume(co)
-coroutine.resume(co)
-coroutine.resume(co)
-]]
-print(costr)
-print("---------------")
-co = coroutine.create(
-        function (i)
-                print(i)
-        end
-)
-coroutine.resume(co, 100) -- 100
-print(coroutine.status(co)) -- dead
-print(coroutine.running()) -- thread: 0x149b018  true
-print("---------------")
-co = coroutine.wrap(
-        function (i)
-                print(i)
-        end
-)
-co(250) -- 250
-print("---------------")
-co = coroutine.create(
-        function ()
-                for i = 1, 10 do
-                        print(i) -- 1 2 3
-                        if i == 3 then
-                                print(coroutine.status(co)) -- running
-                                print(coroutine.running()) -- 返回正在运行的 coroutine thread: 0x14ab788       false
-                         end
-                         coroutine.yield() -- 挂起 coroutine
-                end
-        end
-)
-coroutine.resume(co)
-coroutine.resume(co)
-coroutine.resume(co)
-print("---------------------------------------")
-print("生产者和消费者")
-local prodstr = [[
-local newProductor
-function productor()
-        local i = 0
-        while true do
-                i = i + 1
-                send(i) -- 生产者发送数据
-        end
-end
-function consumer()
-        while true do
-                local i = receive() -- 消费者接收数据
-                print(i)
-        end
-end
-function receive()
-        local status, value = coroutine.resume(newProductor) -- 唤起 coroutine
-        return value
-end
-function send(v)
-        coroutine.yield(v) -- 发送数据后就挂起 coroutine
-end
-newProductor = coroutine.create(productor)
-consumer()
-]]
-print(prodstr)
-print("---------------")
-local newProductor
-function productor()
-        local i = 0
-        while true do
-                i = i + 1
-                send(i) -- 生产者发送数据
-        end
-end
-function consumer()
-        while true do
-                local i = receive() -- 消费者接收数据
-                print(i)
-        end
-end
-function receive()
-        local status, value = coroutine.resume(newProductor) -- 唤起 coroutine
-        return value
-end
-function send(v)
-        coroutine.yield(v) -- 发送数据后就挂起 coroutine
-end
---newProductor = coroutine.create(productor)
---consumer()
 print("---------------------------------------")
 
 print("文件 I/O: 用于读取和处理文件")

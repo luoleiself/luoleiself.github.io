@@ -440,7 +440,7 @@ console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
    * @method leftDown 倒计时方法
    * @description Date原型对象的方法, 所有的日期时间对象都可调用
    * @param {function} callback 时间计算过程返回的差值对象
-   *    @javascript {days: '00', hours: '00', minutes: '00', seconds: '00'}
+   *    @param {days: '00', hours: '00', minutes: '00', seconds: '00'}
    * @property paused 只读属性, 是否暂停倒计时
    * @property resumed 只读属性, 是否恢复倒计时
    * @property canceled 只读属性, 是否取消倒计时
