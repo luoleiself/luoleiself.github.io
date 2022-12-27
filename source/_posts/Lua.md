@@ -464,6 +464,116 @@ alo
 ]]
 ```
 
+##### 变量
+
+Lua 有三种变量: 全局变量, 局部变量和表的域
+所有没有显式声明的局部变量名都被当做全局变量, 在变量的首次赋值之前, 默认值都为 nil
+变量的作用范围开始于声明它们之后的第一个语句段
+
+```lua
+x = 10 -- 全局变量
+do
+    local x = x -- 新的本地变量 x, 并赋值 10
+    print(x) -- 10 第一层作用域的本地变量
+    x = x + 1
+    do
+        local x = x + 1 -- 取最近的变量 x 的值加 1 并赋值给新的本地变量 x
+        print(x) -- 12 第二层作用域的本地变量
+    end
+    print(x) -- 11 第一层作用域的本地变量
+end
+print(x) -- 10 全局变量
+```
+
+##### 控制结构
+
+- if, if exp then block {elseif exp then block} [else block] end
+- while, while exp do block end
+- for, for exp do block end
+- repeat, repeat block until exp
+
+##### 运算符
+
+- 算术运算符: + - \* / // % ^ -
+- 关系运算符: == ~= < <= > >=
+- 逻辑运算符: and or not
+- 位运算符: & | ~ << >>
+- 字符串拼接: ..
+- 取长度操作符(元方法\_\_len): #
+
+##### 函数定义
+
+- 冒号语法可以用来定义方法, 使函数有一个隐形的形参 self, 代表函数自己
+
+```lua
+print("面向对象: lua 使用 table 描述对象的属性, 使用 function 描述方法, 使用 table + function 模拟面向对象")
+print("---------------------------------------")
+-- 冒号语法可以用来定义方法, 使函数有一个隐形的形参 self, 代表函数自己
+-- Meta class
+Shape = {area = 0}
+-- 基础类方法 new
+function Shape:new (o,side)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+  side = side or 0
+  self.area = side*side;
+  return o
+end
+-- 基础类方法 printArea
+function Shape:printArea ()
+  print("面积为 ",self.area)
+end
+-- 创建对象
+myshape = Shape:new(nil,10)
+myshape:printArea()
+print("---------------")
+Square = Shape:new()
+-- 派生类方法 new
+function Square:new (o,side)
+  o = o or Shape:new(o,side)
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+-- 派生类方法 printArea
+function Square:printArea ()
+  print("正方形面积为 ",self.area)
+end
+-- 创建对象
+mysquare = Square:new(nil,10)
+mysquare:printArea()
+print("---------------")
+Rectangle = Shape:new()
+-- 派生类方法 new
+function Rectangle:new (o,length,breadth)
+  o = o or Shape:new(o)
+  setmetatable(o, self)
+  self.__index = self
+  self.area = length * breadth
+  return o
+end
+-- 派生类方法 printArea
+function Rectangle:printArea ()
+  print("矩形面积为 ",self.area)
+end
+-- 创建对象
+myrectangle = Rectangle:new(nil,10,20)
+myrectangle:printArea()
+print("---------------------------------------")
+```
+
+#### 辅助库
+
+辅助库提供了一些便捷函数, 方便在 C 中为 Lua 编程, 基础 API 提供了 C 和 Lua 交互用的主要函数, 而辅助库则为一些常见的任务提供了高阶函数
+所有辅助库中的函数和类型都定义在头文件 lauxlib.h 中, 它们均带有前缀 luaL\_
+辅助库中的所有的函数都基于基础 API 实现
+
+##### 函数和类型
+
+- luaL_addchar(luaL_Buffer \*B, char c) 向缓存 B 添加一个字节 c
+- luaL_addlstring(luaL_Buffer *B, const char *s, size_t l) 向缓存 B 添加一个长度为 l 的字符串 s, 这个字符串可以包含零
+
 ```lua
 #!/usr/local/bin/lua
 print("hello world")
@@ -695,116 +805,5 @@ print("collectgarbage('setpause') 将 arg 设置为收集器的间歇率, 返回
 print("collectgarbage('setstepmul') 返回步进倍率的前一个值")
 print("collectgarbage('step') 单步运行垃圾收集器, 步长大小由 arg 决定")
 print("collectgarbage('stop') 停止垃圾收集器的运行")
-print("---------------------------------------")
-
-print("面向对象: lua 使用 table 描述对象的属性, 使用 function 描述方法, 使用 table + function 模拟面向对象")
-local oopstr = [[
--- 冒号语法可以用来定义方法, 使函数有一个隐形的形参 self, 代表函数自己
--- Meta class
-Shape = {area = 0}
--- 基础类方法 new
-function Shape:new (o,side)
-  o = o or {}
-  setmetatable(o, self)
-  self.__index = self
-  side = side or 0
-  self.area = side*side;
-  return o
-end
--- 基础类方法 printArea
-function Shape:printArea ()
-  print("面积为 ",self.area)
-end
--- 创建对象
-myshape = Shape:new(nil,10)
-myshape:printArea()
-print("---------------")
-Square = Shape:new()
--- 派生类方法 new
-function Square:new (o,side)
-  o = o or Shape:new(o,side)
-  setmetatable(o, self)
-  self.__index = self
-  return o
-end
--- 派生类方法 printArea
-function Square:printArea ()
-  print("正方形面积为 ",self.area)
-end
--- 创建对象
-mysquare = Square:new(nil,10)
-mysquare:printArea()
-print("---------------")
-Rectangle = Shape:new()
--- 派生类方法 new
-function Rectangle:new (o,length,breadth)
-  o = o or Shape:new(o)
-  setmetatable(o, self)
-  self.__index = self
-  self.area = length * breadth
-  return o
-end
--- 派生类方法 printArea
-function Rectangle:printArea ()
-  print("矩形面积为 ",self.area)
-end
--- 创建对象
-myrectangle = Rectangle:new(nil,10,20)
-myrectangle:printArea()
-]]
-print(oopstr)
-print("---------------------------------------")
--- 冒号语法可以用来定义方法, 使函数有一个隐形的形参 self, 代表函数自己
--- Meta class
-Shape = {area = 0}
--- 基础类方法 new
-function Shape:new (o,side)
-  o = o or {}
-  setmetatable(o, self)
-  self.__index = self
-  side = side or 0
-  self.area = side*side;
-  return o
-end
--- 基础类方法 printArea
-function Shape:printArea ()
-  print("面积为 ",self.area)
-end
--- 创建对象
-myshape = Shape:new(nil,10)
-myshape:printArea()
-print("---------------")
-Square = Shape:new()
--- 派生类方法 new
-function Square:new (o,side)
-  o = o or Shape:new(o,side)
-  setmetatable(o, self)
-  self.__index = self
-  return o
-end
--- 派生类方法 printArea
-function Square:printArea ()
-  print("正方形面积为 ",self.area)
-end
--- 创建对象
-mysquare = Square:new(nil,10)
-mysquare:printArea()
-print("---------------")
-Rectangle = Shape:new()
--- 派生类方法 new
-function Rectangle:new (o,length,breadth)
-  o = o or Shape:new(o)
-  setmetatable(o, self)
-  self.__index = self
-  self.area = length * breadth
-  return o
-end
--- 派生类方法 printArea
-function Rectangle:printArea ()
-  print("矩形面积为 ",self.area)
-end
--- 创建对象
-myrectangle = Rectangle:new(nil,10,20)
-myrectangle:printArea()
 print("---------------------------------------")
 ```
