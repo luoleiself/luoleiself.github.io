@@ -563,16 +563,98 @@ myrectangle:printArea()
 print("---------------------------------------")
 ```
 
+#### C API 中的函数和类型
+
+- lua_status(lua_State \*L) 返回线程 L 的状态, 正常状态为 0(LUA_OK), 当线程用 lua_resume 执行完毕并抛出了一个错误时, 状态值时错误码, 如果线程被挂起, 状态为 LUA_YIELD
+- lua_version(lua_State \*L) 返回在 Lua 内核中保存的版本数字的地址
+
 #### 辅助库
 
 辅助库提供了一些便捷函数, 方便在 C 中为 Lua 编程, 基础 API 提供了 C 和 Lua 交互用的主要函数, 而辅助库则为一些常见的任务提供了高阶函数
 所有辅助库中的函数和类型都定义在头文件 lauxlib.h 中, 它们均带有前缀 luaL\_
 辅助库中的所有的函数都基于基础 API 实现
+一些辅助库函数会在内部使用一些额外的栈空间, 当辅助库使用的栈空间少于 5 个时, 它们不会取检查栈大小, 而是简单的假设栈够用
+一些辅助库看中的函数用于检查 C 函数的参数, 因为错误信息格式化为指代参数
 
 ##### 函数和类型
 
 - luaL_addchar(luaL_Buffer \*B, char c) 向缓存 B 添加一个字节 c
 - luaL_addlstring(luaL_Buffer *B, const char *s, size_t l) 向缓存 B 添加一个长度为 l 的字符串 s, 这个字符串可以包含零
+- luaL_addstring(luaL_Buffer *B, const char *s) 向緩存 B 添加一个零结尾的字符串 s
+- luaL_callmeta(lua_State *L, int obj, const char *e) 调用一个元方法, 如果在索引 obj 处的对象有元表, 且元表有域 e, 这个函数会以该对象为参数调用这个域, 这种情况下, 函数返回真并将调用返回值压栈, 如果这个位置没有元表, 或没有对应的元方法, 此函数返回假(并不会将任何东西压栈)
+- luaL_dostring(lua_State *L, const char *str) 加载并运行指定的字符串(使用 luaL_loadstring 或者 luaL_pcall 定义), 如果没有错误返回假, 有错误返回真
+- luaL_getmetatable(lua_State *L, const char *tname) 将注册表中 tname 对应的元表压栈, 如果没有 tname 对应的元表, 则将 nil 压栈并返回假
+- luaL_len(lua_State \*L, int index) 以数字形式返回给定索引处值的 长度, 等价于在 lua 中使用 # 的操作, 如果结果不是一个整数, 则抛出一个错误
+- luaL_loadstring(lua_State *L, const char *s) 将一个字符串加载为 lua 代码块, 这个函数使用 lua_load 加载一个零结尾的字符串 s, 返回值和 lua_load 相同
+
+#### 标准库
+
+标准库提供了一些有用的函数, 它们都是直接用 C API 实现的, 其中一些函数提供了原本语言就有的服务(type/getmetatable), 另一些提供和 `外部` 打交道的服务(I/O)
+还有些本可以用 lua 本身来实现, 但在 C 中实现可以满足关键点上的性能需求(例如 table.sort)
+所有的库都是直接用 C API 实现的, 并以分离的 C 模块形式提供
+
+##### 基础库
+
+- assert(v[,message]) 如果参数 v 的值为假(nil 或 false)就会调用 error, message 为错误对象, 否则返回所有的参数
+- error (message [, level]) 终止正在执行的函数, 并返回 message 的内容作为错误信息, level 指示获取错误的位置: 1 默认, 为调用 error 的位置(文件+行), 2 指出调用 error 函数的函数, 0 不添加错误位置信息
+- pcall(f [, arg1, ...]) 传入参数, 以保护模式调用函数 f
+
+```lua
+print("错误: 语法错误 和 运行时错误")
+print("assert(arg1, arg2) 类型断言, 如果第一个参数为真, assert 不做任何处理, 否则将第二个作为错误信息输出:  assert(type(a) == 'number', 'a 不是一个数字')")
+print("pcall() 保护模式调用, 接收一个函数和要传递给函数的参数, 以保护模式执行第一个参数, 可以捕获函数执行中的任何错误, 无错误返回 true, 有错误返回 false 和 errorinfo")
+print("xpcall() 第一个参数和第二个后面的参数作用同 pcall, 第二个参数为一个错误处理函数, 当错误发生时, lua 会在调用栈展开前调用错误处理函数, debug.debug() 提示一个 lua 提示符, 让用户来检查错误的原因, debug.traceback() 根据调用栈来构建一个扩展的错误消息")
+print("---------------------------------------")
+```
+
+- collectgarbage ([opt [, arg]]) 垃圾收集器的通用接口, opt 提供了一组不同的功能
+
+```lua
+print("垃圾回收: lua 采用了自动内存管理, collectgarbage([opt] [, arg])")
+print("collectgarbage('collect') 做一次完整的垃圾回收循环")
+print("collectgarbage('count') 以 K 字节为单位返回 lua 使用的总内存数")
+print("collectgarbage('restart') 重启垃圾回收器的自动运行")
+print("collectgarbage('setpause') 将 arg 设置为收集器的间歇率, 返回间歇率的前一个值")
+print("collectgarbage('setstepmul') 返回步进倍率的前一个值")
+print("collectgarbage('step') 单步运行垃圾收集器, 步长大小由 arg 决定")
+print("collectgarbage('stop') 停止垃圾收集器的运行")
+print("collectgarbage('isrunning') 返回表示收集器是否在工作的布尔值")
+print("---------------------------------------")
+```
+
+- getmetatable(object) 返回 object 的元表, 如果不包含元表则返回 nil
+- ipairs(t) 返回 3 个值(迭代函数, 表 t, 以及 0)
+- pairs(t) 如果 t 有元方法 \_\_pairs, 以 t 为参数调用它并返回其返回的前 3 个值,否则, 返回 3 个值(迭代函数, 表 t, 以及 nil)
+
+```lua
+for i,v in ipairs(t) do -- 将迭代键值对(1, t[1]), (2, t[2]) ... 知道第一个空值
+    body
+end
+for k,v in pairs(t) do
+    body
+end
+```
+
+- print(...) 接收任意数量的参数, 并将它们的值打印到 stdout
+- rawequal(v1, v2) 在不触发任何元方法的情况检查 v1 和 v2 是否相等, 返回一个布尔值
+
+##### 协程库
+
+##### 包管理库
+
+##### 字符串控制
+
+##### 基础 UTF-8 支持
+
+##### 表控制
+
+##### 数学函数
+
+##### 输入输出
+
+##### 操作系统库
+
+##### 调试库
 
 ```lua
 #!/usr/local/bin/lua
@@ -773,14 +855,6 @@ file:close()
 print(iocmstr)
 print("---------------------------------------")
 
-print("错误: 语法错误 和 运行时错误")
-print("错误处理:")
-print("assert(arg1, arg2) 类型断言, 如果第一个参数为真, assert 不做任何处理, 否则将第二个作为错误信息输出:  assert(type(a) == 'number', 'a 不是一个数字')")
-print("error(message [, level]) 终止正在执行的函数, 并返回 message 的内容作为错误信息, level 指示获取错误的位置: 1 默认, 为调用 error 的位置(文件+行), 2 指出调用 error 函数的函数, 0 不添加错误位置信息")
-print("pcall() 保护模式调用, 接收一个函数和要传递给函数的参数, 以保护模式执行第一个参数, 可以捕获函数执行中的任何错误, 无错误返回 true, 有错误返回 false 和 errorinfo")
-print("xpcall() 第一个参数和第二个后面的参数作用同 pcall, 第二个参数为一个错误处理函数, 当错误发生时, lua 会在调用栈展开前调用错误处理函数, debug.debug() 提示一个 lua 提示符, 让用户来检查错误的原因, debug.traceback() 根据调用栈来构建一个扩展的错误消息")
-print("---------------------------------------")
-
 print("调试: lua 提供了 debug 库用于提供创建自定义调试器的功能")
 print("debug() 进入一个用户交互模式, 运行用户输入的每个字符串, 使用简单的命令以及其他调试设置, 用户可以检阅全局变量和局部变量, 改变变量的值, 计算一些表达式等等")
 print("getfenv(object) 返回对象的环境变量")
@@ -797,13 +871,4 @@ print("setupvalue(f, up, value) 将 value 设置为函数 f 第 up 个上值, �
 print("traceback([thread,] [message [, level]]) 追踪堆栈信息, message 被添加到栈回朔信息的头部, level 指定从栈的哪一层开始回朔(默认: 1)")
 print("---------------------------------------")
 
-print("垃圾回收: lua 采用了自动内存管理, collectgarbage([opt] [, arg])")
-print("collectgarbage('collect') 做一次完整的垃圾回收循环")
-print("collectgarbage('count') 以 K 字节为单位返回 lua 使用的总内存数")
-print("collectgarbage('restart') 重启垃圾回收器的自动运行")
-print("collectgarbage('setpause') 将 arg 设置为收集器的间歇率, 返回间歇率的前一个值")
-print("collectgarbage('setstepmul') 返回步进倍率的前一个值")
-print("collectgarbage('step') 单步运行垃圾收集器, 步长大小由 arg 决定")
-print("collectgarbage('stop') 停止垃圾收集器的运行")
-print("---------------------------------------")
 ```
