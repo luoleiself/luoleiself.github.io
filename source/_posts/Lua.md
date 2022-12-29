@@ -301,7 +301,7 @@ __gc was called...
 属性为 `弱键强值` 的表也被称为 `暂时表`, 对于一张暂时表, 它的值是否可达仅取决于其对应键是否可达
 对一张表的弱属性的修改仅在下次手机循环才生效, 只有那些有显式构造过程的对象才会从弱表中移除, 值, 例如数字和轻量 C 函数, 不受垃圾收集器管辖, 因此不会从弱表中移除(除非它们的关联项被回收)
 
-#### 协程
+#### 协程 <em id="coroutine"></em> <!-- markdownlint-disable-line -->
 
 lua 支持协程(协同式多线程), 一个协程在 lua 中代表了一段独立的执行线程, 协程拥有独立的堆栈, 独立的局部变量, 同时又与其他协程共享全局变量和其他大部分东西,
 
@@ -637,18 +637,51 @@ end
 
 - print(...) 接收任意数量的参数, 并将它们的值打印到 stdout
 - rawequal(v1, v2) 在不触发任何元方法的情况检查 v1 和 v2 是否相等, 返回一个布尔值
+- rawlen(v) 在不触任何元方法的情况下返回对象 v 的长度
+- rawset(table, index, value) 在不触发任何元方法的情况将 table[index] 设置为 value, table 必须是一张表
+- tonumber(e [, base]) 尝试将 e 转换为一个指定 base 进制的数字
+- tostring(v) 将参数 v 转换为可阅读的字符串形式
+- type(v) 返回指定参数的类型编码的字符串形式
 
-##### 协程库
+##### [协程库](#coroutine)
 
 ##### 包管理库
 
+- require(modename) 加载一个模块
+- package.config 描述一些为包管理准备的编译期配置信息的串
+- package.cpath 模块在 C 加载器中加载时的搜索路径
+- package.loaded 控制哪些模块已经被加载的表
+- package.loadlib(libname, funcname)
+- package.path 模块在 lua 加载器中加载时搜索路径
+- package.preload 保存一些特殊模块的加载器
+- package.searchers 控制如何加载模块的表
+- package.searchpath(name, path [, sep [, rep]]) 在指定 path 中搜索指定的 name
+
 ##### 字符串控制
+
+这个库提供了字符串处理的通用函数
 
 ##### 基础 UTF-8 支持
 
+这个库提供了怼 UTF-8 编码的基础支持, 所有的函数都放在表 utf8 中, 此库不提供除编码处理之外的任何 unicode 支持
+
+- utf8.char(...) 接收零个或多个整数, 将每个整数转换成对应的 UTF-8 字节序列, 并返回这些序列连接到一起的字符串
+- utf8.codes(s) 返回一系列的值, 迭代出字符串 s 中所有的字符
+- utf8.codepoint(s [, i [, j]]) 以整数形式返回 s 中从位置 i 到 j 间(包括两端啊)所有字符的编码, 默认 i 为 1, j 为 i
+- uft8.len(s [, i [, j]]) 返回字符串 s 中从位置 i 到 j 间(包含两端) UTF-8 字符的个数, 默认 i 为 1, j 为 -1
+- uft8.offset(s, n [, i]) 返回编码在 s 中的第 n 个字符的开始位置(按字节数)(从位置 i 开始统计), 如果指定的字符不在其中或在结束点之后, 函数返回 nil
+
 ##### 表控制
 
+- table.insert(list, [pos, ] value) 在 list 的位置 pos 处插入元素 value, 并向后移动元素
+- table.pack(...) 返回用所有参数乘以键 1, 2, 等填充的新表, 并将 n 这个域设为参数的总数
+- table.remove(list [, pos]) 移除 list 中 pos 位置的元素并返回移除的元素, pos 默认为 #list
+- table.sort(list [, comp]]) 对 list 进行排序, 如果提供了参数 comp, 则 comp 必须是一个可以接收两个列表内元素为参数的函数
+- table.unpack(list [, i [, j]]) 返回 list 中的元素, 默认 i 为 1, j 为 #list
+
 ##### 数学函数
+
+这个库提供了基本的数学函数, 所有函数都放在表 math 中, 注解有 integer/float 的函数会对整数参数返回整数结果, 对浮点(或混合)参数返回浮点结果, 圆整函数(math.ceil, math.floor, math.modf)的结果在整数范围内是返回整数, 否则返回浮点数
 
 ##### 输入输出
 
