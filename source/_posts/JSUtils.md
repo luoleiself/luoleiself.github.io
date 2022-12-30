@@ -223,202 +223,99 @@ const calcImgRatio = function (width, height) {
 };
 ```
 
-### 检测浏览器版本号
+#### Base64 图片转 File 文件
 
 ```javascript
-class VersionDiff {
-  /**
-   * @property {private} #_comparator 关系符加版本号
-   */
-  static #_comparator = 'gt:0.0.0';
-  /**
-   * @method #greaterThan
-   * @param {Array} arr 3位数版本号
-   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
-   * @returns Boolean
-   */
-  static #greaterThan(arr, arr1) {
-    return arr[0] > arr1[0] ||
-      (arr[0] == arr1[0] && arr[1] > arr1[1]) ||
-      (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] > arr1[2])
-      ? true
-      : false;
+/**
+ * @method  dataURL2File Base64 图片转 File 文件
+ * @param {String} dataUrl 图片 Base64 字符串编码
+ * @param {String} fileName File 文件对象的 name 属性, 包含文件扩展名, 非必传
+ * @return {File}  返回 File 文件对象
+ */
+function dataURL2File(dataUrl, fileName) {
+  if (!/data:image\/.*?;base64,/.test(dataUrl)) {
+    return new Error('dataUrl 参数格式错误...');
   }
-  /**
-   * @method #lessThan
-   * @param {Array} arr 3位数版本号
-   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
-   * @returns Boolean
-   */
-  static #lessThan(arr, arr1) {
-    return arr[0] < arr1[0] ||
-      (arr[0] == arr1[0] && arr[1] < arr1[1]) ||
-      (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] < arr1[2])
-      ? true
-      : false;
+  if (!fileName) {
+    fileName =
+      Math.random().toString(16).substring(2) +
+      '.' +
+      dataUrl.match(/:(.*?);/i)[1].split('/')[1];
   }
-  /**
-   * @method #equalTo
-   * @param {Array} arr 3位数版本号
-   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
-   * @returns Boolean
-   */
-  static #equalTo(arr, arr1) {
-    return arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] == arr1[2]
-      ? true
-      : false;
-  }
-  /**
-   * @method #notEqual
-   * @param {Array} arr 3位数版本号
-   * @param {Array} arr1 3位数版本号,默认为关系符加版本号解析得到
-   * @returns Boolean
-   */
-  static #notEqual(arr, arr1) {
-    return arr[0] != arr1[0] ||
-      (arr[0] == arr1[0] && arr[1] != arr1[1]) ||
-      (arr[0] == arr1[0] && arr[1] == arr1[1] && arr[2] != arr1[2])
-      ? true
-      : false;
-  }
-  /**
-   * @method #versionDiff
-   * @param {String} version 版本号
-   * @param {RegExp} reg 匹配正则
-   * @param {String} comparator 关系符加版本号
-   * @returns Object
-   */
-  static #versionDiff(version, reg, comparator) {
-    if (comparator == null || comparator == undefined) {
-      comparator = VersionDiff.#_comparator;
-    }
-    if (typeof comparator != 'string') {
-      return new Error('TypeError: params comparator must be string...');
-    }
-    let regExp = reg ? reg : /(wxwork)\/([^\s]*)/i;
-    let _version = version
-      ? version.match(regExp)
-      : navigator.userAgent.match(regExp);
 
-    if (!Array.isArray(_version)) {
-      return { version: 0, [comparator]: 'unknow' };
-    }
-
-    let [operator, baseVersion] = comparator.split(':');
-    let result = { version: _version[2], [_version[1].toString()]: true };
-    let _ver = _version[2].split('.');
-    let _baseVer = baseVersion.split('.');
-
-    if (_ver.length != _baseVer.length) {
-      if (_ver.length < _baseVer.length) {
-        for (let i = 0, len = _baseVer.length - _ver.length; i < len; i++) {
-          _ver.push(0);
-        }
-      } else {
-        for (let i = 0, len = _ver.length - _baseVer.length; i < len; i++) {
-          _baseVer.push(0);
-        }
-      }
-    }
-
-    switch (operator.toLowerCase()) {
-      case 'gt':
-        return Object.assign({}, result, {
-          [comparator]: VersionDiff.#greaterThan(_ver, _baseVer),
-        });
-      case 'ge':
-        return Object.assign({}, result, {
-          [comparator]: VersionDiff.#equalTo(_ver, _baseVer)
-            ? true
-            : VersionDiff.#greaterThan(_ver, _baseVer),
-        });
-      case 'lt':
-        return Object.assign({}, result, {
-          [comparator]: VersionDiff.#lessThan(_ver, _baseVer),
-        });
-      case 'le':
-        return Object.assign({}, result, {
-          [comparator]: VersionDiff.#equalTo(_ver, _baseVer)
-            ? true
-            : VersionDiff.#lessThan(_ver, _baseVer),
-        });
-      case 'eq':
-        return Object.assign({}, result, {
-          [comparator]: VersionDiff.#equalTo(_ver, _baseVer),
-        });
-      case 'ne':
-        return Object.assign({}, result, {
-          [comparator]: VersionDiff.#notEqual(_ver, _baseVer),
-        });
-      default:
-        return Object.assign({}, result, { [comparator]: 'unknow' });
-    }
+  var arr = dataUrl.split(','),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
   }
-  /**
-   * @method test 静态测试方法
-   * @param {String} browser 浏览器型号
-   * @param {String} comparator 关系符加版本号
-   * @returns Object
-   */
-  static test(browser = 'safari', comparator) {
-    if (arguments.length == 0) {
-      browser = `safari`;
-      comparator = VersionDiff.#_comparator;
-    } else if (arguments.length == 1) {
-      comparator = browser;
-      browser = `safari`;
-    }
-    return VersionDiff.#versionDiff(
-      `${browser}/${Math.floor(Math.random() * 10)}.${Math.floor(
-        Math.random() * 10
-      )}.${Math.floor(Math.random() * 10)}`,
-      new RegExp('(' + browser + ')/([^s]*)', 'i'),
-      comparator
-    );
-  }
-  /**
-   * @method test 静态比较方法
-   * @param {String} comparator 关系符加版本号
-   * @returns Object
-   */
-  static diff(browser = 'safari', comparator) {
-    if (arguments.length == 0) {
-      browser = `safari`;
-      comparator = VersionDiff.#_comparator;
-    } else if (arguments.length == 1) {
-      comparator = browser;
-      browser = `safari`;
-    }
-    return VersionDiff.#versionDiff(
-      null,
-      new RegExp('(' + browser + ')/([^s]*)', 'i'),
-      comparator
-    );
-  }
+  return new File([u8arr], fileName, { type: mime });
 }
-
-// 测试方式：使用 类名.test 调用
-console.log(
-  `VersionDiff.test('chrome', 'eq:5.3.2') `,
-  VersionDiff.test('chrome', 'eq:5.3.2')
-);
-console.log(
-  `VersionDiff.test('chrome', 'ne:5.3.2') `,
-  VersionDiff.test('chrome', 'ne:5.3.2')
-);
-console.log(
-  `VersionDiff.test('chrome', 'gt:5.3.2') `,
-  VersionDiff.test('chrome', 'gt:5.3.2')
-);
-console.log(
-  `VersionDiff.test('chrome', 'le:5.3.2') `,
-  VersionDiff.test('chrome', 'le:5.3.2')
-);
-// 使用方式: 使用 类名.diff 调用方式
-console.log(`VersionDiff.diff('gt:3.2.0') `, VersionDiff.diff('gt:3.2.0'));
 ```
 
-### 日期倒计时
+#### 图片对象或链接转 Base64
+
+```javascript
+/**
+ * @method  file2DataURL 图片对象或图片链接转 Base64
+ * @param {String|File} arg 图片对象或者图片链接
+ * @return {Promise}  返回 Promise 的 then 方法接收图片 Base64 编码字符串
+ */
+function file2DataURL(arg) {
+  var isImgUrl = /((https?)?:)?\/\/.*?\.(jpg|jpeg|bmp|png|webp|gif)/i.test(arg);
+  var isFile =
+    arg != null && typeof arg == 'object' && /image\/\w+/.test(arg.type);
+
+  if (!isFile && !isImgUrl) {
+    return new Error('arg 参数不是一个图片对象或者图片链接...');
+  }
+
+  if (isImgUrl) {
+    var mime = 'image/' + arg.match(/\.(jpg|jpeg|bmp|png|webp|gif)/i)[1];
+    var canvas = document.createElement('canvas');
+    var img = document.createElement('img');
+    img.src = arg.includes('http')
+      ? arg
+      : arg.includes('://')
+      ? 'https' + arg
+      : 'https:' + arg;
+    img.crossOrigin = 'anonymous';
+
+    return new Promise(function (resolve, reject) {
+      img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        var dataURL = canvas.toDataURL(mime);
+        resolve(dataURL);
+      };
+      img.onerror = function (err) {
+        reject(err);
+      };
+    });
+  }
+
+  if (typeof FileReader == 'undefined') {
+    return new Error('浏览器不支持 FileReader API, 请先升级浏览器...');
+  }
+  var reader = new FileReader();
+  var p = new Promise(function (resolve, reject) {
+    reader.onload = function (e) {
+      resolve(e.currentTarget.result);
+    };
+    reader.onerror = function (e) {
+      reject(e);
+    };
+  });
+  reader.readAsDataURL(arg);
+  return p;
+}
+```
+
+#### 日期倒计时
 
 ```javascript
 (function () {
