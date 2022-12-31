@@ -685,9 +685,133 @@ end
 
 ##### 输入输出
 
+I/O 库提供了两套不同风格的文件处理接口
+
+- 简单模式(simple mode), 它提供设置默认输入文件及默认输出文件的操作, 所有的输入输出操作都针对这些默认文件
+- 完全模式(complete mode), 当使用隐式文件句柄时, 所有的操作都是由表 io 提供, 若使用显式文件句柄, io.open 会返回一个文件句柄, 且所有的操作都由该文件句柄的方法来提供
+
+表 io 中也提供了三个和 C 中含义相同的预定义文件句柄: io.stdin, io.stdout, 以及 io.stderr, I/O 库永远不会关闭这些文件
+
+- io.close([file]) 等价于 file:close(), 不指定 file 时关闭默认输出文件
+- io.flush() 等价于 io.output():flush()
+- io.input([file]) 当文件名调用它时, (以文本模式)来打开该名字的文件, 并将文件句柄设为默认输入文件, 如果用文件句柄调用它时, 就简单的将该句柄设为默认输入文件, 如果调用时不传参数, 则返回当前的默认输入文件
+- io.lines([filename ...]) 以读模式打开指定的文件名并返回一个迭代函数, 此迭代函数的工作方式和用一个已打开的文件去调用 file:lines(...) 得到的迭代器相同, 当迭代函数检测到文件结束, 它不返回值(让循环结束)并自动关闭文件
+
+  调用 io.lines() (不传文件名) 等价于 io.input():lines('\*|'), 按行迭代标准输入文件, 在此情况下, 循环结束后它不会关闭文件
+
+- io.open(filename [, mode]) 用字符串 mode 指定的模式打开一个文件并返回新的文件句柄, 当出错时, 返回 nil 和错误信息
+  - r 读模式, 默认
+  - w 写模式
+  - a 追加模式
+  - r+ 更新模式, 所有之前的数据都保留
+  - w+ 更新模式, 所有之前的数据都删除
+  - a+ 追加更新模式, 所有之前的数据都保留, 只允许在文件尾部写入
+- io.output([file]) 类似于 io.input(), 不过都针对默认输出文件操作
+- io.popen(prog [, mode]) 跟系统有关, 不是所有平台都提供, 用一个分离进程开启程序 prog, 返回的文件句柄可用于从这个程序中读取数据
+- io.read(...) 等价于 io.input():read(...)
+- io.tmpfile() 返回一个临时文件的句柄, 这个文件以更新模式打开, 在程序结束时自动删除
+- io.type(obj) 检查 obj 是否是合法的文件句柄, 如果是返回 'file', 如果是关闭的文件句柄返回 'closed file', 不是则返回 nil
+- io.write(...) 等价于 io.output():write(...)
+- file:close() 关闭文件
+- file:flush() 将写入的数据保存到 file 中
+- file:lines(...) 返回一个迭代器函数, 每次调用迭代器时, 都从文件中按指定格式读取数据, 默认 '|'
+- file:read(...) 按照指定格式读取文件, 默认读取一行
+  - \*| 默认, 从当前位置开始读取一行, 遇到文件末尾(EOF)返回 nil
+  - \*n 从当前位置读取数字直到行尾或者非数字字符结束并返回结果, 否则返回 nil
+  - \*i 读取一个整数并返回
+  - \*a 从当前位置开始读取所有内容
+  - \*L 读取一行并保留行结束标记(如果有的话), 当在文件末尾时，返回 nil
+  - number 从当前位置读取指定数量 number 个字符并返回
+- file:seek([where [, offset]]) 设置及获取当前文件的位置
+  - cur 从当前位置开始, 默认
+  - set 从文件头开始
+  - end 从文件尾开始
+  - offset 默认 0, 偏移量
+- file:setvbuf(mode [, size]) 设置文件的缓冲模式
+  - no 不缓冲, 输出操作立刻生效
+  - full 完全缓冲, 只有在缓存满或当显式的对文件调用 flush 时才真正做输出操作
+  - line 行缓冲, 缓冲有效将到每次换行前, 对于某些特殊文件(例如终端设备)缓冲到任何输入前
+  - size 以字节为单位指定缓冲区大小
+- file:write(...) 将参数的值逐个写入 file, 参数必须是字符串或数字, 成功返回 file, 否则返回 nil 和错误信息
+
+```lua
+print("文件 I/O: 用于读取和处理文件")
+print("\t", "简单模式(simple mode): 拥有一个当前输入文件和一个当前输入文件, 并且提供针对这些文件相关的操作")
+print("\t", "完全模式(complete mode): 使用外部的文件句柄来实现, 它以一种面向对象的方式, 将所有的文件操作定义为文件句柄的方法")
+print("简单模式:")
+-- 以追加的方式打开可读可写文件
+file = io.open("test", "a+")
+-- 设置默认输入文件为 test
+io.input(file)
+-- 读取文件
+print("使用 io.read(\"*n\") 从当前位置读取数字直到行尾或者非数字字符结束并返回结果, 否则返回 nil", io.read("*n"))
+print("使用 io.read 从当前位置读取一行",io.read())
+print("使用 io.read('*|') 从当前位置读取一行, 遇到文件末尾(EOF)返回 nil", io.read("*|"))
+print("使用 io.read(number) 从当前位置读取指定 number 个数的字符并返回", io.read(10))
+-- 写入文件
+io.write("-- 在当前位置追加内容, 追加的内容是注释\n")
+-- 再次读取内容
+print("使用 io.read(\"*a\") 从当前位置读取整个文件", io.read("*a"))
+-- 关闭文件
+io.close(file)
+print("---------------")
+print("完全模式: 使用 file:function_name 代替 io:function_name")
+-- 打开文件
+file = io.open('test', 'a+')
+-- 输出文件第一行
+print("读取一行", file:read())
+print("读取一行", file:read())
+print("读取 10 个字符", file:read(10))
+print("file:seek(where, offset) 设置和获取当前文件位置", file:seek())
+-- 写入文件
+file:write("-- 完全模式插入的内容\n")
+file:seek('set') -- 'set' 从文件头开始, 'cur' 从当前位置, 'end' 从文件尾开始, offset: 0 偏移量
+print("读取所有内容", file:read("*a"))
+-- 关闭文件
+file:close()
+```
+
 ##### 操作系统库
 
+- os.clock() 返回程序使用的按秒计 CPU 时间的近似值
+- os.date([format [, time]]) 返回一个包含日期及时刻的字符串或表, 格式化方法取决于所给字符串 format
+- os.difftime(t2, t1) 返回以秒计算的时刻 t1 到 t2 的差值
+- os.execute([command]) 调用系统解释器执行 command, 执行成功返回 true, 否则返回 nil, 在第一个返回值之后, 函数返回一个字符串加一个数字
+  - exit 命令正常结束, 接下来的数字是命令的退出状态码
+  - signal 命令被信号打断, 接下来的数字是打断该命令的信号
+- os.exit([code [, close]]) 终止宿主程序, 如果 close 为真, 在退出前关闭 lua 状态机
+  - 如果 code 为 true, 返回的状态码是 EXIT_SUCCESS
+  - 如果 code 为 false, 返回的状态码是 EXIT_FAILURE
+  - 如果 code 是一个数字, 返回的状态码就是这个数字, code 默认值为 true
+- os.getenv(varname) 返回进程环境变量 varname 的值, 如果未定义则返回 nil
+- os.remove(filename) 删除指定的文件, 如果函数失败则返回 nil 和错误信息
+- os.rename(oldname, newname) 重命名文件, 如果函数失败则返回 nil 和错误信息
+- os.setlocale(locale [, category]) 设置程序的当前区域, locale 是一个区域设置的系统相关字符串, category 是一个描述由改变哪个分类的可选字符串: all, collate, ctype, monetary, numeric, time, 默认为 all
+- os.time([table]) 当不传参数时, 返回当前时刻, 如果传入一张表则返回由这张表表示的时刻, 这张表必须包含域 year, month, day, 可以包含 hour(默认为 12), min(默认为 0), sec(默认为 0), 以及 isdst(默认为 nil)
+- os.tmpname() 返回一个可用于临时文件的文件名字符串, 这个文件在使用前必须显式打开, 不再使用时需要显式删除
+
 ##### 调试库
+
+- debug.debug() 进入一个用户交互模式,运行用户输入的每个字符串, 使用简单命令以及其他调试设置, 用户可以检阅全局变量和局部变量, 改变变量的值, 计算一些表达式等等, 输入一行仅包含 count 的字符串将结束这个函数继续向下运行
+- debug.gethook([thread]) 返回三个表示线程钩子设置的值: 当前钩子函数, 当前钩子掩码, 当前钩子计数
+
+```lua
+print("调试: lua 提供了 debug 库用于提供创建自定义调试器的功能")
+print("debug() 进入一个用户交互模式, 运行用户输入的每个字符串, 使用简单的命令以及其他调试设置, 用户可以检阅全局变量和局部变量, 改变变量的值, 计算一些表达式等等")
+print("getfenv(object) 返回对象的环境变量")
+print("gethook(optional thread) 返回三个表示线程钩子设置的值: 当前钩子函数, 当前钩子掩码, 当前钩子计数")
+print("getinfo([thread,] f [, where]) 返回一个关于函数信息的表, 也可以提供一个数字 f 表示的函数, 数字 f 表示运行在指定线程的调用栈对应层次上的函数, 0 层表示当前函数(getinfo自身), 1 层表示调用 getinfo 的函数")
+print("debug.getlocal([thread,] f, local) 返回在栈的 f 层处函数的索引为 local 的局部变量的名字和值, 此函数不仅用于访问显式定义的局部变量, 还包括形参, 临时变量等")
+print("getmetatable(value) 把给定索引指向的元表压入堆栈")
+print("getregistry() 返回注册表表, 这是一个预定以的表, 可以用来保存任何 C 代码想保存的 lua 值")
+print("getupvalue(f, up) 返回函数 f 的第 up 个上值的名字和值, 如果没有则返回 nil")
+print("sethook([thread,] hook, mask [, count]) 将一个函数作为钩子函数设入, 字符串 mask 以及数字 count 决定了钩子将在何时调用, mask: c 每当 lua 调用一个函数, 调用此钩子, r 每当 lua 从一个函数内返回时, 调用钩子, l 每当 lua 进入新的一行时, 调用钩子")
+print("setlocal([thread,] level, local, value) 将 value 赋值给栈上第 level 层函数的第 local 个局部变量, 如果没有那个变量返回 nil, 如果 level 越界则抛出一个错误")
+print("setmetatable(value, table) 设置元表")
+print("setupvalue(f, up, value) 将 value 设置为函数 f 第 up 个上值, 如果函数没有那个上值返回 nil, 否则返回 up 上值的名字")
+print("traceback([thread,] [message [, level]]) 追踪堆栈信息, message 被添加到栈回朔信息的头部, level 指定从栈的哪一层开始回朔(默认: 1)")
+print("---------------------------------------")
+```
 
 ```lua
 #!/usr/local/bin/lua
@@ -835,73 +959,4 @@ print(tst.getName())
 ]]
 print(modulestr)
 print("---------------------------------------")
-
-print("文件 I/O: 用于读取和处理文件")
-print("\t", "简单模式(simple mode): 拥有一个当前输入文件和一个当前输入文件, 并且提供针对这些文件相关的操作")
-print("\t", "完全模式(complete mode): 使用外部的文件句柄来实现, 它以一种面向对象的方式, 将所有的文件操作定义为文件句柄的方法")
-print("io.seek(where, offset) 设置和获取当前文件的位置")
-print("\t", "set 从文件头开始")
-print("\t", "cur 从当前位置开始, 默认")
-print("\t", "end 从文件尾开始")
-print("\t", "offset 默认 0, 偏移量")
-print("io.read() 读取文件, 默认读取一行")
-print("\t", "*n 从当前位置读取数字直到行尾或者非数字字符结束并返回结果, 否则返回 nil")
-print("\t", "*a 从当前位置开始读取所有内容")
-print("\t", "*| 默认, 从当前位置开始读取一行, 遇到文件末尾(EOF)返回 nil")
-print("\t", "number 从当前位置读取指定数量 number 个字符并返回")
-print("简单模式:")
-local iostr = [[
--- 以追加的方式打开可读可写文件
-file = io.open("test", "a+")
--- 设置默认输入文件为 test
-io.input(file)
--- 读取文件
-print("使用 io.read(\"*n\") 从当前位置读取数字直到行尾或者非数字字符结束并返回结果, 否则返回 nil", io.read("*n"))
-print("使用 io.read 从当前位置读取一行",io.read())
---print("使用 io.read('*|') 从当前位置读取一行, 遇到文件末尾(EOF)返回 nil", io.read("*|"))
-print("使用 io.read(number) 从当前位置读取指定 number 个数的字符并返回", io.read(10))
--- 写入文件
-io.write("-- 在当前位置追加内容, 追加的内容是注释\n")
--- 再次读取内容
-print("使用 io.read(\"*a\") 从当前位置读取整个文件", io.read("*a"))
--- 关闭文件
-io.close(file)
-]]
-print(iostr)
-print("---------------")
-print("完全模式: 使用 file:function_name 代替 io:function_name")
-local iocmstr = [[
--- 打开文件
-file = io.open('test', 'a+')
--- 输出文件第一行
-print("读取一行", file:read())
-print("读取一行", file:read())
-print("读取 10 个字符", file:read(10))
-print("file:seek(where, offset) 设置和获取当前文件位置", file:seek())
--- 写入文件
-file:write("-- 完全模式插入的内容\n")
-file:seek('set') -- 'set' 从文件头开始, 'cur' 从当前位置, 'end' 从文件尾开始, offset: 0 偏移量
-print("读取所有内容", file:read("*a"))
--- 关闭文件
-file:close()
-]]
-print(iocmstr)
-print("---------------------------------------")
-
-print("调试: lua 提供了 debug 库用于提供创建自定义调试器的功能")
-print("debug() 进入一个用户交互模式, 运行用户输入的每个字符串, 使用简单的命令以及其他调试设置, 用户可以检阅全局变量和局部变量, 改变变量的值, 计算一些表达式等等")
-print("getfenv(object) 返回对象的环境变量")
-print("gethook(optional thread) 返回三个表示线程钩子设置的值: 当前钩子函数, 当前钩子掩码, 当前钩子计数")
-print("getinfo([thread,] f [, where]) 返回一个关于函数信息的表, 也可以提供一个数字 f 表示的函数, 数字 f 表示运行在指定线程的调用栈对应层次上的函数, 0 层表示当前函数(getinfo自身), 1 层表示调用 getinfo 的函数")
-print("debug.getlocal([thread,] f, local) 返回在栈的 f 层处函数的索引为 local 的局部变量的名字和值, 此函数不仅用于访问显式定义的局部变量, 还包括形参, 临时变量等")
-print("getmetatable(value) 把给定索引指向的元表压入堆栈")
-print("getregistry() 返回注册表表, 这是一个预定以的表, 可以用来保存任何 C 代码想保存的 lua 值")
-print("getupvalue(f, up) 返回函数 f 的第 up 个上值的名字和值, 如果没有则返回 nil")
-print("sethook([thread,] hook, mask [, count]) 将一个函数作为钩子函数设入, 字符串 mask 以及数字 count 决定了钩子将在何时调用, mask: c 每当 lua 调用一个函数, 调用此钩子, r 每当 lua 从一个函数内返回时, 调用钩子, l 每当 lua 进入新的一行时, 调用钩子")
-print("setlocal([thread,] level, local, value) 将 value 赋值给栈上第 level 层函数的第 local 个局部变量, 如果没有那个变量返回 nil, 如果 level 越界则抛出一个错误")
-print("setmetatable(value, table) 设置元表")
-print("setupvalue(f, up, value) 将 value 设置为函数 f 第 up 个上值, 如果函数没有那个上值返回 nil, 否则返回 up 上值的名字")
-print("traceback([thread,] [message [, level]]) 追踪堆栈信息, message 被添加到栈回朔信息的头部, level 指定从栈的哪一层开始回朔(默认: 1)")
-print("---------------------------------------")
-
 ```
