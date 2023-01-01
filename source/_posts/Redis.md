@@ -705,10 +705,14 @@ repl_backlog_histlen:0
 #### 命令模式配置
 
 ===每台 Redis 服务器都是主节点===, 只用配置从服务器即可
-使用命令配置只能在本次服务器运行时有效, 重启服务器后将会丢失配置信息, 使用配置文件永久生效
+使用`命令配置`只能在`本次服务器运行时有效`, 重启服务器后将会丢失配置信息, 使用配置文件永久生效
+
+##### 运行时有效
 
 - 方式一: 启动 Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
-- 方式二: 连接服务器使用内置命令 `REPLICAOF host port`
+- 方式二: 连接 Redis 服务器使用内置命令 `REPLICAOF host port`
+
+##### 永久有效
 
 单机主从配置: 新建多个 Redis 服务器配置文件并修改其中关键项
 
@@ -805,32 +809,37 @@ sentinel failover-timeout mymaster 180000 # 当服务器宕机后等待再次重
 sentinel deny-scripts-reconfig yes # 拒绝脚本配置, 默认拒绝
 ```
 
-- 使用命令 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
-- 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
+- 方式一: 使用命令 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
+- 方式二: 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
 
 ```shell
 # sentinel.conf
 sentinel monitor myredis 127.0.0.1 6379 1
 ```
 
-一主三从哨兵配置
+![redis-2](/images/redis-2.png)
+![redis-3](/images/redis-3.png)
+
+##### 一主三从哨兵配置
+
+3 个哨兵配置文件
 
 ```shell
-# sentinel.conf
+# sentinel26379.conf
 port 26379
 pidfile /var/run/redis-sentinel-26379.pid
 logfile "26379.log"
 dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 
-# sentinel.conf
+# sentinel36379.conf
 port 36379
 pidfile /var/run/redis-sentinel-36379.pid
 logfile "36379.log"
 dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 
-# sentinel.conf
+# sentinel46379.conf
 port 46379
 pidfile /var/run/redis-sentinel-46379.pid
 logfile "46379.log"
@@ -838,8 +847,44 @@ dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 ```
 
-![redis-2](/images/redis-2.png)
-![redis-3](/images/redis-3.png)
+3 台 redis 服务器配置文件
+
+```shell
+# redis6379.conf
+bind 127.0.0.1
+port 6379
+daemonize yes
+pidfile /var/run/redis_6379.pid
+logfile "6379.log"
+dbfilename dump6379.rdb
+
+# redis6380.conf
+bind 127.0.0.1
+port 6380
+daemonize yes
+pidfile /var/run/redis_6380.pid
+logfile "6380.log"
+dbfilename dump6380.rdb
+replicaof 127.0.0.1 6379 # 配置主服务器 ip 和 port
+
+# redis6381.conf
+bind 127.0.0.1
+port 6381
+daemonize yes
+pidfile /var/run/redis_6381.pid
+logfile "6381.log"
+dbfilename dump6381.rdb
+replicaof 127.0.0.1 6379 # 配置主服务器 ip 和 port
+```
+
+```shell
+[root@centos7 ~]# redis-server .config/redis6379.conf # 启动 redis 服务器
+[root@centos7 ~]# redis-server .config/redis6380.conf # 启动 redis 服务器
+[root@centos7 ~]# redis-server .config/redis6381.conf # 启动 redis 服务器
+[root@centos7 ~]# redis-sential .config/sentinel26379.conf # 启动哨兵
+[root@centos7 ~]# redis-sential .config/sentinel36379.conf # 启动哨兵
+[root@centos7 ~]# redis-sential .config/sentinel46379.conf # 启动哨兵
+```
 
 ### 集群
 
