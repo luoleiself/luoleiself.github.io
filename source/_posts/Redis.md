@@ -712,6 +712,10 @@ repl_backlog_histlen:0
 - 方式一: 启动 Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
 - 方式二: 连接 Redis 服务器使用内置命令 `REPLICAOF host port`
 
+提升从服务器角色
+
+- REPLICAOF NO ONE 将从服务器更改为主服务器
+
 ##### 永久有效
 
 单机主从配置: 新建多个 Redis 服务器配置文件并修改其中关键项
@@ -764,10 +768,6 @@ OK
 127.0.0.1:6381> SET age 18 # 从机写入数据报错
 (error) READONLY You can't write against a read only replica.
 ```
-
-##### 提升从服务器角色
-
-- REPLICAOF NO ONE 将从服务器更改为主服务器
 
 #### 配置文件配置
 
