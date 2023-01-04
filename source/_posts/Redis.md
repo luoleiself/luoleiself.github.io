@@ -881,9 +881,9 @@ replicaof 127.0.0.1 6379 # 配置主服务器 ip 和 port
 [root@centos7 ~]# redis-server .config/redis6379.conf # 启动 redis 服务器
 [root@centos7 ~]# redis-server .config/redis6380.conf # 启动 redis 服务器
 [root@centos7 ~]# redis-server .config/redis6381.conf # 启动 redis 服务器
-[root@centos7 ~]# redis-sential .config/sentinel26379.conf # 启动哨兵
-[root@centos7 ~]# redis-sential .config/sentinel36379.conf # 启动哨兵
-[root@centos7 ~]# redis-sential .config/sentinel46379.conf # 启动哨兵
+[root@centos7 ~]# redis-sentinel .config/sentinel26379.conf # 启动哨兵
+[root@centos7 ~]# redis-sentinel .config/sentinel36379.conf # 启动哨兵
+[root@centos7 ~]# redis-sentinel .config/sentinel46379.conf # 启动哨兵
 ```
 
 ### 集群

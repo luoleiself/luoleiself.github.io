@@ -1050,6 +1050,27 @@ const Child = {
   console.log(count.value); // 3
   ```
 
+  - 当访问到某个响应式数组或 `Map` 这样的原生集合类型中的 ref 元素时, 不会执行 ref 解包, 如果要避免深层响应式转换, 可以使用 `shallowReactive` 替代
+
+  ```javascript
+  const books = reactive([ref('Vue 3.0')]);
+  console.log(books[0].value); // 需要使用 .value
+
+  const map = reactive(new Map([['count', ref(0)]]));
+  console.log(map.get('count').value); // 需要使用 .value
+  ```
+
+  - 将一个 ref 复制给一个 reactive 属性时, 该 ref 会被自动解包
+
+  ```javascript
+  const count = ref(1);
+  const obj = reactive({});
+
+  obj.count = count;
+  console.log(obj.count); // 1
+  console.log(obj.count === count.value); // true
+  ```
+
 - readonly 接受一个对象 (响应式或纯对象) 或 ref 并返回原始对象的只读代理, 任何被访问的嵌套 property 也是只读的
 
   ```javascript
@@ -1122,6 +1143,8 @@ const Child = {
 ### Refs
 
 - ref 接受一个内部值并返回一个响应式且可变的 ref 对象. ref 对象具有指向内部值的单个属性 .value
+
+  - 将一个对象赋值给 ref, 那么这个对象将通过 reactive 转为具有深层次响应式的对象, 如果对象内部包含了嵌套的 ref, 它们将会被深层的解包
 
   ```javascript
   const count = ref(0);

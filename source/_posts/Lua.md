@@ -703,7 +703,7 @@ end
 
 ##### 包管理库
 
-模块: 封装公用的代码以 API 接口的形式在其他地方调用, 简单理解是将变量、常量、函数放在一个table里面，然后 return 返回
+模块: 封装公用的代码以 API 接口的形式在其他地方调用, 简单理解是将变量、常量、函数放在一个 table 里面，然后 return 返回
 
 使用 require 方法加载模块, require(\"模块名\") 或者 require \"模块名\"
 
@@ -750,7 +750,6 @@ print(modulestr)
 - string.gmatch 返回一个迭代器函数, 每次调用函数返回一个字符串中找到的下一个符合 pattern 模式的子串, 可以结合 for 循环查找")
 - string.match 返回在字符串中查找符合匹配模式的第一个子串")
 - string.sub 截取字符串", string.sub('hello world', 1, 6))
-
 
 ##### 基础 UTF-8 支持
 
@@ -888,7 +887,7 @@ lua 提供了 debug 库用于提供创建自定义调试器的功能
 
 - debug.debug() 进入一个用户交互模式,运行用户输入的每个字符串, 使用简单命令以及其他调试设置, 用户可以检阅全局变量和局部变量, 改变变量的值, 计算一些表达式等等, 输入一行仅包含 count 的字符串将结束这个函数继续向下运行
 - debug.gethook([thread]) 返回三个表示线程钩子设置的值: 当前钩子函数, 当前钩子掩码, 当前钩子计数
-- debug.getinfo([thread,] f [, what]) 返回一个关于函数信息的表, 也可以提供一个数字 f 表示的函数, 数字 f 表示运行在指定线程的调用栈对应层次上的函数, 0 层表示当前函数(getinfo自身), 1 层表示调用 getinfo 的函数
+- debug.getinfo([thread,] f [, what]) 返回一个关于函数信息的表, 也可以提供一个数字 f 表示的函数, 数字 f 表示运行在指定线程的调用栈对应层次上的函数, 0 层表示当前函数(getinfo 自身), 1 层表示调用 getinfo 的函数
 - debug.getlocal([thread, ] f, local) 返回在栈的 f 层处函数的索引为 local 的局部变量的名字和值, 此函数不仅用于访问显式定义的局部变量, 还包括形参, 临时变量等
 - debug.getmetatable(value) 返回给定 value 的元表, 如果没有则返回 nil
 - debug.getregistry() 返回注册表表, 这是一个预定以的表, 可以用来保存任何 C 代码想保存的 lua 值
@@ -902,7 +901,6 @@ lua 提供了 debug 库用于提供创建自定义调试器的功能
 - debug.traceback([thread,] [message [, level]]) 追踪堆栈信息, message 被添加到栈回朔信息的头部, level 指定从栈的哪一层开始回朔(默认: 1)
 - debug.upvalueid(f, n) 返回指定函数第 n 个上值的唯一标识符(一个轻量用户数据), 这个唯一标识符可以让程序检查两个不同的闭包是否共享了上值, 如果是则返回相同的标识符
 - debug.upvaluejoin(f1, n1, f2, n2) 让 lua 闭包 f1 的第 n1 个值引用 lua 闭包 f2 的第 n2 个值
-
 
 #### 其他语法
 
