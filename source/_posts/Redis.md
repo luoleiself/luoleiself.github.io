@@ -483,10 +483,14 @@ OK
 - ACL DRYRUN username command [arg [arg ...]] 模拟指定用户对给定命令的执行, 此命令可以用来测试用户的权限而无需启用用户, 7.0.0 支持
 
 ```shell
+127.0.0.1:6379> ACL DRYRUN zhangsan ZADD zs 1 hello 2 world 3 zs
+"This user has no permissions to run the 'zadd' command"
+127.0.0.1:6379> ACL DRYRUN zhangsan SADD s1 hello world gg s1
+"This user has no permissions to access the 's1' key"
 127.0.0.1:6379> ACL DRYRUN zhangsan SET name zhangsan
 "This user has no permissions to access the 'name' key"
 # 只能操作以 zhang 开头匹配模式的 key
-127.0.0.1:6379> ACL DRYRUN zhangsan SET zhang:name zhangsan
+127.0.0.1:6379> ACL DRYRUN zhangsan SADD zhang:set hello world s1
 OK
 ```
 
