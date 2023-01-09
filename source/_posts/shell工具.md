@@ -58,6 +58,10 @@ tags:
   - substr(r, p) 返回字符串 s 中从 p 开始的后缀部分
   - substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分
 
+```shell
+git branch -r | awk 'BEGIN {print "hello awk, I am coming\n"}END{print "hello awk, good bye\n"}{printf "NF--%s NR--%s FNR--%s $0--%s\n",NF,NR,FNR,$0;}'
+```
+
 ### xargs
 
 - -t 执行命令之前先打印执行命令
