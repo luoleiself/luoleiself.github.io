@@ -34,6 +34,7 @@ tags:
 - $realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径
 
 - $remote_addr 客户端的 IP 地址
+- $binary_remote_addr 客户端的 IP 地址(二进制)
 - $remote_port 客户端的端口号
 - $remote_user 用于 HTTP 基础认证服务的用户名
 
@@ -54,8 +55,8 @@ tags:
 
 - $request 代表客户端的请求地址
 - $request_uri 包含请求参数的原始 URI, 不包含主机名
-- $request_body 客户端的请求主体
 - $request_method HTTP 请求方法，一般为 `GET` 或 `POST`
+- $request_body 客户端的请求主体
 - $request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除
 - $request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成
 - $request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)
@@ -67,6 +68,8 @@ tags:
 - $args 请求中的参数值
 - $is_args 如果请求中有参数, 值为 "?", 否则为空字符串
 - $query_string 同$args
+
+- $request_completion 如果请求结束, 设置为 OK, 否则为空
 
 ### $server
 
@@ -86,6 +89,9 @@ tags:
 - $server_port 服务器端口号
 
 - $status HTTP 响应代码
+
+- $body_bytes_sent 响应时发送的背景 body 字节数
+- $limit_rate 限制连接速率
 
 ## 指令
 
