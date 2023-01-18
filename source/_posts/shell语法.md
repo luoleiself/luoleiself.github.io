@@ -94,12 +94,12 @@ echo $[$a+$b*$c]
 |          -le          |               <=                |  least equal 的缩写，表示小于等于  |  [ ${a} -le ${b} ] \| [[${a} <= ${b}]]\|((${a} <= ${b}))  |
 
 ```bash
-if [ $string -ne 'abc' ] then
+if [ $string -ne 'abc' ]; then
   echo "Not equal"
 else
   echo "Equal"
 fi
-if [ $a -ge $b ] then
+if [ $a -ge $b ]; then
   echo "Greater equal"
 else
   echo "Not greater equal"
@@ -118,12 +118,12 @@ fi
 ```bash
 a=5
 b=12
-if [ $a -lt 50 -a  $b -gt 8 ] then
+if [ $a -lt 50 -a  $b -gt 8 ]; then
   echo "And(-a) expr result is true"
 else
   echo "And(-a) expr result is false"
 fi
-if [ $a -lt 50 -o $b -gt 12 ] then
+if [ $a -lt 50 -o $b -gt 12 ]; then
   echo "Or(-o) expr result is true"
 else
   echo "Or(-o) expr result is false"
@@ -143,7 +143,7 @@ fi
 ```bash
 a=hello
 b=world
-if [ a = b ] then
+if [ a = b ]; then
   echo "string a equal string b"
 else
   echo "string a not equal string b"
@@ -170,12 +170,12 @@ fi
 |       -a       |     检测文件(包括目录)是否存在(此命令已废弃)，如果存在，则返回 true     | [ -e $file ] 返回 true |
 
 ```bash
-if [ -e .node ] then
+if [ -e .node ]; then
   echo 'this file is exists'
 else
   echo 'this file not exists'
 fi
-if [ -s .zshrc ] then
+if [ -s .zshrc ]; then
   echo 'file not empty'
 else
   echo 'file is empty'
@@ -197,3 +197,55 @@ fi
 ##### 管道
 
 - `|` 连接两个命令, 第一个命令的输出作为第二个命令的输入
+
+#### if
+
+```shell
+# 方式一
+if [-e /root/workspace/test.txt ]; then
+  printf "hello world %s %s\n" $(/bin/date +"%Y-%m-%d %H:%M:%S")
+elif [ -s /root/workspace/test.txt ]; then
+  printf "hello world\n"
+else
+  printf "hello gg\n"
+fi
+# 方式二
+if [ 10 -gt 1 ];
+then
+  echo "true"
+else
+  echo "false"
+fi
+```
+
+#### for
+
+```shell
+# 方式一
+for i in {1..10}; do
+  echo "for do " ${i} # 依次输出 for do 1 到 10
+done
+# 方式二
+for i in {1..10};
+do
+  echo "for do " ${i} # 依次输出 for do 1 到 10
+done
+```
+
+#### while
+
+```shell
+# 方式一
+j=1
+while [ $j -lt 10 ]; do
+  echo "while do " ${j} # 依次输出 while do 1 到 9
+  j=$[j+1]
+done
+# 方式二
+j=1
+while [ $j -lt 10 ];
+do
+  echo "while do " ${j} # 依次输出 while do 1 到 9
+  j=$[j+1]
+done
+```

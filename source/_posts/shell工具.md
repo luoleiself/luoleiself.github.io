@@ -257,3 +257,15 @@ tar [option...] [files]...
 ```shell
 [root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable  # 使用 gzip 解压缩到当前目录下的 redis-stable 目录
 ```
+
+### crontab 定时任务
+
+- -u 指定用户
+- -e 使用编辑器设置时程表
+- -r 删除时程表
+- -l 列出目前的时程表
+
+```shell
+[root@centos7 workspace]# crontab -l
+* * * * * /bin/date >> /root/workspace/crontab-out.txt # 每分钟执行一次格式化日期时间追加到指定文件末尾
+```
