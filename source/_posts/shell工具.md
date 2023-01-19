@@ -265,7 +265,26 @@ tar [option...] [files]...
 - -r 删除时程表
 - -l 列出目前的时程表
 
+#### 每分钟向指定文件追加写入一条数据
+
 ```shell
-[root@centos7 workspace]# crontab -l
-* * * * * /bin/date >> /root/workspace/crontab-out.txt # 每分钟执行一次格式化日期时间追加到指定文件末尾
+#!/bin/bash
+
+# /root/workspace/crontab-out-format.sh
+
+file=/root/workspace/crontab-out-format.txt
+
+function dateFormat() {
+  echo $(/bin/date +"hello crontab %Y-%m-%d %H:%M:%S")
+}
+
+if [ -e $file ]; then
+  echo $(dateFormat) >> $file
+else
+  touch $file
+  echo $(dateFormat) >> $file
+fi
+
+[root@centos7 workspace]# crontab -l  # 列出当前用户的所有任务
+* * * * * /bin/bash /root/workspace/crontab-out-format.sh # 定时任务
 ```

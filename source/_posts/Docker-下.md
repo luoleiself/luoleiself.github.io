@@ -151,7 +151,7 @@ rtt min/avg/max/mdev = 0.041/0.048/0.065/0.012 ms
 
 #### \-\-link 参数方式
 
-本质上是在容器内部 hosts 文件中添加 ip 映射, 可以单向使用容器别名通信
+本质上是在容器内部 hosts 文件中添加 ip 映射, 只能单向使用容器别名通信
 
 在未知容器 ip 信息的情况下不能使用别名通信
 
@@ -312,7 +312,7 @@ PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 ```
 
-#### overlay 模式
+#### overlay 模式 <!-- markdownlint-disable-line -->
 
 - docker 运行在 swarm 模式
 - 使用键值存储的 docker 主机集群
@@ -321,12 +321,8 @@ rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 
 > 自定义 bridge 和 docker0 结合使用
 
-- my-docker-net01 和 my-docker-net02 运行在 my-docker-net 网络模式下
+- my-docker-net01 和 my-docker-net02 运行在 my-docker-net 自定义网络模式下
 - centos01 运行在 docker0 网络模式下
-
-```bash
-docker network connect my-docker-net centos01 # 使用命令将不同网络模式中的容器加入到当前网络模式中
-```
 
 原理: 自定义网络模式分配 ip 信息给连接到此网络的容器
 
@@ -369,6 +365,7 @@ docker network connect [OPTIONS] NETWORK CONTAINER
 ```
 
 ```bash
+# 使用命令将不同网络模式中的容器加入到当前网络模式中
 # 连接 centos01 到 自定义网络 my-docker-net
 [root@localhost ~]# docker network connect my-docker-net centos01
 # 查看自定义网络状态
@@ -475,7 +472,7 @@ ping: my-docker-net01: Name or service not known
 
 ### 跨主机容器通信
 
-## 应用
+## 应用部署
 
 ### 部署 nginx
 
@@ -547,7 +544,7 @@ c136f18229c3   mysql:5.7   "docker-entrypoint.s…"   15 hours ago     Up About 
 - 默认以 `应用目录名\_数据卷名` 方式作为数据卷名称
 - 默认以 `应用目录名\_网络名` 方式作为网络名称
 
-Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 docker-compose yaml 文件所在目录中, 以 `应用目录名\_服务名\_数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
+Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `docker-compose.yaml` 文件所在目录中, 以 `应用目录名\_服务名\_数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
@@ -615,7 +612,7 @@ services:
       dockerfile: Dockerfile  # 指定构建镜像的配置文件名称
     ports: # 端口映射
       - '5000:5000'
-      - '0.0.0.0:80:80/tcp' # 指定端口映射的 ip 地址和 协议, 或者可以修改 /etc/docker/daemon.json 配置项 "ipv6": false 
+      - '0.0.0.0:80:80/tcp' # 指定端口映射的 ip 地址和 协议, 或者可以修改 /etc/docker/daemon.json 配置项 "ipv6": false
     privileged: true   # 配置容器目录权限
     read_only: true    # 设计容器文件系统模式
     restart: always    # 定义容器重启模式

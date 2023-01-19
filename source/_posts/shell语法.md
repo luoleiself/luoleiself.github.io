@@ -198,36 +198,41 @@ fi
 
 - `|` 连接两个命令, 第一个命令的输出作为第二个命令的输入
 
+### 流程
+
 #### if
 
 ```shell
-# 方式一
-if [-e /root/workspace/test.txt ]; then
+if [-e /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略
   printf "hello world %s %s\n" $(/bin/date +"%Y-%m-%d %H:%M:%S")
-elif [ -s /root/workspace/test.txt ]; then
+elif [ -s /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略
   printf "hello world\n"
 else
   printf "hello gg\n"
 fi
-# 方式二
-if [ 10 -gt 1 ];
-then
-  echo "true"
-else
-  echo "false"
-fi
+```
+
+#### case
+
+```shell
+a=20
+case $a in
+  10)
+    echo "a的值为 10"
+  ;;
+  20)
+    echo "a的值为 20" # 输出 a 的值为 20
+  ;;
+  *)
+    echo "a的值不是10也不是20"
+  ;;
+esac
 ```
 
 #### for
 
 ```shell
-# 方式一
-for i in {1..10}; do
-  echo "for do " ${i} # 依次输出 for do 1 到 10
-done
-# 方式二
-for i in {1..10};
-do
+for i in {1..10}; do  # do 可以单独另写一行, 但是分号不能省略
   echo "for do " ${i} # 依次输出 for do 1 到 10
 done
 ```
@@ -235,17 +240,106 @@ done
 #### while
 
 ```shell
-# 方式一
 j=1
-while [ $j -lt 10 ]; do
-  echo "while do " ${j} # 依次输出 while do 1 到 9
-  j=$[j+1]
-done
-# 方式二
-j=1
-while [ $j -lt 10 ];
-do
+while [ $j -lt 10 ]; do # do 可以单独另写一行, 但是分号不能省略
   echo "while do " ${j} # 依次输出 while do 1 到 9
   j=$[j+1]
 done
 ```
+
+#### until
+
+```shell
+k=1
+until [ $k -gt 10 ]; do # do 可以单独另写一行, 但是分号不能省略
+  echo "until do " ${k} # 依次输出 until do 1 到 10
+  k=$[k+1]
+done
+```
+
+### 数组
+
+#### 一维数组
+
+- bash 只支持一维数组
+- 初始化时不需要定义数组的大小, 定义时用小括号将用空格分隔的元素包含起来
+- 数组元素的下标由 0 开始
+
+```shell
+arr=(1 2 3 'a')
+echo "arr[0]=" ${arr[0]}
+echo "arr[1]=" ${arr[1]}
+echo "arr[2]=" ${arr[2]}
+echo "arr[3]=" ${arr[3]}
+echo "arr[*]=" ${arr[*]}  # 输出所有元素
+echo "arr[@]=" ${arr[@]}  # 输出所有元素
+echo "arr的键为 " ${!arr[*]}  # arr的键为  0 1 2 3
+echo "arr的长度为 " ${#arr[*]} # 获取数组的长度与获取字符串长度的方法相同
+
+str=helloworld
+echo "str 的长度为 " ${#str}  # str 的长度为 10
+```
+
+#### 关联数组
+
+- 关联数组, 使用 `declare -A` 声明
+
+```shell
+declare -A site=(['google']='www.google.com' ['baidu']='www.baidu.com' ['taobao']='www.taobao.com')
+echo "site['google']=" ${site['google']}  # site['google']= www.google.com
+echo "site['baidu']=" ${site['baidu']}  # site['baidu']= www.baidu.com
+echo "site['taobao']=" ${site['taobao']}  # site['taobao']= www.taobao.com
+echo "site的所有元素是 " ${site[*]} # site的所有元素是  www.google.com www.taobao.com www.baidu.com
+echo "site的所有元素是 " ${site[@]} # site的所有元素是  www.google.com www.taobao.com www.baidu.com
+echo "site的键为 " ${!site[*]}  # site的键为  google taobao baidu
+echo "site的长度为 " ${#site[*]}  # site的长度为  3
+```
+
+#### 数组操作
+
+- \*|@ 获取数组的所有元素, `${arr[*]}`
+- ! 获取数组的所有键, `${!arr[*]}`
+- \# 获取数组的长度, `${#arr[*]}`
+
+### 函数
+
+- function 是关键字, 用来定义函数
+- name 是函数名
+- statements 函数体中的执行语句
+- return value 函数的返回值, 一般表示函数的返回状态, 0 表示成功, 其他值表示失败, 只能是 0 - 255 之间的数字
+
+```shell
+# 标准语法
+[function] function_name [()] {
+  statements
+  [return value]
+}
+```
+
+- 定义函数时, 关键字 function 和 () 可以二选一
+- 定义函数时, 不需要提前指定参数, 在函数体内使用参数时, 使用 `特殊变量` 获取
+- 函数调用时, 函数名后面不需要带小括号, 如果有参数时，多个参数之间用空格分隔
+- 获取函数的返回值
+  - 一种是借助全局变量, 将得到的结果赋值给全局变量
+  - 一种是在函数内使用 `echo`, `printf` 命令将结果输出, 在函数外部使用 `$( )` 或者 `\`\`` 捕获结果
+
+```shell
+#!/bin/bash
+function dateFormat() {
+  echo $(/bin/date +"hello crontab %Y-%m-%d %H:%M:%S")
+}
+
+echo $(dateFormat) # 获取函数的结果
+```
+
+#### 特殊变量
+
+|   变量   |                                                含义                                                 |
+| :------: | :-------------------------------------------------------------------------------------------------: |
+|    $0    |                                          当前脚本的文件名                                           |
+| $n(n>=1) |                        传递给脚本或函数的参数, n 是一个数字, 表示第几个参数                         |
+|    $#    |                                     传递给脚本或函数的参数个数                                      |
+|   $\*    |                     传递给脚本或函数的所有参数, 当前脚本的所有参数作为一个参数                      |
+|    $@    | 传递给脚本或函数的所有参数,当前脚本的所有参数分别作为一个参数, 当被双引号包含时, $@ 和 $\* 有所不同 |
+|    $?    |                                  上个命令的退出状态,或函数的返回值                                  |
+|    $$    |                   当前 Shell 进程 ID, 对于 Shell 脚本, 就是这些脚本所在的进程 ID                    |
