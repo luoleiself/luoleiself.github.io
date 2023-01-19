@@ -28,7 +28,7 @@
 <meta property="og:description" content="shell 重置密码 开机按 e 键进入内核编辑 光标移动到倒数第二段 Linux16 末尾添加 init&#x3D;&#x2F;bin&#x2F;sh ctrl + x 进行引导启动, 成功进入命令提示界面 输入 mount -o remount, rw &#x2F; 挂载根目录 使用 passwd 命令修改指定用户密码 直到提示 passwd: all authentication tokens updated successful">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-28T11:55:46.000Z">
-<meta property="article:modified_time" content="2023-01-18T10:10:01.182Z">
+<meta property="article:modified_time" content="2023-01-19T06:58:50.385Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="shell">
@@ -239,7 +239,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-01-18 18:10:01" itemprop="dateModified" datetime="2023-01-18T18:10:01+08:00">2023-01-18</time>
+                <time title="修改时间：2023-01-19 14:58:50" itemprop="dateModified" datetime="2023-01-19T14:58:50+08:00">2023-01-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -260,13 +260,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>3.7k</span>
+              <span>6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>3 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -568,11 +568,89 @@
 <h5 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h5><ul>
 <li><code>|</code> 连接两个命令, 第一个命令的输出作为第二个命令的输入</li>
 </ul>
-<h4 id="if"><a href="#if" class="headerlink" title="if"></a>if</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">方式一</span></span><br><span class="line">if [-e /root/workspace/test.txt ]; then</span><br><span class="line">  printf &quot;hello world %s %s\n&quot; $(/bin/date +&quot;%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">elif [ -s /root/workspace/test.txt ]; then</span><br><span class="line">  printf &quot;hello world\n&quot;</span><br><span class="line">else</span><br><span class="line">  printf &quot;hello gg\n&quot;</span><br><span class="line">fi</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">方式二</span></span><br><span class="line">if [ 10 -gt 1 ];</span><br><span class="line">then</span><br><span class="line">  echo &quot;true&quot;</span><br><span class="line">else</span><br><span class="line">  echo &quot;false&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><h4 id="if"><a href="#if" class="headerlink" title="if"></a>if</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if [-e /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  printf &quot;hello world %s %s\n&quot; $(/bin/date +&quot;%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">elif [ -s /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  printf &quot;hello world\n&quot;</span><br><span class="line">else</span><br><span class="line">  printf &quot;hello gg\n&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
-<h4 id="for"><a href="#for" class="headerlink" title="for"></a>for</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">方式一</span></span><br><span class="line">for i in &#123;1..10&#125;; do</span><br><span class="line">  echo &quot;for do &quot; $&#123;i&#125; # 依次输出 for do 1 到 10</span><br><span class="line">done</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">方式二</span></span><br><span class="line">for i in &#123;1..10&#125;;</span><br><span class="line">do</span><br><span class="line">  echo &quot;for do &quot; $&#123;i&#125; # 依次输出 for do 1 到 10</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h4 id="case"><a href="#case" class="headerlink" title="case"></a>case</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a=20</span><br><span class="line">case $a in</span><br><span class="line">  10)</span><br><span class="line">    echo &quot;a的值为 10&quot;</span><br><span class="line">  ;;</span><br><span class="line">  20)</span><br><span class="line">    echo &quot;a的值为 20&quot; # 输出 a 的值为 20</span><br><span class="line">  ;;</span><br><span class="line">  *)</span><br><span class="line">    echo &quot;a的值不是10也不是20&quot;</span><br><span class="line">  ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
 
-<h4 id="while"><a href="#while" class="headerlink" title="while"></a>while</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">方式一</span></span><br><span class="line">j=1</span><br><span class="line">while [ $j -lt 10 ]; do</span><br><span class="line">  echo &quot;while do &quot; $&#123;j&#125; # 依次输出 while do 1 到 9</span><br><span class="line">  j=$[j+1]</span><br><span class="line">done</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">方式二</span></span><br><span class="line">j=1</span><br><span class="line">while [ $j -lt 10 ];</span><br><span class="line">do</span><br><span class="line">  echo &quot;while do &quot; $&#123;j&#125; # 依次输出 while do 1 到 9</span><br><span class="line">  j=$[j+1]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h4 id="for"><a href="#for" class="headerlink" title="for"></a>for</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for i in &#123;1..10&#125;; do  # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;for do &quot; $&#123;i&#125; # 依次输出 for do 1 到 10</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="while"><a href="#while" class="headerlink" title="while"></a>while</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">j=1</span><br><span class="line">while [ $j -lt 10 ]; do # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;while do &quot; $&#123;j&#125; # 依次输出 while do 1 到 9</span><br><span class="line">  j=$[j+1]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="until"><a href="#until" class="headerlink" title="until"></a>until</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">k=1</span><br><span class="line">until [ $k -gt 10 ]; do # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;until do &quot; $&#123;k&#125; # 依次输出 until do 1 到 10</span><br><span class="line">  k=$[k+1]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><h4 id="一维数组"><a href="#一维数组" class="headerlink" title="一维数组"></a>一维数组</h4><ul>
+<li>bash 只支持一维数组</li>
+<li>初始化时不需要定义数组的大小, 定义时用小括号将用空格分隔的元素包含起来</li>
+<li>数组元素的下标由 0 开始</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">arr=(1 2 3 &#x27;a&#x27;)</span><br><span class="line">echo &quot;arr[0]=&quot; $&#123;arr[0]&#125;</span><br><span class="line">echo &quot;arr[1]=&quot; $&#123;arr[1]&#125;</span><br><span class="line">echo &quot;arr[2]=&quot; $&#123;arr[2]&#125;</span><br><span class="line">echo &quot;arr[3]=&quot; $&#123;arr[3]&#125;</span><br><span class="line">echo &quot;arr[*]=&quot; $&#123;arr[*]&#125;  # 输出所有元素</span><br><span class="line">echo &quot;arr[@]=&quot; $&#123;arr[@]&#125;  # 输出所有元素</span><br><span class="line">echo &quot;arr的键为 &quot; $&#123;!arr[*]&#125;  # arr的键为  0 1 2 3</span><br><span class="line">echo &quot;arr的长度为 &quot; $&#123;#arr[*]&#125; # 获取数组的长度与获取字符串长度的方法相同</span><br><span class="line"></span><br><span class="line">str=helloworld</span><br><span class="line">echo &quot;str 的长度为 &quot; $&#123;#str&#125;  # str 的长度为 10</span><br></pre></td></tr></table></figure>
+
+<h4 id="关联数组"><a href="#关联数组" class="headerlink" title="关联数组"></a>关联数组</h4><ul>
+<li>关联数组, 使用 <code>declare -A</code> 声明</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">declare -A site=([&#x27;google&#x27;]=&#x27;www.google.com&#x27; [&#x27;baidu&#x27;]=&#x27;www.baidu.com&#x27; [&#x27;taobao&#x27;]=&#x27;www.taobao.com&#x27;)</span><br><span class="line">echo &quot;site[&#x27;google&#x27;]=&quot; $&#123;site[&#x27;google&#x27;]&#125;  # site[&#x27;google&#x27;]= www.google.com</span><br><span class="line">echo &quot;site[&#x27;baidu&#x27;]=&quot; $&#123;site[&#x27;baidu&#x27;]&#125;  # site[&#x27;baidu&#x27;]= www.baidu.com</span><br><span class="line">echo &quot;site[&#x27;taobao&#x27;]=&quot; $&#123;site[&#x27;taobao&#x27;]&#125;  # site[&#x27;taobao&#x27;]= www.taobao.com</span><br><span class="line">echo &quot;site的所有元素是 &quot; $&#123;site[*]&#125; # site的所有元素是  www.google.com www.taobao.com www.baidu.com</span><br><span class="line">echo &quot;site的所有元素是 &quot; $&#123;site[@]&#125; # site的所有元素是  www.google.com www.taobao.com www.baidu.com</span><br><span class="line">echo &quot;site的键为 &quot; $&#123;!site[*]&#125;  # site的键为  google taobao baidu</span><br><span class="line">echo &quot;site的长度为 &quot; $&#123;#site[*]&#125;  # site的长度为  3</span><br></pre></td></tr></table></figure>
+
+<h4 id="数组操作"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作</h4><ul>
+<li>*|@ 获取数组的所有元素, <code>$&#123;arr[*]&#125;</code></li>
+<li>! 获取数组的所有键, <code>$&#123;!arr[*]&#125;</code></li>
+<li># 获取数组的长度, <code>$&#123;#arr[*]&#125;</code></li>
+</ul>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
+<li>function 是关键字, 用来定义函数</li>
+<li>name 是函数名</li>
+<li>statements 函数体中的执行语句</li>
+<li>return value 函数的返回值, 一般表示函数的返回状态, 0 表示成功, 其他值表示失败, 只能是 0 - 255 之间的数字</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">标准语法</span></span><br><span class="line">[function] function_name [()] &#123;</span><br><span class="line">  statements</span><br><span class="line">  [return value]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定义函数时, 关键字 function 和 () 可以二选一</li>
+<li>定义函数时, 不需要提前指定参数, 在函数体内使用参数时, 使用 <code>特殊变量</code> 获取</li>
+<li>函数调用时, 函数名后面不需要带小括号, 如果有参数时，多个参数之间用空格分隔</li>
+<li>获取函数的返回值<ul>
+<li>一种是借助全局变量, 将得到的结果赋值给全局变量</li>
+<li>一种是在函数内使用 <code>echo</code>, <code>printf</code> 命令将结果输出, 在函数外部使用 <code>$( )</code> 或者 <code>\</code>`` 捕获结果</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">function dateFormat() &#123;</span><br><span class="line">  echo $(/bin/date +&quot;hello crontab %Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo $(dateFormat) # 获取函数的结果</span><br></pre></td></tr></table></figure>
+
+<h4 id="特殊变量"><a href="#特殊变量" class="headerlink" title="特殊变量"></a>特殊变量</h4><table>
+<thead>
+<tr>
+<th align="center">变量</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">$0</td>
+<td align="center">当前脚本的文件名</td>
+</tr>
+<tr>
+<td align="center">$n(n&gt;=1)</td>
+<td align="center">传递给脚本或函数的参数, n 是一个数字, 表示第几个参数</td>
+</tr>
+<tr>
+<td align="center">$#</td>
+<td align="center">传递给脚本或函数的参数个数</td>
+</tr>
+<tr>
+<td align="center">$*</td>
+<td align="center">传递给脚本或函数的所有参数, 当前脚本的所有参数作为一个参数</td>
+</tr>
+<tr>
+<td align="center">$@</td>
+<td align="center">传递给脚本或函数的所有参数,当前脚本的所有参数分别作为一个参数, 当被双引号包含时, $@ 和 $* 有所不同</td>
+</tr>
+<tr>
+<td align="center">$?</td>
+<td align="center">上个命令的退出状态,或函数的返回值</td>
+</tr>
+<tr>
+<td align="center">$$</td>
+<td align="center">当前 Shell 进程 ID, 对于 Shell 脚本, 就是这些脚本所在的进程 ID</td>
+</tr>
+</tbody></table>
 
     </div>
 
@@ -682,7 +760,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell-%E9%87%8D%E7%BD%AE%E5%AF%86%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">shell 重置密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.</span> <span class="nav-text">运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">3.1.</span> <span class="nav-text">[ ] | [[]]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-1"><span class="nav-number">3.2.</span> <span class="nav-text">${}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81"><span class="nav-number">3.3.</span> <span class="nav-text">$[ ] | $(( )) | (()) 高版本支持</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-2"><span class="nav-number">3.4.</span> <span class="nav-text">$( )</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.5.</span> <span class="nav-text">算术运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.6.</span> <span class="nav-text">关系运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.7.</span> <span class="nav-text">逻辑运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E7%AC%A6-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E4%B8%8D%E9%9C%80%E8%A6%81%E8%BD%AC%E4%B9%89"><span class="nav-number">3.8.</span> <span class="nav-text">字符串运算符, [ ] 字符串运算不需要转义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%B5%8B%E8%AF%95%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.9.</span> <span class="nav-text">文件测试运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91-%E7%AE%A1%E9%81%93-%E6%B5%81"><span class="nav-number">3.10.</span> <span class="nav-text">重定向 | 管道 | 流</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">3.10.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%A1%E9%81%93"><span class="nav-number">3.10.2.</span> <span class="nav-text">管道</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#if"><span class="nav-number">3.11.</span> <span class="nav-text">if</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#for"><span class="nav-number">3.12.</span> <span class="nav-text">for</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#while"><span class="nav-number">3.13.</span> <span class="nav-text">while</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell-%E9%87%8D%E7%BD%AE%E5%AF%86%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">shell 重置密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.</span> <span class="nav-text">运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">3.1.</span> <span class="nav-text">[ ] | [[]]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-1"><span class="nav-number">3.2.</span> <span class="nav-text">${}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81"><span class="nav-number">3.3.</span> <span class="nav-text">$[ ] | $(( )) | (()) 高版本支持</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-2"><span class="nav-number">3.4.</span> <span class="nav-text">$( )</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.5.</span> <span class="nav-text">算术运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.6.</span> <span class="nav-text">关系运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.7.</span> <span class="nav-text">逻辑运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E7%AC%A6-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E4%B8%8D%E9%9C%80%E8%A6%81%E8%BD%AC%E4%B9%89"><span class="nav-number">3.8.</span> <span class="nav-text">字符串运算符, [ ] 字符串运算不需要转义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%B5%8B%E8%AF%95%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.9.</span> <span class="nav-text">文件测试运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91-%E7%AE%A1%E9%81%93-%E6%B5%81"><span class="nav-number">3.10.</span> <span class="nav-text">重定向 | 管道 | 流</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">3.10.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%A1%E9%81%93"><span class="nav-number">3.10.2.</span> <span class="nav-text">管道</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#if"><span class="nav-number">4.1.</span> <span class="nav-text">if</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case"><span class="nav-number">4.2.</span> <span class="nav-text">case</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#for"><span class="nav-number">4.3.</span> <span class="nav-text">for</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#while"><span class="nav-number">4.4.</span> <span class="nav-text">while</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#until"><span class="nav-number">4.5.</span> <span class="nav-text">until</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84"><span class="nav-number">5.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="nav-number">5.1.</span> <span class="nav-text">一维数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E6%95%B0%E7%BB%84"><span class="nav-number">5.2.</span> <span class="nav-text">关联数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%93%8D%E4%BD%9C"><span class="nav-number">5.3.</span> <span class="nav-text">数组操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%8F%98%E9%87%8F"><span class="nav-number">6.1.</span> <span class="nav-text">特殊变量</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -768,12 +846,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">294k</span>
+    <span title="站点总字数">296k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:27</span>
+    <span title="站点阅读时长">4:29</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
