@@ -598,15 +598,15 @@ Redis 在持久化的过程中, 会先将数据写入到一个临时的文件中
 
 #### 触发方式
 
-- 通过配置文件配置项会触发持久化操作
+- 通过 `FLUSHALL` 命令主动触发
+- 通过 `SAVE` 命令主动触发
+
+- 通过配置文件定期触发持久化操作
 
 ```shell
 # 3600秒至少有 1 次修改, 300秒至少有 100 次修改, 60秒至少有 10000 次修改
 save 3600 1 300 100 60 10000
 ```
-
-- 通过 `FLUSHALL` 命令主动触发
-- 通过 `SAVE` 命令主动触发
 
 #### RDB
 
@@ -720,17 +720,6 @@ repl_backlog_histlen:0
 
 - REPLICAOF NO ONE 将从服务器更改为主服务器
 
-##### 永久有效
-
-单机主从配置: 新建多个 Redis 服务器配置文件并修改其中关键项
-
-- `bind 127.0.0.1` 修改绑定的 ip
-- `port 6379` 修改绑定的端口号
-- `daemonize yes` 开启后台运行, 默认为 no
-- `pidfile /var/run/redis_6379.pid` 修改进程文件, 默认为 redis_6379.pid
-- `logfile "6379.log"` 修改日志文件名, 默认为空
-- `dbfilename dump6379.rdb` 修改持久化文件名, 默认为 dump.rdb
-
 ```shell
 # 设置关联主服务器
 127.0.0.1:6380> REPLICAOF 127.0.0.1 6379
@@ -777,6 +766,12 @@ OK
 
 redis.conf
 
+- bind 127.0.0.1 修改绑定的 ip
+- port 6379 修改绑定的端口号
+- daemonize yes 开启后台运行, 默认为 no
+- pidfile /var/run/redis_6379.pid 修改进程文件, 默认为 redis_6379.pid
+- logfile "6379.log" 修改日志文件名, 默认为空
+- dbfilename dump6379.rdb 修改持久化文件名, 默认为 dump.rdb
 - replicaof &lt;masterip&gt; &lt;masterport&gt; 配置主服务器 ip 和 port
 - masterauth &lt;master-password&gt; 主服务器认证密码, 如果需要
 - masteruser &lt;username&gt; 主服务器用户
