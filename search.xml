@@ -172,64 +172,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Generator和async</title>
     <url>/2021/07/bc748f2ea976/</url>
     <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
@@ -307,133 +249,54 @@
       </tags>
   </entry>
   <entry>
-    <title>Git命令配置篇</title>
-    <url>/2021/04/00ea2bbb2db0/</url>
-    <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
-<h3 id="配置篇"><a href="#配置篇" class="headerlink" title="配置篇"></a>配置篇</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><h5 id="结构型概念"><a href="#结构型概念" class="headerlink" title="结构型概念"></a>结构型概念</h5><h6 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h6><p>远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步</p>
-<h6 id="Repository"><a href="#Repository" class="headerlink" title="Repository"></a>Repository</h6><p>本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本</p>
-<h6 id="Index-Stage"><a href="#Index-Stage" class="headerlink" title="Index / Stage"></a>Index / Stage</h6><p>暂存区, 临时存放改动的需要被提交的文件列表信息</p>
-<h6 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h6><p>工作区, 当前可见的随时可以进行操作的区域</p>
-<h5 id="功能型概念"><a href="#功能型概念" class="headerlink" title="功能型概念"></a>功能型概念</h5><h6 id="文件状态"><a href="#文件状态" class="headerlink" title="文件状态"></a>文件状态</h6><ul>
-<li>修改: Git 可以感知到工作目录中的文件的变化, 然后通过 add 命令可以将变更的文件添加到暂存区</li>
-<li>暂存: 通过 add 命令将工作目录中的变更的文件提交到暂存区, 等候被 commit</li>
-<li>提交: 将暂存区的文件 commit 至 Git 版本库中永久保存</li>
-</ul>
-<h6 id="commit-节点"><a href="#commit-节点" class="headerlink" title="commit 节点"></a>commit 节点</h6><p>Git 中每次的提交都会对提交的文件生成快照并生成一个 hash 值作为唯一标识的节点, 不管 HEAD 或者 Branch 都是对 commit 节点的引用</p>
-<h6 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h6><blockquote>
-<p>指针或者引用, 一个仓库中只能有一个 HEAD, 指向任意一个节点/分支,并且指向的节点始终为当前工作目录</p>
-</blockquote>
-<hr>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
 <span id="more"></span>
 
-<h4 id="Git-仓库用户凭据"><a href="#Git-仓库用户凭据" class="headerlink" title="Git 仓库用户凭据"></a>Git 仓库用户凭据</h4><p>场景: 使用 https 方式与远程仓库同步时, 不想每次都在提示框中输入用户名和密码确认, 此方式在用户家目录下创建(修改) .git-credentials 文件, 存储用户名和密码</p>
-<ul>
-<li><p>清除本地存储的用户名和密码凭据</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --system --<span class="built_in">unset</span> credential.helper</span><br></pre></td></tr></table></figure></li>
-<li><p>存储凭据, 在第一次 push 时提示输入</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure></li>
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h4 id="Git-环境定制"><a href="#Git-环境定制" class="headerlink" title="Git 环境定制"></a>Git 环境定制</h4><ul>
-<li>local: 读取仓库配置文件 <code>.git/config</code></li>
-<li>global: 读取用户配置文件 <code>.gitconfig</code>, 不加默认为仓库配置</li>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h5 id="显示配置项"><a href="#显示配置项" class="headerlink" title="显示配置项"></a>显示配置项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -l|--list</span><br></pre></td></tr></table></figure>
-
-<h5 id="使用-vim-编辑配置文件"><a href="#使用-vim-编辑配置文件" class="headerlink" title="使用 vim 编辑配置文件"></a>使用 vim 编辑配置文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -e|--edit</span><br></pre></td></tr></table></figure>
-
-<h5 id="unset-重置"><a href="#unset-重置" class="headerlink" title="unset 重置"></a>unset 重置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --<span class="built_in">unset</span> [key]</span><br></pre></td></tr></table></figure>
-
-<h5 id="add-添加配置"><a href="#add-添加配置" class="headerlink" title="add 添加配置"></a>add 添加配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --add key value</span><br><span class="line">git config --add user.name Tom</span><br></pre></td></tr></table></figure>
-
-<h5 id="get-获取配置"><a href="#get-获取配置" class="headerlink" title="get 获取配置"></a>get 获取配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --get key</span><br><span class="line">git config --get user.name</span><br></pre></td></tr></table></figure>
-
-<h5 id="alias-命令缩写"><a href="#alias-命令缩写" class="headerlink" title="alias 命令缩写"></a>alias 命令缩写</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] <span class="built_in">alias</span>.* value</span><br><span class="line">git config alias.co checkout</span><br></pre></td></tr></table></figure>
-
-<h6 id="alias-log-美化"><a href="#alias-log-美化" class="headerlink" title="alias.log 美化"></a>alias.log 美化</h6><ul>
-<li><p>%H commit hash</p>
-</li>
-<li><p>%h commit short hash</p>
-</li>
-<li><p>%T tree hash</p>
-</li>
-<li><p>%t tree short hash</p>
-</li>
-<li><p>%P parent hash</p>
-</li>
-<li><p>%p parent short hash</p>
-</li>
-<li><p>%a[n|N] 作者名字</p>
-</li>
-<li><p>%a[e|E] 作者邮箱</p>
-</li>
-<li><p>%a[d|D|r|t|i] 日期格式</p>
-</li>
-<li><p>%c[n|N] 提交者名字</p>
-</li>
-<li><p>%c[e|E] 提交者邮箱</p>
-</li>
-<li><p>%c[d|D|r|t|i] 提交的日期格式</p>
-</li>
-<li><p>%d ref 名称</p>
-</li>
-<li><p>%e encoding</p>
-</li>
-<li><p>%s commit 信息标题</p>
-</li>
-<li><p>%f 过滤 commit 信息的标题使之可以作为文件名</p>
-</li>
-<li><p>%b commit 信息内容</p>
-</li>
-<li><p>%N commit notes</p>
-</li>
-<li><p>%g[D|d] reflog selector</p>
-</li>
-<li><p>%gs reflog subject</p>
-</li>
-<li><p>%Cred 切换至红色</p>
-</li>
-<li><p>%Cgreen 切换至绿色</p>
-</li>
-<li><p>%Cblue 切换至蓝色</p>
-</li>
-<li><p>%Creset 重设颜色</p>
-</li>
-<li><p>%C(color) 指定颜色</p>
-</li>
-<li><p>%n 换行</p>
-</li>
-<li><p>%m left right or boundary mark</p>
-</li>
-<li><p>%%a raw %</p>
-</li>
-<li><p>%x00 print a byte from a hex code</p>
-</li>
-<li><p>%w([[,[,]]]) switch line wrapping, like the -w option of git-shortlog(1).</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span></span><br></pre></td></tr></table></figure></li>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
 </ul>
-<p><img data-src="/images/git-config-1.jpg" alt="配置1"></p>
-<h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose</span><br></pre></td></tr></table></figure>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
 
-<h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url</span><br></pre></td></tr></table></figure>
-
-<h6 id="remove-删除"><a href="#remove-删除" class="headerlink" title="remove 删除"></a>remove 删除</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote remove name</span><br></pre></td></tr></table></figure>
-
-<h6 id="rename-修改关联仓库名称"><a href="#rename-修改关联仓库名称" class="headerlink" title="rename 修改关联仓库名称"></a>rename 修改关联仓库名称</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rename old new</span><br></pre></td></tr></table></figure>
-
-<h6 id="set-url-设置关联仓库地址"><a href="#set-url-设置关联仓库地址" class="headerlink" title="set-url 设置关联仓库地址"></a>set-url 设置关联仓库地址</h6><ul>
-<li><p>push: 设置推送 url</p>
-</li>
-<li><p>add: 保持当前的 url,并添加一个新的 url</p>
-</li>
-<li><p>delete: 将删除匹配到的 url, 并添加一个新的 url</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote set-url [--push|--add|--delete] name url</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h6 id="get-url-获取关联仓库地址"><a href="#get-url-获取关联仓库地址" class="headerlink" title="get-url 获取关联仓库地址"></a>get-url 获取关联仓库地址</h6><ul>
-<li><p>push: 获取推送 url</p>
-</li>
-<li><p>all: 获取所有 url</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name</span><br></pre></td></tr></table></figure></li>
-</ul>
 <hr>
 ]]></content>
       <categories>
@@ -699,6 +562,197 @@
       </tags>
   </entry>
   <entry>
+    <title>Git命令配置篇</title>
+    <url>/2021/04/00ea2bbb2db0/</url>
+    <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
+<h3 id="配置篇"><a href="#配置篇" class="headerlink" title="配置篇"></a>配置篇</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><h5 id="结构型概念"><a href="#结构型概念" class="headerlink" title="结构型概念"></a>结构型概念</h5><h6 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h6><p>远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步</p>
+<h6 id="Repository"><a href="#Repository" class="headerlink" title="Repository"></a>Repository</h6><p>本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本</p>
+<h6 id="Index-Stage"><a href="#Index-Stage" class="headerlink" title="Index / Stage"></a>Index / Stage</h6><p>暂存区, 临时存放改动的需要被提交的文件列表信息</p>
+<h6 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h6><p>工作区, 当前可见的随时可以进行操作的区域</p>
+<h5 id="功能型概念"><a href="#功能型概念" class="headerlink" title="功能型概念"></a>功能型概念</h5><h6 id="文件状态"><a href="#文件状态" class="headerlink" title="文件状态"></a>文件状态</h6><ul>
+<li>修改: Git 可以感知到工作目录中的文件的变化, 然后通过 add 命令可以将变更的文件添加到暂存区</li>
+<li>暂存: 通过 add 命令将工作目录中的变更的文件提交到暂存区, 等候被 commit</li>
+<li>提交: 将暂存区的文件 commit 至 Git 版本库中永久保存</li>
+</ul>
+<h6 id="commit-节点"><a href="#commit-节点" class="headerlink" title="commit 节点"></a>commit 节点</h6><p>Git 中每次的提交都会对提交的文件生成快照并生成一个 hash 值作为唯一标识的节点, 不管 HEAD 或者 Branch 都是对 commit 节点的引用</p>
+<h6 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h6><blockquote>
+<p>指针或者引用, 一个仓库中只能有一个 HEAD, 指向任意一个节点/分支,并且指向的节点始终为当前工作目录</p>
+</blockquote>
+<hr>
+<span id="more"></span>
+
+<h4 id="Git-仓库用户凭据"><a href="#Git-仓库用户凭据" class="headerlink" title="Git 仓库用户凭据"></a>Git 仓库用户凭据</h4><p>场景: 使用 https 方式与远程仓库同步时, 不想每次都在提示框中输入用户名和密码确认, 此方式在用户家目录下创建(修改) .git-credentials 文件, 存储用户名和密码</p>
+<ul>
+<li><p>清除本地存储的用户名和密码凭据</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --system --<span class="built_in">unset</span> credential.helper</span><br></pre></td></tr></table></figure></li>
+<li><p>存储凭据, 在第一次 push 时提示输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="Git-环境定制"><a href="#Git-环境定制" class="headerlink" title="Git 环境定制"></a>Git 环境定制</h4><ul>
+<li>local: 读取仓库配置文件 <code>.git/config</code></li>
+<li>global: 读取用户配置文件 <code>.gitconfig</code>, 不加默认为仓库配置</li>
+</ul>
+<h5 id="显示配置项"><a href="#显示配置项" class="headerlink" title="显示配置项"></a>显示配置项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -l|--list</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用-vim-编辑配置文件"><a href="#使用-vim-编辑配置文件" class="headerlink" title="使用 vim 编辑配置文件"></a>使用 vim 编辑配置文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -e|--edit</span><br></pre></td></tr></table></figure>
+
+<h5 id="unset-重置"><a href="#unset-重置" class="headerlink" title="unset 重置"></a>unset 重置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --<span class="built_in">unset</span> [key]</span><br></pre></td></tr></table></figure>
+
+<h5 id="add-添加配置"><a href="#add-添加配置" class="headerlink" title="add 添加配置"></a>add 添加配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --add key value</span><br><span class="line">git config --add user.name Tom</span><br></pre></td></tr></table></figure>
+
+<h5 id="get-获取配置"><a href="#get-获取配置" class="headerlink" title="get 获取配置"></a>get 获取配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --get key</span><br><span class="line">git config --get user.name</span><br></pre></td></tr></table></figure>
+
+<h5 id="alias-命令缩写"><a href="#alias-命令缩写" class="headerlink" title="alias 命令缩写"></a>alias 命令缩写</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] <span class="built_in">alias</span>.* value</span><br><span class="line">git config alias.co checkout</span><br></pre></td></tr></table></figure>
+
+<h6 id="alias-log-美化"><a href="#alias-log-美化" class="headerlink" title="alias.log 美化"></a>alias.log 美化</h6><ul>
+<li><p>%H commit hash</p>
+</li>
+<li><p>%h commit short hash</p>
+</li>
+<li><p>%T tree hash</p>
+</li>
+<li><p>%t tree short hash</p>
+</li>
+<li><p>%P parent hash</p>
+</li>
+<li><p>%p parent short hash</p>
+</li>
+<li><p>%a[n|N] 作者名字</p>
+</li>
+<li><p>%a[e|E] 作者邮箱</p>
+</li>
+<li><p>%a[d|D|r|t|i] 日期格式</p>
+</li>
+<li><p>%c[n|N] 提交者名字</p>
+</li>
+<li><p>%c[e|E] 提交者邮箱</p>
+</li>
+<li><p>%c[d|D|r|t|i] 提交的日期格式</p>
+</li>
+<li><p>%d ref 名称</p>
+</li>
+<li><p>%e encoding</p>
+</li>
+<li><p>%s commit 信息标题</p>
+</li>
+<li><p>%f 过滤 commit 信息的标题使之可以作为文件名</p>
+</li>
+<li><p>%b commit 信息内容</p>
+</li>
+<li><p>%N commit notes</p>
+</li>
+<li><p>%g[D|d] reflog selector</p>
+</li>
+<li><p>%gs reflog subject</p>
+</li>
+<li><p>%Cred 切换至红色</p>
+</li>
+<li><p>%Cgreen 切换至绿色</p>
+</li>
+<li><p>%Cblue 切换至蓝色</p>
+</li>
+<li><p>%Creset 重设颜色</p>
+</li>
+<li><p>%C(color) 指定颜色</p>
+</li>
+<li><p>%n 换行</p>
+</li>
+<li><p>%m left right or boundary mark</p>
+</li>
+<li><p>%%a raw %</p>
+</li>
+<li><p>%x00 print a byte from a hex code</p>
+</li>
+<li><p>%w([[,[,]]]) switch line wrapping, like the -w option of git-shortlog(1).</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><img data-src="/images/git-config-1.jpg" alt="配置1"></p>
+<h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose</span><br></pre></td></tr></table></figure>
+
+<h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url</span><br></pre></td></tr></table></figure>
+
+<h6 id="remove-删除"><a href="#remove-删除" class="headerlink" title="remove 删除"></a>remove 删除</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote remove name</span><br></pre></td></tr></table></figure>
+
+<h6 id="rename-修改关联仓库名称"><a href="#rename-修改关联仓库名称" class="headerlink" title="rename 修改关联仓库名称"></a>rename 修改关联仓库名称</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rename old new</span><br></pre></td></tr></table></figure>
+
+<h6 id="set-url-设置关联仓库地址"><a href="#set-url-设置关联仓库地址" class="headerlink" title="set-url 设置关联仓库地址"></a>set-url 设置关联仓库地址</h6><ul>
+<li><p>push: 设置推送 url</p>
+</li>
+<li><p>add: 保持当前的 url,并添加一个新的 url</p>
+</li>
+<li><p>delete: 将删除匹配到的 url, 并添加一个新的 url</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote set-url [--push|--add|--delete] name url</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h6 id="get-url-获取关联仓库地址"><a href="#get-url-获取关联仓库地址" class="headerlink" title="get-url 获取关联仓库地址"></a>get-url 获取关联仓库地址</h6><ul>
+<li><p>push: 获取推送 url</p>
+</li>
+<li><p>all: 获取所有 url</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JSSDK</title>
+    <url>/2022/05/2261dfd57ebf/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
+<li>转发</li>
+<li>转发给客户</li>
+<li>群发到客户群</li>
+<li>发表到客户的朋友圈</li>
+<li>分享到同事吧</li>
+<li>分享到微信</li>
+<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>shareAppMessage 自定义转发到会话</li>
+<li>shareWechatMessage 自定义转发到微信</li>
+<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
+<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>wx</category>
+      </categories>
+      <tags>
+        <tag>wx</tag>
+        <tag>jweixin</tag>
+        <tag>JSSDK</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HTTP</title>
     <url>/2021/07/1ddfb1010b19/</url>
     <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
@@ -778,60 +832,6 @@
       </categories>
       <tags>
         <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JSSDK</title>
-    <url>/2022/05/2261dfd57ebf/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
-<li>转发</li>
-<li>转发给客户</li>
-<li>群发到客户群</li>
-<li>发表到客户的朋友圈</li>
-<li>分享到同事吧</li>
-<li>分享到微信</li>
-<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
-</ul>
-<span id="more"></span>
-
-<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>shareAppMessage 自定义转发到会话</li>
-<li>shareWechatMessage 自定义转发到微信</li>
-<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
-<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>wx</category>
-      </categories>
-      <tags>
-        <tag>wx</tag>
-        <tag>jweixin</tag>
-        <tag>JSSDK</tag>
       </tags>
   </entry>
   <entry>
@@ -933,6 +933,46 @@
       </tags>
   </entry>
   <entry>
+    <title>Promise</title>
+    <url>/2021/06/0bc450a2cb90/</url>
+    <content><![CDATA[<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
+<p>是异步编程的一种解决方案, 解决 js 异步回调地狱的问题</p>
+</blockquote>
+<ul>
+<li><p>状态唯一</p>
+<ul>
+<li>pending: 初始状态, 既没有被兑现, 也没有被拒绝</li>
+<li>fulfilled: 操作成功完成</li>
+<li>rejected: 操作失败</li>
+</ul>
+</li>
+<li><p>状态不受外界影响</p>
+</li>
+</ul>
+<h4 id="简单用法"><a href="#简单用法" class="headerlink" title="简单用法"></a>简单用法</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> p = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">resolve</span>(<span class="number">200</span>);</span><br><span class="line">&#125;);</span><br><span class="line">p.<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h4 id="手动实现"><a href="#手动实现" class="headerlink" title="手动实现"></a>手动实现</h4><h5 id="基础代码"><a href="#基础代码" class="headerlink" title="基础代码"></a>基础代码</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 状态常量</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">PENDING</span> = <span class="string">&#x27;pending&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">FULFILLED</span> = <span class="string">&#x27;fulfilled&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">REJECTED</span> = <span class="string">&#x27;rejected&#x27;</span>;</span><br><span class="line"><span class="comment">// 创建一个 MyPromise 类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyPromise</span> &#123;</span><br><span class="line">  <span class="comment">// 储存状态的变量，初始值是 pending</span></span><br><span class="line">  status = <span class="variable constant_">PENDING</span>;</span><br><span class="line">  <span class="comment">// 成功之后的值</span></span><br><span class="line">  value = <span class="literal">null</span>;</span><br><span class="line">  <span class="comment">// 失败之后的原因</span></span><br><span class="line">  reason = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 存储成功回调函数</span></span><br><span class="line">  onFulfilledCallbacks = [];</span><br><span class="line">  <span class="comment">// 存储失败回调函数</span></span><br><span class="line">  onRejectedCallbacks = [];</span><br><span class="line"></span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">executor</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="title function_">resolve</span> = (<span class="params">value</span>) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 状态修改为成功</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">status</span> = <span class="variable constant_">FULFILLED</span>;</span><br><span class="line">        <span class="comment">// 保存成功之后的值</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">value</span> = value;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="property">length</span>) &#123;</span><br><span class="line">          <span class="comment">// shift操作改变原数组, 循环从队列取出第一个方法执行</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">shift</span>()(value);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">let</span> <span class="title function_">reject</span> = (<span class="params">reason</span>) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 状态成功为失败</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">status</span> = <span class="variable constant_">REJECTED</span>;</span><br><span class="line">        <span class="comment">// 保存失败后的原因</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">reason</span> = reason;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="property">length</span>) &#123;</span><br><span class="line">          <span class="comment">// shift操作改变原数组, 循环从队列取出第一个方法执行</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">shift</span>()(reason);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="title function_">executor</span>(resolve, reject);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">      <span class="title function_">reject</span>(error); <span class="comment">// 失败执行 reject 方法</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">then</span>(<span class="params">onFulfilled, onRejected</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> realOnFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">&#x27;function&#x27;</span> ? onFulfilled : <span class="function">(<span class="params">value</span>) =&gt;</span> value;</span><br><span class="line">    <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function">(<span class="params">reason</span>) =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">FULFILLED</span>) &#123;</span><br><span class="line">      <span class="title function_">realOnFulfilled</span>(<span class="variable language_">this</span>.<span class="property">value</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">      <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">      <span class="comment">// 等待状态将成功和失败回调存储起来</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">push</span>(<span class="function">() =&gt;</span> <span class="title function_">realOnFulfilled</span>(<span class="variable language_">this</span>.<span class="property">value</span>));</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(<span class="function">() =&gt;</span> <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">catch</span>(onRejected) &#123;</span><br><span class="line">    <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function">(<span class="params">reason</span>) =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">      <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(<span class="function">() =&gt;</span> <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用</span></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="title function_">resolve</span>(<span class="string">&#x27;gg&#x27;</span>), <span class="number">5000</span>);</span><br><span class="line">&#125;).<span class="title function_">then</span>(</span><br><span class="line">  <span class="function">(<span class="params">res</span>) =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;res&#x27;</span>, res),</span><br><span class="line">  <span class="function">(<span class="params">err</span>) =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;err&#x27;</span>, err)</span><br><span class="line">);</span><br><span class="line"><span class="comment">// 5秒后输出: &#x27;res&#x27; gg</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// resolve 静态方法</span></span><br><span class="line"><span class="keyword">static</span> resolve (parameter) &#123;</span><br><span class="line">  <span class="comment">// 如果传入 MyPromise 就直接返回</span></span><br><span class="line">  <span class="keyword">if</span> (parameter <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> parameter;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 转成常规方式</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">resolve</span>(parameter);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// reject 静态方法</span></span><br><span class="line"><span class="keyword">static</span> reject (reason) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">reject</span>(reason);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="链式调用"><a href="#链式调用" class="headerlink" title="链式调用"></a>链式调用</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="title function_">then</span>(<span class="params">onFulfilled, onRejected</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> realOnFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">&#x27;function&#x27;</span> ? onFulfilled : <span class="function"><span class="params">value</span> =&gt;</span> value;</span><br><span class="line">  <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function"><span class="params">reason</span> =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去</span></span><br><span class="line">  <span class="keyword">const</span> promise2 = <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">fulfilledMicrotask</span> = (<span class="params"></span>) =&gt;  &#123;</span><br><span class="line">      <span class="comment">// 创建一个微任务等待 promise2 完成初始化</span></span><br><span class="line">      <span class="title function_">queueMicrotask</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="comment">// 获取成功回调函数的执行结果</span></span><br><span class="line">          <span class="keyword">const</span> x = <span class="title function_">realOnFulfilled</span>(<span class="variable language_">this</span>.<span class="property">value</span>);</span><br><span class="line">          <span class="comment">// 传入 resolvePromise 集中处理</span></span><br><span class="line">          <span class="title function_">resolvePromise</span>(promise2, x, resolve, reject);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">          <span class="title function_">reject</span>(error)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">rejectedMicrotask</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">      <span class="comment">// 创建一个微任务等待 promise2 完成初始化</span></span><br><span class="line">      <span class="title function_">queueMicrotask</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="comment">// 调用失败回调，并且把原因返回</span></span><br><span class="line">          <span class="keyword">const</span> x = <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">          <span class="comment">// 传入 resolvePromise 集中处理</span></span><br><span class="line">          <span class="title function_">resolvePromise</span>(promise2, x, resolve, reject);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">          <span class="title function_">reject</span>(error)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断状态</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">FULFILLED</span>) &#123;</span><br><span class="line">      <span class="title function_">fulfilledMicrotask</span>()</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">      <span class="title function_">rejectedMicrotask</span>()</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">      <span class="comment">// 等待</span></span><br><span class="line">      <span class="comment">// 因为不知道后面状态的变化情况，所以将成功回调和失败回调存储起来</span></span><br><span class="line">      <span class="comment">// 等到执行成功失败函数的时候再传递</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">push</span>(fulfilledMicrotask);</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(rejectedMicrotask);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> promise2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 处理 MyPromise 实例之间的关系</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">resolvePromise</span>(<span class="params">promise2, x, resolve, reject</span>) &#123;</span><br><span class="line">  <span class="comment">// 如果相等了，说明return的是自己，抛出类型错误并返回</span></span><br><span class="line">  <span class="keyword">if</span> (promise2 === x) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">reject</span>(<span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Chaining cycle detected for promise #&lt;Promise&gt;&#x27;</span>))</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 判断x是不是 MyPromise 实例对象</span></span><br><span class="line">  <span class="keyword">if</span>(x <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">    <span class="comment">// 执行 x，调用 then 方法，目的是将其状态变为 fulfilled 或者 rejected</span></span><br><span class="line">    <span class="comment">// x.then(value =&gt; resolve(value), reason =&gt; reject(reason))</span></span><br><span class="line">    <span class="comment">// 简化之后</span></span><br><span class="line">    x.<span class="title function_">then</span>(resolve, reject)</span><br><span class="line">  &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">// 普通值</span></span><br><span class="line">    <span class="title function_">resolve</span>(x)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 状态常量</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">PENDING</span> = <span class="string">&#x27;pending&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">FULFILLED</span> = <span class="string">&#x27;fulfilled&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">REJECTED</span> = <span class="string">&#x27;rejected&#x27;</span>;</span><br><span class="line"><span class="comment">// 创建一个 MyPromise 类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyPromise</span> &#123;</span><br><span class="line">  <span class="comment">// 储存状态的变量，初始值是 pending</span></span><br><span class="line">  status = <span class="variable constant_">PENDING</span>;</span><br><span class="line">  <span class="comment">// 成功之后的值</span></span><br><span class="line">  value = <span class="literal">null</span>;</span><br><span class="line">  <span class="comment">// 失败之后的原因</span></span><br><span class="line">  reason = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 存储成功回调函数</span></span><br><span class="line">  onFulfilledCallbacks = [];</span><br><span class="line">  <span class="comment">// 存储失败回调函数</span></span><br><span class="line">  onRejectedCallbacks = [];</span><br><span class="line"></span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">executor</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="title function_">resolve</span> = (<span class="params">value</span>) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 状态修改为成功</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">status</span> = <span class="variable constant_">FULFILLED</span>;</span><br><span class="line">        <span class="comment">// 保存成功之后的值</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">value</span> = value;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="property">length</span>) &#123;</span><br><span class="line">          <span class="comment">// shift操作改变原数组, 循环从队列取出第一个方法执行</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">shift</span>()(value);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">let</span> <span class="title function_">reject</span> = (<span class="params">reason</span>) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 状态成功为失败</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">status</span> = <span class="variable constant_">REJECTED</span>;</span><br><span class="line">        <span class="comment">// 保存失败后的原因</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">reason</span> = reason;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="property">length</span>) &#123;</span><br><span class="line">          <span class="comment">// shift操作改变原数组, 循环从队列取出第一个方法执行</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">shift</span>()(reason);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="title function_">executor</span>(resolve, reject);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">      <span class="title function_">reject</span>(error); <span class="comment">// 失败执行 reject 方法</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// resolve 静态方法</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">resolve</span>(<span class="params">parameter</span>) &#123;</span><br><span class="line">    <span class="comment">// 如果传入 MyPromise 就直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (parameter <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> parameter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 转成常规方式</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">resolve</span>(parameter);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// reject 静态方法</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">reject</span>(<span class="params">reason</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">reject</span>(reason);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">then</span>(<span class="params">onFulfilled, onRejected</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> realOnFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">&#x27;function&#x27;</span> ? onFulfilled : <span class="function">(<span class="params">value</span>) =&gt;</span> value;</span><br><span class="line">    <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function">(<span class="params">reason</span>) =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去</span></span><br><span class="line">    <span class="keyword">const</span> promise2 = <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> <span class="title function_">fulfilledMicrotask</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">        <span class="comment">// 创建一个微任务等待 promise2 完成初始化</span></span><br><span class="line">        <span class="title function_">queueMicrotask</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取成功回调函数的执行结果</span></span><br><span class="line">            <span class="keyword">const</span> x = <span class="title function_">realOnFulfilled</span>(<span class="variable language_">this</span>.<span class="property">value</span>);</span><br><span class="line">            <span class="comment">// 传入 resolvePromise 集中处理</span></span><br><span class="line">            <span class="title function_">resolvePromise</span>(promise2, x, resolve, reject);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">            <span class="title function_">reject</span>(error);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> <span class="title function_">rejectedMicrotask</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">        <span class="comment">// 创建一个微任务等待 promise2 完成初始化</span></span><br><span class="line">        <span class="title function_">queueMicrotask</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 调用失败回调，并且把原因返回</span></span><br><span class="line">            <span class="keyword">const</span> x = <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">            <span class="comment">// 传入 resolvePromise 集中处理</span></span><br><span class="line">            <span class="title function_">resolvePromise</span>(promise2, x, resolve, reject);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">            <span class="title function_">reject</span>(error);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;;</span><br><span class="line">      <span class="comment">// 判断状态</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">FULFILLED</span>) &#123;</span><br><span class="line">        <span class="title function_">fulfilledMicrotask</span>();</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">        <span class="title function_">rejectedMicrotask</span>();</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 等待</span></span><br><span class="line">        <span class="comment">// 因为不知道后面状态的变化情况，所以将成功回调和失败回调存储起来</span></span><br><span class="line">        <span class="comment">// 等到执行成功失败函数的时候再传递</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">push</span>(fulfilledMicrotask);</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(rejectedMicrotask);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> promise2;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">catch</span>(onRejected) &#123;</span><br><span class="line">    <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function">(<span class="params">reason</span>) =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">      <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(<span class="function">() =&gt;</span> <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理 MyPromise 实例之间的关系</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">resolvePromise</span>(<span class="params">promise2, x, resolve, reject</span>) &#123;</span><br><span class="line">  <span class="comment">// 如果相等了，说明return的是自己，抛出类型错误并返回</span></span><br><span class="line">  <span class="keyword">if</span> (promise2 === x) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">reject</span>(<span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Chaining cycle detected for promise #&lt;Promise&gt;&#x27;</span>));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 判断x是不是 MyPromise 实例对象</span></span><br><span class="line">  <span class="keyword">if</span> (x <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">    <span class="comment">// 执行 x，调用 then 方法，目的是将其状态变为 fulfilled 或者 rejected</span></span><br><span class="line">    <span class="comment">// x.then(value =&gt; resolve(value), reason =&gt; reject(reason))</span></span><br><span class="line">    <span class="comment">// 简化之后</span></span><br><span class="line">    x.<span class="title function_">then</span>(resolve, reject);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 普通值</span></span><br><span class="line">    <span class="title function_">resolve</span>(x);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>ES</category>
+      </categories>
+      <tags>
+        <tag>ES6</tag>
+        <tag>js</tag>
+        <tag>Promise</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React.md</title>
     <url>/2022/02/7ec5bd96e943/</url>
     <content><![CDATA[<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><ul>
@@ -972,46 +1012,6 @@
         <tag>js</tag>
         <tag>jsx</tag>
         <tag>React</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Promise</title>
-    <url>/2021/06/0bc450a2cb90/</url>
-    <content><![CDATA[<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><blockquote>
-<p>是异步编程的一种解决方案, 解决 js 异步回调地狱的问题</p>
-</blockquote>
-<ul>
-<li><p>状态唯一</p>
-<ul>
-<li>pending: 初始状态, 既没有被兑现, 也没有被拒绝</li>
-<li>fulfilled: 操作成功完成</li>
-<li>rejected: 操作失败</li>
-</ul>
-</li>
-<li><p>状态不受外界影响</p>
-</li>
-</ul>
-<h4 id="简单用法"><a href="#简单用法" class="headerlink" title="简单用法"></a>简单用法</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> p = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">resolve</span>(<span class="number">200</span>);</span><br><span class="line">&#125;);</span><br><span class="line">p.<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h4 id="手动实现"><a href="#手动实现" class="headerlink" title="手动实现"></a>手动实现</h4><h5 id="基础代码"><a href="#基础代码" class="headerlink" title="基础代码"></a>基础代码</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 状态常量</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">PENDING</span> = <span class="string">&#x27;pending&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">FULFILLED</span> = <span class="string">&#x27;fulfilled&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">REJECTED</span> = <span class="string">&#x27;rejected&#x27;</span>;</span><br><span class="line"><span class="comment">// 创建一个 MyPromise 类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyPromise</span> &#123;</span><br><span class="line">  <span class="comment">// 储存状态的变量，初始值是 pending</span></span><br><span class="line">  status = <span class="variable constant_">PENDING</span>;</span><br><span class="line">  <span class="comment">// 成功之后的值</span></span><br><span class="line">  value = <span class="literal">null</span>;</span><br><span class="line">  <span class="comment">// 失败之后的原因</span></span><br><span class="line">  reason = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 存储成功回调函数</span></span><br><span class="line">  onFulfilledCallbacks = [];</span><br><span class="line">  <span class="comment">// 存储失败回调函数</span></span><br><span class="line">  onRejectedCallbacks = [];</span><br><span class="line"></span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">executor</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="title function_">resolve</span> = (<span class="params">value</span>) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 状态修改为成功</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">status</span> = <span class="variable constant_">FULFILLED</span>;</span><br><span class="line">        <span class="comment">// 保存成功之后的值</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">value</span> = value;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="property">length</span>) &#123;</span><br><span class="line">          <span class="comment">// shift操作改变原数组, 循环从队列取出第一个方法执行</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">shift</span>()(value);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">let</span> <span class="title function_">reject</span> = (<span class="params">reason</span>) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 状态成功为失败</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">status</span> = <span class="variable constant_">REJECTED</span>;</span><br><span class="line">        <span class="comment">// 保存失败后的原因</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">reason</span> = reason;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="property">length</span>) &#123;</span><br><span class="line">          <span class="comment">// shift操作改变原数组, 循环从队列取出第一个方法执行</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">shift</span>()(reason);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="title function_">executor</span>(resolve, reject);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">      <span class="title function_">reject</span>(error); <span class="comment">// 失败执行 reject 方法</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">then</span>(<span class="params">onFulfilled, onRejected</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> realOnFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">&#x27;function&#x27;</span> ? onFulfilled : <span class="function">(<span class="params">value</span>) =&gt;</span> value;</span><br><span class="line">    <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function">(<span class="params">reason</span>) =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">FULFILLED</span>) &#123;</span><br><span class="line">      <span class="title function_">realOnFulfilled</span>(<span class="variable language_">this</span>.<span class="property">value</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">      <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">      <span class="comment">// 等待状态将成功和失败回调存储起来</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">push</span>(<span class="function">() =&gt;</span> <span class="title function_">realOnFulfilled</span>(<span class="variable language_">this</span>.<span class="property">value</span>));</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(<span class="function">() =&gt;</span> <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">catch</span>(onRejected) &#123;</span><br><span class="line">    <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function">(<span class="params">reason</span>) =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">      <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(<span class="function">() =&gt;</span> <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用</span></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> <span class="title function_">resolve</span>(<span class="string">&#x27;gg&#x27;</span>), <span class="number">5000</span>);</span><br><span class="line">&#125;).<span class="title function_">then</span>(</span><br><span class="line">  <span class="function">(<span class="params">res</span>) =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;res&#x27;</span>, res),</span><br><span class="line">  <span class="function">(<span class="params">err</span>) =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;err&#x27;</span>, err)</span><br><span class="line">);</span><br><span class="line"><span class="comment">// 5秒后输出: &#x27;res&#x27; gg</span></span><br></pre></td></tr></table></figure>
-
-<h5 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// resolve 静态方法</span></span><br><span class="line"><span class="keyword">static</span> resolve (parameter) &#123;</span><br><span class="line">  <span class="comment">// 如果传入 MyPromise 就直接返回</span></span><br><span class="line">  <span class="keyword">if</span> (parameter <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> parameter;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 转成常规方式</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">resolve</span>(parameter);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// reject 静态方法</span></span><br><span class="line"><span class="keyword">static</span> reject (reason) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">reject</span>(reason);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="链式调用"><a href="#链式调用" class="headerlink" title="链式调用"></a>链式调用</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="title function_">then</span>(<span class="params">onFulfilled, onRejected</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> realOnFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">&#x27;function&#x27;</span> ? onFulfilled : <span class="function"><span class="params">value</span> =&gt;</span> value;</span><br><span class="line">  <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function"><span class="params">reason</span> =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去</span></span><br><span class="line">  <span class="keyword">const</span> promise2 = <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">fulfilledMicrotask</span> = (<span class="params"></span>) =&gt;  &#123;</span><br><span class="line">      <span class="comment">// 创建一个微任务等待 promise2 完成初始化</span></span><br><span class="line">      <span class="title function_">queueMicrotask</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="comment">// 获取成功回调函数的执行结果</span></span><br><span class="line">          <span class="keyword">const</span> x = <span class="title function_">realOnFulfilled</span>(<span class="variable language_">this</span>.<span class="property">value</span>);</span><br><span class="line">          <span class="comment">// 传入 resolvePromise 集中处理</span></span><br><span class="line">          <span class="title function_">resolvePromise</span>(promise2, x, resolve, reject);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">          <span class="title function_">reject</span>(error)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">rejectedMicrotask</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">      <span class="comment">// 创建一个微任务等待 promise2 完成初始化</span></span><br><span class="line">      <span class="title function_">queueMicrotask</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="comment">// 调用失败回调，并且把原因返回</span></span><br><span class="line">          <span class="keyword">const</span> x = <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">          <span class="comment">// 传入 resolvePromise 集中处理</span></span><br><span class="line">          <span class="title function_">resolvePromise</span>(promise2, x, resolve, reject);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">          <span class="title function_">reject</span>(error)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断状态</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">FULFILLED</span>) &#123;</span><br><span class="line">      <span class="title function_">fulfilledMicrotask</span>()</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">      <span class="title function_">rejectedMicrotask</span>()</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">      <span class="comment">// 等待</span></span><br><span class="line">      <span class="comment">// 因为不知道后面状态的变化情况，所以将成功回调和失败回调存储起来</span></span><br><span class="line">      <span class="comment">// 等到执行成功失败函数的时候再传递</span></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">push</span>(fulfilledMicrotask);</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(rejectedMicrotask);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> promise2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 处理 MyPromise 实例之间的关系</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">resolvePromise</span>(<span class="params">promise2, x, resolve, reject</span>) &#123;</span><br><span class="line">  <span class="comment">// 如果相等了，说明return的是自己，抛出类型错误并返回</span></span><br><span class="line">  <span class="keyword">if</span> (promise2 === x) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">reject</span>(<span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Chaining cycle detected for promise #&lt;Promise&gt;&#x27;</span>))</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 判断x是不是 MyPromise 实例对象</span></span><br><span class="line">  <span class="keyword">if</span>(x <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">    <span class="comment">// 执行 x，调用 then 方法，目的是将其状态变为 fulfilled 或者 rejected</span></span><br><span class="line">    <span class="comment">// x.then(value =&gt; resolve(value), reason =&gt; reject(reason))</span></span><br><span class="line">    <span class="comment">// 简化之后</span></span><br><span class="line">    x.<span class="title function_">then</span>(resolve, reject)</span><br><span class="line">  &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">// 普通值</span></span><br><span class="line">    <span class="title function_">resolve</span>(x)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 状态常量</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">PENDING</span> = <span class="string">&#x27;pending&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">FULFILLED</span> = <span class="string">&#x27;fulfilled&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">REJECTED</span> = <span class="string">&#x27;rejected&#x27;</span>;</span><br><span class="line"><span class="comment">// 创建一个 MyPromise 类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyPromise</span> &#123;</span><br><span class="line">  <span class="comment">// 储存状态的变量，初始值是 pending</span></span><br><span class="line">  status = <span class="variable constant_">PENDING</span>;</span><br><span class="line">  <span class="comment">// 成功之后的值</span></span><br><span class="line">  value = <span class="literal">null</span>;</span><br><span class="line">  <span class="comment">// 失败之后的原因</span></span><br><span class="line">  reason = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 存储成功回调函数</span></span><br><span class="line">  onFulfilledCallbacks = [];</span><br><span class="line">  <span class="comment">// 存储失败回调函数</span></span><br><span class="line">  onRejectedCallbacks = [];</span><br><span class="line"></span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">executor</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="title function_">resolve</span> = (<span class="params">value</span>) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 状态修改为成功</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">status</span> = <span class="variable constant_">FULFILLED</span>;</span><br><span class="line">        <span class="comment">// 保存成功之后的值</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">value</span> = value;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="property">length</span>) &#123;</span><br><span class="line">          <span class="comment">// shift操作改变原数组, 循环从队列取出第一个方法执行</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">shift</span>()(value);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">let</span> <span class="title function_">reject</span> = (<span class="params">reason</span>) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 状态成功为失败</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">status</span> = <span class="variable constant_">REJECTED</span>;</span><br><span class="line">        <span class="comment">// 保存失败后的原因</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">reason</span> = reason;</span><br><span class="line">        <span class="keyword">while</span> (<span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="property">length</span>) &#123;</span><br><span class="line">          <span class="comment">// shift操作改变原数组, 循环从队列取出第一个方法执行</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">shift</span>()(reason);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="title function_">executor</span>(resolve, reject);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">      <span class="title function_">reject</span>(error); <span class="comment">// 失败执行 reject 方法</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// resolve 静态方法</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">resolve</span>(<span class="params">parameter</span>) &#123;</span><br><span class="line">    <span class="comment">// 如果传入 MyPromise 就直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (parameter <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> parameter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 转成常规方式</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">resolve</span>(parameter);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// reject 静态方法</span></span><br><span class="line">  <span class="keyword">static</span> <span class="title function_">reject</span>(<span class="params">reason</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">reject</span>(reason);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">then</span>(<span class="params">onFulfilled, onRejected</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> realOnFulfilled = <span class="keyword">typeof</span> onFulfilled === <span class="string">&#x27;function&#x27;</span> ? onFulfilled : <span class="function">(<span class="params">value</span>) =&gt;</span> value;</span><br><span class="line">    <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function">(<span class="params">reason</span>) =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去</span></span><br><span class="line">    <span class="keyword">const</span> promise2 = <span class="keyword">new</span> <span class="title class_">MyPromise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> <span class="title function_">fulfilledMicrotask</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">        <span class="comment">// 创建一个微任务等待 promise2 完成初始化</span></span><br><span class="line">        <span class="title function_">queueMicrotask</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取成功回调函数的执行结果</span></span><br><span class="line">            <span class="keyword">const</span> x = <span class="title function_">realOnFulfilled</span>(<span class="variable language_">this</span>.<span class="property">value</span>);</span><br><span class="line">            <span class="comment">// 传入 resolvePromise 集中处理</span></span><br><span class="line">            <span class="title function_">resolvePromise</span>(promise2, x, resolve, reject);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">            <span class="title function_">reject</span>(error);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> <span class="title function_">rejectedMicrotask</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">        <span class="comment">// 创建一个微任务等待 promise2 完成初始化</span></span><br><span class="line">        <span class="title function_">queueMicrotask</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 调用失败回调，并且把原因返回</span></span><br><span class="line">            <span class="keyword">const</span> x = <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">            <span class="comment">// 传入 resolvePromise 集中处理</span></span><br><span class="line">            <span class="title function_">resolvePromise</span>(promise2, x, resolve, reject);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">            <span class="title function_">reject</span>(error);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;;</span><br><span class="line">      <span class="comment">// 判断状态</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">FULFILLED</span>) &#123;</span><br><span class="line">        <span class="title function_">fulfilledMicrotask</span>();</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">        <span class="title function_">rejectedMicrotask</span>();</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">        <span class="comment">// 等待</span></span><br><span class="line">        <span class="comment">// 因为不知道后面状态的变化情况，所以将成功回调和失败回调存储起来</span></span><br><span class="line">        <span class="comment">// 等到执行成功失败函数的时候再传递</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">onFulfilledCallbacks</span>.<span class="title function_">push</span>(fulfilledMicrotask);</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(rejectedMicrotask);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> promise2;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">catch</span>(onRejected) &#123;</span><br><span class="line">    <span class="keyword">const</span> realOnRejected = <span class="keyword">typeof</span> onRejected === <span class="string">&#x27;function&#x27;</span> ? onRejected : <span class="function">(<span class="params">reason</span>) =&gt;</span> <span class="keyword">throw</span> reason;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">REJECTED</span>) &#123;</span><br><span class="line">      <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">status</span> === <span class="variable constant_">PENDING</span>) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">onRejectedCallbacks</span>.<span class="title function_">push</span>(<span class="function">() =&gt;</span> <span class="title function_">realOnRejected</span>(<span class="variable language_">this</span>.<span class="property">reason</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理 MyPromise 实例之间的关系</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">resolvePromise</span>(<span class="params">promise2, x, resolve, reject</span>) &#123;</span><br><span class="line">  <span class="comment">// 如果相等了，说明return的是自己，抛出类型错误并返回</span></span><br><span class="line">  <span class="keyword">if</span> (promise2 === x) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">reject</span>(<span class="keyword">new</span> <span class="title class_">TypeError</span>(<span class="string">&#x27;Chaining cycle detected for promise #&lt;Promise&gt;&#x27;</span>));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 判断x是不是 MyPromise 实例对象</span></span><br><span class="line">  <span class="keyword">if</span> (x <span class="keyword">instanceof</span> <span class="title class_">MyPromise</span>) &#123;</span><br><span class="line">    <span class="comment">// 执行 x，调用 then 方法，目的是将其状态变为 fulfilled 或者 rejected</span></span><br><span class="line">    <span class="comment">// x.then(value =&gt; resolve(value), reason =&gt; reject(reason))</span></span><br><span class="line">    <span class="comment">// 简化之后</span></span><br><span class="line">    x.<span class="title function_">then</span>(resolve, reject);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 普通值</span></span><br><span class="line">    <span class="title function_">resolve</span>(x);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>ES</category>
-      </categories>
-      <tags>
-        <tag>ES6</tag>
-        <tag>js</tag>
-        <tag>Promise</tag>
       </tags>
   </entry>
   <entry>
@@ -1278,6 +1278,27 @@
       </tags>
   </entry>
   <entry>
+    <title>Hello World</title>
+    <url>/2021/04/7df03390b905/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+  </entry>
+  <entry>
     <title>vue3.x-Changelog</title>
     <url>/2021/08/de0c4011096e/</url>
     <content><![CDATA[<h3 id="Vue-3-x-迭代-新增或者废弃的语法和-API"><a href="#Vue-3-x-迭代-新增或者废弃的语法和-API" class="headerlink" title="Vue 3.x 迭代 新增或者废弃的语法和 API"></a>Vue 3.x 迭代 新增或者废弃的语法和 API</h3><h3 id="源码优化"><a href="#源码优化" class="headerlink" title="源码优化"></a>源码优化</h3><h4 id="代码管理方式-monorepo-monolithic-repository"><a href="#代码管理方式-monorepo-monolithic-repository" class="headerlink" title="代码管理方式 monorepo(monolithic repository)"></a>代码管理方式 monorepo(monolithic repository)</h4><ul>
@@ -1418,27 +1439,6 @@
         <tag>VueJs</tag>
         <tag>Vue3.0</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2021/04/7df03390b905/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
   </entry>
   <entry>
     <title>nginx</title>
@@ -1844,58 +1844,6 @@
       </tags>
   </entry>
   <entry>
-    <title>vagrant</title>
-    <url>/2022/04/6a14bcf31f14/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
-<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
-<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>vagrant</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>即将废弃或已经废弃的API</title>
-    <url>/2021/07/6ab3a6a88944/</url>
-    <content><![CDATA[<ul>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr">String.prototype.substr()</a></p>
-<blockquote>
-<p>并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee">arguments.callee</a></p>
-<blockquote>
-<p>ES5 严格模式下禁止使用此方法，建议使用方法名调用自己</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/arguments">Function.arguments</a> 已废弃</p>
-<blockquote>
-<p>是一个类数组对象,表示传入函数的实参. 在函数内部直接使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments">arguments</a> 对象访问</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/compile">regexObj.compile</a> 已废弃</p>
-<blockquote>
-<p>用于编译正则表达式, 和 RegExp 构造函数的作用基本一样</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear">Date.prototype.getYear</a> 已废弃</p>
-<blockquote>
-<p>使用 getFullYear 代替</p>
-</blockquote>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>WebAPI</category>
-      </categories>
-      <tags>
-        <tag>API</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>shell语法</title>
     <url>/2022/04/616714173ca1/</url>
     <content><![CDATA[<h3 id="shell-重置密码"><a href="#shell-重置密码" class="headerlink" title="shell 重置密码"></a>shell 重置密码</h3><ol>
@@ -2279,6 +2227,58 @@
       <tags>
         <tag>linux</tag>
         <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vagrant</title>
+    <url>/2022/04/6a14bcf31f14/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
+<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
+<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>vagrant</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>即将废弃或已经废弃的API</title>
+    <url>/2021/07/6ab3a6a88944/</url>
+    <content><![CDATA[<ul>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr">String.prototype.substr()</a></p>
+<blockquote>
+<p>并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee">arguments.callee</a></p>
+<blockquote>
+<p>ES5 严格模式下禁止使用此方法，建议使用方法名调用自己</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/arguments">Function.arguments</a> 已废弃</p>
+<blockquote>
+<p>是一个类数组对象,表示传入函数的实参. 在函数内部直接使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments">arguments</a> 对象访问</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/compile">regexObj.compile</a> 已废弃</p>
+<blockquote>
+<p>用于编译正则表达式, 和 RegExp 构造函数的作用基本一样</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear">Date.prototype.getYear</a> 已废弃</p>
+<blockquote>
+<p>使用 getFullYear 代替</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
       </tags>
   </entry>
   <entry>
@@ -5194,15 +5194,6 @@
 <ul>
 <li>REPLICAOF NO ONE 将从服务器更改为主服务器</li>
 </ul>
-<h5 id="永久有效"><a href="#永久有效" class="headerlink" title="永久有效"></a>永久有效</h5><p>单机主从配置: 新建多个 Redis 服务器配置文件并修改其中关键项</p>
-<ul>
-<li><code>bind 127.0.0.1</code> 修改绑定的 ip</li>
-<li><code>port 6379</code> 修改绑定的端口号</li>
-<li><code>daemonize yes</code> 开启后台运行, 默认为 no</li>
-<li><code>pidfile /var/run/redis_6379.pid</code> 修改进程文件, 默认为 redis_6379.pid</li>
-<li><code>logfile &quot;6379.log&quot;</code> 修改日志文件名, 默认为空</li>
-<li><code>dbfilename dump6379.rdb</code> 修改持久化文件名, 默认为 dump.rdb</li>
-</ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置关联主服务器</span></span><br><span class="line">127.0.0.1:6380&gt; REPLICAOF 127.0.0.1 6379</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6381&gt; REPLICAOF 127.0.0.1 6379</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看主服务器配置信息</span></span><br><span class="line">127.0.0.1:6379&gt; INFO replication</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:2</span><br><span class="line">slave0:ip=127.0.0.1,port=6380,state=online,offset=153689,lag=0</span><br><span class="line">slave1:ip=127.0.0.1,port=6381,state=online,offset=153557,lag=0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:749aaed3f58b97f7c01d3732a6f6c55be205c4b2</span><br><span class="line">master_replid2:451a270c3954af29f43878dd9bfeac579d011972</span><br><span class="line">master_repl_offset:153689</span><br><span class="line">second_repl_offset:133525</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:133525</span><br><span class="line">repl_backlog_histlen:20165</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -5212,6 +5203,12 @@
 
 <h4 id="配置文件配置"><a href="#配置文件配置" class="headerlink" title="配置文件配置"></a>配置文件配置</h4><p>redis.conf</p>
 <ul>
+<li>bind 127.0.0.1 修改绑定的 ip</li>
+<li>port 6379 修改绑定的端口号</li>
+<li>daemonize yes 开启后台运行, 默认为 no</li>
+<li>pidfile /var/run/redis_6379.pid 修改进程文件, 默认为 redis_6379.pid</li>
+<li>logfile “6379.log” 修改日志文件名, 默认为空</li>
+<li>dbfilename dump6379.rdb 修改持久化文件名, 默认为 dump.rdb</li>
 <li>replicaof &lt;masterip&gt; &lt;masterport&gt; 配置主服务器 ip 和 port</li>
 <li>masterauth &lt;master-password&gt; 主服务器认证密码, 如果需要</li>
 <li>masteruser &lt;username&gt; 主服务器用户</li>
