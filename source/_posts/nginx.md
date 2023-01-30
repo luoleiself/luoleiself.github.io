@@ -15,7 +15,7 @@ tags:
 
 查找系统进程中已存在的 nginx 进程号, 使用 `kill -9 $PID` 关闭进程后重启 nginx 服务
 
-## 变量
+## 内置变量
 
 - $nginx_version nginx 版本
 
@@ -93,7 +93,34 @@ tags:
 - $body_bytes_sent 响应时发送的背景 body 字节数
 - $limit_rate 限制连接速率
 
-## 指令
+### $invalid_referer
+
+如果 `valid_referers` 验证 `Referer` 请求字段有效则为空字符串, 否则为 1
+
+## 内置指令
+
+### valid_referers 验证请求头
+
+- none 允许 Referer 头域中不存在的情况
+- blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:\/\/ 或 https:\/\/ 开头的情况
+- server_names 设置一个或多个 URL
+- arbitrary string 任意字符串
+- regular expression 第一个字符为 ~ 开头的正则表达式
+
+```nginx
+valid_referers none blocked server_names
+               *.example.com example.* www.example.org/galleries/
+               ~\.google\.;
+# 防盗链
+location ~* \.(gif|jpg|png|jpeg)$ {
+  expires 30d;
+  valid_referers none blocked *.test.com;
+  if ($invalid_referer) {
+    #rewrite ^/ http://static.test.cn/images/403.jpg;
+    return 403;
+  }
+}
+```
 
 ### add_header 添加响应头字段
 
