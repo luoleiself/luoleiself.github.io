@@ -432,6 +432,11 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 29)     Prints this help.
 ```
 
+- ACL USERS 列出所有已配置用户名
+- ACL WHOAMI 返回当前连接服务器的用户名, 默认 default
+- ACL SAVE 将 ACLs 配置项从内存保存到 ACL 文件中
+
+- ACL DELUSER [username...] 删除指定的 ACL 用户, default 用户不能被删除
 - ACL SETUSER 设置用户访问权限
 - ACL GETUSER username 获取指定用户的权限
 
