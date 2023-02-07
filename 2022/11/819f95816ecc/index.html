@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-2.png">
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-3.png">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2023-02-03T11:29:08.465Z">
+<meta property="article:modified_time" content="2023-02-07T11:34:07.749Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -242,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-03 19:29:08" itemprop="dateModified" datetime="2023-02-03T19:29:08+08:00">2023-02-03</time>
+                <time title="修改时间：2023-02-07 19:34:07" itemprop="dateModified" datetime="2023-02-07T19:34:07+08:00">2023-02-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -269,7 +269,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>32 分钟</span>
+              <span>33 分钟</span>
             </span>
 
         </div>
@@ -733,8 +733,18 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL HELP</span><br><span class="line"> 1) ACL &lt;subcommand&gt; [&lt;arg&gt; [value] [opt] ...]. Subcommands are:</span><br><span class="line"> 2) CAT [&lt;category&gt;]</span><br><span class="line"> 3)     List all commands that belong to &lt;category&gt;, or all command categories</span><br><span class="line"> 4)     when no category is specified.</span><br><span class="line"> 5) DELUSER &lt;username&gt; [&lt;username&gt; ...]</span><br><span class="line"> 6)     Delete a list of users.</span><br><span class="line"> 7) DRYRUN &lt;username&gt; &lt;command&gt; [&lt;arg&gt; ...]</span><br><span class="line"> 8)     Returns whether the user can execute the given command without executing the command.</span><br><span class="line"> 9) GETUSER &lt;username&gt;</span><br><span class="line">10)     Get the user\&#x27;s details.</span><br><span class="line">11) GENPASS [&lt;bits&gt;]</span><br><span class="line">12)     Generate a secure 256-bit user password. The optional `bits` argument can</span><br><span class="line">13)     be used to specify a different size.</span><br><span class="line">14) LIST</span><br><span class="line">15)     Show users details in config file format.</span><br><span class="line">16) LOAD</span><br><span class="line">17)     Reload users from the ACL file.</span><br><span class="line">18) LOG [&lt;count&gt; | RESET]</span><br><span class="line">19)     Show the ACL log entries.</span><br><span class="line">20) SAVE</span><br><span class="line">21)     Save the current config to the ACL file.</span><br><span class="line">22) SETUSER &lt;username&gt; &lt;attribute&gt; [&lt;attribute&gt; ...]</span><br><span class="line">23)     Create or modify a user with the specified attributes.</span><br><span class="line">24) USERS</span><br><span class="line">25)     List all the registered usernames.</span><br><span class="line">26) WHOAMI</span><br><span class="line">27)     Return the current connection username.</span><br><span class="line">28) HELP</span><br><span class="line">29)     Prints this help.</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>ACL SETUSER 设置用户访问权限</li>
-<li>ACL GETUSER username 获取指定用户的权限</li>
+<li><p>ACL USERS 列出所有已配置用户名</p>
+</li>
+<li><p>ACL WHOAMI 返回当前连接服务器的用户名, 默认 default</p>
+</li>
+<li><p>ACL SAVE 将 ACLs 配置项从内存保存到 ACL 文件中</p>
+</li>
+<li><p>ACL DELUSER [username…] 删除指定的 ACL 用户, default 用户不能被删除</p>
+</li>
+<li><p>ACL SETUSER 设置用户访问权限</p>
+</li>
+<li><p>ACL GETUSER username 获取指定用户的权限</p>
+</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加 lisi 账号, 明文密码 123456, 添加所有分类的命令</span></span><br><span class="line">127.0.0.1:6379&gt; ACL SETUSER lisi &gt;123456 off +@all</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL GETUSER lisi</span><br><span class="line"> 1) &quot;flags&quot;</span><br><span class="line"> 2) 1) &quot;off&quot;</span><br><span class="line"> 3) &quot;passwords&quot;</span><br><span class="line"> 4) 1) &quot;8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92&quot;</span><br><span class="line"> 5) &quot;commands&quot;</span><br><span class="line"> 6) &quot;+@all&quot;</span><br><span class="line"> 7) &quot;keys&quot;</span><br><span class="line"> 8) &quot;&quot;</span><br><span class="line"> 9) &quot;channels&quot;</span><br><span class="line">10) &quot;&quot;</span><br><span class="line">11) &quot;selectors&quot;</span><br><span class="line">12) (empty array)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加禁用账号 zhangsan</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只包含 string, <span class="built_in">hash</span>, list, <span class="built_in">set</span>分类下的命令</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只能操作以 zhang 开头匹配模式的 key 和通道</span></span><br><span class="line">127.0.0.1:6379&gt; ACL SETUSER zhangsan off +@string +@hash +@list +@set ~zhang:* &amp;zhang:*</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL GETUSER zhangsan</span><br><span class="line"> 1) &quot;flags&quot;</span><br><span class="line"> 2) 1) &quot;off&quot;</span><br><span class="line"> 3) &quot;passwords&quot;</span><br><span class="line"> 4) 1) &quot;8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92&quot;</span><br><span class="line"> 5) &quot;commands&quot;</span><br><span class="line"> 6) &quot;-@all +@list +@string +@hash +@set&quot;</span><br><span class="line"> 7) &quot;keys&quot;</span><br><span class="line"> 8) &quot;~zhang:*&quot;</span><br><span class="line"> 9) &quot;channels&quot;</span><br><span class="line">10) &quot;&amp;zhang:*&quot;</span><br><span class="line">11) &quot;selectors&quot;</span><br><span class="line">12) (empty array)</span><br></pre></td></tr></table></figure>
 
