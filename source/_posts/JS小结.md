@@ -117,6 +117,15 @@ tags:
 
 当 HTML 文档中的 script 标签内的代码执行`前|后`触发该事件, 如果这个 script 标签是用 `appendChild` 等方法动态插入的, 则不会触发该类事件
 
+### [IE 10 开始不再支持条件注释引入资源](<https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/hh801214(v=vs.85)?redirectedfrom=MSDN>)
+
+```html
+<!--[if lt IE 9]>
+  <link rel="stylesheet" type="text/css" href="./main.css" />
+  <script type="text/javascript" src="./main.js"></script>
+<![endif]-->
+```
+
 ### eval
 
 避免使用 eval, 可以使用 `Function('"use strict"; console.log("hello world")')()` 代替, `Function` 直接调用此构造函数可以动态创建函数
