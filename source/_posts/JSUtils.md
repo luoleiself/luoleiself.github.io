@@ -412,7 +412,7 @@ function file2DataURL(arg) {
   }
 
   function hasOwnProp(obj, prop) {
-    return obj != null && typeof obj === 'object' && obj.hasOwnProperty(prop);
+    return obj !== null && typeof obj === 'object' && obj.hasOwnProperty(prop);
   }
   /**
    * @method leftDown 倒计时方法
@@ -611,4 +611,110 @@ var { pause, resume, cancel } = date.leftDown(function (obj) {
 // window.addEventListener('leftDown', function (evt) {
 //   console.log(evt)
 // });
+```
+
+#### 原生 JS 创建 Element
+
+```javascript
+/*
+继承关系
+EventTarget
+  <- Node
+    <- Document
+    <- DocumentFragment
+    <- Element
+      <- HTMLElement
+      <- SVGElement
+    <- [Attr](https://developer.mozilla.org/zh-CN/docs/Web/API/Attr)
+    <- CharacterData
+      <- Comment 
+*/
+function h(tag, props, child) {
+  var _c,
+    children,
+    fragment = document.createDocumentFragment(),
+    argsLength = arguments.length;
+  if (argsLength == 0 || argsLength === 1) {
+    return is.undefinedOrNull(tag) || (is.string(tag) && tag.trim() === '')
+      ? fragment
+      : document.createElement(tag);
+  }
+
+  _c = argsLength == 2 ? props : child;
+
+  var el =
+    is.undefinedOrNull(tag) || (is.string(tag) && tag.trim() === '')
+      ? fragment
+      : document.createElement(tag);
+
+  if (is.primitive(_c)) {
+    children = [document.createTextNode(_c)];
+  } else if (_c instanceof HTMLElement) {
+    children = [_c];
+  } else if (is.array(_c)) {
+    for (var i = 0; i < _c.length; i++) {
+      if (is.primitive(_c[i])) {
+        _c[i] = h(undefined, undefined, _c[i]);
+      }
+    }
+    children = _c;
+  }
+
+  for (var i = 0; i < children.length; i++) {
+    el.appendChild(children[i]);
+  }
+
+  if (argsLength < 3 || !is.object(props)) {
+    return el;
+  }
+  setElAttrs(el, props);
+  return el;
+}
+function setElAttrs(el, props) {
+  if (
+    !(el instanceof HTMLElement) ||
+    !(el instanceof Node) ||
+    !is.object(props)
+  ) {
+    return false;
+  }
+  for (var key in props) {
+    if (key === 'cls' || key === 'class') {
+      if (!is.string(props[key]) && !is.array(props[key])) {
+        continue;
+      }
+      el.setAttribute(
+        'class',
+        is.array(props[key]) ? props[key].join(' ') : props[key]
+      );
+    } else if (key === 'style') {
+      var sty = '';
+      if (is.string(props[key])) {
+        sty = props[key];
+      } else if (is.object(props[key])) {
+        for (var k in props[key]) {
+          sty += k + ':' + props[key][k] + ';';
+        }
+      }
+      el.setAttribute(key, sty);
+    } else if (key === 'data') {
+      if (is.primitive(props[key])) {
+        el.setAttribute(key, props[key]);
+      } else if (is.object(props[key])) {
+        for (var k in props[key]) {
+          el.setAttribute(key + '-' + k, props[key][k]);
+        }
+      }
+    } else if (key === 'on') {
+      if (!is.object(props[key])) {
+        continue;
+      }
+      for (var k in props[key]) {
+        el.addEventListener(k, props[key][k]);
+      }
+    } else {
+      el.setAttribute(key, props[key]);
+    }
+  }
+}
 ```
