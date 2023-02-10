@@ -630,41 +630,38 @@ EventTarget
       <- Comment 
 */
 function h(tag, props, child) {
-  var _c,
-    children,
+  var children,
     fragment = document.createDocumentFragment(),
     argsLength = arguments.length;
-  if (argsLength == 0 || argsLength === 1) {
+  if (argsLength === 0 || argsLength === 1) {
     return is.undefinedOrNull(tag) || (is.string(tag) && tag.trim() === '')
       ? fragment
       : document.createElement(tag);
   }
-
-  _c = argsLength == 2 ? props : child;
 
   var el =
     is.undefinedOrNull(tag) || (is.string(tag) && tag.trim() === '')
       ? fragment
       : document.createElement(tag);
 
-  if (is.primitive(_c)) {
-    children = [document.createTextNode(_c)];
-  } else if (_c instanceof HTMLElement) {
-    children = [_c];
-  } else if (is.array(_c)) {
-    for (var i = 0; i < _c.length; i++) {
-      if (is.primitive(_c[i])) {
-        _c[i] = h(undefined, undefined, _c[i]);
+  if (is.primitive(child)) {
+    children = [document.createTextNode(child)];
+  } else if (child instanceof HTMLElement) {
+    children = [child];
+  } else if (is.array(child)) {
+    for (var i = 0; i < child.length; i++) {
+      if (is.primitive(child[i])) {
+        child[i] = h(undefined, undefined, child[i]);
       }
     }
-    children = _c;
+    children = child;
   }
 
   for (var i = 0; i < children.length; i++) {
     el.appendChild(children[i]);
   }
 
-  if (argsLength < 3 || !is.object(props)) {
+  if (!is.object(props)) {
     return el;
   }
   setElAttrs(el, props);
