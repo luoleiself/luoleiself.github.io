@@ -613,7 +613,7 @@ var { pause, resume, cancel } = date.leftDown(function (obj) {
 // });
 ```
 
-#### 原生 JS 创建 Element
+#### JS 创建 Element
 
 ```javascript
 /*
