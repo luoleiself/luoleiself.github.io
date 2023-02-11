@@ -629,7 +629,42 @@ EventTarget
     <- CharacterData
       <- Comment 
 */
-function h(tag, props, child) {
+export const array = Array.isArray;
+export function undefinedOrNull(v) {
+  return v === undefined || v === null;
+}
+export function primitive(v) {
+  return (
+    typeof v === 'string' ||
+    typeof v === 'number' ||
+    typeof v === 'boolean' ||
+    v instanceof String ||
+    v instanceof Number ||
+    v instanceof Boolean
+  );
+}
+export function string(v) {
+  return Object.prototype.toString.call(v) === '[object String]';
+}
+export function object(v) {
+  return v !== null && Object.prototype.toString.call(v) === '[object Object]';
+}
+export function fn(v) {
+  return Object.prototype.toString.call(v) === '[object Function]';
+}
+export function promise(v) {
+  return Object.prototype.toString.call(v) === '[object Promise]';
+}
+export function asyncFn(v) {
+  return Object.prototype.toString.call(v) === '[object AsyncFunction]';
+}
+export function generatorFn(v) {
+  return Object.prototype.toString.call(v) === '[object GeneratorFunction]';
+}
+
+import * as is from './is.js';
+
+export function h(tag, props, child) {
   var children,
     fragment = document.createDocumentFragment(),
     argsLength = arguments.length;
