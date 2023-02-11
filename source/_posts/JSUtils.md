@@ -629,6 +629,7 @@ EventTarget
     <- CharacterData
       <- Comment 
 */
+/* is.js */
 export const array = Array.isArray;
 export function undefinedOrNull(v) {
   return v === undefined || v === null;
@@ -663,7 +664,6 @@ export function generatorFn(v) {
 }
 
 import * as is from './is.js';
-
 export function h(tag, props, child) {
   var children,
     fragment = document.createDocumentFragment(),
