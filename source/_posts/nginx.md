@@ -135,6 +135,23 @@ add_header name value [always]; # 基础语法
 - location
 - if in location
 
+##### 解决跨域
+
+```nginx
+location / {
+  # 允许跨域主机名
+  add_header "Access-Control-Allow-Origin" *;
+  # 允许携带 cookie 信息
+  add_header "Access-Control-Allow-Credentials" "true";
+  # 允许跨域请求的方法
+  add_header "Access-Control-Allow-Methods" "OPTIONS,GET,POST,PUT,DELETE,HEAD";
+  # 允许跨域请求时携带的头部信息
+  add_header "Access-Control-Allow-Headers" *;
+  # 允许发送按段获取资源的请求
+  add_header "Access-Control-Expose-Headers" "Content-Length,Content-Range";
+}
+```
+
 #### 如果当前层添加了 `add_header`, 则不能从上层继承
 
 #### 仅当状态码为 `ngx_http_headers_module` 模块列出时, `add_header` 添加的标头字段有效
@@ -155,6 +172,30 @@ add_header name value [always]; # 基础语法
 ```nginx
 rewrite ^(/download/.*)/media/(\w+)\.?.*$ $1/mp3/$2.mp3 last;
 rewrite ^/users/(.*)$ /show?user=$1 break;
+```
+
+### proxy_set_header
+
+```nginx
+upstream nginx_boot {
+  # ip_hash;
+  server 192.168.1.2:8080 weight=100 max_fails=2 fail_timeout=30s;
+  server 192.168.1.2:8081 weight=200 max_fails=2 fail_timeout=30s;
+  server 192.168.1.2:8082 weight=300 max_fails=2 fail_timeout=30s;
+}
+
+server {
+  location / {
+    root html;
+    index index.html index.htm;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Reap-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    proxy_pass http://nginx_boot;
+  }
+}
 ```
 
 ### try_files 尝试检查文件
