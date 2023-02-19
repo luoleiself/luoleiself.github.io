@@ -122,7 +122,7 @@ docker run ... centos02 --network centos01 ...
 
 将多个 docker 守护进程连接起来, 使 swarm 服务之间能够互相通信, 一般用于 swarm 集群
 
-### bridge 容器通信
+### 容器通信
 
 #### 借助 docker0 路由功能
 
@@ -238,11 +238,11 @@ b2f23805b5e5   none            null      local
        valid_lft forever preferred_lft forever
 ```
 
-3. 创建基于自定义网络模式容器
+3. 基于自定义网络模式创建容器
 
 ```bash
-[root@localhost ~]# docker run -tid --name my-docker-net01 --net my-docker-net centos /bin/bash
-[root@localhost ~]# docker run -tid --name my-docker-net02 --net my-docker-net centos /bin/bash
+[root@localhost ~]# docker run -tid --name my-docker-net01 --network my-docker-net centos /bin/bash
+[root@localhost ~]# docker run -tid --name my-docker-net02 --network my-docker-net centos /bin/bash
 ```
 
 4. 查看自定义网络信息
@@ -286,7 +286,12 @@ b2f23805b5e5   none            null      local
 }]
 ```
 
-5. 自定义网络内容器通信
+#### overlay 模式 <!-- markdownlint-disable-line -->
+
+- docker 运行在 swarm 模式
+- 使用键值存储的 docker 主机集群
+
+### 自定义网络模式容器通信
 
 ```bash
 [root@localhost ~]# docker exec -it my-docker-net01 ping my-docker-net02
@@ -311,11 +316,6 @@ PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
 4 packets transmitted, 4 received, 0% packet loss, time 3061ms
 rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 ```
-
-#### overlay 模式 <!-- markdownlint-disable-line -->
-
-- docker 运行在 swarm 模式
-- 使用键值存储的 docker 主机集群
 
 ### 跨网络模式容器通信
 

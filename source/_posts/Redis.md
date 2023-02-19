@@ -953,6 +953,9 @@ cluster-config-file nodes-6379.conf
 cluster-node-timeout 15000
 # 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes
 cluster-require-full-coverage no
+#cluster-announce-ip ip
+#cluster-announce-port 6379
+#cluster-announce-bus-port 16379
 ```
 
 ##### 启动 Redis 服务器
