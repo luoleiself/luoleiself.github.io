@@ -18,9 +18,17 @@ tags:
   - 这个变量是否可以通过其他状态(state)或者属性(props)计算得到，如果是，则不是一个状态
   - 这个变量是否在组件的 render 方法中使用，如果不在，则不是一个状态
 
-## React.Component
+## 组件类
 
-## React.PureComponent
+### 类组件
+
+#### React.Component
+
+#### React.PureComponent
+
+对 props 和 state 进行浅比较, 跳过不必要的更新, 提高组件性能
+
+### 函数组件
 
 ## Hooks
 
