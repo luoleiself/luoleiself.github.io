@@ -315,7 +315,7 @@ const calcImgRatio = function (width, height) {
  */
 function dataURL2File(dataUrl, fileName) {
   if (!/data:image\/.*?;base64,/.test(dataUrl)) {
-    return new Error('dataUrl 参数格式错误...');
+    throw new Error('dataUrl 参数格式错误...');
   }
   if (!fileName) {
     fileName =
@@ -350,7 +350,7 @@ function file2DataURL(arg) {
     arg != null && typeof arg == 'object' && /image\/\w+/.test(arg.type);
 
   if (!isFile && !isImgUrl) {
-    return new Error('arg 参数不是一个图片对象或者图片链接...');
+    throw new Error('arg 参数不是一个图片对象或者图片链接...');
   }
 
   if (isImgUrl) {
@@ -380,7 +380,7 @@ function file2DataURL(arg) {
   }
 
   if (typeof FileReader == 'undefined') {
-    return new Error('浏览器不支持 FileReader API, 请先升级浏览器...');
+    throw new Error('浏览器不支持 FileReader API, 请先升级浏览器...');
   }
   var reader = new FileReader();
   var p = new Promise(function (resolve, reject) {
@@ -437,7 +437,7 @@ function file2DataURL(arg) {
       hasOwnProp(this, 'canceled') &&
       hasOwnProp(this, 'kept')
     ) {
-      console.log(
+      console.warn(
         'leftDown 方法不能在一个实例上重复调用, 可以使用返回的 pause, cancel, resume 方法控制当前倒计时, 或者创建新的 Date 实例调用此方法'
       );
       return;
