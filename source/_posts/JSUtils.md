@@ -666,18 +666,23 @@ export function generatorFn(v) {
 import * as is from './is.js';
 export function h(tag, props, child) {
   var children,
-    fragment = document.createDocumentFragment(),
-    argsLength = arguments.length;
-  if (argsLength === 0 || argsLength === 1) {
-    return is.undefinedOrNull(tag) || (is.string(tag) && tag.trim() === '')
-      ? fragment
-      : document.createElement(tag);
-  }
+    attrs,
+    el =
+      is.undefinedOrNull(tag) || (is.string(tag) && tag.trim() === '')
+        ? document.createDocumentFragment()
+        : document.createElement(tag);
 
-  var el =
-    is.undefinedOrNull(tag) || (is.string(tag) && tag.trim() === '')
-      ? fragment
-      : document.createElement(tag);
+  if (child !== undefined && child !== null) {
+    if (is.object(props)) {
+      attrs = props;
+    }
+  } else if (props !== undefined && props !== null) {
+    if (is.object(props)) {
+      attrs = props;
+    } else {
+      child = props;
+    }
+  }
 
   if (is.primitive(child)) {
     children = [document.createTextNode(child)];
@@ -686,20 +691,22 @@ export function h(tag, props, child) {
   } else if (is.array(child)) {
     for (var i = 0; i < child.length; i++) {
       if (is.primitive(child[i])) {
-        child[i] = h(undefined, undefined, child[i]);
+        child[i] = h(undefined, child[i]);
       }
     }
     children = child;
   }
 
-  for (var i = 0; i < children.length; i++) {
-    el.appendChild(children[i]);
+  if (children !== undefined) {
+    for (var i = 0; i < children.length; i++) {
+      el.appendChild(children[i]);
+    }
   }
 
-  if (!is.object(props)) {
-    return el;
+  if (is.object(attrs)) {
+    setElAttrs(el, attrs);
   }
-  setElAttrs(el, props);
+
   return el;
 }
 function setElAttrs(el, props) {
@@ -717,9 +724,11 @@ function setElAttrs(el, props) {
       }
       el.setAttribute(
         'class',
-        is.array(props[key]) ? props[key].join(' ') : props[key]
+        is.array(props[key]) ? [...new Set(props[key])].join(' ') : props[key]
       );
-    } else if (key === 'style') {
+      continue;
+    }
+    if (key === 'style') {
       var sty = '';
       if (is.string(props[key])) {
         sty = props[key];
@@ -729,7 +738,9 @@ function setElAttrs(el, props) {
         }
       }
       el.setAttribute(key, sty);
-    } else if (key === 'data') {
+      continue;
+    }
+    if (key === 'data' || key.includes('data-')) {
       if (is.primitive(props[key])) {
         el.setAttribute(key, props[key]);
       } else if (is.object(props[key])) {
@@ -737,16 +748,18 @@ function setElAttrs(el, props) {
           el.setAttribute(key + '-' + k, props[key][k]);
         }
       }
-    } else if (key === 'on') {
+      continue;
+    }
+    if (key === 'on') {
       if (!is.object(props[key])) {
         continue;
       }
       for (var k in props[key]) {
         el.addEventListener(k, props[key][k]);
       }
-    } else {
-      el.setAttribute(key, props[key]);
+      continue;
     }
+    el.setAttribute(key, props[key]);
   }
 }
 ```
