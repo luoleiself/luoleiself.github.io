@@ -8,6 +8,16 @@ tags:
   - js
 ---
 
+### 浏览器引擎
+
+|浏览器|渲染引擎|js引擎|
+|:--:|:--:|:--:|
+|IE|Trident|JScript(IE3.0-IE8.0) / Chakra(IE9~)|
+|Chrome|webkit / Blink|V8|
+|Safari|webkit|Nitro(SquirrelFish)|
+|Firefox|Gecko|~Monkey系列(SpiderMonkey / TraceMonkey / JaegerMonkey / OdinMonkey)|
+|Opera|WebKit / Blink|Carakan|
+
 ### 改变原数组的方法
 
 - pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度
