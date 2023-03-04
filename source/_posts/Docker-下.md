@@ -604,6 +604,7 @@ docker-compose -f -p -c --env-file up [service_name]
 ### 配置文件
 
 ```yaml
+# docker-compose.yaml
 version: 3.9   # 版本
 services:
   web:   # 服务名称
