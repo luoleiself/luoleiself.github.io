@@ -569,20 +569,33 @@ docker-compose -f -p -c --env-file up [service_name]
 - build 构建服务
 - config 验证 docker-compose 配置文件
 - create 创建服务, deprecated, Use the `up` command with `--no-start` instead
+
+  - \-\-build 启动容器之前构建镜像
+  - \-\-no-build 不构建镜像即使镜像不存在
+  - \-\-force-recreate 即使配置项或镜像没有改变也要重新创建容器
+  - \-\-no-recreate 如果容器存在则不创建新的容器
+  - \-\-scale 调整服务实例数量, 并覆盖配置文件中的 scale 配置
+
+- cp 在容器和本地文件系统之间拷贝文件
 - events 接收一个来自容器的真实的事件
 - exec 在运行的容器中打开命令行
 - down 停止并移除资源
 - up 创建服务并启动容器
 
   - -f 指定配置文件
-  - \-\-build 启动容器之前构建镜像
   - -d, \-\-detach 后台运行容器
+  - \-\-attach 连接服务的输出
+  - \-\-no-attach 不连接服务的输出
+  - \-\-build 启动容器之前构建镜像
   - \-\-no-build 不构建镜像即使镜像不存在
   - \-\-no-start 创建服务之后不启动它
+  - \-\-no-deps 不启动关联的服务
+  - \-\-scale 调整服务实例数量, 覆盖配置文件中的 scale 配置
 
 - kill 关闭容器
 - top 显示运行的进程信息
 - images 查看所有镜像
+- ls 列出正在运行的 compose 项目
 - logs 查看容器日志
 - ps 查看所有容器
 - port 查看公共端口绑定信息
@@ -593,7 +606,6 @@ docker-compose -f -p -c --env-file up [service_name]
 - restart 重启服务
 - rm 移除已经停止的容器
 - run 运行命令
-- scale 服务扩缩容
 - pause 暂停服务
 - unpasue 取消暂停服务
 
@@ -615,14 +627,14 @@ services:
       - '5000:5000'
       - '0.0.0.0:80:80/tcp' # 指定端口映射的 ip 地址和 协议, 或者可以修改 /etc/docker/daemon.json 配置项 "ipv6": false
     privileged: true   # 配置容器目录权限
-    read_only: true    # 设计容器文件系统模式
+    read_only: true    # 开启容器文件系统只读模式
     restart: always    # 定义容器重启模式
     container_name: my-web  # 容器名称
-    environment:  # 环境变量
+    env_file: .env # 环境变量配置文件
+    environment:  # 设置容器内环境变量
       RACK_ENV: development
       SHOW: 'true'
       USER_INPUT:
-    env_file: .env # 环境变量配置文件
     command: [ "bundle", "exec", "thin", "-p", "3000" ]   # 覆盖镜像配置文件(Dockerfile)中的 CMD 指令
     entrypoint:    # 覆盖镜像配置文件(Dockerfile)中的 ENTRYPOINT 指令
       - php
@@ -646,7 +658,22 @@ services:
       - db
       - redis
     deploy:  # 部署
+      # 外部客户端连接服务的方式
+      # vip(Virtual IP) 为服务分配虚拟 IP, 客户端使用虚拟 IP 连接 
+      # dnsrr 平台配置 dns 条目, 使用服务名称查询 IP 地址列表连接 
+      endpoint_mode: vip
+      mode: replicated # 服务运行模式, global | replicaated(default)
       replicas: 6 # 副本
+      restart_policy: # 服务重启策略, 如果缺失, compose 会使用服务 restart 项
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      rollback_config: # 服务回滚设置
+      update_config: # 服务升级设置
+        parallelism: 2
+        delay: 10s
+        order: stop-first
     dns:
       - 8.8.8.8  # 自定义网络的 DNS 服务器
     extends:
