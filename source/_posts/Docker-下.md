@@ -623,11 +623,11 @@ version: 3.9   # 版本
 services:
   web:   # 服务名称
     build: .
-      context: "./web"  # 指定构建 web 服务的镜像的上下文环境目录
+      context: './web'  # 指定构建 web 服务的镜像的上下文环境目录
       dockerfile: Dockerfile  # 指定构建镜像的配置文件名称
     ports: # 端口映射
       - '5000:5000'
-      - '0.0.0.0:80:80/tcp' # 指定端口映射的 ip 地址和 协议, 或者可以修改 /etc/docker/daemon.json 配置项 "ipv6": false
+      - '0.0.0.0:80:80/tcp' # 指定 ip 地址和协议, 或修改 /etc/docker/daemon.json 配置项"ipv6":false
       - target: 80
         host_ip: 127.0.0.1
         published: 8080
@@ -642,8 +642,8 @@ services:
       RACK_ENV: development
       SHOW: 'true'
       USER_INPUT:
-    command: [ "bundle", "exec", "thin", "-p", "3000" ]   # 覆盖镜像配置文件(Dockerfile)中的 CMD 指令
-    entrypoint:    # 覆盖镜像配置文件(Dockerfile)中的 ENTRYPOINT 指令
+    command: ['bundle', 'exec', 'thin', '-p', '3000']  # 覆盖镜像配置文件(Dockerfile)中的CMD指令
+    entrypoint:   # 覆盖镜像配置文件(Dockerfile)中的 ENTRYPOINT 指令
       - php
       - -d
       - vendor/bin/phpunit
@@ -652,8 +652,8 @@ services:
       - database:mysql
       - database:postgresql
     extra_hosts:  # 添加主机 ip 映射关系到容器网络接口配置中(/etc/hosts)
-      - "somehost:162.242.195.82"
-      - "otherhost:50.31.209.229
+      - 'somehost:162.242.195.82'
+      - 'otherhost:50.31.209.229'
     volumes: # 挂载数据卷
       - type: volume
         source: db-data
@@ -703,7 +703,7 @@ services:
     extends:
       file: common.yml   # 当前配置中扩展另一个服务
     labels:    # 添加容器元数据
-      - "com.example.description=Accounting webapp"
+      - 'com.example.description=Accounting webapp'
   redis: # 服务名称
     image: redis
     volumes:   # 挂载数据卷
@@ -743,7 +743,7 @@ secrets: # 针对敏感数据的配置
   server-certificate:
     file: ./server.cert
   token:
-    environment: "OAUTH_TOKEN"
+    environment: 'OAUTH_TOKEN'
 ```
 
 #### version 支持的 Docker 引擎版本
