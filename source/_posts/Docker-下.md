@@ -6,7 +6,7 @@ categories:
   - [linux, Docker]
 tags:
   - Docker
-# description: docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay等. Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 docker-compose yaml 文件所在目录中, 以应用目录名_服务名_服务名数量编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
+# description: docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay等. Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 docker-compose yml 文件所在目录中, 以应用目录名_服务名_服务名数量编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
 ---
 
 ## Docker 网络
@@ -544,7 +544,7 @@ c136f18229c3   mysql:5.7   "docker-entrypoint.s…"   15 hours ago     Up About 
 - 默认以 `应用目录名\_数据卷名` 方式作为数据卷名称
 - 默认以 `应用目录名\_网络名` 方式作为网络名称
 
-Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `docker-compose.yaml` 文件所在目录中, 以 `应用目录名\_服务名\_数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
+Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `docker-compose.yml` 文件所在目录中, 以 `应用目录名\_服务名\_数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
@@ -568,30 +568,10 @@ docker-compose -f -p -c --env-file up [service_name]
 - version 查看版本信息
 - build 构建服务
 - config 验证 docker-compose 配置文件
-- create 创建服务, deprecated, Use the `up` command with `--no-start` instead
-
-  - \-\-build 启动容器之前构建镜像
-  - \-\-no-build 不构建镜像即使镜像不存在
-  - \-\-force-recreate 即使配置项或镜像没有改变也要重新创建容器
-  - \-\-no-recreate 如果容器存在则不创建新的容器
-  - \-\-scale 调整服务实例数量, 并覆盖配置文件中的 scale 配置
-
 - cp 在容器和本地文件系统之间拷贝文件
 - events 接收一个来自容器的真实的事件
 - exec 在运行的容器中打开命令行
 - down 停止并移除资源
-- up 创建服务并启动容器
-
-  - -f 指定配置文件
-  - -d, \-\-detach 后台运行容器
-  - \-\-attach 连接服务的输出
-  - \-\-no-attach 不连接服务的输出
-  - \-\-build 启动容器之前构建镜像
-  - \-\-no-build 不构建镜像即使镜像不存在
-  - \-\-no-start 创建服务之后不启动它
-  - \-\-no-deps 不启动关联的服务
-  - \-\-scale 调整服务实例数量, 覆盖配置文件中的 scale 配置
-
 - kill 关闭容器
 - top 显示运行的进程信息
 - images 查看所有镜像
@@ -608,15 +588,37 @@ docker-compose -f -p -c --env-file up [service_name]
 - run 运行命令
 - pause 暂停服务
 - unpasue 取消暂停服务
+- create 创建容器, deprecated, Use the `up` command with `--no-start` instead
 
-```bash
+  - \-\-build 启动容器之前构建镜像
+  - \-\-no-build 不构建镜像即使镜像不存在
+  - \-\-force-recreate 即使配置项或镜像没有改变也要重新创建容器
+  - \-\-no-recreate 如果容器存在则不创建新的容器
+  - \-\-scale 调整服务实例数量, 并覆盖配置文件中的 scale 配置
+
+- up 创建服务并启动容器
+
+  - -f 指定配置文件
+  - -d, \-\-detach 后台运行容器
+  - \-\-attach 连接服务的输出
+  - \-\-no-attach 不连接服务的输出
+  - \-\-build 启动容器之前构建镜像
+  - \-\-no-build 不构建镜像即使镜像不存在
+  - \-\-no-start 创建服务之后不启动它
+  - \-\-no-deps 不启动关联的服务
+  - \-\-scale 调整服务实例数量, 覆盖配置文件中的 scale 配置
+  
+```shell
 [root@localhost ~]# docker-compose up service_id # 启动指定服务
+
+# 调整指定服务实例数量, 先去掉 docker-compose.yml 配置文件 service 指定的端口, 在单机中会出现端口占用问题
+[root@localhost ~]# docker compose up --scale web=5 -d 
 ```
 
 ### 配置文件
 
 ```yaml
-# docker-compose.yaml
+# docker-compose.yml
 version: 3.9   # 版本
 services:
   web:   # 服务名称
@@ -626,9 +628,14 @@ services:
     ports: # 端口映射
       - '5000:5000'
       - '0.0.0.0:80:80/tcp' # 指定端口映射的 ip 地址和 协议, 或者可以修改 /etc/docker/daemon.json 配置项 "ipv6": false
+      - target: 80
+        host_ip: 127.0.0.1
+        published: 8080
+        protocol: tcp
+        mode: host
     privileged: true   # 配置容器目录权限
     read_only: true    # 开启容器文件系统只读模式
-    restart: always    # 定义容器重启模式
+    restart: always    # 定义容器重启模式 "no" | always | on-failure | unless-stopped
     container_name: my-web  # 容器名称
     env_file: .env # 环境变量配置文件
     environment:  # 设置容器内环境变量
@@ -640,13 +647,30 @@ services:
       - php
       - -d
       - vendor/bin/phpunit
+    external_links:   # 将服务容器连接到 compose 应用管理以外的服务, 作用同 links
+      - redis
+      - database:mysql
+      - database:postgresql
+    extra_hosts:  # 添加主机 ip 映射关系到容器网络接口配置中(/etc/hosts)
+      - "somehost:162.242.195.82"
+      - "otherhost:50.31.209.229
     volumes: # 挂载数据卷
+      - type: volume
+        source: db-data
+        target: /data
+        read_only: true
+        volume:
+          nocopy: true
+        tempfs:
+          size: 1024
+          mode: 755
       - type: bind
         source: /home/workspace
         target: /home/workVolume
       - /home/workspace:/var/workspace  # 定义指定路径数据卷
     tmpfs:
       - /run  # 挂载容器内临时文件系统
+      - /tmp
     volumes_from:     # 挂载共享数据卷
       - service_name
       - service_name:ro
@@ -690,24 +714,36 @@ services:
       - db:mysql   # 可以直接使用 服务名, 或者使用 服务名:别名 方式
   db:
     image: mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test123
     volumes:
       - dbata:/var/lib/mysql   # 定义具名数据卷
     networks:
       - my-web-network
 volumes:
   dbData:   # 声明卷名, compose 自动创建该卷名并会添加项目名前缀
-    external:   # 使用自定义卷名
-      true   # true 确定使用指定卷名, 该卷名需要手动创建, 否则 compose 会报错
+  data:
+    name: 'my-app-data'
 networks:
+  front-tier:
+  back-tier:
   my-web-network:   # 声明自定义网络模式, compose 自动创建该网络并会添加项目名前缀
-    external:
-      true   # 作用同上方的数据卷的配置方式
-external_links:   # 将服务容器连接到 compose 应用管理以外的服务, 作用同 links
-  - database:mysql
-  - database:postgresql
-extra_hosts:  # 添加主机 ip 映射关系到容器网络接口配置中(/etc/hosts)
-  - "somehost:162.242.195.82"
-  - "otherhost:50.31.209.229
+    driver: bridge
+    enable_ipv6: true
+    external: true
+configs: # 允许服务调整其行为而无须重新构建 docker 镜像
+  http_config:
+    file: ./httpd.conf
+secrets: # 针对敏感数据的配置
+  server-certificate:
+    file: ./server.cert
+  token:
+    environment: "OAUTH_TOKEN"
 ```
 
 #### version 支持的 Docker 引擎版本
