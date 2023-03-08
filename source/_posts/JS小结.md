@@ -10,13 +10,13 @@ tags:
 
 ### 浏览器引擎
 
-|浏览器|渲染引擎|js引擎|
-|:--:|:--:|:--:|
-|IE|Trident|JScript(IE3.0-IE8.0) / Chakra(IE9~)|
-|Chrome|webkit / Blink|V8|
-|Safari|webkit|Nitro(SquirrelFish)|
-|Firefox|Gecko|~Monkey系列(SpiderMonkey / TraceMonkey / JaegerMonkey / OdinMonkey)|
-|Opera|WebKit / Blink|Carakan|
+| 浏览器  |    渲染引擎    |                               js 引擎                                |
+| :-----: | :------------: | :------------------------------------------------------------------: |
+|   IE    |    Trident     |                 JScript(IE3.0-IE8.0) / Chakra(IE9~)                  |
+| Chrome  | webkit / Blink |                                  V8                                  |
+| Safari  |     webkit     |                         Nitro(SquirrelFish)                          |
+| Firefox |     Gecko      | ~Monkey 系列(SpiderMonkey / TraceMonkey / JaegerMonkey / OdinMonkey) |
+|  Opera  | WebKit / Blink |                               Carakan                                |
 
 ### 改变原数组的方法
 
