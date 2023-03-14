@@ -148,7 +148,7 @@ tags:
   - effectScope 创建一个 effect 作用域对象, 以捕获在其内部创建的响应式 effect, 使得这些 effect 可以一起被处理
   - getCurrentScope 如果有, 则返回当前活跃的 effect 作用域
   - onScopeDispose 在当前活跃的 effect 作用域上注册一个处理回调, 该回调会在相关的 effect 作用域结束之后被调用
-- SFC 单文件组件中使用组合式 API
+- SFC 单文件组件
 
   - 每次组件实例被创建的时候都会执行
   - 任何声明的顶层的绑定(包括变量，函数声明，以及 import 引入的内容)都可以在模板中直接使用
@@ -170,7 +170,7 @@ tags:
     - 需要手动从 vue 中导入
     - 返回的值和 setupContext.slots 和 setupContext.attrs 是等价的
 
-  - 顶层 await
+  - 顶层 await, 结果代码会被编译成 `async setup()`
 
     ```html
     <script setup>
@@ -214,29 +214,97 @@ tags:
   </template>
   ```
 
-- &lt;style scoped&gt;
+  - 与普通的 &lt;script&gt; 一起使用, 普通的 &lt;script&gt; 在有些需要的情况下会被使用
 
-  - 深度选择器
+    - 声明无法在 `<script setup>` 中声明的选项, 例如 `inheritAttrs` 或插件的自定义选项
+    - 声明模块的具名导出
+    - 运行只需要在模块作用域执行一次的副作用, 或是创建单例对象
 
-  ```scss
-  .a :deep(.b) {
-  }
-  ```
+    ```html
+    <script>
+      // 普通 script, 在模块作用域下执行(仅一次)
+      runSideEffectOnce();
+      // 声明额外的选项
+      export default {
+        inheritAttrs: false,
+        customOptions: {},
+      };
+    </script>
 
-  - 插槽选择器
+    <script setup>
+      // 在 setup() 作用域中执行(对每个示例皆如此)
+    </script>
+    ```
 
-  ```css
-  :slotted(div) {
-    color: red;
-  }
-  ```
+  - css 功能
 
-  - 全局选择器
+    - 组件作用域
 
-  ```css
-  :global(.red) {
-    color: red;
-  }
-  ```
+      - 深度选择器
+
+      ```scss
+      .a :deep(.b) {
+      }
+      ```
+
+      - 插槽选择器
+
+      ```css
+      :slotted(div) {
+        color: red;
+      }
+      ```
+
+      - 全局选择器
+
+      ```css
+      :global(.red) {
+        color: red;
+      }
+      ```
+
+    - css Modules, `<style module>` 标签会被编译成 CSS Modules 并且将生成的 CSS class 作为 $style 对象暴露给组件
+      - 自定义注入名称, module 属性可以接受一个值作为自定义注入名称代替 $style
+
+    ```html
+    <template>
+      <p :class="$style.red">This is should be red.</p>
+    </template>
+    <style module>
+      .red {
+        color: red;
+      }
+    </style>
+
+    <!-- module 属性接收一个值作为自定义注入名称代替 $style -->
+    <template>
+      <p :class="cls.red">This is should be red.</p>
+    </template>
+    <style module="cls">
+      .red {
+        color: red;
+      }
+    </style>
+    ```
+
+    - 支持 `v-bind()`, 使用 `v-bind` CSS 函数将 CSS 的值链接到动态的组件状态
+
+    ```html
+    <template>
+      <div class="text"></div>
+    </template>
+    <script>
+      export default {
+        data() {
+          return { color: 'red' };
+        },
+      };
+    </script>
+    <style scoped>
+      .text {
+        color: v-bind(color);
+      }
+    </style>
+    ```
 
 #### 废弃
