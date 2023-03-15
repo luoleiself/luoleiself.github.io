@@ -6,7 +6,7 @@ categories:
 tags:
   - js
   - VueJs
-  - Vue3.0
+  - Vue3
 ---
 
 ### Vue 3.x 迭代 新增或者废弃的语法和 API

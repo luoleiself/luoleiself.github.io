@@ -1,130 +1,145 @@
 ---
-title: Vue3.0知识点
+title: Vue3
 date: 2021-06-19 15:19:26
 categories:
   - [ES, VueJs]
 tags:
   - js
   - VueJs
-  - Vue3.0
+  - Vue3
 ---
 
-> 3.0.11 -> 3.2.37
+## 全局 API
 
-## 应用配置
+### 应用实例 API
 
-```javascript
-// 每个 Vue 应用会暴露一个 config 对象, 在挂载应用之前, 可修改其属性
-import { createApp } from 'vue';
-const app = createApp({});
-console.log(app.config);
-```
+- createApp() 创建一个应用实例
 
-- errorHandler 处理组件渲染过程中抛出的未捕获错误
+  - 参数
+    - {Object} rootComponent 根组件选项
+    - {Object} rootProps 传递给根组件的 props
 
-  - 类型: Function
-  - 默认: undefined
-
-  ```javascript
-  app.config.errorHandler = (err, vm, info) => {
-    // 处理错误
-  };
+  ```js
+  import { createApp } from 'vue';
+  const app = createApp({
+    /* root component options */
+  });
   ```
 
-- warnHandler 处理 Vue 运行中的警告, 开发环境下有效
+- createSSRApp() 以 `SSR` 模式创建一个应用实例, 用法和 `createApp()` 相同
+- app.mount() 将应用实例挂载到一个容器元素中
+  - 参数可以是一个实际的 DOM 元素或一个 CSS 选择器, 返回根组件实例
+  - 如果该组件有 `template` 模板或定义了 `render` 函数, 则替换容器内所有现存的 DOM 节点, 否则使用容器元素的 innerHTML 作为模板
+- app.unmount() 卸载一个已挂载的应用实例, 同时触发该应用组件树内所有组件的卸载生命周期钩子
+- app.provide() 提供一个值, 可以在应用中的所有后代组件中注入使用
 
-  - 类型: Function
-  - 默认: undefined
+  - 参数
+    - key, 注入的 key
+    - value, 注入的 key 对应的值, 返回应用实例本身
 
-  ```javascript
-  app.config.warnHandler = (msg, vm, trace) => {
-    // 处理警告
-  };
+  ```js
+  import { createApp } from 'vue';
+  const app = createApp(/* */);
+  app.provide('name', 'hello world');
   ```
 
-- globalProperties 添加应用程序内任何组件实例都可访问的全局 property, 属性名冲突时,组件内 property 优先
+- app.component() 注册或查找全局组件, 根据参数个数区分
 
-  - 类型: [key: string]: any
-  - 默认: undefined
+  ```js
+  import { createApp } from 'vue';
+  const app = createApp(/* */);
+  app.component('my-component', {
+    /*组件配置项*/
+  });
 
-  ```javascript
-  // Vue 2.x
-  Vue.prototype.$xhr = () => {};
-  // Vue 3.x
-  app.config.globalProperties.$xhr = () => {};
+  app.component('my-component'); // 查找已注册的组件
   ```
 
-- optionMergeStrategies 合并策略选项分别接收在父实例和子实例上定义的该选项的值作为第一个和第二个参数, 引用上下文实例被作为第三个参数传入
+- app.directive() 注册或查找全局指令, 根据参数个数区分
 
-  - 类型: { [key: string]: Function }
-  - 默认: {}
+  ```html
+  <template>
+    <MyComponent v-my-directive="test" />
+  </template>
+  <script>
+    import { createApp } from 'vue';
+    const app = createApp(/* */);
+    app.directive('my-directive', {
+      /* 自定义指令钩子: created, beforeMount, mounted, beforeUpdate, updated, beforeUnmount, unmounted */
+    });
 
-  ```javascript
-  const app = Vue.createApp({
-    mounted() {
-      console.log(this.$options.hello);
+    // 简化形式: 仅需要在 `mounted` 和 `updated` 上实现相同的行为
+    app.directive('my-directive', (el, binding) => {
+      /* 在 mounted 和 updated 时都调用 */
+    });
+  </script>
+  ```
+
+  <!-- more -->
+
+- app.use() 安装一个`插件`, 插件可以是一个包含 `install()` 方法的对象或者是一个安装函数本身
+
+  - 参数
+    - 第一个参数为插件本身
+    - 可选, 第二个参数作为插件选项将会传递给插件的 `install()`方法
+
+  ```js
+  import { createApp } from 'vue';
+  const app = createApp(/* */);
+  // 包含 install 方法的对象
+  const myPlugins = {
+    install(app, options) {
+      /* 配置此应用 */
     },
-  });
-  app.config.optionMergeStrategies.hello = (parent, child, vm) => {
-    return `Hello, ${child}`;
   };
-  app.mixin({
-    hello: 'Vue',
+  app.use(myPlugins, {
+    name: 'hello world',
+    /* 传递给 install 方法的可选的选项 */
   });
-  // 'Hello, Vue'
+
+  // 安装函数
+  app.use((app, options) => {
+    /* 配置此应用 */
+  });
   ```
 
-- performance 启用对组件初始化、编译、渲染和更新的性能追踪
+- app.mixin() 应用一个全局的 mixin,作用于应用中的每个组件实例 (不推荐)
+- app.version 提供当前应用所使用的 Vue 版本号, 插件中可根据此执行不同的逻辑
+- app.config 应用实例暴露出的一个 `config` 对象, 其中包含了对此应用实例的配置
 
-  - 类型: boolean
-  - 默认: false
+  - app.config.errorHandler 用于为应用实例内抛出的未捕获错误指定一个全局处理函数
+  - app.config.warnHandler 用于为 Vue 的运行时警告指定一个自定义处理函数
+  - app.config.performance 设置为 `true` 可在浏览器工具的 `性能/时间线` 页启用对组件初始化、编译、渲染和修改的性能表现追踪
+  - app.config.compilerOptions 配置 `运行时编译器` 的选项
+    - app.config.compilerOptions.isCustomElement 用于指定一个检查方法来识别原生自定义元素
+    - app.config.compilerOptions.whitespace 用于调整模板中空格的处理行为 `condense(default) | preserve`
+    - app.config.compilerOptions.delimiters 用于调整模板内文本插值的分隔符, 默认 ['{{', '}}']
+    - app.config.compilerOptions.comments 用于调整是否移除模板中的 HTML 注释
+  - app.config.globalProperties 用于注册能够被应用实例内所有组件实例访问到的全局属性的对象
+  - app.config.optionMergeStrategies 用于定义自定义组件选项的合并策略的对象
 
-  ```javascript
-  app.config.performance = true;
+  ```js
+  import { createApp } from 'vue';
+  const app = createApp(/* */);
+  app.config.errorHandler = (err, instance, info){/* */}
+
+  app.config.globalProperties.name = "hello world"
+  app.config.globalProperties.$xhr = () => {};
+
+  app.config.compilerOptions.isCustomElement = (tag){
+    return  tag.startsWith('icon-');
+  }
   ```
 
-- isCustomElement (3.1 废弃) 指定一个方法, 用来识别在 Vue 之外定义的自定义元素, 如果组件符合此条件, 则不需要本地或全局注册
+### 通用
 
-  > 注意, 所有原生 HTML 和 SVG 标记不需要在此函数中匹配——Vue 解析器自动执行此检查
+- version 暴露当前所使用的 Vue 的版本号
+- nextTick() 等待下一次 DOM 更新刷新的工具方法
+- defineComponent()
+- defineAsyncComponent()
+- defineCustomElement()
 
-  - 类型: (tag: string) => boolean
-  - 默认: undefined
-
-  ```javascript
-  app.config.isCustomElement = (tag) => tag.startsWith('icon-');
-  ```
-
-- compilerOptions (3.1 新增) 配置运行时编译器的选项, 设置在这个对象上的值将会被传入浏览器内的模板编译器，并影响配置过的应用内的每个组件
-
-  ```javascript
-  app.config.compilerOptions = {
-    isCustomElement: (tag) => {},
-    whitespace: 'condense',
-    delimiters: ['{{', '}}']
-    comments: false,
-  };
-  ```
-
-  - isCustomElement 作用同上, 换用 compilerOptions.isCustomElement
-  - whitespace 默认情况下，Vue 会移除/压缩模板元素之间的空格以产生更高效的编译结果
-
-    1. 元素内的多个开头/结尾空格会被压缩成一个空格
-    2. 元素之间的包括折行在内的多个空格会被移除
-    3. 文本结点之间可被压缩的空格都会被压缩成为一个空格
-
-    ```javascript
-    app.config.compilerOptions.whitespace = 'condense';
-    // 设置 preserve 可以禁用 b 和 c
-    ```
-
-  - delimiters 设置用在模板内的文本插值的边界符
-  - comments 默认生产环境移除模板内的 HTML 注释
-
-    ```javascript
-    app.config.compilerOptions.comments = true; // 生产环境保留注释
-    ```
-
-<!-- more -->
+## 组合式 API
 
 ## 应用 API
 
@@ -219,7 +234,7 @@ console.log(app.config);
     const app = createApp({});
     // 做一些必要的准备
     app.mount('#my-app');
-  </script>
+  </>
   ```
 
 - unmount 卸载应用实例的根组件
