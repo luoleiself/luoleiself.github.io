@@ -291,6 +291,8 @@ const app = createApp({
     expose({ count: publicCount });
 
     emit('my-event', { name: 'hello world' });
+
+    return { publicCount };
   },
 });
 ```
@@ -313,15 +315,236 @@ const app = createApp({
 
 ### 响应式: 核心
 
+#### ref()
+
+接受一个内部值, 返回一个响应式可更改的 ref 对象, 此对象只有一个指向其内部值的属性 `.value`
+
+- 如果将一个对象赋值给 ref, 那么这个对象将通过 `reactive()` 转为具有深层次响应式的对象, 如果对象中包含了嵌套的 ref, 它们将被深层地解包
+
+```javascript
+const count = ref(0);
+console.log(count.value); // 0
+
+count.value++;
+console.log(count.value); // 1
+```
+
+#### computed()
+
+返回一个只读的响应式 ref 对象, 该 ref 通过 .value 暴露 getter 函数的返回值
+
+- 接受一个 getter 函数
+- 接受一个带有 get 和 set 函数的对象
+
+```javascript
+// 接受一个 getter 函数
+const count = ref(1);
+const plusOne = computed(() => count.value + 1);
+console.log(plusOne.value); // 2
+plusOne.value++; // 错误
+
+// 接受一个带有 get 和 set 函数的对象
+const count = ref(1);
+const plusOne = computed({
+  get: () => count.value + 1,
+  set: (val) => {
+    count.value = val - 1;
+  },
+});
+plusOne.value = 1;
+console.log(count.value); // 0
+```
+
+#### reactive()
+
+返回一个对象的响应式代理
+
+- 仅对对象类型有效(对象、数组、Map、Set 这样的集合类型), 而对 `string` `number` `boolean`这样的原始类型无效
+- 因为 Vue 的响应式系统是通过属性访问进行追踪的, 因此需要始终保持对响应式对象的相同引用, 将响应式对象的属性赋值或解构至本地变量时、或是将该属性传入一个函数时将失去响应性
+- 对同一个原始对象调用 `reactive()` 总是返回同样的代理对象, 对一个已存在的代理对象调用 `reactive()` 总是返回其本身
+
+- 将一个 ref 赋值给一个 reactive 属性时, 该 ref 会被自动解包
+
+```javascript
+const count = ref(1);
+const obj = reactive({});
+obj.count = count;
+console.log(obj.count); // 1
+// ref 会被解包
+console.log(obj.count === count.value); // true
+// 自动更新 `obj.value`
+count.value++;
+console.log(count.value); // 2
+console.log(obj.count); // 2
+// 自动更新 `count` ref
+obj.count++;
+console.log(obj.count); // 3
+console.log(count.value); // 3
+```
+
+- 当访问到某个响应式数组或 `Map` 这样的原生集合类型中的 ref 元素时, 不会执行 ref 解包
+
+```javascript
+// 原生集合中包含 ref 元素时, ref 不会被解包
+const books = reactive([ref('Vue 3.0')]);
+console.log(books[0].value); // 需要使用 .value
+
+const map = reactive(new Map([['count', ref(0)]]));
+console.log(map.get('count').value); // 需要使用 .value
+```
+
+#### readonly()
+
+接受一个对象(响应式或普通)或一个 ref, 返回原值的只读代理, 任何被访问的嵌套属性也是只读的, 它的 ref 解包行为与 reactive() 相同, 但解包得到的值是只读的
+
+```javascript
+import { reactive, readonly, watchEffect } from 'vue';
+const original = reactive({ count: 0 });
+const copy = readonly(original);
+watchEffect(() => {
+  console.log(copy.count); // 用于响应性追踪
+});
+original.count++; // 变更 original 会触发依赖于副本的侦听器
+copy.count++; // 警告! // 变更副本将失败并导致警告
+```
+
+#### watchEffect() <em id="watchEffect"></em> <!-- markdownlint-disable-line -->
+
+立即执行一个函数, 同时响应式地追踪其依赖, 并在依赖更新时重新执行函数
+
+- 第一个参数是要运行的副作用函数
+- 第二个参数是可选项, 用来调整副作用的刷新时机或调试副作用的依赖
+- 返回值是一个用来停止该副作用的函数
+
+```javascript
+const count = ref(0);
+watchEffect(() => {
+  console.log(count.value); // 输出 0
+});
+count.value++; // 输出 1
+```
+
+- 副作用清除 onCleanup
+
+  - 副作用即将重新执行时
+  - 侦听器被停止(setup 或 lifeCycle Hooks 中使用过, 则在组件卸载时)
+
+```javascript
+watchEffect(async (onCleanup) => {
+  const { response, cancel } = doAsyncWork(id.value);
+  // cancel 会在 id 更改时调用
+  // 取消之前未完成的请求
+  onCleanup(cancel);
+  data.value = await response;
+});
+```
+
+- 停止侦听器
+
+```javascript
+const stop = watchEffect(() => {});
+// 不再需要此侦听器时
+stop();
+```
+
+- 副作用刷新时机, 会在组件更新之前执行副作用
+
+  - 如果需要在组件更新后重新运行侦听器副作用
+  - flush
+    - pre: '默认值', 指定的回调应该在渲染前被调用
+    - post: 将回调推迟到渲染之后调用
+    - sync: '始终同步触发', 低效
+
+```javascript
+// 在组件更新后触发，这样你就可以访问更新的 DOM。
+// 注意：这也将推迟副作用的初始运行，直到组件的首次渲染完成。
+watchEffect(() => {}, {
+  flush: 'post',
+});
+```
+
+- 侦听器调试, 只能用于开发模式下
+
+  - onTrack 响应式 property 和 ref 作为依赖项被追踪时被调用
+  - onTrigger 依赖项变更导致副作用被触发时被调用
+
+```javascript
+watchEffect(() => {}, {
+  flush: 'post',
+  onTrack(e) {},
+  onTrigger(e) {},
+});
+```
+
+#### [watchPostEffect()](#watchEffect)
+
+`watchEffect()` 使用 flush: 'post' 选项时的别名
+
+#### [watchSyncEffect()](#watchEffect)
+
+`watchEffect()` 使用 flush: 'sync' 选项时的别名
+
+#### watch()
+
+- 侦听一个或多个响应式数据源, 并在数据源变化时调用所给的回调函数, 使用方式和 this.$watch 和 watch 选项完全等效
+- 默认是懒侦听的, 仅在侦听源发生变化时才执行回调函数
+
+##### 参数
+
+- 第一个参数是侦听器的源, 支持返回值的函数、ref、响应式对象、或者以上类型的值组成的数组
+- 第二个参数是侦听源发生变化时调用的函数, 函数接收三个参数: 新值、旧值，及一个用于注册副作用清理的回调函数
+- 第三个参数是一个配置项对象
+
+  - immediate 在侦听器创建时立即触发回调, 第一次调用时旧值为 `undefined`
+  - deep 如果源是对象, 强制深度遍历, 以便在深层级变更时触发回调
+  - flush 调整回调函数的刷新时机, 见 `[watchEffect()](#watchEffect)`
+  - onTrack/onTrigger 调试侦听器的依赖, 见 `[watchEffect()](#watchEffect)`
+
+```javascript
+// 侦听一个 getter 函数
+const state = reactive({ count: 0 });
+watch(
+  () => state.count,
+  (count, prevCount) => {
+    /* */
+  }
+);
+
+// 侦听一个 ref
+const count = ref(0);
+watch(count, (count, prevCount) => {
+  /* */
+});
+
+// 侦听多个源
+const stop = watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
+  /* */
+});
+// 停止侦听器
+stop();
+
+```
+
+##### 与 watchEffect() 的区别
+
+- 惰性执行副作用
+- 更具体地说明应触发侦听器重新运行的状态
+- 访问被侦听状态的先前值和当前值
+- 侦听多个源
+
 ### 响应式: 工具
+
+#### isRef()
+
+
+
+
 
 ### 响应式: 进阶
 
 ### 生命周期钩子
 
 ### 依赖注入
-
-
 
 ## 全局 API
 
@@ -343,6 +566,8 @@ const app = createApp({
     ])
   }
   ```
+
+````
 
 - resolveComponent 允许按名称解析 component
 
@@ -935,63 +1160,6 @@ const Child = {
 
 ### 响应性基础 API
 
-- reactive 返回对象的响应式副本
-
-  > 当将 ref 分配给 reactive property 时，ref 将被自动解构
-
-  - 仅对对象类型有效(对象、数组、Map、Set 这样的集合类型), 而对 `string` `number` `boolean`这样的原始类型无效
-  - 因为 Vue 的响应式系统是通过属性访问进行追踪的, 因此需要始终保持对响应式对象的相同引用, 将响应式对象的属性赋值或解构至本地变量时、或是将该属性传入一个函数时将失去响应性
-  - 对同一个原始对象调用 `reactive()` 总是返回同样的代理对象, 对一个已存在的代理对象调用 `reactive()` 总是返回其本身
-
-  ```javascript
-  const count = ref(1);
-  const obj = reactive({});
-  obj.count = count;
-  console.log(obj.count); // 1
-  console.log(obj.count === count.value); // true
-  // 它会更新 `obj.value`
-  count.value++;
-  console.log(count.value); // 2
-  console.log(obj.count); // 2
-  // 它也会更新 `count` ref
-  obj.count++;
-  console.log(obj.count); // 3
-  console.log(count.value); // 3
-  ```
-
-  - 当访问到某个响应式数组或 `Map` 这样的原生集合类型中的 ref 元素时, 不会执行 ref 解包, 如果要避免深层响应式转换, 可以使用 `shallowReactive` 替代
-
-  ```javascript
-  const books = reactive([ref('Vue 3.0')]);
-  console.log(books[0].value); // 需要使用 .value
-
-  const map = reactive(new Map([['count', ref(0)]]));
-  console.log(map.get('count').value); // 需要使用 .value
-  ```
-
-  - 将一个 ref 复制给一个 reactive 属性时, 该 ref 会被自动解包
-
-  ```javascript
-  const count = ref(1);
-  const obj = reactive({});
-
-  obj.count = count;
-  console.log(obj.count); // 1
-  console.log(obj.count === count.value); // true
-  ```
-
-- readonly 接受一个对象 (响应式或纯对象) 或 ref 并返回原始对象的只读代理, 任何被访问的嵌套 property 也是只读的
-
-  ```javascript
-  const original = reactive({ count: 0 });
-  const copy = readonly(original);
-  watchEffect(() => {
-    console.log(copy.count); // 用于响应性追踪
-  });
-  original.count++; // 变更 original 会触发依赖于副本的侦听器
-  copy.count++; // 警告! // 变更副本将失败并导致警告
-  ```
-
 - isProxy 检查对象是否是由 `reactive` `readonly` `shallowReactive` `shallowReadonly` 创建的 proxy
 - isReactive 检查对象是否是由 `reactive` `shallowReactive` 创建的响应式代理, 如果代理是由 readonly 创建的并包含了由 reactive 创建的另一个代理, 同样返回 true
 - isReadonly 检查对象是否是由 `readonly` `shallowReadonly` 创建的只读代理
@@ -1052,16 +1220,6 @@ const Child = {
 ### Refs
 
 - ref 接受一个内部值并返回一个响应式且可变的 ref 对象. ref 对象具有指向内部值的单个属性 .value
-
-  - 将一个对象赋值给 ref, 那么这个对象将通过 reactive 转为具有深层次响应式的对象, 如果对象内部包含了嵌套的 ref, 它们将会被深层的解包
-
-  ```javascript
-  const count = ref(0);
-  console.log(count.value); // 0
-
-  count.value++;
-  console.log(count.value); // 1
-  ```
 
 - unref 如果参数是一个 ref, 则返回内部值, 否则返回参数本身
   > val = isRef(val) ? val.value : val 的语法糖函数
@@ -1156,137 +1314,6 @@ const Child = {
 - triggerRef 手动执行与 shallowRef 关联的任何副作用
 
 ### Computed | watch <em id="computedWatchEffect"></em>
-
-- computed 接受一个 getter 函数,并为从 getter 返回的值返回一个不变的响应式 ref 对象
-
-  ```javascript
-  // 1.
-  const count = ref(1);
-  const plusOne = computed(() => count.value + 1);
-  console.log(plusOne.value); // 2
-  plusOne.value++; // 错误
-  // 2.
-  const count = ref(1);
-  const plusOne = computed({
-    get: () => count.value + 1,
-    set: (val) => {
-      count.value = val - 1;
-    },
-  });
-  plusOne.value = 1;
-  console.log(count.value); // 0
-  ```
-
-- watch 使用方式和 this.$watch 和 watch 选项完全等效
-
-  - 第一个参数支持函数、ref、响应式对象、或者以上类型组成的数组
-  - 第二个参数发生变化时调用的回调函数
-  - 第三个参数
-
-    - immediate 在侦听器创建时立即触发回调, 第一次调用时旧值为 `undefined`
-    - deep 如果源是对象, 强制深度遍历
-    - flush 调整回调函数的刷新时机
-    - onTrack/onTrigger 调试侦听器的依赖
-
-  - 与 watchEffect 的区别
-
-    - 惰性地执行副作用
-    - 更具体地说明应触发侦听器重新运行的状态
-    - 访问被侦听状态的先前值和当前值
-    - 侦听单一源
-
-    ```javascript
-    // 侦听一个 getter
-    const state = reactive({ count: 0 });
-    watch(
-      () => state.count,
-      (count, prevCount) => {
-        /* ... */
-      }
-    );
-    // 直接侦听一个 ref
-    const count = ref(0);
-    watch(count, (count, prevCount) => {
-      /* ... */
-    });
-    ```
-
-    - 侦听多个源
-
-    ```javascript
-    watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
-      /* ... */
-    });
-    ```
-
-- watchEffect 在响应式地跟踪其依赖项时立即运行一个函数, 并在更改依赖项时重新运行它
-
-  - 第一个参数是要运行的副作用函数
-  - 第二个参数是可选项, 可以用来调整副作用的刷新时机或调试副作用的依赖
-  - 返回值是一个用来停止该副作用的函数
-
-  - 停止侦听器
-
-    ```javascript
-    const stop = watchEffect(() => {});
-    stop();
-    ```
-
-  - 清除副作用时回调 onInvalidate
-
-    - 副作用即将重新执行时
-    - 侦听器被停止(setup 或 lifeCycle Hooks 中使用过, 则在组件卸载时)
-
-    ```javascript
-    watchEffect((onInvalidate) => {
-      const token = performAsyncOperation(id.value);
-      onInvalidate(() => {
-        // id has changed or watcher is stopped.
-        // invalidate previously pending async operation
-        token.cancel();
-      });
-    });
-    ```
-
-  - 副作用刷新时机, 会在组件更新之前执行副作用
-
-    - 如果需要在组件更新后重新运行侦听器副作用
-    - flush
-      - pre: '默认值', 指定的回调应该在渲染前被调用
-      - post: 将回调推迟到渲染之后调用
-      - sync: '始终同步触发', 低效
-
-    ```javascript
-    // 在组件更新后触发，这样你就可以访问更新的 DOM。
-    // 注意：这也将推迟副作用的初始运行，直到组件的首次渲染完成。
-    watchEffect(() => {}, {
-      flush: 'post',
-    });
-    ```
-
-  - 侦听器调试, 只能用于开发模式下
-
-    - onTrack 响应式 property 和 ref 作为依赖项被追踪时被调用
-    - onTrigger 依赖项变更导致副作用被触发时被调用
-
-    ```javascript
-    watchEffect(() => {}, { onTrack(e) {}, onTrigger(e) {} });
-    ```
-
-  ```javascript
-  const count = ref(0);
-  watchEffect(() => console.log(count.value));
-  // -> logs 0
-  setTimeout(() => {
-    count.value++;
-    // -> logs 1
-  }, 100);
-  ```
-
-- watchPostEffect `watchEffect()` 使用 flush: 'post' 选项时的别名
-  Vue 3.2 新增
-- watchSyncEffect `watchEffect()` 使用 flush: 'sync' 选项时的别名
-  Vue 3.2 新增
 
 ## 组合式 API
 
@@ -1880,3 +1907,4 @@ export default {
   },
 };
 ```
+````
