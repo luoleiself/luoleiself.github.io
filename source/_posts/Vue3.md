@@ -258,6 +258,71 @@ async function increment() {
 
 ### setup()
 
+> 对于结合单文件组件使用的组合式 API 推荐使用 &lt;script setup&gt; 语法
+
+#### 基本使用
+
+- 需要在非单文件组件中使用组合式 API 时
+- 需要在基于选项式 API 的组件集成基于组合式 API 的代码时
+
+- 在创建组件实例时, 在初始 prop 解析之后立即调用 setup
+- 在生命周期方面, 在 beforeCreate 钩子之前调用
+
+#### 访问 Props
+
+- setup 函数地第一个参数, 是响应式地并且会在传入新的 props 时同步更新
+- 不能直接对 props 进行解构操作, 会丢失响应性, 可以通过 `toRefs()` 和 `toRef()` 工具函数辅助完成
+
+#### 上下文
+
+setup 函数的第二个参数, 暴露了其他一些在 setup 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 是非响应式的, 如果需要根据 attrs 或者 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑
+
+- attrs 透传 Attributes, 等价于 $attrs
+- slots 插槽, 等价于 $slots
+- emit 触发事件, 等价于 $emit
+- expose 用于显示的限制该组件暴露出的属性, 父组件将仅能访问 expose 函数暴露出的内容
+
+```js
+import { ref, createApp } from 'vue';
+
+const app = createApp({
+  setup(props, { emit, expose }) {
+    const publicCount = ref(0);
+    expose({ count: publicCount });
+
+    emit('my-event', { name: 'hello world' });
+  },
+});
+```
+
+#### 返回渲染函数
+
+- setup 应该同步地返回一个对象, 唯一可以使用 `async setup()` 地情况是该组件时 `Suspense` 组件地后裔
+- 也可以返回一个`渲染函数`, 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
+
+```javascript
+import { h, ref, reactive } from 'vue';
+const app = createApp({
+  setup() {
+    const count = ref(0);
+    const object = reactive({ foo: 'bar' });
+    return () => h('div', [count.value, object.foo]);
+  },
+});
+```
+
+### 响应式: 核心
+
+### 响应式: 工具
+
+### 响应式: 进阶
+
+### 生命周期钩子
+
+### 依赖注入
+
+
+
 ## 全局 API
 
 - h 返回一个"虚拟节点",通常缩写为 VNode：一个普通对象，其中包含向 Vue 描述它应在页面上渲染哪种节点的信息,包括所有子节点的描述
@@ -643,27 +708,6 @@ const Child = {
   // ...
 };
 ```
-
-#### setup 组合式 API 的入口点
-
-- 在创建组件实例时, 在初始 prop 解析之后立即调用 setup
-- 在生命周期方面, 在 beforeCreate 钩子之前调用
-- 参数
-  - props 接收父组件传入的属性, 不要结构 props 对象,会失去响应式
-  - ctx 上下文对象, 包含了 attrs, slots, emit, expose
-- 返回值
-
-  - Object 对象的属性合并到组件实例的上下文
-  - h 返回一个渲染函数, 该函数可以直接使用在同一作用域中声明的响应式状态
-
-    ```javascript
-    import {h, ref, reactive} from 'vue';
-    setup() {
-      const count = ref(0)
-      const object = reactive({ foo: 'bar' })
-      return () => h('div', [count.value, object.foo])
-    }
-    ```
 
 ### 杂项
 
@@ -1264,8 +1308,6 @@ const Child = {
     },
   });
   ```
-
-  - attrs 和 slots 是非响应式的, 如果需要根据 attrs 或者 slots 更改应用的的副作用, 需要在 onUpdated 钩子中执行此操作
 
 - 生命周期钩子
 
