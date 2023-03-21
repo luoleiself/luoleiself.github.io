@@ -315,7 +315,7 @@ const app = createApp({
 
 ### 响应式: 核心
 
-#### ref()
+#### ref() <em id="ref"></em> <!-- markdownlint-disable-line -->
 
 接受一个内部值, 返回一个响应式可更改的 ref 对象, 此对象只有一个指向其内部值的属性 `.value`
 
@@ -329,7 +329,7 @@ count.value++;
 console.log(count.value); // 1
 ```
 
-#### computed()
+#### computed() <em id="computed"></em> <!-- markdownlint-disable-line -->
 
 返回一个只读的响应式 ref 对象, 该 ref 通过 .value 暴露 getter 函数的返回值
 
@@ -355,7 +355,7 @@ plusOne.value = 1;
 console.log(count.value); // 0
 ```
 
-#### reactive()
+#### reactive() <em id="reactive"></em> <!-- markdownlint-disable-line -->
 
 返回一个对象的响应式代理
 
@@ -393,7 +393,7 @@ const map = reactive(new Map([['count', ref(0)]]));
 console.log(map.get('count').value); // 需要使用 .value
 ```
 
-#### readonly()
+#### readonly() <em id="readonly"></em> <!-- markdownlint-disable-line -->
 
 接受一个对象(响应式或普通)或一个 ref, 返回原值的只读代理, 任何被访问的嵌套属性也是只读的, 它的 ref 解包行为与 reactive() 相同, 但解包得到的值是只读的
 
@@ -491,14 +491,14 @@ watchEffect(() => {}, {
 
 ##### 参数
 
-- 第一个参数是侦听器的源, 支持返回值的函数、ref、响应式对象、或者以上类型的值组成的数组
+- 第一个参数是侦听器的源, 支持包含返回值的函数、ref、响应式对象、或者以上类型的值组成的数组
 - 第二个参数是侦听源发生变化时调用的函数, 函数接收三个参数: 新值、旧值，及一个用于注册副作用清理的回调函数
 - 第三个参数是一个配置项对象
 
   - immediate 在侦听器创建时立即触发回调, 第一次调用时旧值为 `undefined`
   - deep 如果源是对象, 强制深度遍历, 以便在深层级变更时触发回调
-  - flush 调整回调函数的刷新时机, 见 `[watchEffect()](#watchEffect)`
-  - onTrack/onTrigger 调试侦听器的依赖, 见 `[watchEffect()](#watchEffect)`
+  - flush 调整回调函数的刷新时机, 见 [watchEffect()](#watchEffect)
+  - onTrack/onTrigger 调试侦听器的依赖, 见 [watchEffect()](#watchEffect)
 
 ```javascript
 // 侦听一个 getter 函数
@@ -522,10 +522,9 @@ const stop = watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
 });
 // 停止侦听器
 stop();
-
 ```
 
-##### 与 watchEffect() 的区别
+##### 与 [watchEffect()](#watchEffect) 的区别
 
 - 惰性执行副作用
 - 更具体地说明应触发侦听器重新运行的状态
@@ -536,11 +535,180 @@ stop();
 
 #### isRef()
 
+检查某个值是否是 ref
 
+#### unref()
 
+如果参数是 ref, 则返回 ref 指向的内部值, 否则返回参数本身. 是 `isRef(val) ? val.value : val` 的一个语法糖
 
+#### toRef()
+
+基于响应式对象上的一个属性, 新创建一个对应的 ref, 此 ref 与其源属性保持同步, 改变源属性的值将更新 ref 的值, 反之亦然
+
+```javascript
+const state = reactive({ foo: 1, bar: 2 });
+const fooRef = toRef(state, 'foo');
+// 更改 ref 会更新源属性
+fooRef.value++;
+console.log(state.foo); // 2
+// 更改源属性会更新 ref
+state.foo++;
+console.log(fooRef.value); // 3
+```
+
+#### toRefs()
+
+> 方便消费组件可以在不丢失响应性的情况下对返回的对象进行分解/扩散
+
+将一个响应式对象转换为一个普通对象, 这个普通对象的每个属性都指向源对象相应属性的 ref, 每个单独的 ref 都是使用 `toRef()` 创建的
+
+- toRefs 在调用时智慧为源对象上的可以枚举的属性创建 ref, 如果为可能还不存在的属性创建 ref 时, 使用 toRef
+
+```javascript
+const state = reactive({ foo: 1, bar: 2 });
+const stateAsRefs = toRefs(state);
+/*
+stateAsRefs 的类型:
+{
+  foo: Ref<number>,
+  bar: Ref<number>
+}
+*/
+
+// ref 和原始 property 已经 "链接" 起来了
+state.foo++;
+console.log(stateAsRefs.foo.value); // 2
+
+stateAsRefs.foo.value++;
+console.log(state.foo); // 3
+```
+
+#### isProxy()
+
+检查一个对象是否由 `reactive()`, `readonly()`, `shallowReactive()`, `shallowReadonly()` 创建的代理
+
+#### isReactive()
+
+检查一个对象是否由 `reactive()`, `shallowReactive()` 创建的代理
+
+#### isReadonly()
+
+检查对象是否是由 `readonly()` `shallowReadonly()` 创建的只读代理, 只读对象的属性可以更改, 但不能通过传入的对象直接赋值
 
 ### 响应式: 进阶
+
+#### shallowRef()
+
+[ref()](#ref) 的浅层作用形式
+
+- 浅层 ref 的内部值将会原样存储和暴露, 并且不会被深层递归地转为响应式
+- 只有对 `.value` 的访问是响应式的
+
+```javascript
+const state = shallowRef({ count: 1 });
+// 不会触发更改
+state.value.count = 2;
+
+// 会触发更新
+state.value = { count: 2 };
+```
+
+#### triggerRef()
+
+强制触发依赖一个 `浅层 ref` 的副作用, 通常对浅引用的内部值进行深度变更后使用
+
+```javascript
+const shallow = shallowRef({ name: 'hello world' });
+
+// 立刻执行一次副作用, 输出 hello world
+watchEffect(() => {
+  console.log(shallow.value.name);
+});
+
+// 更改不会触发副作用, ref 是浅层的
+shallow.value.name = 'hello gg';
+
+// 手动触发浅层 ref 的副作用, 输出 hello gg
+triggerRef(shallow);
+```
+
+#### customRef()
+
+> 它需要一个工厂函数，该函数接收 track 和 trigger 函数作为参数，并且应该返回一个带有 get 和 set 的对象
+
+创建一个自定义的 ref, 显式声明对其依赖追踪和更新触发的控制方式
+
+```html
+<template> <input v-model="text" /> </template>
+
+<script setup>
+  const text = useDebouncedRef('hello');
+</script>
+
+<script>
+  // 创建一个防抖 ref, 只在最后一次 set 调用后的一段固定间隔后再调用
+  function useDebouncedRef(value, delay = 200) {
+    let timeout;
+    return customRef((track, trigger) => {
+      return {
+        get() {
+          track();
+          return value;
+        },
+        set(newValue) {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            value = newValue;
+            trigger();
+          }, delay);
+        },
+      };
+    });
+  }
+</script>
+```
+
+#### shallowReactive()
+
+[reactive()](#reactive) 的浅层作用形式
+
+- 没有深层级的转换, 浅层响应式对象里只有根级别的属性是响应式的
+- 属性的值会被原样存储和暴露, 值为 ref 的属性不会被自动解包
+
+```javascript
+const state = shallowReactive({ foo: 1, nested: { bar: 2 } });
+// 更改状态自身的属性是响应式的
+state.foo++;
+// 嵌套对象不会被转为响应式
+isReactive(state.nested); // false
+// 不是响应式的
+state.nested.bar++;
+```
+
+#### shallowReadonly()
+
+[readonly()](#readonly) 的浅层作用形式
+
+- 没有深层级的转换, 只有根层级的属性变为了只读
+- 属性的值会被原样存储和暴露, 值为 ref 的属性不会被自动解包
+
+```javascript
+const state = shallowReadonly({ foo: 1, nested: { bar: 2 } });
+// 更改状态自身的属性会失败
+state.foo++;
+// 可以更改嵌套的属性
+isReadonly(state.nested); // false
+// 允许更改嵌套的属性
+state.nested.bar++;
+```
+
+
+
+
+
+
+<em id="computed"></em> <!-- markdownlint-disable-line -->
+
 
 ### 生命周期钩子
 
@@ -566,8 +734,6 @@ stop();
     ])
   }
   ```
-
-````
 
 - resolveComponent 允许按名称解析 component
 
@@ -1160,9 +1326,6 @@ const Child = {
 
 ### 响应性基础 API
 
-- isProxy 检查对象是否是由 `reactive` `readonly` `shallowReactive` `shallowReadonly` 创建的 proxy
-- isReactive 检查对象是否是由 `reactive` `shallowReactive` 创建的响应式代理, 如果代理是由 readonly 创建的并包含了由 reactive 创建的另一个代理, 同样返回 true
-- isReadonly 检查对象是否是由 `readonly` `shallowReadonly` 创建的只读代理
 - toRaw 返回 `reactive` `readonly` `shallowReactive` `shallowReadonly` 代理的原始对象
 
   > 可用于临时读取数据而无需承担代理访问/跟踪的开销，也可用于写入数据而避免触发更改。不建议保留对原始对象的持久引用
@@ -1186,132 +1349,6 @@ const Child = {
   const bar = reactive({ foo });
   console.log(isReactive(bar.foo)); // false
   ```
-
-- shallowReactive 创建一个响应式代理,它跟踪其自身 property 的响应性,但不执行嵌套对象的深层响应式转换 (暴露原始值)
-
-  ```javascript
-  const state = shallowReactive({
-    foo: 1,
-    nested: {
-      bar: 2,
-    },
-  });
-  state.foo++; // 改变 state 本身的性质是响应式的
-  // ...但是不转换嵌套对象
-  isReactive(state.nested); // false
-  state.nested.bar++; // 非响应式
-  ```
-
-- shallowReadonly 创建一个 proxy, 使其自身的 property 为只读, 但不执行嵌套对象的深度只读转换 (暴露原始值)
-
-  ```javascript
-  const state = shallowReadonly({
-    foo: 1,
-    nested: {
-      bar: 2,
-    },
-  });
-  state.foo++; // 改变 state 本身的 property 将失败
-  // ...但适用于嵌套对象
-  isReadonly(state.nested); // false
-  state.nested.bar++; // 适用
-  ```
-
-### Refs
-
-- ref 接受一个内部值并返回一个响应式且可变的 ref 对象. ref 对象具有指向内部值的单个属性 .value
-
-- unref 如果参数是一个 ref, 则返回内部值, 否则返回参数本身
-  > val = isRef(val) ? val.value : val 的语法糖函数
-- toRef 为源响应式对象上的某个 property 新创建一个 ref, 然后 ref 可以被传递,它会保持对其源 property 的响应式连接
-
-  ```javascript
-  const state = reactive({
-    foo: 1,
-    bar: 2,
-  });
-  const fooRef = toRef(state, 'foo');
-  fooRef.value++;
-  console.log(state.foo); // 2
-
-  state.foo++;
-  console.log(fooRef.value); // 3
-  ```
-
-- toRefs 将响应式对象转换为普通对象, 其中结果对象的每个 property 都是指向原始对象相应 property 的 ref
-
-  > 方便消费组件可以在不丢失响应性的情况下对返回的对象进行分解/扩散
-
-  ```javascript
-  const state = reactive({
-    foo: 1,
-    bar: 2,
-  });
-  const stateAsRefs = toRefs(state);
-  /*
-  stateAsRefs 的类型:
-  {
-    foo: Ref<number>,
-    bar: Ref<number>
-  }
-  */
-
-  // ref 和原始 property 已经“链接”起来了
-  state.foo++;
-  console.log(stateAsRefs.foo.value); // 2
-
-  stateAsRefs.foo.value++;
-  console.log(state.foo); // 3
-  ```
-
-- isRef 检查值是否为一个 ref 对象
-- customRef 创建一个自定义的 ref, 并对其依赖项跟踪和更新触发进行显式控制
-
-  > 它需要一个工厂函数，该函数接收 track 和 trigger 函数作为参数，并且应该返回一个带有 get 和 set 的对象
-
-  ```html
-  <template> <input v-model="text" /> </template>
-  <script>
-    function useDebouncedRef(value, delay = 200) {
-      let timeout;
-      return customRef((track, trigger) => {
-        return {
-          get() {
-            track();
-            return value;
-          },
-          set(newValue) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              value = newValue;
-              trigger();
-            }, delay);
-          },
-        };
-      });
-    }
-
-    export default {
-      setup() {
-        return {
-          text: useDebouncedRef('hello'),
-        };
-      },
-    };
-  </script>
-  ```
-
-- shallowRef 创建一个跟踪自身 .value 变化的 ref, 但不会使其值也变成响应式的
-
-  ```javascript
-  const foo = shallowRef({});
-  // 改变 ref 的值是响应式的
-  foo.value = {};
-  // 但是这个值不会被转换。
-  isReactive(foo.value); // false
-  ```
-
-- triggerRef 手动执行与 shallowRef 关联的任何副作用
 
 ### Computed | watch <em id="computedWatchEffect"></em>
 
@@ -1907,4 +1944,7 @@ export default {
   },
 };
 ```
-````
+
+```
+
+```
