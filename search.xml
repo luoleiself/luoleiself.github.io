@@ -1,80 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Charles-手机代理-Https-证书管理</title>
-    <url>/2021/12/a521f7947aed/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
-<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
-</ul>
-<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
-<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img data-src="/images/charles-11.jpg" alt="charles-11"></li>
-<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img data-src="/images/charles-12.png" alt="charles-12"></li>
-</ol>
-<span id="more"></span>
-
-<ol start="3">
-<li>在弹框中左侧列表选择 “证书”, 点击 “添加” 按钮, 在弹出的对话框选择 “我的用户账户” 点击 “完成” 后, 右侧列表会出现 证书 选项, 最后点击 “确定”<br><img data-src="/images/charles-13.jpg" alt="charles-13"><br><img data-src="/images/charles-14.jpg" alt="charles-14"></li>
-<li>在第 2 步的窗口中会出现证书菜单, 依次展开这些菜单, 中间窗口会出现所有已安装的证书<br><img data-src="/images/charles-15.jpg" alt="charles-15"></li>
-<li>选择需要删除的证书 “右键单击”, 选择 “删除”, 在弹出的对话框中选择 “是”, 完成证书删除<br><img data-src="/images/charles-16.jpg" alt="charles-16"></li>
-<li>点击右上角的 “关闭” 按钮关闭控制台, 在弹出的对话框中选择 “否” 不存入控制台配置, 如果有需要也可以选择 “是” 存入控制台配置<br><img data-src="/images/charles-17.jpg" alt="charles-17"></li>
-</ol>
-<h3 id="电脑安装-charles-证书"><a href="#电脑安装-charles-证书" class="headerlink" title="电脑安装 charles 证书"></a>电脑安装 charles 证书</h3><ol>
-<li><p>打开 charles, 选择 Help -&gt; SSL Proxing -&gt; Install Charles Root Certificate<br><img data-src="/images/charles-1.png" alt="charles-1"></p>
-</li>
-<li><p>在 “证书” 对话框中点击 “安装证书”<br><img data-src="/images/charles-2.jpg" alt="charles-2"></p>
-</li>
-<li><p>在 “证书导入向导” 对话框中选择 “本地计算机”, 点击 “下一步”<br><img data-src="/images/charles-3.jpg" alt="charles-3"></p>
-</li>
-<li><p>在 “证书导入向导” 对话框中选择 “将所有的证书都放入下列存储”, 点击 “浏览”<br><img data-src="/images/charles-4.jpg" alt="charles-4"></p>
-</li>
-<li><p>在 “选择证书存储” 对话框中选择 “受信任的根证书颁发机构”, 点击 “确认”<br><img data-src="/images/charles-5.jpg" alt="charles-5"></p>
-</li>
-<li><p>在弹出的对话框选择 “是” 将证书导入到浏览器的证书列表中<br><img data-src="/images/charles-10.jpg" alt="charles-10"></p>
-</li>
-<li><p>点击 “确定” 完成证书添加<br><img data-src="/images/charles-6.jpg" alt="charles-6"></p>
-</li>
-</ol>
-<h3 id="手机添加-charles-证书"><a href="#手机添加-charles-证书" class="headerlink" title="手机添加 charles 证书"></a>手机添加 charles 证书</h3><ol>
-<li>手机绑定 charles 代理(电脑 IP 和端口):<ol>
-<li>WLAN -&gt; 修改已连接网络</li>
-<li>代理改为 “手动”</li>
-<li>服务器主机名添加电脑 IP</li>
-<li>服务器端口添加 charles 监听端口</li>
-<li>保存后连接 wifi</li>
-</ol>
-</li>
-<li>安卓手机使用 Chrome, 苹果手机使用 safari</li>
-<li>浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理</li>
-<li>安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定<ol>
-<li>输入 “证明名称(可任意起名)”, 后期删除证书时可根据此名称查找</li>
-<li>凭证用途 默认为 “VPN 和应用”, 如果改为 WLAN 会导致无效</li>
-</ol>
-</li>
-<li>苹果手机打开设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置 -&gt; 找到已下载的 charles 证书打开信任</li>
-<li>使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试<br><img data-src="/images/charles-7.jpg" alt="charles-7"></li>
-</ol>
-<h3 id="电脑使用-charles-无法访问百度等其他页面"><a href="#电脑使用-charles-无法访问百度等其他页面" class="headerlink" title="电脑使用 charles 无法访问百度等其他页面"></a>电脑使用 charles 无法访问百度等其他页面</h3><p>黑名单和白名单设置</p>
-<ol>
-<li>打开 charles, 选择 Tools -&gt; Block List | Allow List( 部分版本为 White List)<br><img data-src="/images/charles-8.png" alt="charles-8"></li>
-<li>此配置为黑名单和白名单设置<br><img data-src="/images/charles-9.jpg" alt="charles-9"></li>
-</ol>
-<h3 id="手机微信扫码后显示白屏"><a href="#手机微信扫码后显示白屏" class="headerlink" title="手机微信扫码后显示白屏"></a>手机微信扫码后显示白屏</h3><ul>
-<li>手机未安装 charles 证书会显示白屏</li>
-<li>其他部分浏览器会在 地址栏 中出现非安全链接的提示图标</li>
-</ul>
-<h3 id="手机卸载安装的-charles-证书"><a href="#手机卸载安装的-charles-证书" class="headerlink" title="手机卸载安装的 charles 证书"></a>手机卸载安装的 charles 证书</h3><ol>
-<li>打开手机 设置 -&gt; 安全 -&gt; 更多安全设置 -&gt; 加密和凭据 -&gt; 用户凭据</li>
-<li>根据安装手机证书时填写的证明名称找到指定项, 点击后选择 “删除”</li>
-</ol>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>charles</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BABELRC</title>
     <url>/2021/12/2f42f14b8489/</url>
     <content><![CDATA[<h1 id="babel-cli"><a href="#babel-cli" class="headerlink" title="@babel/cli"></a>@babel/cli</h1><h2 id="install"><a href="#install" class="headerlink" title="install"></a>install</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -D @babel/cli @babel/core</span><br></pre></td></tr></table></figure>
@@ -172,6 +98,80 @@
       </tags>
   </entry>
   <entry>
+    <title>Charles-手机代理-Https-证书管理</title>
+    <url>/2021/12/a521f7947aed/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
+<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
+</ul>
+<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
+<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img data-src="/images/charles-11.jpg" alt="charles-11"></li>
+<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img data-src="/images/charles-12.png" alt="charles-12"></li>
+</ol>
+<span id="more"></span>
+
+<ol start="3">
+<li>在弹框中左侧列表选择 “证书”, 点击 “添加” 按钮, 在弹出的对话框选择 “我的用户账户” 点击 “完成” 后, 右侧列表会出现 证书 选项, 最后点击 “确定”<br><img data-src="/images/charles-13.jpg" alt="charles-13"><br><img data-src="/images/charles-14.jpg" alt="charles-14"></li>
+<li>在第 2 步的窗口中会出现证书菜单, 依次展开这些菜单, 中间窗口会出现所有已安装的证书<br><img data-src="/images/charles-15.jpg" alt="charles-15"></li>
+<li>选择需要删除的证书 “右键单击”, 选择 “删除”, 在弹出的对话框中选择 “是”, 完成证书删除<br><img data-src="/images/charles-16.jpg" alt="charles-16"></li>
+<li>点击右上角的 “关闭” 按钮关闭控制台, 在弹出的对话框中选择 “否” 不存入控制台配置, 如果有需要也可以选择 “是” 存入控制台配置<br><img data-src="/images/charles-17.jpg" alt="charles-17"></li>
+</ol>
+<h3 id="电脑安装-charles-证书"><a href="#电脑安装-charles-证书" class="headerlink" title="电脑安装 charles 证书"></a>电脑安装 charles 证书</h3><ol>
+<li><p>打开 charles, 选择 Help -&gt; SSL Proxing -&gt; Install Charles Root Certificate<br><img data-src="/images/charles-1.png" alt="charles-1"></p>
+</li>
+<li><p>在 “证书” 对话框中点击 “安装证书”<br><img data-src="/images/charles-2.jpg" alt="charles-2"></p>
+</li>
+<li><p>在 “证书导入向导” 对话框中选择 “本地计算机”, 点击 “下一步”<br><img data-src="/images/charles-3.jpg" alt="charles-3"></p>
+</li>
+<li><p>在 “证书导入向导” 对话框中选择 “将所有的证书都放入下列存储”, 点击 “浏览”<br><img data-src="/images/charles-4.jpg" alt="charles-4"></p>
+</li>
+<li><p>在 “选择证书存储” 对话框中选择 “受信任的根证书颁发机构”, 点击 “确认”<br><img data-src="/images/charles-5.jpg" alt="charles-5"></p>
+</li>
+<li><p>在弹出的对话框选择 “是” 将证书导入到浏览器的证书列表中<br><img data-src="/images/charles-10.jpg" alt="charles-10"></p>
+</li>
+<li><p>点击 “确定” 完成证书添加<br><img data-src="/images/charles-6.jpg" alt="charles-6"></p>
+</li>
+</ol>
+<h3 id="手机添加-charles-证书"><a href="#手机添加-charles-证书" class="headerlink" title="手机添加 charles 证书"></a>手机添加 charles 证书</h3><ol>
+<li>手机绑定 charles 代理(电脑 IP 和端口):<ol>
+<li>WLAN -&gt; 修改已连接网络</li>
+<li>代理改为 “手动”</li>
+<li>服务器主机名添加电脑 IP</li>
+<li>服务器端口添加 charles 监听端口</li>
+<li>保存后连接 wifi</li>
+</ol>
+</li>
+<li>安卓手机使用 Chrome, 苹果手机使用 safari</li>
+<li>浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理</li>
+<li>安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定<ol>
+<li>输入 “证明名称(可任意起名)”, 后期删除证书时可根据此名称查找</li>
+<li>凭证用途 默认为 “VPN 和应用”, 如果改为 WLAN 会导致无效</li>
+</ol>
+</li>
+<li>苹果手机打开设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置 -&gt; 找到已下载的 charles 证书打开信任</li>
+<li>使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试<br><img data-src="/images/charles-7.jpg" alt="charles-7"></li>
+</ol>
+<h3 id="电脑使用-charles-无法访问百度等其他页面"><a href="#电脑使用-charles-无法访问百度等其他页面" class="headerlink" title="电脑使用 charles 无法访问百度等其他页面"></a>电脑使用 charles 无法访问百度等其他页面</h3><p>黑名单和白名单设置</p>
+<ol>
+<li>打开 charles, 选择 Tools -&gt; Block List | Allow List( 部分版本为 White List)<br><img data-src="/images/charles-8.png" alt="charles-8"></li>
+<li>此配置为黑名单和白名单设置<br><img data-src="/images/charles-9.jpg" alt="charles-9"></li>
+</ol>
+<h3 id="手机微信扫码后显示白屏"><a href="#手机微信扫码后显示白屏" class="headerlink" title="手机微信扫码后显示白屏"></a>手机微信扫码后显示白屏</h3><ul>
+<li>手机未安装 charles 证书会显示白屏</li>
+<li>其他部分浏览器会在 地址栏 中出现非安全链接的提示图标</li>
+</ul>
+<h3 id="手机卸载安装的-charles-证书"><a href="#手机卸载安装的-charles-证书" class="headerlink" title="手机卸载安装的 charles 证书"></a>手机卸载安装的 charles 证书</h3><ol>
+<li>打开手机 设置 -&gt; 安全 -&gt; 更多安全设置 -&gt; 加密和凭据 -&gt; 用户凭据</li>
+<li>根据安装手机证书时填写的证明名称找到指定项, 点击后选择 “删除”</li>
+</ol>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>charles</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Generator和async</title>
     <url>/2021/07/bc748f2ea976/</url>
     <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
@@ -246,64 +246,6 @@
       </categories>
       <tags>
         <tag>ES6</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -562,88 +504,6 @@
       </tags>
   </entry>
   <entry>
-    <title>HTTP</title>
-    <url>/2021/07/1ddfb1010b19/</url>
-    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
-<li><p>100 Continue 请求继续</p>
-</li>
-<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
-</li>
-<li><p>102 Processing 继续执行</p>
-</li>
-<li><p>200 OK 请求成功</p>
-</li>
-<li><p>204 No Content 没有响应实体</p>
-</li>
-<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
-</li>
-<li><p>301 Moved Permanently 资源永久移动</p>
-</li>
-<li><p>302 Move Temporarily 资源临时移动</p>
-</li>
-<li><p>303 See Other 参见其他</p>
-</li>
-<li><p>304 Not Modified 资源没有改动</p>
-</li>
-<li><p>305 Use Proxy 使用代理</p>
-</li>
-<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
-</li>
-<li><p>400 Bad Request 错误的请求</p>
-</li>
-<li><p>401 Unauthorized 需要验证</p>
-</li>
-<li><p>403 Forbidden 服务器拒绝执行</p>
-</li>
-<li><p>404 Not Found 资源未找到</p>
-</li>
-<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
-</li>
-<li><p>408 Request Timeout 请求超时</p>
-</li>
-<li><p>413 Request Entity Too Large 请求体超长</p>
-</li>
-<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
-</li>
-<li><p>500 Internal Server Error 服务器错误</p>
-</li>
-<li><p>502 Bad Gateway 网关错误</p>
-</li>
-<li><p>504 Gateway Timeout 网关超时</p>
-</li>
-<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
-</li>
-</ul>
-<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
-<li>%21 !</li>
-<li>%22 “</li>
-<li>%23 #</li>
-<li>%24 $</li>
-<li>%25 %</li>
-<li>%26 &amp;</li>
-<li>%27 ‘</li>
-<li>%28 (</li>
-<li>%29 )</li>
-<li>%2F /</li>
-<li>%30-9 0..9</li>
-<li>%3A :</li>
-<li>%3B ;</li>
-<li>%3C &lt;</li>
-<li>%3D =</li>
-<li>%3E &gt;</li>
-<li>%3F ?</li>
-<li>%40 @</li>
-<li>%41 A</li>
-</ul>
-]]></content>
-      <categories>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Git命令配置篇</title>
     <url>/2021/04/00ea2bbb2db0/</url>
     <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
@@ -771,6 +631,146 @@
 <li><p>all: 获取所有 url</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name</span><br></pre></td></tr></table></figure></li>
 </ul>
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTTP</title>
+    <url>/2021/07/1ddfb1010b19/</url>
+    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
+<li><p>100 Continue 请求继续</p>
+</li>
+<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
+</li>
+<li><p>102 Processing 继续执行</p>
+</li>
+<li><p>200 OK 请求成功</p>
+</li>
+<li><p>204 No Content 没有响应实体</p>
+</li>
+<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
+</li>
+<li><p>301 Moved Permanently 资源永久移动</p>
+</li>
+<li><p>302 Move Temporarily 资源临时移动</p>
+</li>
+<li><p>303 See Other 参见其他</p>
+</li>
+<li><p>304 Not Modified 资源没有改动</p>
+</li>
+<li><p>305 Use Proxy 使用代理</p>
+</li>
+<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
+</li>
+<li><p>400 Bad Request 错误的请求</p>
+</li>
+<li><p>401 Unauthorized 需要验证</p>
+</li>
+<li><p>403 Forbidden 服务器拒绝执行</p>
+</li>
+<li><p>404 Not Found 资源未找到</p>
+</li>
+<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
+</li>
+<li><p>408 Request Timeout 请求超时</p>
+</li>
+<li><p>413 Request Entity Too Large 请求体超长</p>
+</li>
+<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
+</li>
+<li><p>500 Internal Server Error 服务器错误</p>
+</li>
+<li><p>502 Bad Gateway 网关错误</p>
+</li>
+<li><p>504 Gateway Timeout 网关超时</p>
+</li>
+<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
+</li>
+</ul>
+<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
+<li>%21 !</li>
+<li>%22 “</li>
+<li>%23 #</li>
+<li>%24 $</li>
+<li>%25 %</li>
+<li>%26 &amp;</li>
+<li>%27 ‘</li>
+<li>%28 (</li>
+<li>%29 )</li>
+<li>%2F /</li>
+<li>%30-9 0..9</li>
+<li>%3A :</li>
+<li>%3B ;</li>
+<li>%3C &lt;</li>
+<li>%3D =</li>
+<li>%3E &gt;</li>
+<li>%3F ?</li>
+<li>%40 @</li>
+<li>%41 A</li>
+</ul>
+]]></content>
+      <categories>
+        <category>network</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
 <hr>
 ]]></content>
       <categories>
@@ -1279,219 +1279,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2021/04/7df03390b905/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>nginx</title>
-    <url>/2022/04/1e58889c42cf/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
-<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
-<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
-<li><p>$nginx_version nginx 版本</p>
-</li>
-<li><p>$connection_requests TCP 链接当前的请求数量</p>
-</li>
-<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
-<span id="more"></span></li>
-</ul>
-<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
-<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
-</li>
-<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
-</li>
-<li><p>$document_uri 同 $uri</p>
-</li>
-<li><p>$document_root 当前请求的文档根目录或别名</p>
-</li>
-<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
-</li>
-<li><p>$remote_addr 客户端的 IP 地址</p>
-</li>
-<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
-</li>
-<li><p>$remote_port 客户端的端口号</p>
-</li>
-<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
-</li>
-<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
-</li>
-<li><p>$hostname 主机名</p>
-</li>
-<li><p>$http_user_agent 客户端 agent 信息</p>
-</li>
-<li><p>$http_cookie 客户端所有的 cookie 信息</p>
-</li>
-<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
-</li>
-<li><p>$http_referer 引用地址</p>
-</li>
-<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
-</li>
-<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
-</li>
-</ul>
-<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
-<li><p>$request 代表客户端的请求地址</p>
-</li>
-<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
-</li>
-<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
-</li>
-<li><p>$request_body 客户端的请求主体</p>
-</li>
-<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
-</li>
-<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
-</li>
-<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
-</li>
-<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
-</li>
-<li><p>$uri 当前请求的 URI</p>
-</li>
-<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
-</li>
-<li><p>$args 请求中的参数值</p>
-</li>
-<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
-</li>
-<li><p>$query_string 同$args</p>
-</li>
-<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
-</li>
-</ul>
-<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
-<li><p>$time_local 服务器时间(LOG Format 格式)</p>
-</li>
-<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
-<ul>
-<li>$sent_http_content_type ‘text/html’</li>
-<li>$sent_http_content_length 1024</li>
-</ul>
-</li>
-</ul>
-<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
-<li><p>$scheme HTTP 方法(如 http, https)</p>
-</li>
-<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
-</li>
-<li><p>$server_addr 服务器地址</p>
-</li>
-<li><p>$server_name 服务器名称</p>
-</li>
-<li><p>$server_port 服务器端口号</p>
-</li>
-<li><p>$status HTTP 响应代码</p>
-</li>
-<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
-</li>
-<li><p>$limit_rate 限制连接速率</p>
-</li>
-</ul>
-<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
-<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
-<li>none 允许 Referer 头域中不存在的情况</li>
-<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
-<li>server_names 设置一个或多个 URL</li>
-<li>arbitrary string 任意字符串</li>
-<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
-<li>http</li>
-<li>server</li>
-<li>location</li>
-<li>if in location</li>
-</ul>
-<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
-<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
-<ul>
-<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
-<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
-<thead>
-<tr>
-<th align="center">符号</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">~</td>
-<td>正则匹配，区分大小写</td>
-</tr>
-<tr>
-<td align="center">~*</td>
-<td>正则匹配，不区分大小写</td>
-</tr>
-<tr>
-<td align="center">^~</td>
-<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
-</tr>
-<tr>
-<td align="center">=</td>
-<td>普通字符匹配，精确匹配</td>
-</tr>
-<tr>
-<td align="center">@</td>
-<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
-</tr>
-</tbody></table>
-<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
-<li><p>精确匹配：</p>
-<p>= 前缀的指令严格匹配这个查询。</p>
-<p>如果找到，停止搜索。</p>
-</li>
-<li><p>普通字符匹配：</p>
-<p>所有剩下的常规字符串，最长的匹配。</p>
-<p>如果这个匹配使用^〜前缀，搜索停止。</p>
-</li>
-<li><p>正则匹配：</p>
-<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
-</li>
-<li><p>默认匹配：</p>
-<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
-<p>否则，如同从第 2 条规则被使用。</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>server</category>
-      </categories>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>vue3.x-Changelog</title>
     <url>/2021/08/de0c4011096e/</url>
     <content><![CDATA[<h3 id="Vue-3-x-迭代-新增或者废弃的语法和-API"><a href="#Vue-3-x-迭代-新增或者废弃的语法和-API" class="headerlink" title="Vue 3.x 迭代 新增或者废弃的语法和 API"></a>Vue 3.x 迭代 新增或者废弃的语法和 API</h3><h3 id="源码优化"><a href="#源码优化" class="headerlink" title="源码优化"></a>源码优化</h3><h4 id="代码管理方式-monorepo-monolithic-repository"><a href="#代码管理方式-monorepo-monolithic-repository" class="headerlink" title="代码管理方式 monorepo(monolithic repository)"></a>代码管理方式 monorepo(monolithic repository)</h4><ul>
@@ -1657,6 +1444,27 @@
         <tag>VueJs</tag>
         <tag>Vue3</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/04/7df03390b905/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
   </entry>
   <entry>
     <title>shell语法</title>
@@ -2045,20 +1853,6 @@
       </tags>
   </entry>
   <entry>
-    <title>vagrant</title>
-    <url>/2022/04/6a14bcf31f14/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
-<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
-<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>vagrant</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>shell工具</title>
     <url>/2022/05/4881d8683e6d/</url>
     <content><![CDATA[<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
@@ -2281,6 +2075,212 @@
       <tags>
         <tag>linux</tag>
         <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx</title>
+    <url>/2022/04/1e58889c42cf/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
+<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
+<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
+<li><p>$nginx_version nginx 版本</p>
+</li>
+<li><p>$connection_requests TCP 链接当前的请求数量</p>
+</li>
+<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
+<span id="more"></span></li>
+</ul>
+<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
+<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
+</li>
+<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
+</li>
+<li><p>$document_uri 同 $uri</p>
+</li>
+<li><p>$document_root 当前请求的文档根目录或别名</p>
+</li>
+<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
+</li>
+<li><p>$remote_addr 客户端的 IP 地址</p>
+</li>
+<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
+</li>
+<li><p>$remote_port 客户端的端口号</p>
+</li>
+<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
+</li>
+<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
+</li>
+<li><p>$hostname 主机名</p>
+</li>
+<li><p>$http_user_agent 客户端 agent 信息</p>
+</li>
+<li><p>$http_cookie 客户端所有的 cookie 信息</p>
+</li>
+<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
+</li>
+<li><p>$http_referer 引用地址</p>
+</li>
+<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
+</li>
+<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
+</li>
+</ul>
+<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
+<li><p>$request 代表客户端的请求地址</p>
+</li>
+<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
+</li>
+<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
+</li>
+<li><p>$request_body 客户端的请求主体</p>
+</li>
+<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
+</li>
+<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
+</li>
+<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
+</li>
+<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
+</li>
+<li><p>$uri 当前请求的 URI</p>
+</li>
+<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
+</li>
+<li><p>$args 请求中的参数值</p>
+</li>
+<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
+</li>
+<li><p>$query_string 同$args</p>
+</li>
+<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
+</li>
+</ul>
+<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
+<li><p>$time_local 服务器时间(LOG Format 格式)</p>
+</li>
+<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
+<ul>
+<li>$sent_http_content_type ‘text/html’</li>
+<li>$sent_http_content_length 1024</li>
+</ul>
+</li>
+</ul>
+<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
+<li><p>$scheme HTTP 方法(如 http, https)</p>
+</li>
+<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
+</li>
+<li><p>$server_addr 服务器地址</p>
+</li>
+<li><p>$server_name 服务器名称</p>
+</li>
+<li><p>$server_port 服务器端口号</p>
+</li>
+<li><p>$status HTTP 响应代码</p>
+</li>
+<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
+</li>
+<li><p>$limit_rate 限制连接速率</p>
+</li>
+</ul>
+<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
+<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
+<li>none 允许 Referer 头域中不存在的情况</li>
+<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
+<li>server_names 设置一个或多个 URL</li>
+<li>arbitrary string 任意字符串</li>
+<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
+<li>http</li>
+<li>server</li>
+<li>location</li>
+<li>if in location</li>
+</ul>
+<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
+<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
+<ul>
+<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
+<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
+<thead>
+<tr>
+<th align="center">符号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">~</td>
+<td>正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td align="center">~*</td>
+<td>正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td align="center">^~</td>
+<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
+</tr>
+<tr>
+<td align="center">=</td>
+<td>普通字符匹配，精确匹配</td>
+</tr>
+<tr>
+<td align="center">@</td>
+<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
+</tr>
+</tbody></table>
+<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
+<li><p>精确匹配：</p>
+<p>= 前缀的指令严格匹配这个查询。</p>
+<p>如果找到，停止搜索。</p>
+</li>
+<li><p>普通字符匹配：</p>
+<p>所有剩下的常规字符串，最长的匹配。</p>
+<p>如果这个匹配使用^〜前缀，搜索停止。</p>
+</li>
+<li><p>正则匹配：</p>
+<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
+</li>
+<li><p>默认匹配：</p>
+<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
+<p>否则，如同从第 2 条规则被使用。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>server</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vagrant</title>
+    <url>/2022/04/6a14bcf31f14/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
+<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
+<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>vagrant</tag>
       </tags>
   </entry>
   <entry>
@@ -5738,7 +5738,7 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 侦听一个 getter 函数</span></span><br><span class="line"><span class="keyword">const</span> state = <span class="title function_">reactive</span>(&#123; <span class="attr">count</span>: <span class="number">0</span> &#125;);</span><br><span class="line"><span class="title function_">watch</span>(</span><br><span class="line">  <span class="function">() =&gt;</span> state.<span class="property">count</span>,</span><br><span class="line">  <span class="function">(<span class="params">count, prevCount</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* */</span></span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 侦听一个 ref</span></span><br><span class="line"><span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_">watch</span>(count, <span class="function">(<span class="params">count, prevCount</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/* */</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 侦听多个源</span></span><br><span class="line"><span class="keyword">const</span> stop = <span class="title function_">watch</span>([fooRef, barRef], <span class="function">(<span class="params">[foo, bar], [prevFoo, prevBar]</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/* */</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 停止侦听器</span></span><br><span class="line"><span class="title function_">stop</span>();</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 侦听一个 getter 函数</span></span><br><span class="line"><span class="keyword">const</span> state = <span class="title function_">reactive</span>(&#123; <span class="attr">count</span>: <span class="number">0</span> &#125;);</span><br><span class="line"><span class="title function_">watch</span>(</span><br><span class="line">  <span class="function">() =&gt;</span> state.<span class="property">count</span>,</span><br><span class="line">  <span class="function">(<span class="params">newVal, oldValue</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* */</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 当侦听 getter 函数, 回调函数只在此函数的返回值变化时才会触发, 监听深层级变更时触发需要设置 &#123;deep: true&#125;</span></span><br><span class="line">  <span class="comment">// 当前侦听一个响应式对象, 默认自动开启深层级模式</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">deep</span>: <span class="literal">true</span>,</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 侦听一个 ref</span></span><br><span class="line"><span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_">watch</span>(count, <span class="function">(<span class="params">count, prevCount</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/* */</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 侦听多个源</span></span><br><span class="line"><span class="keyword">const</span> stop = <span class="title function_">watch</span>([fooRef, barRef], <span class="function">(<span class="params">[foo, bar], [prevFoo, prevBar]</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/* */</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 停止侦听器</span></span><br><span class="line"><span class="title function_">stop</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 副作用清理</span></span><br><span class="line"><span class="title function_">watch</span>(id, <span class="keyword">async</span> (newValue, oldValue, onCleanup) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; response, cancel &#125; = <span class="title function_">doAsyncWork</span>(newValue);</span><br><span class="line">  <span class="comment">// 当 id 变化时, cancel 被调用</span></span><br><span class="line">  <span class="comment">// 取消之前的未完成的请求</span></span><br><span class="line">  <span class="title function_">onCleanup</span>(cancel);</span><br><span class="line">  data.<span class="property">value</span> = <span class="keyword">await</span> response;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h5 id="与-watchEffect-的区别"><a href="#与-watchEffect-的区别" class="headerlink" title="与 watchEffect() 的区别"></a>与 <a href="#watchEffect">watchEffect()</a> 的区别</h5><ul>
 <li>惰性执行副作用</li>
@@ -5793,13 +5793,59 @@
 </ul>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> state = <span class="title function_">shallowReadonly</span>(&#123; <span class="attr">foo</span>: <span class="number">1</span>, <span class="attr">nested</span>: &#123; <span class="attr">bar</span>: <span class="number">2</span> &#125; &#125;);</span><br><span class="line"><span class="comment">// 更改状态自身的属性会失败</span></span><br><span class="line">state.<span class="property">foo</span>++;</span><br><span class="line"><span class="comment">// 可以更改嵌套的属性</span></span><br><span class="line"><span class="title function_">isReadonly</span>(state.<span class="property">nested</span>); <span class="comment">// false</span></span><br><span class="line"><span class="comment">// 允许更改嵌套的属性</span></span><br><span class="line">state.<span class="property">nested</span>.<span class="property">bar</span>++;</span><br></pre></td></tr></table></figure>
 
+<h4 id="toRaw"><a href="#toRaw" class="headerlink" title="toRaw()"></a>toRaw()</h4><blockquote>
+<p>可用于临时读取数据而无需承担代理访问/跟踪开销，也可用于写入数据而避免触发更改. 不建议保留对原始对象的持久引用</p>
+</blockquote>
+<p>返回由 <code>reactive()</code>, <code>readonly()</code>, <code>shallowReactive()</code>, <code>shallowReadonly()</code> 创建的的代理对应的原始对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> reactiveFoo = <span class="title function_">reactive</span>(foo);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">toRaw</span>(reactiveFoo) === foo); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="markRaw"><a href="#markRaw" class="headerlink" title="markRaw()"></a>markRaw()</h4><p>将一个对象标记为不可转为代理并返回该对象本身</p>
+<ul>
+<li>有些值不应该是响应式的，例如复杂的第三方类实例或 Vue 组件对象</li>
+<li>当渲染具有不可变数据源的大列表时，跳过代理转换可以提高性能</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="title function_">markRaw</span>(&#123;&#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isReactive</span>(<span class="title function_">reactive</span>(foo))); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 嵌套在其他响应式对象中时也可以使用</span></span><br><span class="line"><span class="keyword">const</span> bar = <span class="title function_">reactive</span>(&#123; foo &#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isReactive</span>(bar.<span class="property">foo</span>)); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="effectScope"><a href="#effectScope" class="headerlink" title="effectScope() "></a>effectScope() <em id='effect'></em></h4><p>创建一个 effect 作用域, 可以捕获其中所创建的响应式副作用(计算属性和侦听器), 这样捕获到的副作用可以一起处理</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建 effect 作用域</span></span><br><span class="line"><span class="keyword">const</span> scope = <span class="title function_">effectScope</span>();</span><br><span class="line"></span><br><span class="line">scope.<span class="title function_">run</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> doubled = <span class="title function_">computed</span>(<span class="function">() =&gt;</span> counter.<span class="property">value</span> * <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">  <span class="title function_">watch</span>(doubled, <span class="function">(<span class="params">newValue, oldValue</span>) =&gt;</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(doubled.<span class="property">value</span>, newValue, oldValue)</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="title function_">watchEffect</span>(<span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Count: &#x27;</span>, doubled.<span class="property">value</span>));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止当前作用域内的所有 effect</span></span><br><span class="line">scope.<span class="title function_">stop</span>();</span><br></pre></td></tr></table></figure>
+
+<h4 id="getCurrentScope"><a href="#getCurrentScope" class="headerlink" title="getCurrentScope()"></a><a href="#effect">getCurrentScope()</a></h4><p>如果存在则返回当前活跃的 effect 作用域</p>
+<h4 id="onScopeDispose"><a href="#onScopeDispose" class="headerlink" title="onScopeDispose()"></a>onScopeDispose()</h4><blockquote>
+<p>此方法可以作为可复用的组合式函数中 <code>onUnmounted</code> 的替代品, 它并不与组件耦合, 因为每个 Vue 组件的 setup 函数也是在一个 effect 作用域中调用的</p>
+</blockquote>
+<p>在当前活跃的 effect 作用域上注册一个处理回调函数, 当相关的 effect 作用域停止时会调用注册的回调函数</p>
+<h3 id="生命周期钩子"><a href="#生命周期钩子" class="headerlink" title="生命周期钩子"></a>生命周期钩子</h3><h4 id="onMounted"><a href="#onMounted" class="headerlink" title="onMounted()"></a>onMounted()</h4><p>注册一个回调函数在组件 <code>挂载完成</code> 之后执行, 此钩子在服务器端渲染期间不会被调用</p>
+<ul>
+<li>其所有同步子组件都已经被挂载(不包含 <code>异步组件</code> 或 <code>&lt;Suspense&gt;</code> 树内的组件)</li>
+<li>其自身的 DOM 树已经创建完成并插入了父容器中, 仅当根容器存在于文档中</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">ref</span>=<span class="string">&quot;el&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; ref, onMounted &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> el = <span class="title function_">ref</span>();</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">onMounted</span>(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="variable language_">console</span>.<span class="title function_">log</span>(el.<span class="property">value</span>); <span class="comment">// &lt;div&gt;</span></span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="onUpdated"><a href="#onUpdated" class="headerlink" title="onUpdated()"></a>onUpdated()</h4><blockquote>
+<p>父组件的更新钩子在其子组件的更新钩子之后调用</p>
+</blockquote>
+<p>注册一个回调函数在组件因为响应式状态变更而更新其 DOM 树之后调用, 此钩子在服务器端渲染期间不会被调用</p>
+<ul>
+<li>如果需要在某个特定的状态更改后访问更新后的 DOM, 使用 <code>nextTick()</code></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;count&quot;</span> @<span class="attr">click</span>=<span class="string">&quot;count++&quot;</span>&gt;</span>&#123;&#123;count&#125;&#125;<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; ref, onUpdated &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">onUpdated</span>(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;count&#x27;</span>).<span class="property">textContent</span>);</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="onUnmounted"><a href="#onUnmounted" class="headerlink" title="onUnmounted()"></a>onUnmounted()</h4><p>注册一个回调函数在组件实例被 <code>卸载之后</code> 调用, 此钩子在服务器端渲染期间不会被调用</p>
+<ul>
+<li>其所有子组件都已经被卸载</li>
+<li>所有相关的响应式作用(<code>渲染作用</code> 以及 <code>setup()</code> 时创建的计算属性和侦听器)都已经停止</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; onMounted, onUnmounted &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">let</span> intervalId;</span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">onMounted</span>(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    intervalId = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="comment">/* */</span></span></span><br><span class="line"><span class="language-javascript">    &#125;);</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">onUnmounted</span>(<span class="function">() =&gt;</span> <span class="built_in">clearInterval</span>(intervalId));</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 
 
 
 
-<p><em id="computed"></em> <!-- markdownlint-disable-line --></p>
-<h3 id="生命周期钩子"><a href="#生命周期钩子" class="headerlink" title="生命周期钩子"></a>生命周期钩子</h3><h3 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h3><h2 id="全局-API-1"><a href="#全局-API-1" class="headerlink" title="全局 API"></a>全局 API</h2><ul>
+
+
+
+
+<h3 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h3><h2 id="全局-API-1"><a href="#全局-API-1" class="headerlink" title="全局 API"></a>全局 API</h2><ul>
 <li><p>h 返回一个”虚拟节点”,通常缩写为 VNode：一个普通对象，其中包含向 Vue 描述它应在页面上渲染哪种节点的信息,包括所有子节点的描述</p>
 <ul>
 <li>参数<ul>
@@ -6141,20 +6187,7 @@
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Suspense</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 具有深层异步依赖的组件 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Dashboard</span> /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 在 #fallback 插槽中显示 “正在加载中” --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">fallback</span>&gt;</span> Loading... <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Suspense</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
 </ul>
-<h2 id="响应性-API"><a href="#响应性-API" class="headerlink" title="响应性 API"></a>响应性 API</h2><h3 id="响应性基础-API"><a href="#响应性基础-API" class="headerlink" title="响应性基础 API"></a>响应性基础 API</h3><ul>
-<li><p>toRaw 返回 <code>reactive</code> <code>readonly</code> <code>shallowReactive</code> <code>shallowReadonly</code> 代理的原始对象</p>
-<blockquote>
-<p>可用于临时读取数据而无需承担代理访问/跟踪的开销，也可用于写入数据而避免触发更改。不建议保留对原始对象的持久引用</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> reactiveFoo = <span class="title function_">reactive</span>(foo);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">toRaw</span>(reactiveFoo) === foo); <span class="comment">// true</span></span><br></pre></td></tr></table></figure></li>
-<li><p>markRaw 标记一个对象, 使其永远不会转换为 proxy. 返回对象本身</p>
-<ul>
-<li>有些值不应该是响应式的，例如复杂的第三方类实例或 Vue 组件对象。</li>
-<li>当渲染具有不可变数据源的大列表时，跳过 proxy 转换可以提高性能</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="title function_">markRaw</span>(&#123;&#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isReactive</span>(<span class="title function_">reactive</span>(foo))); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 嵌套在其他响应式对象中时也可以使用</span></span><br><span class="line"><span class="keyword">const</span> bar = <span class="title function_">reactive</span>(&#123; foo &#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isReactive</span>(bar.<span class="property">foo</span>)); <span class="comment">// false</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="Computed-watch"><a href="#Computed-watch" class="headerlink" title="Computed | watch "></a>Computed | watch <em id="computedWatchEffect"></em></h3><h2 id="组合式-API-1"><a href="#组合式-API-1" class="headerlink" title="组合式 API"></a>组合式 API</h2><ul>
+<h2 id="响应性-API"><a href="#响应性-API" class="headerlink" title="响应性 API"></a>响应性 API</h2><h3 id="响应性基础-API"><a href="#响应性基础-API" class="headerlink" title="响应性基础 API"></a>响应性基础 API</h3><h3 id="Computed-watch"><a href="#Computed-watch" class="headerlink" title="Computed | watch "></a>Computed | watch <em id="computedWatchEffect"></em></h3><h2 id="组合式-API-1"><a href="#组合式-API-1" class="headerlink" title="组合式 API"></a>组合式 API</h2><ul>
 <li><p>setup 组件选项，在创建组件之前执行</p>
 <ul>
 <li>参数<ul>
@@ -6170,8 +6203,6 @@
 </li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyComponent</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; attrs, slots, emit, expose &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
-<li><p>生命周期钩子</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  defineComponent,</span><br><span class="line">  onBeforeMount,</span><br><span class="line">  onMounted,</span><br><span class="line">  onBeforeUnmount,</span><br><span class="line">  onUnmounted,</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyComponent</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; attrs, slots, emit, expose &#125;</span>) &#123;</span><br><span class="line">    <span class="title function_">onBeforeMount</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onMounted</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onBeforeUnmount</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="title function_">onUnmounted</span>(<span class="function">() =&gt;</span> &#123;&#125;);</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
 <li><p>Provide / Inject</p>
 </li>
 <li><p>getCurrentInstance</p>
