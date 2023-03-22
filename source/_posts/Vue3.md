@@ -505,8 +505,13 @@ watchEffect(() => {}, {
 const state = reactive({ count: 0 });
 watch(
   () => state.count,
-  (count, prevCount) => {
+  (newVal, oldValue) => {
     /* */
+  },
+  // 当侦听 getter 函数, 回调函数只在此函数的返回值变化时才会触发, 监听深层级变更时触发需要设置 {deep: true}
+  // 当前侦听一个响应式对象, 默认自动开启深层级模式
+  {
+    deep: true,
   }
 );
 
@@ -522,6 +527,15 @@ const stop = watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
 });
 // 停止侦听器
 stop();
+
+// 副作用清理
+watch(id, async (newValue, oldValue, onCleanup) => {
+  const { response, cancel } = doAsyncWork(newValue);
+  // 当 id 变化时, cancel 被调用
+  // 取消之前的未完成的请求
+  onCleanup(cancel);
+  data.value = await response;
+});
 ```
 
 ##### 与 [watchEffect()](#watchEffect) 的区别
@@ -702,15 +716,141 @@ isReadonly(state.nested); // false
 state.nested.bar++;
 ```
 
+#### toRaw()
 
+> 可用于临时读取数据而无需承担代理访问/跟踪开销，也可用于写入数据而避免触发更改. 不建议保留对原始对象的持久引用
 
+返回由 `reactive()`, `readonly()`, `shallowReactive()`, `shallowReadonly()` 创建的的代理对应的原始对象
 
+```javascript
+const foo = {};
+const reactiveFoo = reactive(foo);
+console.log(toRaw(reactiveFoo) === foo); // true
+```
 
+#### markRaw()
 
-<em id="computed"></em> <!-- markdownlint-disable-line -->
+将一个对象标记为不可转为代理并返回该对象本身
 
+- 有些值不应该是响应式的，例如复杂的第三方类实例或 Vue 组件对象
+- 当渲染具有不可变数据源的大列表时，跳过代理转换可以提高性能
+
+```javascript
+const foo = markRaw({});
+console.log(isReactive(reactive(foo))); // false
+
+// 嵌套在其他响应式对象中时也可以使用
+const bar = reactive({ foo });
+console.log(isReactive(bar.foo)); // false
+```
+
+#### effectScope() <em id='effect'></em>
+
+创建一个 effect 作用域, 可以捕获其中所创建的响应式副作用(计算属性和侦听器), 这样捕获到的副作用可以一起处理
+
+```javascript
+// 创建 effect 作用域
+const scope = effectScope();
+
+scope.run(() => {
+  const doubled = computed(() => counter.value * 2);
+
+  watch(doubled, (newValue, oldValue) =>
+    console.log(doubled.value, newValue, oldValue)
+  );
+
+  watchEffect(() => console.log('Count: ', doubled.value));
+});
+
+// 停止当前作用域内的所有 effect
+scope.stop();
+```
+
+#### [getCurrentScope()](#effect)
+
+如果存在则返回当前活跃的 effect 作用域
+
+#### onScopeDispose()
+
+> 此方法可以作为可复用的组合式函数中 `onUnmounted` 的替代品, 它并不与组件耦合, 因为每个 Vue 组件的 setup 函数也是在一个 effect 作用域中调用的
+
+在当前活跃的 effect 作用域上注册一个处理回调函数, 当相关的 effect 作用域停止时会调用注册的回调函数
 
 ### 生命周期钩子
+
+#### onMounted()
+
+注册一个回调函数在组件 `挂载完成` 之后执行, 此钩子在服务器端渲染期间不会被调用
+
+- 其所有同步子组件都已经被挂载(不包含 `异步组件` 或 `<Suspense>` 树内的组件)
+- 其自身的 DOM 树已经创建完成并插入了父容器中, 仅当根容器存在于文档中
+
+```html
+<template>
+  <div ref="el"></div>
+</template>
+<script setup>
+  import { ref, onMounted } from 'vue';
+  const el = ref();
+
+  onMounted(() => {
+    console.log(el.value); // <div>
+  });
+</script>
+```
+
+#### onUpdated()
+
+> 父组件的更新钩子在其子组件的更新钩子之后调用
+
+注册一个回调函数在组件因为响应式状态变更而更新其 DOM 树之后调用, 此钩子在服务器端渲染期间不会被调用
+
+- 如果需要在某个特定的状态更改后访问更新后的 DOM, 使用 `nextTick()`
+
+```html
+<template>
+  <button id="count" @click="count++">{{count}}</button>
+</template>
+<script setup>
+  import { ref, onUpdated } from 'vue';
+
+  const count = ref(0);
+
+  onUpdated(() => {
+    console.log(document.getElementById('count').textContent);
+  });
+</script>
+```
+
+#### onUnmounted()
+
+注册一个回调函数在组件实例被 `卸载之后` 调用, 此钩子在服务器端渲染期间不会被调用
+
+- 其所有子组件都已经被卸载
+- 所有相关的响应式作用(`渲染作用` 以及 `setup()` 时创建的计算属性和侦听器)都已经停止
+
+```html
+<script setup>
+  import { onMounted, onUnmounted } from 'vue';
+
+  let intervalId;
+  onMounted(() => {
+    intervalId = setInterval(() => {
+      /* */
+    });
+  });
+
+  onUnmounted(() => clearInterval(intervalId));
+</script>
+```
+
+
+
+
+
+
+
+
 
 ### 依赖注入
 
@@ -1326,30 +1466,6 @@ const Child = {
 
 ### 响应性基础 API
 
-- toRaw 返回 `reactive` `readonly` `shallowReactive` `shallowReadonly` 代理的原始对象
-
-  > 可用于临时读取数据而无需承担代理访问/跟踪的开销，也可用于写入数据而避免触发更改。不建议保留对原始对象的持久引用
-
-  ```javascript
-  const foo = {};
-  const reactiveFoo = reactive(foo);
-  console.log(toRaw(reactiveFoo) === foo); // true
-  ```
-
-- markRaw 标记一个对象, 使其永远不会转换为 proxy. 返回对象本身
-
-  - 有些值不应该是响应式的，例如复杂的第三方类实例或 Vue 组件对象。
-  - 当渲染具有不可变数据源的大列表时，跳过 proxy 转换可以提高性能
-
-  ```javascript
-  const foo = markRaw({});
-  console.log(isReactive(reactive(foo))); // false
-
-  // 嵌套在其他响应式对象中时也可以使用
-  const bar = reactive({ foo });
-  console.log(isReactive(bar.foo)); // false
-  ```
-
 ### Computed | watch <em id="computedWatchEffect"></em>
 
 ## 组合式 API
@@ -1368,27 +1484,6 @@ const Child = {
   import { defineComponent } from 'vue';
   const MyComponent = defineComponent({
     setup(props, { attrs, slots, emit, expose }) {
-      return {};
-    },
-  });
-  ```
-
-- 生命周期钩子
-
-  ```javascript
-  import {
-    defineComponent,
-    onBeforeMount,
-    onMounted,
-    onBeforeUnmount,
-    onUnmounted,
-  } from 'vue';
-  const MyComponent = defineComponent({
-    setup(props, { attrs, slots, emit, expose }) {
-      onBeforeMount(() => {});
-      onMounted(() => {});
-      onBeforeUnmount(() => {});
-      onUnmounted(() => {});
       return {};
     },
   });
