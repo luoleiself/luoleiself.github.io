@@ -300,7 +300,7 @@ const app = createApp({
 #### 返回渲染函数
 
 - setup 应该同步地返回一个对象, 唯一可以使用 `async setup()` 地情况是该组件时 `Suspense` 组件地后裔
-- 也可以返回一个`渲染函数`, 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
+- 也可以返回一个 `渲染函数`, 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
 
 ```javascript
 import { h, ref, reactive } from 'vue';
@@ -359,18 +359,18 @@ console.log(count.value); // 0
 
 返回一个对象的响应式代理
 
-- 仅对对象类型有效(对象、数组、Map、Set 这样的集合类型), 而对 `string` `number` `boolean`这样的原始类型无效
+- 仅对对象类型有效(对象、数组、Map、Set 这样的集合类型), 而对 `string`, `number`, `boolean` 这样的原始类型无效
 - 因为 Vue 的响应式系统是通过属性访问进行追踪的, 因此需要始终保持对响应式对象的相同引用, 将响应式对象的属性赋值或解构至本地变量时、或是将该属性传入一个函数时将失去响应性
 - 对同一个原始对象调用 `reactive()` 总是返回同样的代理对象, 对一个已存在的代理对象调用 `reactive()` 总是返回其本身
 
-- 将一个 ref 赋值给一个 reactive 属性时, 该 ref 会被自动解包
+- 将一个 ref 赋值给一个 reactive 属性时, 该 ref 会自动解包
 
 ```javascript
 const count = ref(1);
 const obj = reactive({});
 obj.count = count;
 console.log(obj.count); // 1
-// ref 会被解包
+// ref 会解包
 console.log(obj.count === count.value); // true
 // 自动更新 `obj.value`
 count.value++;
@@ -382,10 +382,10 @@ console.log(obj.count); // 3
 console.log(count.value); // 3
 ```
 
-- 当访问到某个响应式数组或 `Map` 这样的原生集合类型中的 ref 元素时, 不会执行 ref 解包
+- 当访问到某个响应式 `数组` 或 `Map` 这样的原生集合类型中的 ref 元素时, 不会执行 ref 的解包
 
 ```javascript
-// 原生集合中包含 ref 元素时, ref 不会被解包
+// 原生集合中包含 ref 元素时, ref 不会解包
 const books = reactive([ref('Vue 3.0')]);
 console.log(books[0].value); // 需要使用 .value
 
@@ -607,7 +607,7 @@ console.log(state.foo); // 3
 
 #### isReadonly()
 
-检查对象是否是由 `readonly()` `shallowReadonly()` 创建的只读代理, 只读对象的属性可以更改, 但不能通过传入的对象直接赋值
+检查对象是否是由 `readonly()`, `shallowReadonly()` 创建的只读代理, 只读对象的属性可以更改, 但不能通过传入的对象直接赋值
 
 ### 响应式: 进阶
 
@@ -687,7 +687,7 @@ triggerRef(shallow);
 [reactive()](#reactive) 的浅层作用形式
 
 - 没有深层级的转换, 浅层响应式对象里只有根级别的属性是响应式的
-- 属性的值会被原样存储和暴露, 值为 ref 的属性不会被自动解包
+- 属性的值会被原样存储和暴露, 值为 ref 的属性不会自动解包
 
 ```javascript
 const state = shallowReactive({ foo: 1, nested: { bar: 2 } });
@@ -704,7 +704,7 @@ state.nested.bar++;
 [readonly()](#readonly) 的浅层作用形式
 
 - 没有深层级的转换, 只有根层级的属性变为了只读
-- 属性的值会被原样存储和暴露, 值为 ref 的属性不会被自动解包
+- 属性的值会被原样存储和暴露, 值为 ref 的属性不会自动解包
 
 ```javascript
 const state = shallowReadonly({ foo: 1, nested: { bar: 2 } });
@@ -744,7 +744,7 @@ const bar = reactive({ foo });
 console.log(isReactive(bar.foo)); // false
 ```
 
-#### effectScope() <em id='effect'></em>
+#### effectScope() <em id='effect'></em> <!-- markdownlint-disable-line -->
 
 创建一个 effect 作用域, 可以捕获其中所创建的响应式副作用(计算属性和侦听器), 这样捕获到的副作用可以一起处理
 
