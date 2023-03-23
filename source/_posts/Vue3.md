@@ -21,7 +21,7 @@ tags:
     - {Object} rootComponent 根组件选项
     - {Object} rootProps 传递给根组件的 props
 
-  ```js
+  ```javascript
   import { createApp } from 'vue';
   const app = createApp({
     /* root component options */
@@ -40,7 +40,7 @@ tags:
     - key, 注入的 key
     - value, 注入的 key 对应的值, 返回应用实例本身
 
-  ```js
+  ```javascript
   import { createApp } from 'vue';
   const app = createApp({
     inject: ['name'],
@@ -51,7 +51,7 @@ tags:
 
 - app.component() 注册或查找全局组件, 根据参数个数区分
 
-  ```js
+  ```javascript
   import { createApp } from 'vue';
   const app = createApp(/* */);
   app.component('my-component', {
@@ -98,7 +98,7 @@ tags:
     - 第一个参数为插件本身
     - 可选, 第二个参数作为插件选项将会传递给插件的 `install()`方法
 
-  ```js
+  ```javascript
   import { createApp } from 'vue';
   const app = createApp(/* */);
   // 包含 install 方法的对象
@@ -133,7 +133,7 @@ tags:
   - app.config.globalProperties 用于注册能够被应用实例内所有组件实例访问到的全局属性的对象
   - app.config.optionMergeStrategies 用于定义自定义组件选项的合并策略的对象
 
-  ```js
+  ```javascript
   import { createApp } from 'vue';
   const app = createApp(/* */);
   app.config.errorHandler = (err, instance, info){/* */}
@@ -212,10 +212,10 @@ async function increment() {
       suspensible: false, // 定义组件是否可挂起 | 默认值：true
       /**
        * @param {*} error 错误信息对象
-      * @param {*} retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试
-      * @param {*} fail  一个函数，指示加载程序结束退出
-      * @param {*} attempts 允许的最大重试次数
-      */
+       * @param {*} retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试
+       * @param {*} fail  一个函数，指示加载程序结束退出
+       * @param {*} attempts 允许的最大重试次数
+       */
       onError(error, retry, fail, attempts) {
         if (error.message.match(/fetch/) && attempts <= 3) {
           // 请求发生错误时重试，最多可尝试 3 次
@@ -282,7 +282,7 @@ setup 函数的第二个参数, 暴露了其他一些在 setup 中可能会用�
 - emit 触发事件, 等价于 $emit
 - expose 用于显示的限制该组件暴露出的属性, 父组件将仅能访问 expose 函数暴露出的内容
 
-```js
+```javascript
 import { ref, createApp } from 'vue';
 
 const app = createApp({
@@ -843,6 +843,11 @@ scope.stop();
   onUnmounted(() => clearInterval(intervalId));
 </script>
 ```
+
+
+
+
+
 
 
 
