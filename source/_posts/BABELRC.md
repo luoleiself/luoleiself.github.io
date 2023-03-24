@@ -8,47 +8,30 @@ tags:
   - Babel
 ---
 
-# @babel/cli
+## @babel/cli
 
-## install
+### install
 
 ```bash
-npm i -D @babel/cli @babel/core
+npm i -D @babel/cli @babel/core @babel/preset-env
 ```
 
-## 运行
+### 运行
 
-### 配置项
-
-- 编译文件
-
-  ```bash
-  npx babel index.js # 编译 index.js
-  ```
+#### 参数
 
 - \-\-watch | \-w 监听文件改变自动编译
-
-  ```bash
-  npx babel index.js -w # 编译并监听 index.js
-  ```
-
 - \-\-out-file | \-o 输出指定文件名
-
-  ```bash
-  npx babel index.js -o index.min.js # 编译 index.js 文件输出到 index.min.js
-  ```
-
 - \-\-out-dir | \-d 编译整个目录
-
   - 编译目录下所有文件输出合并为一个文件
 
-    ```bash
-    npx babel src -o index.min.js # 编译 src 目录下所有文件输出到 index.min.js
-    ```
+```bash
+npx babel index.js -w # 编译并监听 index.js
 
-  ```bash
-  npx babel src -d dist # 编译 src 目录下文件输出到 dist 下
-  ```
+npx babel index.js -o index.min.js # 编译 index.js 文件输出到 index.min.js
+
+npx babel src -d dist # 编译 src 目录下文件输出到 dist 下
+```
 
 <!-- more -->
 
@@ -61,24 +44,6 @@ npm i -D @babel/cli @babel/core
   ```bash
   npx babel index.js -w -s # 输出 .map 文件
   npx babel index.js -w -s inline # 文件末尾追加
-  ```
-
-- \-\-ignore 忽略某些文件
-
-  ```bash
-  npx babel src -d dist --ignore "src/**/*.test.js","lib/**/*.*" # 忽略编译文件
-  ```
-
-- \-\-copy-files 复制文件
-
-  ```bash
-  npx babel src -d dist --copy-files "libs/**/*.js" # 复制不需要编译的文件
-  ```
-
-- 通过管道输入文件
-
-  ```bash
-  npx babel -o bundle.min.js < index.js # 读取 index.js 的内容通过管道流编译输出到 bundle.min.js
   ```
 
 - \-\-presets 使用预设
@@ -94,68 +59,87 @@ npm i -D @babel/cli @babel/core
   npx babel index.js -o index.min.js --plugins=@babel/proposal-class-properties,@babel/plugin-transform-runtime
   ```
 
+- 通过管道输入文件
+
+  ```bash
+  npx babel -o bundle.min.js < index.js # 读取 index.js 的内容通过管道流编译输出到 bundle.min.js
+  ```
+
 - \-\-no-babelrc 忽略 .babelrc 配置文件
+- \-\-config-file 自定义配置文件路径
+- \-\-copy-files 复制文件
+- \-\-ignore 忽略某些文件
 
   ```bash
   npx babel index.js --no-babelrc # 忽略项目中的 .babelrc 配置文件
-  ```
 
-- \-\-config-file 自定义配置文件路径
-
-  ```bash
   npx babel index.js --config-file /path/to/.babelrc.json # 自定义配置文件路径
+
+  npx babel src -d dist --copy-files "libs/**/*.js" # 复制不需要编译的文件
+
+  npx babel src -d dist --ignore "src/**/*.test.js","lib/**/*.*" # 忽略编译文件
   ```
 
-# @babel/core
+## @babel/core
 
-## Presets
+### Presets
 
 - @babel/preset-env
-- @babel/preset-react
-  - @babel/plugin-syntax-jsx
-  - @babel/plugin-transform-react-jsx
-  - @babel/plugin-transform-react-display-name
 - @babel/preset-typescript
-  - @babel/plugin-transform-typescript
+- @babel/preset-react
 - @babel/preset-flow
-  - @babel/plugin-transform-flow-strip-types
-- TC39 规则
-  - Stage 0 - Strawman: just an idea, possible Babel plugin.
-  - Stage 1 - Proposal: this is worth working on.
-  - Stage 2 - Draft: initial spec.
-  - Stage 3 - Candidate: complete spec and initial browser implementations.
-  - Stage 4 - Finished: will be added to the next yearly release.
+
+### 插件
 
 ```json
-{ "presets": ["babel-preset-myPreset", "@babel/preset-env"] }
+{
+  // 开启默认预设
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false, // 关闭 esm 转化，统一交由 rollup 处理，防止冲突
+        "targets": "> 0.25%, not dead"
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-external-helpers",
+    [
+      // 开启 babel 各依赖联动，由此插件负责自动导入 helper 辅助函数，从而形成沙箱 polyfill
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": { "version": 3, "proposals": true },
+        "helper": true,
+        "regenerator": true
+        // "useESModules": true // 关闭 esm 转化，交由 rollup 处理，同上防止冲突 7.13.0 开启废弃
+      }
+    ]
+  ]
+}
 ```
 
-a
+### 集成
 
-## 插件
+- @babel/cli babel 命令行工具
+- @babel/polyfill 7.4.0 开始被废弃
+- @babel/plugin-transform-runtime 包含 babel 重建模块化运行时助手的插件
 
-```json
-{ "plugins": ["@babel/plugin-transform-runtime"] }
-```
+  - 为所有辅助函数创建 `@babel/runtime` 模块的引用, 避免编译输出中的重复引用
+  - 为代码创建一个沙盒环境, 避免直接的引入垫片而引起的全局环境污染
 
-## 集成
-
-- @babel/cli
-- @babel/plugin-transform-runtime
 - @babel/register 通过 require 钩子方式使用 babel
-
-  ```javascript
-  require('@babel/register')({
-    presets: ['@babel/preset-env'],
-    plugins: ['@babel/plugin-transform-runtime'],
-    extensions: ['.es6', '.es', '.jsx', '.js', '.mjs'],
-    cache: true,
-  });
-  ```
-
 - @babel/standalone 提供一个 js 编译环境,不建议在生产环境中使用此工具
 
-## 工具
+### 工具
 
+- @babel/parser babel 的 js 解析函数
+- @babel/core 包含整个 babel 工作的核心模块
 - @babel/generator AST 转换
-- @babel/runtime 包含 babel 模块化运行时帮助程序的库
+- @babel/code-frame
+- @babel/runtime 包含 babel 模块化运行时助手的库
+  - 为每个 js 文件添加运行时辅助函数
+  - 可能会在输出文件中注入一些跨文件相同的可能被重复使用的代码
+- @babel/template
+- @babel/traverse
+- @babel/types 此模块包含手动构建 AST 和检查 AST 节点类型的方法
