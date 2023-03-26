@@ -778,6 +778,8 @@ scope.stop();
 
 ### 生命周期钩子
 
+> 所有生命周期钩子函数必须在组件的 `setup()` 阶段同步调用
+
 #### onBeforeMount()
 
 > 钩子函数在服务器端渲染期间不会被调用
@@ -947,9 +949,243 @@ scope.stop();
 
 #### provide()
 
+> `provide()` 必须在组件的 `setup()` 阶段同步调用
+
+允许组件向其所有后代组件注入一个依赖, 不论组件层次深度
+
+```html
+<script setup>
+  import { ref, provide } from 'vue';
+
+  provide('name', 'hello world');
+  // 或者是返回一个对象的函数
+  provide(() => {
+    return { foo: 'foo' }
+  });
+
+  const count = ref(0);
+  provide('count', count);
+</script>
+```
+
 #### inject()
 
+> `inject()` 必须在组件的 `setup()` 阶段同步调用
+
+注入一个由祖先组件或整个应用(通过 `app.provide()` ) 提供的值
+
+- 第一个参数为注入的 key, 通过匹配最近的组件提供的值, 否则将返回 undefined
+- 第二个参数可选, 即在没有匹配到 key 时使用的默认值, 
+  
+  - 如果为一个工厂函数, 则用来返回某些创建复杂的值
+  - 如果默认值本身是一个函数, 则需要将 false 作为第三个参数传入, 表明这个函数就是默认值而不是工厂函数
+
+```html
+<script setup>
+  import { inject } from 'vue';
+
+  // 注入值的默认方式
+  const count = inject('count');
+
+  // 注入一个值, 如果为空则使用提供的默认值
+  const foo = inject('foo', 'default value');
+
+  // 注入一个值, 如果为空则使用提供的工厂函数
+  const bar = inject('bar', () => new Map());
+
+  // 注入一个值, 表明提供的默认值是一个函数
+  const fn = inject('fn', () => { }, false);
+</script>
+```
+
 ## 选项式 API
+
+### 状态选项
+
+#### data
+
+> 以 _ 和 $ 开头的属性不会被组件实例代理, 因为它们可能和 Vue 的内置属性, API 方法冲突
+
+用于声明组件初始响应式状态的函数
+
+#### props
+
+用于声明组件的 props
+
+- 使用字符串数组的简易形式
+- 使用对象的完整形式, 可以对单个 prop 进行更详细的配置
+
+  - type 定义 prop 的类型, 可以为原生构造函数之一
+  - default 为该 prop 指定一个当其没有被传入值或值为 undefined 时的默认值
+  - required 定义该 prop 是否必需传入
+  - validator 将 prop 值作为唯一参数传入的自定义验证函数
+
+```javascript
+export default {
+  data(){
+    return {name: 'hello world'}
+  },
+  // 简易形式
+  props:['name', 'age'], 
+  // 对象形式
+  props: {
+    name: String, // 类型检查
+    age: {
+      type: Number,
+      default: 18,
+      required: true,
+      validator: (value) => {
+        return value > 0;
+      }
+    }
+  }
+}
+``` 
+
+#### computed
+
+用于声明在组件实例上暴露的计算属性
+
+- 包含一个只有 getter 函数的方法, 方法名为计算属性的名称
+- 包含一个具有 get 和 set 函数的对象
+
+```javascript
+export default {
+  data(){
+    return {age: 18}
+  },
+  computed: {
+    // 只读计算属性
+    name(){ 
+      return 'hello world'
+    },
+    // 可读可写计算属性
+    agePlus: {
+      get(){
+        return this.age;
+      },
+      set(val){
+        this.age = this.age + val;
+      }
+    }
+  }
+}
+```
+
+#### methods
+
+> 在声明方法时避免使用箭头函数, 因为它们不能通过 this 访问组件实例
+
+用于声明要混入到组件实例中的方法
+
+#### [watch](#watchEffect)
+
+用于声明在数据更改时调用的侦听回调
+
+- 普通形式
+- 对象形式
+  
+  - immediate 在侦听器创建时立即触发回调
+  - deep 如果源是对象或数组, 则强制深度遍历源, 以便在深度变更时触发回调
+  - flush 调整回调函数的刷新时机
+  - onTrack/onTrigger 调试侦听器的依赖关系
+
+```javascript
+export default {
+  data(){
+    return {age: 18}
+  },
+  watch: {
+    // 侦听根级属性
+    age(val, oldVal){
+      console.log(val, oldVal);
+    },
+    // 字符串方法名称
+    b: 'otherMethod',
+    // 深度侦听属性
+    c: {
+      handler(val, oldVal){},
+      deep: true
+    },
+    // 侦听单个嵌套属性
+    'c.d': function(val, oldVal){},
+    // 该回调函数在侦听开始之后立即调用
+    e: {
+      handler(val, oldVal){},
+      immediate: true
+    },
+    // 回调数组, 将会被逐一调用
+    f: [
+      'handler',
+      function handle2(val, oldVal){
+        console.log('handle2 triggered');
+      },
+      {
+        handler: function handle3(val, oldVal){
+          console.log('handle3 triggered');
+        },
+        /* */
+      }
+    ]
+  }
+}
+```
+
+#### emits
+
+用于声明由组件触发的自定义事件
+
+- 使用字符串数组的简易形式
+- 使用对象的完整形式
+
+```javascript
+export default {
+  data(){
+    return {name: 'hello world'}
+  },
+  // 简易形式
+  emits: ['check'],
+  // 对象形式
+  emits: {
+    // 没有验证函数
+    click: null,
+    // 具有验证函数
+    submit: (payload) => {
+      if (payload.email && payload.password) {
+        return true;
+      } else {
+        console.warn(`Invalid submit event payload!`);
+        return false;
+      }
+    }
+  },
+  mounted() {
+    this.$emit('check');
+  }
+}
+```
+
+#### expose
+
+> 保持私有的内部状态或方法, 以避免紧耦合
+
+用于声明当组件实例被父组件通过模板引用访问时暴露的公共属性, 当使用 expose 时, 只有显式列出的属性将在组件实例上暴露
+
+```javascript
+export default {
+  data(){
+    return {name: 'hello world'}
+  },
+  expose: ['publicProp', 'publicMethod']
+}
+```
+
+### 渲染选项
+
+
+
+
+
 
 
 
@@ -1161,73 +1397,6 @@ scope.stop();
 
 ## 选项
 
-### Data
-
-#### data
-
-- vm.a 等价于 vm.$data.a
-- 以 \_ 或 $ 开头的 property 不会被组件实例代理, vm.$data.\_property
-
-#### props 用于接收来自父组件的数据
-
-#### [computed](#computedWatchEffect) 计算属性
-
-- 计算属性的结果会被缓存,依赖的响应式 property 变化才会重新计算
-
-#### methods
-
-#### [watch](#computedWatchEffect)
-
-#### emits 定义组件触发的自定义事件
-
-> emits 选项中列出的事件不会从组件的根元素继承，也将从 $attrs property 中移除
-
-- Array&lt;string&gt; | Object
-
-  ```javascript
-  import { createApp } from 'vue';
-  const app = createApp({});
-  // 数组语法
-  app.component('todo-item', {
-    emits: ['check'],
-    created() {
-      this.$emit('check');
-    },
-  });
-  // 对象语法
-  app.component('reply-form', {
-    emits: {
-      // 没有验证函数
-      click: null,
-      // 带有验证函数
-      submit: (payload) => {
-        if (payload.email && payload.password) {
-          return true;
-        } else {
-          console.warn(`Invalid submit event payload!`);
-          return false;
-        }
-      },
-    },
-    mounted() {
-      this.$emit('submit', { email: '', password: '' });
-    },
-  });
-  ```
-
-#### expose
-
-- 3.2 新增, 暴露在公共组件实例上的 property 列表
-
-```javascript
-export default {
-  expose: ['increment'],
-  data() {
-    return {};
-  },
-};
-```
-
 ### DOM
 
 #### template
@@ -1277,41 +1446,6 @@ const CompB = {
   extends: CompA,
   ...
 }
-```
-
-#### provide / inject
-
-> 允许一个祖先组件向其所有子孙后代注入一个依赖,不论组件层次深度
-
-> provide 和 inject 绑定并不是响应式的
-
-```javascript
-// 父级组件 provide  'foo'
-const Provider = {
-  provide: {
-    foo: 'bar',
-  },
-  // 或者是返回一个对象的函数
-  // provide() {
-  //   return {
-  //     foo: 'bar',
-  //   };
-  // },
-};
-// 子组件 inject  'foo'
-const Child = {
-  inject: ['foo'],
-  // 或者是一个对象
-  // inject: {
-  //   foo: {
-  //     default: 'foo',
-  //   },
-  // },
-  created() {
-    console.log(this.foo); // => "bar"
-  },
-  // ...
-};
 ```
 
 ### 杂项
@@ -1563,7 +1697,6 @@ const Child = {
   });
   ```
 
-- Provide / Inject
 - getCurrentInstance
   - 支持访问内部组件实例，用于高阶用法或库的开发
   - 只能在 setup 或生命周期钩子中调用
@@ -2097,23 +2230,3 @@ app.directive('my-directive', {
 <child-component @vnodeUpdated="onUpdated"></child-component>
 ```
 
-### Watch on Arrays
-
-> 当侦听一个数组时，只有当数组被替换时才会触发回调。如果你需要在数组改变时触发回调，必须指定 deep 选项
-
-```javascript
-export default {
-  watch: {
-    bookList: {
-      handler(val, oldVal) {
-        console.log('book list changed');
-      },
-      deep: true,
-    },
-  },
-};
-```
-
-```
-
-```
