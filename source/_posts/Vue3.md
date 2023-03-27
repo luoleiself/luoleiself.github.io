@@ -960,7 +960,7 @@ scope.stop();
   provide('name', 'hello world');
   // 或者是返回一个对象的函数
   provide(() => {
-    return { foo: 'foo' }
+    return { foo: 'foo' };
   });
 
   const count = ref(0);
@@ -975,8 +975,8 @@ scope.stop();
 注入一个由祖先组件或整个应用(通过 `app.provide()` ) 提供的值
 
 - 第一个参数为注入的 key, 通过匹配最近的组件提供的值, 否则将返回 undefined
-- 第二个参数可选, 即在没有匹配到 key 时使用的默认值, 
-  
+- 第二个参数可选, 即在没有匹配到 key 时使用的默认值,
+
   - 如果为一个工厂函数, 则用来返回某些创建复杂的值
   - 如果默认值本身是一个函数, 则需要将 false 作为第三个参数传入, 表明这个函数就是默认值而不是工厂函数
 
@@ -994,7 +994,7 @@ scope.stop();
   const bar = inject('bar', () => new Map());
 
   // 注入一个值, 表明提供的默认值是一个函数
-  const fn = inject('fn', () => { }, false);
+  const fn = inject('fn', () => {}, false);
 </script>
 ```
 
@@ -1004,7 +1004,7 @@ scope.stop();
 
 #### data
 
-> 以 _ 和 $ 开头的属性不会被组件实例代理, 因为它们可能和 Vue 的内置属性, API 方法冲突
+> 以 \_ 和 $ 开头的属性不会被组件实例代理, 因为它们可能和 Vue 的内置属性, API 方法冲突
 
 用于声明组件初始响应式状态的函数
 
@@ -1022,11 +1022,11 @@ scope.stop();
 
 ```javascript
 export default {
-  data(){
-    return {name: 'hello world'}
+  data() {
+    return { name: 'hello world' };
   },
   // 简易形式
-  props:['name', 'age'], 
+  props: ['name', 'age'],
   // 对象形式
   props: {
     name: String, // 类型检查
@@ -1036,11 +1036,11 @@ export default {
       required: true,
       validator: (value) => {
         return value > 0;
-      }
-    }
-  }
-}
-``` 
+      },
+    },
+  },
+};
+```
 
 #### computed
 
@@ -1051,25 +1051,25 @@ export default {
 
 ```javascript
 export default {
-  data(){
-    return {age: 18}
+  data() {
+    return { age: 18 };
   },
   computed: {
     // 只读计算属性
-    name(){ 
-      return 'hello world'
+    name() {
+      return 'hello world';
     },
     // 可读可写计算属性
     agePlus: {
-      get(){
+      get() {
         return this.age;
       },
-      set(val){
+      set(val) {
         this.age = this.age + val;
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 ```
 
 #### methods
@@ -1084,7 +1084,7 @@ export default {
 
 - 普通形式
 - 对象形式
-  
+
   - immediate 在侦听器创建时立即触发回调
   - deep 如果源是对象或数组, 则强制深度遍历源, 以便在深度变更时触发回调
   - flush 调整回调函数的刷新时机
@@ -1092,43 +1092,43 @@ export default {
 
 ```javascript
 export default {
-  data(){
-    return {age: 18}
+  data() {
+    return { age: 18 };
   },
   watch: {
     // 侦听根级属性
-    age(val, oldVal){
+    age(val, oldVal) {
       console.log(val, oldVal);
     },
     // 字符串方法名称
     b: 'otherMethod',
     // 深度侦听属性
     c: {
-      handler(val, oldVal){},
-      deep: true
+      handler(val, oldVal) {},
+      deep: true,
     },
     // 侦听单个嵌套属性
-    'c.d': function(val, oldVal){},
+    'c.d': function (val, oldVal) {},
     // 该回调函数在侦听开始之后立即调用
     e: {
-      handler(val, oldVal){},
-      immediate: true
+      handler(val, oldVal) {},
+      immediate: true,
     },
     // 回调数组, 将会被逐一调用
     f: [
       'handler',
-      function handle2(val, oldVal){
+      function handle2(val, oldVal) {
         console.log('handle2 triggered');
       },
       {
-        handler: function handle3(val, oldVal){
+        handler: function handle3(val, oldVal) {
           console.log('handle3 triggered');
         },
-        /* */
-      }
-    ]
-  }
-}
+        /* ... */
+      },
+    ],
+  },
+};
 ```
 
 #### emits
@@ -1140,8 +1140,8 @@ export default {
 
 ```javascript
 export default {
-  data(){
-    return {name: 'hello world'}
+  data() {
+    return { name: 'hello world' };
   },
   // 简易形式
   emits: ['check'],
@@ -1157,12 +1157,12 @@ export default {
         console.warn(`Invalid submit event payload!`);
         return false;
       }
-    }
+    },
   },
   mounted() {
     this.$emit('check');
-  }
-}
+  },
+};
 ```
 
 #### expose
@@ -1173,11 +1173,11 @@ export default {
 
 ```javascript
 export default {
-  data(){
-    return {name: 'hello world'}
+  data() {
+    return { name: 'hello world' };
   },
-  expose: ['publicProp', 'publicMethod']
-}
+  expose: ['publicProp', 'publicMethod'],
+};
 ```
 
 ### 渲染选项
@@ -2229,4 +2229,3 @@ app.directive('my-directive', {
 <!-- 或者使用驼峰命名法 -->
 <child-component @vnodeUpdated="onUpdated"></child-component>
 ```
-
