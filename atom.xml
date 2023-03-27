@@ -46,6 +46,48 @@
   </entry>
   
   <entry>
+    <title>Redis-String-Hash</title>
+    <link href="https://luoleiself.github.io/2022/11/80b3dfc88923/"/>
+    <id>https://luoleiself.github.io/2022/11/80b3dfc88923/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2023-02-07T11:35:02.970Z</updated>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Strings-命令&quot;&gt;&lt;a href=&quot;#Strings-命令&quot; class=&quot;headerlink&quot; title=&quot;Strings 命令&quot;&gt;&lt;/a&gt;Strings 命令&lt;/h3&gt;&lt;p&gt;字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.&lt;/p&gt;
+&lt;p&gt;Strings: 键名: key, 键类型: string, 键值: string&lt;/p&gt;
+&lt;h4 id=&quot;设置值&quot;&gt;&lt;a href=&quot;#设置值&quot; class=&quot;headerlink&quot; title=&quot;设置值&quot;&gt;&lt;/a&gt;设置值&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL] 为 key 设置字符串的值, 执行成功返回 ok&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SETNX key value 设置指定 key 的值且当 key 不存在时, 1 成功, 0 失败&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 &lt;code&gt;SET&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&quot;批量设置值&quot;&gt;&lt;a href=&quot;#批量设置值&quot; class=&quot;headerlink&quot; title=&quot;批量设置值&quot;&gt;&lt;/a&gt;批量设置值&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;MSET key value [key value …] 批量设置 key 的值&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 1 成功, 0 失败&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SETRANGE key offset value 覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&quot;过期时间&quot;&gt;&lt;a href=&quot;#过期时间&quot; class=&quot;headerlink&quot; title=&quot;过期时间&quot;&gt;&lt;/a&gt;过期时间&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok&lt;/li&gt;
+&lt;li&gt;PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Redis-List</title>
     <link href="https://luoleiself.github.io/2022/11/3f42dc25499d/"/>
     <id>https://luoleiself.github.io/2022/11/3f42dc25499d/</id>
@@ -77,48 +119,6 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LINSERT list BEFORE a hello   # 向 list 中第 1 次出现 a 的前面添加 hello&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LRANGE list 0 -1 # 遍历 list&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &amp;quot;hello&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &amp;quot;a&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &amp;quot;d&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &amp;quot;c&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5) &amp;quot;b&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis-String-Hash</title>
-    <link href="https://luoleiself.github.io/2022/11/80b3dfc88923/"/>
-    <id>https://luoleiself.github.io/2022/11/80b3dfc88923/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2023-02-07T11:35:02.970Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;Strings-命令&quot;&gt;&lt;a href=&quot;#Strings-命令&quot; class=&quot;headerlink&quot; title=&quot;Strings 命令&quot;&gt;&lt;/a&gt;Strings 命令&lt;/h3&gt;&lt;p&gt;字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.&lt;/p&gt;
-&lt;p&gt;Strings: 键名: key, 键类型: string, 键值: string&lt;/p&gt;
-&lt;h4 id=&quot;设置值&quot;&gt;&lt;a href=&quot;#设置值&quot; class=&quot;headerlink&quot; title=&quot;设置值&quot;&gt;&lt;/a&gt;设置值&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL] 为 key 设置字符串的值, 执行成功返回 ok&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SETNX key value 设置指定 key 的值且当 key 不存在时, 1 成功, 0 失败&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 &lt;code&gt;SET&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5 id=&quot;批量设置值&quot;&gt;&lt;a href=&quot;#批量设置值&quot; class=&quot;headerlink&quot; title=&quot;批量设置值&quot;&gt;&lt;/a&gt;批量设置值&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;MSET key value [key value …] 批量设置 key 的值&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 1 成功, 0 失败&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SETRANGE key offset value 覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5 id=&quot;过期时间&quot;&gt;&lt;a href=&quot;#过期时间&quot; class=&quot;headerlink&quot; title=&quot;过期时间&quot;&gt;&lt;/a&gt;过期时间&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok&lt;/li&gt;
-&lt;li&gt;PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok&lt;/li&gt;
-&lt;/ul&gt;</summary>
     
     
     
