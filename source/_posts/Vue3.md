@@ -780,13 +780,13 @@ scope.stop();
 
 > 所有生命周期钩子函数必须在组件的 `setup()` 阶段同步调用
 
-#### onBeforeMount()
+#### onBeforeMount() <em id="onBeforeMount"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
 注册一个回调函数在组件 `挂载之前` 调用, 组件已经完成其响应式状态的设置, 但还没有创建 DOM 节点
 
-#### onMounted()
+#### onMounted() <em id="onMounted"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
@@ -809,13 +809,13 @@ scope.stop();
 </script>
 ```
 
-#### onBeforeUpdate()
+#### onBeforeUpdate() <em id="onBeforeUpdate"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
 注册一个回调函数在组件因为响应式状态变更而更新其 DOM 树之前调用
 
-#### onUpdated()
+#### onUpdated() <em id="onUpdated"></em> <!-- markdownlint-disable-line -->
 
 > 父组件的更新钩子在其子组件的更新钩子之后调用, 钩子函数在服务器端渲染期间不会被调用
 
@@ -838,13 +838,13 @@ scope.stop();
 </script>
 ```
 
-#### onBeforeUnmount()
+#### onBeforeUnmount() <em id="onBeforeUnmount"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
 注册一个回调函数在组件实例被 `卸载之前` 调用, 此时组件实例还保有全部的功能
 
-#### onUnmounted()
+#### onUnmounted() <em id="onUnmounted"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
@@ -868,19 +868,19 @@ scope.stop();
 </script>
 ```
 
-#### onActivated()
+#### onActivated() <em id="onActivated"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
 注册一个回调函数, 如果组件实例是 `<KeepAlive>` 缓存树的一部分, 当组件被插入到 DOM 中时调用
 
-#### onDeactivated()
+#### onDeactivated() <em id="onDeactivated"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
 注册一个回调函数, 如果组件实例是 `<KeepAlive>` 缓存树的一部分, 当组件从 DOM 中移除时调用
 
-#### onErrorCaptured()
+#### onErrorCaptured() <em id="onErrorCaptured"></em> <!-- markdownlint-disable-line -->
 
 注册一个回调函数在捕获了后代组件传递的错误时调用
 
@@ -907,19 +907,19 @@ scope.stop();
 - 如果 `errorCaptured` 钩子本身抛出了一个错误, 那么这个错误和原来捕获到的错误都将被发送到 `app.config.errorHandler`
 - `errorCaptured` 钩子可以通过返回 `false` 来阻止错误继续向上传递
 
-#### onRenderTracked()
+#### onRenderTracked() <em id="onRenderTracked"></em> <!-- markdownlint-disable-line -->
 
 > 仅在开发模式下可用, 且在服务器端渲染期间不会被调用
 
 注册一个回调函数在组件渲染过程中追踪到响应式依赖时调用
 
-#### onRenderTriggered()
+#### onRenderTriggered() <em id="onRenderTriggered"></em> <!-- markdownlint-disable-line -->
 
 > 仅在开发模式下可用, 且在服务器端渲染期间不会被调用
 
 注册一个回调函数在组件的响应式依赖的变更触发了组件渲染时调用
 
-#### onServerPrefetch()
+#### onServerPrefetch() <em id="onServerPrefetch"></em> <!-- markdownlint-disable-line -->
 
 注册一个异步函数, 在组件实例在服务器上被渲染之前调用, 可用于执行一些仅存在于服务端的数据抓取过程
 
@@ -1182,6 +1182,131 @@ export default {
 
 ### 渲染选项
 
+#### template
+
+> 通过 `template` 选项提供的模板将会在运行时即时编译
+
+用于声明组件的字符串模板
+
+- 如果字符串以 `#` 开头, 它将被用作 `querySelector` 的选择器, 并使用所选中元素的 `innerHTML` 作为模板字符串
+- 如果存在 `render` 选项, 则 `template` 选项将被忽略
+- 如果应用的根组件不含任何 `template` 或 `render` 选项, Vue 将尝试使用所挂载元素的 `innerHTML` 来作为模板
+
+#### render
+
+> `render` 具有比 `template` 更高的优先级
+
+用于编程式地创建组件虚拟 DOM 树的函数
+
+#### compilerOptions
+
+用于配置组件模板的运行时编译选项, 支持与应用级 `app.config.compilerOptions` 相同的选项, 并针对当前组件有更高的优先级
+
+```javascript
+import { h } from 'vue';
+export default {
+  data() {
+    return { name: 'hello world' };
+  },
+  template: '#tpl',
+  render() {
+    return h('div', {}, [h('p', 'This is tag p'), h('p', this.name)]);
+  },
+  compilerOptions: {
+    delimiters: ['{{', '}}'],
+    comments: true,
+    isCustomElement(tag) {
+      return tag.startsWith('icon-');
+    },
+  },
+};
+```
+
+### 生命周期选项
+
+> 组合式 API 中的 `setup()` 钩子函数会在所有选项式 API 钩子之前调用
+
+#### beforeCreate
+
+在组件实例初始化完成之后立即调用
+
+#### created
+
+在组件实例处理完所有与状态相关的选项后调用, 此时挂载阶段还未开始, `$el` 属性仍不可用
+
+#### [beforeMount](#onBeforeMount)
+
+> 钩子函数在服务器端渲染期间不会被调用
+
+在组件被 `挂载之前` 调用, 组件已经完成了其响应式状态的设置, 但还没有创建 DOM 节点, 将首次执行 DOM 渲染过程
+
+#### [mounted](#onMounted)
+
+> 钩子函数在服务器端渲染期间不会被调用
+
+在组件被 `挂载之后` 调用
+
+#### [beforeUpdate](#onBeforeUpdate)
+
+> 钩子函数在服务器端渲染期间不会被调用
+
+在组件因为响应式状态变更而更新其 DOM 树之前调用
+
+#### [updated](#onUpdated)
+
+> 钩子函数在服务器端渲染期间不会被调用
+
+在组件因为响应式状态变更而更新其 DOM 树之后调用
+
+#### [beforeUnmount](#onBeforeUnmount)
+
+> 钩子函数在服务器端渲染期间不会被调用
+
+在组件实例被 `卸载之前` 调用
+
+#### [unmounted](#onUnmounted)
+
+> 钩子函数在服务器端渲染期间不会被调用
+
+在组件实例被 `卸载之后` 调用
+
+#### [activated](#onActivated)
+
+> 钩子函数在服务器端渲染期间不会被调用
+
+如果组件实例是 `<KeepAlive>` 缓存树的一部分, 当组件被插入到 DOM 中时调用
+
+#### [deactivated](#onDeactivated)
+
+> 钩子函数在服务器端渲染期间不会被调用
+
+如果组件实例是 `<KeepAlive>` 缓存树的一部分, 当组件从 DOM 中移除时调用
+
+#### [errorCaptured](#onErrorCaptured)
+
+在捕获了后代组件传递的错误时调用
+
+#### [renderTracked](#onRenderTracked)
+
+> 仅在开发模式下可用, 且在服务器端渲染期间不会被调用
+
+在一个响应式依赖被组件的渲染作用追踪后调用
+
+#### [renderTriggered](#onRenderTriggered)
+
+> 仅在开发模式下可用, 且在服务器端渲染期间不会被调用
+
+在一个响应式依赖被组件触发了重新渲染之后调用
+
+#### [serverPrefetch](#onServerPrefetch)
+
+在组件实例在服务器上被渲染之前要完成的异步函数
+
+### 组合选项
+
+
+
+
 
 
 
@@ -1394,36 +1519,6 @@ export default {
   ```
 
 - version 以字符串形式提供已安装的 Vue 的版本号
-
-## 选项
-
-### DOM
-
-#### template
-
-> 如果 Vue 选项中包含渲染函数，该模板将被忽略
-
-#### render
-
-> render 函数的优先级高于从挂载元素 template 选项或内置 DOM 提取出的 HTML 模板编译渲染函数
-
-### 生命周期钩子
-
-> 所有的生命周期钩子自动绑定 this 上下文到实例中, 不能使用箭头函数来定义一个生命周期方法
-
-#### beforeCreate
-
-#### created
-
-#### renderTracked 跟踪虚拟 DOM 重新渲染时调用
-
-- 参数
-  - e: DebuggerEvent
-
-#### renderTriggered 当虚拟 DOM 重新渲染被触发时调用
-
-- 参数
-  - e: DebuggerEvent
 
 ### 选项/资源
 
