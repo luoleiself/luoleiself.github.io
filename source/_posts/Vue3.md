@@ -61,7 +61,19 @@ tags:
   app.component('my-component'); // 查找已注册的组件
   ```
 
-- app.directive() 注册或查找全局指令, 根据参数个数区分
+- app.directive() 注册或查找全局指令, 根据参数个数区分 <em id="directive"></em> <!-- markdownlint-disable-line -->
+
+  - 钩子函数参数
+    - el 指令绑定的元素, 可用于直接操作 DOM
+    - binding 一个对象
+      - value 传递给指令的值, 例如 `v-my-directive="1 + 1"` 的值为 2
+      - oldValue 之前的值, 仅在 [`beforeUpdate`](#onBeforeUpdate) 和 [`updated`](#onUpdated) 中可用
+      - arg 传递给指令的参数, 例如 `v-my-directive:foo` 的参数为 `foo`
+      - modifiers 一个包含修饰符的对象, 例如 `v-my-directive.foo.bar` 的修饰符对象为 `{foo: true, bar: true}`
+      - instance 使用该指令的组件实例
+      - dir 指令的定义对象
+    - vnode 代表绑定元素的底层 VNode
+    - prevVnode 之前的渲染中代表指令所绑定元素的 VNode, 仅在 [`beforeUpdate`](#onBeforeUpdate) 和 [`updated`](#onUpdated) 中可用
 
   ```html
   <template>
@@ -149,7 +161,10 @@ tags:
 ### 通用
 
 - version 暴露当前所使用的 Vue 的版本号
-- nextTick() 等待下一次 DOM 更新刷新的工具方法
+- nextTick() 等待下一次 DOM 更新刷新的工具方法, 可以在状态改变后立即使用以等待 DOM 更新完成 <em id="nextTick"></em> <!-- markdownlint-disable-line -->
+
+  - 传递一个回调函数作为参数
+  - 或者 await 返回的 Promise
 
 ```javascript
 import { Version, nextTick } from 'vue';
@@ -258,7 +273,7 @@ async function increment() {
 
 ### setup()
 
-> 对于结合单文件组件使用的组合式 API 推荐使用 &lt;script setup&gt; 语法
+> 对于结合单文件组件使用的组合式 API 推荐使用 `<script setup>` 语法
 
 #### 基本使用
 
@@ -267,6 +282,10 @@ async function increment() {
 
 - 在创建组件实例时, 在初始 prop 解析之后立即调用 setup
 - 在生命周期方面, 在 beforeCreate 钩子之前调用
+
+- getCurrentInstance
+  - 支持访问内部组件实例，用于高阶用法或库的开发
+  - 只能在 setup 或生命周期钩子中调用
 
 #### 访问 Props
 
@@ -484,7 +503,7 @@ watchEffect(() => {}, {
 
 `watchEffect()` 使用 flush: 'sync' 选项时的别名
 
-#### watch()
+#### watch() <em id="watch"></em> <!-- markdownlint-disable-line -->
 
 - 侦听一个或多个响应式数据源, 并在数据源变化时调用所给的回调函数, 使用方式和 this.$watch 和 watch 选项完全等效
 - 默认是懒侦听的, 仅在侦听源发生变化时才执行回调函数
@@ -821,7 +840,7 @@ scope.stop();
 
 注册一个回调函数在组件因为响应式状态变更而更新其 DOM 树之后调用
 
-- 如果需要在某个特定的状态更改后访问更新后的 DOM, 使用 `nextTick()`
+- 如果需要在某个特定的状态更改后访问更新后的 DOM, 使用 [`nextTick()`](#nextTick)
 
 ```html
 <template>
@@ -947,7 +966,7 @@ scope.stop();
 
 ### 依赖注入
 
-#### provide()
+#### provide() <em id="provide"></em> <!-- markdownlint-disable-line -->
 
 > `provide()` 必须在组件的 `setup()` 阶段同步调用
 
@@ -958,6 +977,7 @@ scope.stop();
   import { ref, provide } from 'vue';
 
   provide('name', 'hello world');
+
   // 或者是返回一个对象的函数
   provide(() => {
     return { foo: 'foo' };
@@ -968,7 +988,7 @@ scope.stop();
 </script>
 ```
 
-#### inject()
+#### inject() <em id="inject"></em> <!-- markdownlint-disable-line -->
 
 > `inject()` 必须在组件的 `setup()` 阶段同步调用
 
@@ -1008,7 +1028,7 @@ scope.stop();
 
 用于声明组件初始响应式状态的函数
 
-#### props
+#### props <em id="props"></em> <!-- markdownlint-disable-line -->
 
 用于声明组件的 props
 
@@ -1078,17 +1098,12 @@ export default {
 
 用于声明要混入到组件实例中的方法
 
-#### [watch](#watchEffect)
+#### [watch](#watch)
 
 用于声明在数据更改时调用的侦听回调
 
 - 普通形式
 - 对象形式
-
-  - immediate 在侦听器创建时立即触发回调
-  - deep 如果源是对象或数组, 则强制深度遍历源, 以便在深度变更时触发回调
-  - flush 调整回调函数的刷新时机
-  - onTrack/onTrigger 调试侦听器的依赖关系
 
 ```javascript
 export default {
@@ -1106,6 +1121,8 @@ export default {
     c: {
       handler(val, oldVal) {},
       deep: true,
+      flush: 'post',
+      onTrack(e) {},
     },
     // 侦听单个嵌套属性
     'c.d': function (val, oldVal) {},
@@ -1304,6 +1321,776 @@ export default {
 
 ### 组合选项
 
+#### [provide](#provide)
+
+用于提供可以被后代组件注入的值
+
+#### [inject](#inject)
+
+用于声明要通过从上层提供方匹配并注入当前组件的属性
+
+- 一个字符串数组
+- 一个对象
+  - 匹配可注入的 key(String 或者 Symbol)
+  - 一个对象
+    - from 属性表示匹配可用的注入的来源
+    - default 属性用作候补值, 和 props 的默认值类似
+
+```javascript
+export default {
+  data() {
+    return { name: 'hello world' };
+  },
+  // 字符串数组
+  inject: ['foo'],
+  // 对象形式指定默认值
+  inject: {
+    foo: { default: 'foo' },
+  },
+  // 对象形式指定来源
+  inject: {
+    foo: {
+      from: 'bar',
+      default: 'foo',
+    },
+  },
+  // 对象形式使用工厂函数
+  inject: {
+    foo: {
+      from: 'bar',
+      default: () => [1, 2, 3],
+    },
+  },
+};
+```
+
+#### mixins
+
+> Mixin 钩子的调用顺序与提供它们的选项顺序相同, 且会在组件自身的钩子前调用
+
+一个包含组件选项对象的数组, 这些选项都将被混入到当前组件的实例中
+
+#### extends
+
+> `extends` 和 `mixin` 实现上几乎相同, 但是表达的目标不同, `mixins` 选项基本用于组合功能, `extends` 一般更关注继承关系
+
+要继承的 `基类` 组件, 同 `mixins` 一样, 所有选项都将使用相关的策略进行合并
+
+### 其他杂项
+
+#### name
+
+用于显式声明组件展示时的名称, 使用 name 选项可以覆盖推导出的名称, 或是在没有推导出名字是显式提供一个
+
+- 在组件自己的模板中递归引用自己时
+- 在 Vue 开发者工具中的组件树显示时
+- 在组件抛出的警告追踪栈信息中显示时
+
+#### inheritAttrs
+
+> 默认情况下, 父组件传递的没有被子组件解析为 `props` 的 `attributes` 绑定会被透传
+
+用于控制是否启用默认的组件 `attribute` 透传行为, 默认为 true
+
+- 使用 `<script setup>` 的组合式 API 中声明这个选项时, 需要一个额外的 `<script>` 块
+
+```html
+<!-- 单独 script 块声明 inheritAttrs 选项 -->
+<script>
+  export default {
+    inheritAttrs: false,
+  };
+</script>
+<!-- SFC 组合式 API -->
+<script setup>
+  const msg = 'hello world';
+
+  const props = defineProps(['name', 'age']);
+  const emit = defineEmits(['input']);
+
+  // 暴露外部可访问的公共属性
+  defineExpose({ msg });
+</script>
+```
+
+#### components
+
+用于注册对当前组件实例可用的组件的配置对象
+
+```javascript
+import { h } from 'vue';
+export default {
+  data() {
+    return { name: 'hello world' };
+  },
+  components: {
+    Foo,
+    'my-component': {
+      setup() {
+        return () => h('h1', 'Register local components...');
+      },
+    },
+  },
+};
+```
+
+#### [directives](#directive)
+
+用于注册对当前组件实例可用的指令的配置对象
+
+```javascript
+export default {
+  data() {
+    return { name: 'hello world' };
+  },
+  directives: {
+    // 在模板中启用 v-focus 指令
+    focus: {
+      /* 自定义指令的钩子函数配置 */
+    },
+  },
+};
+```
+
+### 组件实例
+
+#### $data
+
+从 `data` 选项函数返回的对象, 会被组件赋为响应式, 组件实例将会代理其数据对象的属性访问
+
+#### [$props](#props)
+
+表示组件当前已解析的 `props` 对象
+
+#### $el
+
+该组件实例管理的 DOM 根节点, $el 直到组件 `挂载完成` 之前都是 undefined
+
+#### $options
+
+已解析的用于实例化当前组件的组件选项
+
+- 全局 mixin
+- 组件 `extends` 的基组件
+- 组件级 mixin
+
+#### $parent
+
+当前组件可能存在的父组件实例, 如果当前组件是顶层组件, 则为 null
+
+#### $root
+
+当前组件树的根组件实例, 如果当前组件实例没有父组件, 则为本身
+
+#### $slots
+
+表示父组件传入 `插槽` 的对象
+
+#### $refs
+
+包含 DOM 元素和组件实例的对象, 通过 `模板引用` 注册
+
+#### $attrs
+
+包含了组件所有透传 `attributes` 的对象
+
+#### [$watch()](#watch)
+
+用于命令式地创建侦听器的 API
+
+#### $emit()
+
+在当前组件触发一个自定义事件, 任何额外的参数都将传递给事件监听器的回调函数
+
+#### $forceUpdate()
+
+强制当前组件重新渲染, 仅仅影响实例本身和插入插槽内容的子组件
+
+#### [$nextTick()](#nextTick)
+
+> 和全局的 `nextTick` 的区别是传递给 `this.$nextTick()` 的回调函数会带上绑定当前组件实例上下文的 `this`
+
+绑定在实例上的 `nextTick()` 函数
+
+```javascript
+export default {
+  data() {
+    return { name: 'hello world' };
+  },
+  updated() {
+    this.$nextTick(() => {
+      console.log(this.name);
+    });
+  },
+};
+```
+
+## 内置内容
+
+### 指令
+
+#### v-text
+
+更新元素的文本内容
+
+#### v-html
+
+更新元素的 `innerHTML`
+
+#### v-show
+
+基于表达式值的真假来改变元素的可见性, 通过设置内联样式的 `display` CSS 属性来工作
+
+#### v-if
+
+基于表达式值的真假来条件性地渲染元素或者模板片段, 同时使用 `v-if` 和 `v-for` 时, 前者的优先级更高
+
+#### v-else
+
+表示 `v-if` 或 `v-if` / `v-else-if` 链式调用的块
+
+#### v-for
+
+基于原始数据多次渲染元素或模板块
+
+#### v-on
+
+给元素绑定事件监听器, 缩写 `@`
+
+##### 事件修饰符
+
+- .stop 调用 `event.stopPropagation()`
+- .prevent 调用 `event.preventDefault()`
+- .capture 在捕获模式添加事件监听器
+- .self 只有事件从元素本身发出才触发处理函数
+- .{keyAlias} 只有在某些按键下触发处理函数
+- .once 最多触发一次处理函数
+- .left 只在鼠标左键事件触发处理函数
+- .right 只在鼠标右键事件触发处理函数
+- .middle 只在鼠标中键事件触发处理函数
+- .passive 通过 `{passive: true}` 附加一个 DOM 事件
+
+#### v-bind <em id="v-bind"></em> <!-- markdownlint-disable-line -->
+
+动态的绑定一个或多个 attribute, 也可以是组件的 prop, 缩写 `:` 或 `.`(当使用 `.prop` 修饰符)
+
+##### 绑定修饰符
+
+- .camel 将短横线命名的 attribute 转变为驼峰式命名
+- .prop 强制绑定为 DOM property
+- .attr 强制绑定为 DOM attribute
+
+```html
+<template>
+  <div :someProperty.prop="someObject"></div>
+  <!-- 等价于 -->
+  <div .someProperty="someObject"></div>
+</template>
+```
+
+#### v-model
+
+在表单输入元素或组件上创建双向绑定
+
+##### 修饰符
+
+- .lazy 监听 change 事件而不是 input 事件
+- .number 将输入的合法字符换转为数字
+- .trim 移除输入内容两端空格
+
+##### 版本迭代
+
+- [`v-bind`](#v-bind) 的 .sync 修饰符和组件的 model 选项被移除, 使用 v-model 代替
+- 同一组件上可以使用多个 v-model 进行双向绑定
+- 可自定义 v-model 修饰符
+- 自定义组件时 `v-model` 的 `prop` 和 `event` 默认名称已更改
+
+  - prop: `value` -> `modelValue`
+  - event: `input` -> `update:modelValue`
+
+###### migration
+
+- 所有子组件 .sync 修饰符的替换为 v-model
+- 未带参数的 v-model, 修改子组件的 prop 和 event 命令为 `modelValue` 和 `update:modelValue`
+
+```html
+<template>
+  <my-component :title.sync="pageTitle" />
+  <!-- 替换为 -->
+  <my-component v-model:title="pageTitle" />
+
+  <!-- 未带参数的 v-model -->
+  <ChildComponent v-model="pageTitle" />
+</template>
+<script>
+  export default {
+    props: {
+      modelValue: String, // 以前是`value：String`
+    },
+    emits: ['update:modelValue'],
+    methods: {
+      changePageTitle(title) {
+        this.$emit('update:modelValue', title); // 以前是 `this.$emit('input', title)`
+      },
+    },
+  };
+</script>
+```
+
+##### V 2.0
+
+- Vue 2.0 `v-model` 只能使用 `value` 作为 prop, 并监听抛出的 `input` 事件, 如果使用其他 prop, 必须使用 `v-bind.sync` 同步
+
+```html
+<template>
+  <my-component :value="pageTitle" @input="pageTitle = $event" />
+  <!-- 简写方式 -->
+  <my-component v-model="pageTitle" />
+</template>
+<script>
+  export default {
+    props: ['value'],
+    created() {
+      this.$emit('input', 'hello value');
+    },
+  };
+</script>
+```
+
+##### V 2.2
+
+- Vue 2.2 增加组件选项 `model`, 允许自定义 `v-model` 的 prop 和事件, 只能在组件上使用一个 model
+
+```html
+<template>
+  <my-component :value="pageTitle" @change="pageTitle = $event" />
+  <!-- 简写方式 -->
+  <my-component v-model="pageTitle" />
+</template>
+<script>
+  export default {
+    model: {
+      prop: 'title',
+      event: 'change',
+    },
+    props: {
+      // 这将允许 `value` 属性用于其他用途
+      value: String,
+      // 使用 `title` 代替 `value` 作为 model 的 prop
+      title: {
+        type: String,
+        default: 'Default title',
+      },
+    },
+  };
+</script>
+```
+
+##### V 2.3
+
+- Vue 2.3 增加 `.sync` 修饰符
+
+```html
+<template>
+  <my-component :title="pageTitle" @update:title="pageTitle = $event" />
+  <!-- 简写方式 -->
+  <my-component :title.sync="pageTitle" />
+</template>
+```
+
+##### V 3.x
+
+- Vue 3.x `v-model` 传递 `modelValue` prop 并接收抛出的 `update:modelValue` 事件
+
+```html
+<template>
+  <!-- 单个 v-model 绑定 -->
+  <my-component
+    :modelValue="pageTitle"
+    @update:modelValue="pageTitle = $event"
+  />
+  <!-- 简写方式 -->
+  <my-component v-model="pageTitle" />
+
+  <!-- 多个 v-model 绑定 -->
+  <my-component
+    :title="pageTitle"
+    @update:title="pageTitle = $event"
+    :content="pageContent"
+    @update:content="pageContent = $event"
+  />
+  <!-- 简写方式 -->
+  <my-component v-model:title="pageTitle" v-model:content="pageContent" />
+</template>
+<script setup>
+  const props = defineProps(['modelValue', 'title', 'content']);
+  const emit = defineEmits([
+    'update:modelValue',
+    'update:title',
+    'update:content',
+  ]);
+
+  // 触发事件
+  emit('update:modelValue', 'hello modelValue');
+  emit('update:title', 'hello title');
+  emit('update:content', 'hello content');
+</script>
+```
+
+- 处理 `v-model` 修饰符
+
+  - 不带参数: Vue 3.x 通过 `modelModifiers` 提供给 prop
+  - 带参数: 生成的 prop 名称将为 `arg + 'Modifiers'`
+
+```html
+<template>
+  <!-- v-model 不带参数  -->
+  <my-component v-model.capitalize="myText" />
+
+  <!-- v-model 带参数  -->
+  <my-component v-model:description.capitalize="myText" />
+</template>
+<script>
+  // v-model 不带参数
+  app.component('my-component', {
+    props: {
+      modelValue: String,
+      modelModifiers: {
+        default: () => ({}),
+      },
+    },
+    emits: ['update:modelValue'],
+    template: `
+      <input type="text"
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)">
+    `,
+    created() {
+      console.log(this.modelModifiers); // { capitalize: true }
+    },
+  });
+
+  // v-model 带参数
+  app.component('my-component', {
+    props: ['description', 'descriptionModifiers'],
+    emits: ['update:description'],
+    template: `
+      <input type="text"
+        :value="description"
+        @input="$emit('update:description', $event.target.value)">
+    `,
+    created() {
+      console.log(this.descriptionModifiers); // { capitalize: true }
+    },
+  });
+</script>
+```
+
+#### v-slot
+
+用于声明具名插槽或是期望接收 props 的作用域插槽, 缩写 `#`
+
+##### 限制使用
+
+> 如果混用了 `具名插槽` 和 `默认插槽`, 则需要为 `默认插槽` 使用显式的 `<template>` 标签, 否则编译错误
+
+- &lt;template&gt;
+- components(用于带有 prop 的单个默认插槽)
+
+```html
+<template>
+  <MyComponent>
+    <!-- 使用显式的默认插槽 -->
+    <template #default="{ message }">
+      <p>{{ message }}</p>
+    </template>
+
+    <template #footer>
+      <p>Here's some contact info</p>
+    </template>
+  </MyComponent>
+
+  <!-- 单个默认作用域插槽, 直接使用子组件标签 -->
+  <MyComponent v-slot="slotProps">
+    {{slotProps.text}} - {{slotProps.message}}
+  </MyComponent>
+</template>
+```
+
+#### v-pre
+
+跳过该元素及其所有子元素的编译
+
+#### v-once
+
+仅渲染元素和组件一次, 并跳过之后的更新
+
+#### v-memo
+
+缓存一个模板的子树, 根据传入的依赖值数组的比较结果控制子树的更新
+
+#### v-cloak
+
+> 该指令只在没有构建步骤的环境下需要使用
+
+用于隐藏尚未完成编译的 DOM 模板
+
+### 组件
+
+> 内置组件无需注册便可以直接在模板中使用，同时也支持 `tree-shaking`; 仅在使用时才会包含在构建中
+> 在 `渲染函数` 中使用它们时, 需要显式引入
+
+```javascript
+import { h, KeepAlive, Transition } from 'vue';
+
+export default {
+  setup() {
+    return () => h(Transition, { mode: 'out-in' } /* ... */);
+  },
+};
+```
+
+#### &lt;Transition&gt;
+
+为单个元素或组件提供动画过渡效果
+
+##### Transition props
+
+- name
+- css
+- type
+- duration
+- mode
+- appear
+- enterFromClass
+- enterActiveClass
+- enterToClass
+- appearFromClass
+- appearActiveClass
+- appearToClass
+- leaveFromClass
+- leaveActiveClass
+- leaveToClass
+
+##### Transition 事件
+
+- @before-enter
+- @before-leave
+- @enter
+- @leave
+- @appear
+- @after-enter
+- @after-leave
+- @after-appear
+- @enter-cancelled
+- @leave-cancelled(v-show only)
+- @appear-cancelled
+
+```html
+<!-- 单个元素 -->
+<Transition>
+  <div v-if="ok">toggled content</div>
+</Transition>
+
+<!-- 动态组件 -->
+<Transition name="fade" mode="out-in" appear>
+  <component :is="view"></component>
+</Transition>
+
+<!-- 事件钩子 -->
+<div id="transition-demo">
+  <Transition @after-enter="transitionComplete">
+    <div v-show="ok">toggled content</div>
+  </Transition>
+</div>
+```
+
+#### &lt;TransitionGroup&gt;
+
+为列表中的多个元素或组件提供过渡效果
+
+##### TransitionGroup props
+
+- tag 如果未定义, 则渲染为片段(fragment)
+- moveClass 用于自定义过渡期间被应用的 CSS class, 使用 `kebab-case` 格式
+
+##### TransitionGroup 事件
+
+`<TransitionGroup>` 抛出与 `<Transition>` 相同的事件
+
+#### &lt;KeepAlive&gt;
+
+缓存包裹在其中的动态切换组件
+
+##### KeepAlive props
+
+- include 哪些组件实例可以被缓存
+- exclude 哪些组件实例不被缓存
+- max 最多可以缓存多少组件实例
+
+```html
+<!-- 逗号分隔字符串 -->
+<KeepAlive include="a,b">
+  <component :is="view"></component>
+</KeepAlive>
+
+<!-- regex (使用 `v-bind`) -->
+<KeepAlive :include="/a|b/">
+  <component :is="view"></component>
+</KeepAlive>
+
+<!-- Array (使用 `v-bind`) -->
+<KeepAlive :include="['a', 'b']">
+  <component :is="view"></component>
+</KeepAlive>
+```
+
+#### &lt;Teleport&gt;
+
+移动实际 DOM 节点(非销毁重建),并保持任何组件实例的活动状态
+
+##### Teleport props
+
+- to 必填项, 指定目标容器, 可以是选择器或实际元素
+- disabled 值为 true 时, 内容将保留在其原始位置不做移动, 值可动态修改
+
+```html
+<!-- 正确 -->
+<Teleport to="#some-id" />
+<Teleport to=".some-class" />
+<Teleport to="[data-teleport]" />
+<!-- 错误 -->
+<Teleport to="h1" />
+<Teleport to="some-string" />
+
+<button @click="open = true">Open Modal</button>
+<Teleport to="body">
+  <div v-if="open" class="modal">
+    <p>Hello from the modal!</p>
+    <button @click="open = false">Close</button>
+  </div>
+</Teleport>
+```
+
+#### &lt;Suspense&gt;
+
+用于协调对组件树中嵌套的异步依赖的处理
+
+##### Suspense props
+
+- timeout 渲染新内容耗时超时时间
+
+##### Suspense 事件
+
+- @pending 在 suspense 进入挂起状态时触发
+- @resolve 在 default 插槽完成获取新内容时触发
+- @fallback 在 fallback 插槽的内容显示时触发
+
+##### Suspense 插槽
+
+- #default
+- #fallback
+
+```html
+<Suspense>
+  <!-- 具有深层异步依赖的组件 -->
+  <Dashboard />
+  <!-- 在 #fallback 插槽中显示 “正在加载中” -->
+  <template #fallback> Loading... </template>
+</Suspense>
+```
+
+### 特殊元素
+
+> `<component>`, `<slot>`, `<template>` 具有类似组件的特性, 也是模板语法的一部分. 但它们并非真正的组件, 同时在模板编译期间会被编译掉. 因此, 它们通常在模板中使用小写字母
+
+#### &lt;component&gt;
+
+用于渲染动态组件或元素的 `元组件`
+
+##### component props
+
+- is 要渲染的实际组件由 `is` prop 决定
+  - 如果是字符串时, 可以是 HTML 标签名或者组件的注册名
+  - 或者是直接绑定到组件的定义
+
+#### &lt;slot&gt;
+
+表示模板中的插槽内容出口
+
+##### slot props
+
+- name 指定插槽名, 缺少时将会渲染默认插槽
+
+#### &lt;template&gt;
+
+当使用内置指令而不在 DOM 中渲染元素时, `<template>` 标签可以作为占位符使用
+
+### 特殊 Attributes
+
+#### key
+
+主要作为 Vue 的虚拟 DOM 算法提示, 在比较新旧节点列表时用于识别 vnode
+
+#### ref
+
+用于注册元素或子组件的 `模板引用`
+
+```html
+<template>
+  <div ref="root">This is a root element</div>
+  <div v-for="item in list" :ref="itemRefs">
+    {{ item }}
+  </div
+</template>
+<script setup>
+  import { ref, onBeforeUpdate, onUpdated, onMounted } from 'vue';
+
+  const root = ref(null);
+  const itemRefs = ref([]);
+  // 确保在每次更新之前重置 ref
+  onBeforeUpdate(() => {
+    itemRefs.value = [];
+  });
+
+  onUpdated(()=>{
+    console.log(itemRefs.value);
+  });
+
+  onMounted(() => {
+    // DOM元素将在初始渲染后分配给ref
+    console.log(root.value); // <div>这是根元素</div>
+  });
+</script>
+```
+
+#### is
+
+用于动态绑定组件
+
+- 用于原生元素时, 将被作为 `Customized built-in element`, 如果需要用 Vue 组件替换原生元素, 需要加上 `vue:` 前缀
+
+```html
+<template>
+  <table>
+    <tr is="vue:my-row-component"></tr>
+  </table>
+</template>
+```
+
+## 单文件组件
+
+### SFC 语法定义
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1452,22 +2239,6 @@ export default {
   })
   ```
 
-- nextTick 将回调推迟到下一个 DOM 更新周期之后执行
-
-  ```javascript
-  import { createApp, nextTick } from 'vue';
-  const app = createApp({
-    setup() {
-      const message = ref('Hello!');
-      const changeMessage = async (newMessage) => {
-        message.value = newMessage;
-        await nextTick();
-        console.log('Now DOM is updated');
-      };
-    },
-  });
-  ```
-
 - mergeProps 将包含 VNode prop 的多个对象合并为一个单独的对象, 返回一个新创建的对象, 而作为参数传递的对象则不会被修改.
 
   ```javascript
@@ -1520,282 +2291,6 @@ export default {
 
 - version 以字符串形式提供已安装的 Vue 的版本号
 
-### 选项/资源
-
-#### directives 包含组件实例可用指令的哈希表
-
-#### components 包含组件实例可用组件的哈希表
-
-### 组合
-
-#### mixins
-
-- Mixin 钩子按照传入顺序依次调用，并在调用组件自身的钩子之前被调用
-
-#### extends 允许声明扩展另一个组件
-
-```javascript
-const CompA = { ... }
-// 在没有调用 `Vue.extend` 时候继承 CompA
-const CompB = {
-  extends: CompA,
-  ...
-}
-```
-
-### 杂项
-
-#### name
-
-#### inheritAttrs
-
-- 控制是否在子组件的根元素上显示不被认作 props 的 attributes 绑定
-
-- 默认值: true
-
-#### delimiters (3.1 废弃)
-
-- 默认值: ['{{', '}}'] 模板文本插值的分隔符
-- 换用 compilerOptions.delimiters
-
-#### compilerOptions (3.1 新增) 配置运行时编译器的选项
-
-配置同应用 API compilerOptions
-
-## 实例 Property
-
-- $data
-- $props
-- $el
-- $options 当前组件实例的初始化选项
-- $parent 父组件实例
-- $root 根组件实例
-- $slots 用来访问被插槽分发的内容
-- $refs
-- $attrs
-
-## 实例方法
-
-- $watch
-- $emit
-- $forceUpdate 迫使组件实例重新渲染,仅仅影响实例本身和插入插槽内容的子组件
-- $nextTick
-
-## 指令
-
-- v-text
-- v-html
-- v-show
-- v-else-if
-- v-for
-- v-on
-- v-bind
-- v-model
-- v-slot 只能使用在 template 标签上, 当被提供的内容只有默认插槽时, 组件的标签才可以当作插槽的模板使用(v-slot 写在标签上)
-- v-pre 跳过这个元素和它的子元素的编译过程
-- v-cloak 这个指令保持在元素上直到关联组件实例结束编译
-- v-once
-- v-memo 3.2 新增
-- v-is (3.1 废弃) 对于某些 HTML 元素只能出现在固定位置的解析规则的重定义
-
-  > 注意：本节仅影响直接在页面的 HTML 中写入 Vue 模板的情况
-
-  ```html
-  <!-- vue 2.x -->
-  <!-- 这样做是有必要的，因为 `<my-component-row>` 放在一个 -->
-  <!-- `<table>` 内可能无效且被放置到外面 -->
-  <table>
-    <tr is="my-component-row"></tr>
-  </table>
-  <!-- vue 3.x -->
-  <table>
-    <tr v-is="my-component-row"></tr>
-    <!-- 不正确，不会渲染任何内容 -->
-  </table>
-  <table>
-    <tr v-is="'my-component-row'"></tr>
-    <!-- 正确 -->
-  </table>
-  ```
-
-## 特殊指令
-
-- key
-- ref
-
-  ```html
-  <template>
-    <div ref="root">This is a root element</div>
-    <div v-for="(item, i) in list" :ref="el => { if (el) divs[i] = el }">
-      {{ item }}
-    </div
-  </template>
-  <script>
-    import { ref, onMounted } from 'vue';
-
-    export default {
-      setup() {
-        const root = ref(null);
-        const divs = ref([]);
-        // 确保在每次更新之前重置ref
-        onBeforeUpdate(() => {
-          divs.value = [];
-        });
-
-        onMounted(() => {
-          // DOM元素将在初始渲染后分配给ref
-          console.log(root.value); // <div>这是根元素</div>
-        });
-        return { root, divs }
-      }
-    }
-  </script>
-  ```
-
-- is
-
-## 内置组件
-
-- component
-  - is 渲染一个元组件为动态组件
-- slot
-  - props
-    - {String} name 插槽命名
-- transition
-
-  - props
-    - name
-    - appear
-    - persisted
-    - css
-    - type
-    - mode
-    - duration
-    - enter/leave-from-class
-    - appear-class
-    - enter/leave/appear-to-class
-    - enter/leave/appear-active-class
-  - events
-    - before-enter/leave
-    - enter/leave/appear
-    - after-enter/leave/appear
-    - enter/leave/appear-cancelled
-
-  ```html
-  <!-- 单个元素 -->
-  <transition>
-    <div v-if="ok">toggled content</div>
-  </transition>
-
-  <!-- 动态组件 -->
-  <transition name="fade" mode="out-in" appear>
-    <component :is="view"></component>
-  </transition>
-
-  <!-- 事件钩子 -->
-  <div id="transition-demo">
-    <transition @after-enter="transitionComplete">
-      <div v-show="ok">toggled content</div>
-    </transition>
-  </div>
-  ```
-
-- transition-group
-  - props
-    - tag
-    - move-class
-  - events 和 transition 相同
-- keep-alive
-
-  - props
-    - {String|RegExp|Array} include 哪些组件实例可以被缓存
-    - {String|RegExp|Array} exclude 哪些组件实例不被缓存
-    - {String|Number} max 最多可以缓存多少组件实例
-
-  ```html
-  <!-- 逗号分隔字符串 -->
-  <keep-alive include="a,b">
-    <component :is="view"></component>
-  </keep-alive>
-
-  <!-- regex (使用 `v-bind`) -->
-  <keep-alive :include="/a|b/">
-    <component :is="view"></component>
-  </keep-alive>
-
-  <!-- Array (使用 `v-bind`) -->
-  <keep-alive :include="['a', 'b']">
-    <component :is="view"></component>
-  </keep-alive>
-  ```
-
-- teleport 移动实际 DOM 节点(非销毁重建),并保持任何组件实例的活动状态
-
-  - props
-    - {String} to 必须是有效的查询选择器或者 HTMLElement(如果在浏览器环境中时), 指定将在其中移动 &lt;teleport&gt; 内容的目标元素
-    - {Boolean} disabled 可选属性可用于禁用 &lt;teleport&gt; 的功能
-
-  ```html
-  <!-- 正确 -->
-  <teleport to="#some-id" />
-  <teleport to=".some-class" />
-  <teleport to="[data-teleport]" />
-
-  <!-- 错误 -->
-  <teleport to="h1" />
-  <teleport to="some-string" />
-  ```
-
-- suspense 用于协调对组件树中嵌套的异步依赖的处理
-
-  - 事件
-    - @resolve 在 default 插槽完成获取新内容时触发
-    - @pending 在 suspense 进入挂起状态时触发
-    - @fallback 在 fallback 插槽的内容显示时触发
-  - 插槽
-    - #default
-    - #fallback
-
-  ```html
-  <Suspense>
-    <!-- 具有深层异步依赖的组件 -->
-    <Dashboard />
-    <!-- 在 #fallback 插槽中显示 “正在加载中” -->
-    <template #fallback> Loading... </template>
-  </Suspense>
-  ```
-
-## 响应性 API
-
-### 响应性基础 API
-
-### Computed | watch <em id="computedWatchEffect"></em>
-
-## 组合式 API
-
-- setup 组件选项，在创建组件之前执行
-
-  - 参数
-    - {Data} props
-    - {SetupContext} context
-      - attrs
-      - slots
-      - emit
-      - expose
-
-  ```javascript
-  import { defineComponent } from 'vue';
-  const MyComponent = defineComponent({
-    setup(props, { attrs, slots, emit, expose }) {
-      return {};
-    },
-  });
-  ```
-
-- getCurrentInstance
-  - 支持访问内部组件实例，用于高阶用法或库的开发
-  - 只能在 setup 或生命周期钩子中调用
-
 ## Migration
 
 ### v-for 中的 Ref 数组
@@ -1830,56 +2325,6 @@ const CompB = {
     loadingComponent: LoadingComponent,
   });
   ```
-
-### attribute 强制行为
-
-- Vue 3.x 中, 移除 attribute 使用 null 或者 undefined
-- 非布尔 attribute, 如果 attribute 为 false, 将停止删除它们, 相反强制它们为 'false'
-
-### $attrs 包括 class 和 style
-
-- $attrs 中的 attribute 不再自动添加到根元素中,而是由开发者决定
-
-### $children 移除
-
-### 自定义指令
-
-- 特定 is prop 用法仅限于保留的 component 标签
-- 新增 v-is 指令来处理原生 HTML 解析限制
-
-```javascript
-// Vue 2.x
-Vue.directive('my-directive', {
-  bind() {}, // - 指令绑定到元素后发生。只发生一次。
-  inserted() {}, // - 元素插入父 DOM 后发生。
-  update() {}, // - 当元素更新，但子元素尚未更新时，将调用此钩子。
-  componentUpdated() {}, // - 一旦组件和子级被更新，就会调用这个钩子。
-  unbind() {}, // - 一旦指令被移除，就会调用这个钩子。也只调用一次
-});
-// Vue 3.x
-const app = createApp({});
-app.directive('my-directive', {
-  created() {},
-  beforeMount() {},
-  mounted() {},
-  beforeUpdate() {},
-  updated() {},
-  beforeUnmount() {},
-  unmounted() {},
-});
-```
-
-### Data 选项
-
-> 标准化只接受返回的 Object 的 function
-
-### emits
-
-### 事件 API
-
-> $on，$off 和 $once 实例方法已被移除，应用实例不再实现事件触发接口
-
-### 过滤器(filter) 移除
 
 ### 片段
 
@@ -2135,158 +2580,6 @@ app.directive('my-directive', {
 ### v-on.native 修饰符 移除
 
 新增 emits 选项允许子组件定义真正会被触发的事件
-
-### v-model
-
-- v-bind 的 .sync 修饰符和组件的 model 选项被移除, 使用 v-model 代替
-- 同一组件上可以使用多个 v-model 进行双向绑定
-- 可自定义 v-model 修饰符
-- 自定义组件时 v-model prop 和事件默认名称已更改
-
-  - prop: value -> modelValue
-  - event: input -> update:modelValue
-
-  - Vue 2.0 v-model 只能使用 value 作为 prop, 并接收抛出的 input 事件, 如果使用其他 prop, 必须使用 v-bind.sync 同步
-
-    ```html
-    <my-component :value="pageTitle" @input="pageTitle = $event" />
-    <!-- 简写方式 -->
-    <my-component v-model="pageTitle" />
-    ```
-
-  - Vue 2.2 增加组件选项 model, 允许自定义 v-model 的 prop 和事件,只能在组件上使用一个 model
-
-    ```html
-    <template>
-      <my-component :value="pageTitle" @change="pageTitle = $event" />
-      <!-- 简写方式 -->
-      <my-component v-model="pageTitle" />
-    </template>
-    <script>
-      export default {
-        model: {
-          prop: 'title',
-          event: 'change',
-        },
-        props: {
-          // 这将允许 `value` 属性用于其他用途
-          value: String,
-          // 使用 `title` 代替 `value` 作为 model 的 prop
-          title: {
-            type: String,
-            default: 'Default title',
-          },
-        },
-      };
-    </script>
-    ```
-
-  - Vue 2.3 增加 .sync 修饰符
-
-    ```html
-    <my-component :title="pageTitle" @update:title="pageTitle = $event" />
-    <!-- 简写方式 -->
-    <my-component :title.sync="pageTitle" />
-    ```
-
-  - Vue 3.x v-model 传递 `modelValue` prop 并接收抛出的 `update:modelValue` 事件
-
-    ```html
-    <my-component
-      :modelValue="pageTitle"
-      @update:modelValue="pageTitle = $event"
-    />
-    <!-- 简写方式 -->
-    <my-component v-model="pageTitle" />
-
-    <!-- 修改名称，使用多个 v-model -->
-    <my-component
-      :title="pageTitle"
-      @update:title="pageTitle = $event"
-      :content="pageContent"
-      @update:content="pageContent = $event"
-    />
-    <!-- 简写方式 -->
-    <my-component v-model:title="pageTitle" v-model:content="pageContent" />
-    ```
-
-  - migration
-
-    - 所有子组件 .sync 修饰符的替换为 v-model
-    - 未带参数的 v-model, 修改子组件的 prop 和 event 命令为 modelValue 和 update:modelValue
-
-    ```html
-    <template>
-      <my-component :title.sync="pageTitle" />
-      <!-- 替换为 -->
-      <my-component v-model:title="pageTitle" />
-
-      <!-- 未带参数的 v-model -->
-      <ChildComponent v-model="pageTitle" />
-    </template>
-    <script>
-      export default {
-        props: {
-          modelValue: String, // 以前是`value：String`
-        },
-        emits: ['update:modelValue'],
-        methods: {
-          changePageTitle(title) {
-            this.$emit('update:modelValue', title); // 以前是 `this.$emit('input', title)`
-          },
-        },
-      };
-    </script>
-    ```
-
-- 处理 v-model 修饰符
-
-  - 不带参数: Vue 3.x 通过 modelModifiers 提供给 prop
-  - 带参数: 生成的 prop 名称将为 arg + 'Modifiers'
-
-  ```html
-  <template>
-    <!-- 不带参数的 v-model -->
-    <my-component v-model.capitalize="myText" />
-  </template>
-  <script>
-    app.component('my-component', {
-      props: {
-        modelValue: String,
-        modelModifiers: {
-          default: () => ({}),
-        },
-      },
-      emits: ['update:modelValue'],
-      template: `
-      <input type="text"
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)">
-    `,
-      created() {
-        console.log(this.modelModifiers); // { capitalize: true }
-      },
-    });
-  </script>
-  <template>
-    <!-- 带参 v-model -->
-    <my-component v-model:description.capitalize="myText" />
-  </template>
-  <script>
-    app.component('my-component', {
-      props: ['description', 'descriptionModifiers'],
-      emits: ['update:description'],
-      template: `
-      <input type="text"
-        :value="description"
-        @input="$emit('update:description', $event.target.value)">
-    `,
-      created() {
-        console.log(this.descriptionModifiers); // { capitalize: true }
-      },
-    });
-  </script>
-  ```
 
 ### v-if 与 v-for 的优先级对比
 
