@@ -104,7 +104,7 @@ tags:
 
   <!-- more -->
 
-- app.use() 安装一个`插件`, 插件可以是一个包含 `install()` 方法的对象或者是一个安装函数本身
+- app.use() 安装一个 **插件**, 插件可以是一个包含 `install()` 方法的对象或者是一个安装函数本身
 
   - 参数
     - 第一个参数为插件本身
@@ -136,8 +136,8 @@ tags:
 
   - app.config.errorHandler 用于为应用实例内抛出的未捕获错误指定一个全局处理函数
   - app.config.warnHandler 用于为 Vue 的运行时警告指定一个自定义处理函数
-  - app.config.performance 设置为 `true` 可在浏览器工具的 `性能/时间线` 页启用对组件初始化、编译、渲染和修改的性能表现追踪
-  - app.config.compilerOptions 配置 `运行时编译器` 的选项
+  - app.config.performance 设置为 `true` 可在浏览器工具的 **性能/时间线** 页启用对组件初始化、编译、渲染和修改的性能表现追踪
+  - app.config.compilerOptions 配置 **运行时编译器** 的选项
     - app.config.compilerOptions.isCustomElement 用于指定一个检查方法来识别原生自定义元素
     - app.config.compilerOptions.whitespace 用于调整模板中空格的处理行为 `condense(default) | preserve`
     - app.config.compilerOptions.delimiters 用于调整模板内文本插值的分隔符, 默认 ['{{', '}}']
@@ -267,9 +267,9 @@ async function increment() {
     });
     ```
 
-- [defineCustomElement()](#defineComponent) 和 `defineComponent()` 接收的参数相同, 不同的是返回一个原生`自定义元素`类的构造器
+- [defineCustomElement()](#defineComponent) 和 `defineComponent()` 接收的参数相同, 不同的是返回一个原生 **自定义元素** 类的构造器
 
-## 组合式 API
+## 组合式 API <em id="combinedapi"></em> <!-- markdownlint-disable-line -->
 
 ### setup()
 
@@ -318,8 +318,8 @@ const app = createApp({
 
 #### 返回渲染函数
 
-- setup 应该同步地返回一个对象, 唯一可以使用 `async setup()` 地情况是该组件时 `Suspense` 组件地后裔
-- 也可以返回一个 `渲染函数`, 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
+- setup 应该同步地返回一个对象, 唯一可以使用 `async setup()` 的情况是该组件是 [&lt;Suspense&gt;](#suspense) 组件地后裔
+- 也可以返回一个 **渲染函数**, 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
 
 ```javascript
 import { h, ref, reactive } from 'vue';
@@ -401,7 +401,7 @@ console.log(obj.count); // 3
 console.log(count.value); // 3
 ```
 
-- 当访问到某个响应式 `数组` 或 `Map` 这样的原生集合类型中的 ref 元素时, 不会执行 ref 的解包
+- 当访问到某个响应式 **数组** 或 `Map` 这样的原生集合类型中的 ref 元素时, 不会执行 ref 的解包
 
 ```javascript
 // 原生集合中包含 ref 元素时, ref 不会解包
@@ -803,15 +803,15 @@ scope.stop();
 
 > 钩子函数在服务器端渲染期间不会被调用
 
-注册一个回调函数在组件 `挂载之前` 调用, 组件已经完成其响应式状态的设置, 但还没有创建 DOM 节点
+注册一个回调函数在组件 **挂载之前** 调用, 组件已经完成其响应式状态的设置, 但还没有创建 DOM 节点
 
 #### onMounted() <em id="onMounted"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
-注册一个回调函数在组件 `挂载完成` 之后执行
+注册一个回调函数在组件 **挂载完成** 之后执行
 
-- 其所有同步子组件都已经被挂载(不包含 `异步组件` 或 `<Suspense>` 树内的组件)
+- 其所有同步子组件都已经被挂载(不包含 **异步组件** 或 [&lt;Suspense&gt;](#suspense) 树内的组件)
 - 其自身的 DOM 树已经创建完成并插入了父容器中, 仅当根容器存在于文档中
 
 ```html
@@ -861,16 +861,16 @@ scope.stop();
 
 > 钩子函数在服务器端渲染期间不会被调用
 
-注册一个回调函数在组件实例被 `卸载之前` 调用, 此时组件实例还保有全部的功能
+注册一个回调函数在组件实例被 **卸载之前** 调用, 此时组件实例还保有全部的功能
 
 #### onUnmounted() <em id="onUnmounted"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
 
-注册一个回调函数在组件实例被 `卸载之后` 调用
+注册一个回调函数在组件实例被 **卸载之后** 调用
 
 - 其所有子组件都已经被卸载
-- 所有相关的响应式作用(`渲染作用` 以及 `setup()` 时创建的计算属性和侦听器)都已经停止
+- 所有相关的响应式作用(**渲染作用** 以及 `setup()` 时创建的计算属性和侦听器)都已经停止
 
 ```html
 <script setup>
@@ -922,7 +922,7 @@ scope.stop();
 ##### 错误传递规则
 
 - 默认情况下, 所有的错误都会被发送到应用级 `app.config.errorHandler`(前提已经定义), 这样这些错误都能在一个统一的地方报告给分析服务
-- 如果组件的继承链或组件链上存在多个 `errorCaptured` 钩子, 对于同一个错误, 这些钩子会被按从底到上的顺序一一调用, 这个过程称为 `向上传递`, 类似于原生 DOM 事件的冒泡机制
+- 如果组件的继承链或组件链上存在多个 `errorCaptured` 钩子, 对于同一个错误, 这些钩子会被按从底到上的顺序一一调用, 这个过程称为 **向上传递**, 类似于原生 DOM 事件的冒泡机制
 - 如果 `errorCaptured` 钩子本身抛出了一个错误, 那么这个错误和原来捕获到的错误都将被发送到 `app.config.errorHandler`
 - `errorCaptured` 钩子可以通过返回 `false` 来阻止错误继续向上传递
 
@@ -1148,7 +1148,7 @@ export default {
 };
 ```
 
-#### emits
+#### emits <em id="emits"></em> <!-- markdownlint-disable-line -->
 
 用于声明由组件触发的自定义事件
 
@@ -1255,13 +1255,13 @@ export default {
 
 > 钩子函数在服务器端渲染期间不会被调用
 
-在组件被 `挂载之前` 调用, 组件已经完成了其响应式状态的设置, 但还没有创建 DOM 节点, 将首次执行 DOM 渲染过程
+在组件被 **挂载之前** 调用, 组件已经完成了其响应式状态的设置, 但还没有创建 DOM 节点, 将首次执行 DOM 渲染过程
 
 #### [mounted](#onMounted)
 
 > 钩子函数在服务器端渲染期间不会被调用
 
-在组件被 `挂载之后` 调用
+在组件被 **挂载之后** 调用
 
 #### [beforeUpdate](#onBeforeUpdate)
 
@@ -1279,13 +1279,13 @@ export default {
 
 > 钩子函数在服务器端渲染期间不会被调用
 
-在组件实例被 `卸载之前` 调用
+在组件实例被 **卸载之前** 调用
 
 #### [unmounted](#onUnmounted)
 
 > 钩子函数在服务器端渲染期间不会被调用
 
-在组件实例被 `卸载之后` 调用
+在组件实例被 **卸载之后** 调用
 
 #### [activated](#onActivated)
 
@@ -1374,7 +1374,7 @@ export default {
 
 > `extends` 和 `mixin` 实现上几乎相同, 但是表达的目标不同, `mixins` 选项基本用于组合功能, `extends` 一般更关注继承关系
 
-要继承的 `基类` 组件, 同 `mixins` 一样, 所有选项都将使用相关的策略进行合并
+要继承的 **基类** 组件, 同 `mixins` 一样, 所有选项都将使用相关的策略进行合并
 
 ### 其他杂项
 
@@ -1386,13 +1386,13 @@ export default {
 - 在 Vue 开发者工具中的组件树显示时
 - 在组件抛出的警告追踪栈信息中显示时
 
-#### inheritAttrs
+#### inheritAttrs <em id="inheritAttrs"></em> <!-- markdownlint-disable-line -->
 
 > 默认情况下, 父组件传递的没有被子组件解析为 `props` 的 `attributes` 绑定会被透传
 
 用于控制是否启用默认的组件 `attribute` 透传行为, 默认为 true
 
-- 使用 `<script setup>` 的组合式 API 中声明这个选项时, 需要一个额外的 `<script>` 块
+- 使用 [&lt;script setup&gt;](#scriptsetup) 的组合式 API 中声明这个选项时, 需要一个额外的 `<script>` 块
 
 ```html
 <!-- 单独 script 块声明 inheritAttrs 选项 -->
@@ -1464,7 +1464,7 @@ export default {
 
 #### $el
 
-该组件实例管理的 DOM 根节点, $el 直到组件 `挂载完成` 之前都是 undefined
+该组件实例管理的 DOM 根节点, $el 直到组件 **挂载完成** 之前都是 undefined
 
 #### $options
 
@@ -1484,11 +1484,11 @@ export default {
 
 #### $slots
 
-表示父组件传入 `插槽` 的对象
+表示父组件传入 **插槽** 的对象
 
 #### $refs
 
-包含 DOM 元素和组件实例的对象, 通过 `模板引用` 注册
+包含 DOM 元素和组件实例的对象, 通过 **模板引用** 注册
 
 #### $attrs
 
@@ -1610,8 +1610,8 @@ export default {
 
 ###### migration
 
-- 所有子组件 .sync 修饰符的替换为 v-model
-- 未带参数的 v-model, 修改子组件的 prop 和 event 命令为 `modelValue` 和 `update:modelValue`
+- 所有子组件 `.sync` 修饰符的替换为 `v-model`
+- 未带参数的 `v-model`, 修改子组件的 prop -> `modelValue`, event -> `update:modelValue`
 
 ```html
 <template>
@@ -1659,7 +1659,7 @@ export default {
 
 ##### V 2.2
 
-- Vue 2.2 增加组件选项 `model`, 允许自定义 `v-model` 的 prop 和事件, 只能在组件上使用一个 model
+- Vue 2.2 增加组件选项 `model`, 允许自定义 `v-model` 的 prop 和 event, 只能在组件上使用一个 model
 
 ```html
 <template>
@@ -1700,7 +1700,7 @@ export default {
 
 ##### V 3.x
 
-- Vue 3.x `v-model` 传递 `modelValue` prop 并接收抛出的 `update:modelValue` 事件
+- Vue 3.x `v-model` 默认传递 `modelValue` prop, 并接收子组件抛出的 `update:modelValue` 事件
 
 ```html
 <template>
@@ -1711,7 +1711,20 @@ export default {
   />
   <!-- 简写方式 -->
   <my-component v-model="pageTitle" />
+</template>
+<script setup>
+  const props = defineProps(['modelValue']);
+  const emit = defineEmits(['update:modelValue']);
 
+  // 触发事件
+  emit('update:modelValue', 'hello modelValue');
+</script>
+```
+
+- 多个 `v-model` 绑定
+
+```html
+<template>
   <!-- 多个 v-model 绑定 -->
   <my-component
     :title="pageTitle"
@@ -1723,15 +1736,9 @@ export default {
   <my-component v-model:title="pageTitle" v-model:content="pageContent" />
 </template>
 <script setup>
-  const props = defineProps(['modelValue', 'title', 'content']);
-  const emit = defineEmits([
-    'update:modelValue',
-    'update:title',
-    'update:content',
-  ]);
+  const props = defineProps({ title: String, content: String });
+  const emit = defineEmits(['update:title', 'update:content']);
 
-  // 触发事件
-  emit('update:modelValue', 'hello modelValue');
   emit('update:title', 'hello title');
   emit('update:content', 'hello content');
 </script>
@@ -1739,8 +1746,8 @@ export default {
 
 - 处理 `v-model` 修饰符
 
-  - 不带参数: Vue 3.x 通过 `modelModifiers` 提供给 prop
-  - 带参数: 生成的 prop 名称将为 `arg + 'Modifiers'`
+  - 不带参数: 生成的 prop 名称为 `modelModifiers` 的对象, 包含传入的修饰符
+  - 带参数: 生成的 prop 名称为 `arg + 'Modifiers'`
 
 ```html
 <template>
@@ -1750,6 +1757,7 @@ export default {
   <!-- v-model 带参数  -->
   <my-component v-model:description.capitalize="myText" />
 </template>
+<script setup></script>
 <script>
   // v-model 不带参数
   app.component('my-component', {
@@ -1760,13 +1768,18 @@ export default {
       },
     },
     emits: ['update:modelValue'],
-    template: `
-      <input type="text"
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)">
-    `,
+    template: `<input type="text" :value="modelValue" @input="emitValue" />`,
     created() {
       console.log(this.modelModifiers); // { capitalize: true }
+    },
+    methods: {
+      emitValue(e) {
+        let value = e.target.value;
+        if (this.props.modelModifiers.capitalize) {
+          value = value.charAt(0).toUpperCase() + value.slice(1);
+        }
+        this.$emit('update:modelValue', $event.target.value);
+      },
     },
   });
 
@@ -1777,7 +1790,7 @@ export default {
     template: `
       <input type="text"
         :value="description"
-        @input="$emit('update:description', $event.target.value)">
+        @input="$emit('update:description', $event.target.value)" />
     `,
     created() {
       console.log(this.descriptionModifiers); // { capitalize: true }
@@ -1792,7 +1805,7 @@ export default {
 
 ##### 限制使用
 
-> 如果混用了 `具名插槽` 和 `默认插槽`, 则需要为 `默认插槽` 使用显式的 `<template>` 标签, 否则编译错误
+> 如果混用了 **具名插槽** 和 **默认插槽**, 则需要为 **默认插槽** 使用显式的 `<template>` 标签, 否则编译错误
 
 - &lt;template&gt;
 - components(用于带有 prop 的单个默认插槽)
@@ -1838,13 +1851,13 @@ export default {
 ### 组件
 
 > 内置组件无需注册便可以直接在模板中使用，同时也支持 `tree-shaking`; 仅在使用时才会包含在构建中
-> 在 `渲染函数` 中使用它们时, 需要显式引入
+> 在 **渲染函数** 中使用它们时, 需要显式引入
 
 ```javascript
 import { h, KeepAlive, Transition } from 'vue';
 
 export default {
-  setup() {
+  setup(props, ctx) {
     return () => h(Transition, { mode: 'out-in' } /* ... */);
   },
 };
@@ -1972,7 +1985,7 @@ export default {
 </Teleport>
 ```
 
-#### &lt;Suspense&gt;
+#### &lt;Suspense&gt; <em id="suspense"></em> <!-- markdownlint-disable-line -->
 
 用于协调对组件树中嵌套的异步依赖的处理
 
@@ -2082,15 +2095,142 @@ export default {
 
 ### SFC 语法定义
 
+- `<template>` 每个 `*.vue` 文件最多可以包含一个顶层 `<template>` 块, 包含的内容将被提取传递给 `@vue/compiler-dom` 编译生成为 **渲染函数**
+- `<script>` 每个 `*.vue` 文件最多可以包含一个 `<script>` 块(使用 `<script setup>` 除外), 默认导出是 Vue 的组件选项对象
+- `<script setup>` 每个 `*.vue` 文件最多可以包含一个 `<script setup>` 块, 此脚本块将被预处理为组件的 `setup()` 函数
+- `<style>` 每个 `*.vue` 文件可以包含多个 `<style>` 块
 
+#### src 导入
 
+```html
+<template src="./template.html"></template>
+<script src="./script.js"></script>
+<style src="./style.css"></style>
+```
 
+### &lt;script setup&gt; <em id="scriptsetup"></em> <!-- markdownlint-disable-line -->
 
+> `<script setup>` 是在单文件组件(SFC) 中使用 [组合式 API](#combinedapi) 的编译时语法糖
+> `<script setup>` 中的代码会在每次组件实例被创建的时候执行
 
+- 更少的样板内容, 更简洁的代码
+- 能够使用纯 TypeScript 声明 props 和 自定义事件
+- 更好的运行时性能(其模板会被编译成同一作用域内的渲染函数, 避免了渲染上下文代理对象)
+- 更好的 IDE 类型推导性能(减少了语言服务器从代码中抽取类型的工作)
 
+#### 顶层绑定
 
+任何在 `<script setup>` 声明的 **顶层的绑定**(包括变量, 函数声明, 以及 import 导入的内容)都能在模板中直接使用
 
+#### 响应式
 
+```html
+<script setup>
+  import { ref, reactive } from 'vue';
+  const count = ref(0);
+  const user = reactive({ name: 'hello world', age: 18 });
+</script>
+<template>
+  <button @click="count++">{{ count }}</button>
+</template>
+```
+
+#### 使用组件
+
+```html
+<script setup>
+  import Foo from './Foo.vue';
+  import Bar from './Bar.vue';
+</script>
+<template>
+  <component :is="Foo" />
+  <!-- 三目运算中的组件使用 -->
+  <component :is="someCondition ? Foo : Bar" />
+</template>
+```
+
+#### 使用[自定义指令](#directive)
+
+本地声明自定义指令在 `<script setup>` 中不需要显式注册, 但必须遵循 `vNameOfDirective` 的命名规范
+
+```html
+<script setup>
+  const vMyDirective = {
+    mounted(el, binding, vnode prevVnode){},
+    updated(el, binding, vnode prevVnode){},
+    unmounted(el, binding, vnode prevVnode){}
+  }
+</script>
+<template>
+  <h1 v-my-directive>This is a heading.</h1>
+</template>
+```
+
+#### defineProps|defineEmits
+
+- `defineProps` 和 `defineEmits` 都是只能在 `<script setup>` 中使用的 **编译器宏**, 不需要导入直接使用, 且会随着 `<script setup>` 的处理过程一同被编译掉
+- `defineProps` 接收和 [props](#props) 选项相同的值, `defineEmits` 接收和 [emits](#emits) 选项相同的值
+- `defineProps` 和 `defineEmits` 在选项传入后会提供恰当的类型推导
+- 传入 `defineProps` 和 `defineEmits` 的选项会从 setup 中提升到模块的作用域, 因此, 传入的选项不能引用在 setup 作用域中声明的局部变量
+
+##### 默认 props 值
+
+> `defineProps` 没有可以给 props 提供默认值的方式, 使用 `withDefaults` **编译器宏** 解决
+
+```html
+<script setup>
+  const props = withDefaults(defineProps(), {
+    msg: 'hello world',
+    labels: () => ['one', 'two'],
+  });
+</script>
+```
+
+#### defineExpose()
+
+> 使用 `<script setup>` 的组件是 **默认关闭** 暴露任何在 `<script setup>` 中声明的绑定
+
+```html
+<script setup>
+  import { ref } from 'vue';
+
+  const a = 1;
+  const b = ref(0);
+  defineExpose({ a, b });
+</script>
+```
+
+#### useSlots()|useAttrs()
+
+- 在 SFC 中使用的辅助函数获取 slots 和 attrs
+- 需要手动从 vue 中导入
+- 返回的值和 `setupContext.slots` 和 `setupContext.attrs` 是等价的
+
+```html
+<script setup>
+  import { useSlots, useAttrs } from 'vue';
+
+  const slots = useSlots();
+  const attrs = useAttrs();
+</script>
+```
+
+#### 与普通 script 一起用
+
+- 声明无法在 `<script setup>` 中声明的选项, 例如 [inheritAttrs](#inheritAttrs) 或插件的自定义选项
+- 声明模块的具名导出(named exports)
+- 运行只需要在模块作用域执行一次的副作用, 或是创建单例对象
+
+#### 顶层 await
+
+> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()`
+> `async setup()` 必须与 [&lt;Suspense&gt;](#suspense) 内置组件组合使用
+
+```html
+<script setup>
+  const post = await fetch('/api/post/1').then(res => res.json())
+</script>
+```
 
 
 
