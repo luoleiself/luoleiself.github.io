@@ -316,10 +316,10 @@ const app = createApp({
 });
 ```
 
-#### 返回渲染函数
+#### 返回[渲染函数](#renderingfunc)
 
 - setup 应该同步地返回一个对象, 唯一可以使用 `async setup()` 的情况是该组件是 [&lt;Suspense&gt;](#suspense) 组件地后裔
-- 也可以返回一个 **渲染函数**, 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
+- 也可以返回一个 [**渲染函数**](#renderingfunc), 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
 
 ```javascript
 import { h, ref, reactive } from 'vue';
@@ -1018,7 +1018,7 @@ scope.stop();
 </script>
 ```
 
-## 选项式 API
+## 选项式 API <em id="optionalapi"></em> <!-- markdownlint-disable-line -->
 
 ### 状态选项
 
@@ -1851,7 +1851,7 @@ export default {
 ### 组件
 
 > 内置组件无需注册便可以直接在模板中使用，同时也支持 `tree-shaking`; 仅在使用时才会包含在构建中
-> 在 **渲染函数** 中使用它们时, 需要显式引入
+> 在 [**渲染函数**](#renderingfunc) 中使用它们时, 需要显式引入
 
 ```javascript
 import { h, KeepAlive, Transition } from 'vue';
@@ -2095,7 +2095,7 @@ export default {
 
 ### SFC 语法定义
 
-- `<template>` 每个 `*.vue` 文件最多可以包含一个顶层 `<template>` 块, 包含的内容将被提取传递给 `@vue/compiler-dom` 编译生成为 **渲染函数**
+- `<template>` 每个 `*.vue` 文件最多可以包含一个顶层 `<template>` 块, 包含的内容将被提取传递给 `@vue/compiler-dom` 编译生成为 [**渲染函数**](#renderingfunc)
 - `<script>` 每个 `*.vue` 文件最多可以包含一个 `<script>` 块(使用 `<script setup>` 除外), 默认导出是 Vue 的组件选项对象
 - `<script setup>` 每个 `*.vue` 文件最多可以包含一个 `<script setup>` 块, 此脚本块将被预处理为组件的 `setup()` 函数
 - `<style>` 每个 `*.vue` 文件可以包含多个 `<style>` 块
@@ -2223,14 +2223,369 @@ export default {
 
 #### 顶层 await
 
-> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()`
-> `async setup()` 必须与 [&lt;Suspense&gt;](#suspense) 内置组件组合使用
+> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()` > `async setup()` 必须与 [&lt;Suspense&gt;](#suspense) 内置组件组合使用
 
 ```html
 <script setup>
   const post = await fetch('/api/post/1').then(res => res.json())
 </script>
 ```
+
+### CSS 功能
+
+#### 组件作用域
+
+> 使用 `scoped` 后, 父组件的样式不会透传到子组件中，不过, 子组件的 **根节点** 会同时被父组件的作用域样式和子组件的作用域样式影响, 这样设计是为了让父组件可以从布局的角度出发, 调整其子组件根元素的样式
+
+##### 深度选择器
+
+```html
+<style scoped>
+  .a :deep(.b) {
+    /* */
+  }
+</style>
+```
+
+##### 插槽选择器
+
+默认情况下, 作用域样式不会影响到 `<slot />` 渲染出来的内容, 使用 `:slotted` 伪类以明确地将插槽内容作为选择器的目标
+
+```html
+<style scoped>
+  :slotted(div) {
+    color: red;
+  }
+</style>
+```
+
+##### 全局选择器
+
+```html
+<style scoped>
+  :global(.red) {
+    color: red;
+  }
+</style>
+```
+
+#### css Modules
+
+一个 `<style module>` 标签会被编译成 `CSS Modules` 并且将生成的 CSS class 作为 `$style` 对象暴露给组件
+
+```html
+<template>
+  <p :class="$style.red">This is should be red.</p>
+</template>
+<style module>
+  .red {
+    color: red;
+  }
+</style>
+```
+
+##### 自定义注入名称
+
+module 属性可以接受一个值作为自定义注入名称代替 `$style`
+
+```html
+<template>
+  <p :class="classes.red">This is should be red.</p>
+</template>
+<style module="classes">
+  .red {
+    color: red;
+  }
+</style>
+```
+
+##### 与[组合式 API](#combinedapi)一起使用
+
+- 使用 [useCssModule](#useCssModule) API 在 `setup()` 和 `<script setup>` 中访问注入的 class
+- 使用 **自定义注入名称** 的 `<style module>`, [useCssModule](#useCssModule) 接收一个匹配的 `module` attribute 值作为第一个参数
+
+```html
+<script setup>
+  import { h, useCssModule } from 'vue';
+  // 默认情况下, 返回 <style module> 的 class
+  const style = useCssModule();
+  // 自定义注入名称, 返回 <style module="classes"> 的 class
+  const classes = useCssModule('classes');
+</script>
+```
+
+#### CSS 中的 v-bind()
+
+单文件组件的 `<style>` 标签支持使用 `v-bind` CSS 函数将 CSS 的值链接到动态的组件状态
+
+- [选项式 API](#optionalapi)使用
+
+```html
+<template>
+  <div class="text">hello world</div>
+</template>
+<script>
+  export default {
+    data() {
+      return { color: 'red' };
+    },
+  };
+</script>
+<style scoped>
+  .text {
+    color: v-bind(color);
+  }
+</style>
+```
+
+- [组合式 API](#combinedapi) 使用
+
+```html
+<template>
+  <p>hello world</p>
+</template>
+<script setup>
+  const theme = {
+    color: 'red',
+  };
+</script>
+<style scope>
+  p {
+    color: v-bind('theme.color');
+  }
+</style>
+```
+
+## 进阶 API
+
+### 渲染函数 <em id="renderingfunc"></em> <!-- markdownlint-disable-line-->
+
+- 如果组件定义了 setup 并且返回值是一个函数, 则其返回值作为该组件的渲染函数
+- 如果组件定义了 render, 则将其作为渲染函数
+- 如果组件定义了 template, 则将其作为模板进行编译成可执行的渲染函数
+- 如果以上条件都不满足, 则使用容器的 innerHTML 作为模板
+
+#### h()
+
+> 当创建组件的 vnode 时, 子节点必须以 **插槽函数** 的形式传递, 如果组件只有默认插槽, 可以使用单个 **插槽函数** 传递, 否则, 必须以 **插槽函数** 的对象形式传递
+
+创建虚拟 DOM 节点(vnode)
+
+- 第一个参数是一个字符串(用于原生元素)或者一个 Vue 组件定义
+- 第二个参数是要传入的 prop
+- 第三个参数是子节点
+
+```html
+<script setup>
+  import { h } from 'vue';
+
+  h(
+    'div',
+    {
+      class: 'bar',
+      style: { color: 'red' },
+      innerHtml: 'hello',
+      // 事件监听以 onXxx 的形式
+      onClick: () => {},
+    },
+    ['hello world', h('span', 'gg')]
+  );
+</script>
+```
+
+- 创建组件
+
+```html
+<script setup>
+  import { h } from 'vue';
+  import Foo from './Foo.vue';
+
+  // 传递 prop
+  h(Foo, {
+    // 等价于 some-prop="hello world"
+    someProp: 'hello world',
+    // 等价于 @update="() => {}"
+    onUpdate: () => {},
+  });
+
+  // 传递单个默认插槽
+  h(Foo, () => 'default slot');
+
+  // 传递具名插槽
+  // 需要使用 null 来避免插槽对象被当作 prop
+  h(MyComponent, null, {
+    default: () => 'default slot',
+    foo: () => h('div', 'hello div'),
+    bar: () => [h('span', 'one'), h('span', 'two')],
+  });
+</script>
+```
+
+#### mergeProps()
+
+> `class`, `style` 将被合并成一个对象, `onXxx` 将被合并成一个数组
+
+合并多个 props 对象, 用于处理含有特定的 props 参数的情况
+
+```html
+<script setup>
+  import { h, mergeProps } from 'vue';
+
+  const one = {
+    class: 'foo',
+    onClick: handlerA,
+  };
+
+  const two = {
+    class: { bar: true },
+    onClick: handlerB,
+  };
+
+  const merged = mergeProps(one, two);
+  /**
+   * {
+   *  class: 'foo bar',
+   *  onClick: [handlerA, handlerB]
+   * }
+   */
+</script>
+```
+
+#### cloneVNode()
+
+克隆一个 vnode, 可在原有的基础上添加一些额外的 prop
+
+```html
+<script setup>
+  import { h, cloneVNode } from 'vue';
+
+  const original = h('div');
+  const cloned = cloneVNode(original, { id: 'foo' });
+</script>
+```
+
+#### isVNode()
+
+判断一个值是否为 vnode 类型
+
+#### resolveComponent()
+
+> `resolveComponent()` 只能在 [**渲染函数**](#renderingfunc) 或 `setup()` 中使用
+
+按名称手动解析已注册的组件, 返回 Component, 未找到则返回组件名字符串并抛出一个运行时警告
+
+```html
+<script setup>
+  import { h, resolveComponent } from 'vue';
+
+  const ButtonComponent = resolveComponent('ButtonComponent');
+  return () => h(ButtonComponent);
+</script>
+```
+
+#### [resolveDirective()](#directive)
+
+> `resolveDirective()` 只能在 [**渲染函数**](#renderingfunc) 或 `setup()` 中使用
+
+按名称手动解析已注册的指令, 返回 Directive, 未找到则返回 undefined 并抛出一个运行时警告
+
+```html
+<script setup>
+  import { resolveDirective } from 'vue';
+
+  const myDirective = resolveDirective('myDirective');
+</script>
+```
+
+#### [withDirectives()](#directive)
+
+用于给 vnode 增加自定义指令
+
+- 第一个参数为要添加指令的 vnode
+- 第二个参数为自定义指令的数组, 每个自定义指令表示为 `[Directive, value, argument, modifiers]` 形式的数组
+  - [directive] 指令本身
+  - [directive, value] 上述内容, 指令的值
+  - [directive, value, arg] 上述内容, 一个 String 参数,eg: v-on:click 中的 click
+  - [directive, value, arg, modifiers] 上述内容, 定义任意修饰符的 key:value 键值对
+
+```html
+<script setup>
+  import { h, withDirectives } from 'vue';
+
+  const pin = {
+    created() {
+      console.log('pin directive created...');
+    },
+    beforeMount() {
+      console.log('pin directive beforeMount...');
+    },
+    mounted(el, binding, vnode, prevVnode) {
+      console.log(binding.value, binding.arg, binding.modifiers);
+      el.style.fontSize = '20px';
+      el.style.color = '#08f';
+    },
+  };
+  return () =>
+    withDirectives(h('div', 'hello world'), [
+      [pin, 200, 'top', { animate: true }],
+    ]);
+</script>
+```
+
+```javascript
+import { withDirectives, resolveDirective } from 'vue';
+const foo = resolveDirective('foo');
+const bar = resolveDirective('bar');
+
+return withDirectives(h('div'), [
+  [foo, this.x],
+  [bar, this.y],
+]);
+```
+
+#### withModifiers()
+
+用于向事件处理函数添加内置 `v-on` 修饰符
+
+```html
+<script setup>
+  import { h, withModifiers } from 'vue';
+
+  const clk = function (e) {
+    console.log(e);
+  };
+
+  return () =>
+    h(
+      'button',
+      {
+        // 等价于 v-on.stop.prevent
+        onClick: withModifier(
+          (e) => {
+            clk(e);
+          },
+          ['stop', 'prevent']
+        ),
+      },
+      'Click Me'
+    );
+</script>
+```
+
+### 服务端渲染
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2258,112 +2613,21 @@ export default {
 
 ## 全局 API
 
-- h 返回一个"虚拟节点",通常缩写为 VNode：一个普通对象，其中包含向 Vue 描述它应在页面上渲染哪种节点的信息,包括所有子节点的描述
-
-  - 参数
-    - {String | Object | Function} type
-    - {Object} props
-    - {String | Array} children
-
-  ```javascript
-  render() {
-    // 使用返回 null 的函数将渲染一个注释
-    return Vue.h('div', {}, [
-      Vue.h(null, {}, [' Annotation start ']),
-      Vue.h('h2', {}, ['Hello World']),
-      Vue.h('p', {}, 'This is a label p, it contain description...'),
-      Vue.h(null, {}, [' Annotation end '])
-    ])
-  }
-  ```
-
-- resolveComponent 允许按名称解析 component
-
-  > resolveComponent 只能在 render 或 setup 函数中使用
-
-  - 参数
-
-    - {String} name 已加载的组件的名称
-
-  - 返回值: 返回一个 Component, 如果找不到则返回接收的参数 name
-
-  ```javascript
-  const app = Vue.createApp({});
-  app.component('MyComponent', {
-    /* ... */
-  })
-  import { resolveComponent } from 'vue';
-  render() {
-    const MyComponent = resolveComponent('MyComponent');
-  }
-  ```
-
 - resolveDynamicComponent 返回已解析的 Component 或新创建的 VNode，其中组件名称作为节点标签。如果找不到 Component,将发出警告
 
-  > 允许使用与 &lt;component :is=""&gt; 相同的机制来解析一个 component
+> 允许使用与 &lt;component :is=""&gt; 相同的机制来解析一个 component
 
-  > resolveDynamicComponent 只能在 render 或 setup 函数中使用
+> resolveDynamicComponent 只能在 render 或 setup 函数中使用
 
-  - 参数
-    - {String | Object} component 组件
+- 参数
+  - {String | Object} component 组件
 
-  ```javascript
-  import { resolveDynamicComponent } from 'vue';
-  render () {
-    const MyComponent = resolveDynamicComponent('MyComponent');
-  }
-  ```
-
-- resolveDirective 允许按名称解析一个 directive
-
-  > resolveDirective 只能在 render 或 setup 函数中使用
-
-  - 参数
-    - {String} name 已加载的指令名称
-  - 返回值: 返回一个 Directive, 如果没有找到则返回 undefined
-
-  ```javascript
-  import { createApp, resolveDirective } from 'vue';
-  const app = createApp({});
-  app.directive('highlight', {});
-  render () {
-    const highlightDirective = resolveDirective('highlight');
-  }
-  ```
-
-- withDirectives 允许将指令应用于 VNode。返回一个包含应用指令的 VNode
-
-  > withDirectives 只能在 render 或 setup 函数中使用
-
-  - 参数
-
-    - {Element} vnode 使用 h() 创建的虚拟节点
-    - {Array} directives 指令数组
-
-      - 每个指令都是一个数组, 最多可以定义 4 个索引
-
-        - [directive] 指令本身
-        - [directive, value] 上述内容,指令的值
-        - [directive, value, arg] 上述内容,一个 String 参数,eg: v-on:click 中的 click
-        - [directive, value, arg, modifiers] 上述内容,定义任意修饰符的 key:value 键值对
-
-        ```javascript
-        const MyDirective = resolveDirective('MyDirective');
-        const nodeWithDirectives = withDirectives(h('div'), [
-          [MyDirective, 100, 'click', { prevent: true }],
-        ]);
-        ```
-
-  ```javascript
-  import { withDirectives, resolveDirective } from 'vue';
-  const foo = resolveDirective('foo');
-  const bar = resolveDirective('bar');
-
-  return withDirectives(h('div'), [
-    [foo, this.x],
-    [bar, this.y],
-  ]);
-  ```
+```javascript
+import { resolveDynamicComponent } from 'vue';
+render () {
+  const MyComponent = resolveDynamicComponent('MyComponent');
+}
+```
 
 - createRenderer 自定义渲染器可以传入特定于平台的类型
 
@@ -2378,58 +2642,6 @@ export default {
     ...nodeOps
   })
   ```
-
-- mergeProps 将包含 VNode prop 的多个对象合并为一个单独的对象, 返回一个新创建的对象, 而作为参数传递的对象则不会被修改.
-
-  ```javascript
-  import { h, mergeProps } from 'vue';
-  export default {
-    inheritAttrs: false,
-    render() {
-      const props = mergeProps(
-        {
-          // 该 class 将与 $attrs 中的其他 class 合并。
-          class: 'active',
-        },
-        this.$attrs
-      );
-      return h('div', props);
-    },
-  };
-  ```
-
-- useCssModule 允许在 setup 的单文件组件函数中访问 CSS 模块
-
-  > useCssModule 只能在 render 或 setup 函数中使用
-
-  - 参数
-    - {String} name CSS 模块的名称, 默认为 '$style'
-
-  ```html
-  <script>
-    import { h, useCssModule } from 'vue';
-    export default {
-      setup() {
-        const style = useCssModule();
-        return () =>
-          h(
-            'div',
-            {
-              class: style.success,
-            },
-            'Task complete!'
-          );
-      },
-    };
-  </script>
-  <style module>
-    .success {
-      color: #090;
-    }
-  </style>
-  ```
-
-- version 以字符串形式提供已安装的 Vue 的版本号
 
 ## Migration
 
@@ -2580,34 +2792,6 @@ export default {
   };
   ```
 
-### 渲染函数 API
-
-- 如果组件中定义了 setup 配置项并且返回值是一个函数, 则其返回值作为该组件的渲染函数
-- 如果组件中定义了 render 配置项, 则将其作为渲染函数
-- 如果以上条件都不满足, 当前组件包含 template 配置项, 则将其作为模板进行编译成可执行的渲染函数
-- 如果以上条件都不满足, 则使用容器的 innerHTML 作为模板
-- h 全局导入, 不再作为参数传递给渲染函数
-
-  ```javascript
-  // Vue 2.x
-  export default {
-    render(h) {
-      return h();
-    },
-  };
-  // Vue 3.x
-  import { h } from 'vue';
-  export default {
-    render() {
-      return h();
-    },
-  };
-  ```
-
-- 渲染函数参数更改以在有状态组件和函数组件之间更加一致
-
-- cloneVNode 克隆一个 vnode
-- isVNode 判断一个值是否为 vnode 类型
 - VNode Prop 格式化
 
   ```javascript
@@ -2662,19 +2846,6 @@ export default {
       return () => h(MyComponent);
     },
   };
-  ```
-
-- withModifiers 用于向事件处理函数添加内置 `v-on` 修饰符
-
-  ```javascript
-  import { h, withModifiers } from 'vue';
-
-  const vnode = h('button', {
-    // 等价于 v-on.stop.prevent
-    onClick: withModifiers(() => {
-      // ...
-    }, ['stop', 'prevent']),
-  });
   ```
 
 ### 插槽统一
