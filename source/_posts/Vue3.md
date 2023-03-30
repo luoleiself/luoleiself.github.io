@@ -167,9 +167,9 @@ tags:
   - 或者 await 返回的 Promise
 
 ```javascript
-import { Version, nextTick } from 'vue';
+import { version, nextTick } from 'vue';
 
-console.log(Version); // 打印当前使用的 Vue 版本
+console.log(version); // 打印当前使用的 Vue 版本
 async function increment() {
   console.log('DOM 还未更新');
   await nextTick();
@@ -763,7 +763,7 @@ const bar = reactive({ foo });
 console.log(isReactive(bar.foo)); // false
 ```
 
-#### effectScope() <em id='effect'></em> <!-- markdownlint-disable-line -->
+#### effectScope() <em id='effectscope'></em> <!-- markdownlint-disable-line -->
 
 创建一个 effect 作用域, 可以捕获其中所创建的响应式副作用(计算属性和侦听器), 这样捕获到的副作用可以一起处理
 
@@ -785,11 +785,11 @@ scope.run(() => {
 scope.stop();
 ```
 
-#### [getCurrentScope()](#effect)
+#### [getCurrentScope()](#effectscope)
 
 如果存在则返回当前活跃的 effect 作用域
 
-#### onScopeDispose()
+#### [onScopeDispose()](#effectscope)
 
 > 此方法可以作为可复用的组合式函数中 `onUnmounted` 的替代品, 它并不与组件耦合, 因为每个 Vue 组件的 setup 函数也是在一个 effect 作用域中调用的
 
@@ -1380,11 +1380,21 @@ export default {
 
 #### name
 
-用于显式声明组件展示时的名称, 使用 name 选项可以覆盖推导出的名称, 或是在没有推导出名字是显式提供一个
+> 使用 name 选项可以覆盖推导出的名称, 或是在没有推导出名字是显式提供一个
+
+用于显式声明组件展示时的名称
 
 - 在组件自己的模板中递归引用自己时
 - 在 Vue 开发者工具中的组件树显示时
 - 在组件抛出的警告追踪栈信息中显示时
+
+##### 场景 1
+
+使用单文件组件时, 组件会根据其文件名推导出其名称, 例如 `MyComponent.vue` 的文件会推导出显式名称为 `MyComponent`
+
+##### 场景 2
+
+当使用 `app.component` 注册全局组件时, 这个全局 ID 会自动设置为其名称
 
 #### inheritAttrs <em id="inheritAttrs"></em> <!-- markdownlint-disable-line -->
 
@@ -1572,6 +1582,8 @@ export default {
 
 #### v-bind <em id="v-bind"></em> <!-- markdownlint-disable-line -->
 
+> `v-bind` 的绑定顺序会影响渲染结果
+
 动态的绑定一个或多个 attribute, 也可以是组件的 prop, 缩写 `:` 或 `.`(当使用 `.prop` 修饰符)
 
 ##### 绑定修饰符
@@ -1588,7 +1600,7 @@ export default {
 </template>
 ```
 
-#### v-model
+#### v-model <em id="v-model"></em> <!-- markdownlint-disable-line -->
 
 在表单输入元素或组件上创建双向绑定
 
@@ -1600,7 +1612,7 @@ export default {
 
 ##### 版本迭代
 
-- [`v-bind`](#v-bind) 的 .sync 修饰符和组件的 model 选项被移除, 使用 v-model 代替
+- [`v-bind`](#v-bind) 的 .sync 修饰符和组件的 model 选项被移除, 使用 v-model 和参数代替
 - 同一组件上可以使用多个 v-model 进行双向绑定
 - 可自定义 v-model 修饰符
 - 自定义组件时 `v-model` 的 `prop` 和 `event` 默认名称已更改
@@ -1610,7 +1622,7 @@ export default {
 
 ###### migration
 
-- 所有子组件 `.sync` 修饰符的替换为 `v-model`
+- 所有子组件 `.sync` 修饰符的部分替换为 `v-model`
 - 未带参数的 `v-model`, 修改子组件的 prop -> `modelValue`, event -> `update:modelValue`
 
 ```html
@@ -1841,6 +1853,19 @@ export default {
 #### v-memo
 
 缓存一个模板的子树, 根据传入的依赖值数组的比较结果控制子树的更新
+
+- 如果依赖值为空数组, 功能等同于 `v-once`
+- 结合 `v-for` 使用, 必须确保和 `v-for` 用在同一个元素上, 否则无效
+
+```html
+<!-- 普通用法 -->
+<div v-memo="[valueA, valueB]"></div>
+<!-- v-for | v-memo -->
+<div v-for="item in list" :key="item.id" v-memo="[item.id === selected]">
+  <p>ID: {{ item.id }} - selected: {{ item.id === selected }}</p>
+  <p>more child nodes</p>
+</div>
+```
 
 #### v-cloak
 
@@ -2471,6 +2496,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 #### resolveComponent()
 
 > `resolveComponent()` 只能在 [**渲染函数**](#renderingfunc) 或 `setup()` 中使用
+> 如果可以直接引入组件就不需要使用此方法
 
 按名称手动解析已注册的组件, 返回 Component, 未找到则返回组件名字符串并抛出一个运行时警告
 
@@ -2486,6 +2512,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 #### [resolveDirective()](#directive)
 
 > `resolveDirective()` 只能在 [**渲染函数**](#renderingfunc) 或 `setup()` 中使用
+> 如果可以直接引入组件就不需要使用此方法
 
 按名称手动解析已注册的指令, 返回 Directive, 未找到则返回 undefined 并抛出一个运行时警告
 
@@ -2525,6 +2552,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
       el.style.color = '#08f';
     },
   };
+
   return () =>
     withDirectives(h('div', 'hello world'), [
       [pin, 200, 'top', { animate: true }],
@@ -2574,357 +2602,242 @@ return withDirectives(h('div'), [
 
 ### 服务端渲染
 
+#### renderToString()
 
+> 导出自 `vue/server-renderer`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 全局 API
-
-- resolveDynamicComponent 返回已解析的 Component 或新创建的 VNode，其中组件名称作为节点标签。如果找不到 Component,将发出警告
-
-> 允许使用与 &lt;component :is=""&gt; 相同的机制来解析一个 component
-
-> resolveDynamicComponent 只能在 render 或 setup 函数中使用
-
-- 参数
-  - {String | Object} component 组件
+- 传入第二个可选的上下文对象用来在渲染过程中记录额外的数据
 
 ```javascript
-import { resolveDynamicComponent } from 'vue';
-render () {
-  const MyComponent = resolveDynamicComponent('MyComponent');
+import { createSSRApp } from 'vue';
+import { renderToString } from 'vue/server-renderer';
+
+const app = createSSRApp({
+  data() {
+    return { name: 'hello world' };
+  },
+  template: `<div>{{name}}</div>`,
+});
+
+const ctx = {};
+(async () => {
+  const html = await renderToString(app, ctx);
+  console.log(html);
+})();
+```
+
+#### renderToNodeStream()
+
+> 导出自 `vue/server-renderer`
+
+将输入渲染为一个 `Node.js Readable Stream` 实例
+
+```javascript
+import { renderToNodeStream } from 'vue/server-renderer';
+
+// 在 Node.js http 处理函数中使用
+const stream = renderToNodeStream(app);
+stream.pip(res);
+```
+
+#### pipeToNodeWritable()
+
+> 导出自 `vue/server-renderer`
+
+将输入渲染并 pipe 到一个 `Node.js Writable Stream` 实例
+
+```javascript
+import { pipeToNodeWritable } from 'vue/server-renderer';
+
+// 在 Node.js http 处理函数中使用
+pipeToNodeWritable(app, {}, res);
+```
+
+#### renderToWebStream()
+
+> 导出自 `vue/server-renderer`
+
+将输入渲染为一个 `Web ReadableStream` 实例
+
+```javascript
+import { renderToWebStream } from 'vue/server-renderer';
+
+(async () => {
+  const res = new Response(renderToWebStream(app));
+  console.log(res); // Response
+  // text() 返回 UTF-8 编码的包含 USVString 对象的 Promise 对象
+  console.log(await res.text());
+})();
+```
+
+#### pipeToWebWritable()
+
+> 导出自 `vue/server-renderer`
+
+将输入渲染并 pipe 到一个 `Web WritableStream` 实例
+
+```javascript
+import { pipeToWebWritable } from 'vue/server-renderer';
+
+(async () => {
+  // 创建一个转换流
+  const tfs = new TransformStream();
+  // 将内容渲染并 pipe 到转换流的可写流
+  pipeToWebWritable(app, {}, tfs.writable);
+  // 根据转换流的可读流创建响应对象
+  const res = new Response(tfs.readable);
+  console.log('pipeToWebWritable ', res);
+  // text() 返回 UTF-8 编码的包含 USVString 对象的 Promise 对象
+  console.log('pipeToWebWritable ', await res.text());
+})();
+```
+
+#### renderToSimpleStream()
+
+> 导出自 `vue/server-renderer`
+
+通过一个简单的接口, 将输入以 `stream` 模式进行渲染
+
+```javascript
+import { renderToSimpleStream } from 'vue/server-renderer';
+
+let res = '';
+
+renderToSimpleStream(
+  app,
+  {},
+  {
+    push(chunk) {
+      if (chunk == null) {
+        console.log('renderToSimpleStream render complete: ', res);
+      } else {
+        res += chunk;
+      }
+    },
+    destroy(err) {
+      console.log(err);
+    },
+  }
+);
+```
+
+#### useSSRContext()
+
+运行时 API, 用于获取传递给 `renderToString` 或者其他服务端渲染 API 的上下文对象
+
+```html
+<script setup>
+  import { useSSRContext } from 'vue';
+
+  // 确保只在服务端渲染时调用
+  if(import.meta.env.SSR){
+    const ctx = useSSRContext();
+    // 为上下文对象添加属性
+  }
+</script>
+```
+
+### 工具类型
+
+#### PropType&lt;T&gt;
+
+用于在用运行时 props 声明时给一个 prop 标注更复杂的类型定义
+
+```javascript
+  import type { PropType } from 'vue';
+
+  interface Book{
+    title: string,
+    author: string,
+    year: number
+  }
+
+  export default {
+    props: {
+      book: {
+        // 提供一个比 `Object` 更具体的类型
+        type: Object as PropType<Book>,
+        required: true,
+      }
+    }
+  }
+```
+
+#### ComponentCustomProperties
+
+用于增强组件实例类型以支持自定义全局属性
+
+```javascript
+  import axios from 'axios';
+
+  declare module 'vue'{
+    interface ComponentCustomProperties {
+      $http: typeof axios
+      $translate: (key: string) => string
+    }
+  }
+```
+
+#### ComponentCustomOptions
+
+用来扩展组件选项类型以支持自定义选项
+
+```javascript
+import {Route} from 'vue-router';
+
+declare module 'vue' {
+  interface ComponentCustomOptions {
+    beforeRouteEnter?(to: any, from: any, next: () => void): void
+  }
 }
 ```
 
-- createRenderer 自定义渲染器可以传入特定于平台的类型
+#### ComponentCustomProps
 
-  - 参数
-    - HostNode 宿主环境中的节点
-    - HostElement 宿主环境中的元素
+用于扩展全局可用的 TSX props, 以便在 TSX 元素上使用没有在组件选项上定义过的 props
 
-  ```javascript
-  import { createRenderer } from 'vue';
-  const { render, createApp } = createRenderer<Node, Element>({
-    patchProp,
-    ...nodeOps
-  })
-  ```
-
-## Migration
-
-### v-for 中的 Ref 数组
-
-- Vue 3.x 中 不再在 $ref 中自动创建数组填充相应的 $refs property
-
-### 异步组件
-
-- 新的 defineAsyncComponent 助手方法，用于显式地定义异步组件
-- component 选项重命名为 loader
-- Loader 函数本身不再接收 resolve 和 reject 参数，且必须返回一个 Promise
-
-  ```javascript
-  // Vue 2.x
-  const asyncPage = () => import('./NextPage.vue');
-  const asyncPage = {
-    component: () => import('./NextPage.vue'),
-    delay: 200,
-    timeout: 3000,
-    error: ErrorComponent,
-    loading: LoadingComponent,
-  };
-  // Vue 3.x
-  // 不带选项的异步组件
-  const asyncPage = defineAsyncComponent(() => import('./NextPage.vue'));
-  // 带选项的异步组件
-  const asyncPageWithOptions = defineAsyncComponent({
-    loader: () => import('./NextPage.vue'),
-    delay: 200,
-    timeout: 3000,
-    errorComponent: ErrorComponent,
-    loadingComponent: LoadingComponent,
-  });
-  ```
-
-### 片段
-
-- 组件可以包含多个根节点, 需要显示定义 attribute 的位置
-
-  ```html
-  <template>
-    <header>...</header>
-    <main v-bind="$attrs">...</main>
-    <footer>...</footer>
-  </template>
-  ```
-
-### 函数式组件
-
-- 单文件组件的 functional attribute 被移除
-- { functional: true} 选项通过函数创建组件不推荐使用,和状态组件的性能差别不大
-
-  ```javascript
-  import { h } from 'vue';
-  const DynamicHeading = (props, { attrs, slots, emit, expose }) => {
-    return h(`h${props.level}`, attrs, slots);
-  };
-  DynamicHeading.props = ['level'];
-  export default DynamicHeading;
-  ```
-
-### 全局 API 变更
-
-- 测试期间,全局配置很容易意外地污染其他测试用例, Vue.use | Vue.mixin 无恢复效果的方法
-- 全局配置使同一页面的多个 app 之间共享同一个 Vue 副本非常困难
-
-  ```javascript
-  import { createApp } from 'vue';
-  import Foo from './Foo.vue';
-  import Bar from './Bar.vue';
-
-  const createMyApp = (options) => {
-    const app = createApp(options);
-    app.directive('focus' /* ... */);
-
-    return app;
-  };
-
-  createMyApp(Foo).mount('#foo');
-  createMyApp(Bar).mount('#bar');
-  ```
-
-### 全局 API Treeshaking
-
-- 全局 API 现在只能作为 ES 模块构建的命名导出进行访问, Vue 应用程序将从未使用的 api 从最终捆绑包中消除,从而获得最佳的文件大小
-
-  ```html
-  <template>
-    <transition> <div v-show="ok">hello</div> </transition>;
-  </template>
-  <script>
-    import { h, Transition, withDirectives, vShow } from 'vue';
-    export function render() {
-      return h(Transition, [
-        withDirectives(h('div', 'hello'), [[vShow, this.ok]]),
-      ]);
-    }
-  </script>
-  ```
-
-### 内联模板 Attribute 移除
-
-```html
-<my-component inline-template>
-  <div>
-    <p>它们被编译为组件自己的模板</p>
-    <p>不是父级所包含的内容。</p>
-  </div>
-</my-component>
-```
-
-### key attribute
-
-- 条件判断分支项不再必须 key
-
-### 按键修饰符
-
-- 不再支持使用数字(即键码)作为 v-on 修饰符
-- 不再支持 config.keyCodes
-
-### $listeners 移除
-
-- 事件监听器作为 $attrs 的一部分
-
-### propsData 移除
-
-- 使用 createApp 第二个参数, 向根组件传入 prop
-
-### 在 prop 的默认函数中不能再访问 this
-
-- 组件接收到的原始 prop 作为参数传递给默认函数
-- inject API 在默认函数中使用
-
-  ```javascript
-  import { inject } from 'vue';
-  export default {
-    props: {
-      theme: {
-        default(props) {
-          // `props` 是传递给组件的原始值。
-          // 在任何类型/默认强制转换之前
-          // 也可以使用 `inject` 来访问注入的 property
-          return inject('theme', 'default-theme');
-        },
-      },
-    },
-  };
-  ```
-
-- VNode Prop 格式化
-
-  ```javascript
-  // 2.x
-  {
-    staticClass: 'button',
-    class: { 'is-outlined': isOutlined },
-    staticStyle: { color: '#34495E' },
-    style: { backgroundColor: buttonColor },
-    attrs: { id: 'submit' },
-    domProps: { innerHTML: '' },
-    on: { click: submitForm },
-    key: 'submit-button'
+```javascript
+declare module 'vue'{
+  interface ComponentCustomProps {
+    hello?: string
   }
-  // 3.x 语法
-  {
-    class: ['button', { 'is-outlined': isOutlined }],
-    style: [{ color: '#34495E' }, { backgroundColor: buttonColor }],
-    id: 'submit',
-    innerHTML: '',
-    onClick: submitForm,
-    key: 'submit-button'
+}
+export {}
+```
+
+#### CSSProperties
+
+用于扩展在样式属性绑定上允许的值的类型
+
+```javascript
+declare module 'vue' {
+  interface CSSProperties {
+    [key: `--${string}`]: string
   }
-  ```
-
-- 注册组件, 需要借助 resolveComponent API
-
-  ```javascript
-  // Vue 2.x
-  Vue.component('my-component', {
-    data() {
-      return {
-        count: 0,
-      };
-    },
-    template: `<button @click="count++">
-      Clicked {{ count }} times.
-    </button>`,
-  });
-  export default {
-    render(h) {
-      return h('my-component');
-    },
-  };
-  // Vue 3.x
-  import { h, resolveComponent } from 'vue';
-  // resolveComponent,resolveDynamicComponent,resolveDirective,withDirectives
-  // 全局API只能在 render 或 setup 函数中使用
-  export default {
-    setup() {
-      const MyComponent = resolveComponent('my-component');
-      return () => h(MyComponent);
-    },
-  };
-  ```
-
-### 插槽统一
-
-- this.$slots 插槽作为函数公开
-- 移除 this.$scopedSlots
-
-  ```javascript
-  // 2.x 语法
-  this.$scopedSlots.header;
-  // 3.x 语法
-  this.$slots.header();
-  ```
-
-- 见指令 v-slot
-- 解构插槽 prop
-
-  ```html
-  <!-- 解构并且重命名 -->
-  <todo-list v-slot="{ item: todo }">
-    <i class="fas fa-check"></i>
-    <span class="green">{{ todo }}</span>
-  </todo-list>
-  ```
-
-- 动态插槽名
-
-  ```html
-  <base-layout>
-    <template v-slot:[dynamicSlotName]> ... </template>
-  </base-layout>
-  ```
-
-### 过渡的 class 名更改
-
-- 过渡类名 v-enter 修改为 v-enter-from
-- 过渡类名 v-leave 修改为 v-leave-from
-
-### Transition Group 根元素
-
-> 不再默认渲染根元素, 仍然可以用 tag prop 创建根元素
-
-### v-on.native 修饰符 移除
-
-新增 emits 选项允许子组件定义真正会被触发的事件
-
-### v-if 与 v-for 的优先级对比
-
-> 两者作用于同一个元素上时，v-if 会拥有比 v-for 更高的优先级
-
-### v-bind 合并行为
-
-> 声明绑定的顺序决定了合并顺序
-
-```html
-<!-- 模板 -->
-<div id="red" v-bind="{ id: 'blue' }"></div>
-<!-- 结果 -->
-<div id="blue"></div>
-
-<!-- 模板 -->
-<div v-bind="{ id: 'blue' }" id="red"></div>
-<!-- 结果 -->
-<div id="red"></div>
+}
 ```
 
-### VNode 生命周期事件
+### 自定义渲染
 
-- 2.x
+#### createRenderer()
 
-```html
-<child-component @hook:updated="onUpdated"></child-component>
-```
+创建一个自定义渲染器, 可以在非 DOM 环境中使用 Vue 核心运行时的特性
 
-- 3.x
-  - 绝大多数情况下只需要修改前缀. 生命周期钩子 beforeDestroy 和 destroyed 已经分别被重命名为 beforeUnmount 和 unmounted,所以相应的事件名也需要更新
+```javascript
+import { createRenderer } from '@vue/runtime-core';
 
-```html
-<child-component @vnode-updated="onUpdated"></child-component>
-<!-- 或者使用驼峰命名法 -->
-<child-component @vnodeUpdated="onUpdated"></child-component>
+const { render, createApp } = createRenderer({
+  patchProp,
+  insert,
+  remove,
+  createElement,
+  // ...
+});
+
+// render 是底层 API
+// createApp 返回一个应用实例
+export { render, createApp };
+
+// 重新导出 Vue 的核心 API
+export * from '@vue/runtime-core';
 ```
