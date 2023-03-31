@@ -2446,8 +2446,8 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 
 ##### 与[组合式 API](#combinedapi)一起使用
 
-- 使用 [useCssModule](#useCssModule) API 在 `setup()` 和 `<script setup>` 中访问注入的 class
-- 使用 **自定义注入名称** 的 `<style module>`, [useCssModule](#useCssModule) 接收一个匹配的 `module` attribute 值作为第一个参数
+- 使用 `useCssModule` API 在 `setup()` 和 `<script setup>` 中访问注入的 class
+- 使用 **自定义注入名称** 的 `<style module>`, `useCssModule` 接收一个匹配的 `module` attribute 值作为第一个参数
 
 ```html
 <script setup>
