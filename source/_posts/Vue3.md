@@ -2331,6 +2331,29 @@ export default {
 </script>
 ```
 
+##### props|emit 类型声明
+
+`props` 和 `emits` 都可以通过给 `defineProps` 和 `defineEmits` 传递纯类型参数的方式声明
+
+```html
+<script setup>
+  const props = defineProps({ title: string, age: number });
+  const emit = defineEmits({
+    // 没有验证函数
+    click: null,
+    // 有验证函数
+    submit: (payload) => {
+      if (payload.email && payload.password) {
+        return true;
+      } else {
+        console.warn(`Invalid submit event payload!`);
+        return false;
+      }
+    }
+  })
+</script>
+```
+
 #### defineExpose()
 
 > 使用 `<script setup>` 的组件是 **默认关闭** 暴露任何在 `<script setup>` 中声明的绑定
