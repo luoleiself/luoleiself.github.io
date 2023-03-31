@@ -934,7 +934,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-30 20:03:46" itemprop="dateModified" datetime="2023-03-30T20:03:46+08:00">2023-03-30</time>
+                <time title="修改时间：2023-03-31 20:06:16" itemprop="dateModified" datetime="2023-03-31T20:06:16+08:00">2023-03-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -955,13 +955,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>49k</span>
+              <span>52k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>44 分钟</span>
+              <span>47 分钟</span>
             </span>
 
         </div>
@@ -1006,26 +1006,7 @@
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="attr">inject</span>: [<span class="string">&#x27;name&#x27;</span>],</span><br><span class="line">  <span class="attr">template</span>: <span class="string">&#x27;&lt;span&gt;&#123;&#123;name&#125;&#125;&lt;/span&gt;&#x27;</span>,</span><br><span class="line">&#125;);</span><br><span class="line">app.<span class="title function_">provide</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;hello world&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
 <li><p>app.component() 注册或查找全局组件, 根据参数个数区分</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="comment">/* */</span>);</span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;my-component&#x27;</span>, &#123;</span><br><span class="line">  <span class="comment">/*组件配置项*/</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;my-component&#x27;</span>); <span class="comment">// 查找已注册的组件</span></span><br></pre></td></tr></table></figure></li>
-<li><p>app.directive() 注册或查找全局指令, 根据参数个数区分 <em id="directive"></em> <!-- markdownlint-disable-line --></p>
-<ul>
-<li>钩子函数参数<ul>
-<li>el 指令绑定的元素, 可用于直接操作 DOM</li>
-<li>binding 一个对象<ul>
-<li>value 传递给指令的值, 例如 <code>v-my-directive=&quot;1 + 1&quot;</code> 的值为 2</li>
-<li>oldValue 之前的值, 仅在 <a href="#onBeforeUpdate"><code>beforeUpdate</code></a> 和 <a href="#onUpdated"><code>updated</code></a> 中可用</li>
-<li>arg 传递给指令的参数, 例如 <code>v-my-directive:foo</code> 的参数为 <code>foo</code></li>
-<li>modifiers 一个包含修饰符的对象, 例如 <code>v-my-directive.foo.bar</code> 的修饰符对象为 <code>&#123;foo: true, bar: true&#125;</code></li>
-<li>instance 使用该指令的组件实例</li>
-<li>dir 指令的定义对象</li>
-</ul>
-</li>
-<li>vnode 代表绑定元素的底层 VNode</li>
-<li>prevVnode 之前的渲染中代表指令所绑定元素的 VNode, 仅在 <a href="#onBeforeUpdate"><code>beforeUpdate</code></a> 和 <a href="#onUpdated"><code>updated</code></a> 中可用</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">MyComponent</span> <span class="attr">v-my-directive</span>=<span class="string">&quot;test&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="comment">/* */</span>);</span></span><br><span class="line"><span class="language-javascript">  app.<span class="title function_">directive</span>(<span class="string">&#x27;my-directive&#x27;</span>, &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">/**</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     * 自定义指令钩子:</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     * created 在绑定元素的 attribute 或事件监听器被应用之前调用</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     * beforeMount 在绑定元素的父组件挂载之前调用</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     * mounted 绑定元素的父组件被挂载时调用</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     * beforeUpdate 在包含组件的 VNode 更新之前调用</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     * updated 在包含组件的 VNode 及其子组件的 VNode 更新之后调用</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     * beforeUnmount 在绑定元素的父组件卸载之前调用</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     * unmounted 卸载绑定元素的父组件时调用</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">     */</span></span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 简化形式: 仅需要在 `mounted` 和 `updated` 上实现相同的行为</span></span></span><br><span class="line"><span class="language-javascript">  app.<span class="title function_">directive</span>(<span class="string">&#x27;my-directive&#x27;</span>, <span class="function">(<span class="params">el, binding</span>) =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">/* 在 mounted 和 updated 时都调用 */</span></span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="comment">/* */</span>);</span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;my-component&#x27;</span>, &#123;</span><br><span class="line">  <span class="comment">/*组件配置项*/</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;my-component&#x27;</span>); <span class="comment">// 查找已注册的组件</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/06/c430903d5070/#more" rel="contents">
@@ -1495,12 +1476,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">323k</span>
+    <span title="站点总字数">325k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:53</span>
+    <span title="站点阅读时长">4:55</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
