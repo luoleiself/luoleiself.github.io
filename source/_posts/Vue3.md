@@ -305,7 +305,7 @@ document.body.append(new MyElement(/* 初始化 prop */));
 setup 函数的第二个参数, 暴露了其他一些在 setup 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 是非响应式的, 如果需要根据 attrs 或者 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑
 
 - attrs 透传 Attributes, 等价于 $attrs
-- slots 插槽, 等价于 $slots
+- slots [插槽](#v-slot), 等价于 $slots
 - emit 触发事件, 等价于 $emit
 - expose 用于显示的限制该组件暴露出的属性, 父组件将仅能访问 expose 函数暴露出的内容
 
@@ -323,6 +323,42 @@ const app = createApp({
   },
 });
 ```
+
+##### 使用 [slot](#v-slot) 渲染内容
+
+```javascript
+import { createApp, defineComponent, h } from 'vue';
+
+const HelloWorld = defineComponent((props, { slots }) => {
+  // 使用 `?.` 可选链运算符判断默认插槽不存在则使用默认值渲染
+  return () => h('p', [slots?.default?.() || 'rendered content from self...']);
+});
+
+const app = createApp({
+  setup(props, { slots }) {
+    return () =>
+      h(
+        HelloWorld,
+        {
+          // VNode 生命周期事件琢磨中...
+          'vue:mounted': () => {
+            console.log('child component hooks triggered...');
+          }
+        },
+        // 传递单个默认插槽函数
+        // () => 'rendered content from father component by default slot...',
+        // 传递具名插槽, 使用插槽函数对象形式传递
+        {
+          default: () => 'rendered content from father component by default slot...',
+          header: () => h('span', 'rendered content from father component by header slot...')
+        }
+      );
+  }
+});
+app.component('hello-world', HelloWorld);
+app.mount('#app');
+```
+
 
 #### 返回[渲染函数](#renderingfunc)
 
@@ -2535,7 +2571,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 
 #### h()
 
-> 当创建组件的 vnode 时, 子节点必须以 **插槽函数** 的形式传递, 如果组件只有默认插槽, 可以使用单个 **插槽函数** 传递, 否则, 必须以 **插槽函数** 的对象形式传递
+> 当创建组件的 vnode 时, 子节点必须以 **[插槽](#v-slot)函数** 的形式传递, 如果组件只有默认插槽, 可以使用单个 **[插槽](#v-slot)函数** 传递, 否则, 必须以 **[插槽](#v-slot)函数** 的对象形式传递
 
 创建虚拟 DOM 节点(vnode)
 
@@ -2583,8 +2619,8 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
   // 需要使用 null 来避免插槽对象被当作 prop
   h(MyComponent, null, {
     default: () => 'default slot',
-    foo: () => h('div', 'hello div'),
-    bar: () => [h('span', 'one'), h('span', 'two')],
+    header: () => h('div', 'hello div'),
+    footer: () => [h('span', 'one'), h('span', 'two')],
   });
 </script>
 ```
