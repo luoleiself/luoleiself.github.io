@@ -65,6 +65,8 @@ tags:
 <div id="red"></div>
 ```
 
+<!-- more -->
+
 #### v-on.native 移除
 
 `v-on` 的 `.native` 修饰符被**移除**
@@ -92,7 +94,7 @@ export default DynamicHeading;
 
 #### 异步组件
 
-- 新的 `defineAsyncComponent` 助手方法,用于显式地定义异步组件
+- 新增 `defineAsyncComponent` 助手方法, 用于显式地定义异步组件
 - `component` 选项重命名为 `loader`
 - `Loader` 函数本身不再接收 `resolve` 和 `reject` 参数，且必须返回一个 Promise
 
@@ -139,7 +141,7 @@ export default {
 ```
 
 - 更改渲染函数参数, 使其在有状态组件和函数组件的表现更加一致
-- VNode 现有一个扁平的 prop 结构
+- VNode Prop 格式化
 
 ```javascript
 // 2.x
@@ -166,7 +168,7 @@ export default {
 
 - 注册组件
 
-  - Vue3.x 中 VNode 是上下文无关的, 无法使用字符串 ID 隐式查找已注册的组件, 需要借助 `resolveComponent` 方法
+  - Vue3.x `setup()` 中 VNode 是上下文无关的, 无法使用字符串 ID 隐式查找已注册的组件, 需要借助 `resolveComponent` 方法
 
 ```javascript
 // Vue 2.x
@@ -197,51 +199,73 @@ export default {
 };
 ```
 
+#### 插槽统一
 
+- `this.$slots` 插槽作为函数公开
+- `this.$scopedSlots` **移除**
 
+#### $listeners **移除**
 
+> `$listeners` 对象在 Vue3 中被移除, 事件监听器现在是 `$attrs` 的一部分
 
+#### $attrs 包含 class 和 style
 
+`$attrs` 现在包含了所有传递给组件的 attribute, 包含 `class` 和 `style`
 
+- Vue 2.x 当 `inheritAttrs: false` 时, `class` 和 `style` 不是 `$attrs` 的一部分, 仍然会被应用到组件的根元素中
 
+### 自定义元素
 
+#### 与自定义元素的互操作性
 
+> 特殊的 `is` 属性的使用被严格限制在保留的 `<component>` 标签中
+> 使用 `vue:` 前缀解决 DOM 内模板解析问题
 
+```html
+<!-- Vue 2.x -->
+<table>
+  <tr is="blog-post-row"></tr>
+</table>
 
+<!-- Vue 3.x -->
+<table>
+  <tr is="vue:blog-post-row"></tr>
+</table>
+```
 
+### 移除的 APIs
 
+#### 按键修饰符
 
+- 不再支持使用数字(按键)作为 `v-on` 修饰符
+- 不再支持 `config.keyCodes`
 
+```html
+<!-- Vue 2.x -->
+<!-- 键码 -->
+<input v-on:keyup.13="submit" />
+<!-- 别名 -->
+<input v-on:keyup.enter="submit" />
 
+<!-- Vue 3.x -->
+<input v-pn:keyup.page-down="nextPage" />
+<!-- 同时匹配 q 和 Q -->
+<input v-on:keypress.q="quit" />
+```
 
+#### 事件 API
 
+`$on`, `$off`, `$once` 实例方法已被 **移除**, 组件实例不再实现事件触发接口
 
+#### 过滤器
 
+`$filter` 过滤被**移除**
 
+#### 内联模板 Attribute
 
+对 **内联模板特性** 的支持被**移除**
 
-
-
-
-
-
-### v-for 中的 Ref 数组
-
-- Vue 3.x 中 不再在 $ref 中自动创建数组填充相应的 $refs property
-
-### 片段
-
-- 组件可以包含多个根节点, 需要显示定义 attribute 的位置
-
-  ```html
-  <template>
-    <header>...</header>
-    <main v-bind="$attrs">...</main>
-    <footer>...</footer>
-  </template>
-  ```
-
-### 内联模板 Attribute 移除
+- Vue 2.x 使用 `inline-template` 属性将其内容作为模板使用, 而不是作为分发内容
 
 ```html
 <my-component inline-template>
@@ -252,271 +276,185 @@ export default {
 </my-component>
 ```
 
-### 按键修饰符
+#### $children
 
-- 不再支持使用数字(即键码)作为 v-on 修饰符
-- 不再支持 config.keyCodes
+`$children` 实例属性已被 **移除**
 
-### propsData 移除
+#### propsData
 
-- 使用 createApp 第二个参数, 向根组件传入 prop
+- Vue 2.x `propsData` 选项用于在创建 Vue 实例的过程中传入的 prop, 现在已被 **移除**
+- Vue 3.x 使用 `createApp` 的第二个参数传入 prop
 
-### 在 prop 的默认函数中不能再访问 this
+```javascript
+// Vue 2.x
+const Comp = Vue.extend({
+  props: ['name'],
+  template: '<div>{{name}}</div>',
+});
+new Comp({
+  propsData: {
+    name: 'hello world',
+  },
+});
+
+// Vue 3.x
+import { createApp } from 'vue';
+const app = createApp(
+  {
+    props: ['name'],
+    template: '<div>{{name}}</div>',
+  },
+  { name: 'hello world' }
+);
+```
+
+### 其他变化
+
+#### 片段
+
+- 组件可以包含多个根节点, 需要显示定义 attribute 的位置
+
+```html
+<template>
+  <header>...</header>
+  <main v-bind="$attrs">...</main>
+  <footer>...</footer>
+</template>
+```
+
+#### attribute 强制行为
+
+> 底层的内部 API 更改, 绝大多数开发人员不会受到影响
+
+#### 自定义指令
+
+- 指令的钩子函数已经被重命名, 以更好地与组件的生命周期保持一致
+- `expression` 字符串不再作为 `binding` 对象的一部分被传入
+
+##### 钩子函数
+
+|     Vue 2.x      |    Vue 3.x    |
+| :--------------: | :-----------: |
+|                  |    created    |
+|       bind       |  beforeMount  |
+|     inserted     |    mounted    |
+|                  | beforeUpdate  |
+|      update      |               |
+| componentUpdated |    updated    |
+|                  | beforeUnmount |
+|      unbind      |   unmounted   |
+
+#### Data 选项
+
+- 组件选项 `data` 的声明不再接收纯 JavaScript `Object`, 而是接收一个 `function`
+- 当合并来自 `mixin` 或 `extend` 的多个 `data` 返回值时, 合并操作现在是浅层次的而非深层次的(只合并根级属性)
+
+#### mount API
+
+> 挂载元素时, 被渲染的应用作为子元素插入, 不再替换要挂载的目标元素
+
+- Vue 2.x 当挂载一个具有 `template` 的应用时, 被渲染的内容会替换要挂载的目标元素
+- Vue 3.x 被挂载的应用会作为子元素插入, 从而替换目标元素的 `innerHTML`
+
+```html
+<!-- Vue 2.x 替换目标元素 -->
+<template>
+  <div id="rendered">hello world!</div>
+</template>
+<script>
+  const app = new Vue({
+    data() {
+      return {
+        message: 'hello world!',
+      };
+    },
+    template: '<div id="rendered">{{message}}</div>',
+  });
+  app.$mount('#app');
+</script>
+```
+
+```html
+<!-- Vue 3.x 作为子元素插入到目标元素 -->
+<template>
+  <div id="app">
+    <div id="rendered">hello world!</div>
+  </div>
+</template>
+<script>
+  import { createApp } from 'vue';
+  const app = createApp({
+    data() {
+      return { message: 'hello world!' };
+    },
+    template: '<div id="rendered">{{message}}</div>',
+  });
+  app.mount('#app');
+</script>
+```
+
+#### 在 prop 的默认函数中不能再访问 this
 
 - 组件接收到的原始 prop 作为参数传递给默认函数
-- inject API 在默认函数中使用
+- `inject` API 在默认函数中使用
 
-  ```javascript
-  import { inject } from 'vue';
-  export default {
-    props: {
-      theme: {
-        default(props) {
-          // `props` 是传递给组件的原始值。
-          // 在任何类型/默认强制转换之前
-          // 也可以使用 `inject` 来访问注入的 property
-          return inject('theme', 'default-theme');
-        },
+```javascript
+import { inject } from 'vue';
+export default {
+  props: {
+    theme: {
+      default(props) {
+        // `props` 是传递给组件的原始值。
+        // 在任何类型/默认强制转换之前
+        // 也可以使用 `inject` 来访问注入的 property
+        return inject('theme', 'default-theme');
       },
     },
-  };
-  ```
-
-### 插槽统一
-
-- this.$slots 插槽作为函数公开
-- 移除 this.$scopedSlots
-
-  ```javascript
-  // 2.x 语法
-  this.$scopedSlots.header;
-  // 3.x 语法
-  this.$slots.header();
-  ```
-
-- 见指令 v-slot
-- 解构插槽 prop
-
-  ```html
-  <!-- 解构并且重命名 -->
-  <todo-list v-slot="{ item: todo }">
-    <i class="fas fa-check"></i>
-    <span class="green">{{ todo }}</span>
-  </todo-list>
-  ```
-
-- 动态插槽名
-
-  ```html
-  <base-layout>
-    <template v-slot:[dynamicSlotName]> ... </template>
-  </base-layout>
-  ```
-
-### 过渡的 class 名更改
-
-- 过渡类名 v-enter 修改为 v-enter-from
-- 过渡类名 v-leave 修改为 v-leave-from
-
-### Transition Group 根元素
-
-> 不再默认渲染根元素, 仍然可以用 tag prop 创建根元素
-
-### VNode 生命周期事件
-
-- 2.x
-
-```html
-<child-component @hook:updated="onUpdated"></child-component>
+  },
+};
 ```
 
-- 3.x
-  - 绝大多数情况下只需要修改前缀. 生命周期钩子 beforeDestroy 和 destroyed 已经分别被重命名为 beforeUnmount 和 unmounted,所以相应的事件名也需要更新
+#### Transition class
+
+过渡类名 `v-enter` 修改为 `v-enter-from`, 过渡类名 `v-leave` 修改为 `v-leave-from`
+
+- v-enter-from
+- v-enter-active
+- v-enter-to
+- v-leave-from
+- v-leave-active
+- v-leave-to
+
+#### Transition 作为根节点
+
+当使用 `<Transition>` 作为根节点的组件从外部被切换时将不再触发过渡效果
+
+#### TransitionGroup 根元素
+
+`<TransitionGroup>` 不再默认渲染根元素, 但仍然可以用 `tag` 属性创建根元素
+
+#### VNode 生命周期事件
+
+- Vue 2.x 监听组件生命周期的事件名以 `hook:` 前缀开头, 并跟随相应的生命周期钩子的名字
 
 ```html
-<child-component @vnode-updated="onUpdated"></child-component>
-<!-- 或者使用驼峰命名法 -->
-<child-component @vnodeUpdated="onUpdated"></child-component>
+<template>
+  <child-component @hook:updated="onUpdated" />
+</template>
 ```
 
-### Vue 3.x 迭代 新增或者废弃的语法和 API
+- Vue 3.x 前缀改为 `vue:` 开头, 这些事件也可用于 HTML 元素, 和在组件上的用法一样
+  - 绝大多数情况下只需要修改前缀. 生命周期钩子 `beforeDestroy` 和 `destroyed` 已经分别被重命名为 `beforeUnmount` 和 `unmounted`, 所以相应的事件名也需要更新
 
-### 源码优化
+```html
+<template>
+  <child-component @vue:mounted="onMounted" />
+  <child-component @vue:before-update="onBeforeUpdate" />
+  <!-- 等同于 -->
+  <child-component @vue:beforeUpdate="onBeforeUpdate" />
+</template>
+```
 
-#### 代码管理方式 monorepo(monolithic repository)
+#### 侦听数组
 
-- vue 2.x 源码托管在 src 目录下, 然后根据功能拆分出不同的目录 compiler, core, platforms, server, sfc, shared
-
-- vue 3.0 通过 monorepo 方式管理代码结构,按功能拆分到不同的 package 中, 每个 package 有各自的 API, 类型定义, 测试
-
-#### 使用 TypeScript 规范代码类型
-
-#### 性能优化
-
-- 源码体积优化: 移除不常用的 Feature, 更友好的 tree-shaking 减少打包体积
-- 数据劫持优化: Vue 区别于 React 的一大特色是数据是响应式的,
-- Vue 3.0 使用 Proxy 代理(嵌套对象在访问时递归响应式而非初始化递归, 提升性能)
-
-#### 编译优化
-
-- 静态模板优化：vue 3.0 编译阶段对静态模板的分析,区分动态内容和静态内容提升更新性能
-- Slot, 事件监听函数缓存优化
-
-#### Composition API 属于 API 的增强, 非开发规范
-
-- Composition API 非 Vue 3.0 的开发规范, 可以根据需求选择使用 Composition API 还是 Options API
-
-<!-- more -->
-
-### vue 3.1
-
-#### 新增
-
-- compilerOptions 配置运行时编译器的选项
-
-  - isCustomElement 指定一个方法来识别 Vue 以外 (例如通过 Web Components API) 定义的自定义元素
-  - whitespace 编译模板时对模板元素之间的空格的处理方式, 默认值: condense
-    - condense
-    - preserve
-  - delimiters 设置模板内的文本插值的边界符
-  - comments 是否在生产环境保留注释
-
-  ```javascript
-  // 应用中使用
-  app.config.compilerOptions = {
-    isCustomElement: (tag) => tag.startWith('icon'),
-    whitespace: 'condense', // 默认值
-    delimiters: ['{{', '}}'], // 默认值
-    comments: false, // 默认值
-  };
-  // 组件中使用
-  createApp({
-    // ...
-    compilerOptions: {},
-  });
-  ```
-
-- is 特殊属性
-
-  - 动态组件中正常使用
-
-    ```html
-    <component :is="currentView"></component>
-    ```
-
-  - 原生元素上使用 is 属性, vue: 前缀声明的元素会被 Vue 组件进行渲染替换
-
-    ```html
-    <table>
-      <tr is="vue:my-row-component"></tr>
-    </table>
-    ```
-
-#### 废弃
-
-- isCustomElement 使用 compilerOptions.isCustomElement 代替
-- delimiters 使用 compilerOptions.delimiters 代替
-- v-is 使用 is 代替, 参考上方新增中的语法
-
-### vue 3.2
-
-#### 新增
-
-- defineCustomElement 接受和 defineComponent 相同的参数, 但是返回一个原生的自定义元素, 该元素可以用于任意框架或不基于框架使用
-
-  ```javascript
-  import { defineCustomElement } from 'vue';
-  // <my-element></my-element>
-  const MyElement = defineCustomElement({});
-  customElements.define('my-element', MyElement); // 注册该自定义元素
-  document.body.append(new MyElement(/* 初始化 prop */));
-  ```
-
-- v-bind 修饰符
-
-  - .camel 将 kebab-case attribute 名转换为 camelCase, 3.2 之前新增
-
-    ```html
-    <svg :view-box.camel="viewBox"></svg>
-    ```
-
-  - .prop 将一个绑定强制设置为一个 DOM Property
-  - .attr 将一个绑定强制设置为一个 DOM Attribute
-
-  ```html
-  <!-- 使用 .prop 修饰符，会从组件选项 props 中移除, 
-    以 .[attr] 形式出现在组件 attrs 参数中并且不会显示在 DOM 上 -->
-  <!-- 使用 .attr 修饰符，会从组件选项 props 中移除, 
-    以 ^[attr] 形式出现在组件 attrs 参数中并且会显示在 DOM 上 -->
-  <div :someProperty.prop="someObject"></div>
-  <!-- // 相当于 -->
-  <div .someProperty="someObject"></div>
-  ```
-
-- SFC 单文件组件
-
-  - 每次组件实例被创建的时候都会执行
-  - 任何声明的顶层的绑定(包括变量，函数声明，以及 import 引入的内容)都可以在模板中直接使用
-
-  - defineProps 和 defineEmits
-
-    - 只能在 SFC 中使用, 不需要导入
-    - defineProps 接收 props 相同的参数
-    - defineEmits 接收 emits 相同的参数
-    - 传入的选项不能引用在 setup 范围中声明的局部变量, 会引起编译错误
-
-  - defineExpose 明确向外暴露出去的属性
-
-    - 不需要导入直接使用
-
-  - useSlots 和 useAttrs
-
-    - 在 SFC 中使用的辅助函数获取 slots 和 attrs
-    - 需要手动从 vue 中导入
-    - 返回的值和 setupContext.slots 和 setupContext.attrs 是等价的
-
-  - 顶层 await, 结果代码会被编译成 `async setup()`
-
-    ```html
-    <script setup>
-      // setup 会被编译成 async setup()
-      const post = await fetch('/api/example');
-    </script>
-    ```
-
-  ```html
-  <script setup>
-    import { capitalize } from './helpers';
-    import { ref } from 'vue';
-    import MyComponent from './MyComponent.vue'; // 使用组件
-    console.log('hello script setup');
-    const count = ref(0);
-    // 变量
-    const msg = 'Hello!';
-    // 函数
-    function log() {
-      console.log(msg);
-    }
-
-    // defineProps 和 defineEmits
-    const props = defineProps(['foo']);
-
-    const emit = defineEmits(['change', 'delete']);
-
-    // defineExpose
-    defineExpose({ msg });
-
-    // useSlots 和 useAttrs
-    import { useSlots, useAttrs } from 'vue';
-    const slots = useSlots();
-    const attrs = useAttrs();
-  </script>
-  <template>
-    <div @click="log">{{ msg }}</div>
-    <div>{{capitalize('hello')}}</div>
-    <button @click="count++">{{count}}</button>
-    <MyComponent />
-  </template>
-  ```
-
-#### 废弃
+当侦听一个数组时, 只有当数组被替换时才会触发回调, 如果需要在数组被改变时触发回调, 必须指定 `deep` 选项

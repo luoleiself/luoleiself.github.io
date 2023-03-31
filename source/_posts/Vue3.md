@@ -61,6 +61,8 @@ tags:
   app.component('my-component'); // 查找已注册的组件
   ```
 
+  <!-- more -->
+
 - app.directive() 注册或查找全局指令, 根据参数个数区分 <em id="directive"></em> <!-- markdownlint-disable-line -->
 
   - 钩子函数参数
@@ -101,8 +103,6 @@ tags:
     });
   </script>
   ```
-
-  <!-- more -->
 
 - app.use() 安装一个 **插件**, 插件可以是一个包含 `install()` 方法的对象或者是一个安装函数本身
 
@@ -269,6 +269,14 @@ async function increment() {
 
 - [defineCustomElement()](#defineComponent) 和 `defineComponent()` 接收的参数相同, 不同的是返回一个原生 **自定义元素** 类的构造器
 
+```javascript
+import { defineCustomElement } from 'vue';
+// <my-element></my-element>
+const MyElement = defineCustomElement({});
+customElements.define('my-element', MyElement); // 注册该自定义元素
+document.body.append(new MyElement(/* 初始化 prop */));
+```
+
 ## 组合式 API <em id="combinedapi"></em> <!-- markdownlint-disable-line -->
 
 ### setup()
@@ -281,7 +289,7 @@ async function increment() {
 - 需要在基于选项式 API 的组件集成基于组合式 API 的代码时
 
 - 在创建组件实例时, 在初始 prop 解析之后立即调用 setup
-- 在生命周期方面, 在 beforeCreate 钩子之前调用
+- 在生命周期方面, 在 `beforeCreate` 钩子之前调用
 
 - getCurrentInstance
   - 支持访问内部组件实例，用于高阶用法或库的开发
@@ -798,6 +806,47 @@ scope.stop();
 ### 生命周期钩子
 
 > 所有生命周期钩子函数必须在组件的 `setup()` 阶段同步调用
+
+#### VNode 生命周期事件
+
+VNode 生命周期事件前缀从 `hook:` 更改为 `vue:`, 这些事件也可用于 HTML 元素, 和在组件上的用法一样
+
+- `vue:` 前缀为固定格式, 生命周期事件可以使用 `kebab-case` 或者 `camelCase`
+
+```html
+<template>
+  <!-- Vue 2.x -->
+  <child-component @hook:mounted="onMounted"></child-component>
+
+  <!-- Vue 3.x -->
+  <child-component @vue:mounted="onMounted"></child-component>
+  <child-component @vue:before-update="onBeforeUpdate"></child-component>
+  <!-- 等同于 -->
+  <child-component @vue:beforeUpdate="onBeforeUpdate"></child-component>
+</template>
+```
+
+```javascript
+import { h, createApp, defineComponent } from 'vue';
+
+const HelloWorld = defineComponent((props, ctx) => {
+  return () => h('p', 'hello world component');
+});
+const app = createApp({
+  data() {
+    return {};
+  },
+  template: `<h1>This is template option.</h1>
+    <hello-world @vue:before-mount="helloWorldBeforeMount"></hello-world>`,
+  methods: {
+    helloWorldBeforeMount() {
+      console.log('child component hooks before-mount triggered...');
+    },
+  },
+});
+app.component('hello-world', HelloWorld);
+app.mount('#app');
+```
 
 #### onBeforeMount() <em id="onBeforeMount"></em> <!-- markdownlint-disable-line -->
 
@@ -1492,7 +1541,7 @@ export default {
 
 当前组件树的根组件实例, 如果当前组件实例没有父组件, 则为本身
 
-#### $slots
+#### [$slots](#v-slot)
 
 表示父组件传入 **插槽** 的对象
 
@@ -1588,16 +1637,19 @@ export default {
 
 ##### 绑定修饰符
 
-- .camel 将短横线命名的 attribute 转变为驼峰式命名
+- .camel 将 `kebab-case` 命名的属性转变为 `camelCase` 命名
 - .prop 强制绑定为 DOM property
 - .attr 强制绑定为 DOM attribute
 
 ```html
-<template>
-  <div :someProperty.prop="someObject"></div>
-  <!-- 等价于 -->
-  <div .someProperty="someObject"></div>
-</template>
+<svg :view-box.camel="viewBox"></svg>
+<!-- 使用 .prop 修饰符，会从组件选项 props 中移除, 
+  以 .[attr] 形式出现在组件 attrs 参数中并且**不会显示**在 DOM 上 -->
+<!-- 使用 .attr 修饰符，会从组件选项 props 中移除, 
+  以 ^[attr] 形式出现在组件 attrs 参数中并且**会显示**在 DOM 上 -->
+<div :someProperty.prop="someObject"></div>
+<!-- 等价于 -->
+<div .someProperty="someObject"></div>
 ```
 
 #### v-model <em id="v-model"></em> <!-- markdownlint-disable-line -->
@@ -1811,35 +1863,91 @@ export default {
 </script>
 ```
 
-#### v-slot
+#### v-slot <em id="v-slot"></em> <!-- markdownlint-disable-line -->
+
+> 如果混用了 **具名插槽** 和 **默认插槽**, 则需要为 **默认插槽** 使用显式的 `<template>` 标签, 直接为组件添加 `v-slot` 指令将导致编译错误
 
 用于声明具名插槽或是期望接收 props 的作用域插槽, 缩写 `#`
 
 ##### 限制使用
 
-> 如果混用了 **具名插槽** 和 **默认插槽**, 则需要为 **默认插槽** 使用显式的 `<template>` 标签, 否则编译错误
+能够合法在函数参数位置使用的 js 表达式, 支持解构语法. 绑定的值是可选的(只有在给作用域插槽传递 props 才需要)
 
 - &lt;template&gt;
 - components(用于带有 prop 的单个默认插槽)
 
+##### 具名插槽
+
+组件中包含多个插槽出口, `<slot>` 内置元素的特殊属性 `name` 用来给每个插槽分配唯一的 ID 以确定每一处要渲染的内容
+
 ```html
-<template>
-  <MyComponent>
-    <!-- 使用显式的默认插槽 -->
-    <template #default="{ message }">
-      <p>{{ message }}</p>
-    </template>
+<!-- BaseComponent 组件模板 -->
+<div class="container">
+  <header>
+    <slot name="header"></slot>
+  </header>
+  <main>
+    <slot></slot>
+  </main>
+  <footer>
+    <slot name="footer"></slot>
+  </footer>
+</div>
 
-    <template #footer>
-      <p>Here's some contact info</p>
-    </template>
-  </MyComponent>
+<!-- 父组件使用 -->
+<BaseComponent>
+  <template #header>
+    <!-- header 插槽的内容 -->
+  </template>
 
-  <!-- 单个默认作用域插槽, 直接使用子组件标签 -->
-  <MyComponent v-slot="slotProps">
-    {{slotProps.text}} - {{slotProps.message}}
-  </MyComponent>
-</template>
+  <!-- 所有位于顶级的非 template 节点都被隐式地当作默认插槽的内容 -->
+  <p>This is the first tag p</p>
+  <p>This is the second tag p</p>
+
+  <template #footer>
+    <!-- footer 插槽的内容 -->
+  </template>
+</BaseComponent>
+```
+
+##### 动态插槽
+
+```html
+<!-- 动态插槽名，支持 `#SlotName` 缩写 -->
+<base-layout>
+  <template v-slot:[dynamicSlotName]></template>
+</base-layout>
+```
+
+##### 作用域插槽
+
+- 默认插槽接收 props, 通过子组件标签上的 `v-slot` 指令接收一个插槽 props 对象
+
+```html
+<slot text="hello text" message="hello message"></slot>
+
+<!-- 单个默认作用域插槽, 直接使用子组件标签 -->
+<MyComponent v-slot="slotProps">
+  {{slotProps.text}} - {{slotProps.message}}
+</MyComponent>
+```
+
+- 具名插槽 props 可以作为 `v-slot` 指令的值被访问到 `v-slot:name="slotProps"`
+
+```html
+<!-- 具名作用域插槽 -->
+<MyComponent>
+  <template #header="headerProps"> {{ headerProps }} </template>
+
+  <!-- 使用显式的默认插槽 -->
+  <template #default="{ message }">
+    <p>{{ message }}</p>
+  </template>
+
+  <template #footer>
+    <p>Here's some contact info</p>
+  </template>
+</MyComponent>
 ```
 
 #### v-pre
@@ -2104,7 +2212,19 @@ export default {
 
 #### is
 
-用于动态绑定组件
+- 用于动态绑定组件
+
+```html
+<script setup>
+  import Foo from './Foo.vue';
+  import Bar from './Bar.vue';
+</script>
+<template>
+  <component :is="Foo" />
+  <!-- 三目运算中的组件使用 -->
+  <component :is="someCondition ? Foo : Bar" />
+</template>
+```
 
 - 用于原生元素时, 将被作为 `Customized built-in element`, 如果需要用 Vue 组件替换原生元素, 需要加上 `vue:` 前缀
 
