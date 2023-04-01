@@ -304,7 +304,7 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 setup 函数的第二个参数, 暴露了其他一些在 setup 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 是非响应式的, 如果需要根据 attrs 或者 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑
 
-- attrs 透传 Attributes, 等价于 $attrs
+- attrs 透传 Attributes, 等价于 $attrs, 未在 `props` 中声明的属性全部作为 `attrs` 的一部分
 - slots [插槽](#v-slot), 等价于 $slots
 - emit 触发事件, 等价于 $emit
 - expose 用于显示的限制该组件暴露出的属性, 父组件将仅能访问 expose 函数暴露出的内容
@@ -324,7 +324,7 @@ const app = createApp({
 });
 ```
 
-##### 使用 [slot](#v-slot) 渲染内容
+##### 使用 [slot](#v-slot) 渲染
 
 ```javascript
 import { createApp, defineComponent, h } from 'vue';
@@ -359,6 +359,35 @@ app.component('hello-world', HelloWorld);
 app.mount('#app');
 ```
 
+##### 使用 [slot](#v-slot)scope 渲染
+
+```javascript
+import { createApp, defineComponent, h } from 'vue';
+
+const HelloWorld = defineComponent((props, { attrs, slots }) => {
+  const message = "from hello world component";
+  const age = attrs.age > 0 ? attrs.age : 18;
+  console.log(props); // {}
+  console.log(slots); // {default: renderFnWithContext()}
+  console.log(attrs); // {name: 'from createApp', age: -1}
+
+  return () => h("p", slots.default({ message: message, age: age }));
+});
+
+const app = createApp({
+  setup(props, ctx) {
+    return () =>
+      h(
+        HelloWorld,
+        { name: 'from createApp', age: -1 },
+        // 传递单个默认插槽函数
+        (slotScope) => slotScope.message + ' - ' + slotScope.age + ' - others from createApp'
+      );
+  }
+});
+app.component('hello-world', HelloWorld);
+app.mount('#app');
+```
 
 #### 返回[渲染函数](#renderingfunc)
 
@@ -1952,6 +1981,8 @@ export default {
 <!-- 动态插槽名，支持 `#SlotName` 缩写 -->
 <base-layout>
   <template v-slot:[dynamicSlotName]></template>
+  <!-- 等同于 -->
+  <template #[dynamicSlotName]></template>
 </base-layout>
 ```
 
@@ -1963,17 +1994,17 @@ export default {
 <slot text="hello text" message="hello message"></slot>
 
 <!-- 单个默认作用域插槽, 直接使用子组件标签 -->
-<MyComponent v-slot="slotProps">
-  {{slotProps.text}} - {{slotProps.message}}
+<MyComponent v-slot="slotScope">
+  {{slotScope.text}} - {{slotScope.message}}
 </MyComponent>
 ```
 
-- 具名插槽 props 可以作为 `v-slot` 指令的值被访问到 `v-slot:name="slotProps"`
+- 具名插槽 props 可以作为 `v-slot` 指令的值被访问到 `v-slot:name="slotScope"`
 
 ```html
 <!-- 具名作用域插槽 -->
 <MyComponent>
-  <template #header="headerProps"> {{ headerProps }} </template>
+  <template #header="headerScope"> {{ headerScope }} </template>
 
   <!-- 使用显式的默认插槽 -->
   <template #default="{ message }">
