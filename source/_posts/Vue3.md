@@ -330,8 +330,11 @@ const app = createApp({
 import { createApp, defineComponent, h } from 'vue';
 
 const HelloWorld = defineComponent((props, { slots }) => {
-  // 使用 `?.` 可选链运算符判断默认插槽不存在则使用默认值渲染
-  return () => h('p', [slots?.default?.() || 'rendered content from self...']);
+  // 使用 `?.` 可选链运算符判断插槽函数不存在则使用默认值渲染
+  return () => [
+    h('p', slots?.default?.() || 'rendered content from self by default slot...'),
+    h('p', slots?.header?.() || 'rendered content from self by header slot...')
+  ];
 });
 
 const app = createApp({
@@ -1680,6 +1683,8 @@ export default {
 #### v-on
 
 给元素绑定事件监听器, 缩写 `@`
+
+- 和原生 DOM 事件不一样, 组件触发的事件**没有冒泡机制**, 只能监听直接子组件触发的事件, 平级组件或嵌套组件间通信, 应使用一个外部事件总线或全局状态管理方案
 
 ##### 事件修饰符
 
