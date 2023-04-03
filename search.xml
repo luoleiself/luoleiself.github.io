@@ -239,6 +239,88 @@
       </tags>
   </entry>
   <entry>
+    <title>HTTP</title>
+    <url>/2021/07/1ddfb1010b19/</url>
+    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
+<li><p>100 Continue 请求继续</p>
+</li>
+<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
+</li>
+<li><p>102 Processing 继续执行</p>
+</li>
+<li><p>200 OK 请求成功</p>
+</li>
+<li><p>204 No Content 没有响应实体</p>
+</li>
+<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
+</li>
+<li><p>301 Moved Permanently 资源永久移动</p>
+</li>
+<li><p>302 Move Temporarily 资源临时移动</p>
+</li>
+<li><p>303 See Other 参见其他</p>
+</li>
+<li><p>304 Not Modified 资源没有改动</p>
+</li>
+<li><p>305 Use Proxy 使用代理</p>
+</li>
+<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
+</li>
+<li><p>400 Bad Request 错误的请求</p>
+</li>
+<li><p>401 Unauthorized 需要验证</p>
+</li>
+<li><p>403 Forbidden 服务器拒绝执行</p>
+</li>
+<li><p>404 Not Found 资源未找到</p>
+</li>
+<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
+</li>
+<li><p>408 Request Timeout 请求超时</p>
+</li>
+<li><p>413 Request Entity Too Large 请求体超长</p>
+</li>
+<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
+</li>
+<li><p>500 Internal Server Error 服务器错误</p>
+</li>
+<li><p>502 Bad Gateway 网关错误</p>
+</li>
+<li><p>504 Gateway Timeout 网关超时</p>
+</li>
+<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
+</li>
+</ul>
+<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
+<li>%21 !</li>
+<li>%22 “</li>
+<li>%23 #</li>
+<li>%24 $</li>
+<li>%25 %</li>
+<li>%26 &amp;</li>
+<li>%27 ‘</li>
+<li>%28 (</li>
+<li>%29 )</li>
+<li>%2F /</li>
+<li>%30-9 0..9</li>
+<li>%3A :</li>
+<li>%3B ;</li>
+<li>%3C &lt;</li>
+<li>%3D =</li>
+<li>%3E &gt;</li>
+<li>%3F ?</li>
+<li>%40 @</li>
+<li>%41 A</li>
+</ul>
+]]></content>
+      <categories>
+        <category>network</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git命令其他篇</title>
     <url>/2021/04/946abb7dbe1d/</url>
     <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
@@ -287,6 +369,143 @@
 </ul>
 <h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
 
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令配置篇</title>
+    <url>/2021/04/00ea2bbb2db0/</url>
+    <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
+<h3 id="配置篇"><a href="#配置篇" class="headerlink" title="配置篇"></a>配置篇</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><h5 id="结构型概念"><a href="#结构型概念" class="headerlink" title="结构型概念"></a>结构型概念</h5><h6 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h6><p>远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步</p>
+<h6 id="Repository"><a href="#Repository" class="headerlink" title="Repository"></a>Repository</h6><p>本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本</p>
+<h6 id="Index-Stage"><a href="#Index-Stage" class="headerlink" title="Index / Stage"></a>Index / Stage</h6><p>暂存区, 临时存放改动的需要被提交的文件列表信息</p>
+<h6 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h6><p>工作区, 当前可见的随时可以进行操作的区域</p>
+<h5 id="功能型概念"><a href="#功能型概念" class="headerlink" title="功能型概念"></a>功能型概念</h5><h6 id="文件状态"><a href="#文件状态" class="headerlink" title="文件状态"></a>文件状态</h6><ul>
+<li>修改: Git 可以感知到工作目录中的文件的变化, 然后通过 add 命令可以将变更的文件添加到暂存区</li>
+<li>暂存: 通过 add 命令将工作目录中的变更的文件提交到暂存区, 等候被 commit</li>
+<li>提交: 将暂存区的文件 commit 至 Git 版本库中永久保存</li>
+</ul>
+<h6 id="commit-节点"><a href="#commit-节点" class="headerlink" title="commit 节点"></a>commit 节点</h6><p>Git 中每次的提交都会对提交的文件生成快照并生成一个 hash 值作为唯一标识的节点, 不管 HEAD 或者 Branch 都是对 commit 节点的引用</p>
+<h6 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h6><blockquote>
+<p>指针或者引用, 一个仓库中只能有一个 HEAD, 指向任意一个节点/分支,并且指向的节点始终为当前工作目录</p>
+</blockquote>
+<hr>
+<span id="more"></span>
+
+<h4 id="Git-仓库用户凭据"><a href="#Git-仓库用户凭据" class="headerlink" title="Git 仓库用户凭据"></a>Git 仓库用户凭据</h4><p>场景: 使用 https 方式与远程仓库同步时, 不想每次都在提示框中输入用户名和密码确认, 此方式在用户家目录下创建(修改) .git-credentials 文件, 存储用户名和密码</p>
+<ul>
+<li><p>清除本地存储的用户名和密码凭据</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --system --<span class="built_in">unset</span> credential.helper</span><br></pre></td></tr></table></figure></li>
+<li><p>存储凭据, 在第一次 push 时提示输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="Git-环境定制"><a href="#Git-环境定制" class="headerlink" title="Git 环境定制"></a>Git 环境定制</h4><ul>
+<li>local: 读取仓库配置文件 <code>.git/config</code></li>
+<li>global: 读取用户配置文件 <code>.gitconfig</code>, 不加默认为仓库配置</li>
+</ul>
+<h5 id="显示配置项"><a href="#显示配置项" class="headerlink" title="显示配置项"></a>显示配置项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -l|--list</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用-vim-编辑配置文件"><a href="#使用-vim-编辑配置文件" class="headerlink" title="使用 vim 编辑配置文件"></a>使用 vim 编辑配置文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -e|--edit</span><br></pre></td></tr></table></figure>
+
+<h5 id="unset-重置"><a href="#unset-重置" class="headerlink" title="unset 重置"></a>unset 重置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --<span class="built_in">unset</span> [key]</span><br></pre></td></tr></table></figure>
+
+<h5 id="add-添加配置"><a href="#add-添加配置" class="headerlink" title="add 添加配置"></a>add 添加配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --add key value</span><br><span class="line">git config --add user.name Tom</span><br></pre></td></tr></table></figure>
+
+<h5 id="get-获取配置"><a href="#get-获取配置" class="headerlink" title="get 获取配置"></a>get 获取配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --get key</span><br><span class="line">git config --get user.name</span><br></pre></td></tr></table></figure>
+
+<h5 id="alias-命令缩写"><a href="#alias-命令缩写" class="headerlink" title="alias 命令缩写"></a>alias 命令缩写</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] <span class="built_in">alias</span>.* value</span><br><span class="line">git config alias.co checkout</span><br></pre></td></tr></table></figure>
+
+<h6 id="alias-log-美化"><a href="#alias-log-美化" class="headerlink" title="alias.log 美化"></a>alias.log 美化</h6><ul>
+<li><p>%H commit hash</p>
+</li>
+<li><p>%h commit short hash</p>
+</li>
+<li><p>%T tree hash</p>
+</li>
+<li><p>%t tree short hash</p>
+</li>
+<li><p>%P parent hash</p>
+</li>
+<li><p>%p parent short hash</p>
+</li>
+<li><p>%a[n|N] 作者名字</p>
+</li>
+<li><p>%a[e|E] 作者邮箱</p>
+</li>
+<li><p>%a[d|D|r|t|i] 日期格式</p>
+</li>
+<li><p>%c[n|N] 提交者名字</p>
+</li>
+<li><p>%c[e|E] 提交者邮箱</p>
+</li>
+<li><p>%c[d|D|r|t|i] 提交的日期格式</p>
+</li>
+<li><p>%d ref 名称</p>
+</li>
+<li><p>%e encoding</p>
+</li>
+<li><p>%s commit 信息标题</p>
+</li>
+<li><p>%f 过滤 commit 信息的标题使之可以作为文件名</p>
+</li>
+<li><p>%b commit 信息内容</p>
+</li>
+<li><p>%N commit notes</p>
+</li>
+<li><p>%g[D|d] reflog selector</p>
+</li>
+<li><p>%gs reflog subject</p>
+</li>
+<li><p>%Cred 切换至红色</p>
+</li>
+<li><p>%Cgreen 切换至绿色</p>
+</li>
+<li><p>%Cblue 切换至蓝色</p>
+</li>
+<li><p>%Creset 重设颜色</p>
+</li>
+<li><p>%C(color) 指定颜色</p>
+</li>
+<li><p>%n 换行</p>
+</li>
+<li><p>%m left right or boundary mark</p>
+</li>
+<li><p>%%a raw %</p>
+</li>
+<li><p>%x00 print a byte from a hex code</p>
+</li>
+<li><p>%w([[,[,]]]) switch line wrapping, like the -w option of git-shortlog(1).</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><img data-src="/images/git-config-1.jpg" alt="配置1"></p>
+<h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose</span><br></pre></td></tr></table></figure>
+
+<h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url</span><br></pre></td></tr></table></figure>
+
+<h6 id="remove-删除"><a href="#remove-删除" class="headerlink" title="remove 删除"></a>remove 删除</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote remove name</span><br></pre></td></tr></table></figure>
+
+<h6 id="rename-修改关联仓库名称"><a href="#rename-修改关联仓库名称" class="headerlink" title="rename 修改关联仓库名称"></a>rename 修改关联仓库名称</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rename old new</span><br></pre></td></tr></table></figure>
+
+<h6 id="set-url-设置关联仓库地址"><a href="#set-url-设置关联仓库地址" class="headerlink" title="set-url 设置关联仓库地址"></a>set-url 设置关联仓库地址</h6><ul>
+<li><p>push: 设置推送 url</p>
+</li>
+<li><p>add: 保持当前的 url,并添加一个新的 url</p>
+</li>
+<li><p>delete: 将删除匹配到的 url, 并添加一个新的 url</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote set-url [--push|--add|--delete] name url</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h6 id="get-url-获取关联仓库地址"><a href="#get-url-获取关联仓库地址" class="headerlink" title="get-url 获取关联仓库地址"></a>get-url 获取关联仓库地址</h6><ul>
+<li><p>push: 获取推送 url</p>
+</li>
+<li><p>all: 获取所有 url</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name</span><br></pre></td></tr></table></figure></li>
+</ul>
 <hr>
 ]]></content>
       <categories>
@@ -552,225 +771,6 @@
       </tags>
   </entry>
   <entry>
-    <title>HTTP</title>
-    <url>/2021/07/1ddfb1010b19/</url>
-    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
-<li><p>100 Continue 请求继续</p>
-</li>
-<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
-</li>
-<li><p>102 Processing 继续执行</p>
-</li>
-<li><p>200 OK 请求成功</p>
-</li>
-<li><p>204 No Content 没有响应实体</p>
-</li>
-<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
-</li>
-<li><p>301 Moved Permanently 资源永久移动</p>
-</li>
-<li><p>302 Move Temporarily 资源临时移动</p>
-</li>
-<li><p>303 See Other 参见其他</p>
-</li>
-<li><p>304 Not Modified 资源没有改动</p>
-</li>
-<li><p>305 Use Proxy 使用代理</p>
-</li>
-<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
-</li>
-<li><p>400 Bad Request 错误的请求</p>
-</li>
-<li><p>401 Unauthorized 需要验证</p>
-</li>
-<li><p>403 Forbidden 服务器拒绝执行</p>
-</li>
-<li><p>404 Not Found 资源未找到</p>
-</li>
-<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
-</li>
-<li><p>408 Request Timeout 请求超时</p>
-</li>
-<li><p>413 Request Entity Too Large 请求体超长</p>
-</li>
-<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
-</li>
-<li><p>500 Internal Server Error 服务器错误</p>
-</li>
-<li><p>502 Bad Gateway 网关错误</p>
-</li>
-<li><p>504 Gateway Timeout 网关超时</p>
-</li>
-<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
-</li>
-</ul>
-<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
-<li>%21 !</li>
-<li>%22 “</li>
-<li>%23 #</li>
-<li>%24 $</li>
-<li>%25 %</li>
-<li>%26 &amp;</li>
-<li>%27 ‘</li>
-<li>%28 (</li>
-<li>%29 )</li>
-<li>%2F /</li>
-<li>%30-9 0..9</li>
-<li>%3A :</li>
-<li>%3B ;</li>
-<li>%3C &lt;</li>
-<li>%3D =</li>
-<li>%3E &gt;</li>
-<li>%3F ?</li>
-<li>%40 @</li>
-<li>%41 A</li>
-</ul>
-]]></content>
-      <categories>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令配置篇</title>
-    <url>/2021/04/00ea2bbb2db0/</url>
-    <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
-<h3 id="配置篇"><a href="#配置篇" class="headerlink" title="配置篇"></a>配置篇</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><h5 id="结构型概念"><a href="#结构型概念" class="headerlink" title="结构型概念"></a>结构型概念</h5><h6 id="Remote"><a href="#Remote" class="headerlink" title="Remote"></a>Remote</h6><p>远程仓库, 托管代码的服务器, 团队协作开发时都与此进行同步</p>
-<h6 id="Repository"><a href="#Repository" class="headerlink" title="Repository"></a>Repository</h6><p>本机仓库(或版本库), 管理所有被提交的代码版本, 其中 HEAD 指向最新放入仓库的版本</p>
-<h6 id="Index-Stage"><a href="#Index-Stage" class="headerlink" title="Index / Stage"></a>Index / Stage</h6><p>暂存区, 临时存放改动的需要被提交的文件列表信息</p>
-<h6 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h6><p>工作区, 当前可见的随时可以进行操作的区域</p>
-<h5 id="功能型概念"><a href="#功能型概念" class="headerlink" title="功能型概念"></a>功能型概念</h5><h6 id="文件状态"><a href="#文件状态" class="headerlink" title="文件状态"></a>文件状态</h6><ul>
-<li>修改: Git 可以感知到工作目录中的文件的变化, 然后通过 add 命令可以将变更的文件添加到暂存区</li>
-<li>暂存: 通过 add 命令将工作目录中的变更的文件提交到暂存区, 等候被 commit</li>
-<li>提交: 将暂存区的文件 commit 至 Git 版本库中永久保存</li>
-</ul>
-<h6 id="commit-节点"><a href="#commit-节点" class="headerlink" title="commit 节点"></a>commit 节点</h6><p>Git 中每次的提交都会对提交的文件生成快照并生成一个 hash 值作为唯一标识的节点, 不管 HEAD 或者 Branch 都是对 commit 节点的引用</p>
-<h6 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h6><blockquote>
-<p>指针或者引用, 一个仓库中只能有一个 HEAD, 指向任意一个节点/分支,并且指向的节点始终为当前工作目录</p>
-</blockquote>
-<hr>
-<span id="more"></span>
-
-<h4 id="Git-仓库用户凭据"><a href="#Git-仓库用户凭据" class="headerlink" title="Git 仓库用户凭据"></a>Git 仓库用户凭据</h4><p>场景: 使用 https 方式与远程仓库同步时, 不想每次都在提示框中输入用户名和密码确认, 此方式在用户家目录下创建(修改) .git-credentials 文件, 存储用户名和密码</p>
-<ul>
-<li><p>清除本地存储的用户名和密码凭据</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --system --<span class="built_in">unset</span> credential.helper</span><br></pre></td></tr></table></figure></li>
-<li><p>存储凭据, 在第一次 push 时提示输入</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global credential.helper store</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Git-环境定制"><a href="#Git-环境定制" class="headerlink" title="Git 环境定制"></a>Git 环境定制</h4><ul>
-<li>local: 读取仓库配置文件 <code>.git/config</code></li>
-<li>global: 读取用户配置文件 <code>.gitconfig</code>, 不加默认为仓库配置</li>
-</ul>
-<h5 id="显示配置项"><a href="#显示配置项" class="headerlink" title="显示配置项"></a>显示配置项</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -l|--list</span><br></pre></td></tr></table></figure>
-
-<h5 id="使用-vim-编辑配置文件"><a href="#使用-vim-编辑配置文件" class="headerlink" title="使用 vim 编辑配置文件"></a>使用 vim 编辑配置文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--<span class="built_in">local</span>|--global] -e|--edit</span><br></pre></td></tr></table></figure>
-
-<h5 id="unset-重置"><a href="#unset-重置" class="headerlink" title="unset 重置"></a>unset 重置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --<span class="built_in">unset</span> [key]</span><br></pre></td></tr></table></figure>
-
-<h5 id="add-添加配置"><a href="#add-添加配置" class="headerlink" title="add 添加配置"></a>add 添加配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --add key value</span><br><span class="line">git config --add user.name Tom</span><br></pre></td></tr></table></figure>
-
-<h5 id="get-获取配置"><a href="#get-获取配置" class="headerlink" title="get 获取配置"></a>get 获取配置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] --get key</span><br><span class="line">git config --get user.name</span><br></pre></td></tr></table></figure>
-
-<h5 id="alias-命令缩写"><a href="#alias-命令缩写" class="headerlink" title="alias 命令缩写"></a>alias 命令缩写</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] <span class="built_in">alias</span>.* value</span><br><span class="line">git config alias.co checkout</span><br></pre></td></tr></table></figure>
-
-<h6 id="alias-log-美化"><a href="#alias-log-美化" class="headerlink" title="alias.log 美化"></a>alias.log 美化</h6><ul>
-<li><p>%H commit hash</p>
-</li>
-<li><p>%h commit short hash</p>
-</li>
-<li><p>%T tree hash</p>
-</li>
-<li><p>%t tree short hash</p>
-</li>
-<li><p>%P parent hash</p>
-</li>
-<li><p>%p parent short hash</p>
-</li>
-<li><p>%a[n|N] 作者名字</p>
-</li>
-<li><p>%a[e|E] 作者邮箱</p>
-</li>
-<li><p>%a[d|D|r|t|i] 日期格式</p>
-</li>
-<li><p>%c[n|N] 提交者名字</p>
-</li>
-<li><p>%c[e|E] 提交者邮箱</p>
-</li>
-<li><p>%c[d|D|r|t|i] 提交的日期格式</p>
-</li>
-<li><p>%d ref 名称</p>
-</li>
-<li><p>%e encoding</p>
-</li>
-<li><p>%s commit 信息标题</p>
-</li>
-<li><p>%f 过滤 commit 信息的标题使之可以作为文件名</p>
-</li>
-<li><p>%b commit 信息内容</p>
-</li>
-<li><p>%N commit notes</p>
-</li>
-<li><p>%g[D|d] reflog selector</p>
-</li>
-<li><p>%gs reflog subject</p>
-</li>
-<li><p>%Cred 切换至红色</p>
-</li>
-<li><p>%Cgreen 切换至绿色</p>
-</li>
-<li><p>%Cblue 切换至蓝色</p>
-</li>
-<li><p>%Creset 重设颜色</p>
-</li>
-<li><p>%C(color) 指定颜色</p>
-</li>
-<li><p>%n 换行</p>
-</li>
-<li><p>%m left right or boundary mark</p>
-</li>
-<li><p>%%a raw %</p>
-</li>
-<li><p>%x00 print a byte from a hex code</p>
-</li>
-<li><p>%w([[,[,]]]) switch line wrapping, like the -w option of git-shortlog(1).</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config [--global] alias.lg <span class="string">&quot;log --color --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27; --abbrev-commit&quot;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<p><img data-src="/images/git-config-1.jpg" alt="配置1"></p>
-<h5 id="remote-设置"><a href="#remote-设置" class="headerlink" title="remote 设置"></a>remote 设置</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v|--verbose</span><br></pre></td></tr></table></figure>
-
-<h6 id="add-添加"><a href="#add-添加" class="headerlink" title="add 添加"></a>add 添加</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add name url</span><br></pre></td></tr></table></figure>
-
-<h6 id="remove-删除"><a href="#remove-删除" class="headerlink" title="remove 删除"></a>remove 删除</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote remove name</span><br></pre></td></tr></table></figure>
-
-<h6 id="rename-修改关联仓库名称"><a href="#rename-修改关联仓库名称" class="headerlink" title="rename 修改关联仓库名称"></a>rename 修改关联仓库名称</h6><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote rename old new</span><br></pre></td></tr></table></figure>
-
-<h6 id="set-url-设置关联仓库地址"><a href="#set-url-设置关联仓库地址" class="headerlink" title="set-url 设置关联仓库地址"></a>set-url 设置关联仓库地址</h6><ul>
-<li><p>push: 设置推送 url</p>
-</li>
-<li><p>add: 保持当前的 url,并添加一个新的 url</p>
-</li>
-<li><p>delete: 将删除匹配到的 url, 并添加一个新的 url</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote set-url [--push|--add|--delete] name url</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h6 id="get-url-获取关联仓库地址"><a href="#get-url-获取关联仓库地址" class="headerlink" title="get-url 获取关联仓库地址"></a>get-url 获取关联仓库地址</h6><ul>
-<li><p>push: 获取推送 url</p>
-</li>
-<li><p>all: 获取所有 url</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote get-url [--push|--all] name</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>JSSDK</title>
     <url>/2022/05/2261dfd57ebf/</url>
     <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
@@ -963,6 +963,49 @@
       </tags>
   </entry>
   <entry>
+    <title>React.md</title>
+    <url>/2022/02/7ec5bd96e943/</url>
+    <content><![CDATA[<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><ul>
+<li>4 种条件判定是否可作为 state<ul>
+<li>这个变量是否通过 props 从父组件中获取，如果是，则不是一个状态</li>
+<li>这个变量是否在组件的整个生命周期中都保持不变，如果是，则不是一个状态</li>
+<li>这个变量是否可以通过其他状态(state)或者属性(props)计算得到，如果是，则不是一个状态</li>
+<li>这个变量是否在组件的 render 方法中使用，如果不在，则不是一个状态</li>
+</ul>
+</li>
+</ul>
+<h2 id="组件类"><a href="#组件类" class="headerlink" title="组件类"></a>组件类</h2><h3 id="类组件"><a href="#类组件" class="headerlink" title="类组件"></a>类组件</h3><h4 id="React-Component"><a href="#React-Component" class="headerlink" title="React.Component"></a>React.Component</h4><h4 id="React-PureComponent"><a href="#React-PureComponent" class="headerlink" title="React.PureComponent"></a>React.PureComponent</h4><p>对 props 和 state 进行浅比较, 跳过不必要的更新, 提高组件性能</p>
+<h3 id="函数组件"><a href="#函数组件" class="headerlink" title="函数组件"></a>函数组件</h3><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><h3 id="状态值"><a href="#状态值" class="headerlink" title="状态值"></a>状态值</h3><ul>
+<li>useState</li>
+<li>useReducer</li>
+</ul>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><ul>
+<li>useEffect</li>
+<li>useLayoutEffect</li>
+</ul>
+<h3 id="状态共享"><a href="#状态共享" class="headerlink" title="状态共享"></a>状态共享</h3><ul>
+<li>useContext</li>
+</ul>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
+<li>useMemo</li>
+<li>useCallback</li>
+</ul>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li>useRef</li>
+<li>useId</li>
+</ul>
+]]></content>
+      <categories>
+        <category>ES</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>jsx</tag>
+        <tag>React</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Redis-List</title>
     <url>/2022/11/3f42dc25499d/</url>
     <content><![CDATA[<h3 id="Lists-命令"><a href="#Lists-命令" class="headerlink" title="Lists 命令"></a>Lists 命令</h3><p>List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.</p>
@@ -1089,49 +1132,6 @@
       </categories>
       <tags>
         <tag>Redis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>React.md</title>
-    <url>/2022/02/7ec5bd96e943/</url>
-    <content><![CDATA[<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><ul>
-<li>4 种条件判定是否可作为 state<ul>
-<li>这个变量是否通过 props 从父组件中获取，如果是，则不是一个状态</li>
-<li>这个变量是否在组件的整个生命周期中都保持不变，如果是，则不是一个状态</li>
-<li>这个变量是否可以通过其他状态(state)或者属性(props)计算得到，如果是，则不是一个状态</li>
-<li>这个变量是否在组件的 render 方法中使用，如果不在，则不是一个状态</li>
-</ul>
-</li>
-</ul>
-<h2 id="组件类"><a href="#组件类" class="headerlink" title="组件类"></a>组件类</h2><h3 id="类组件"><a href="#类组件" class="headerlink" title="类组件"></a>类组件</h3><h4 id="React-Component"><a href="#React-Component" class="headerlink" title="React.Component"></a>React.Component</h4><h4 id="React-PureComponent"><a href="#React-PureComponent" class="headerlink" title="React.PureComponent"></a>React.PureComponent</h4><p>对 props 和 state 进行浅比较, 跳过不必要的更新, 提高组件性能</p>
-<h3 id="函数组件"><a href="#函数组件" class="headerlink" title="函数组件"></a>函数组件</h3><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><h3 id="状态值"><a href="#状态值" class="headerlink" title="状态值"></a>状态值</h3><ul>
-<li>useState</li>
-<li>useReducer</li>
-</ul>
-<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><ul>
-<li>useEffect</li>
-<li>useLayoutEffect</li>
-</ul>
-<h3 id="状态共享"><a href="#状态共享" class="headerlink" title="状态共享"></a>状态共享</h3><ul>
-<li>useContext</li>
-</ul>
-<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
-<li>useMemo</li>
-<li>useCallback</li>
-</ul>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
-<li>useRef</li>
-<li>useId</li>
-</ul>
-]]></content>
-      <categories>
-        <category>ES</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>js</tag>
-        <tag>jsx</tag>
-        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1267,6 +1267,27 @@
       <tags>
         <tag>Redis</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/04/7df03390b905/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
   </entry>
   <entry>
     <title>Vue3-migration</title>
@@ -1489,27 +1510,6 @@
         <tag>VueJs</tag>
         <tag>Vue3</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2021/04/7df03390b905/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
   </entry>
   <entry>
     <title>nginx</title>
@@ -2315,20 +2315,6 @@
       </tags>
   </entry>
   <entry>
-    <title>vagrant</title>
-    <url>/2022/04/6a14bcf31f14/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
-<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
-<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>vagrant</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>即将废弃或已经废弃的API</title>
     <url>/2021/07/6ab3a6a88944/</url>
     <content><![CDATA[<ul>
@@ -2364,6 +2350,20 @@
       </categories>
       <tags>
         <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vagrant</title>
+    <url>/2022/04/6a14bcf31f14/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
+<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：<br/> D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
+<p>修改 newstr.encode!(‘UTF-16LE’) 为 <br/> newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>vagrant</tag>
       </tags>
   </entry>
   <entry>
@@ -5699,12 +5699,16 @@
 </ul>
 <h4 id="上下文"><a href="#上下文" class="headerlink" title="上下文"></a>上下文</h4><p>setup 函数的第二个参数, 暴露了其他一些在 setup 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 是非响应式的, 如果需要根据 attrs 或者 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑</p>
 <ul>
-<li>attrs 透传 Attributes, 等价于 $attrs</li>
-<li>slots 插槽, 等价于 $slots</li>
+<li>attrs 透传 Attributes, 等价于 $attrs, 未在 <code>props</code> 中声明的属性全部作为 <code>attrs</code> 的一部分</li>
+<li>slots <a href="#v-slot">插槽</a>, 等价于 $slots</li>
 <li>emit 触发事件, 等价于 $emit</li>
 <li>expose 用于显示的限制该组件暴露出的属性, 父组件将仅能访问 expose 函数暴露出的内容</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ref, createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; emit, expose &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> publicCount = <span class="title function_">ref</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="title function_">expose</span>(&#123; <span class="attr">count</span>: publicCount &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="title function_">emit</span>(<span class="string">&#x27;my-event&#x27;</span>, &#123; <span class="attr">name</span>: <span class="string">&#x27;hello world&#x27;</span> &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123; publicCount &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用-slot-渲染"><a href="#使用-slot-渲染" class="headerlink" title="使用 slot 渲染"></a>使用 <a href="#v-slot">slot</a> 渲染</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, defineComponent, h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="title function_">defineComponent</span>(<span class="function">(<span class="params">props, &#123; slots &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 使用 `?.` 可选链运算符判断插槽函数不存在则使用默认值渲染</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> [</span><br><span class="line">    <span class="title function_">h</span>(</span><br><span class="line">      <span class="string">&#x27;p&#x27;</span>,</span><br><span class="line">      slots?.<span class="property">default</span>?.() || <span class="string">&#x27;rendered content from self by default slot...&#x27;</span></span><br><span class="line">    ),</span><br><span class="line">    <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, slots?.<span class="property">header</span>?.() || <span class="string">&#x27;rendered content from self by header slot...&#x27;</span>),</span><br><span class="line">  ];</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; slots &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(</span><br><span class="line">        <span class="title class_">HelloWorld</span>,</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="comment">// VNode 生命周期事件琢磨中...</span></span><br><span class="line">          <span class="string">&#x27;vue:mounted&#x27;</span>: <span class="function">() =&gt;</span> &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;child component hooks triggered...&#x27;</span>);</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="comment">// 传递单个默认插槽函数</span></span><br><span class="line">        <span class="comment">// () =&gt; &#x27;rendered content from father component by default slot...&#x27;,</span></span><br><span class="line">        <span class="comment">// 传递具名插槽, 使用插槽函数对象形式传递</span></span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">default</span>: <span class="function">() =&gt;</span></span><br><span class="line">            <span class="string">&#x27;rendered content from father component by default slot...&#x27;</span>,</span><br><span class="line">          <span class="attr">header</span>: <span class="function">() =&gt;</span></span><br><span class="line">            <span class="title function_">h</span>(</span><br><span class="line">              <span class="string">&#x27;span&#x27;</span>,</span><br><span class="line">              <span class="string">&#x27;rendered content from father component by header slot...&#x27;</span></span><br><span class="line">            ),</span><br><span class="line">        &#125;</span><br><span class="line">      );</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;hello-world&#x27;</span>, <span class="title class_">HelloWorld</span>);</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用-slotscope-渲染"><a href="#使用-slotscope-渲染" class="headerlink" title="使用 slotscope 渲染"></a>使用 <a href="#v-slot">slot</a>scope 渲染</h5><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, defineComponent, h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="title function_">defineComponent</span>(<span class="function">(<span class="params">props, &#123; attrs, slots &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> message = <span class="string">&#x27;from hello world component&#x27;</span>;</span><br><span class="line">  <span class="keyword">const</span> age = attrs.<span class="property">age</span> &gt; <span class="number">0</span> ? attrs.<span class="property">age</span> : <span class="number">18</span>;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(props); <span class="comment">// &#123;&#125;</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(slots); <span class="comment">// &#123;default: renderFnWithContext()&#125;</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(attrs); <span class="comment">// &#123;name: &#x27;from createApp&#x27;, age: -1&#125;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, slots.<span class="title function_">default</span>(&#123; <span class="attr">message</span>: message, <span class="attr">age</span>: age &#125;));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, ctx</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(</span><br><span class="line">        <span class="title class_">HelloWorld</span>,</span><br><span class="line">        &#123; <span class="attr">name</span>: <span class="string">&#x27;from createApp&#x27;</span>, <span class="attr">age</span>: -<span class="number">1</span> &#125;,</span><br><span class="line">        <span class="comment">// 传递单个默认插槽函数</span></span><br><span class="line">        <span class="function">(<span class="params">slotScope</span>) =&gt;</span></span><br><span class="line">          slotScope.<span class="property">message</span> + <span class="string">&#x27; - &#x27;</span> + slotScope.<span class="property">age</span> + <span class="string">&#x27; - others from createApp&#x27;</span></span><br><span class="line">      );</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;hello-world&#x27;</span>, <span class="title class_">HelloWorld</span>);</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <h4 id="返回渲染函数"><a href="#返回渲染函数" class="headerlink" title="返回渲染函数"></a>返回<a href="#renderingfunc">渲染函数</a></h4><ul>
 <li>setup 应该同步地返回一个对象, 唯一可以使用 <code>async setup()</code> 的情况是该组件是 <a href="#suspense">&lt;Suspense&gt;</a> 组件地后裔</li>
@@ -5798,7 +5802,8 @@
 <h4 id="watchSyncEffect"><a href="#watchSyncEffect" class="headerlink" title="watchSyncEffect()"></a><a href="#watchEffect">watchSyncEffect()</a></h4><p><code>watchEffect()</code> 使用 flush: ‘sync’ 选项时的别名</p>
 <h4 id="watch"><a href="#watch" class="headerlink" title="watch()  "></a>watch() <em id="watch"></em> <!-- markdownlint-disable-line --></h4><ul>
 <li>侦听一个或多个响应式数据源, 并在数据源变化时调用所给的回调函数, 使用方式和 this.$watch 和 watch 选项完全等效</li>
-<li>默认是懒侦听的, 仅在侦听源发生变化时才执行回调函数</li>
+<li>默认是浅层侦听, 仅在侦听的属性被赋新值时才触发回调, 而嵌套属性的变化不会触发, 如果需要侦听嵌套属性, 使用 <code>deep: true</code> 选项</li>
+<li>默认是懒侦听的, 仅在侦听源发生变化时才触发回调, 如果需要在创建侦听器时立即执行一遍回调, 使用 <code>immediate: true</code> 选项</li>
 </ul>
 <h5 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h5><ul>
 <li><p>第一个参数是侦听器的源, 支持包含返回值的函数、ref、响应式对象、或者以上类型的值组成的数组</p>
@@ -5891,11 +5896,11 @@
 </blockquote>
 <p>在当前活跃的 effect 作用域上注册一个处理回调函数, 当相关的 effect 作用域停止时会调用注册的回调函数</p>
 <h3 id="生命周期钩子"><a href="#生命周期钩子" class="headerlink" title="生命周期钩子"></a>生命周期钩子</h3><blockquote>
-<p>所有生命周期钩子函数必须在组件的 <code>setup()</code> 阶段同步调用</p>
+<p>所有生命周期钩子函数必须在组件的 <code>setup()</code> 阶段<strong>同步调用</strong></p>
 </blockquote>
 <h4 id="VNode-生命周期事件"><a href="#VNode-生命周期事件" class="headerlink" title="VNode 生命周期事件"></a>VNode 生命周期事件</h4><p>VNode 生命周期事件前缀从 <code>hook:</code> 更改为 <code>vue:</code>, 这些事件也可用于 HTML 元素, 和在组件上的用法一样</p>
 <ul>
-<li><code>vue:</code> 前缀为固定格式, 生命周期事件可以使用 <code>kebab-case</code> 或者 <code>camelCase</code></li>
+<li><code>vue:</code> 前缀为固定格式, 生命周期事件名可以使用 <code>kebab-case</code> 或者 <code>camelCase</code> 方式</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- Vue 2.x --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">hook:mounted</span>=<span class="string">&quot;onMounted&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">child-component</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- Vue 3.x --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:mounted</span>=<span class="string">&quot;onMounted&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">child-component</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:before-update</span>=<span class="string">&quot;onBeforeUpdate&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">child-component</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 等同于 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:beforeUpdate</span>=<span class="string">&quot;onBeforeUpdate&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">child-component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -6201,6 +6206,9 @@
 <h4 id="v-else"><a href="#v-else" class="headerlink" title="v-else"></a>v-else</h4><p>表示 <code>v-if</code> 或 <code>v-if</code> / <code>v-else-if</code> 链式调用的块</p>
 <h4 id="v-for"><a href="#v-for" class="headerlink" title="v-for"></a>v-for</h4><p>基于原始数据多次渲染元素或模板块</p>
 <h4 id="v-on"><a href="#v-on" class="headerlink" title="v-on"></a>v-on</h4><p>给元素绑定事件监听器, 缩写 <code>@</code></p>
+<ul>
+<li>和原生 DOM 事件不一样, 组件触发的事件<strong>没有冒泡机制</strong>, 只能监听直接子组件触发的事件, 平级组件或嵌套组件间通信, 应使用一个外部事件总线或全局状态管理方案</li>
+</ul>
 <h5 id="事件修饰符"><a href="#事件修饰符" class="headerlink" title="事件修饰符"></a>事件修饰符</h5><ul>
 <li>.stop 调用 <code>event.stopPropagation()</code></li>
 <li>.prevent 调用 <code>event.preventDefault()</code></li>
@@ -6231,11 +6239,11 @@
 <li>.trim 移除输入内容两端空格</li>
 </ul>
 <h5 id="版本迭代"><a href="#版本迭代" class="headerlink" title="版本迭代"></a>版本迭代</h5><ul>
-<li><p><a href="#v-bind"><code>v-bind</code></a> 的 .sync 修饰符和组件的 model 选项被移除, 使用 v-model 和参数代替</p>
+<li><p><a href="#v-bind"><code>v-bind</code></a> 的 <code>.sync</code> 修饰符和组件的 model 选项被<strong>移除</strong>, 使用 <code>v-model</code> 和参数代替</p>
 </li>
-<li><p>同一组件上可以使用多个 v-model 进行双向绑定</p>
+<li><p>同一组件上可以使用多个 <code>v-model</code> 进行双向绑定</p>
 </li>
-<li><p>可自定义 v-model 修饰符</p>
+<li><p>可自定义 <code>v-model</code> 修饰符</p>
 </li>
 <li><p>自定义组件时 <code>v-model</code> 的 <code>prop</code> 和 <code>event</code> 默认名称已更改</p>
 <ul>
@@ -6244,29 +6252,29 @@
 </ul>
 </li>
 </ul>
-<h6 id="migration"><a href="#migration" class="headerlink" title="migration"></a>migration</h6><ul>
+<h5 id="migration"><a href="#migration" class="headerlink" title="migration"></a>migration</h5><ul>
 <li>所有子组件 <code>.sync</code> 修饰符的部分替换为 <code>v-model</code></li>
 <li>未带参数的 <code>v-model</code>, 修改子组件的 prop -&gt; <code>modelValue</code>, event -&gt; <code>update:modelValue</code></li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">:title.sync</span>=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 替换为 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">v-model:title</span>=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- 未带参数的 v-model --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ChildComponent</span> <span class="attr">v-model</span>=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">props</span>: &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="attr">modelValue</span>: <span class="title class_">String</span>, <span class="comment">// 以前是`value：String`</span></span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">emits</span>: [<span class="string">&#x27;update:modelValue&#x27;</span>],</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">methods</span>: &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="title function_">changePageTitle</span>(<span class="params">title</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">this</span>.$emit(<span class="string">&#x27;update:modelValue&#x27;</span>, title); <span class="comment">// 以前是 `this.$emit(&#x27;input&#x27;, title)`</span></span></span><br><span class="line"><span class="language-javascript">      &#125;,</span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">  &#125;;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="V-2-0"><a href="#V-2-0" class="headerlink" title="V 2.0"></a>V 2.0</h5><ul>
-<li>Vue 2.0 <code>v-model</code> 只能使用 <code>value</code> 作为 prop, 并监听抛出的 <code>input</code> 事件, 如果使用其他 prop, 必须使用 <code>v-bind.sync</code> 同步</li>
+<h5 id="Vue-2-0"><a href="#Vue-2-0" class="headerlink" title="Vue 2.0"></a>Vue 2.0</h5><ul>
+<li><code>v-model</code> 只能使用 <code>value</code> 作为 prop, 并监听子组件抛出的 <code>input</code> 事件, 如果使用其他 prop, 必须使用 <code>v-bind.sync</code> 同步</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">:value</span>=<span class="string">&quot;pageTitle&quot;</span> @<span class="attr">input</span>=<span class="string">&quot;pageTitle = $event&quot;</span> /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 简写方式 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">v-model</span>=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">props</span>: [<span class="string">&#x27;value&#x27;</span>],</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">created</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">this</span>.$emit(<span class="string">&#x27;input&#x27;</span>, <span class="string">&#x27;hello value&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">  &#125;;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="V-2-2"><a href="#V-2-2" class="headerlink" title="V 2.2"></a>V 2.2</h5><ul>
-<li>Vue 2.2 增加组件选项 <code>model</code>, 允许自定义 <code>v-model</code> 的 prop 和 event, 只能在组件上使用一个 model</li>
+<h5 id="Vue-2-2"><a href="#Vue-2-2" class="headerlink" title="Vue 2.2"></a>Vue 2.2</h5><ul>
+<li>增加组件选项 <code>model</code>, 允许自定义 <code>v-model</code> 的 prop 和 event, 只能在组件上使用一个 model</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">:value</span>=<span class="string">&quot;pageTitle&quot;</span> @<span class="attr">change</span>=<span class="string">&quot;pageTitle = $event&quot;</span> /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 简写方式 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">v-model</span>=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">model</span>: &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="attr">prop</span>: <span class="string">&#x27;title&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">      <span class="attr">event</span>: <span class="string">&#x27;change&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">props</span>: &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 这将允许 `value` 属性用于其他用途</span></span></span><br><span class="line"><span class="language-javascript">      <span class="attr">value</span>: <span class="title class_">String</span>,</span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 使用 `title` 代替 `value` 作为 model 的 prop</span></span></span><br><span class="line"><span class="language-javascript">      <span class="attr">title</span>: &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">type</span>: <span class="title class_">String</span>,</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">default</span>: <span class="string">&#x27;Default title&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">      &#125;,</span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">  &#125;;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="V-2-3"><a href="#V-2-3" class="headerlink" title="V 2.3"></a>V 2.3</h5><ul>
-<li>Vue 2.3 增加 <code>.sync</code> 修饰符</li>
+<h5 id="Vue-2-3"><a href="#Vue-2-3" class="headerlink" title="Vue 2.3"></a>Vue 2.3</h5><ul>
+<li>增加 <code>.sync</code> 修饰符</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">:title</span>=<span class="string">&quot;pageTitle&quot;</span> @<span class="attr">update:title</span>=<span class="string">&quot;pageTitle = $event&quot;</span> /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 简写方式 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">:title.sync</span>=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="V-3-x"><a href="#V-3-x" class="headerlink" title="V 3.x"></a>V 3.x</h5><ul>
-<li>Vue 3.x <code>v-model</code> 默认传递 <code>modelValue</code> prop, 并接收子组件抛出的 <code>update:modelValue</code> 事件</li>
+<h5 id="Vue-3-x"><a href="#Vue-3-x" class="headerlink" title="Vue 3.x"></a>Vue 3.x</h5><ul>
+<li><code>v-model</code> 默认传递 <code>modelValue</code> prop, 并接收子组件抛出的 <code>update:modelValue</code> 事件</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 单个 v-model 绑定 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:modelValue</span>=<span class="string">&quot;pageTitle&quot;</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">update:modelValue</span>=<span class="string">&quot;pageTitle = $event&quot;</span></span></span><br><span class="line"><span class="tag">  /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 简写方式 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">my-component</span> <span class="attr">v-model</span>=<span class="string">&quot;pageTitle&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> props = <span class="title function_">defineProps</span>([<span class="string">&#x27;modelValue&#x27;</span>]);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> emit = <span class="title function_">defineEmits</span>([<span class="string">&#x27;update:modelValue&#x27;</span>]);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 触发事件</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">emit</span>(<span class="string">&#x27;update:modelValue&#x27;</span>, <span class="string">&#x27;hello modelValue&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -6297,17 +6305,17 @@
 <h5 id="具名插槽"><a href="#具名插槽" class="headerlink" title="具名插槽"></a>具名插槽</h5><p>组件中包含多个插槽出口, <code>&lt;slot&gt;</code> 内置元素的特殊属性 <code>name</code> 用来给每个插槽分配唯一的 ID 以确定每一处要渲染的内容</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- BaseComponent 组件模板 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">header</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">&quot;header&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">main</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">slot</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">main</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">footer</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">&quot;footer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 父组件使用 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">BaseComponent</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">header</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- header 插槽的内容 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- 所有位于顶级的非 template 节点都被隐式地当作默认插槽的内容 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>This is the first tag p<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>This is the second tag p<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">footer</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- footer 插槽的内容 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">BaseComponent</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="动态插槽"><a href="#动态插槽" class="headerlink" title="动态插槽"></a>动态插槽</h5><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 动态插槽名，支持 `#SlotName` 缩写 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">base-layout</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> <span class="attr">v-slot:</span>[<span class="attr">dynamicSlotName</span>]&gt;</span><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">base-layout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h5 id="动态插槽"><a href="#动态插槽" class="headerlink" title="动态插槽"></a>动态插槽</h5><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 动态插槽名，支持 `#SlotName` 缩写 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">base-layout</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> <span class="attr">v-slot:</span>[<span class="attr">dynamicSlotName</span>]&gt;</span><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 等同于 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #[<span class="attr">dynamicSlotName</span>]&gt;</span><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">base-layout</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h5 id="作用域插槽"><a href="#作用域插槽" class="headerlink" title="作用域插槽"></a>作用域插槽</h5><ul>
 <li>默认插槽接收 props, 通过子组件标签上的 <code>v-slot</code> 指令接收一个插槽 props 对象</li>
 </ul>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">slot</span> <span class="attr">text</span>=<span class="string">&quot;hello text&quot;</span> <span class="attr">message</span>=<span class="string">&quot;hello message&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 单个默认作用域插槽, 直接使用子组件标签 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">MyComponent</span> <span class="attr">v-slot</span>=<span class="string">&quot;slotProps&quot;</span>&gt;</span></span><br><span class="line">  &#123;&#123;slotProps.text&#125;&#125; - &#123;&#123;slotProps.message&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">MyComponent</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">slot</span> <span class="attr">text</span>=<span class="string">&quot;hello text&quot;</span> <span class="attr">message</span>=<span class="string">&quot;hello message&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 单个默认作用域插槽, 直接使用子组件标签 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">MyComponent</span> <span class="attr">v-slot</span>=<span class="string">&quot;slotScope&quot;</span>&gt;</span></span><br><span class="line">  &#123;&#123;slotScope.text&#125;&#125; - &#123;&#123;slotScope.message&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">MyComponent</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>具名插槽 props 可以作为 <code>v-slot</code> 指令的值被访问到 <code>v-slot:name=&quot;slotProps&quot;</code></li>
+<li>具名插槽 props 可以作为 <code>v-slot</code> 指令的值被访问到 <code>v-slot:name=&quot;slotScope&quot;</code></li>
 </ul>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 具名作用域插槽 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">MyComponent</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">header</span>=<span class="string">&quot;headerProps&quot;</span>&gt;</span> &#123;&#123; headerProps &#125;&#125; <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- 使用显式的默认插槽 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">default</span>=<span class="string">&quot;&#123; message &#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">footer</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Here&#x27;s some contact info<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">MyComponent</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 具名作用域插槽 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">MyComponent</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">header</span>=<span class="string">&quot;headerScope&quot;</span>&gt;</span> &#123;&#123; headerScope &#125;&#125; <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- 使用显式的默认插槽 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">default</span>=<span class="string">&quot;&#123; message &#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">template</span> #<span class="attr">footer</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Here&#x27;s some contact info<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">MyComponent</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="v-pre"><a href="#v-pre" class="headerlink" title="v-pre"></a>v-pre</h4><p>跳过该元素及其所有子元素的编译</p>
 <h4 id="v-once"><a href="#v-once" class="headerlink" title="v-once"></a>v-once</h4><p>仅渲染元素和组件一次, 并跳过之后的更新</p>
@@ -6462,6 +6470,9 @@
 </blockquote>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> props = <span class="title function_">withDefaults</span>(<span class="title function_">defineProps</span>(), &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">msg</span>: <span class="string">&#x27;hello world&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">labels</span>: <span class="function">() =&gt;</span> [<span class="string">&#x27;one&#x27;</span>, <span class="string">&#x27;two&#x27;</span>],</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
+<h5 id="props-emit-类型声明"><a href="#props-emit-类型声明" class="headerlink" title="props|emit 类型声明"></a>props|emit 类型声明</h5><p><code>props</code> 和 <code>emits</code> 都可以通过给 <code>defineProps</code> 和 <code>defineEmits</code> 传递纯类型参数的方式声明</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> props = <span class="title function_">defineProps</span>(&#123; <span class="attr">title</span>: string, <span class="attr">age</span>: number &#125;);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> emit = <span class="title function_">defineEmits</span>(&#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 没有验证函数</span></span></span><br><span class="line"><span class="language-javascript">    <span class="attr">click</span>: <span class="literal">null</span>,</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 有验证函数</span></span></span><br><span class="line"><span class="language-javascript">    <span class="attr">submit</span>: <span class="function">(<span class="params">payload</span>) =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">if</span> (payload.<span class="property">email</span> &amp;&amp; payload.<span class="property">password</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">return</span> <span class="literal">true</span>;</span></span><br><span class="line"><span class="language-javascript">      &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">warn</span>(<span class="string">`Invalid submit event payload!`</span>);</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">return</span> <span class="literal">false</span>;</span></span><br><span class="line"><span class="language-javascript">      &#125;</span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <h4 id="defineExpose"><a href="#defineExpose" class="headerlink" title="defineExpose()"></a>defineExpose()</h4><blockquote>
 <p>使用 <code>&lt;script setup&gt;</code> 的组件是 <strong>默认关闭</strong> 暴露任何在 <code>&lt;script setup&gt;</code> 中声明的绑定</p>
 </blockquote>
@@ -6501,8 +6512,8 @@
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span> <span class="attr">:class</span>=<span class="string">&quot;classes.red&quot;</span>&gt;</span>This is should be red.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">module</span>=<span class="string">&quot;classes&quot;</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">  <span class="selector-class">.red</span> &#123;</span></span><br><span class="line"><span class="language-css">    <span class="attribute">color</span>: red;</span></span><br><span class="line"><span class="language-css">  &#125;</span></span><br><span class="line"><span class="language-css"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h5 id="与组合式-API一起使用"><a href="#与组合式-API一起使用" class="headerlink" title="与组合式 API一起使用"></a>与<a href="#combinedapi">组合式 API</a>一起使用</h5><ul>
-<li>使用 <a href="#useCssModule">useCssModule</a> API 在 <code>setup()</code> 和 <code>&lt;script setup&gt;</code> 中访问注入的 class</li>
-<li>使用 <strong>自定义注入名称</strong> 的 <code>&lt;style module&gt;</code>, <a href="#useCssModule">useCssModule</a> 接收一个匹配的 <code>module</code> attribute 值作为第一个参数</li>
+<li>使用 <code>useCssModule</code> API 在 <code>setup()</code> 和 <code>&lt;script setup&gt;</code> 中访问注入的 class</li>
+<li>使用 <strong>自定义注入名称</strong> 的 <code>&lt;style module&gt;</code>, <code>useCssModule</code> 接收一个匹配的 <code>module</code> attribute 值作为第一个参数</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; h, useCssModule &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 默认情况下, 返回 &lt;style module&gt; 的 class</span></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> style = <span class="title function_">useCssModule</span>();</span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 自定义注入名称, 返回 &lt;style module=&quot;classes&quot;&gt; 的 class</span></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> classes = <span class="title function_">useCssModule</span>(<span class="string">&#x27;classes&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -6524,7 +6535,7 @@
 <li>如果以上条件都不满足, 则使用容器的 innerHTML 作为模板</li>
 </ul>
 <h4 id="h"><a href="#h" class="headerlink" title="h()"></a>h()</h4><blockquote>
-<p>当创建组件的 vnode 时, 子节点必须以 <strong>插槽函数</strong> 的形式传递, 如果组件只有默认插槽, 可以使用单个 <strong>插槽函数</strong> 传递, 否则, 必须以 <strong>插槽函数</strong> 的对象形式传递</p>
+<p>当创建组件的 vnode 时, 子节点必须以 <strong><a href="#v-slot">插槽</a>函数</strong> 的形式传递, 如果组件只有默认插槽, 可以使用单个 <strong><a href="#v-slot">插槽</a>函数</strong> 传递, 否则, 必须以 <strong><a href="#v-slot">插槽</a>函数</strong> 的对象形式传递</p>
 </blockquote>
 <p>创建虚拟 DOM 节点(vnode)</p>
 <ul>
@@ -6537,7 +6548,7 @@
 <ul>
 <li>创建组件</li>
 </ul>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> <span class="title class_">Foo</span> <span class="keyword">from</span> <span class="string">&#x27;./Foo.vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 传递 prop</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">h</span>(<span class="title class_">Foo</span>, &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 等价于 some-prop=&quot;hello world&quot;</span></span></span><br><span class="line"><span class="language-javascript">    <span class="attr">someProp</span>: <span class="string">&#x27;hello world&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 等价于 @update=&quot;() =&gt; &#123;&#125;&quot;</span></span></span><br><span class="line"><span class="language-javascript">    <span class="attr">onUpdate</span>: <span class="function">() =&gt;</span> &#123;&#125;,</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 传递单个默认插槽</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">h</span>(<span class="title class_">Foo</span>, <span class="function">() =&gt;</span> <span class="string">&#x27;default slot&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 传递具名插槽</span></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 需要使用 null 来避免插槽对象被当作 prop</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">h</span>(<span class="title class_">MyComponent</span>, <span class="literal">null</span>, &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">default</span>: <span class="function">() =&gt;</span> <span class="string">&#x27;default slot&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">foo</span>: <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>, <span class="string">&#x27;hello div&#x27;</span>),</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">bar</span>: <span class="function">() =&gt;</span> [<span class="title function_">h</span>(<span class="string">&#x27;span&#x27;</span>, <span class="string">&#x27;one&#x27;</span>), <span class="title function_">h</span>(<span class="string">&#x27;span&#x27;</span>, <span class="string">&#x27;two&#x27;</span>)],</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> <span class="title class_">Foo</span> <span class="keyword">from</span> <span class="string">&#x27;./Foo.vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 传递 prop</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">h</span>(<span class="title class_">Foo</span>, &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 等价于 some-prop=&quot;hello world&quot;</span></span></span><br><span class="line"><span class="language-javascript">    <span class="attr">someProp</span>: <span class="string">&#x27;hello world&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 等价于 @update=&quot;() =&gt; &#123;&#125;&quot;</span></span></span><br><span class="line"><span class="language-javascript">    <span class="attr">onUpdate</span>: <span class="function">() =&gt;</span> &#123;&#125;,</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 传递单个默认插槽</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">h</span>(<span class="title class_">Foo</span>, <span class="function">() =&gt;</span> <span class="string">&#x27;default slot&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 传递具名插槽</span></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 需要使用 null 来避免插槽对象被当作 prop</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">h</span>(<span class="title class_">MyComponent</span>, <span class="literal">null</span>, &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">default</span>: <span class="function">() =&gt;</span> <span class="string">&#x27;default slot&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">header</span>: <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>, <span class="string">&#x27;hello div&#x27;</span>),</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">footer</span>: <span class="function">() =&gt;</span> [<span class="title function_">h</span>(<span class="string">&#x27;span&#x27;</span>, <span class="string">&#x27;one&#x27;</span>), <span class="title function_">h</span>(<span class="string">&#x27;span&#x27;</span>, <span class="string">&#x27;two&#x27;</span>)],</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="mergeProps"><a href="#mergeProps" class="headerlink" title="mergeProps()"></a>mergeProps()</h4><blockquote>
 <p><code>class</code>, <code>style</code> 将被合并成一个对象, <code>onXxx</code> 将被合并成一个数组</p>
