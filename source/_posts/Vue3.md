@@ -353,7 +353,7 @@ const app = createApp({
         },
         // 传递单个默认插槽函数
         // () => 'rendered content from father component by default slot...',
-        // 传递具名插槽, 使用插槽函数对象形式传递
+        // 传递具名插槽函数, 使用插槽函数对象形式传递
         {
           default: () =>
             'rendered content from father component by default slot...',
