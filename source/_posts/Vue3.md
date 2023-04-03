@@ -2813,7 +2813,7 @@ return withDirectives(h('div'), [
       'button',
       {
         // 等价于 v-on.stop.prevent
-        onClick: withModifier(
+        onClick: withModifiers(
           (e) => {
             clk(e);
           },
