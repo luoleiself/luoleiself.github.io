@@ -332,8 +332,11 @@ import { createApp, defineComponent, h } from 'vue';
 const HelloWorld = defineComponent((props, { slots }) => {
   // 使用 `?.` 可选链运算符判断插槽函数不存在则使用默认值渲染
   return () => [
-    h('p', slots?.default?.() || 'rendered content from self by default slot...'),
-    h('p', slots?.header?.() || 'rendered content from self by header slot...')
+    h(
+      'p',
+      slots?.default?.() || 'rendered content from self by default slot...'
+    ),
+    h('p', slots?.header?.() || 'rendered content from self by header slot...'),
   ];
 });
 
@@ -346,17 +349,22 @@ const app = createApp({
           // VNode 生命周期事件琢磨中...
           'vue:mounted': () => {
             console.log('child component hooks triggered...');
-          }
+          },
         },
         // 传递单个默认插槽函数
         // () => 'rendered content from father component by default slot...',
         // 传递具名插槽, 使用插槽函数对象形式传递
         {
-          default: () => 'rendered content from father component by default slot...',
-          header: () => h('span', 'rendered content from father component by header slot...')
+          default: () =>
+            'rendered content from father component by default slot...',
+          header: () =>
+            h(
+              'span',
+              'rendered content from father component by header slot...'
+            ),
         }
       );
-  }
+  },
 });
 app.component('hello-world', HelloWorld);
 app.mount('#app');
@@ -368,13 +376,13 @@ app.mount('#app');
 import { createApp, defineComponent, h } from 'vue';
 
 const HelloWorld = defineComponent((props, { attrs, slots }) => {
-  const message = "from hello world component";
+  const message = 'from hello world component';
   const age = attrs.age > 0 ? attrs.age : 18;
   console.log(props); // {}
   console.log(slots); // {default: renderFnWithContext()}
   console.log(attrs); // {name: 'from createApp', age: -1}
 
-  return () => h("p", slots.default({ message: message, age: age }));
+  return () => h('p', slots.default({ message: message, age: age }));
 });
 
 const app = createApp({
@@ -384,9 +392,10 @@ const app = createApp({
         HelloWorld,
         { name: 'from createApp', age: -1 },
         // 传递单个默认插槽函数
-        (slotScope) => slotScope.message + ' - ' + slotScope.age + ' - others from createApp'
+        (slotScope) =>
+          slotScope.message + ' - ' + slotScope.age + ' - others from createApp'
       );
-  }
+  },
 });
 app.component('hello-world', HelloWorld);
 app.mount('#app');
@@ -874,13 +883,13 @@ scope.stop();
 
 ### 生命周期钩子
 
-> 所有生命周期钩子函数必须在组件的 `setup()` 阶段同步调用
+> 所有生命周期钩子函数必须在组件的 `setup()` 阶段**同步调用**
 
 #### VNode 生命周期事件
 
 VNode 生命周期事件前缀从 `hook:` 更改为 `vue:`, 这些事件也可用于 HTML 元素, 和在组件上的用法一样
 
-- `vue:` 前缀为固定格式, 生命周期事件可以使用 `kebab-case` 或者 `camelCase`
+- `vue:` 前缀为固定格式, 生命周期事件名可以使用 `kebab-case` 或者 `camelCase` 方式
 
 ```html
 <template>
@@ -1735,15 +1744,15 @@ export default {
 
 ##### 版本迭代
 
-- [`v-bind`](#v-bind) 的 .sync 修饰符和组件的 model 选项被移除, 使用 v-model 和参数代替
-- 同一组件上可以使用多个 v-model 进行双向绑定
-- 可自定义 v-model 修饰符
+- [`v-bind`](#v-bind) 的 `.sync` 修饰符和组件的 model 选项被**移除**, 使用 `v-model` 和参数代替
+- 同一组件上可以使用多个 `v-model` 进行双向绑定
+- 可自定义 `v-model` 修饰符
 - 自定义组件时 `v-model` 的 `prop` 和 `event` 默认名称已更改
 
   - prop: `value` -> `modelValue`
   - event: `input` -> `update:modelValue`
 
-###### migration
+##### migration
 
 - 所有子组件 `.sync` 修饰符的部分替换为 `v-model`
 - 未带参数的 `v-model`, 修改子组件的 prop -> `modelValue`, event -> `update:modelValue`
@@ -1772,9 +1781,9 @@ export default {
 </script>
 ```
 
-##### V 2.0
+##### Vue 2.0
 
-- Vue 2.0 `v-model` 只能使用 `value` 作为 prop, 并监听抛出的 `input` 事件, 如果使用其他 prop, 必须使用 `v-bind.sync` 同步
+- `v-model` 只能使用 `value` 作为 prop, 并监听子组件抛出的 `input` 事件, 如果使用其他 prop, 必须使用 `v-bind.sync` 同步
 
 ```html
 <template>
@@ -1792,9 +1801,9 @@ export default {
 </script>
 ```
 
-##### V 2.2
+##### Vue 2.2
 
-- Vue 2.2 增加组件选项 `model`, 允许自定义 `v-model` 的 prop 和 event, 只能在组件上使用一个 model
+- 增加组件选项 `model`, 允许自定义 `v-model` 的 prop 和 event, 只能在组件上使用一个 model
 
 ```html
 <template>
@@ -1821,9 +1830,9 @@ export default {
 </script>
 ```
 
-##### V 2.3
+##### Vue 2.3
 
-- Vue 2.3 增加 `.sync` 修饰符
+- 增加 `.sync` 修饰符
 
 ```html
 <template>
@@ -1833,9 +1842,9 @@ export default {
 </template>
 ```
 
-##### V 3.x
+##### Vue 3.x
 
-- Vue 3.x `v-model` 默认传递 `modelValue` prop, 并接收子组件抛出的 `update:modelValue` 事件
+- `v-model` 默认传递 `modelValue` prop, 并接收子组件抛出的 `update:modelValue` 事件
 
 ```html
 <template>
@@ -2422,8 +2431,8 @@ export default {
         console.warn(`Invalid submit event payload!`);
         return false;
       }
-    }
-  })
+    },
+  });
 </script>
 ```
 
