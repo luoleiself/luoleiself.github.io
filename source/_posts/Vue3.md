@@ -285,8 +285,8 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 #### 基本使用
 
-- 需要在非单文件组件中使用组合式 API 时
-- 需要在基于选项式 API 的组件集成基于组合式 API 的代码时
+- 需要在**非单文件组件**中使用组合式 API 时
+- 需要在基于选项式 API 的组件中集成基于组合式 API 的代码时
 
 - 在创建组件实例时, 在初始 prop 解析之后立即调用 setup
 - 在生命周期方面, 在 `beforeCreate` 钩子之前调用
