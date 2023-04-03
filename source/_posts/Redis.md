@@ -251,7 +251,7 @@ Reading messages... (press Ctrl-C to quit)
 2) (integer) 0
 ```
 
-### 配置文件
+### 配置文件配置项
 
 - include /path/to/\*.conf # 导入其他 redis 配置文件
 
@@ -907,7 +907,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
   - \-\-cluster-from \<arg\> # 已有节点 id, 多个 id 之间使用半角逗号分隔
   - \-\-cluster-to \<arg\> # 新节点 id
   - \-\-cluster-slots \<arg\> # 新节点的 hash 槽数量
-- redis-clis \-\-cluster rebalance \<host:port\> # 重新分配节点
+- redis-cli \-\-cluster rebalance \<host:port\> # 重新分配节点
   - \-\-cluster-weight \<node1=w1...nodeN=wN\> # 分配节点权重
   - \-\-cluster-timeout \<arg\> # 节点超时时间
   - \-\-cluster-threshold \<arg\> # 节点阈值
