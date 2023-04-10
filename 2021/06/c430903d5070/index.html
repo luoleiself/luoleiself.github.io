@@ -28,7 +28,7 @@
 <meta property="og:description" content="全局 API应用实例 API 调用 createApp 返回一个应用实例，该实例提供了一个应用上下文, 应用实例挂载的整个组件树共享相同的上下文   createApp() 创建一个应用实例  参数 {Object} rootComponent 根组件选项 {Object} rootProps 传递给根组件的 props    1234import &amp;#123; createApp &amp;#125;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-06-19T07:19:26.000Z">
-<meta property="article:modified_time" content="2023-04-10T02:36:46.129Z">
+<meta property="article:modified_time" content="2023-04-10T03:20:45.182Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="js">
 <meta property="article:tag" content="VueJs">
@@ -240,7 +240,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-10 10:36:46" itemprop="dateModified" datetime="2023-04-10T10:36:46+08:00">2023-04-10</time>
+                <time title="修改时间：2023-04-10 11:20:45" itemprop="dateModified" datetime="2023-04-10T11:20:45+08:00">2023-04-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -417,6 +417,8 @@
 <li>只能在 setup 或生命周期钩子中调用</li>
 </ul>
 </li>
+<li><p><code>setup()</code> 应该同步地返回一个对象, 唯一可以使用 <code>async setup()</code> 的情况是该组件是 <a href="#suspense">&lt;Suspense&gt;</a> 组件地后裔</p>
+</li>
 </ul>
 <h4 id="访问-Props"><a href="#访问-Props" class="headerlink" title="访问 Props"></a>访问 Props</h4><ul>
 <li><code>setup()</code> 的第一个参数, 是响应式地并且会在传入新的 props 时同步更新</li>
@@ -435,11 +437,13 @@
 
 <h5 id="使用-slotscope-渲染"><a href="#使用-slotscope-渲染" class="headerlink" title="使用 slotscope 渲染"></a>使用 <a href="#v-slot">slot</a>scope 渲染</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, defineComponent, h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="title function_">defineComponent</span>(<span class="function">(<span class="params">props, &#123; attrs, slots &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> message = <span class="string">&#x27;from hello world component&#x27;</span>;</span><br><span class="line">  <span class="keyword">const</span> age = attrs.<span class="property">age</span> &gt; <span class="number">0</span> ? attrs.<span class="property">age</span> : <span class="number">18</span>;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(props); <span class="comment">// &#123;&#125;</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(slots); <span class="comment">// &#123;default: renderFnWithContext()&#125;</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(attrs); <span class="comment">// &#123;name: &#x27;from createApp&#x27;, age: -1&#125;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, slots.<span class="title function_">default</span>(&#123; <span class="attr">message</span>: message, <span class="attr">age</span>: age &#125;));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, ctx</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(</span><br><span class="line">        <span class="title class_">HelloWorld</span>,</span><br><span class="line">        &#123; <span class="attr">name</span>: <span class="string">&#x27;from createApp&#x27;</span>, <span class="attr">age</span>: -<span class="number">1</span> &#125;,</span><br><span class="line">        <span class="comment">// 传递单个默认插槽函数</span></span><br><span class="line">        <span class="function">(<span class="params">slotScope</span>) =&gt;</span></span><br><span class="line">          slotScope.<span class="property">message</span> + <span class="string">&#x27; - &#x27;</span> + slotScope.<span class="property">age</span> + <span class="string">&#x27; - others from createApp&#x27;</span></span><br><span class="line">      );</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;hello-world&#x27;</span>, <span class="title class_">HelloWorld</span>);</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
-<h4 id="返回渲染函数"><a href="#返回渲染函数" class="headerlink" title="返回渲染函数"></a>返回<a href="#renderingfunc">渲染函数</a></h4><ul>
-<li>setup 应该同步地返回一个对象, 唯一可以使用 <code>async setup()</code> 的情况是该组件是 <a href="#suspense">&lt;Suspense&gt;</a> 组件地后裔</li>
-<li>也可以返回一个 <a href="#renderingfunc"><strong>渲染函数</strong></a>, 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态</li>
+<h4 id="返回渲染函数"><a href="#返回渲染函数" class="headerlink" title="返回渲染函数"></a>返回<a href="#renderingfunc">渲染函数</a></h4><blockquote>
+<p>返回<a href="#renderingfunc"><strong>渲染函数</strong></a>将会阻止返回其他东西, 对于父组件通过模板引用组件暴露的属性使用 <code>expose()</code> 方法解决</p>
+</blockquote>
+<ul>
+<li>返回一个 <a href="#renderingfunc"><strong>渲染函数</strong></a>, 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h, ref, reactive &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">const</span> object = <span class="title function_">reactive</span>(&#123; <span class="attr">foo</span>: <span class="string">&#x27;bar&#x27;</span> &#125;);</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>, [count.<span class="property">value</span>, object.<span class="property">foo</span>]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h, ref, reactive &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; expose &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">const</span> object = <span class="title function_">reactive</span>(&#123; <span class="attr">foo</span>: <span class="string">&#x27;bar&#x27;</span> &#125;);</span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">increment</span> = (<span class="params"></span>) =&gt; ++count.<span class="property">value</span>;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">expose</span>(&#123; increment &#125;); <span class="comment">// 组件暴露 increment 方法</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>, [count.<span class="property">value</span>, object.<span class="property">foo</span>]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h3 id="响应式-核心"><a href="#响应式-核心" class="headerlink" title="响应式: 核心"></a>响应式: 核心</h3><h4 id="ref"><a href="#ref" class="headerlink" title="ref()  "></a>ref() <em id="ref"></em> <!-- markdownlint-disable-line --></h4><p>接受一个内部值, 返回一个响应式可更改的 ref 对象, 此对象只有一个指向其内部值的属性 <code>.value</code></p>
 <ul>
@@ -1386,16 +1390,16 @@
       <div class="popular-posts-title"><a href="\2021\08\9fc9b29dd769\" rel="bookmark">Vue3-migration</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
+      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
     </li>
   </ul>
 
