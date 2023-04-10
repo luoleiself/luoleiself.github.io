@@ -283,10 +283,12 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 > 对于结合单文件组件使用的组合式 API 推荐使用 `<script setup>` 语法
 
-#### 基本使用
+在组件中使用组合式 API 的入口钩子函数
 
 - 需要在**非单文件组件**中使用组合式 API 时
 - 需要在基于选项式 API 的组件中集成基于组合式 API 的代码时
+
+#### 基本使用
 
 - 在创建组件实例时, 在初始 prop 解析之后立即调用 setup
 - 在生命周期方面, 在 `beforeCreate` 钩子之前调用
@@ -297,12 +299,12 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 #### 访问 Props
 
-- setup 函数地第一个参数, 是响应式地并且会在传入新的 props 时同步更新
+- `setup()` 的第一个参数, 是响应式地并且会在传入新的 props 时同步更新
 - 不能直接对 props 进行解构操作, 会丢失响应性, 可以通过 `toRefs()` 和 `toRef()` 工具函数辅助完成
 
 #### 上下文
 
-setup 函数的第二个参数, 暴露了其他一些在 setup 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 是非响应式的, 如果需要根据 attrs 或者 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑
+`setup()` 的第二个参数为一个**上下文**对象, 暴露了其他一些在 `setup()` 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 都是非响应式的, 如果需要根据 attrs 或 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑
 
 - attrs 透传 Attributes, 等价于 $attrs, 未在 `props` 中声明的属性全部作为 `attrs` 的一部分
 - slots [插槽](#v-slot), 等价于 $slots
