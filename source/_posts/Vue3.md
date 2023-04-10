@@ -294,8 +294,11 @@ document.body.append(new MyElement(/* 初始化 prop */));
 - 在生命周期方面, 在 `beforeCreate` 钩子之前调用
 
 - getCurrentInstance
+
   - 支持访问内部组件实例，用于高阶用法或库的开发
   - 只能在 setup 或生命周期钩子中调用
+
+- `setup()` 应该同步地返回一个对象, 唯一可以使用 `async setup()` 的情况是该组件是 [&lt;Suspense&gt;](#suspense) 组件地后裔
 
 #### 访问 Props
 
@@ -405,15 +408,20 @@ app.mount('#app');
 
 #### 返回[渲染函数](#renderingfunc)
 
-- setup 应该同步地返回一个对象, 唯一可以使用 `async setup()` 的情况是该组件是 [&lt;Suspense&gt;](#suspense) 组件地后裔
-- 也可以返回一个 [**渲染函数**](#renderingfunc), 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
+> 返回[**渲染函数**](#renderingfunc)将会阻止返回其他东西, 对于父组件通过模板引用组件暴露的属性使用 `expose()` 方法解决
+
+- 返回一个 [**渲染函数**](#renderingfunc), 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
 
 ```javascript
 import { h, ref, reactive } from 'vue';
 const app = createApp({
-  setup() {
+  setup(props, { expose }) {
     const count = ref(0);
     const object = reactive({ foo: 'bar' });
+    const increment = () => ++count.value;
+
+    expose({ increment }); // 组件暴露 increment 方法
+
     return () => h('div', [count.value, object.foo]);
   },
 });
