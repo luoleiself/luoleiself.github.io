@@ -28,7 +28,7 @@
 <meta property="og:description" content="全局 API应用实例 API 调用 createApp 返回一个应用实例，该实例提供了一个应用上下文, 应用实例挂载的整个组件树共享相同的上下文   createApp() 创建一个应用实例  参数 {Object} rootComponent 根组件选项 {Object} rootProps 传递给根组件的 props    1234import &amp;#123; createApp &amp;#125;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-06-19T07:19:26.000Z">
-<meta property="article:modified_time" content="2023-04-03T06:56:10.872Z">
+<meta property="article:modified_time" content="2023-04-10T02:36:46.129Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="js">
 <meta property="article:tag" content="VueJs">
@@ -240,7 +240,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-03 14:56:10" itemprop="dateModified" datetime="2023-04-03T14:56:10+08:00">2023-04-03</time>
+                <time title="修改时间：2023-04-10 10:36:46" itemprop="dateModified" datetime="2023-04-10T10:36:46+08:00">2023-04-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -401,11 +401,12 @@
 <h2 id="组合式-API"><a href="#组合式-API" class="headerlink" title="组合式 API  "></a>组合式 API <em id="combinedapi"></em> <!-- markdownlint-disable-line --></h2><h3 id="setup"><a href="#setup" class="headerlink" title="setup()"></a>setup()</h3><blockquote>
 <p>对于结合单文件组件使用的组合式 API 推荐使用 <code>&lt;script setup&gt;</code> 语法</p>
 </blockquote>
+<p>在组件中使用组合式 API 的入口钩子函数</p>
+<ul>
+<li>需要在<strong>非单文件组件</strong>中使用组合式 API 时</li>
+<li>需要在基于选项式 API 的组件中集成基于组合式 API 的代码时</li>
+</ul>
 <h4 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h4><ul>
-<li><p>需要在<strong>非单文件组件</strong>中使用组合式 API 时</p>
-</li>
-<li><p>需要在基于选项式 API 的组件中集成基于组合式 API 的代码时</p>
-</li>
 <li><p>在创建组件实例时, 在初始 prop 解析之后立即调用 setup</p>
 </li>
 <li><p>在生命周期方面, 在 <code>beforeCreate</code> 钩子之前调用</p>
@@ -418,10 +419,10 @@
 </li>
 </ul>
 <h4 id="访问-Props"><a href="#访问-Props" class="headerlink" title="访问 Props"></a>访问 Props</h4><ul>
-<li>setup 函数地第一个参数, 是响应式地并且会在传入新的 props 时同步更新</li>
+<li><code>setup()</code> 的第一个参数, 是响应式地并且会在传入新的 props 时同步更新</li>
 <li>不能直接对 props 进行解构操作, 会丢失响应性, 可以通过 <code>toRefs()</code> 和 <code>toRef()</code> 工具函数辅助完成</li>
 </ul>
-<h4 id="上下文"><a href="#上下文" class="headerlink" title="上下文"></a>上下文</h4><p>setup 函数的第二个参数, 暴露了其他一些在 setup 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 是非响应式的, 如果需要根据 attrs 或者 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑</p>
+<h4 id="上下文"><a href="#上下文" class="headerlink" title="上下文"></a>上下文</h4><p><code>setup()</code> 的第二个参数为一个<strong>上下文</strong>对象, 暴露了其他一些在 <code>setup()</code> 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 都是非响应式的, 如果需要根据 attrs 或 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑</p>
 <ul>
 <li>attrs 透传 Attributes, 等价于 $attrs, 未在 <code>props</code> 中声明的属性全部作为 <code>attrs</code> 的一部分</li>
 <li>slots <a href="#v-slot">插槽</a>, 等价于 $slots</li>
@@ -1391,10 +1392,10 @@
       <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
+      <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
+      <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
     </li>
   </ul>
 
