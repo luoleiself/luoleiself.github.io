@@ -65,7 +65,15 @@ tags:
 
 - app.directive() 注册或查找全局指令, 根据参数个数区分 <em id="directive"></em> <!-- markdownlint-disable-line -->
 
-  - 钩子函数参数
+  > 自定义指令主要是为了**重用**涉及普通元素的底层 DOM 访问的逻辑
+  > 只有当所需功能只能通过直接的 DOM 操作来实现时, 才应该使用自定义指令
+
+  一个自定义指令由一个包含类似组件生命周期钩子的对象来定义
+
+  - 当在组件上使用自定义指令时, 它会始终应用于组件的根节点
+  - 如果组件存在多个根节点时, 指令将会被忽略并且抛出一个警告, 总之不推荐在组件上使用自定义指令
+
+  - 钩子参数
     - el 指令绑定的元素, 可用于直接操作 DOM
     - binding 一个对象
       - value 传递给指令的值, 例如 `v-my-directive="1 + 1"` 的值为 2
@@ -2764,7 +2772,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 用于给 vnode 增加自定义指令
 
 - 第一个参数为要添加指令的 vnode
-- 第二个参数为自定义指令的数组, 每个自定义指令表示为 `[Directive, value, argument, modifiers]` 形式的数组
+- 第二个参数为自定义指令数组, 每个自定义指令表示为 `[Directive, value, argument, modifiers]` 形式的数组
   - [directive] 指令本身
   - [directive, value] 上述内容, 指令的值
   - [directive, value, arg] 上述内容, 一个 String 参数,eg: v-on:click 中的 click
