@@ -239,6 +239,64 @@
       </tags>
   </entry>
   <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git命令操作篇</title>
     <url>/2021/04/b0420868a4bc/</url>
     <content><![CDATA[<h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name]</span><br></pre></td></tr></table></figure>
@@ -494,64 +552,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Git命令配置篇</title>
     <url>/2021/04/00ea2bbb2db0/</url>
     <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
@@ -771,60 +771,6 @@
       </tags>
   </entry>
   <entry>
-    <title>JSSDK</title>
-    <url>/2022/05/2261dfd57ebf/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
-<li>转发</li>
-<li>转发给客户</li>
-<li>群发到客户群</li>
-<li>发表到客户的朋友圈</li>
-<li>分享到同事吧</li>
-<li>分享到微信</li>
-<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
-</ul>
-<span id="more"></span>
-
-<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>shareAppMessage 自定义转发到会话</li>
-<li>shareWechatMessage 自定义转发到微信</li>
-<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
-<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>wx</category>
-      </categories>
-      <tags>
-        <tag>wx</tag>
-        <tag>jweixin</tag>
-        <tag>JSSDK</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MutationObserver</title>
     <url>/2021/07/f148f882ba3d/</url>
     <content><![CDATA[<p>MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知</p>
@@ -920,6 +866,60 @@
       </categories>
       <tags>
         <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JSSDK</title>
+    <url>/2022/05/2261dfd57ebf/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
+<li>转发</li>
+<li>转发给客户</li>
+<li>群发到客户群</li>
+<li>发表到客户的朋友圈</li>
+<li>分享到同事吧</li>
+<li>分享到微信</li>
+<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>shareAppMessage 自定义转发到会话</li>
+<li>shareWechatMessage 自定义转发到微信</li>
+<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
+<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>wx</category>
+      </categories>
+      <tags>
+        <tag>wx</tag>
+        <tag>jweixin</tag>
+        <tag>JSSDK</tag>
       </tags>
   </entry>
   <entry>
@@ -1491,219 +1491,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2021/04/7df03390b905/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>nginx</title>
-    <url>/2022/04/1e58889c42cf/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
-<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
-<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
-<li><p>$nginx_version nginx 版本</p>
-</li>
-<li><p>$connection_requests TCP 链接当前的请求数量</p>
-</li>
-<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
-<span id="more"></span></li>
-</ul>
-<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
-<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
-</li>
-<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
-</li>
-<li><p>$document_uri 同 $uri</p>
-</li>
-<li><p>$document_root 当前请求的文档根目录或别名</p>
-</li>
-<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
-</li>
-<li><p>$remote_addr 客户端的 IP 地址</p>
-</li>
-<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
-</li>
-<li><p>$remote_port 客户端的端口号</p>
-</li>
-<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
-</li>
-<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
-</li>
-<li><p>$hostname 主机名</p>
-</li>
-<li><p>$http_user_agent 客户端 agent 信息</p>
-</li>
-<li><p>$http_cookie 客户端所有的 cookie 信息</p>
-</li>
-<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
-</li>
-<li><p>$http_referer 引用地址</p>
-</li>
-<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
-</li>
-<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
-</li>
-</ul>
-<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
-<li><p>$request 代表客户端的请求地址</p>
-</li>
-<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
-</li>
-<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
-</li>
-<li><p>$request_body 客户端的请求主体</p>
-</li>
-<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
-</li>
-<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
-</li>
-<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
-</li>
-<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
-</li>
-<li><p>$uri 当前请求的 URI</p>
-</li>
-<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
-</li>
-<li><p>$args 请求中的参数值</p>
-</li>
-<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
-</li>
-<li><p>$query_string 同$args</p>
-</li>
-<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
-</li>
-</ul>
-<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
-<li><p>$time_local 服务器时间(LOG Format 格式)</p>
-</li>
-<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
-<ul>
-<li>$sent_http_content_type ‘text/html’</li>
-<li>$sent_http_content_length 1024</li>
-</ul>
-</li>
-</ul>
-<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
-<li><p>$scheme HTTP 方法(如 http, https)</p>
-</li>
-<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
-</li>
-<li><p>$server_addr 服务器地址</p>
-</li>
-<li><p>$server_name 服务器名称</p>
-</li>
-<li><p>$server_port 服务器端口号</p>
-</li>
-<li><p>$status HTTP 响应代码</p>
-</li>
-<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
-</li>
-<li><p>$limit_rate 限制连接速率</p>
-</li>
-</ul>
-<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
-<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
-<li>none 允许 Referer 头域中不存在的情况</li>
-<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
-<li>server_names 设置一个或多个 URL</li>
-<li>arbitrary string 任意字符串</li>
-<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
-<li>http</li>
-<li>server</li>
-<li>location</li>
-<li>if in location</li>
-</ul>
-<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
-<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
-<ul>
-<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
-<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
-<thead>
-<tr>
-<th align="center">符号</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">~</td>
-<td>正则匹配，区分大小写</td>
-</tr>
-<tr>
-<td align="center">~*</td>
-<td>正则匹配，不区分大小写</td>
-</tr>
-<tr>
-<td align="center">^~</td>
-<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
-</tr>
-<tr>
-<td align="center">=</td>
-<td>普通字符匹配，精确匹配</td>
-</tr>
-<tr>
-<td align="center">@</td>
-<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
-</tr>
-</tbody></table>
-<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
-<li><p>精确匹配：</p>
-<p>= 前缀的指令严格匹配这个查询。</p>
-<p>如果找到，停止搜索。</p>
-</li>
-<li><p>普通字符匹配：</p>
-<p>所有剩下的常规字符串，最长的匹配。</p>
-<p>如果这个匹配使用^〜前缀，搜索停止。</p>
-</li>
-<li><p>正则匹配：</p>
-<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
-</li>
-<li><p>默认匹配：</p>
-<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
-<p>否则，如同从第 2 条规则被使用。</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>server</category>
-      </categories>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>shell工具</title>
     <url>/2022/05/4881d8683e6d/</url>
     <content><![CDATA[<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
@@ -1927,6 +1714,219 @@
         <tag>linux</tag>
         <tag>shell</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>nginx</title>
+    <url>/2022/04/1e58889c42cf/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
+<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
+<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
+<li><p>$nginx_version nginx 版本</p>
+</li>
+<li><p>$connection_requests TCP 链接当前的请求数量</p>
+</li>
+<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
+<span id="more"></span></li>
+</ul>
+<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
+<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
+</li>
+<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
+</li>
+<li><p>$document_uri 同 $uri</p>
+</li>
+<li><p>$document_root 当前请求的文档根目录或别名</p>
+</li>
+<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
+</li>
+<li><p>$remote_addr 客户端的 IP 地址</p>
+</li>
+<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
+</li>
+<li><p>$remote_port 客户端的端口号</p>
+</li>
+<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
+</li>
+<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
+</li>
+<li><p>$hostname 主机名</p>
+</li>
+<li><p>$http_user_agent 客户端 agent 信息</p>
+</li>
+<li><p>$http_cookie 客户端所有的 cookie 信息</p>
+</li>
+<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
+</li>
+<li><p>$http_referer 引用地址</p>
+</li>
+<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
+</li>
+<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
+</li>
+</ul>
+<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
+<li><p>$request 代表客户端的请求地址</p>
+</li>
+<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
+</li>
+<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
+</li>
+<li><p>$request_body 客户端的请求主体</p>
+</li>
+<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
+</li>
+<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
+</li>
+<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
+</li>
+<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
+</li>
+<li><p>$uri 当前请求的 URI</p>
+</li>
+<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
+</li>
+<li><p>$args 请求中的参数值</p>
+</li>
+<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
+</li>
+<li><p>$query_string 同$args</p>
+</li>
+<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
+</li>
+</ul>
+<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
+<li><p>$time_local 服务器时间(LOG Format 格式)</p>
+</li>
+<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
+<ul>
+<li>$sent_http_content_type ‘text/html’</li>
+<li>$sent_http_content_length 1024</li>
+</ul>
+</li>
+</ul>
+<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
+<li><p>$scheme HTTP 方法(如 http, https)</p>
+</li>
+<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
+</li>
+<li><p>$server_addr 服务器地址</p>
+</li>
+<li><p>$server_name 服务器名称</p>
+</li>
+<li><p>$server_port 服务器端口号</p>
+</li>
+<li><p>$status HTTP 响应代码</p>
+</li>
+<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
+</li>
+<li><p>$limit_rate 限制连接速率</p>
+</li>
+</ul>
+<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
+<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
+<li>none 允许 Referer 头域中不存在的情况</li>
+<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
+<li>server_names 设置一个或多个 URL</li>
+<li>arbitrary string 任意字符串</li>
+<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
+<li>http</li>
+<li>server</li>
+<li>location</li>
+<li>if in location</li>
+</ul>
+<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
+<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
+<ul>
+<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
+<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
+<thead>
+<tr>
+<th align="center">符号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">~</td>
+<td>正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td align="center">~*</td>
+<td>正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td align="center">^~</td>
+<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
+</tr>
+<tr>
+<td align="center">=</td>
+<td>普通字符匹配，精确匹配</td>
+</tr>
+<tr>
+<td align="center">@</td>
+<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
+</tr>
+</tbody></table>
+<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
+<li><p>精确匹配：</p>
+<p>= 前缀的指令严格匹配这个查询。</p>
+<p>如果找到，停止搜索。</p>
+</li>
+<li><p>普通字符匹配：</p>
+<p>所有剩下的常规字符串，最长的匹配。</p>
+<p>如果这个匹配使用^〜前缀，搜索停止。</p>
+</li>
+<li><p>正则匹配：</p>
+<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
+</li>
+<li><p>默认匹配：</p>
+<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
+<p>否则，如同从第 2 条规则被使用。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>server</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/04/7df03390b905/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
   </entry>
   <entry>
     <title>shell语法</title>
@@ -6618,13 +6618,13 @@
 <h4 id="resolveComponent"><a href="#resolveComponent" class="headerlink" title="resolveComponent()"></a>resolveComponent()</h4><blockquote>
 <p><code>resolveComponent()</code> 只能在 <a href="#renderingfunc"><strong>渲染函数</strong></a> 或 <code>setup()</code> 中使用<br>如果可以直接引入组件就不需要使用此方法</p>
 </blockquote>
-<p>按名称手动解析已注册的组件, 返回 Component, 未找到则返回组件名字符串并抛出一个运行时警告</p>
+<p>按名称手动解析已注册的组件, 未找到则抛出一个运行时警告并返回组件名字符串</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; h, resolveComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> <span class="title class_">ButtonComponent</span> = <span class="title function_">resolveComponent</span>(<span class="string">&#x27;ButtonComponent&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="title class_">ButtonComponent</span>);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="resolveDirective"><a href="#resolveDirective" class="headerlink" title="resolveDirective()"></a><a href="#directive">resolveDirective()</a></h4><blockquote>
 <p><code>resolveDirective()</code> 只能在 <a href="#renderingfunc"><strong>渲染函数</strong></a> 或 <code>setup()</code> 中使用<br>如果可以直接引入组件就不需要使用此方法</p>
 </blockquote>
-<p>按名称手动解析已注册的指令, 返回 Directive, 未找到则返回 undefined 并抛出一个运行时警告</p>
+<p>按名称手动解析已注册的指令, 未找到则抛出一个运行时警告并返回 undefined</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; resolveDirective &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> myDirective = <span class="title function_">resolveDirective</span>(<span class="string">&#x27;myDirective&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="withDirectives"><a href="#withDirectives" class="headerlink" title="withDirectives()"></a><a href="#directive">withDirectives()</a></h4><p>用于给 vnode 增加自定义指令</p>
@@ -6643,8 +6643,13 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; withDirectives, resolveDirective &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> foo = <span class="title function_">resolveDirective</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bar = <span class="title function_">resolveDirective</span>(<span class="string">&#x27;bar&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="title function_">withDirectives</span>(<span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>), [</span><br><span class="line">  [foo, <span class="variable language_">this</span>.<span class="property">x</span>],</span><br><span class="line">  [bar, <span class="variable language_">this</span>.<span class="property">y</span>],</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
 
 <h4 id="withModifiers"><a href="#withModifiers" class="headerlink" title="withModifiers()"></a>withModifiers()</h4><p>用于向事件处理函数添加内置 <code>v-on</code> 修饰符</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; h, withModifiers &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> clk = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="variable language_">console</span>.<span class="title function_">log</span>(e);</span></span><br><span class="line"><span class="language-javascript">  &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">return</span> <span class="function">() =&gt;</span></span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">h</span>(</span></span><br><span class="line"><span class="language-javascript">      <span class="string">&#x27;button&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">      &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 等价于 v-on.stop.prevent</span></span></span><br><span class="line"><span class="language-javascript">        <span class="attr">onClick</span>: <span class="title function_">withModifiers</span>(</span></span><br><span class="line"><span class="language-javascript">          <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="title function_">clk</span>(e);</span></span><br><span class="line"><span class="language-javascript">          &#125;,</span></span><br><span class="line"><span class="language-javascript">          [<span class="string">&#x27;stop&#x27;</span>, <span class="string">&#x27;prevent&#x27;</span>]</span></span><br><span class="line"><span class="language-javascript">        ),</span></span><br><span class="line"><span class="language-javascript">      &#125;,</span></span><br><span class="line"><span class="language-javascript">      <span class="string">&#x27;Click Me&#x27;</span></span></span><br><span class="line"><span class="language-javascript">    );</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; h, withModifiers &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> clk = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="variable language_">console</span>.<span class="title function_">log</span>(e);</span></span><br><span class="line"><span class="language-javascript">  &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">return</span> <span class="function">() =&gt;</span></span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">h</span>(</span></span><br><span class="line"><span class="language-javascript">      <span class="string">&#x27;button&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">      &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 等价于 v-on.stop.prevent</span></span></span><br><span class="line"><span class="language-javascript">        <span class="attr">onClick</span>: <span class="title function_">withModifiers</span>(</span></span><br><span class="line"><span class="language-javascript">          <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="variable language_">console</span>.<span class="title function_">log</span>(e);</span></span><br><span class="line"><span class="language-javascript">          &#125;,</span></span><br><span class="line"><span class="language-javascript">          [<span class="string">&#x27;stop&#x27;</span>, <span class="string">&#x27;prevent&#x27;</span>]</span></span><br><span class="line"><span class="language-javascript">        ),</span></span><br><span class="line"><span class="language-javascript">      &#125;,</span></span><br><span class="line"><span class="language-javascript">      <span class="string">&#x27;Click Me&#x27;</span></span></span><br><span class="line"><span class="language-javascript">    );</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
+<h4 id="综合使用"><a href="#综合使用" class="headerlink" title="综合使用"></a>综合使用</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  createApp,</span><br><span class="line">  h,</span><br><span class="line">  ref,</span><br><span class="line">  defineComponent,</span><br><span class="line">  resolveComponent,</span><br><span class="line">  resolveDirective,</span><br><span class="line">  withDirectives,</span><br><span class="line">  withModifiers,</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="attr">props</span>: [<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;age&#x27;</span>],</span><br><span class="line">  <span class="comment">// 定义局部指令</span></span><br><span class="line">  <span class="attr">directives</span>: &#123;</span><br><span class="line">    <span class="attr">foo</span>: &#123;</span><br><span class="line">      <span class="title function_">created</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;directives foo hooks created trigger... &#x27;</span>, binding);</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="comment">/* beforeMount, mounted, beforeUpdate, updated, beforeUnmount */</span></span><br><span class="line">      <span class="title function_">unmounted</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;directives foo hooks unmounted trigger... &#x27;</span>, binding);</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; slots &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> message = <span class="title function_">ref</span>(<span class="string">&#x27;from hello world component&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> fooV = <span class="title function_">ref</span>(<span class="number">250</span>);</span><br><span class="line">    <span class="keyword">const</span> show = <span class="title function_">ref</span>(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义点击切换自定义指令值的方法</span></span><br><span class="line">    <span class="keyword">const</span> changeFooDirective = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      fooV.<span class="property">value</span> = <span class="title class_">Math</span>.<span class="title function_">ceil</span>(<span class="title class_">Math</span>.<span class="title function_">random</span>() * <span class="number">100</span>);</span><br><span class="line">      show.<span class="property">value</span> = fooV.<span class="property">value</span> % <span class="number">4</span> === <span class="number">0</span> ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解析一个已注册的指令, 未找到则抛出运行时警告并返回 undefined</span></span><br><span class="line">    <span class="keyword">const</span> foo = <span class="title function_">resolveDirective</span>(<span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Must use `.value` to read or write the value wrapped by `ref()`</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>, [</span><br><span class="line">        <span class="title function_">h</span>(</span><br><span class="line">          <span class="string">&#x27;p&#x27;</span>,</span><br><span class="line">          slots?.<span class="property">default</span>?.(&#123;</span><br><span class="line">            <span class="attr">message</span>: message.<span class="property">value</span>,</span><br><span class="line">            <span class="attr">age</span>: props.<span class="property">age</span> &gt; <span class="number">0</span> ? props.<span class="property">age</span> : <span class="number">18</span>,</span><br><span class="line">          &#125;)</span><br><span class="line">        ),</span><br><span class="line">        <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, slots?.<span class="property">header</span>?.()),</span><br><span class="line">        show.<span class="property">value</span></span><br><span class="line">          ? <span class="title function_">withDirectives</span>(</span><br><span class="line">              <span class="title function_">h</span>(</span><br><span class="line">                <span class="string">&#x27;p&#x27;</span>,</span><br><span class="line">                <span class="title function_">withDirectives</span>(</span><br><span class="line">                  <span class="title function_">h</span>(<span class="string">&#x27;span&#x27;</span>, [<span class="string">&#x27;v-foo:bar2.uppercase=&#x27;</span> + fooV.<span class="property">value</span>]),</span><br><span class="line">                  [[foo, fooV.<span class="property">value</span>, <span class="string">&#x27;bar2&#x27;</span>, &#123; <span class="attr">uppercase</span>: <span class="literal">true</span> &#125;]]</span><br><span class="line">                )</span><br><span class="line">              ),</span><br><span class="line">              [[foo, fooV.<span class="property">value</span>, <span class="string">&#x27;bar1&#x27;</span>, &#123; <span class="attr">uppercase</span>: <span class="literal">true</span> &#125;]]</span><br><span class="line">            )</span><br><span class="line">          : <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, <span class="title function_">h</span>(<span class="string">&#x27;button&#x27;</span>, &#123; <span class="attr">onClick</span>: changeFooDirective &#125;, <span class="string">&#x27;Click Me&#x27;</span>)),</span><br><span class="line">      ]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; slots &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> gg = &#123;</span><br><span class="line">      <span class="title function_">created</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;withDirectives gg hooks created trigger... &#x27;</span>, binding);</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="comment">/* beforeMount, mounted, beforeUpdate, updated, beforeUnmount */</span></span><br><span class="line">      <span class="title function_">unmounted</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;withDirectives gg hooks unmounted trigger... &#x27;</span>, binding);</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解析一个已注册的组件，未找到则抛出运行时警告并返回组件名字符串</span></span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">HelloWorld</span> = <span class="title function_">resolveComponent</span>(<span class="string">&#x27;hello-world&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> [</span><br><span class="line">      <span class="title function_">withDirectives</span>(</span><br><span class="line">        <span class="title function_">h</span>(</span><br><span class="line">          <span class="title class_">HelloWorld</span>,</span><br><span class="line">          &#123; <span class="attr">name</span>: <span class="string">&#x27;from createApp&#x27;</span>, <span class="attr">age</span>: -<span class="number">1</span> &#125;,</span><br><span class="line">          &#123;</span><br><span class="line">            <span class="attr">default</span>: <span class="function">(<span class="params">slotScope</span>) =&gt;</span></span><br><span class="line">              slotScope.<span class="property">message</span> +</span><br><span class="line">              <span class="string">&#x27; - &#x27;</span> +</span><br><span class="line">              slotScope.<span class="property">age</span> +</span><br><span class="line">              <span class="string">&#x27; - others from createApp&#x27;</span>,</span><br><span class="line">            <span class="attr">header</span>: <span class="function">() =&gt;</span> <span class="string">&#x27;from createApp by header slot...&#x27;</span>,</span><br><span class="line">          &#125;</span><br><span class="line">        ),</span><br><span class="line">        [[gg, <span class="number">1000</span>, <span class="string">&#x27;bottom&#x27;</span>, &#123; <span class="attr">animate</span>: <span class="literal">true</span> &#125;]]</span><br><span class="line">      ),</span><br><span class="line">      <span class="title function_">h</span>(</span><br><span class="line">        <span class="string">&#x27;button&#x27;</span>,</span><br><span class="line">        &#123; <span class="attr">onClick</span>: <span class="title function_">withModifiers</span>(<span class="function">(<span class="params">e</span>) =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(e), [<span class="string">&#x27;stop&#x27;</span>, <span class="string">&#x27;prevent&#x27;</span>]) &#125;,</span><br><span class="line">        <span class="string">&#x27;Click Me withModifiers&#x27;</span></span><br><span class="line">      ),</span><br><span class="line">    ];</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;hello-world&#x27;</span>, <span class="title class_">HelloWorld</span>);</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h5 id="自定义指令挂载"><a href="#自定义指令挂载" class="headerlink" title="自定义指令挂载"></a><a href="#directive">自定义指令</a>挂载</h5><p><img data-src="/images/vue3-directives-hooks-1.jpg" alt="vue3-directives-hooks-1"></p>
+<h5 id="自定义指令更新"><a href="#自定义指令更新" class="headerlink" title="自定义指令更新"></a><a href="#directive">自定义指令</a>更新</h5><p><img data-src="/images/vue3-directives-hooks-2.jpg" alt="vue3-directives-hooks-2"></p>
+<h5 id="自定义指令卸载"><a href="#自定义指令卸载" class="headerlink" title="自定义指令卸载"></a><a href="#directive">自定义指令</a>卸载</h5><p><img data-src="/images/vue3-directives-hooks-3.jpg" alt="vue3-directives-hooks-3"></p>
 <h3 id="服务端渲染"><a href="#服务端渲染" class="headerlink" title="服务端渲染"></a>服务端渲染</h3><h4 id="renderToString"><a href="#renderToString" class="headerlink" title="renderToString()"></a>renderToString()</h4><blockquote>
 <p>导出自 <code>vue/server-renderer</code></p>
 </blockquote>
