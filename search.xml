@@ -239,64 +239,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Git命令操作篇</title>
     <url>/2021/04/b0420868a4bc/</url>
     <content><![CDATA[<h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name]</span><br></pre></td></tr></table></figure>
@@ -542,6 +484,64 @@
 <li><p>u|set-upstream: 建立分支追踪</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push [-u] [&lt;remote&gt;] [&lt;remote-branch-name&gt;]</span><br></pre></td></tr></table></figure></li>
 </ul>
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
 <hr>
 ]]></content>
       <categories>
@@ -963,49 +963,6 @@
       </tags>
   </entry>
   <entry>
-    <title>React.md</title>
-    <url>/2022/02/7ec5bd96e943/</url>
-    <content><![CDATA[<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><ul>
-<li>4 种条件判定是否可作为 state<ul>
-<li>这个变量是否通过 props 从父组件中获取，如果是，则不是一个状态</li>
-<li>这个变量是否在组件的整个生命周期中都保持不变，如果是，则不是一个状态</li>
-<li>这个变量是否可以通过其他状态(state)或者属性(props)计算得到，如果是，则不是一个状态</li>
-<li>这个变量是否在组件的 render 方法中使用，如果不在，则不是一个状态</li>
-</ul>
-</li>
-</ul>
-<h2 id="组件类"><a href="#组件类" class="headerlink" title="组件类"></a>组件类</h2><h3 id="类组件"><a href="#类组件" class="headerlink" title="类组件"></a>类组件</h3><h4 id="React-Component"><a href="#React-Component" class="headerlink" title="React.Component"></a>React.Component</h4><h4 id="React-PureComponent"><a href="#React-PureComponent" class="headerlink" title="React.PureComponent"></a>React.PureComponent</h4><p>对 props 和 state 进行浅比较, 跳过不必要的更新, 提高组件性能</p>
-<h3 id="函数组件"><a href="#函数组件" class="headerlink" title="函数组件"></a>函数组件</h3><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><h3 id="状态值"><a href="#状态值" class="headerlink" title="状态值"></a>状态值</h3><ul>
-<li>useState</li>
-<li>useReducer</li>
-</ul>
-<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><ul>
-<li>useEffect</li>
-<li>useLayoutEffect</li>
-</ul>
-<h3 id="状态共享"><a href="#状态共享" class="headerlink" title="状态共享"></a>状态共享</h3><ul>
-<li>useContext</li>
-</ul>
-<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
-<li>useMemo</li>
-<li>useCallback</li>
-</ul>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
-<li>useRef</li>
-<li>useId</li>
-</ul>
-]]></content>
-      <categories>
-        <category>ES</category>
-        <category>React</category>
-      </categories>
-      <tags>
-        <tag>js</tag>
-        <tag>jsx</tag>
-        <tag>React</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Redis-List</title>
     <url>/2022/11/3f42dc25499d/</url>
     <content><![CDATA[<h3 id="Lists-命令"><a href="#Lists-命令" class="headerlink" title="Lists 命令"></a>Lists 命令</h3><p>List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.</p>
@@ -1132,6 +1089,49 @@
       </categories>
       <tags>
         <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>React.md</title>
+    <url>/2022/02/7ec5bd96e943/</url>
+    <content><![CDATA[<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><ul>
+<li>4 种条件判定是否可作为 state<ul>
+<li>这个变量是否通过 props 从父组件中获取，如果是，则不是一个状态</li>
+<li>这个变量是否在组件的整个生命周期中都保持不变，如果是，则不是一个状态</li>
+<li>这个变量是否可以通过其他状态(state)或者属性(props)计算得到，如果是，则不是一个状态</li>
+<li>这个变量是否在组件的 render 方法中使用，如果不在，则不是一个状态</li>
+</ul>
+</li>
+</ul>
+<h2 id="组件类"><a href="#组件类" class="headerlink" title="组件类"></a>组件类</h2><h3 id="类组件"><a href="#类组件" class="headerlink" title="类组件"></a>类组件</h3><h4 id="React-Component"><a href="#React-Component" class="headerlink" title="React.Component"></a>React.Component</h4><h4 id="React-PureComponent"><a href="#React-PureComponent" class="headerlink" title="React.PureComponent"></a>React.PureComponent</h4><p>对 props 和 state 进行浅比较, 跳过不必要的更新, 提高组件性能</p>
+<h3 id="函数组件"><a href="#函数组件" class="headerlink" title="函数组件"></a>函数组件</h3><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><h3 id="状态值"><a href="#状态值" class="headerlink" title="状态值"></a>状态值</h3><ul>
+<li>useState</li>
+<li>useReducer</li>
+</ul>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><ul>
+<li>useEffect</li>
+<li>useLayoutEffect</li>
+</ul>
+<h3 id="状态共享"><a href="#状态共享" class="headerlink" title="状态共享"></a>状态共享</h3><ul>
+<li>useContext</li>
+</ul>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
+<li>useMemo</li>
+<li>useCallback</li>
+</ul>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li>useRef</li>
+<li>useId</li>
+</ul>
+]]></content>
+      <categories>
+        <category>ES</category>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>jsx</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -6346,7 +6346,7 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, ref, h, defineComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// v-model 不带参数</span></span><br><span class="line"><span class="comment">// &lt;with-out-args v-model.capitalize=&quot;myText&quot; /&gt;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">WithoutArgs</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="attr">props</span>: [<span class="string">&#x27;modelValue&#x27;</span>, <span class="string">&#x27;modelModifiers&#x27;</span>],</span><br><span class="line">  <span class="attr">emits</span>: [<span class="string">&#x27;update:modelValue&#x27;</span>],</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; emit &#125;</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(props);</span><br><span class="line">    <span class="keyword">const</span> emitValue = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> value = e.<span class="property">target</span>.<span class="property">value</span>;</span><br><span class="line">      <span class="keyword">if</span> (props.<span class="property">modelModifiers</span>.<span class="property">capitalize</span>) &#123;</span><br><span class="line">        value = value.<span class="title function_">charAt</span>(<span class="number">0</span>).<span class="title function_">toUpperCase</span>() + value.<span class="title function_">slice</span>(<span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">emit</span>(<span class="string">&#x27;update:modelValue&#x27;</span>, value);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, [</span><br><span class="line">        <span class="string">&#x27;without args &#x27;</span>,</span><br><span class="line">        <span class="title function_">h</span>(<span class="string">&#x27;input&#x27;</span>, &#123;</span><br><span class="line">          <span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>,</span><br><span class="line">          <span class="attr">placeholder</span>: <span class="string">&#x27;write something...&#x27;</span>,</span><br><span class="line">          <span class="attr">value</span>: props.<span class="property">modelValue</span>,</span><br><span class="line">          <span class="attr">onInput</span>: emitValue,</span><br><span class="line">        &#125;),</span><br><span class="line">      ]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// v-model 带参数</span></span><br><span class="line"><span class="comment">// &lt;with-args v-model:description.uppercase=&quot;myText&quot; /&gt;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">WithArgs</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="attr">props</span>: [<span class="string">&#x27;description&#x27;</span>, <span class="string">&#x27;descriptionModifiers&#x27;</span>],</span><br><span class="line">  <span class="attr">emits</span>: [<span class="string">&#x27;update:description&#x27;</span>],</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; emit &#125;</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(props);</span><br><span class="line">    <span class="keyword">const</span> emitValue = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> value = e.<span class="property">target</span>.<span class="property">value</span>;</span><br><span class="line">      <span class="keyword">if</span> (props.<span class="property">descriptionModifiers</span>.<span class="property">uppercase</span>) &#123;</span><br><span class="line">        value = value.<span class="title function_">toUpperCase</span>();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">emit</span>(<span class="string">&#x27;update:description&#x27;</span>, value);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, [</span><br><span class="line">        <span class="string">&#x27;with args &#x27;</span>,</span><br><span class="line">        <span class="title function_">h</span>(<span class="string">&#x27;input&#x27;</span>, &#123;</span><br><span class="line">          <span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>,</span><br><span class="line">          <span class="attr">placeholder</span>: <span class="string">&#x27;write something...&#x27;</span>,</span><br><span class="line">          <span class="attr">value</span>: props.<span class="property">description</span>,</span><br><span class="line">          <span class="attr">onInput</span>: emitValue,</span><br><span class="line">        &#125;),</span><br><span class="line">      ]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, ctx</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> v1 = <span class="title function_">ref</span>(<span class="string">&#x27;hello without args&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> v2 = <span class="title function_">ref</span>(<span class="string">&#x27;hello with args&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>, [</span><br><span class="line">        <span class="title function_">h</span>(<span class="title class_">WithoutArgs</span>, &#123;</span><br><span class="line">          <span class="attr">modelValue</span>: v1.<span class="property">value</span>,</span><br><span class="line">          <span class="attr">modelModifiers</span>: &#123; <span class="attr">capitalize</span>: <span class="literal">true</span> &#125;,</span><br><span class="line">          <span class="string">&#x27;onUpdate:modelValue&#x27;</span>: <span class="function">(<span class="params">value</span>) =&gt;</span> (v1.<span class="property">value</span> = value),</span><br><span class="line">        &#125;),</span><br><span class="line">        <span class="title function_">h</span>(<span class="title class_">WithArgs</span>, &#123;</span><br><span class="line">          <span class="attr">description</span>: v2.<span class="property">value</span>,</span><br><span class="line">          <span class="attr">descriptionModifiers</span>: &#123; <span class="attr">uppercase</span>: <span class="literal">true</span> &#125;,</span><br><span class="line">          <span class="string">&#x27;onUpdate:description&#x27;</span>: <span class="function">(<span class="params">value</span>) =&gt;</span> (v2.<span class="property">value</span> = value),</span><br><span class="line">        &#125;),</span><br><span class="line">      ]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp, ref, h, defineComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// v-model 不带参数</span></span><br><span class="line"><span class="comment">// &lt;with-out-args v-model.capitalize=&quot;myText&quot; /&gt;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">WithoutArgs</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="attr">props</span>: [<span class="string">&#x27;modelValue&#x27;</span>, <span class="string">&#x27;modelModifiers&#x27;</span>],</span><br><span class="line">  <span class="attr">emits</span>: [<span class="string">&#x27;update:modelValue&#x27;</span>],</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; emit &#125;</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(props);</span><br><span class="line">    <span class="keyword">const</span> emitValue = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> value = e.<span class="property">target</span>.<span class="property">value</span>;</span><br><span class="line">      <span class="keyword">if</span> (props.<span class="property">modelModifiers</span>.<span class="property">capitalize</span>) &#123;</span><br><span class="line">        value = value.<span class="title function_">charAt</span>(<span class="number">0</span>).<span class="title function_">toUpperCase</span>() + value.<span class="title function_">slice</span>(<span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">emit</span>(<span class="string">&#x27;update:modelValue&#x27;</span>, value);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, [</span><br><span class="line">        <span class="string">&#x27;without args &#x27;</span>,</span><br><span class="line">        <span class="title function_">h</span>(<span class="string">&#x27;input&#x27;</span>, &#123;</span><br><span class="line">          <span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>,</span><br><span class="line">          <span class="attr">placeholder</span>: <span class="string">&#x27;write something...&#x27;</span>,</span><br><span class="line">          <span class="attr">value</span>: props.<span class="property">modelValue</span>,</span><br><span class="line">          <span class="attr">onInput</span>: emitValue,</span><br><span class="line">        &#125;),</span><br><span class="line">      ]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// v-model 带参数</span></span><br><span class="line"><span class="comment">// &lt;with-args v-model:description.uppercase=&quot;myText&quot; /&gt;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">WithArgs</span> = <span class="title function_">defineComponent</span>(&#123;</span><br><span class="line">  <span class="attr">props</span>: [<span class="string">&#x27;description&#x27;</span>, <span class="string">&#x27;descriptionModifiers&#x27;</span>],</span><br><span class="line">  <span class="attr">emits</span>: [<span class="string">&#x27;update:description&#x27;</span>],</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; emit &#125;</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(props);</span><br><span class="line">    <span class="keyword">const</span> emitValue = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> value = e.<span class="property">target</span>.<span class="property">value</span>;</span><br><span class="line">      <span class="keyword">if</span> (props.<span class="property">descriptionModifiers</span>.<span class="property">uppercase</span>) &#123;</span><br><span class="line">        value = value.<span class="title function_">toUpperCase</span>();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">emit</span>(<span class="string">&#x27;update:description&#x27;</span>, value);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span></span><br><span class="line">      <span class="title function_">h</span>(<span class="string">&#x27;p&#x27;</span>, [</span><br><span class="line">        <span class="string">&#x27;with args &#x27;</span>,</span><br><span class="line">        <span class="title function_">h</span>(<span class="string">&#x27;input&#x27;</span>, &#123;</span><br><span class="line">          <span class="attr">type</span>: <span class="string">&#x27;text&#x27;</span>,</span><br><span class="line">          <span class="attr">placeholder</span>: <span class="string">&#x27;write something...&#x27;</span>,</span><br><span class="line">          <span class="attr">value</span>: props.<span class="property">description</span>,</span><br><span class="line">          <span class="attr">onInput</span>: emitValue,</span><br><span class="line">        &#125;),</span><br><span class="line">      ]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, ctx</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> v1 = <span class="title function_">ref</span>(<span class="string">&#x27;hello without args&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> v2 = <span class="title function_">ref</span>(<span class="string">&#x27;hello with args&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> [</span><br><span class="line">      <span class="title function_">h</span>(<span class="title class_">WithoutArgs</span>, &#123;</span><br><span class="line">        <span class="attr">modelValue</span>: v1.<span class="property">value</span>,</span><br><span class="line">        <span class="attr">modelModifiers</span>: &#123; <span class="attr">capitalize</span>: <span class="literal">true</span> &#125;,</span><br><span class="line">        <span class="string">&#x27;onUpdate:modelValue&#x27;</span>: <span class="function">(<span class="params">value</span>) =&gt;</span> (v1.<span class="property">value</span> = value),</span><br><span class="line">      &#125;),</span><br><span class="line">      <span class="title function_">h</span>(<span class="title class_">WithArgs</span>, &#123;</span><br><span class="line">        <span class="attr">description</span>: v2.<span class="property">value</span>,</span><br><span class="line">        <span class="attr">descriptionModifiers</span>: &#123; <span class="attr">uppercase</span>: <span class="literal">true</span> &#125;,</span><br><span class="line">        <span class="string">&#x27;onUpdate:description&#x27;</span>: <span class="function">(<span class="params">value</span>) =&gt;</span> (v2.<span class="property">value</span> = value),</span><br><span class="line">      &#125;),</span><br><span class="line">    ];</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <h4 id="v-slot"><a href="#v-slot" class="headerlink" title="v-slot  "></a>v-slot <em id="v-slot"></em> <!-- markdownlint-disable-line --></h4><blockquote>
 <p>如果混用了 <strong>具名插槽</strong> 和 <strong>默认插槽</strong>, 则需要为 <strong>默认插槽</strong> 使用显式的 <code>&lt;template&gt;</code> 标签, 直接为组件添加 <code>v-slot</code> 指令将导致编译错误</p>
