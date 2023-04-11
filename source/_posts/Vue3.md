@@ -1974,19 +1974,18 @@ const app = createApp({
     const v1 = ref('hello without args');
     const v2 = ref('hello with args');
 
-    return () =>
-      h('div', [
-        h(WithoutArgs, {
-          modelValue: v1.value,
-          modelModifiers: { capitalize: true },
-          'onUpdate:modelValue': (value) => (v1.value = value),
-        }),
-        h(WithArgs, {
-          description: v2.value,
-          descriptionModifiers: { uppercase: true },
-          'onUpdate:description': (value) => (v2.value = value),
-        }),
-      ]);
+    return () => [
+      h(WithoutArgs, {
+        modelValue: v1.value,
+        modelModifiers: { capitalize: true },
+        'onUpdate:modelValue': (value) => (v1.value = value),
+      }),
+      h(WithArgs, {
+        description: v2.value,
+        descriptionModifiers: { uppercase: true },
+        'onUpdate:description': (value) => (v2.value = value),
+      }),
+    ];
   },
 });
 app.mount('#app');
