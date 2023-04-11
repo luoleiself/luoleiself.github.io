@@ -2769,7 +2769,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 > `resolveComponent()` 只能在 [**渲染函数**](#renderingfunc) 或 `setup()` 中使用
 > 如果可以直接引入组件就不需要使用此方法
 
-按名称手动解析已注册的组件, 返回 Component, 未找到则返回组件名字符串并抛出一个运行时警告
+按名称手动解析已注册的组件, 未找到则抛出一个运行时警告并返回组件名字符串
 
 ```html
 <script setup>
@@ -2785,7 +2785,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 > `resolveDirective()` 只能在 [**渲染函数**](#renderingfunc) 或 `setup()` 中使用
 > 如果可以直接引入组件就不需要使用此方法
 
-按名称手动解析已注册的指令, 返回 Directive, 未找到则返回 undefined 并抛出一个运行时警告
+按名称手动解析已注册的指令, 未找到则抛出一个运行时警告并返回 undefined
 
 ```html
 <script setup>
@@ -2862,7 +2862,7 @@ return withDirectives(h('div'), [
         // 等价于 v-on.stop.prevent
         onClick: withModifiers(
           (e) => {
-            clk(e);
+            console.log(e);
           },
           ['stop', 'prevent']
         ),
@@ -2871,6 +2871,131 @@ return withDirectives(h('div'), [
     );
 </script>
 ```
+
+#### 综合使用
+
+```javascript
+import {
+  createApp,
+  h,
+  ref,
+  defineComponent,
+  resolveComponent,
+  resolveDirective,
+  withDirectives,
+  withModifiers,
+} from 'vue';
+
+const HelloWorld = defineComponent({
+  props: ['name', 'age'],
+  // 定义局部指令
+  directives: {
+    foo: {
+      created(el, binding, vnode, prevVnode) {
+        console.log('directives foo hooks created trigger... ', binding);
+      },
+      /* beforeMount, mounted, beforeUpdate, updated, beforeUnmount */
+      unmounted(el, binding, vnode, prevVnode) {
+        console.log('directives foo hooks unmounted trigger... ', binding);
+      },
+    },
+  },
+  setup(props, { slots }) {
+    const message = ref('from hello world component');
+    const fooV = ref(250);
+    const show = ref(true);
+
+    // 定义点击切换自定义指令值的方法
+    const changeFooDirective = function () {
+      fooV.value = Math.ceil(Math.random() * 100);
+      show.value = fooV.value % 4 === 0 ? true : false;
+    };
+
+    // 解析一个已注册的指令, 未找到则抛出运行时警告并返回 undefined
+    const foo = resolveDirective('foo');
+
+    // Must use `.value` to read or write the value wrapped by `ref()`
+    return () =>
+      h('div', [
+        h(
+          'p',
+          slots?.default?.({
+            message: message.value,
+            age: props.age > 0 ? props.age : 18,
+          })
+        ),
+        h('p', slots?.header?.()),
+        show.value
+          ? withDirectives(
+              h(
+                'p',
+                withDirectives(
+                  h('span', ['v-foo:bar2.uppercase=' + fooV.value]),
+                  [[foo, fooV.value, 'bar2', { uppercase: true }]]
+                )
+              ),
+              [[foo, fooV.value, 'bar1', { uppercase: true }]]
+            )
+          : '',
+        h('p', h('button', { onClick: changeFooDirective }, 'Click Me')),
+      ]);
+  },
+});
+
+const app = createApp({
+  setup(props, { slots }) {
+    const gg = {
+      created(el, binding, vnode, prevVnode) {
+        console.log('withDirectives gg hooks created trigger... ', binding);
+      },
+      /* beforeMount, mounted, beforeUpdate, updated, beforeUnmount */
+      unmounted(el, binding, vnode, prevVnode) {
+        console.log('withDirectives gg hooks unmounted trigger... ', binding);
+      },
+    };
+
+    // 解析一个已注册的组件，未找到则抛出运行时警告并返回组件名字符串
+    const HelloWorld = resolveComponent('hello-world');
+
+    return () => [
+      withDirectives(
+        h(
+          HelloWorld,
+          { name: 'from createApp', age: -1 },
+          {
+            default: (slotScope) =>
+              slotScope.message +
+              ' - ' +
+              slotScope.age +
+              ' - others from createApp',
+            header: () => 'from createApp by header slot...',
+          }
+        ),
+        [[gg, 1000, 'bottom', { animate: true }]]
+      ),
+      h(
+        'button',
+        { onClick: withModifiers((e) => console.log(e), ['stop', 'prevent']) },
+        'Click Me withModifiers'
+      ),
+    ];
+  },
+});
+app.component('hello-world', HelloWorld);
+app.mount('#app');
+```
+
+##### [自定义指令](#directive)挂载
+
+![vue3-directives-hooks-1](/images/vue3-directives-hooks-1.jpg)
+
+##### [自定义指令](#directive)更新
+
+![vue3-directives-hooks-2](/images/vue3-directives-hooks-2.jpg)
+
+##### [自定义指令](#directive)卸载
+
+![vue3-directives-hooks-3](/images/vue3-directives-hooks-3.jpg)
 
 ### 服务端渲染
 
