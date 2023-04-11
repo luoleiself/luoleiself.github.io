@@ -71,7 +71,7 @@ tags:
   一个自定义指令由一个包含类似组件生命周期钩子的对象来定义
 
   - 当在组件上使用自定义指令时, 它会始终应用于组件的根节点
-  - 如果组件存在多个根节点时, 指令将会被忽略并且抛出一个警告, 总之不推荐在组件上使用自定义指令
+  - 如果组件存在多个根节点时, 指令将会被忽略并且抛出一个警告
 
   - 钩子参数
     - el 指令绑定的元素, 可用于直接操作 DOM
@@ -360,7 +360,7 @@ const app = createApp({
         HelloWorld,
         {
           // VNode 生命周期事件琢磨中...
-          'vue:mounted': () => {
+          'onVue:before-mount': () => {
             console.log('child component hooks triggered...');
           },
         },
@@ -1682,7 +1682,7 @@ export default {
 
 ## 内置内容
 
-### 指令
+### 内置指令
 
 #### v-text
 
@@ -1911,54 +1911,85 @@ export default {
   - 不带参数: 生成的 prop 名称为 `modelModifiers` 的对象, 包含传入的修饰符
   - 带参数: 生成的 prop 名称为 `arg + 'Modifiers'`
 
-```html
-<template>
-  <!-- v-model 不带参数  -->
-  <my-component v-model.capitalize="myText" />
+```javascript
+import { createApp, ref, h, defineComponent } from 'vue';
 
-  <!-- v-model 带参数  -->
-  <my-component v-model:description.capitalize="myText" />
-</template>
-<script setup></script>
-<script>
-  // v-model 不带参数
-  app.component('my-component', {
-    props: {
-      modelValue: String,
-      modelModifiers: {
-        default: () => ({}),
-      },
-    },
-    emits: ['update:modelValue'],
-    template: `<input type="text" :value="modelValue" @input="emitValue" />`,
-    created() {
-      console.log(this.modelModifiers); // { capitalize: true }
-    },
-    methods: {
-      emitValue(e) {
-        let value = e.target.value;
-        if (this.props.modelModifiers.capitalize) {
-          value = value.charAt(0).toUpperCase() + value.slice(1);
-        }
-        this.$emit('update:modelValue', $event.target.value);
-      },
-    },
-  });
+// v-model 不带参数
+// <with-out-args v-model.capitalize="myText" />
+const WithoutArgs = defineComponent({
+  props: ['modelValue', 'modelModifiers'],
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    console.log(props);
+    const emitValue = function (e) {
+      let value = e.target.value;
+      if (props.modelModifiers.capitalize) {
+        value = value.charAt(0).toUpperCase() + value.slice(1);
+      }
+      emit('update:modelValue', value);
+    };
+    return () =>
+      h('p', [
+        'without args ',
+        h('input', {
+          type: 'text',
+          placeholder: 'write something...',
+          value: props.modelValue,
+          onInput: emitValue,
+        }),
+      ]);
+  },
+});
 
-  // v-model 带参数
-  app.component('my-component', {
-    props: ['description', 'descriptionModifiers'],
-    emits: ['update:description'],
-    template: `
-      <input type="text"
-        :value="description"
-        @input="$emit('update:description', $event.target.value)" />
-    `,
-    created() {
-      console.log(this.descriptionModifiers); // { capitalize: true }
-    },
-  });
-</script>
+// v-model 带参数
+// <with-args v-model:description.uppercase="myText" />
+const WithArgs = defineComponent({
+  props: ['description', 'descriptionModifiers'],
+  emits: ['update:description'],
+  setup(props, { emit }) {
+    console.log(props);
+    const emitValue = function (e) {
+      let value = e.target.value;
+      if (props.descriptionModifiers.uppercase) {
+        value = value.toUpperCase();
+      }
+      emit('update:description', value);
+    };
+
+    return () =>
+      h('p', [
+        'with args ',
+        h('input', {
+          type: 'text',
+          placeholder: 'write something...',
+          value: props.description,
+          onInput: emitValue,
+        }),
+      ]);
+  },
+});
+
+const app = createApp({
+  setup(props, ctx) {
+    const v1 = ref('hello without args');
+    const v2 = ref('hello with args');
+
+    return () =>
+      h('div', [
+        h(WithoutArgs, {
+          modelValue: v1.value,
+          modelModifiers: { capitalize: true },
+          'onUpdate:modelValue': (value) => (v1.value = value),
+        }),
+        h(WithArgs, {
+          description: v2.value,
+          descriptionModifiers: { uppercase: true },
+          'onUpdate:description': (value) => (v2.value = value),
+        }),
+      ]);
+  },
+});
+app.mount('#app');
 ```
 
 #### v-slot <em id="v-slot"></em> <!-- markdownlint-disable-line -->
@@ -2081,10 +2112,10 @@ export default {
 
 用于隐藏尚未完成编译的 DOM 模板
 
-### 组件
+### 内置组件 <em id="builtincomponent"></em> <!-- markdownlint-disable-line -->
 
 > 内置组件无需注册便可以直接在模板中使用，同时也支持 `tree-shaking`; 仅在使用时才会包含在构建中
-> 在 [**渲染函数**](#renderingfunc) 中使用它们时, 需要显式引入
+> 在 [**渲染函数**](#renderingfunc) 中使用内置组件时, 需要显式引入
 
 ```javascript
 import { h, KeepAlive, Transition } from 'vue';
@@ -2246,7 +2277,7 @@ export default {
 </Suspense>
 ```
 
-### 特殊元素
+### 内置特殊元素
 
 > `<component>`, `<slot>`, `<template>` 具有类似组件的特性, 也是模板语法的一部分. 但它们并非真正的组件, 同时在模板编译期间会被编译掉. 因此, 它们通常在模板中使用小写字母
 
@@ -2272,7 +2303,7 @@ export default {
 
 当使用内置指令而不在 DOM 中渲染元素时, `<template>` 标签可以作为占位符使用
 
-### 特殊 Attributes
+### 内置特殊 Attributes
 
 #### key
 
@@ -2491,7 +2522,7 @@ export default {
 
 #### 顶层 await
 
-> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()` > `async setup()` 必须与 [&lt;Suspense&gt;](#suspense) 内置组件组合使用
+> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()` > `async setup()` 必须与 [&lt;Suspense&gt;](#suspense) [**内置组件**](#builtincomponent)组合使用
 
 ```html
 <script setup>
@@ -2797,6 +2828,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
   };
 
   return () =>
+    // <div v-pin:top.animate="200"></div>
     withDirectives(h('div', 'hello world'), [
       [pin, 200, 'top', { animate: true }],
     ]);
