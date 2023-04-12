@@ -7,11 +7,13 @@ tags:
   - API
 ---
 
+## MutationObserver
+
 MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知
 
-#### 构造函数 MutationObserver
+### 构造函数
 
-创建并返回一个新的 MutationObserver 会在指定的 DOM 发生变化时被调用
+创建并返回一个新的 `MutationObserver` 会在指定的 DOM 发生变化时被调用
 
 - 参数 callback
 
@@ -41,9 +43,9 @@ var observer = new MutationObserver(function (MutationRecord, observer) {
 
 <!-- more -->
 
-#### 方法
+### 实例方法
 
-##### disconnect
+#### disconnect
 
 阻止 MutationObserver 实例继续接收的通知, 直到再次调用其 observe 方法, 该观察者对象包含的回调函数都不会再被调用
 
@@ -54,60 +56,36 @@ var observer = new MutationObserver(function (MutationRecord, observer) {
 observer.disconnect();
 ```
 
-##### observe
+#### observe
 
 配置 MutationObserver 在 DOM 更改匹配给定选项时, 通过其回调函数开始接收通知
 
 - 参数
   - target DOM 树种一个要观察变化的 DOM Node
-  - options 可选, 一个可选的 MutationObserverInit 对象, 此对象的配置描述了 DOM 的哪些变化应该提供给当前观察者的 callback
+  - options 可选, 一个可选的 `MutationObserverInit` 对象, 此对象的配置描述了 DOM 的哪些变化应该提供给当前观察者的 callback
 - 返回值 undefined
 
 ```javascript
 observer.observe(Element, { subtree: true, childList: true, attributes: true });
 ```
 
-##### takeRecords
+#### takeRecords
 
 返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表, 使变更队列保持为空
 使用场景是在断开观察者之前立即获取所有未处理的更改记录, 以便在停止观察者时可以处理任何未处理的更改
 
 - 参数 无
-- 返回值 MutationRecord 对象列表, 每个对象都描述了应用于 DOM 树某部分的一次改动
+- 返回值 `MutationRecord` 对象列表, 每个对象都描述了应用于 DOM 树某部分的一次改动
 
 ```javascript
 var mutations = observer.takeRecords();
 ```
 
-#### MutationObserverInit
+##### MutationRecord
 
-描述了 MutationObserver 的配置, 主要被用作 observe 方法的参数模型
+每个 `MutationRecord` 代表一个独立的 DOM 变化在每次随 DOM 变化时作为 MutationObserver 回调函数的参数传入
 
-##### 参数属性
-
-- attributeFilter 可选, 要监视的特定属性名称的数组, 未包含此属性则对所有属性的更改都会触发变动通知, 无默认值
-
-- attributeOldValue 可选, 当监视节点的属性改动时, 将此属性设为 true 将记录任何有改动的属性的上一个值, 无默认值
-
-- attributes 三选一,设为 true 以观察受监视元素的属性值变更, 默认 false
-
-- characterData 三选一, 设为 true 以监视指定目标节点或子节点树中节点所包含的字符数据的变化, 无默认值
-
-- characterDataOldValue 设为 true 以在文本在受监视节点上发生更改时记录节点文本的先前值, 无默认值
-
-- childList 三选一, 设为 true 以监视目标节点(如果 subtree 为 true, 则包含子孙节点)添加或删除新的子节点, 默认 false
-
-- subtree 设为 true 以将监视范围扩展至目标节点整个节点树中的所有节点, 默认 false
-
-##### 注意
-
-当调用 observe 方法时, childList, attributes, characterData 三个属性之中, 至少有一个必须为 true, 否则抛出 TypeError 异常
-
-#### MutationRecord
-
-每个 MutationRecord 代表一个独立的 DOM 变化在每次随 DOM 变化时作为 MutationObserver 回调函数的参数传入
-
-##### record 属性
+###### record 属性
 
 - type String,
   - 如果是属性变化, 则返回 "attributes"
@@ -150,3 +128,27 @@ observer.observe(root, {
 //   type: "attributes"
 // }]
 ```
+
+### MutationObserverInit
+
+描述了 MutationObserver 的配置, 主要被用作 observe 方法的参数模型
+
+#### 参数属性
+
+- attributeFilter 可选, 要监视的特定属性名称的数组, 未包含此属性则对所有属性的更改都会触发变动通知, 无默认值
+
+- attributeOldValue 可选, 当监视节点的属性改动时, 将此属性设为 true 将记录任何有改动的属性的上一个值, 无默认值
+
+- attributes 三选一,设为 true 以观察受监视元素的属性值变更, 默认 false
+
+- characterData 三选一, 设为 true 以监视指定目标节点或子节点树中节点所包含的字符数据的变化, 无默认值
+
+- characterDataOldValue 设为 true 以在文本在受监视节点上发生更改时记录节点文本的先前值, 无默认值
+
+- childList 三选一, 设为 true 以监视目标节点(如果 subtree 为 true, 则包含子孙节点)添加或删除新的子节点, 默认 false
+
+- subtree 设为 true 以将监视范围扩展至目标节点整个节点树中的所有节点, 默认 false
+
+#### 注意
+
+当调用 observe 方法时, childList, attributes, characterData 三个属性之中, 至少有一个必须为 true, 否则抛出 TypeError 异常
