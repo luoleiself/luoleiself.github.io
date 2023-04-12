@@ -15,164 +15,217 @@ tags:
 
 > 调用 createApp 返回一个应用实例，该实例提供了一个应用上下文, 应用实例挂载的整个组件树共享相同的上下文
 
-- createApp() 创建一个应用实例
+#### createApp()
 
-  - 参数
-    - {Object} rootComponent 根组件选项
-    - {Object} rootProps 传递给根组件的 props
+创建一个应用实例
 
-  ```javascript
-  import { createApp } from 'vue';
-  const app = createApp({
-    /* root component options */
-  });
-  ```
+- 参数
+  - {Object} rootComponent 根组件选项
+  - {Object} rootProps 传递给根组件的 props
 
-- createSSRApp() 以 `SSR` 模式创建一个应用实例, 用法和 `createApp()` 相同
+```javascript
+import { createApp } from 'vue';
+const app = createApp({
+  /* root component options */
+});
+```
 
-- app.mount() 将应用实例挂载到一个容器元素中
-  - 参数可以是一个实际的 DOM 元素或一个 CSS 选择器, 返回根组件实例
-  - 如果该组件有 `template` 模板或定义了 `render` 函数, 则替换容器内所有现存的 DOM 节点, 否则使用容器元素的 innerHTML 作为模板
-- app.unmount() 卸载一个已挂载的应用实例, 同时触发该应用组件树内所有组件的卸载生命周期钩子
-- app.provide() 提供一个值, 可以在应用中的所有后代组件中注入使用
+#### createSSRApp()
 
-  - 参数
-    - key, 注入的 key
-    - value, 注入的 key 对应的值, 返回应用实例本身
+以 `SSR` 模式创建一个应用实例, 用法和 `createApp()` 相同
 
-  ```javascript
-  import { createApp } from 'vue';
-  const app = createApp({
-    inject: ['name'],
-    template: '<span>{{name}}</span>',
-  });
-  app.provide('name', 'hello world');
-  ```
+#### app.mount()
 
-- app.component() 注册或查找全局组件, 根据参数个数区分
+将应用实例挂载到一个容器元素中
 
-  ```javascript
-  import { createApp } from 'vue';
-  const app = createApp(/* */);
-  app.component('my-component', {
-    /*组件配置项*/
-  });
+- 参数可以是一个实际的 DOM 元素或一个 CSS 选择器, 返回根组件实例
+- 如果该组件有 `template` 模板或定义了 `render` 函数, 则替换容器内所有现存的 DOM 节点, 否则使用容器元素的 innerHTML 作为模板
 
-  app.component('my-component'); // 查找已注册的组件
-  ```
+#### app.unmount()
 
-  <!-- more -->
+卸载一个已挂载的应用实例, 同时触发该应用组件树内所有组件的卸载生命周期钩子
 
-- app.directive() 注册或查找全局指令, 根据参数个数区分 <em id="directive"></em> <!-- markdownlint-disable-line -->
+#### app.provide()
 
-  > 自定义指令主要是为了**重用**涉及普通元素的底层 DOM 访问的逻辑
-  > 只有当所需功能只能通过直接的 DOM 操作来实现时, 才应该使用自定义指令
+提供一个值, 可以在应用中的所有后代组件中注入使用
 
-  一个自定义指令由一个包含类似组件生命周期钩子的对象来定义
+- 参数
+  - key, 注入的 key
+  - value, 注入的 key 对应的值, 返回应用实例本身
 
-  - 当在组件上使用自定义指令时, 它会始终应用于组件的根节点
-  - 如果组件存在多个根节点时, 指令将会被忽略并且抛出一个警告
+```javascript
+import { createApp } from 'vue';
+const app = createApp({
+  inject: ['name'],
+  template: '<span>{{name}}</span>',
+});
+app.provide('name', 'hello world');
+```
 
-  - 钩子参数
-    - el 指令绑定的元素, 可用于直接操作 DOM
-    - binding 一个对象
-      - value 传递给指令的值, 例如 `v-my-directive="1 + 1"` 的值为 2
-      - oldValue 之前的值, 仅在 [`beforeUpdate`](#onBeforeUpdate) 和 [`updated`](#onUpdated) 中可用
-      - arg 传递给指令的参数, 例如 `v-my-directive:foo` 的参数为 `foo`
-      - modifiers 一个包含修饰符的对象, 例如 `v-my-directive.foo.bar` 的修饰符对象为 `{foo: true, bar: true}`
-      - instance 使用该指令的组件实例
-      - dir 指令的定义对象
-    - vnode 代表绑定元素的底层 VNode
-    - prevVnode 之前的渲染中代表指令所绑定元素的 VNode, 仅在 [`beforeUpdate`](#onBeforeUpdate) 和 [`updated`](#onUpdated) 中可用
+#### app.component()
 
-  ```html
-  <template>
-    <MyComponent v-my-directive="test" />
-  </template>
-  <script>
-    import { createApp } from 'vue';
-    const app = createApp(/* */);
-    app.directive('my-directive', {
-      /**
-       * 自定义指令钩子:
-       * created 在绑定元素的 attribute 或事件监听器被应用之前调用
-       * beforeMount 在绑定元素的父组件挂载之前调用
-       * mounted 绑定元素的父组件被挂载时调用
-       * beforeUpdate 在包含组件的 VNode 更新之前调用
-       * updated 在包含组件的 VNode 及其子组件的 VNode 更新之后调用
-       * beforeUnmount 在绑定元素的父组件卸载之前调用
-       * unmounted 卸载绑定元素的父组件时调用
-       */
-    });
+注册或查找全局组件, 根据参数个数区分
 
-    // 简化形式: 仅需要在 `mounted` 和 `updated` 上实现相同的行为
-    app.directive('my-directive', (el, binding) => {
-      /* 在 mounted 和 updated 时都调用 */
-    });
-  </script>
-  ```
+```javascript
+import { createApp } from 'vue';
+const app = createApp(/* */);
+app.component('my-component', {
+  /*组件配置项*/
+});
 
-- app.use() 安装一个 **插件**, 插件可以是一个包含 `install()` 方法的对象或者是一个安装函数本身
+app.component('my-component'); // 查找已注册的组件
+```
 
-  - 参数
-    - 第一个参数为插件本身
-    - 可选, 第二个参数作为插件选项将会传递给插件的 `install()`方法
+<!-- more -->
 
-  ```javascript
+#### app.directive() <em id="directive"></em> <!-- markdownlint-disable-line -->
+
+注册或查找全局指令, 根据参数个数区分
+
+> 自定义指令主要是为了**重用**涉及普通元素的底层 DOM 访问的逻辑
+> 只有当所需功能只能通过直接的 DOM 操作来实现时, 才应该使用自定义指令
+
+一个自定义指令由一个包含类似组件生命周期钩子的对象来定义
+
+- 当在组件上使用自定义指令时, 它会始终应用于组件的根节点
+- 如果组件存在多个根节点时, 指令将会被忽略并且抛出一个警告
+
+- 钩子参数
+  - el 指令绑定的元素, 可用于直接操作 DOM
+  - binding 一个对象
+    - value 传递给指令的值, 例如 `v-my-directive="1 + 1"` 的值为 2
+    - oldValue 之前的值, 仅在 [`beforeUpdate`](#onBeforeUpdate) 和 [`updated`](#onUpdated) 中可用
+    - arg 传递给指令的参数, 例如 `v-my-directive:name` 的参数为 `name`
+    - modifiers 一个包含修饰符的对象, 例如 `v-my-directive.foo.bar` 的修饰符对象为 `{foo: true, bar: true}`
+    - instance 使用该指令的组件实例
+    - dir 指令的定义对象
+  - vnode 代表绑定元素的底层 VNode
+  - prevVnode 之前的渲染中代表指令所绑定元素的 VNode, 仅在 [`beforeUpdate`](#onBeforeUpdate) 和 [`updated`](#onUpdated) 中可用
+
+```html
+<template>
+  <MyComponent v-my-directive:name.foo.bar="test" />
+</template>
+<script>
   import { createApp } from 'vue';
   const app = createApp(/* */);
-  // 包含 install 方法的对象
-  const myPlugins = {
-    install(app, options) {
-      /* 配置此应用 */
-    },
-  };
-  app.use(myPlugins, {
-    name: 'hello world',
-    /* 传递给 install 方法的可选的选项 */
+  app.directive('my-directive', {
+    /**
+     * 自定义指令钩子:
+     * created 在绑定元素的 attribute 或事件监听器被应用之前调用
+     * beforeMount 在绑定元素的父组件挂载之前调用
+     * mounted 绑定元素的父组件被挂载时调用
+     * beforeUpdate 在包含组件的 VNode 更新之前调用
+     * updated 在包含组件的 VNode 及其子组件的 VNode 更新之后调用
+     * beforeUnmount 在绑定元素的父组件卸载之前调用
+     * unmounted 卸载绑定元素的父组件时调用
+     */
   });
 
-  // 安装函数
-  app.use((app, options) => {
+  // 简化形式: 仅需要在 `mounted` 和 `updated` 上实现相同的行为
+  app.directive('my-directive', (el, binding) => {
+    /* 在 mounted 和 updated 时都调用 */
+  });
+</script>
+```
+
+#### app.use()
+
+安装一个 **插件**, 插件可以是一个包含 `install()` 方法的对象或者是一个安装函数本身
+
+- 参数
+  - 第一个参数为插件本身
+  - 可选, 第二个参数作为插件选项将会传递给插件的 `install()`方法
+
+```javascript
+import { createApp } from 'vue';
+const app = createApp(/* */);
+// 包含 install 方法的对象
+const myPlugins = {
+  install(app, options) {
     /* 配置此应用 */
-  });
-  ```
+  },
+};
+app.use(myPlugins, {
+  name: 'hello world',
+  /* 传递给 install 方法的可选的选项 */
+});
 
-- app.mixin() 应用一个全局的 mixin, 作用于应用中的每个组件实例 (不推荐使用)
-- app.version 提供当前应用所使用的 Vue 版本号, 插件中可根据此执行不同的逻辑
-- app.config 应用实例暴露出的一个 `config` 对象, 其中包含了对此应用实例的配置
+// 安装函数
+app.use((app, options) => {
+  /* 配置此应用 */
+});
+```
 
-  - app.config.errorHandler 用于为应用实例内抛出的未捕获错误指定一个全局处理函数
-  - app.config.warnHandler 用于为 Vue 的运行时警告指定一个自定义处理函数
-  - app.config.performance 设置为 `true` 可在浏览器工具的 **性能/时间线** 页启用对组件初始化、编译、渲染和修改的性能表现追踪
-  - app.config.compilerOptions 配置 **运行时编译器** 的选项
-    - app.config.compilerOptions.isCustomElement 用于指定一个检查方法来识别原生自定义元素
-    - app.config.compilerOptions.whitespace 用于调整模板中空格的处理行为 `condense(default) | preserve`
-    - app.config.compilerOptions.delimiters 用于调整模板内文本插值的分隔符, 默认 ['{{', '}}']
-    - app.config.compilerOptions.comments 用于调整是否移除模板中的 HTML 注释
-  - app.config.globalProperties 用于注册能够被应用实例内所有组件实例访问到的全局属性的对象
-  - app.config.optionMergeStrategies 用于定义自定义组件选项的合并策略的对象
+#### app.mixin()
 
-  ```javascript
-  import { createApp } from 'vue';
-  const app = createApp(/* */);
-  app.config.errorHandler = (err, instance, info){/* */}
+应用一个全局的 mixin, 作用于应用中的每个组件实例 (不推荐使用)
 
-  app.config.globalProperties.name = "hello world"
-  app.config.globalProperties.$xhr = () => {};
+#### app.version
 
-  app.config.compilerOptions.isCustomElement = (tag){
-    return  tag.startsWith('icon-');
-  }
-  ```
+提供当前应用所使用的 Vue 版本号, 插件中可根据此执行不同的逻辑
+
+#### app.config
+
+应用实例暴露出的一个 `config` 对象, 其中包含了对此应用实例的配置
+
+##### app.config.errorHandler
+
+用于为应用实例内抛出的未捕获错误指定一个全局处理函数
+
+##### app.config.warnHandler
+
+用于为 Vue 的运行时警告指定一个自定义处理函数
+
+##### app.config.performance
+
+设置为 `true` 可在浏览器工具的 **性能/时间线** 页启用对组件初始化、编译、渲染和修改的性能表现追踪
+
+##### app.config.compilerOptions
+
+配置 **运行时编译器** 的选项
+
+- app.config.compilerOptions.isCustomElement 用于指定一个检查方法来识别原生自定义元素
+
+- app.config.compilerOptions.whitespace 用于调整模板中空格的处理行为 `condense(default) | preserve`
+
+- app.config.compilerOptions.delimiters 用于调整模板内文本插值的分隔符, 默认 ['{{', '}}']
+
+- app.config.compilerOptions.comments 用于调整是否移除模板中的 HTML 注释
+
+##### app.config.globalProperties
+
+用于注册能够被应用实例内所有组件实例访问到的全局属性的对象
+
+##### app.config.optionMergeStrategies
+
+用于定义自定义组件选项的合并策略的对象
+
+```javascript
+import { createApp } from 'vue';
+const app = createApp(/* */);
+app.config.errorHandler = (err, instance, info){/* */}
+
+app.config.globalProperties.name = "hello world"
+app.config.globalProperties.$xhr = () => {};
+
+app.config.compilerOptions.isCustomElement = (tag){
+  return  tag.startsWith('icon-');
+}
+```
 
 ### 通用
 
-- version 暴露当前所使用的 Vue 的版本号
-- nextTick() 等待下一次 DOM 更新刷新的工具方法, 可以在状态改变后立即使用以等待 DOM 更新完成 <em id="nextTick"></em> <!-- markdownlint-disable-line -->
+#### version
 
-  - 传递一个回调函数作为参数
-  - 或者 await 返回的 Promise
+暴露当前所使用的 Vue 的版本号
+
+#### nextTick() <em id="nextTick"></em> <!-- markdownlint-disable-line -->
+
+等待下一次 DOM 更新刷新的工具方法, 可以在状态改变后立即使用以等待 DOM 更新完成
+
+- 传递一个回调函数作为参数
+- 或者 await 返回的 Promise
 
 ```javascript
 import { version, nextTick } from 'vue';
@@ -185,97 +238,103 @@ async function increment() {
 }
 ```
 
-- defineComponent() 创建一个合成类型的构造函数, 用于手动渲染函数、TSX 和 IDE 工具支持 <em id="defineComponent"></em> <!-- markdownlint-disable-line -->
+#### defineComponent() <em id="defineComponent"></em> <!-- markdownlint-disable-line -->
 
-  - 参数为组件选项对象
+创建一个合成类型的构造函数, 用于手动渲染函数、TSX 和 IDE 工具支持
 
-    ```javascript
-    import { createApp, defineComponent } from 'vue';
+- 参数为组件选项对象
 
-    const MyComponent = defineComponent({
-      data() {
-        return { count: 1 };
-      },
-      methods: {
-        increment() {
-          this.count++;
-        },
-      },
-    });
-    const app = createApp(MyComponent).mount('#app');
-    ```
+```javascript
+import { createApp, defineComponent } from 'vue';
 
-  - 参数为 setup 函数, 函数名称作为组件名称使用
+const MyComponent = defineComponent({
+  data() {
+    return { count: 1 };
+  },
+  methods: {
+    increment() {
+      this.count++;
+    },
+  },
+});
+const app = createApp(MyComponent).mount('#app');
+```
 
-    ```javascript
-    import { createApp, defineComponent, ref } from 'vue';
+- 参数为 setup 函数, 函数名称作为组件名称使用
 
-    const HelloWorld = defineComponent((props, ctx) => {
-      const count = ref(0);
-      return { count };
-    });
-    const app = createApp(HelloWorld).mount('#app');
-    ```
+```javascript
+import { createApp, defineComponent, ref } from 'vue';
 
-- defineAsyncComponent() 创建一个只有在需要时才会加载的异步组件
+const HelloWorld = defineComponent((props, ctx) => {
+  const count = ref(0);
+  return { count };
+});
+const app = createApp(HelloWorld).mount('#app');
+```
 
-  - 参数为配置加载行为的选项对象
+#### defineAsyncComponent()
 
-    ```javascript
-    import { defineAsyncComponent } from 'vue';
+创建一个只有在需要时才会加载的异步组件
 
-    const AsyncComp = defineAsyncComponent({
-      loader: () => import('./Foo.vue') // 工厂函数
-      loadingComponent: LoadingComponent,  // 加载异步组件时要使用的组件
-      errorComponent: ErrorComponent, // 加载失败时要使用的组件
-      delay: 200, // 在显示 loadingComponent 之前的延迟 | 默认值：200（单位 ms）
-      // 如果提供了 timeout ，并且加载组件的时间超过了设定值，将显示错误组件
-      // 默认值：Infinity（即永不超时，单位 ms）
-      timeout: 3000,
-      suspensible: false, // 定义组件是否可挂起 | 默认值：true
-      /**
-       * @param {*} error 错误信息对象
-       * @param {*} retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试
-       * @param {*} fail  一个函数，指示加载程序结束退出
-       * @param {*} attempts 允许的最大重试次数
-       */
-      onError(error, retry, fail, attempts) {
-        if (error.message.match(/fetch/) && attempts <= 3) {
-          // 请求发生错误时重试，最多可尝试 3 次
-          retry()
-        } else {
-          // 注意，retry/fail 就像 promise 的 resolve/reject 一样：
-          // 必须调用其中一个才能继续错误处理。
-          fail()
-        }
-      }
-    });
-    ```
+- 参数为配置加载行为的选项对象
 
-  - 参数为异步加载函数
+```javascript
+import { defineAsyncComponent } from 'vue';
 
-    ```javascript
-    import { defineAsyncComponent } from 'vue';
+const AsyncComp = defineAsyncComponent({
+  loader: () => import('./Foo.vue') // 工厂函数
+  loadingComponent: LoadingComponent,  // 加载异步组件时要使用的组件
+  errorComponent: ErrorComponent, // 加载失败时要使用的组件
+  delay: 200, // 在显示 loadingComponent 之前的延迟 | 默认值：200（单位 ms）
+  // 如果提供了 timeout ，并且加载组件的时间超过了设定值，将显示错误组件
+  // 默认值：Infinity（即永不超时，单位 ms）
+  timeout: 3000,
+  suspensible: false, // 定义组件是否可挂起 | 默认值：true
+  /**
+   * @param {*} error 错误信息对象
+    * @param {*} retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试
+    * @param {*} fail  一个函数，指示加载程序结束退出
+    * @param {*} attempts 允许的最大重试次数
+    */
+  onError(error, retry, fail, attempts) {
+    if (error.message.match(/fetch/) && attempts <= 3) {
+      // 请求发生错误时重试，最多可尝试 3 次
+      retry()
+    } else {
+      // 注意，retry/fail 就像 promise 的 resolve/reject 一样：
+      // 必须调用其中一个才能继续错误处理。
+      fail()
+    }
+  }
+});
+```
 
-    // 全局注册异步组件
-    const AsyncComp = defineAsyncComponent(() =>
+- 参数为异步加载函数
+
+```javascript
+import { defineAsyncComponent } from 'vue';
+
+// 全局注册异步组件
+const AsyncComp = defineAsyncComponent(() =>
+  import('./components/AsyncComponent.vue');
+);
+app.component('async-component', AsyncComp);
+
+// 局部注册异步组件
+import { createApp, defineAsyncComponent } from 'vue';
+createApp({
+  // ...
+  components: {
+    AsyncComponent: defineAsyncComponent(() =>
       import('./components/AsyncComponent.vue');
-    );
-    app.component('async-component', AsyncComp);
+    ),
+  },
+});
+```
 
-    // 局部注册异步组件
-    import { createApp, defineAsyncComponent } from 'vue';
-    createApp({
-      // ...
-      components: {
-        AsyncComponent: defineAsyncComponent(() =>
-          import('./components/AsyncComponent.vue');
-        ),
-      },
-    });
-    ```
+#### [defineCustomElement()](#defineComponent)
 
-- [defineCustomElement()](#defineComponent) 和 `defineComponent()` 接收的参数相同, 不同的是返回一个原生 **自定义元素** 类的构造器
+和 `defineComponent()` 接收的参数相同, 不同的是返回一个原生 **自定义元素** 类的构造器
 
 ```javascript
 import { defineCustomElement } from 'vue';
