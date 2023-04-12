@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他">
+  <meta name="description" content="MutationObserverMutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MutationObserver">
 <meta property="og:url" content="https://luoleiself.github.io/2021/07/f148f882ba3d/index.html">
 <meta property="og:site_name" content="luoleiself&#39;s blog">
-<meta property="og:description" content="MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他">
+<meta property="og:description" content="MutationObserverMutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-07-26T09:05:57.000Z">
-<meta property="article:modified_time" content="2022-04-30T07:04:23.691Z">
+<meta property="article:modified_time" content="2023-04-12T07:26:37.227Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="API">
 <meta name="twitter:card" content="summary">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-04-30 15:04:23" itemprop="dateModified" datetime="2022-04-30T15:04:23+08:00">2022-04-30</time>
+                <time title="修改时间：2023-04-12 15:26:37" itemprop="dateModified" datetime="2023-04-12T15:26:37+08:00">2023-04-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -273,8 +273,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知</p>
-<h4 id="构造函数-MutationObserver"><a href="#构造函数-MutationObserver" class="headerlink" title="构造函数 MutationObserver"></a>构造函数 MutationObserver</h4><p>创建并返回一个新的 MutationObserver 会在指定的 DOM 发生变化时被调用</p>
+        <h2 id="MutationObserver"><a href="#MutationObserver" class="headerlink" title="MutationObserver"></a>MutationObserver</h2><p>MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知</p>
+<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>创建并返回一个新的 <code>MutationObserver</code> 会在指定的 DOM 发生变化时被调用</p>
 <ul>
 <li><p>参数 callback</p>
 <p>当被指定的节点或子树以及配置项有 Dom 变化时会被调用, 回调函数有两个参数:</p>
@@ -291,51 +291,33 @@
 </ul>
 <span id="more"></span>
 
-<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><h5 id="disconnect"><a href="#disconnect" class="headerlink" title="disconnect"></a>disconnect</h5><p>阻止 MutationObserver 实例继续接收的通知, 直到再次调用其 observe 方法, 该观察者对象包含的回调函数都不会再被调用</p>
+<h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h4 id="disconnect"><a href="#disconnect" class="headerlink" title="disconnect"></a>disconnect</h4><p>阻止 MutationObserver 实例继续接收的通知, 直到再次调用其 observe 方法, 该观察者对象包含的回调函数都不会再被调用</p>
 <ul>
 <li>参数 无</li>
 <li>返回值 undefined</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">observer.<span class="title function_">disconnect</span>();</span><br></pre></td></tr></table></figure>
 
-<h5 id="observe"><a href="#observe" class="headerlink" title="observe"></a>observe</h5><p>配置 MutationObserver 在 DOM 更改匹配给定选项时, 通过其回调函数开始接收通知</p>
+<h4 id="observe"><a href="#observe" class="headerlink" title="observe"></a>observe</h4><p>配置 MutationObserver 在 DOM 更改匹配给定选项时, 通过其回调函数开始接收通知</p>
 <ul>
 <li>参数<ul>
 <li>target DOM 树种一个要观察变化的 DOM Node</li>
-<li>options 可选, 一个可选的 MutationObserverInit 对象, 此对象的配置描述了 DOM 的哪些变化应该提供给当前观察者的 callback</li>
+<li>options 可选, 一个可选的 <code>MutationObserverInit</code> 对象, 此对象的配置描述了 DOM 的哪些变化应该提供给当前观察者的 callback</li>
 </ul>
 </li>
 <li>返回值 undefined</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">observer.<span class="title function_">observe</span>(<span class="title class_">Element</span>, &#123; <span class="attr">subtree</span>: <span class="literal">true</span>, <span class="attr">childList</span>: <span class="literal">true</span>, <span class="attr">attributes</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
 
-<h5 id="takeRecords"><a href="#takeRecords" class="headerlink" title="takeRecords"></a>takeRecords</h5><p>返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表, 使变更队列保持为空<br>使用场景是在断开观察者之前立即获取所有未处理的更改记录, 以便在停止观察者时可以处理任何未处理的更改</p>
+<h4 id="takeRecords"><a href="#takeRecords" class="headerlink" title="takeRecords"></a>takeRecords</h4><p>返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表, 使变更队列保持为空<br>使用场景是在断开观察者之前立即获取所有未处理的更改记录, 以便在停止观察者时可以处理任何未处理的更改</p>
 <ul>
 <li>参数 无</li>
-<li>返回值 MutationRecord 对象列表, 每个对象都描述了应用于 DOM 树某部分的一次改动</li>
+<li>返回值 <code>MutationRecord</code> 对象列表, 每个对象都描述了应用于 DOM 树某部分的一次改动</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> mutations = observer.<span class="title function_">takeRecords</span>();</span><br></pre></td></tr></table></figure>
 
-<h4 id="MutationObserverInit"><a href="#MutationObserverInit" class="headerlink" title="MutationObserverInit"></a>MutationObserverInit</h4><p>描述了 MutationObserver 的配置, 主要被用作 observe 方法的参数模型</p>
-<h5 id="参数属性"><a href="#参数属性" class="headerlink" title="参数属性"></a>参数属性</h5><ul>
-<li><p>attributeFilter 可选, 要监视的特定属性名称的数组, 未包含此属性则对所有属性的更改都会触发变动通知, 无默认值</p>
-</li>
-<li><p>attributeOldValue 可选, 当监视节点的属性改动时, 将此属性设为 true 将记录任何有改动的属性的上一个值, 无默认值</p>
-</li>
-<li><p>attributes 三选一,设为 true 以观察受监视元素的属性值变更, 默认 false</p>
-</li>
-<li><p>characterData 三选一, 设为 true 以监视指定目标节点或子节点树中节点所包含的字符数据的变化, 无默认值</p>
-</li>
-<li><p>characterDataOldValue 设为 true 以在文本在受监视节点上发生更改时记录节点文本的先前值, 无默认值</p>
-</li>
-<li><p>childList 三选一, 设为 true 以监视目标节点(如果 subtree 为 true, 则包含子孙节点)添加或删除新的子节点, 默认 false</p>
-</li>
-<li><p>subtree 设为 true 以将监视范围扩展至目标节点整个节点树中的所有节点, 默认 false</p>
-</li>
-</ul>
-<h5 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h5><p>当调用 observe 方法时, childList, attributes, characterData 三个属性之中, 至少有一个必须为 true, 否则抛出 TypeError 异常</p>
-<h4 id="MutationRecord"><a href="#MutationRecord" class="headerlink" title="MutationRecord"></a>MutationRecord</h4><p>每个 MutationRecord 代表一个独立的 DOM 变化在每次随 DOM 变化时作为 MutationObserver 回调函数的参数传入</p>
-<h5 id="record-属性"><a href="#record-属性" class="headerlink" title="record 属性"></a>record 属性</h5><ul>
+<h5 id="MutationRecord"><a href="#MutationRecord" class="headerlink" title="MutationRecord"></a>MutationRecord</h5><p>每个 <code>MutationRecord</code> 代表一个独立的 DOM 变化在每次随 DOM 变化时作为 MutationObserver 回调函数的参数传入</p>
+<h6 id="record-属性"><a href="#record-属性" class="headerlink" title="record 属性"></a>record 属性</h6><ul>
 <li>type String,<ul>
 <li>如果是属性变化, 则返回 “attributes”</li>
 <li>如果是 characterData 节点变化, 则返回 “characterData”</li>
@@ -361,6 +343,25 @@
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#root&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> <span class="title class_">MutationObserver</span>(<span class="function">(<span class="params">mutationRecord, observer</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(mutationRecord, observer);</span><br><span class="line">&#125;);</span><br><span class="line">observer.<span class="title function_">observe</span>(root, &#123;</span><br><span class="line">  <span class="attr">attributes</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">attributeOldValue</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">attributeFilter</span>: [<span class="string">&#x27;title&#x27;</span>],</span><br><span class="line">  <span class="attr">characterData</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">characterDataOldValue</span>: <span class="literal">true</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// [&#123;</span></span><br><span class="line"><span class="comment">//   addedNodes: NodeList []</span></span><br><span class="line"><span class="comment">//   attributeName: &quot;title&quot;</span></span><br><span class="line"><span class="comment">//   attributeNamespace: null</span></span><br><span class="line"><span class="comment">//   nextSibling: null</span></span><br><span class="line"><span class="comment">//   oldValue: &quot;hello new root 1&quot;</span></span><br><span class="line"><span class="comment">//   previousSibling: null</span></span><br><span class="line"><span class="comment">//   removedNodes: NodeList []</span></span><br><span class="line"><span class="comment">//   target: &quot;div#root.helloRoothelloRoot1.helloRoot1&quot;</span></span><br><span class="line"><span class="comment">//   type: &quot;attributes&quot;</span></span><br><span class="line"><span class="comment">// &#125;]</span></span><br></pre></td></tr></table></figure>
 
+<h3 id="MutationObserverInit"><a href="#MutationObserverInit" class="headerlink" title="MutationObserverInit"></a>MutationObserverInit</h3><p>描述了 MutationObserver 的配置, 主要被用作 observe 方法的参数模型</p>
+<h4 id="参数属性"><a href="#参数属性" class="headerlink" title="参数属性"></a>参数属性</h4><ul>
+<li><p>attributeFilter 可选, 要监视的特定属性名称的数组, 未包含此属性则对所有属性的更改都会触发变动通知, 无默认值</p>
+</li>
+<li><p>attributeOldValue 可选, 当监视节点的属性改动时, 将此属性设为 true 将记录任何有改动的属性的上一个值, 无默认值</p>
+</li>
+<li><p>attributes 三选一,设为 true 以观察受监视元素的属性值变更, 默认 false</p>
+</li>
+<li><p>characterData 三选一, 设为 true 以监视指定目标节点或子节点树中节点所包含的字符数据的变化, 无默认值</p>
+</li>
+<li><p>characterDataOldValue 设为 true 以在文本在受监视节点上发生更改时记录节点文本的先前值, 无默认值</p>
+</li>
+<li><p>childList 三选一, 设为 true 以监视目标节点(如果 subtree 为 true, 则包含子孙节点)添加或删除新的子节点, 默认 false</p>
+</li>
+<li><p>subtree 设为 true 以将监视范围扩展至目标节点整个节点树中的所有节点, 默认 false</p>
+</li>
+</ul>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>当调用 observe 方法时, childList, attributes, characterData 三个属性之中, 至少有一个必须为 true, 否则抛出 TypeError 异常</p>
+
     </div>
 
     
@@ -370,10 +371,16 @@
   <div class="popular-posts-header">相关文章推荐</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2023\04\12766d614e53\" rel="bookmark">FileSystemAccessAPI</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2021\07\6ab3a6a88944\" rel="bookmark">即将废弃或已经废弃的API</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2023\04\628a49166594\" rel="bookmark">Stream</a></div>
     </li>
   </ul>
 
@@ -471,7 +478,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-MutationObserver"><span class="nav-number">1.</span> <span class="nav-text">构造函数 MutationObserver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#disconnect"><span class="nav-number">2.1.</span> <span class="nav-text">disconnect</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#observe"><span class="nav-number">2.2.</span> <span class="nav-text">observe</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#takeRecords"><span class="nav-number">2.3.</span> <span class="nav-text">takeRecords</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MutationObserverInit"><span class="nav-number">3.</span> <span class="nav-text">MutationObserverInit</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%B1%9E%E6%80%A7"><span class="nav-number">3.1.</span> <span class="nav-text">参数属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-number">3.2.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MutationRecord"><span class="nav-number">4.</span> <span class="nav-text">MutationRecord</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#record-%E5%B1%9E%E6%80%A7"><span class="nav-number">4.1.</span> <span class="nav-text">record 属性</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MutationObserver"><span class="nav-number">1.</span> <span class="nav-text">MutationObserver</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">实例方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#disconnect"><span class="nav-number">1.2.1.</span> <span class="nav-text">disconnect</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#observe"><span class="nav-number">1.2.2.</span> <span class="nav-text">observe</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#takeRecords"><span class="nav-number">1.2.3.</span> <span class="nav-text">takeRecords</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MutationRecord"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">MutationRecord</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#record-%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.3.1.1.</span> <span class="nav-text">record 属性</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MutationObserverInit"><span class="nav-number">1.3.</span> <span class="nav-text">MutationObserverInit</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%B1%9E%E6%80%A7"><span class="nav-number">1.3.1.</span> <span class="nav-text">参数属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-number">1.3.2.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -487,7 +494,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -557,12 +564,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">334k</span>
+    <span title="站点总字数">339k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:04</span>
+    <span title="站点阅读时长">5:08</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

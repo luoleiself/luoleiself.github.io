@@ -6,7 +6,7 @@
   <link href="https://luoleiself.github.io/atom.xml" rel="self"/>
   
   <link href="https://luoleiself.github.io/"/>
-  <updated>2023-02-06T01:20:08.096Z</updated>
+  <updated>2023-04-12T12:32:06.308Z</updated>
   <id>https://luoleiself.github.io/</id>
   
   <author>
@@ -15,6 +15,68 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Stream</title>
+    <link href="https://luoleiself.github.io/2023/04/628a49166594/"/>
+    <id>https://luoleiself.github.io/2023/04/628a49166594/</id>
+    <published>2023-04-12T07:52:05.000Z</published>
+    <updated>2023-04-12T12:32:06.308Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;可读流&quot;&gt;&lt;a href=&quot;#可读流&quot; class=&quot;headerlink&quot; title=&quot;可读流&quot;&gt;&lt;/a&gt;可读流&lt;/h2&gt;&lt;h3 id=&quot;ReadableStream&quot;&gt;&lt;a href=&quot;#ReadableStream&quot; class=&quot;headerlink&quot; title=&quot;ReadableStream&quot;&gt;&lt;/a&gt;ReadableStream&lt;/h3&gt;&lt;p&gt;创建并从给定的 Handler 返回一个可读流对象&lt;/p&gt;
+&lt;h4 id=&quot;RS-构造方法&quot;&gt;&lt;a href=&quot;#RS-构造方法&quot; class=&quot;headerlink&quot; title=&quot;RS 构造方法&quot;&gt;&lt;/a&gt;RS 构造方法&lt;/h4&gt;&lt;p&gt;创建并从给定的处理程序返回一个可读的流对象&lt;/p&gt;
+&lt;h5 id=&quot;可读流配置项&quot;&gt;&lt;a href=&quot;#可读流配置项&quot; class=&quot;headerlink&quot; title=&quot;可读流配置项&quot;&gt;&lt;/a&gt;可读流配置项&lt;/h5&gt;&lt;p&gt;underlyingSource 可选的定义可读流的行为方式的配置项&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;start(controller) 由开发人员定义, 当流对象被创建时立刻调用, 执行其他任何必须的设置流功能, 如果过程是异步的则返回一个 Promise&lt;ul&gt;
+&lt;li&gt;controller 根据 &lt;code&gt;type=&amp;#39;bytes&amp;#39;&lt;/code&gt; 属性传递的 &lt;code&gt;ReadableStreamDefaultController&lt;/code&gt; 或 &lt;code&gt;ReadableByteStreamController&lt;/code&gt; 控制器实例&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;pull(controller) 由开发人员定义, 当流的内部队列不满时, 会重复调用这个方法, 直到队列补满&lt;/li&gt;
+&lt;li&gt;cancel(reason) 由开发人员定义, 当该流被取消时调用&lt;/li&gt;
+&lt;li&gt;type 控制正在处理的可读类型的流, 默认 &lt;code&gt;ReadableStreamDefaultController&lt;/code&gt;, &lt;code&gt;type=&amp;#39;bytes&amp;#39;&lt;/code&gt; 表示 &lt;code&gt;ReadableByteStreamController&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;autoAllocateChunkSize 开启流自动分配缓冲区, 使用正整数设置&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="WebAPI" scheme="https://luoleiself.github.io/categories/WebAPI/"/>
+    
+    
+    <category term="API" scheme="https://luoleiself.github.io/tags/API/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>FileSystemAccessAPI</title>
+    <link href="https://luoleiself.github.io/2023/04/12766d614e53/"/>
+    <id>https://luoleiself.github.io/2023/04/12766d614e53/</id>
+    <published>2023-04-12T06:02:45.000Z</published>
+    <updated>2023-04-12T07:50:37.493Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;File-System-Access-API&quot;&gt;&lt;a href=&quot;#File-System-Access-API&quot; class=&quot;headerlink&quot; title=&quot;File System Access API&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API&quot;&gt;File System Access API&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;目前仅在 chrome 86 (edge 86, opera 72)及以上版本支持, safari 和 firefox 暂时不支持&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验&lt;/p&gt;
+&lt;p&gt;File System Access API 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用改 API 时, 会提示用户授权应用程序访问文件系统&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将文件从本地文件系统上传到 Web 应用程序&lt;/li&gt;
+&lt;li&gt;将 Web 应用程中的数据写入到本地文件系统中&lt;/li&gt;
+&lt;li&gt;在用户的本地文件系统中创建、重命名和删除文件&lt;/li&gt;
+&lt;li&gt;读取本地文件系统上的文件内容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;FileSystemHandle接口&quot;&gt;&lt;a href=&quot;#FileSystemHandle接口&quot; class=&quot;headerlink&quot; title=&quot;FileSystemHandle接口&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle&quot;&gt;FileSystemHandle&lt;/a&gt;接口&lt;/h3&gt;&lt;p&gt;是 File System Access API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 &lt;code&gt;FileSystemFileHandle&lt;/code&gt; 和 &lt;code&gt;FileSystemDirectoryHandle&lt;/code&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;/**&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; * 继承&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; * FileSystemHandle&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; *  &amp;lt;- FileSystemFileHandle&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; *  &amp;lt;- FileSystemDirectoryHandle&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; * FileSystemSyncAccessHandle&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; * WritableStream&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; *  &amp;lt;- FileSystemWritableFileStream&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt; */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="WebAPI" scheme="https://luoleiself.github.io/categories/WebAPI/"/>
+    
+    
+    <category term="API" scheme="https://luoleiself.github.io/tags/API/"/>
+    
+  </entry>
   
   <entry>
     <title>Lua</title>
@@ -475,7 +537,7 @@
     <link href="https://luoleiself.github.io/2022/03/28e7482b798b/"/>
     <id>https://luoleiself.github.io/2022/03/28e7482b798b/</id>
     <published>2022-03-05T02:35:34.000Z</published>
-    <updated>2023-04-10T09:30:51.509Z</updated>
+    <updated>2023-04-12T07:53:52.304Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;浏览器引擎&quot;&gt;&lt;a href=&quot;#浏览器引擎&quot; class=&quot;headerlink&quot; title=&quot;浏览器引擎&quot;&gt;&lt;/a&gt;浏览器引擎&lt;/h3&gt;&lt;table&gt;
@@ -693,91 +755,6 @@
     
     
     <category term="charles" scheme="https://luoleiself.github.io/tags/charles/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>BABELRC</title>
-    <link href="https://luoleiself.github.io/2021/12/2f42f14b8489/"/>
-    <id>https://luoleiself.github.io/2021/12/2f42f14b8489/</id>
-    <published>2021-12-09T08:56:30.000Z</published>
-    <updated>2023-03-24T10:08:57.276Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;babel-cli&quot;&gt;&lt;a href=&quot;#babel-cli&quot; class=&quot;headerlink&quot; title=&quot;@babel/cli&quot;&gt;&lt;/a&gt;@babel/cli&lt;/h2&gt;&lt;h3 id=&quot;install&quot;&gt;&lt;a href=&quot;#install&quot; class=&quot;headerlink&quot; title=&quot;install&quot;&gt;&lt;/a&gt;install&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;npm i -D @babel/cli @babel/core @babel/preset-env&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;运行&quot;&gt;&lt;a href=&quot;#运行&quot; class=&quot;headerlink&quot; title=&quot;运行&quot;&gt;&lt;/a&gt;运行&lt;/h3&gt;&lt;h4 id=&quot;参数&quot;&gt;&lt;a href=&quot;#参数&quot; class=&quot;headerlink&quot; title=&quot;参数&quot;&gt;&lt;/a&gt;参数&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;--watch | -w 监听文件改变自动编译&lt;/li&gt;
-&lt;li&gt;--out-file | -o 输出指定文件名&lt;/li&gt;
-&lt;li&gt;--out-dir | -d 编译整个目录&lt;ul&gt;
-&lt;li&gt;编译目录下所有文件输出合并为一个文件&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;npx babel index.js -w &lt;span class=&quot;comment&quot;&gt;# 编译并监听 index.js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;npx babel index.js -o index.min.js &lt;span class=&quot;comment&quot;&gt;# 编译 index.js 文件输出到 index.min.js&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;npx babel src -d dist &lt;span class=&quot;comment&quot;&gt;# 编译 src 目录下文件输出到 dist 下&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="ES" scheme="https://luoleiself.github.io/categories/ES/"/>
-    
-    
-    <category term="ES6" scheme="https://luoleiself.github.io/tags/ES6/"/>
-    
-    <category term="Babel" scheme="https://luoleiself.github.io/tags/Babel/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Vue3-migration</title>
-    <link href="https://luoleiself.github.io/2021/08/9fc9b29dd769/"/>
-    <id>https://luoleiself.github.io/2021/08/9fc9b29dd769/</id>
-    <published>2021-08-17T10:06:52.000Z</published>
-    <updated>2023-03-31T12:06:29.311Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;全局-API&quot;&gt;&lt;a href=&quot;#全局-API&quot; class=&quot;headerlink&quot; title=&quot;全局 API&quot;&gt;&lt;/a&gt;全局 API&lt;/h3&gt;&lt;h4 id=&quot;全局-API-应用实例&quot;&gt;&lt;a href=&quot;#全局-API-应用实例&quot; class=&quot;headerlink&quot; title=&quot;全局 API 应用实例&quot;&gt;&lt;/a&gt;全局 API 应用实例&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;Vue.config -&amp;gt; app.config&lt;/li&gt;
-&lt;li&gt;Vue.config.productionTip -&amp;gt; &lt;strong&gt;移除&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;Vue.config.ignoreElements -&amp;gt; app.config.compilerOptions.isCustomElement&lt;/li&gt;
-&lt;li&gt;Vue.component -&amp;gt; app.component&lt;/li&gt;
-&lt;li&gt;Vue.directive -&amp;gt; app.directive&lt;/li&gt;
-&lt;li&gt;Vue.mixin -&amp;gt; app.mixin&lt;/li&gt;
-&lt;li&gt;Vue.use -&amp;gt; app.use&lt;/li&gt;
-&lt;li&gt;Vue.prototype -&amp;gt; app.config.globalProperties&lt;/li&gt;
-&lt;li&gt;Vue.extend -&amp;gt; &lt;strong&gt;移除&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;全局-API-Treeshaking&quot;&gt;&lt;a href=&quot;#全局-API-Treeshaking&quot; class=&quot;headerlink&quot; title=&quot;全局 API Treeshaking&quot;&gt;&lt;/a&gt;全局 API Treeshaking&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;Vue.nextTick() -&amp;gt; nextTick()&lt;/li&gt;
-&lt;li&gt;Vue.observable -&amp;gt; reactive()&lt;/li&gt;
-&lt;li&gt;Vue.version -&amp;gt; version&lt;/li&gt;
-&lt;li&gt;Vue.compile(仅完整构建版本)&lt;/li&gt;
-&lt;li&gt;Vue.set(仅兼容构建版本)&lt;/li&gt;
-&lt;li&gt;Vue.delete(仅兼容构建版本)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&quot;模板指令&quot;&gt;&lt;a href=&quot;#模板指令&quot; class=&quot;headerlink&quot; title=&quot;模板指令&quot;&gt;&lt;/a&gt;模板指令&lt;/h3&gt;&lt;h4 id=&quot;v-model&quot;&gt;&lt;a href=&quot;#v-model&quot; class=&quot;headerlink&quot; title=&quot;v-model&quot;&gt;&lt;/a&gt;v-model&lt;/h4&gt;&lt;p&gt;参见 vue3.md 的 v-model 指令部分&lt;/p&gt;
-&lt;h4 id=&quot;key-使用改变&quot;&gt;&lt;a href=&quot;#key-使用改变&quot; class=&quot;headerlink&quot; title=&quot;key 使用改变&quot;&gt;&lt;/a&gt;key 使用改变&lt;/h4&gt;&lt;p&gt;对于 &lt;code&gt;v-if&lt;/code&gt;, &lt;code&gt;v-else-if&lt;/code&gt;, &lt;code&gt;v-else&lt;/code&gt; 的各分支项 &lt;code&gt;key&lt;/code&gt; 将不再是必须的, Vue 会自动生成唯一的 &lt;code&gt;key&lt;/code&gt;&lt;/p&gt;
-&lt;h4 id=&quot;v-if-和-v-for-优先级&quot;&gt;&lt;a href=&quot;#v-if-和-v-for-优先级&quot; class=&quot;headerlink&quot; title=&quot;v-if 和 v-for 优先级&quot;&gt;&lt;/a&gt;v-if 和 v-for 优先级&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;两者作用于同一个元素上时，v-if 会拥有比 v-for 更高的优先级&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;v-bind-合并行为&quot;&gt;&lt;a href=&quot;#v-bind-合并行为&quot; class=&quot;headerlink&quot; title=&quot;v-bind 合并行为&quot;&gt;&lt;/a&gt;v-bind 合并行为&lt;/h4&gt;&lt;p&gt;&lt;code&gt;v-bind&lt;/code&gt; 的绑定顺序会影响渲染结果&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;vue 2.x 独立绑定的 attribute 会覆盖 v-bind 中的 attribute&lt;/li&gt;
-&lt;li&gt;vue 3.x 根据声明顺序决定如何被合并&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight html&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 模板 --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;red&amp;quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;v-bind&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;&amp;#123; id: &amp;#x27;blue&amp;#x27; &amp;#125;&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 结果 --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;red&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 模板 --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;v-bind&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;&amp;#123; id: &amp;#x27;blue&amp;#x27; &amp;#125;&amp;quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;red&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 结果 --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;id&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;red&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;div&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="ES" scheme="https://luoleiself.github.io/categories/ES/"/>
-    
-    <category term="VueJs" scheme="https://luoleiself.github.io/categories/ES/VueJs/"/>
-    
-    
-    <category term="js" scheme="https://luoleiself.github.io/tags/js/"/>
-    
-    <category term="VueJs" scheme="https://luoleiself.github.io/tags/VueJs/"/>
-    
-    <category term="Vue3" scheme="https://luoleiself.github.io/tags/Vue3/"/>
     
   </entry>
   
