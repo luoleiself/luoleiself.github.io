@@ -11,7 +11,7 @@ tags:
 
 允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验
 
-[File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用改 API 时, 会提示用户授权应用程序访问文件系统
+[File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用该 API 时, 会提示用户授权应用程序访问文件系统
 
 - 将文件从本地文件系统上传到 Web 应用程序
 - 将 Web 应用程中的数据写入到本地文件系统中
