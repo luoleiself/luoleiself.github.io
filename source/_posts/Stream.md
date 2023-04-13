@@ -648,7 +648,7 @@ console.log(uint8Arr.join());
 
 根据参数指定的编码创建并返回一个新的 `TextDecoder` 实例
 
-- utfLabel 可选的一个字符串, 默认 `utf-8`, 可以为任意有效的编码
+- label 可选的一个字符串, 默认 `utf-8`, 可以为任意有效的编码
 - options 可选的配置项
   - fatal 布尔值, 表示在解码无效数据时, `decode()` 方法是否必须抛出 `TypeError`, 默认 false
 
@@ -695,7 +695,12 @@ document.getElementById('decode-value').textContent = str;
 创建并返回一个新的 `TextEncoderStream` 实例, 该对象使用 `UTF-8` 编码将字符串流转换为字节
 
 ```javascript
-const tes = new TextEncoderStream();
+const body = textStream.pipeThrough(new TextEncoderStream());
+fetch('./dest', {
+  method: 'POST',
+  body,
+  headers: { 'Content-Type': 'text/plain;chagrset=UTF-8' },
+});
 ```
 
 ### TES 实例属性
@@ -706,7 +711,8 @@ const tes = new TextEncoderStream();
 
 ```javascript
 var tes = new TextEncoderStream();
-console.log(tes.readable);
+console.log(tes.readable); // a ReadableStream
+console.log(tes.writable); // a WritableStream
 ```
 
 ## TextDecoderStream
@@ -734,5 +740,6 @@ const stream = response.body.pipeThrough(new TextDecoderStream());
 
 ```javascript
 var tds = new TextDecoderStream('utf-8', { fatal: true });
-console.log(tds.writable);
+console.log(tds.readable); // a ReadableStream
+console.log(tds.writable); // a WritableStream
 ```
