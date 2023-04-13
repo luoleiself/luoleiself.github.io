@@ -19,7 +19,7 @@ tags:
 
 ##### 可读流配置项
 
-underlyingSource 可选的定义可读流的行为方式的配置项
+`underlyingSource` 可选的定义可读流的行为方式的配置项
 
 - start(controller) 由开发人员定义, 当流对象被创建时立刻调用, 执行其他任何必须的设置流功能, 如果过程是异步的则返回一个 Promise
   - controller 根据 `type='bytes'` 属性传递的 `ReadableStreamDefaultController` 或 `ReadableByteStreamController` 控制器实例
@@ -32,7 +32,7 @@ underlyingSource 可选的定义可读流的行为方式的配置项
 
 ##### 可读流队列策略配置项
 
-queuingStrategy 可选的为流定义排队策略的配置项
+`queuingStrategy` 可选的为流定义排队策略的配置项
 
 - highWaterMark 非负整数, 定义应用在背压之前可以包含在内部队列中的块的总数
 - size(chunk) 表示每个分块使用的大小(以字节为单位)
@@ -314,7 +314,7 @@ const rs = new ReadableStream({
 
 ##### 可写流配置项
 
-underlyingSource 可选的定义可读流的行为方式的配置项
+`underlyingSource` 可选的定义可读流的行为方式的配置项
 
 - start(controller) 由开发人员定义, 当流对象被创建时立刻调用, 执行其他任何必须的设置流功能, 如果过程是异步的则返回一个 Promise
   - controller 传递的 `WritableStreamDefaultController` 控制器实例
@@ -325,7 +325,7 @@ underlyingSource 可选的定义可读流的行为方式的配置项
 
 ##### 可写流队列策略配置项
 
-queuingStrategy 可选的为流定义排队策略的配置项
+`queuingStrategy` 可选的为流定义排队策略的配置项
 
 - highWaterMark 非负整数, 定义应用在背压之前可以包含在内部队列中的块的总数
 - size(chunk) 表示每个分块使用的大小(以字节为单位)
@@ -465,51 +465,71 @@ wsdw.ready
   });
 ```
 
+### 默认写入流控制器
 
+> **无构造函数**, `WritableStreamDefaultController` 实例会在构造 `WritableStream` 时被自动创建
 
+`WritableStreamDefaultController` 接口是一个控制器, 允许控制 `WritableStream` 状态的控制器, 当构造 `WritableStream` 时, 会为底层的 sink 提供一个相应的`WritableStreamDefaultController`实例进行操作
 
+#### WSDC 实例属性
 
+- signal 返回与 `AbortSignal` 关联的控制器
 
+#### WSDC 实例方法
 
+##### WSDC.error(message) 导致未来任何与关联流的交互都会出错
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### WritableStreamDefaultController
-
-是一个控制器, 允许控制 `WritableStream` 状态的控制器, 当构造 `WritableStream` 时, 会为底层的 sink 提供一个相应的`WritableStreamDefaultController`实例进行操作
-无构造函数, `WritableStreamDefaultController` 实例会在构造 `WritableStream` 时被自动创建
-
-- WritableStreamDefaultController.error(message) 导致未来任何与关联流的交互都会出错
+```javascript
+const ws = new WritableStream({
+  start(controller) {
+    controller.error('Stream is broken');
+  },
+  write(chunk, controller) {},
+  close(controller) {},
+  abort(err) {},
+});
+```
 
 ## 转换流
 
 ### TransformStream
 
-TransformStream 接口表示链式管道传输转换流概念的具体实现, 可以传给 `ReadableStream.pipeThrough()` 方法将流数据从一种格式转换成另一种, 例如, 可以用于解码(编码)视频帧, 解压数据或者将流从 XML 转换成 JSON
+`TransformStream` 接口表示链式管道传输转换流概念的具体实现, 可以传给 `ReadableStream.pipeThrough()` 方法将流数据从一种格式转换成另一种, 例如, 可以用于解码(编码)视频帧, 解压数据或者将流从 XML 转换成 JSON
 
-- TransformStream.readable 只读属性, 转换流的 readable 端
-- TransformStream.writable 只读属性, 转换流的 writable 端
+#### TS 构造方法
+
+创建并返回一个转换流对象, 可以选择为流指定一个转换对象和排队策略
+
+##### 转换流配置项
+
+transformer 可选的表示转换流的对象, 如果未提供, 则生成的流将是一个恒等交换流, 它将所有写入可写端的分块转发到可读端, 不会有任何该表
+
+- start(controller) 当 `TransformStream` 创建时被调用, 通常用于使用 `TransformStreamDefaultController.enqueue()` 对分块进行排队
+- transform(chunk, controller) 当一个写入可写端的分块准备好转换时调用, 并执行转换流的工作, 如果没有提供则使用恒等交换
+- flush(controller) 当所有写入可写端的分块成功转换后被调用, 并且可写端将会关闭
+
+##### 写入流队列策略配置项
+
+`writableStrategy` 可选的定义写入流队列策略的配置项
+
+- highWaterMark 非负整数, 定义应用在背压之前可以包含在内部队列中的块的总数
+- size(chunk) 表示每个分块使用的大小(以字节为单位)
+
+##### 读取流队列策略配置项
+
+`readableStrategy` 可选的定义读取流队列策略的配置项
+
+- highWaterMark 非负整数, 定义应用在背压之前可以包含在内部队列中的块的总数
+- size(chunk) 表示每个分块使用的大小(以字节为单位)
 
 ```javascript
-var writableStrategy = new CountQueuingStrategy({ highWaterMark: 1 });
-var readableStrategy = new CountQueuingStrategy({ highWaterMark: 1 });
-var ts = new TransformStream({
+const writableStrategy = new CountQueuingStrategy({ highWaterMark: 1 });
+const readableStrategy = new CountQueuingStrategy({ highWaterMark: 1 });
+const ts = new TransformStream({
   // 当创建实例时执行, 通常用于使用 enqueue 对分块进行排队
   start(controller) {},
-  // 当一个写入可写端的分块准备好转换时调用，并且执行转换流的工作, 如果不提供此方法则使用恒等变换并且分块将在没有更改的情况下排队
+  // 当一个写入可写端的分块准备好转换时调用，并且执行转换流的工作
+  // 如果不提供此方法则使用恒等变换并且分块将在没有更改的情况下排队
   transform(chunk, controller) {},
   // 当所有写入可写端的分块成功转换后被调用, 并且可写端将会关闭
   flush(controller) {},
@@ -518,53 +538,171 @@ var ts = new TransformStream({
 });
 ```
 
-### TransformStreamDefaultController
+#### TS 实例属性
 
-提供操作关联的 `ReadableStream` 和 `WritableStream` 的方法
-无构造函数, `TransformStreamDefaultController` 实例会在构造 `TransformStream` 时被自动创建, 通过 `TransformStream` 的回调函数获取
+- readable 只读属性, 转换流的 readable 端
+- writable 只读属性, 转换流的 writable 端
 
-- TransformStreamDefaultController.desiredSize 只读属性, 返回填充满内部队列的可读端所需要的大小
-- TransformStreamDefaultController.enqueue(chunk) 将给定的 chunk 加入流的可读端
-- TransformStreamDefaultController.error(reason) 导致转换流的可读端和可写端都会出错
-- TransformStreamDefaultController.terminate() 关闭流的可读端并且流的可写端出错
+```javascript
+const writableStrategy = new ByteLengthQueuingStrategy({
+  highWaterMark: 1024 * 1024,
+});
+const el = document.body;
+const ts = new TransformStream(
+  {
+    transform(chunk, controller) {
+      controller.enqueue(chunk.toUpperCase());
+    },
+  },
+  writableStrategy
+);
+const ws = new WritableStream({
+  write(chunk, controller) {
+    el.append(chunk);
+  },
+});
+
+fetch('./lorem-ipsum.txt').then((response) =>
+  response.body.pipeThrough(ts).pipeTo(ws)
+);
+```
+
+### 默认转换流控制器
+
+> **无构造函数**, `TransformStreamDefaultController` 实例会在构造 `TransformStream` 时被自动创建
+
+`TransformStreamDefaultController` 接口提供操作关联的 `ReadableStream` 和 `WritableStream` 的方法
+
+#### TSDC 实例属性
+
+- desiredSize 只读属性, 返回填充满内部队列的可读端所需要的大小
+
+#### TSDC 实例方法
+
+##### TSDC.enqueue(chunk)
+
+将给定的 chunk 加入流的可读端
+
+##### TSDC.error(reason)
+
+导致转换流的可读端和可写端都会出错
+
+##### TSDC.terminate()
+
+关闭流的可读端并且流的可写端出错
+
+```javascript
+const ts = new TransformStream({
+  transform(chunk, controller) {
+    controller.enqueue(new TextEncoder().encode(chunk));
+  },
+  flush(controller) {
+    controller.terminate();
+  },
+});
+```
 
 ## TextEncoder
 
 接受码位流作为输入并提供 UTF-8 字节流作为输出
 
-- TextEncoder.prototype.encoding 只读属性, 总是返回 utf-8
-- TextEncoder.encode(string) 接受一个字符串输入并返回一个 UTF-8 编码的文本的 `Uint8Array`
-- TextEncoder.encodeInto(string, Uint8Array) 接受一个字符串和一个目标(Uint8Array 用于存放 UTF-8 编码的文本), 并且返回一个只是编码进度的对象, 此方法性能会比 encode 好一些
+### TE 构造函数
+
+创建并返回一个新的 `TextEncoder` 实例, 该实例将生成具有 `UTF-8` 编码的字节流
 
 ```javascript
-var te = new TextEncoder();
-var u8arr = te.encode('hello world'); // Uint8Array [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]
+const te = new TextEncoder();
+```
+
+### TE 实例属性
+
+- encoding 只读属性, 总是返回 utf-8
+
+### TE 实例方法
+
+#### TE.encode(string)
+
+接受一个字符串输入并返回一个 `UTF-8` 编码的文本的 `Uint8Array`
+
+```javascript
+const te = new TextEncoder();
+const u8arr = te.encode('hello world'); // Uint8Array [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]
+```
+
+#### TE.encodeInto(string, Uint8Array)
+
+接受一个字符串和一个目标(Uint8Array 用于存放 UTF-8 编码的文本), 并且返回一个只是编码进度的对象, 此方法性能会比 encode() 更高
+
+```javascript
+const te = new TextEncoder();
+const uint8Arr = new Unit8Array(8);
+te.encodeInto('hello world', uint8Arr);
+console.log(uint8Arr.join());
 ```
 
 ## TextDecoder
 
-接收一个文本编码, 将字节流作为输入并提供码位流作为输出
+`TextDecoder` 接口表示一个文本解码器, 一个解码器只支持一种特定文本编码, 解码器将字节流作为输入并提供码位流作为输出
 
-- TextDecoder.prototype.encoding 只读属性, 表示将使用的编码格式
-- TextDecoder.prototype.fatal 只读属性, 表示错误模式是否致命
-- TextDecoder.prototype.ignoreBOM 只读属性, 表示是否忽略字节顺序标记(BOM)
-- TextDecoder.prototype.decode(buffer, {stream: false}) 返回一个使用指定编码格式解码的字符串
-  - buffer 一个 ArrayBuffer, TypedArray 或包含要解码的编码文本的 DataView 对象
+### TD 构造函数
+
+根据参数指定的编码创建并返回一个新的 `TextDecoder` 实例
+
+- utfLabel 可选的一个字符串, 默认 `utf-8`, 可以为任意有效的编码
+- options 可选的配置项
+  - fatal 布尔值, 表示在解码无效数据时, `decode()` 方法是否必须抛出 `TypeError`, 默认 false
+
+```javascript
+const td1 = new TextDecoder('iso-8859-2');
+// Allow TypeError exception to be thrown
+const td2 = new TextDecoder('csiso2022kr', { fatal: true });
+```
+
+### TD 实例属性
+
+- encoding 只读属性, 表示将使用的编码格式
+- fatal 只读属性, 表示错误模式是否致命
+- ignoreBOM 只读属性, 表示是否忽略字节顺序标记(BOM)
+
+### TD 实例方法
+
+#### TD.decode(buffer, {stream: false})
+
+返回一个使用指定编码格式解码的字符串
+
+- buffer 可选的一个 ArrayBuffer, TypedArray 或包含要解码的编码文本的 DataView 对象
+- options 可选的配置项
   - stream 默认 false 不使用分块方式, true 表示以分块方式处理数据,后续调用 decode 将跟随附加数据
 
 ```javascript
-// 第一个参数表示编码, 默认 utf-8, 第二个参数的 fatal 属性表示在解码无效数据时是否必须抛出 TypeError, 默认 false
-var td = new TextDecoder('utf-8', { fatal: true });
-td.decode(u8arr); // hello world
+const te = new TextEncoder();
+const array = te.encode('hello world');
+// Unit8Array(6) [228,189,160,229,165,189]
+document.getElementById('encode-value').textContent = array;
+
+const td = new TextDecoder();
+const str = td.decode(array);
+// 你好
+document.getElementById('decode-value').textContent = str;
 ```
 
 ## TextEncoderStream
 
-将一个字符串流转换为 UTF-8 编码的字节, 与 `TextEncoder` 的流形式等价
+将一个字符串流转换为 `UTF-8` 编码的字节, 与 `TextEncoder` 的流形式等价
 
-- TextEncoderStream.encoding 只读属性, 总是返回 utf-8
-- TextEncoderStream.readable 只读属性, 返回此对象控制的 `ReadableStream` 实例
-- TextEncoderStream.writable 只读属性, 返回此对象控制的 `WritableStream` 实例
+### TES 构造函数
+
+创建并返回一个新的 `TextEncoderStream` 实例, 该对象使用 `UTF-8` 编码将字符串流转换为字节
+
+```javascript
+const tes = new TextEncoderStream();
+```
+
+### TES 实例属性
+
+- encoding 只读属性, 总是返回 utf-8
+- readable 只读属性, 返回此对象控制的 `ReadableStream` 实例
+- writable 只读属性, 返回此对象控制的 `WritableStream` 实例
 
 ```javascript
 var tes = new TextEncoderStream();
@@ -575,13 +713,26 @@ console.log(tes.readable);
 
 将二进制编码的文本流转换字符串流, 与 `TextDecoder` 的流形式等价
 
-- TextDecoderStream.encoding 只读属性, 表示将使用的编码格式
-- TextDecoderStream.fatal 只读属性, 表示错误是否致命
-- TextDecoderStream.ignoreBOM 只读属性, 表示是否忽略字节顺序标记
-- TextDecoderStream.readable 只读属性, 返回此对象控制的 `ReadableStream` 实例
-- TextDecoderStream.writable 只读属性, 返回此对象控制的 `WritableStream` 实例
+### TDS 构造函数
+
+- label 可选的一个字符串, 默认 `utf-8`, 可以为任意有效的编码
+- options 可选的配置项
+  - fatal 布尔值, 表示在错误的模式, 如果为 true, decoder 则在遇到错误时抛出一个 DOMException, 默认为 false
 
 ```javascript
-var tds = new TextDecoderStream('utf-8', { fatal: false });
+const response = await fetch('https://example.com');
+const stream = response.body.pipeThrough(new TextDecoderStream());
+```
+
+### TDS 实例属性
+
+- encoding 只读属性, 表示将使用的编码格式
+- fatal 只读属性, 表示错误是否致命
+- ignoreBOM 只读属性, 表示是否忽略字节顺序标记
+- readable 只读属性, 返回此对象控制的 `ReadableStream` 实例
+- writable 只读属性, 返回此对象控制的 `WritableStream` 实例
+
+```javascript
+var tds = new TextDecoderStream('utf-8', { fatal: true });
 console.log(tds.writable);
 ```
