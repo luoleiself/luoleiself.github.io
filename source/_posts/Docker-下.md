@@ -23,6 +23,8 @@ CNM 定义了 3 个基本要素：沙盒(Sandbox)、终端(Endpoint)和网络(Ne
 
 docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay 等.
 
+<!-- more -->
+
 ```bash
 [root@localhost ~]# docker run -tid --name centos01 centos /bin/bash
 [root@localhost ~]# docker run -tid --name centos02 centos /bin/bash
@@ -58,8 +60,6 @@ docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对
 ### veth-pair
 
 veth-pair 就是一对的虚拟设备接口，和 tap/tun 设备不同的是，它都是成对出现的。一端连着协议栈，一端彼此相连着. 由于它的这个特性，常常被用于构建虚拟网络拓扑。例如连接两个不同的网络命名空间(netns)，连接 docker 容器，连接网桥(Bridge)等
-
-<!-- more -->
 
 ![docker-2](/images/docker-2.png)
 
@@ -607,12 +607,12 @@ docker-compose -f -p -c --env-file up [service_name]
   - \-\-no-start 创建服务之后不启动它
   - \-\-no-deps 不启动关联的服务
   - \-\-scale 调整服务实例数量, 覆盖配置文件中的 scale 配置
-  
+
 ```shell
 [root@localhost ~]# docker-compose up service_id # 启动指定服务
 
 # 调整指定服务实例数量, 先去掉 docker-compose.yml 配置文件 service 指定的端口, 在单机中会出现端口占用问题
-[root@localhost ~]# docker compose up --scale web=5 -d 
+[root@localhost ~]# docker compose up --scale web=5 -d
 ```
 
 ### 配置文件
@@ -683,8 +683,8 @@ services:
       - redis
     deploy:  # 部署
       # 外部客户端连接服务的方式
-      # vip(Virtual IP) 为服务分配虚拟 IP, 客户端使用虚拟 IP 连接 
-      # dnsrr 平台配置 dns 条目, 使用服务名称查询 IP 地址列表连接 
+      # vip(Virtual IP) 为服务分配虚拟 IP, 客户端使用虚拟 IP 连接
+      # dnsrr 平台配置 dns 条目, 使用服务名称查询 IP 地址列表连接
       endpoint_mode: vip
       mode: replicated # 服务运行模式, global | replicaated(default)
       replicas: 6 # 副本

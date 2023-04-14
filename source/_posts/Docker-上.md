@@ -42,6 +42,8 @@ systemctl restart docker # 重启 docker 服务
 systemctl enable docker # 设置 docker 守护进程开机启动
 ```
 
+<!-- more -->
+
 ### 概念
 
 #### 架构
@@ -51,8 +53,6 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 #### 命令
 
 ![docker-1](/images/docker-1.jpg)
-
-<!-- more -->
 
 ## 镜像
 
