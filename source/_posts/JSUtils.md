@@ -396,6 +396,56 @@ function file2DataURL(arg) {
 }
 ```
 
+#### DOM 拖动
+
+```javascript
+var $popDom = null; // 指定拖动的 DOM
+var disX,
+  disY,
+  dragging = false;
+$popDom.on('mousedown', function (evt) {
+  evt.stopPropagation();
+  var popWidth = $popDom[0].clientWidth;
+  var popHeight = $popDom[0].clientHeight;
+  disX = evt.pageX - Number.parseInt($popDom.css('left'), 10);
+  disY = evt.pageY - Number.parseInt($popDom.css('top'), 10);
+  dragging = true;
+
+  $(document)
+    .on('mousemove.move-dom', function (evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      if (!dragging) {
+        return;
+      }
+      var clientWidth = document.documentElement.clientWidth;
+      var clientHeight = document.documentElement.clientHeight;
+
+      var videoPopTop = Number.parseInt(evt.pageY - disY, 10);
+      var videoPopLeft = Number.parseInt(evt.pageX - disX, 10);
+
+      if (videoPopTop < 0) {
+        videoPopTop = 0;
+      } else if (clientHeight - videoPopTop < popHeight) {
+        videoPopTop = clientHeight - popHeight;
+      }
+
+      if (videoPopLeft < 0) {
+        videoPopLeft = 0;
+      } else if (clientWidth - videoPopLeft < popWidth) {
+        videoPopLeft = clientWidth - popWidth;
+      }
+      $popDom.css({ top: videoPopTop, left: videoPopLeft });
+    })
+    .on('mouseup.move-dom', function (evt) {
+      evt.stopPropagation();
+      dragging = false;
+      $(document).off('mousemove.move-dom');
+      $(document).off('mouseup.move-dom');
+    });
+});
+```
+
 #### 日期倒计时
 
 ```javascript
@@ -664,6 +714,7 @@ export function generatorFn(v) {
 }
 
 import * as is from './is.js';
+
 export function h(tag, props, child) {
   var children,
     attrs,
