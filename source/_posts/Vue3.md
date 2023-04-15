@@ -365,7 +365,7 @@ document.body.append(new MyElement(/* 初始化 prop */));
   - 支持访问内部组件实例，用于高阶用法或库的开发
   - 只能在 setup 或生命周期钩子中调用
 
-- `setup()` 应该同步地返回一个对象, 唯一可以使用 `async setup()` 的情况是该组件是 [&lt;Suspense&gt;](#suspense) 组件地后裔
+- `setup()` 应该同步地返回一个对象, 唯一可以使用 `async setup()` 的情况是该组件是 [\<Suspense\>](#suspense) 组件地后裔
 
 #### 访问 Props
 
@@ -966,7 +966,7 @@ scope.stop();
 
 VNode 生命周期事件前缀从 `hook:` 更改为 `vue:`, 这些事件也可用于 HTML 元素, 和在组件上的用法一样
 
-- `vue:` 前缀为固定格式, 生命周期事件名可以使用 `kebab-case` 或者 `camelCase` 方式
+- `vue:` 前缀为固定格式, 生命周期事件名可以使用 `kebab-case` 或者 `camelCase` 格式
 
 ```html
 <template>
@@ -1015,7 +1015,7 @@ app.mount('#app');
 
 注册一个回调函数在组件 **挂载完成** 之后执行
 
-- 其所有同步子组件都已经被挂载(不包含 **异步组件** 或 [&lt;Suspense&gt;](#suspense) 树内的组件)
+- 其所有同步子组件都已经被挂载(不包含 **异步组件** 或 [\<Suspense\>](#suspense) 树内的组件)
 - 其自身的 DOM 树已经创建完成并插入了父容器中, 仅当根容器存在于文档中
 
 ```html
@@ -1606,7 +1606,7 @@ export default {
 
 用于控制是否启用默认的组件 `attribute` 透传行为, 默认为 true
 
-- 使用 [&lt;script setup&gt;](#scriptsetup) 的组合式 API 中声明这个选项时, 需要一个额外的 `<script>` 块
+- 使用 [\<script setup\>](#scriptsetup) 的组合式 API 中声明这个选项时, 需要一个额外的 `<script>` 块
 
 ```html
 <!-- 单独 script 块声明 inheritAttrs 选项 -->
@@ -2060,7 +2060,7 @@ app.mount('#app');
 
 能够合法在函数参数位置使用的 js 表达式, 支持解构语法. 绑定的值是可选的(只有在给作用域插槽传递 props 才需要)
 
-- &lt;template&gt;
+- \<template\>
 - components(用于带有 prop 的单个默认插槽)
 
 ##### 具名插槽
@@ -2185,11 +2185,11 @@ export default {
 };
 ```
 
-#### &lt;Transition&gt;
+#### \<Transition\>
 
 为单个元素或组件提供动画过渡效果
 
-##### Transition props
+##### \<Transition\> props
 
 - name
 - css
@@ -2207,7 +2207,7 @@ export default {
 - leaveActiveClass
 - leaveToClass
 
-##### Transition 事件
+##### \<Transition\> 事件
 
 - @before-enter
 - @before-leave
@@ -2240,24 +2240,24 @@ export default {
 </div>
 ```
 
-#### &lt;TransitionGroup&gt;
+#### \<TransitionGroup\>
 
 为列表中的多个元素或组件提供过渡效果
 
-##### TransitionGroup props
+##### \<TransitionGroup\> props
 
 - tag 如果未定义, 则渲染为片段(fragment)
 - moveClass 用于自定义过渡期间被应用的 CSS class, 使用 `kebab-case` 格式
 
-##### TransitionGroup 事件
+##### \<TransitionGroup\> 事件
 
 `<TransitionGroup>` 抛出与 `<Transition>` 相同的事件
 
-#### &lt;KeepAlive&gt;
+#### \<KeepAlive\>
 
 缓存包裹在其中的动态切换组件
 
-##### KeepAlive props
+##### \<KeepAlive\> props
 
 - include 哪些组件实例可以被缓存
 - exclude 哪些组件实例不被缓存
@@ -2280,11 +2280,11 @@ export default {
 </KeepAlive>
 ```
 
-#### &lt;Teleport&gt;
+#### \<Teleport\>
 
 移动实际 DOM 节点(非销毁重建),并保持任何组件实例的活动状态
 
-##### Teleport props
+##### \<Teleport\> props
 
 - to 必填项, 指定目标容器, 可以是选择器或实际元素
 - disabled 值为 true 时, 内容将保留在其原始位置不做移动, 值可动态修改
@@ -2307,21 +2307,21 @@ export default {
 </Teleport>
 ```
 
-#### &lt;Suspense&gt; <em id="suspense"></em> <!-- markdownlint-disable-line -->
+#### \<Suspense\> <em id="suspense"></em> <!-- markdownlint-disable-line -->
 
 用于协调对组件树中嵌套的异步依赖的处理
 
-##### Suspense props
+##### \<Suspense\> props
 
 - timeout 渲染新内容耗时超时时间
 
-##### Suspense 事件
+##### \<Suspense\> 事件
 
 - @pending 在 suspense 进入挂起状态时触发
 - @resolve 在 default 插槽完成获取新内容时触发
 - @fallback 在 fallback 插槽的内容显示时触发
 
-##### Suspense 插槽
+##### \<Suspense\> 插槽
 
 - #default
 - #fallback
@@ -2339,25 +2339,25 @@ export default {
 
 > `<component>`, `<slot>`, `<template>` 具有类似组件的特性, 也是模板语法的一部分. 但它们并非真正的组件, 同时在模板编译期间会被编译掉. 因此, 它们通常在模板中使用小写字母
 
-#### &lt;component&gt;
+#### \<component\>
 
 用于渲染动态组件或元素的 `元组件`
 
-##### component props
+##### \<component\> props
 
 - is 要渲染的实际组件由 `is` prop 决定
   - 如果是字符串时, 可以是 HTML 标签名或者组件的注册名
   - 或者是直接绑定到组件的定义
 
-#### &lt;slot&gt;
+#### \<slot\>
 
 表示模板中的插槽内容出口
 
-##### slot props
+##### \<slot\> props
 
 - name 指定插槽名, 缺少时将会渲染默认插槽
 
-#### &lt;template&gt;
+#### \<template\>
 
 当使用内置指令而不在 DOM 中渲染元素时, `<template>` 标签可以作为占位符使用
 
@@ -2440,7 +2440,7 @@ export default {
 <style src="./style.css"></style>
 ```
 
-### &lt;script setup&gt; <em id="scriptsetup"></em> <!-- markdownlint-disable-line -->
+### \<script setup\> <em id="scriptsetup"></em> <!-- markdownlint-disable-line -->
 
 > `<script setup>` 是在单文件组件(SFC) 中使用 [组合式 API](#combinedapi) 的编译时语法糖
 > `<script setup>` 中的代码会在每次组件实例被创建的时候执行
@@ -2469,6 +2469,19 @@ export default {
 
 #### 使用组件
 
+单文件组件模板中使用组件可以使用 `kebab-case` 或者 `PascalCase` 两种格式, 推荐使用后者
+
+```html
+<script setup>
+  import { MyComponent } from './MyComponent.vue';
+</script>
+<template>
+  <MyComponent />
+</template>
+```
+
+##### 动态组件
+
 ```html
 <script setup>
   import Foo from './Foo.vue';
@@ -2478,6 +2491,29 @@ export default {
   <component :is="Foo" />
   <!-- 三目运算中的组件使用 -->
   <component :is="someCondition ? Foo : Bar" />
+</template>
+```
+
+##### 递归组件
+
+一个单文件组件可以通过它的文件名被其自己所引用, 为防止具名的导入和组件自身推导的名字冲突可以使用别名的方式
+
+```javascript
+import { FooBar as FooBarChild } from './components';
+```
+
+##### 命名空间组件
+
+可以使用带 `.` 的组件标签来引用嵌套在对象属性中的组件
+
+```html
+<script setup>
+  import * as Form from './form-components';
+</script>
+<template>
+  <Form.Input>
+    <Form.Label>label</Form.Label>
+  </Form.Input>
 </template>
 ```
 
@@ -2578,13 +2614,17 @@ export default {
 
 #### 顶层 await
 
-> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()` > `async setup()` 必须与 [&lt;Suspense&gt;](#suspense) [**内置组件**](#builtincomponent)组合使用
+> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()` > `async setup()` 必须与 [\<Suspense\>](#suspense) [**内置组件**](#builtincomponent)组合使用
 
 ```html
 <script setup>
   const post = await fetch('/api/post/1').then(res => res.json())
 </script>
 ```
+
+#### 限制
+
+由于模块执行语义的差异, `<script setup>` 中的代码依赖单文件组件的上下文, 当将其移动到外部的 `.js` 或 `.ts` 文件中时, 对于开发者和工具来说都会感到混乱. 因此, `<script setup>` 不能和 `src` 属性一起使用
 
 ### CSS 功能
 
@@ -3195,7 +3235,7 @@ renderToSimpleStream(
 
 ### 工具类型
 
-#### PropType&lt;T&gt;
+#### PropType\<T\>
 
 用于在用运行时 props 声明时给一个 prop 标注更复杂的类型定义
 
