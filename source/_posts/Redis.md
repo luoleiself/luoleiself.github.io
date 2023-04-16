@@ -514,22 +514,24 @@ Redis 事务执行的三个重要保证:
 
 事务开始到执行的三个阶段
 
-- 开始事务(multi)
-- 命令入队
-- 执行事务(exec)
+- 开启事务(multi): 使用 `MULTI` 命令标记从非事务状态切换到事务状态
+- 命令入队: 命令不会被立即执行, 而是被放入一个事务队列
+- 执行事务(exec)或丢弃(discard)
 
 #### 命令
 
-- MULTI 开启事务, 通常返回 ok
-- DISCARD 丢弃事务, 通常返回 ok
-  - 必须在 `MULTI` 命令之后才能调用, 否则报错 ERR DISCARD without MULTI
+- MULTI 标记一个事务块的开启, 通常返回 ok
 - EXEC 执行事务, 通常返回 ok
 
   - 必须在 `MULTI` 命令之后才能调用, 否则报错 ERR EXEC without MULTI
-  - 如果 `WATCH` 观察的 key 在当前的事务执行时已被修改, 则返回 &lt;nil&gt;
+  - 如果 `WATCH` 观察的 key 在当前的事务执行时已被修改, 则返回 \<nil\>
 
-- WATCH key [key ...] 观察指定 key, 通常返回 ok, 如果在事务执行之前观察的 key 被修改, 则事务将被打断
+- DISCARD 丢弃事务, 通常返回 ok
+  - 必须在 `MULTI` 命令之后才能调用, 否则报错 ERR DISCARD without MULTI
+
+- WATCH key [key ...] 监视一个或多个 key, 如果在事务执行之前观察的 key 被修改, 则事务将被打断, 通常返回 ok
   - 如果在 `MULTI` 命令后调用, 则会报错 ERR WATCH inside MULTI is not allowed
+
 - UNWATCH 取消所有观察的 key, 通常返回 ok, 如果调用了 `EXEC` 或 `DISCARD` 命令, 通常不再需要调用此命令
 
 ```shell
@@ -594,6 +596,103 @@ QUEUED
 4) "key2"
 127.0.0.1:6379> get key2
 "key2"
+```
+
+#### Redis-Lua
+
+##### Lua 中调用 Redis 命令
+
+- `redis.call(command [, arg...])` 执行一个 redis 命令并返回结果
+- `redis.pcall(command [, arg...])` 行为与 `redis.call()` 命令相同, 并且能用于处理 redis 服务器引发的运行时错误
+
+```shell
+127.0.0.1:6379> SET name 'hello world'
+OK
+127.0.0.1:6379> GET name
+"hello world"
+127.0.0.1:6379> EVAL "return redis.call('GET', KEYS[1])" 1 name
+"hello world"
+127.0.0.1:6379> EVAL "return redis.call('GET', 'name')" 0
+"hello world"
+```
+
+- `redis.error_reply(x)` 辅助函数, 返回一个错误信息
+- `redis.status_reply(x)` 辅助函数, 可以修改 Redis 命令的默认返回值 OK
+
+```shell
+# 返回错误信息
+127.0.0.1:6379> EVAL "return redis.error_reply('ERR This is a special error')" 0
+(error) ERR This is a special error
+
+# 修改默认返回值
+127.0.0.1:6379> EVAL "return { ok = 'TICK' }" 0
+"TICK"
+127.0.0.1:6379> EVAL "return redis.status_reply('TOCK')" 0
+"TOCK"
+```
+
+- `redis.sha1hex(x)` 返回字符串参数的 SHA1 摘要信息
+- `redis.log(level, message)` 写入 Redis 日志
+
+```shell
+127.0.0.1:6379> EVAL "return redis.sha1hex('')" 0
+"da39a3ee5e6b40d3255bfef95601890afd80709"
+```
+
+- `bit.tobit(x)` 将数字格式化为位运算的数值范围并返回
+- `bit.tohex(x [, n])` 将第一个参数转换为十六进制并返回, 第二个参数的绝对值控制返回值的数量
+- `bit.bnot(x), bit.bor(x1 [, x2...]), bit.band(x1 [, x2...]), bit.bxor(x1 [, x2...])` 返回参数的按位运算
+
+```shell
+127.0.0.1:6379> EVAL "return bit.tobit(1)" 0
+(integer) 1
+
+127.0.0.1:6379> EVAL "return bit.tohex(422342)" 0
+"000671cd"
+
+127.0.0.1:6379> EVAL "return bit.bor(1,2,4,8,16,32,64,255)" 0
+(integer) 255
+```
+
+##### 执行脚本
+
+- EVAL script numkeys key [key ...] arg [arg ...] 执行 Lua 脚本
+  - script 要执行的脚本语句
+  - numkeys 指定后续的参数有几个 key
+  - key 要操作的键, 在 Lua 脚本中通过 KEYS[1], KEYS[2] 获取
+  - arg 参数, 在 Lua 脚本中通过 ARGV[1], ARGV[2] 获取
+- EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行 Lua 脚本
+- SCRIPT EXISTS script [script ...] 查看指定的脚本是否已经被保存在缓存中
+- SCRIPT FLUSH 从脚本缓存中移除所有脚本
+- SCRIPT KILL 杀死系统当前正在运行的 Lua 脚本
+- SCRIPT LOAD script 将脚本 script 添加到脚本缓存中, 但并不立即执行这个脚本
+
+```shell
+127.0.0.1:6379> EVAL "return 10" 0
+(integer) 10
+127.0.0.1:6379> EVAL "return ARGV[1]" 0 100
+"100"
+127.0.0.1:6379> EVAL "return {ARGV[1], ARGV[2]}" 0 100 101
+1) "100"
+2) "101"
+127.0.0.1:6379> EVAL "return {KEYS[1], KEYS[2], ARGV[1], ARGV[2]}" 2 key1 key2 first second
+1) "key1"
+2) "key2"
+3) "first"
+4) "second"
+127.0.0.1:6379> EVAL "return {1, 2, { 3, 'hello world' } }" 0
+1) (integer) 1
+2) (integer) 2
+3) 1) (integer) 3
+   2) "hello world"
+
+# 添加 Lua 缓存脚本
+127.0.0.1:6379> SCRIPT LOAD "return redis.call('GET', 'name')"
+"948239fda87f9ddfa987fda97dfs8fsd8d7s8"
+
+# 使用 sha 执行脚本
+127.0.0.1:6379> EVALSHA 948239fda87f9ddfa987fda97dfs8fsd8d7s8 0
+"hello world"
 ```
 
 ### 持久化

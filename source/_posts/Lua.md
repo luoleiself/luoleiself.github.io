@@ -641,7 +641,7 @@ print("---------------------------------------")
 - luaL_dostring(lua_State *L, const char *str) 加载并运行指定的字符串(使用 luaL_loadstring 或者 luaL_pcall 定义), 如果没有错误返回假, 有错误返回真
 - luaL_getmetatable(lua_State *L, const char *tname) 将注册表中 tname 对应的元表压栈, 如果没有 tname 对应的元表, 则将 nil 压栈并返回假
 - luaL_len(lua_State \*L, int index) 以数字形式返回给定索引处值的 长度, 等价于在 lua 中使用 # 的操作, 如果结果不是一个整数, 则抛出一个错误
-- luaL_loadstring(lua_State *L, const char *s) 将一个字符串加载为 lua 代码块, 这个函数使用 lua_load 加载一个零结尾的字符串 s, 返回值和 lua_load 相同
+- luaL_loadstring(lua_State \*L, const char \*s) 将一个字符串加载为 lua 代码块, 这个函数使用 lua_load 加载一个零结尾的字符串 s, 返回值和 lua_load 相同
 
 #### 标准库
 
