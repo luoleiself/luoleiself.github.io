@@ -296,6 +296,64 @@
       </tags>
   </entry>
   <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git命令操作篇</title>
     <url>/2021/04/b0420868a4bc/</url>
     <content><![CDATA[<h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name]</span><br></pre></td></tr></table></figure>
@@ -541,64 +599,6 @@
 <li><p>u|set-upstream: 建立分支追踪</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push [-u] [&lt;remote&gt;] [&lt;remote-branch-name&gt;]</span><br></pre></td></tr></table></figure></li>
 </ul>
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
 <hr>
 ]]></content>
       <categories>
@@ -1688,198 +1688,6 @@
       </categories>
   </entry>
   <entry>
-    <title>nginx</title>
-    <url>/2022/04/1e58889c42cf/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
-<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
-<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
-<li><p>$nginx_version nginx 版本</p>
-</li>
-<li><p>$connection_requests TCP 链接当前的请求数量</p>
-</li>
-<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
-<span id="more"></span></li>
-</ul>
-<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
-<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
-</li>
-<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
-</li>
-<li><p>$document_uri 同 $uri</p>
-</li>
-<li><p>$document_root 当前请求的文档根目录或别名</p>
-</li>
-<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
-</li>
-<li><p>$remote_addr 客户端的 IP 地址</p>
-</li>
-<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
-</li>
-<li><p>$remote_port 客户端的端口号</p>
-</li>
-<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
-</li>
-<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
-</li>
-<li><p>$hostname 主机名</p>
-</li>
-<li><p>$http_user_agent 客户端 agent 信息</p>
-</li>
-<li><p>$http_cookie 客户端所有的 cookie 信息</p>
-</li>
-<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
-</li>
-<li><p>$http_referer 引用地址</p>
-</li>
-<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
-</li>
-<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
-</li>
-</ul>
-<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
-<li><p>$request 代表客户端的请求地址</p>
-</li>
-<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
-</li>
-<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
-</li>
-<li><p>$request_body 客户端的请求主体</p>
-</li>
-<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
-</li>
-<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
-</li>
-<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
-</li>
-<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
-</li>
-<li><p>$uri 当前请求的 URI</p>
-</li>
-<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
-</li>
-<li><p>$args 请求中的参数值</p>
-</li>
-<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
-</li>
-<li><p>$query_string 同$args</p>
-</li>
-<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
-</li>
-</ul>
-<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
-<li><p>$time_local 服务器时间(LOG Format 格式)</p>
-</li>
-<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
-<ul>
-<li>$sent_http_content_type ‘text/html’</li>
-<li>$sent_http_content_length 1024</li>
-</ul>
-</li>
-</ul>
-<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
-<li><p>$scheme HTTP 方法(如 http, https)</p>
-</li>
-<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
-</li>
-<li><p>$server_addr 服务器地址</p>
-</li>
-<li><p>$server_name 服务器名称</p>
-</li>
-<li><p>$server_port 服务器端口号</p>
-</li>
-<li><p>$status HTTP 响应代码</p>
-</li>
-<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
-</li>
-<li><p>$limit_rate 限制连接速率</p>
-</li>
-</ul>
-<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
-<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
-<li>none 允许 Referer 头域中不存在的情况</li>
-<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
-<li>server_names 设置一个或多个 URL</li>
-<li>arbitrary string 任意字符串</li>
-<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
-<li>http</li>
-<li>server</li>
-<li>location</li>
-<li>if in location</li>
-</ul>
-<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
-<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
-<ul>
-<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
-<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
-<thead>
-<tr>
-<th align="center">符号</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">~</td>
-<td>正则匹配，区分大小写</td>
-</tr>
-<tr>
-<td align="center">~*</td>
-<td>正则匹配，不区分大小写</td>
-</tr>
-<tr>
-<td align="center">^~</td>
-<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
-</tr>
-<tr>
-<td align="center">=</td>
-<td>普通字符匹配，精确匹配</td>
-</tr>
-<tr>
-<td align="center">@</td>
-<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
-</tr>
-</tbody></table>
-<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
-<li><p>精确匹配：</p>
-<p>= 前缀的指令严格匹配这个查询。</p>
-<p>如果找到，停止搜索。</p>
-</li>
-<li><p>普通字符匹配：</p>
-<p>所有剩下的常规字符串，最长的匹配。</p>
-<p>如果这个匹配使用^〜前缀，搜索停止。</p>
-</li>
-<li><p>正则匹配：</p>
-<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
-</li>
-<li><p>默认匹配：</p>
-<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
-<p>否则，如同从第 2 条规则被使用。</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>server</category>
-      </categories>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>shell工具</title>
     <url>/2022/05/4881d8683e6d/</url>
     <content><![CDATA[<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
@@ -2102,44 +1910,6 @@
       <tags>
         <tag>linux</tag>
         <tag>shell</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>即将废弃或已经废弃的API</title>
-    <url>/2021/07/6ab3a6a88944/</url>
-    <content><![CDATA[<ul>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr">String.prototype.substr()</a></p>
-<blockquote>
-<p>并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee">arguments.callee</a></p>
-<blockquote>
-<p>ES5 严格模式下禁止使用此方法，建议使用方法名调用自己</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/arguments">Function.arguments</a> 已废弃</p>
-<blockquote>
-<p>是一个类数组对象,表示传入函数的实参. 在函数内部直接使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments">arguments</a> 对象访问</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/compile">regexObj.compile</a> 已废弃</p>
-<blockquote>
-<p>用于编译正则表达式, 和 RegExp 构造函数的作用基本一样</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear">Date.prototype.getYear</a> 已废弃</p>
-<blockquote>
-<p>使用 getFullYear 代替</p>
-</blockquote>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>WebAPI</category>
-      </categories>
-      <tags>
-        <tag>API</tag>
       </tags>
   </entry>
   <entry>
@@ -2540,6 +2310,236 @@
       </categories>
       <tags>
         <tag>vagrant</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx</title>
+    <url>/2022/04/1e58889c42cf/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
+<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
+<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
+<li><p>$nginx_version nginx 版本</p>
+</li>
+<li><p>$connection_requests TCP 链接当前的请求数量</p>
+</li>
+<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
+<span id="more"></span></li>
+</ul>
+<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
+<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
+</li>
+<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
+</li>
+<li><p>$document_uri 同 $uri</p>
+</li>
+<li><p>$document_root 当前请求的文档根目录或别名</p>
+</li>
+<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
+</li>
+<li><p>$remote_addr 客户端的 IP 地址</p>
+</li>
+<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
+</li>
+<li><p>$remote_port 客户端的端口号</p>
+</li>
+<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
+</li>
+<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
+</li>
+<li><p>$hostname 主机名</p>
+</li>
+<li><p>$http_user_agent 客户端 agent 信息</p>
+</li>
+<li><p>$http_cookie 客户端所有的 cookie 信息</p>
+</li>
+<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
+</li>
+<li><p>$http_referer 引用地址</p>
+</li>
+<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
+</li>
+<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
+</li>
+</ul>
+<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
+<li><p>$request 代表客户端的请求地址</p>
+</li>
+<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
+</li>
+<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
+</li>
+<li><p>$request_body 客户端的请求主体</p>
+</li>
+<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
+</li>
+<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
+</li>
+<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
+</li>
+<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
+</li>
+<li><p>$uri 当前请求的 URI</p>
+</li>
+<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
+</li>
+<li><p>$args 请求中的参数值</p>
+</li>
+<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
+</li>
+<li><p>$query_string 同$args</p>
+</li>
+<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
+</li>
+</ul>
+<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
+<li><p>$time_local 服务器时间(LOG Format 格式)</p>
+</li>
+<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
+<ul>
+<li>$sent_http_content_type ‘text/html’</li>
+<li>$sent_http_content_length 1024</li>
+</ul>
+</li>
+</ul>
+<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
+<li><p>$scheme HTTP 方法(如 http, https)</p>
+</li>
+<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
+</li>
+<li><p>$server_addr 服务器地址</p>
+</li>
+<li><p>$server_name 服务器名称</p>
+</li>
+<li><p>$server_port 服务器端口号</p>
+</li>
+<li><p>$status HTTP 响应代码</p>
+</li>
+<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
+</li>
+<li><p>$limit_rate 限制连接速率</p>
+</li>
+</ul>
+<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
+<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
+<li>none 允许 Referer 头域中不存在的情况</li>
+<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
+<li>server_names 设置一个或多个 URL</li>
+<li>arbitrary string 任意字符串</li>
+<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
+<li>http</li>
+<li>server</li>
+<li>location</li>
+<li>if in location</li>
+</ul>
+<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
+<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
+<ul>
+<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
+<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
+<thead>
+<tr>
+<th align="center">符号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">~</td>
+<td>正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td align="center">~*</td>
+<td>正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td align="center">^~</td>
+<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
+</tr>
+<tr>
+<td align="center">=</td>
+<td>普通字符匹配，精确匹配</td>
+</tr>
+<tr>
+<td align="center">@</td>
+<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
+</tr>
+</tbody></table>
+<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
+<li><p>精确匹配：</p>
+<p>= 前缀的指令严格匹配这个查询。</p>
+<p>如果找到，停止搜索。</p>
+</li>
+<li><p>普通字符匹配：</p>
+<p>所有剩下的常规字符串，最长的匹配。</p>
+<p>如果这个匹配使用^〜前缀，搜索停止。</p>
+</li>
+<li><p>正则匹配：</p>
+<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
+</li>
+<li><p>默认匹配：</p>
+<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
+<p>否则，如同从第 2 条规则被使用。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>server</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>即将废弃或已经废弃的API</title>
+    <url>/2021/07/6ab3a6a88944/</url>
+    <content><![CDATA[<ul>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr">String.prototype.substr()</a></p>
+<blockquote>
+<p>并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee">arguments.callee</a></p>
+<blockquote>
+<p>ES5 严格模式下禁止使用此方法，建议使用方法名调用自己</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/arguments">Function.arguments</a> 已废弃</p>
+<blockquote>
+<p>是一个类数组对象,表示传入函数的实参. 在函数内部直接使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments">arguments</a> 对象访问</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/compile">regexObj.compile</a> 已废弃</p>
+<blockquote>
+<p>用于编译正则表达式, 和 RegExp 构造函数的作用基本一样</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear">Date.prototype.getYear</a> 已废弃</p>
+<blockquote>
+<p>使用 getFullYear 代替</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
       </tags>
   </entry>
   <entry>
@@ -5470,17 +5470,12 @@
 </ul>
 <p>事务开始到执行的三个阶段</p>
 <ul>
-<li>开始事务(multi)</li>
-<li>命令入队</li>
-<li>执行事务(exec)</li>
+<li>开启事务(multi): 使用 <code>MULTI</code> 命令标记从非事务状态切换到事务状态</li>
+<li>命令入队: 命令不会被立即执行, 而是被放入一个事务队列</li>
+<li>执行事务(exec)或丢弃(discard)</li>
 </ul>
 <h4 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h4><ul>
-<li><p>MULTI 开启事务, 通常返回 ok</p>
-</li>
-<li><p>DISCARD 丢弃事务, 通常返回 ok</p>
-<ul>
-<li>必须在 <code>MULTI</code> 命令之后才能调用, 否则报错 ERR DISCARD without MULTI</li>
-</ul>
+<li><p>MULTI 标记一个事务块的开启, 通常返回 ok</p>
 </li>
 <li><p>EXEC 执行事务, 通常返回 ok</p>
 <ul>
@@ -5488,7 +5483,12 @@
 <li>如果 <code>WATCH</code> 观察的 key 在当前的事务执行时已被修改, 则返回 &lt;nil&gt;</li>
 </ul>
 </li>
-<li><p>WATCH key [key …] 观察指定 key, 通常返回 ok, 如果在事务执行之前观察的 key 被修改, 则事务将被打断</p>
+<li><p>DISCARD 丢弃事务, 通常返回 ok</p>
+<ul>
+<li>必须在 <code>MULTI</code> 命令之后才能调用, 否则报错 ERR DISCARD without MULTI</li>
+</ul>
+</li>
+<li><p>WATCH key [key …] 监视一个或多个 key, 如果在事务执行之前观察的 key 被修改, 则事务将被打断, 通常返回 ok</p>
 <ul>
 <li>如果在 <code>MULTI</code> 命令后调用, 则会报错 ERR WATCH inside MULTI is not allowed</li>
 </ul>
@@ -5501,6 +5501,47 @@
 <h4 id="编译时错误"><a href="#编译时错误" class="headerlink" title="编译时错误"></a>编译时错误</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; set key1 hello</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; MULTI # 开启事务</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">此处的错误在命令加入事务队列时发现, 直接报告, 导致整个事务的执行失败</span></span><br><span class="line">127.0.0.1:6379(TX)&gt; INCR key1 10</span><br><span class="line">(error) ERR wrong number of arguments for &#x27;incr&#x27; command</span><br><span class="line">127.0.0.1:6379(TX)&gt; set key2 key2 # 命令入队列</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379(TX)&gt; get key2</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379(TX)&gt; exec  # 执行事务</span><br><span class="line">(error) EXECABORT Transaction discarded because of previous errors.</span><br><span class="line">127.0.0.1:6379&gt; get key2</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
 
 <h4 id="运行时错误"><a href="#运行时错误" class="headerlink" title="运行时错误"></a>运行时错误</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; MULTI # 开启事务</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379(TX)&gt; set key1 hello  # 命令入队列</span><br><span class="line">QUEUED</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">此处的错误在命令运行时才能发现, 但不影响下面的命令的执行</span></span><br><span class="line">127.0.0.1:6379(TX)&gt; INCR key1</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379(TX)&gt; set key2 key2</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379(TX)&gt; get key2  # 命令执行成功</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379(TX)&gt; EXEC  # 执行事务</span><br><span class="line">1) OK</span><br><span class="line">2) (error) ERR value is not an integer or out of range</span><br><span class="line">3) OK</span><br><span class="line">4) &quot;key2&quot;</span><br><span class="line">127.0.0.1:6379&gt; get key2</span><br><span class="line">&quot;key2&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Redis-Lua"><a href="#Redis-Lua" class="headerlink" title="Redis-Lua"></a>Redis-Lua</h4><h5 id="Lua-中调用-Redis-命令"><a href="#Lua-中调用-Redis-命令" class="headerlink" title="Lua 中调用 Redis 命令"></a>Lua 中调用 Redis 命令</h5><ul>
+<li><code>redis.call(command [, arg...])</code> 执行一个 redis 命令并返回结果</li>
+<li><code>redis.pcall(command [, arg...])</code> 行为与 <code>redis.call()</code> 命令相同, 并且能用于处理 redis 服务器引发的运行时错误</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SET name &#x27;hello world&#x27;</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; GET name</span><br><span class="line">&quot;hello world&quot;</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return redis.call(&#x27;GET&#x27;, KEYS[1])&quot; 1 name</span><br><span class="line">&quot;hello world&quot;</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return redis.call(&#x27;GET&#x27;, &#x27;name&#x27;)&quot; 0</span><br><span class="line">&quot;hello world&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>redis.error_reply(x)</code> 辅助函数, 返回一个错误信息</li>
+<li><code>redis.status_reply(x)</code> 辅助函数, 可以修改 Redis 命令的默认返回值 OK</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">返回错误信息</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return redis.error_reply(&#x27;ERR This is a special error&#x27;)&quot; 0</span><br><span class="line">(error) ERR This is a special error</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改默认返回值</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return &#123; ok = &#x27;TICK&#x27; &#125;&quot; 0</span><br><span class="line">&quot;TICK&quot;</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return redis.status_reply(&#x27;TOCK&#x27;)&quot; 0</span><br><span class="line">&quot;TOCK&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>redis.sha1hex(x)</code> 返回字符串参数的 SHA1 摘要信息</li>
+<li><code>redis.log(level, message)</code> 写入 Redis 日志</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL &quot;return redis.sha1hex(&#x27;&#x27;)&quot; 0</span><br><span class="line">&quot;da39a3ee5e6b40d3255bfef95601890afd80709&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>bit.tobit(x)</code> 将数字格式化为位运算的数值范围并返回</li>
+<li><code>bit.tohex(x [, n])</code> 将第一个参数转换为十六进制并返回, 第二个参数的绝对值控制返回值的数量</li>
+<li><code>bit.bnot(x), bit.bor(x1 [, x2...]), bit.band(x1 [, x2...]), bit.bxor(x1 [, x2...])</code> 返回参数的按位运算</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL &quot;return bit.tobit(1)&quot; 0</span><br><span class="line">(integer) 1</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return bit.tohex(422342)&quot; 0</span><br><span class="line">&quot;000671cd&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return bit.bor(1,2,4,8,16,32,64,255)&quot; 0</span><br><span class="line">(integer) 255</span><br></pre></td></tr></table></figure>
+
+<h5 id="执行脚本"><a href="#执行脚本" class="headerlink" title="执行脚本"></a>执行脚本</h5><ul>
+<li>EVAL script numkeys key [key …] arg [arg …] 执行 Lua 脚本<ul>
+<li>script 要执行的脚本语句</li>
+<li>numkeys 指定后续的参数有几个 key</li>
+<li>key 要操作的键, 在 Lua 脚本中通过 KEYS[1], KEYS[2] 获取</li>
+<li>arg 参数, 在 Lua 脚本中通过 ARGV[1], ARGV[2] 获取</li>
+</ul>
+</li>
+<li>EVALSHA sha1 numkeys key [key …] arg [arg …] 使用缓存 Lua 脚本的 sha 执行 Lua 脚本</li>
+<li>SCRIPT EXISTS script [script …] 查看指定的脚本是否已经被保存在缓存中</li>
+<li>SCRIPT FLUSH 从脚本缓存中移除所有脚本</li>
+<li>SCRIPT KILL 杀死系统当前正在运行的 Lua 脚本</li>
+<li>SCRIPT LOAD script 将脚本 script 添加到脚本缓存中, 但并不立即执行这个脚本</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL &quot;return 10&quot; 0</span><br><span class="line">(integer) 10</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return ARGV[1]&quot; 0 100</span><br><span class="line">&quot;100&quot;</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return &#123;ARGV[1], ARGV[2]&#125;&quot; 0 100 101</span><br><span class="line">1) &quot;100&quot;</span><br><span class="line">2) &quot;101&quot;</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return &#123;KEYS[1], KEYS[2], ARGV[1], ARGV[2]&#125;&quot; 2 key1 key2 first second</span><br><span class="line">1) &quot;key1&quot;</span><br><span class="line">2) &quot;key2&quot;</span><br><span class="line">3) &quot;first&quot;</span><br><span class="line">4) &quot;second&quot;</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return &#123;1, 2, &#123; 3, &#x27;hello world&#x27; &#125; &#125;&quot; 0</span><br><span class="line">1) (integer) 1</span><br><span class="line">2) (integer) 2</span><br><span class="line">3) 1) (integer) 3</span><br><span class="line">   2) &quot;hello world&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加 Lua 缓存脚本</span></span><br><span class="line">127.0.0.1:6379&gt; SCRIPT LOAD &quot;return redis.call(&#x27;GET&#x27;, &#x27;name&#x27;)&quot;</span><br><span class="line">&quot;948239fda87f9ddfa987fda97dfs8fsd8d7s8&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用 sha 执行脚本</span></span><br><span class="line">127.0.0.1:6379&gt; EVALSHA 948239fda87f9ddfa987fda97dfs8fsd8d7s8 0</span><br><span class="line">&quot;hello world&quot;</span><br></pre></td></tr></table></figure>
 
 <h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>Redis 是基于内存的数据库, 遇到断电就会丢失数据, 持久化就是将内存中的数据保存到磁盘中便于以后使用, Redis 提供了 RDB 和 AOF 两种持久化方式, 默认使用 RDB 方式持久化数据<br>Redis 在持久化的过程中, 会先将数据写入到一个临时的文件中, 待持久化过程结束后, 才会用这个临时文件替换赏赐持久化生成的文件</p>
 <h4 id="触发方式"><a href="#触发方式" class="headerlink" title="触发方式"></a>触发方式</h4><ul>
@@ -5575,56 +5616,44 @@
 <h5 id="增量复制"><a href="#增量复制" class="headerlink" title="增量复制"></a>增量复制</h5><p>主服务器将新的所有收集到的修改命令依次传给从服务器, 完成同步</p>
 <h4 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h4><p>===每台 Redis 服务器都是主节点===, 只用配置从服务器即可<br>使用<code>命令配置</code>只能在<code>本次服务器运行时有效</code>, 重启服务器后将会丢失配置信息, 使用配置文件永久生效</p>
 <h5 id="运行时有效"><a href="#运行时有效" class="headerlink" title="运行时有效"></a>运行时有效</h5><ul>
-<li>方式一: 启动 Redis 服务器时参数指定 <code>redis-server --port 6380 --replicaof 127.0.0.1 6379</code></li>
-<li>方式二: 连接 Redis 服务器使用内置命令 <code>REPLICAOF host port</code></li>
+<li>方式一: <strong>启动</strong> Redis 服务器时参数指定 <code>redis-server --port 6380 --replicaof 127.0.0.1 6379</code></li>
+<li>方式二: <strong>连接</strong> Redis 服务器使用内置命令 <code>REPLICAOF host port</code></li>
 </ul>
 <p>提升从服务器角色</p>
 <ul>
-<li>REPLICAOF NO ONE 将从服务器更改为主服务器</li>
+<li><code>REPLICAOF NO ONE</code> 将从服务器更改为主服务器</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置关联主服务器</span></span><br><span class="line">127.0.0.1:6380&gt; REPLICAOF 127.0.0.1 6379</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6381&gt; REPLICAOF 127.0.0.1 6379</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看主服务器配置信息</span></span><br><span class="line">127.0.0.1:6379&gt; INFO replication</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:2</span><br><span class="line">slave0:ip=127.0.0.1,port=6380,state=online,offset=153689,lag=0</span><br><span class="line">slave1:ip=127.0.0.1,port=6381,state=online,offset=153557,lag=0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:749aaed3f58b97f7c01d3732a6f6c55be205c4b2</span><br><span class="line">master_replid2:451a270c3954af29f43878dd9bfeac579d011972</span><br><span class="line">master_repl_offset:153689</span><br><span class="line">second_repl_offset:133525</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:133525</span><br><span class="line">repl_backlog_histlen:20165</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>读写数据</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">主机写入数据</span></span><br><span class="line">127.0.0.1:6379&gt; SET name helloworld</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从机读取数据</span></span><br><span class="line">127.0.0.1:6380&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6380&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can&#x27;t write against a read only replica.</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从机读取数据</span></span><br><span class="line">127.0.0.1:6381&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6381&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can&#x27;t write against a read only replica.</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">主机写入数据</span></span><br><span class="line">127.0.0.1:6379&gt; SET name helloworld</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从机读取数据</span></span><br><span class="line">127.0.0.1:6380&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6380&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can\&#x27;t write against a read only replica.</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从机读取数据</span></span><br><span class="line">127.0.0.1:6381&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6381&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can\&#x27;t write against a read only replica.</span><br></pre></td></tr></table></figure>
 
-<h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>redis.conf</p>
-<ul>
-<li>bind 127.0.0.1 修改绑定的 ip</li>
-<li>port 6379 修改绑定的端口号</li>
-<li>daemonize yes 开启后台运行, 默认为 no</li>
-<li>pidfile /var/run/redis_6379.pid 修改进程文件, 默认为 redis_6379.pid</li>
-<li>logfile “6379.log” 修改日志文件名, 默认为空</li>
-<li>dbfilename dump6379.rdb 修改持久化文件名, 默认为 dump.rdb</li>
-<li>replicaof &lt;masterip&gt; &lt;masterport&gt; 配置主服务器 ip 和 port</li>
-<li>masterauth &lt;master-password&gt; 主服务器认证密码, 如果需要</li>
-<li>masteruser &lt;username&gt; 主服务器用户</li>
-<li>replica-read-only yes 只读模式, 默认开启</li>
-<li>repl-diskless-sync yes 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件</li>
-<li>repl-diskless-sync-delay 5 同步延迟, 默认 5 秒</li>
-<li>replica-priority 100 哨兵模式下被选为主服务器的优先级, 值越小优先级越高</li>
-</ul>
+<h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>使用配置文件的方式永久有效</p>
+<p>redis.conf</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="comment"># 修改绑定的 ip</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span> <span class="comment"># 修改绑定的端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span> <span class="comment"># 开启后台运行, 默认为 no</span></span><br><span class="line"><span class="comment"># 修改进程文件, 默认为 redis_6379.pid</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="comment"># 修改日志文件名, 默认为空</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="comment"># 修改持久化文件名, 默认为 dump.rdb</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="string">&lt;masterip&gt;</span> <span class="string">&lt;masterport&gt;</span></span><br><span class="line"><span class="comment"># 主服务器认证密码, 如果需要</span></span><br><span class="line"><span class="string">masterauth</span> <span class="string">&lt;master-password&gt;</span></span><br><span class="line"><span class="string">masteruser</span> <span class="string">&lt;username&gt;</span> <span class="comment"># 主服务器用户</span></span><br><span class="line"><span class="string">replica-read-only</span> <span class="literal">yes</span> <span class="comment"># 只读模式, 默认开启</span></span><br><span class="line"><span class="comment"># 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件</span></span><br><span class="line"><span class="string">repl-diskless-sync</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 同步延迟, 默认 5 秒</span></span><br><span class="line"><span class="string">repl-diskless-sync-delay</span> <span class="number">5</span></span><br><span class="line"><span class="comment"># 哨兵模式下被选为主服务器的优先级, 值越小优先级越高</span></span><br><span class="line"><span class="string">replica-priority</span> <span class="number">100</span></span><br></pre></td></tr></table></figure>
+
 <h4 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h4><p>哨兵模式是一种特殊的模式, 首先 Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行<br>哨兵模式选举: 首先, 领头 sentinel 根据从服务器的信号反馈将从服务器列表中失联的服务器剔除, 按照从服务器的优先级(replica-priority)进行排序并选择优先级最高的从服务器, 如果有多个具有相同最高优先级的从服务器, 那么, 领头 sentinel 将多个具有相同最高优先级的从服务器按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从服务器进行 PSYNC 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从服务器, 如果有多个优先级最高, 复制偏移量最大的从服务器, 那么 领头 sentinel 将按照从服务器的运行 ID 进行排序并选择其中 ID 最小的从服务器</p>
 <ul>
 <li>哨兵通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器</li>
 <li>当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件并关联新的主服务器</li>
 </ul>
 <p>默认配置文件 <code>sentinel.conf</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">protected-mode no # 保护模式, 默认不开启</span><br><span class="line">port 26379 # 服务端口号</span><br><span class="line">daemonize no # 是否后台运行模式</span><br><span class="line">pidfile /var/run/redis-sentinel.pid # 进程文件</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel announce-ip &lt;ip&gt; <span class="comment"># 广播地址</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel announce-port &lt;port&gt; <span class="comment"># 广播端口</span></span></span><br><span class="line">logfile &quot;&quot; # 日志文件</span><br><span class="line">dir /tmp # 工作目录</span><br><span class="line">sentinel monitor mymaster 127.0.0.1 6379 2 # 监测服务器配置, 数字表示确认主服务器宕机的票数</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel auth-pass &lt;master-name&gt; &lt;password&gt; <span class="comment"># 认证配置</span></span></span><br><span class="line">sentinel down-after-milliseconds mymaster 30000 # 不可触达的超时时间, 默认 30 s</span><br><span class="line">sentinel parallel-syncs mymaster 1 # 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1</span><br><span class="line">sentinel failover-timeout mymaster 180000 # 当服务器宕机后等待再次重启的时间, 默认 3 min</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel notification-script &lt;master-name&gt; &lt;script-path&gt; <span class="comment"># 服务器唤起脚本文件</span></span></span><br><span class="line">sentinel deny-scripts-reconfig yes # 拒绝脚本配置, 默认拒绝</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span> <span class="comment"># 保护模式, 默认不开启</span></span><br><span class="line"><span class="string">port</span> <span class="number">26379</span> <span class="comment"># 服务端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">no</span> <span class="comment"># 是否后台运行模式</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel.pid</span> <span class="comment"># 进程文件</span></span><br><span class="line"><span class="comment"># sentinel announce-ip &lt;ip&gt; # 广播地址</span></span><br><span class="line"><span class="comment"># sentinel announce-port &lt;port&gt; # 广播端口</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;&quot;</span> <span class="comment"># 日志文件</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span> <span class="comment"># 工作目录</span></span><br><span class="line"><span class="comment"># 监测服务器配置, 数字表示确认主服务器宕机的票数</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">mymaster</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br><span class="line"><span class="comment"># sentinel auth-pass &lt;master-name&gt; &lt;password&gt; # 认证配置</span></span><br><span class="line"><span class="comment"># 不可触达的超时时间, 默认 30 s</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">down-after-milliseconds</span> <span class="string">mymaster</span> <span class="number">30000</span></span><br><span class="line"><span class="comment"># 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">parallel-syncs</span> <span class="string">mymaster</span> <span class="number">1</span></span><br><span class="line"><span class="comment"># 当服务器宕机后等待再次重启的时间, 默认 3 min</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">failover-timeout</span> <span class="string">mymaster</span> <span class="number">180000</span></span><br><span class="line"><span class="comment"># 服务器唤起脚本文件</span></span><br><span class="line"><span class="comment"># sentinel notification-script &lt;master-name&gt; &lt;script-path&gt;</span></span><br><span class="line"><span class="comment"># 拒绝脚本配置, 默认拒绝</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">deny-scripts-reconfig</span> <span class="literal">yes</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>方式一: 使用命令 <code>redis-server /path/to/sentinel.conf --sentinel</code> 开启哨兵模式</li>
 <li>方式二: 使用命令 <code>redis-sentinel /path/to/sentinel.conf</code> 开启哨兵模式</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel.conf</span></span><br><span class="line">sentinel monitor myredis 127.0.0.1 6379 1</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># sentinel.conf</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">myredis</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">1</span></span><br></pre></td></tr></table></figure>
 
 <p><img data-src="/images/redis-2.png" alt="redis-2"><br><img data-src="/images/redis-3.png" alt="redis-3"></p>
 <h5 id="一主三从哨兵配置"><a href="#一主三从哨兵配置" class="headerlink" title="一主三从哨兵配置"></a>一主三从哨兵配置</h5><p>3 个哨兵配置文件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel26379.conf</span></span><br><span class="line">port 26379</span><br><span class="line">pidfile /var/run/redis-sentinel-26379.pid</span><br><span class="line">logfile &quot;26379.log&quot;</span><br><span class="line">dir /tmp</span><br><span class="line">sentinel monitor myredis 127.0.0.1 6379 2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel36379.conf</span></span><br><span class="line">port 36379</span><br><span class="line">pidfile /var/run/redis-sentinel-36379.pid</span><br><span class="line">logfile &quot;36379.log&quot;</span><br><span class="line">dir /tmp</span><br><span class="line">sentinel monitor myredis 127.0.0.1 6379 2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sentinel46379.conf</span></span><br><span class="line">port 46379</span><br><span class="line">pidfile /var/run/redis-sentinel-46379.pid</span><br><span class="line">logfile &quot;46379.log&quot;</span><br><span class="line">dir /tmp</span><br><span class="line">sentinel monitor myredis 127.0.0.1 6379 2</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># sentinel26379.conf</span></span><br><span class="line"><span class="string">port</span> <span class="number">26379</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel-26379.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;26379.log&quot;</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">myredis</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># sentinel36379.conf</span></span><br><span class="line"><span class="string">port</span> <span class="number">36379</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel-36379.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;36379.log&quot;</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">myredis</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># sentinel46379.conf</span></span><br><span class="line"><span class="string">port</span> <span class="number">46379</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel-46379.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;46379.log&quot;</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">myredis</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br></pre></td></tr></table></figure>
 
 <p>3 台 redis 服务器配置文件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">redis6379.conf</span></span><br><span class="line">bind 127.0.0.1</span><br><span class="line">port 6379</span><br><span class="line">daemonize yes</span><br><span class="line">pidfile /var/run/redis_6379.pid</span><br><span class="line">logfile &quot;6379.log&quot;</span><br><span class="line">dbfilename dump6379.rdb</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">redis6380.conf</span></span><br><span class="line">bind 127.0.0.1</span><br><span class="line">port 6380</span><br><span class="line">daemonize yes</span><br><span class="line">pidfile /var/run/redis_6380.pid</span><br><span class="line">logfile &quot;6380.log&quot;</span><br><span class="line">dbfilename dump6380.rdb</span><br><span class="line">replicaof 127.0.0.1 6379 # 配置主服务器 ip 和 port</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">redis6381.conf</span></span><br><span class="line">bind 127.0.0.1</span><br><span class="line">port 6381</span><br><span class="line">daemonize yes</span><br><span class="line">pidfile /var/run/redis_6381.pid</span><br><span class="line">logfile &quot;6381.log&quot;</span><br><span class="line">dbfilename dump6381.rdb</span><br><span class="line">replicaof 127.0.0.1 6379 # 配置主服务器 ip 和 port</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># redis6379.conf</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># redis6380.conf</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="string">port</span> <span class="number">6380</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6380.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6380.log&quot;</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6380.rdb</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># redis6381.conf</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="string">port</span> <span class="number">6381</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6381.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6381.log&quot;</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6381.rdb</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@centos7 ~]# redis-server .config/redis6379.conf # 启动 redis 服务器</span><br><span class="line">[root@centos7 ~]# redis-server .config/redis6380.conf # 启动 redis 服务器</span><br><span class="line">[root@centos7 ~]# redis-server .config/redis6381.conf # 启动 redis 服务器</span><br><span class="line">[root@centos7 ~]# redis-sentinel .config/sentinel26379.conf # 启动哨兵</span><br><span class="line">[root@centos7 ~]# redis-sentinel .config/sentinel36379.conf # 启动哨兵</span><br><span class="line">[root@centos7 ~]# redis-sentinel .config/sentinel46379.conf # 启动哨兵</span><br></pre></td></tr></table></figure>
 
@@ -5667,7 +5696,7 @@
 </ul>
 <p>使用 <code>redis-cli -c -p port</code> 命令接入集群节点</p>
 <h4 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h4><h5 id="编辑配置文件"><a href="#编辑配置文件" class="headerlink" title="编辑配置文件  "></a>编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line --></h5><p>创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式<br>创建 <code>redis6379.conf</code>, <code>redis6380.conf</code>, <code>redis6381.conf</code>, <code>redis6382.conf</code>, <code>redis6383.conf</code>, <code>redis6384.conf</code> 6 个文件<br>修改其中的 ip, port, pidfile, cluster-enabled, cluster-config-file</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">引入 redis 默认配置文件</span></span><br><span class="line">include /root/redis-cluster/redis.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改绑定 ip, 此处演示全为本机</span></span><br><span class="line">bind 127.0.0.1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改 redis 端口号, 本机演示需要修改, 多机器时可以不用</span></span><br><span class="line">port 6379</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">关闭保护模式, 默认 <span class="built_in">yes</span></span></span><br><span class="line">protected-mode no</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">开启后台运行, 默认 no</span></span><br><span class="line">daemonize yes</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改 redis 进程文件名</span></span><br><span class="line">pidfile /var/run/redis_6379.pid</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">开启集群模式</span></span><br><span class="line">cluster-enabled yes</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改集群节点文件名, 默认在存储在当前目录下</span></span><br><span class="line">cluster-config-file nodes-6379.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒</span></span><br><span class="line">cluster-node-timeout 15000</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 <span class="built_in">yes</span></span></span><br><span class="line">cluster-require-full-coverage no</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cluster-announce-ip ip</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cluster-announce-port 6379</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cluster-announce-bus-port 16379</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 引入 redis 默认配置文件</span></span><br><span class="line"><span class="string">include</span> <span class="string">/root/redis-cluster/redis.conf</span></span><br><span class="line"><span class="comment"># 修改绑定 ip, 此处演示全为本机</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="comment"># 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span></span><br><span class="line"><span class="comment"># 关闭保护模式, 默认 yes</span></span><br><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span></span><br><span class="line"><span class="comment"># 开启后台运行, 默认 no</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 修改 redis 进程文件名</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">cluster-enabled</span> <span class="literal">yes</span> <span class="comment"># 开启集群模式</span></span><br><span class="line"><span class="comment"># 修改集群节点文件名, 默认在存储在当前目录下</span></span><br><span class="line"><span class="string">cluster-config-file</span> <span class="string">nodes-6379.conf</span></span><br><span class="line"><span class="comment"># 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒</span></span><br><span class="line"><span class="string">cluster-node-timeout</span> <span class="number">15000</span></span><br><span class="line"><span class="comment"># 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes</span></span><br><span class="line"><span class="string">cluster-require-full-coverage</span> <span class="literal">no</span></span><br><span class="line"><span class="comment">#cluster-announce-ip ip</span></span><br><span class="line"><span class="comment">#cluster-announce-port 6379</span></span><br><span class="line"><span class="comment">#cluster-announce-bus-port 16379</span></span><br></pre></td></tr></table></figure>
 
 <h5 id="启动-Redis-服务器"><a href="#启动-Redis-服务器" class="headerlink" title="启动 Redis 服务器"></a>启动 Redis 服务器</h5><p>启动所有的 redis 服务器, 使用 <code>ps -ef | grep redis</code> 命令查看 redis 服务器进程</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@centos7 redis-cluster]# redis-server redis6379.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6380.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6381.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6382.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6383.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6384.conf</span><br><span class="line">[root@centos7 redis-cluster]# ps -ef | grep redis</span><br><span class="line">root      3731     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6379 [cluster]</span><br><span class="line">root      3737     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6380 [cluster]</span><br><span class="line">root      3743     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6381 [cluster]</span><br><span class="line">root      3749     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6382 [cluster]</span><br><span class="line">root      3755     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6383 [cluster]</span><br><span class="line">root      3761     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6384 [cluster]</span><br></pre></td></tr></table></figure>
@@ -5677,12 +5706,12 @@
 
 <h5 id="连接-Redis-服务器"><a href="#连接-Redis-服务器" class="headerlink" title="连接 Redis 服务器"></a>连接 Redis 服务器</h5><p>使用 <code>redis-cli -c -p port</code> 命令接入集群节点</p>
 <ul>
-<li>-c 允许集群模式接入</li>
+<li>-c 以集群模式接入</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@centos7 redis-cluster]# redis-cli -c -p 6379</span><br></pre></td></tr></table></figure>
 
 <h5 id="集群命令"><a href="#集群命令" class="headerlink" title="集群命令"></a>集群命令</h5><ul>
-<li>CLUSTER HELP # 在 Redis 命令行中查看所有集群操作命令</li>
+<li>CLUSTER HELP 在 Redis 命令行中查看所有集群操作命令</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6380&gt; CLUSTER HELP</span><br></pre></td></tr></table></figure>
 
@@ -5700,11 +5729,15 @@
 
 <h5 id="查看节点配置文件"><a href="#查看节点配置文件" class="headerlink" title="查看节点配置文件"></a>查看节点配置文件</h5><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@centos7 redis-cluster]# cat nodes-6381.conf</span><br><span class="line">76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381@16381 myself,slave eaf9833aa105e36b22f6330585a972239bab9f50 0 1669529243521 8 connected</span><br><span class="line">2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529243524 7 connected</span><br><span class="line">4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529243524 2 connected</span><br><span class="line">eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384@16384 master - 0 1669529243529 8 connected 10923-16383</span><br><span class="line">6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382@16382 master - 0 1669529243529 7 connected 0-5460</span><br><span class="line">a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529243524 2 connected 5461-10922</span><br><span class="line">vars currentEpoch 8 lastVoteEpoch 7</span><br></pre></td></tr></table></figure>
 
-<h5 id="添加新节点"><a href="#添加新节点" class="headerlink" title="添加新节点"></a>添加新节点</h5><p>按照 <a href="#bjpzwj">编辑配置文件</a> 创建并修改 <code>redis6385.conf</code> 文件 <!-- markdownlint-disable-line --><br>启动服务器 <code>redis-server redis6385.conf</code>, 同时查看服务器是否正常启动</p>
-<p>使用命令 <code>redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379</code> 将 6385 添加为 6379 的从节点</p>
+<h5 id="添加新节点"><a href="#添加新节点" class="headerlink" title="添加新节点"></a>添加新节点</h5><p>按照 <a href="#bjpzwj">编辑配置文件</a> 创建并修改 <code>redis6385.conf</code> 文件<br>启动服务器 <code>redis-server redis6385.conf</code>, 同时查看服务器是否正常启动</p>
+<ul>
+<li>使用命令 <code>redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379</code> 将 6385 添加为 6379 的从节点</li>
+</ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">向 6379 节点添加新的从节点</span></span><br><span class="line">[root@centos7 redis-cluster]# redis-cli --cluster add-node --cluster-slave \</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">127.0.0.1:6385 127.0.0.1:6379</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Adding node 127.0.0.1:6385 to cluster 127.0.0.1:6379</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Performing Cluster Check (using node 127.0.0.1:6379)</span></span><br><span class="line">M: 8e20e97a99e1abed4eb568079d63538439d39382 127.0.0.1:6379</span><br><span class="line">   slots:[0-5460] (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">M: fba8c2aefddd1cb4b694f7f29ade77b9309f0359 127.0.0.1:6381</span><br><span class="line">   slots:[10923-16383] (5461 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: c1a6f2b05266dd2c99a21e8ec715b5760828bd05 127.0.0.1:6384</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates fba8c2aefddd1cb4b694f7f29ade77b9309f0359</span><br><span class="line">S: 6750e7cf044954b21381c074d0a3a89f8d9e211b 127.0.0.1:6383</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 57c53adcc0a7d8ddcc79487a7386837b364044fb</span><br><span class="line">M: 57c53adcc0a7d8ddcc79487a7386837b364044fb 127.0.0.1:6380</span><br><span class="line">   slots:[5461-10922] (5462 slots) master</span><br><span class="line">   1 additional replica(s)</span><br><span class="line">S: ae1e820f675956a281404de626a7e2194bede899 127.0.0.1:6382</span><br><span class="line">   slots: (0 slots) slave</span><br><span class="line">   replicates 8e20e97a99e1abed4eb568079d63538439d39382</span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Check <span class="keyword">for</span> open slots...</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Check slots coverage...</span></span><br><span class="line">[OK] All 16384 slots covered.</span><br><span class="line">Automatically selected master 127.0.0.1:6379</span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Send CLUSTER MEET to node 127.0.0.1:6385 to make it <span class="built_in">join</span> the cluster.</span></span><br><span class="line">Waiting for the cluster to join</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; Configure node as replica of 127.0.0.1:6379.</span></span><br><span class="line">[OK] New node added correctly.</span><br></pre></td></tr></table></figure>
 
-<p>查看节点 6379 的信息, 显示 2 个从节点</p>
+<ul>
+<li>查看节点 6379 的信息, 显示 2 个从节点</li>
+</ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看节点信息</span></span><br><span class="line">[root@centos7 redis-cluster]# redis-cli --cluster info 127.0.0.1:6379</span><br><span class="line">127.0.0.1:6379 (8e20e97a...) -&gt; 0 keys | 5461 slots | 2 slaves.</span><br><span class="line">127.0.0.1:6381 (fba8c2ae...) -&gt; 0 keys | 5461 slots | 1 slaves.</span><br><span class="line">127.0.0.1:6380 (57c53adc...) -&gt; 0 keys | 5462 slots | 1 slaves.</span><br><span class="line">[OK] 0 keys in 3 masters.</span><br><span class="line">0.00 keys per slot on average.</span><br></pre></td></tr></table></figure>
 
 <h4 id="集群优点"><a href="#集群优点" class="headerlink" title="集群优点"></a>集群优点</h4><ul>
@@ -6139,7 +6172,7 @@
 </blockquote>
 <h4 id="VNode-生命周期事件"><a href="#VNode-生命周期事件" class="headerlink" title="VNode 生命周期事件"></a>VNode 生命周期事件</h4><p>VNode 生命周期事件前缀从 <code>hook:</code> 更改为 <code>vue:</code>, 这些事件也可用于 HTML 元素, 和在组件上的用法一样</p>
 <ul>
-<li><code>vue:</code> 前缀为固定格式, 生命周期事件名可以使用 <code>kebab-case</code> 或者 <code>camelCase</code> 方式</li>
+<li><code>vue:</code> 前缀为固定格式, 生命周期事件名可以使用 <code>kebab-case</code> 或者 <code>camelCase</code> 格式</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- Vue 2.x --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">hook:mounted</span>=<span class="string">&quot;onMounted&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">child-component</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- Vue 3.x --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:mounted</span>=<span class="string">&quot;onMounted&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">child-component</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:before-update</span>=<span class="string">&quot;onBeforeUpdate&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">child-component</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 等同于 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:beforeUpdate</span>=<span class="string">&quot;onBeforeUpdate&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">child-component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -6575,7 +6608,7 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h, <span class="title class_">KeepAlive</span>, <span class="title class_">Transition</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, ctx</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="title class_">Transition</span>, &#123; <span class="attr">mode</span>: <span class="string">&#x27;out-in&#x27;</span> &#125; <span class="comment">/* ... */</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h4 id="lt-Transition-gt"><a href="#lt-Transition-gt" class="headerlink" title="&lt;Transition&gt;"></a>&lt;Transition&gt;</h4><p>为单个元素或组件提供动画过渡效果</p>
-<h5 id="Transition-props"><a href="#Transition-props" class="headerlink" title="Transition props"></a>Transition props</h5><ul>
+<h5 id="lt-Transition-gt-props"><a href="#lt-Transition-gt-props" class="headerlink" title="&lt;Transition&gt; props"></a>&lt;Transition&gt; props</h5><ul>
 <li>name</li>
 <li>css</li>
 <li>type</li>
@@ -6592,7 +6625,7 @@
 <li>leaveActiveClass</li>
 <li>leaveToClass</li>
 </ul>
-<h5 id="Transition-事件"><a href="#Transition-事件" class="headerlink" title="Transition 事件"></a>Transition 事件</h5><ul>
+<h5 id="lt-Transition-gt-事件"><a href="#lt-Transition-gt-事件" class="headerlink" title="&lt;Transition&gt; 事件"></a>&lt;Transition&gt; 事件</h5><ul>
 <li>@before-enter</li>
 <li>@before-leave</li>
 <li>@enter</li>
@@ -6608,13 +6641,13 @@
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 单个元素 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Transition</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">v-if</span>=<span class="string">&quot;ok&quot;</span>&gt;</span>toggled content<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Transition</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 动态组件 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Transition</span> <span class="attr">name</span>=<span class="string">&quot;fade&quot;</span> <span class="attr">mode</span>=<span class="string">&quot;out-in&quot;</span> <span class="attr">appear</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">&quot;view&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Transition</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 事件钩子 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;transition-demo&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Transition</span> @<span class="attr">after-enter</span>=<span class="string">&quot;transitionComplete&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">v-show</span>=<span class="string">&quot;ok&quot;</span>&gt;</span>toggled content<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">Transition</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="lt-TransitionGroup-gt"><a href="#lt-TransitionGroup-gt" class="headerlink" title="&lt;TransitionGroup&gt;"></a>&lt;TransitionGroup&gt;</h4><p>为列表中的多个元素或组件提供过渡效果</p>
-<h5 id="TransitionGroup-props"><a href="#TransitionGroup-props" class="headerlink" title="TransitionGroup props"></a>TransitionGroup props</h5><ul>
+<h5 id="lt-TransitionGroup-gt-props"><a href="#lt-TransitionGroup-gt-props" class="headerlink" title="&lt;TransitionGroup&gt; props"></a>&lt;TransitionGroup&gt; props</h5><ul>
 <li>tag 如果未定义, 则渲染为片段(fragment)</li>
 <li>moveClass 用于自定义过渡期间被应用的 CSS class, 使用 <code>kebab-case</code> 格式</li>
 </ul>
-<h5 id="TransitionGroup-事件"><a href="#TransitionGroup-事件" class="headerlink" title="TransitionGroup 事件"></a>TransitionGroup 事件</h5><p><code>&lt;TransitionGroup&gt;</code> 抛出与 <code>&lt;Transition&gt;</code> 相同的事件</p>
+<h5 id="lt-TransitionGroup-gt-事件"><a href="#lt-TransitionGroup-gt-事件" class="headerlink" title="&lt;TransitionGroup&gt; 事件"></a>&lt;TransitionGroup&gt; 事件</h5><p><code>&lt;TransitionGroup&gt;</code> 抛出与 <code>&lt;Transition&gt;</code> 相同的事件</p>
 <h4 id="lt-KeepAlive-gt"><a href="#lt-KeepAlive-gt" class="headerlink" title="&lt;KeepAlive&gt;"></a>&lt;KeepAlive&gt;</h4><p>缓存包裹在其中的动态切换组件</p>
-<h5 id="KeepAlive-props"><a href="#KeepAlive-props" class="headerlink" title="KeepAlive props"></a>KeepAlive props</h5><ul>
+<h5 id="lt-KeepAlive-gt-props"><a href="#lt-KeepAlive-gt-props" class="headerlink" title="&lt;KeepAlive&gt; props"></a>&lt;KeepAlive&gt; props</h5><ul>
 <li>include 哪些组件实例可以被缓存</li>
 <li>exclude 哪些组件实例不被缓存</li>
 <li>max 最多可以缓存多少组件实例</li>
@@ -6622,22 +6655,22 @@
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 逗号分隔字符串 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">KeepAlive</span> <span class="attr">include</span>=<span class="string">&quot;a,b&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">&quot;view&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">KeepAlive</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- regex (使用 `v-bind`) --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">KeepAlive</span> <span class="attr">:include</span>=<span class="string">&quot;/a|b/&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">&quot;view&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">KeepAlive</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Array (使用 `v-bind`) --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">KeepAlive</span> <span class="attr">:include</span>=<span class="string">&quot;[&#x27;a&#x27;, &#x27;b&#x27;]&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">&quot;view&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">KeepAlive</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="lt-Teleport-gt"><a href="#lt-Teleport-gt" class="headerlink" title="&lt;Teleport&gt;"></a>&lt;Teleport&gt;</h4><p>移动实际 DOM 节点(非销毁重建),并保持任何组件实例的活动状态</p>
-<h5 id="Teleport-props"><a href="#Teleport-props" class="headerlink" title="Teleport props"></a>Teleport props</h5><ul>
+<h5 id="lt-Teleport-gt-props"><a href="#lt-Teleport-gt-props" class="headerlink" title="&lt;Teleport&gt; props"></a>&lt;Teleport&gt; props</h5><ul>
 <li>to 必填项, 指定目标容器, 可以是选择器或实际元素</li>
 <li>disabled 值为 true 时, 内容将保留在其原始位置不做移动, 值可动态修改</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 正确 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Teleport</span> <span class="attr">to</span>=<span class="string">&quot;#some-id&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Teleport</span> <span class="attr">to</span>=<span class="string">&quot;.some-class&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Teleport</span> <span class="attr">to</span>=<span class="string">&quot;[data-teleport]&quot;</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 错误 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Teleport</span> <span class="attr">to</span>=<span class="string">&quot;h1&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Teleport</span> <span class="attr">to</span>=<span class="string">&quot;some-string&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;open = true&quot;</span>&gt;</span>Open Modal<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Teleport</span> <span class="attr">to</span>=<span class="string">&quot;body&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">v-if</span>=<span class="string">&quot;open&quot;</span> <span class="attr">class</span>=<span class="string">&quot;modal&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Hello from the modal!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;open = false&quot;</span>&gt;</span>Close<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Teleport</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="lt-Suspense-gt"><a href="#lt-Suspense-gt" class="headerlink" title="&lt;Suspense&gt;  "></a>&lt;Suspense&gt; <em id="suspense"></em> <!-- markdownlint-disable-line --></h4><p>用于协调对组件树中嵌套的异步依赖的处理</p>
-<h5 id="Suspense-props"><a href="#Suspense-props" class="headerlink" title="Suspense props"></a>Suspense props</h5><ul>
+<h5 id="lt-Suspense-gt-props"><a href="#lt-Suspense-gt-props" class="headerlink" title="&lt;Suspense&gt; props"></a>&lt;Suspense&gt; props</h5><ul>
 <li>timeout 渲染新内容耗时超时时间</li>
 </ul>
-<h5 id="Suspense-事件"><a href="#Suspense-事件" class="headerlink" title="Suspense 事件"></a>Suspense 事件</h5><ul>
+<h5 id="lt-Suspense-gt-事件"><a href="#lt-Suspense-gt-事件" class="headerlink" title="&lt;Suspense&gt; 事件"></a>&lt;Suspense&gt; 事件</h5><ul>
 <li>@pending 在 suspense 进入挂起状态时触发</li>
 <li>@resolve 在 default 插槽完成获取新内容时触发</li>
 <li>@fallback 在 fallback 插槽的内容显示时触发</li>
 </ul>
-<h5 id="Suspense-插槽"><a href="#Suspense-插槽" class="headerlink" title="Suspense 插槽"></a>Suspense 插槽</h5><ul>
+<h5 id="lt-Suspense-gt-插槽"><a href="#lt-Suspense-gt-插槽" class="headerlink" title="&lt;Suspense&gt; 插槽"></a>&lt;Suspense&gt; 插槽</h5><ul>
 <li>#default</li>
 <li>#fallback</li>
 </ul>
@@ -6647,7 +6680,7 @@
 <p><code>&lt;component&gt;</code>, <code>&lt;slot&gt;</code>, <code>&lt;template&gt;</code> 具有类似组件的特性, 也是模板语法的一部分. 但它们并非真正的组件, 同时在模板编译期间会被编译掉. 因此, 它们通常在模板中使用小写字母</p>
 </blockquote>
 <h4 id="lt-component-gt"><a href="#lt-component-gt" class="headerlink" title="&lt;component&gt;"></a>&lt;component&gt;</h4><p>用于渲染动态组件或元素的 <code>元组件</code></p>
-<h5 id="component-props"><a href="#component-props" class="headerlink" title="component props"></a>component props</h5><ul>
+<h5 id="lt-component-gt-props"><a href="#lt-component-gt-props" class="headerlink" title="&lt;component&gt; props"></a>&lt;component&gt; props</h5><ul>
 <li>is 要渲染的实际组件由 <code>is</code> prop 决定<ul>
 <li>如果是字符串时, 可以是 HTML 标签名或者组件的注册名</li>
 <li>或者是直接绑定到组件的定义</li>
@@ -6655,7 +6688,7 @@
 </li>
 </ul>
 <h4 id="lt-slot-gt"><a href="#lt-slot-gt" class="headerlink" title="&lt;slot&gt;"></a>&lt;slot&gt;</h4><p>表示模板中的插槽内容出口</p>
-<h5 id="slot-props"><a href="#slot-props" class="headerlink" title="slot props"></a>slot props</h5><ul>
+<h5 id="lt-slot-gt-props"><a href="#lt-slot-gt-props" class="headerlink" title="&lt;slot&gt; props"></a>&lt;slot&gt; props</h5><ul>
 <li>name 指定插槽名, 缺少时将会渲染默认插槽</li>
 </ul>
 <h4 id="lt-template-gt"><a href="#lt-template-gt" class="headerlink" title="&lt;template&gt;"></a>&lt;template&gt;</h4><p>当使用内置指令而不在 DOM 中渲染元素时, <code>&lt;template&gt;</code> 标签可以作为占位符使用</p>
@@ -6693,7 +6726,16 @@
 <h4 id="顶层绑定"><a href="#顶层绑定" class="headerlink" title="顶层绑定"></a>顶层绑定</h4><p>任何在 <code>&lt;script setup&gt;</code> 声明的 <strong>顶层的绑定</strong>(包括变量, 函数声明, 以及 import 导入的内容)都能在模板中直接使用</p>
 <h4 id="响应式"><a href="#响应式" class="headerlink" title="响应式"></a>响应式</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; ref, reactive &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> user = <span class="title function_">reactive</span>(&#123; <span class="attr">name</span>: <span class="string">&#x27;hello world&#x27;</span>, <span class="attr">age</span>: <span class="number">18</span> &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;count++&quot;</span>&gt;</span>&#123;&#123; count &#125;&#125;<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="使用组件"><a href="#使用组件" class="headerlink" title="使用组件"></a>使用组件</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> <span class="title class_">Foo</span> <span class="keyword">from</span> <span class="string">&#x27;./Foo.vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> <span class="title class_">Bar</span> <span class="keyword">from</span> <span class="string">&#x27;./Bar.vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">&quot;Foo&quot;</span> /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 三目运算中的组件使用 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">&quot;someCondition ? Foo : Bar&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="使用组件"><a href="#使用组件" class="headerlink" title="使用组件"></a>使用组件</h4><p>单文件组件模板中使用组件可以使用 <code>kebab-case</code> 或者 <code>PascalCase</code> 两种格式, 推荐使用后者</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; <span class="title class_">MyComponent</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;./MyComponent.vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">MyComponent</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h5><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> <span class="title class_">Foo</span> <span class="keyword">from</span> <span class="string">&#x27;./Foo.vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> <span class="title class_">Bar</span> <span class="keyword">from</span> <span class="string">&#x27;./Bar.vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">&quot;Foo&quot;</span> /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 三目运算中的组件使用 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">&quot;someCondition ? Foo : Bar&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="递归组件"><a href="#递归组件" class="headerlink" title="递归组件"></a>递归组件</h5><p>一个单文件组件可以通过它的文件名被其自己所引用, 为防止具名的导入和组件自身推导的名字冲突可以使用别名的方式</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">FooBar</span> <span class="keyword">as</span> <span class="title class_">FooBarChild</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;./components&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="命名空间组件"><a href="#命名空间组件" class="headerlink" title="命名空间组件"></a>命名空间组件</h5><p>可以使用带 <code>.</code> 的组件标签来引用嵌套在对象属性中的组件</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> * <span class="keyword">as</span> <span class="title class_">Form</span> <span class="keyword">from</span> <span class="string">&#x27;./form-components&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Form.Input</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Form.Label</span>&gt;</span>label<span class="tag">&lt;/<span class="name">Form.Label</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">Form.Input</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="使用自定义指令"><a href="#使用自定义指令" class="headerlink" title="使用自定义指令"></a>使用<a href="#directive">自定义指令</a></h4><p>本地声明自定义指令在 <code>&lt;script setup&gt;</code> 中不需要显式注册, 但必须遵循 <code>vNameOfDirective</code> 的命名规范</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> vMyDirective = &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">mounted</span>(<span class="params">el, binding, vnode prevVnode</span>)&#123;&#125;,</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">updated</span>(<span class="params">el, binding, vnode prevVnode</span>)&#123;&#125;,</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">unmounted</span>(<span class="params">el, binding, vnode prevVnode</span>)&#123;&#125;</span></span><br><span class="line"><span class="language-javascript">  &#125;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span> <span class="attr">v-my-directive</span>&gt;</span>This is a heading.<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -6734,6 +6776,7 @@
 </blockquote>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> post = <span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">&#x27;/api/post/1&#x27;</span>).<span class="title function_">then</span>(<span class="function"><span class="params">res</span> =&gt;</span> res.<span class="title function_">json</span>())</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
+<h4 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h4><p>由于模块执行语义的差异, <code>&lt;script setup&gt;</code> 中的代码依赖单文件组件的上下文, 当将其移动到外部的 <code>.js</code> 或 <code>.ts</code> 文件中时, 对于开发者和工具来说都会感到混乱. 因此, <code>&lt;script setup&gt;</code> 不能和 <code>src</code> 属性一起使用</p>
 <h3 id="CSS-功能"><a href="#CSS-功能" class="headerlink" title="CSS 功能"></a>CSS 功能</h3><h4 id="组件作用域"><a href="#组件作用域" class="headerlink" title="组件作用域"></a>组件作用域</h4><blockquote>
 <p>使用 <code>scoped</code> 后, 父组件的样式不会透传到子组件中，不过, 子组件的 <strong>根节点</strong> 会同时被父组件的作用域样式和子组件的作用域样式影响, 这样设计是为了让父组件可以从布局的角度出发, 调整其子组件根元素的样式</p>
 </blockquote>
