@@ -527,9 +527,11 @@ Redis 事务执行的三个重要保证:
   - 如果 `WATCH` 观察的 key 在当前的事务执行时已被修改, 则返回 \<nil\>
 
 - DISCARD 丢弃事务, 通常返回 ok
+
   - 必须在 `MULTI` 命令之后才能调用, 否则报错 ERR DISCARD without MULTI
 
 - WATCH key [key ...] 监视一个或多个 key, 如果在事务执行之前观察的 key 被修改, 则事务将被打断, 通常返回 ok
+
   - 如果在 `MULTI` 命令后调用, 则会报错 ERR WATCH inside MULTI is not allowed
 
 - UNWATCH 取消所有观察的 key, 通常返回 ok, 如果调用了 `EXEC` 或 `DISCARD` 命令, 通常不再需要调用此命令
@@ -817,12 +819,12 @@ repl_backlog_histlen:0
 
 ##### 运行时有效
 
-- 方式一: 启动 Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
-- 方式二: 连接 Redis 服务器使用内置命令 `REPLICAOF host port`
+- 方式一: **启动** Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
+- 方式二: **连接** Redis 服务器使用内置命令 `REPLICAOF host port`
 
 提升从服务器角色
 
-- REPLICAOF NO ONE 将从服务器更改为主服务器
+- `REPLICAOF NO ONE` 将从服务器更改为主服务器
 
 ```shell
 # 设置关联主服务器
@@ -858,31 +860,43 @@ OK
 127.0.0.1:6380> GET name
 "helloworld"
 127.0.0.1:6380> SET age 18 # 从机写入数据报错
-(error) READONLY You can't write against a read only replica.
+(error) READONLY You can\'t write against a read only replica.
 # 从机读取数据
 127.0.0.1:6381> GET name
 "helloworld"
 127.0.0.1:6381> SET age 18 # 从机写入数据报错
-(error) READONLY You can't write against a read only replica.
+(error) READONLY You can\'t write against a read only replica.
 ```
 
 #### 配置文件
 
+使用配置文件的方式永久有效
+
 redis.conf
 
-- bind 127.0.0.1 修改绑定的 ip
-- port 6379 修改绑定的端口号
-- daemonize yes 开启后台运行, 默认为 no
-- pidfile /var/run/redis_6379.pid 修改进程文件, 默认为 redis_6379.pid
-- logfile "6379.log" 修改日志文件名, 默认为空
-- dbfilename dump6379.rdb 修改持久化文件名, 默认为 dump.rdb
-- replicaof &lt;masterip&gt; &lt;masterport&gt; 配置主服务器 ip 和 port
-- masterauth &lt;master-password&gt; 主服务器认证密码, 如果需要
-- masteruser &lt;username&gt; 主服务器用户
-- replica-read-only yes 只读模式, 默认开启
-- repl-diskless-sync yes 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件
-- repl-diskless-sync-delay 5 同步延迟, 默认 5 秒
-- replica-priority 100 哨兵模式下被选为主服务器的优先级, 值越小优先级越高
+```yaml
+bind 127.0.0.1 # 修改绑定的 ip
+port 6379 # 修改绑定的端口号
+daemonize yes # 开启后台运行, 默认为 no
+# 修改进程文件, 默认为 redis_6379.pid
+pidfile /var/run/redis_6379.pid
+# 修改日志文件名, 默认为空
+logfile "6379.log"
+# 修改持久化文件名, 默认为 dump.rdb
+dbfilename dump6379.rdb
+# 配置主服务器 ip 和 port
+replicaof <masterip> <masterport>
+# 主服务器认证密码, 如果需要
+masterauth <master-password>
+masteruser <username> # 主服务器用户
+replica-read-only yes # 只读模式, 默认开启
+# 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件
+repl-diskless-sync yes
+# 同步延迟, 默认 5 秒
+repl-diskless-sync-delay 5
+# 哨兵模式下被选为主服务器的优先级, 值越小优先级越高
+replica-priority 100
+```
 
 #### 哨兵模式
 
@@ -894,7 +908,7 @@ redis.conf
 
 默认配置文件 `sentinel.conf`
 
-```shell
+```yaml
 protected-mode no # 保护模式, 默认不开启
 port 26379 # 服务端口号
 daemonize no # 是否后台运行模式
@@ -903,19 +917,25 @@ pidfile /var/run/redis-sentinel.pid # 进程文件
 # sentinel announce-port <port> # 广播端口
 logfile "" # 日志文件
 dir /tmp # 工作目录
-sentinel monitor mymaster 127.0.0.1 6379 2 # 监测服务器配置, 数字表示确认主服务器宕机的票数
+# 监测服务器配置, 数字表示确认主服务器宕机的票数
+sentinel monitor mymaster 127.0.0.1 6379 2
 # sentinel auth-pass <master-name> <password> # 认证配置
-sentinel down-after-milliseconds mymaster 30000 # 不可触达的超时时间, 默认 30 s
-sentinel parallel-syncs mymaster 1 # 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1
-sentinel failover-timeout mymaster 180000 # 当服务器宕机后等待再次重启的时间, 默认 3 min
-# sentinel notification-script <master-name> <script-path> # 服务器唤起脚本文件
-sentinel deny-scripts-reconfig yes # 拒绝脚本配置, 默认拒绝
+# 不可触达的超时时间, 默认 30 s
+sentinel down-after-milliseconds mymaster 30000
+# 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1
+sentinel parallel-syncs mymaster 1
+# 当服务器宕机后等待再次重启的时间, 默认 3 min
+sentinel failover-timeout mymaster 180000
+# 服务器唤起脚本文件
+# sentinel notification-script <master-name> <script-path>
+# 拒绝脚本配置, 默认拒绝
+sentinel deny-scripts-reconfig yes
 ```
 
 - 方式一: 使用命令 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
 - 方式二: 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
 
-```shell
+```yaml
 # sentinel.conf
 sentinel monitor myredis 127.0.0.1 6379 1
 ```
@@ -927,7 +947,7 @@ sentinel monitor myredis 127.0.0.1 6379 1
 
 3 个哨兵配置文件
 
-```shell
+```yaml
 # sentinel26379.conf
 port 26379
 pidfile /var/run/redis-sentinel-26379.pid
@@ -952,7 +972,7 @@ sentinel monitor myredis 127.0.0.1 6379 2
 
 3 台 redis 服务器配置文件
 
-```shell
+```yaml
 # redis6379.conf
 bind 127.0.0.1
 port 6379
@@ -968,7 +988,8 @@ daemonize yes
 pidfile /var/run/redis_6380.pid
 logfile "6380.log"
 dbfilename dump6380.rdb
-replicaof 127.0.0.1 6379 # 配置主服务器 ip 和 port
+# 配置主服务器 ip 和 port
+replicaof 127.0.0.1 6379
 
 # redis6381.conf
 bind 127.0.0.1
@@ -977,7 +998,8 @@ daemonize yes
 pidfile /var/run/redis_6381.pid
 logfile "6381.log"
 dbfilename dump6381.rdb
-replicaof 127.0.0.1 6379 # 配置主服务器 ip 和 port
+# 配置主服务器 ip 和 port
+replicaof 127.0.0.1 6379
 ```
 
 ```shell
@@ -1031,7 +1053,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 创建 `redis6379.conf`, `redis6380.conf`, `redis6381.conf`, `redis6382.conf`, `redis6383.conf`, `redis6384.conf` 6 个文件
 修改其中的 ip, port, pidfile, cluster-enabled, cluster-config-file
 
-```shell
+```yaml
 # 引入 redis 默认配置文件
 include /root/redis-cluster/redis.conf
 # 修改绑定 ip, 此处演示全为本机
@@ -1044,8 +1066,7 @@ protected-mode no
 daemonize yes
 # 修改 redis 进程文件名
 pidfile /var/run/redis_6379.pid
-# 开启集群模式
-cluster-enabled yes
+cluster-enabled yes # 开启集群模式
 # 修改集群节点文件名, 默认在存储在当前目录下
 cluster-config-file nodes-6379.conf
 # 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒
@@ -1142,7 +1163,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 
 使用 `redis-cli -c -p port` 命令接入集群节点
 
-- -c 允许集群模式接入
+- -c 以集群模式接入
 
 ```shell
 [root@centos7 redis-cluster]# redis-cli -c -p 6379
@@ -1150,7 +1171,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 
 ##### 集群命令
 
-- CLUSTER HELP # 在 Redis 命令行中查看所有集群操作命令
+- CLUSTER HELP 在 Redis 命令行中查看所有集群操作命令
 
 ```shell
 127.0.0.1:6380> CLUSTER HELP
@@ -1305,10 +1326,10 @@ vars currentEpoch 8 lastVoteEpoch 7
 
 ##### 添加新节点
 
-按照 <a href="#bjpzwj">编辑配置文件</a> 创建并修改 `redis6385.conf` 文件 <!-- markdownlint-disable-line -->
+按照 [编辑配置文件](#bjpzwj) 创建并修改 `redis6385.conf` 文件
 启动服务器 `redis-server redis6385.conf`, 同时查看服务器是否正常启动
 
-使用命令 `redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379` 将 6385 添加为 6379 的从节点
+- 使用命令 `redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379` 将 6385 添加为 6379 的从节点
 
 ```shell
 # 向 6379 节点添加新的从节点
@@ -1346,7 +1367,7 @@ Waiting for the cluster to join
 [OK] New node added correctly.
 ```
 
-查看节点 6379 的信息, 显示 2 个从节点
+- 查看节点 6379 的信息, 显示 2 个从节点
 
 ```shell
 # 查看节点信息
