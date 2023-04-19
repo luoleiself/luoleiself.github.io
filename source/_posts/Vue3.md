@@ -496,6 +496,7 @@ const app = createApp({
 
 ### 响应式: 核心
 
+- 响应式状态默认是深层次的, 即对深层次的响应式状态的更改也能被检测到
 - 只有代理对象是响应式的, 更改原始对象不会触发更新, 使用响应式系统时仅使用声明对象的代理版本
 - 对同一个**原始对象**调用 `reactive()` 总是返回同样的**代理对象**
 - 对一个已存在的**代理对象**调用 `reactive()` 总是返回其本身
@@ -512,6 +513,49 @@ console.log(count.value); // 0
 
 count.value++;
 console.log(count.value); // 1
+```
+
+- 一个包含对象类型值的 ref 可以响应式的替换整个对象
+
+```javascript
+const objRef = ref({ count: 0 });
+objRef.value = { count: 1 }; // 响应式替换
+```
+
+- ref 被传递给函数或是从一般对象上被解构时, 不会丢失响应性
+
+```javascript
+const obj = {
+  foo: ref(0),
+  bar: ref(1),
+};
+// 该函数接收一个 ref 需要通过 .value 取值, 但会保持响应性
+callSomeFn(obj.foo);
+// 解构 ref 仍然是响应性的
+const { foo, bar } = obj;
+```
+
+- 当 ref 在模板中作为**顶层属性**被访问时, 它们会被自动解包, 不需要使用 `.value`
+
+```html
+<script setup>
+  import { ref } from 'vue';
+  // ref 非渲染上下文顶层属性
+  const obj = { foo: ref(1) };
+
+  // ref 为渲染上下文顶层属性
+  const count = ref(0);
+
+  function increment() {
+    count.value++;
+  }
+</script>
+<template>
+  <!-- 不需要使用 .value 访问 -->
+  <button @click="increment">{{count}}</button>
+  <!-- 需要使用 .value 访问 -->
+  <p>{{obj.foo.value}}</p>
+</template>
 ```
 
 #### computed() <em id="computed"></em> <!-- markdownlint-disable-line -->
@@ -566,7 +610,7 @@ console.log(obj.count); // 3
 console.log(count.value); // 3
 ```
 
-- 当访问到某个响应式 **数组** 或 `Map` 这样的原生集合类型中的 ref 元素时, 不会执行 ref 的解包
+- 当访问到某个响应式 **数组** 或 `Map` 这样的原生集合类型中的 ref 元素时, 不会进行解包
 
 ```javascript
 // 原生集合中包含 ref 元素时, ref 不会解包
@@ -761,7 +805,7 @@ console.log(fooRef.value); // 3
 
 将一个响应式对象转换为一个普通对象, 这个普通对象的每个属性都指向源对象相应属性的 ref, 每个单独的 ref 都是使用 `toRef()` 创建的
 
-- toRefs 在调用时智慧为源对象上的可以枚举的属性创建 ref, 如果为可能还不存在的属性创建 ref 时, 使用 toRef
+- toRefs 在调用时只为源对象上的可以枚举的属性创建 ref, 如果为可能还不存在的属性创建 ref 时, 使用 toRef
 
 ```javascript
 const state = reactive({ foo: 1, bar: 2 });
