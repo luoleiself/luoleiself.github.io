@@ -88,6 +88,63 @@
       </tags>
   </entry>
   <entry>
+    <title>FileSystemAccessAPI</title>
+    <url>/2023/04/12766d614e53/</url>
+    <content><![CDATA[<blockquote>
+<p>目前仅在 chrome 86 (edge 86, opera 72)及以上版本支持, safari 和 firefox 暂时不支持</p>
+</blockquote>
+<p>允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a> 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用该 API 时, 会提示用户授权应用程序访问文件系统</p>
+<ul>
+<li>将文件从本地文件系统上传到 Web 应用程序</li>
+<li>将 Web 应用程中的数据写入到本地文件系统中</li>
+<li>在用户的本地文件系统中创建、重命名和删除文件</li>
+<li>读取本地文件系统上的文件内容</li>
+</ul>
+<h3 id="FileSystemHandle接口"><a href="#FileSystemHandle接口" class="headerlink" title="FileSystemHandle接口"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle">FileSystemHandle</a>接口</h3><p>是 File System Access API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 <code>FileSystemFileHandle</code> 和 <code>FileSystemDirectoryHandle</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承</span></span><br><span class="line"><span class="comment"> * FileSystemHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemFileHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemDirectoryHandle</span></span><br><span class="line"><span class="comment"> * FileSystemSyncAccessHandle</span></span><br><span class="line"><span class="comment"> * WritableStream</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemWritableFileStream</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h4 id="FSH-实例属性"><a href="#FSH-实例属性" class="headerlink" title="FSH 实例属性"></a>FSH 实例属性</h4><ul>
+<li>kind 返回条目的类型, <code>file</code> 表示文件, <code>directory</code> 表示目录</li>
+<li>name 返回关联条目的名称</li>
+</ul>
+<h4 id="FSH-实例方法"><a href="#FSH-实例方法" class="headerlink" title="FSH 实例方法"></a>FSH 实例方法</h4><ul>
+<li>isSameEntry() 比较两者 handle 以查看相关条目(文件或目录)是否匹配</li>
+<li>queryPermission() 查询当前句柄的当前权限状态</li>
+<li>remove() 请求从底层文件系统中删除由句柄表示的条目</li>
+<li>requestPermission() 请求文件句柄的读取或读写权限</li>
+</ul>
+<h3 id="showOpenFilePicker"><a href="#showOpenFilePicker" class="headerlink" title="showOpenFilePicker"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showOpenFilePicker">showOpenFilePicker</a></h3><p>显示一个文件选择器, 允许用户选择一个或多个文件并返回这些文件的句柄, 返回一个 Promise 对象, 并兑现一个包含 <code>FileSystemFileHandle</code> 对象的 Array 数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的包含 `FileSystemFileHandle` 对象的 Array 数组</span></span><br><span class="line">  <span class="keyword">const</span> fileHandles = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showOpenFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个文件对象</span></span><br><span class="line">  <span class="keyword">const</span> file = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">getFile</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于同步读取和写入文件的对象,</span></span><br><span class="line">  <span class="comment">// 但只能用在专用的 web workers 中</span></span><br><span class="line">  <span class="keyword">const</span> syncAccessFile = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createSyncAccessHandle</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于写入文件的新创建的对象</span></span><br><span class="line">  <span class="comment">// WritableStream &lt;- FileSystemWritableFileStream</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="comment">// 在流关闭之前, 通常将对流做的任何修改写入临时文件来实现,</span></span><br><span class="line">  <span class="comment">// 并且仅在可写文件流关闭时才将文件句柄表示的文件替换为临时文件</span></span><br><span class="line">  <span class="keyword">const</span> writer = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createWritable</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SOFP-实例方法"><a href="#SOFP-实例方法" class="headerlink" title="SOFP 实例方法  "></a>SOFP 实例方法 <em id="showopenfilePickerfn"></em> <!-- markdownlint-disable-line--></h4><h5 id="getFile"><a href="#getFile" class="headerlink" title="getFile()"></a>getFile()</h5><p>返回一个已兑现的由句柄表示的条目在磁盘上的状态的对象</p>
+<h5 id="createSyncAccessHandle"><a href="#createSyncAccessHandle" class="headerlink" title="createSyncAccessHandle()"></a>createSyncAccessHandle()</h5><p>返回一个已兑现的可用于同步读取和写入文件的 <code>FileSystemSyncAccessHandle</code> 对象</p>
+<h5 id="createWritable"><a href="#createWritable" class="headerlink" title="createWritable()"></a>createWritable()</h5><p>返回一个已兑现的可用于写入文件的新创建的 <code>FileSystemWritableFileStream</code> 对象</p>
+<h3 id="showSaveFilePicker"><a href="#showSaveFilePicker" class="headerlink" title="showSaveFilePicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker">showSaveFilePicker</a></h3><p>显示一个允许用户保存文件的文件选择器, 通过选择现有文件或者输入新文件的名称, 返回一个已兑现的 <code>FileSystemFileHandle</code> 对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemFileHandle` 对象</span></span><br><span class="line">  <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showSaveFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建一个可写流</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="keyword">const</span> writable = <span class="keyword">await</span> fileHandle.<span class="title function_">createWritable</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 写入数据</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">write</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 关闭流</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">close</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SSFP-实例方法"><a href="#SSFP-实例方法" class="headerlink" title="SSFP 实例方法"></a>SSFP 实例方法</h4><p>实例方法同 <a href="#showopenfilePickerfn"><code>showOpenFilePicker</code></a> 方法返回的实例的方法</p>
+<h3 id="showDirectoryPicker"><a href="#showDirectoryPicker" class="headerlink" title="showDirectoryPicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">showDirectoryPicker</a></h3><p>显示一个目录选择器, 允许用户选择一个目录, 返回一个已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个目录选择器筛选目录的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemDirectoryHandle` 对象</span></span><br><span class="line">  <span class="comment">// FileSystemHandle &lt;- FileSystemDirectoryHandle</span></span><br><span class="line">  <span class="keyword">const</span> dirHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showDirectoryPicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 遍历目录</span></span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">await</span> (<span class="keyword">const</span> [name, handle] <span class="keyword">of</span> dirHandle.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (handle.<span class="property">key</span> == <span class="string">&#x27;file&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> dirHandle.<span class="title function_">getFileHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(fileHandle);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> dh = dirHandle.<span class="title function_">getDirectoryHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(dh);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SDP-实例方法"><a href="#SDP-实例方法" class="headerlink" title="SDP 实例方法"></a>SDP 实例方法</h4><h5 id="entries"><a href="#entries" class="headerlink" title="entries()"></a>entries()</h5><p>返回给定对象自己的可枚举属性对的新**异步迭代[key, value]**器</p>
+<h5 id="getFileHandle"><a href="#getFileHandle" class="headerlink" title="getFileHandle()"></a>getFileHandle()</h5><p>返回指定名称的文件的已兑现的 <code>FileSystemFileHandle</code> 对象</p>
+<h5 id="getDirectoryHandle"><a href="#getDirectoryHandle" class="headerlink" title="getDirectoryHandle()"></a>getDirectoryHandle()</h5><p>返回指定名称的目录的已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
+<h5 id="resolve"><a href="#resolve" class="headerlink" title="resolve()"></a>resolve()</h5><p>返回一个从父句柄到指定子项的目录名称的 Promise, 子项的名称作为最后一个数组项</p>
+<h5 id="removeEntry"><a href="#removeEntry" class="headerlink" title="removeEntry()"></a>removeEntry()</h5><p>尝试异步删除指定名称的文件或目录</p>
+<h5 id="keys"><a href="#keys" class="headerlink" title="keys()"></a>keys()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含每个项目的键 <code>FileSystemDirectoryHandle</code></p>
+<h5 id="values"><a href="#values" class="headerlink" title="values()"></a>values()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含对象中每个索引的值 <code>FileSystemDirectoryHandle</code></p>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Charles-手机代理-Https-证书管理</title>
     <url>/2021/12/a521f7947aed/</url>
     <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
@@ -159,6 +216,64 @@
       </categories>
       <tags>
         <tag>charles</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -236,121 +351,6 @@
       </categories>
       <tags>
         <tag>ES6</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FileSystemAccessAPI</title>
-    <url>/2023/04/12766d614e53/</url>
-    <content><![CDATA[<blockquote>
-<p>目前仅在 chrome 86 (edge 86, opera 72)及以上版本支持, safari 和 firefox 暂时不支持</p>
-</blockquote>
-<p>允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验</p>
-<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a> 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用该 API 时, 会提示用户授权应用程序访问文件系统</p>
-<ul>
-<li>将文件从本地文件系统上传到 Web 应用程序</li>
-<li>将 Web 应用程中的数据写入到本地文件系统中</li>
-<li>在用户的本地文件系统中创建、重命名和删除文件</li>
-<li>读取本地文件系统上的文件内容</li>
-</ul>
-<h3 id="FileSystemHandle接口"><a href="#FileSystemHandle接口" class="headerlink" title="FileSystemHandle接口"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle">FileSystemHandle</a>接口</h3><p>是 File System Access API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 <code>FileSystemFileHandle</code> 和 <code>FileSystemDirectoryHandle</code></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承</span></span><br><span class="line"><span class="comment"> * FileSystemHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemFileHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemDirectoryHandle</span></span><br><span class="line"><span class="comment"> * FileSystemSyncAccessHandle</span></span><br><span class="line"><span class="comment"> * WritableStream</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemWritableFileStream</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h4 id="FSH-实例属性"><a href="#FSH-实例属性" class="headerlink" title="FSH 实例属性"></a>FSH 实例属性</h4><ul>
-<li>kind 返回条目的类型, <code>file</code> 表示文件, <code>directory</code> 表示目录</li>
-<li>name 返回关联条目的名称</li>
-</ul>
-<h4 id="FSH-实例方法"><a href="#FSH-实例方法" class="headerlink" title="FSH 实例方法"></a>FSH 实例方法</h4><ul>
-<li>isSameEntry() 比较两者 handle 以查看相关条目(文件或目录)是否匹配</li>
-<li>queryPermission() 查询当前句柄的当前权限状态</li>
-<li>remove() 请求从底层文件系统中删除由句柄表示的条目</li>
-<li>requestPermission() 请求文件句柄的读取或读写权限</li>
-</ul>
-<h3 id="showOpenFilePicker"><a href="#showOpenFilePicker" class="headerlink" title="showOpenFilePicker"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showOpenFilePicker">showOpenFilePicker</a></h3><p>显示一个文件选择器, 允许用户选择一个或多个文件并返回这些文件的句柄, 返回一个 Promise 对象, 并兑现一个包含 <code>FileSystemFileHandle</code> 对象的 Array 数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的包含 `FileSystemFileHandle` 对象的 Array 数组</span></span><br><span class="line">  <span class="keyword">const</span> fileHandles = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showOpenFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个文件对象</span></span><br><span class="line">  <span class="keyword">const</span> file = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">getFile</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于同步读取和写入文件的对象,</span></span><br><span class="line">  <span class="comment">// 但只能用在专用的 web workers 中</span></span><br><span class="line">  <span class="keyword">const</span> syncAccessFile = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createSyncAccessHandle</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于写入文件的新创建的对象</span></span><br><span class="line">  <span class="comment">// WritableStream &lt;- FileSystemWritableFileStream</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="comment">// 在流关闭之前, 通常将对流做的任何修改写入临时文件来实现,</span></span><br><span class="line">  <span class="comment">// 并且仅在可写文件流关闭时才将文件句柄表示的文件替换为临时文件</span></span><br><span class="line">  <span class="keyword">const</span> writer = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createWritable</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h4 id="SOFP-实例方法"><a href="#SOFP-实例方法" class="headerlink" title="SOFP 实例方法  "></a>SOFP 实例方法 <em id="showopenfilePickerfn"></em> <!-- markdownlint-disable-line--></h4><h5 id="getFile"><a href="#getFile" class="headerlink" title="getFile()"></a>getFile()</h5><p>返回一个已兑现的由句柄表示的条目在磁盘上的状态的对象</p>
-<h5 id="createSyncAccessHandle"><a href="#createSyncAccessHandle" class="headerlink" title="createSyncAccessHandle()"></a>createSyncAccessHandle()</h5><p>返回一个已兑现的可用于同步读取和写入文件的 <code>FileSystemSyncAccessHandle</code> 对象</p>
-<h5 id="createWritable"><a href="#createWritable" class="headerlink" title="createWritable()"></a>createWritable()</h5><p>返回一个已兑现的可用于写入文件的新创建的 <code>FileSystemWritableFileStream</code> 对象</p>
-<h3 id="showSaveFilePicker"><a href="#showSaveFilePicker" class="headerlink" title="showSaveFilePicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker">showSaveFilePicker</a></h3><p>显示一个允许用户保存文件的文件选择器, 通过选择现有文件或者输入新文件的名称, 返回一个已兑现的 <code>FileSystemFileHandle</code> 对象</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemFileHandle` 对象</span></span><br><span class="line">  <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showSaveFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建一个可写流</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="keyword">const</span> writable = <span class="keyword">await</span> fileHandle.<span class="title function_">createWritable</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 写入数据</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">write</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 关闭流</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">close</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h4 id="SSFP-实例方法"><a href="#SSFP-实例方法" class="headerlink" title="SSFP 实例方法"></a>SSFP 实例方法</h4><p>实例方法同 <a href="#showopenfilePickerfn"><code>showOpenFilePicker</code></a> 方法返回的实例的方法</p>
-<h3 id="showDirectoryPicker"><a href="#showDirectoryPicker" class="headerlink" title="showDirectoryPicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">showDirectoryPicker</a></h3><p>显示一个目录选择器, 允许用户选择一个目录, 返回一个已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个目录选择器筛选目录的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemDirectoryHandle` 对象</span></span><br><span class="line">  <span class="comment">// FileSystemHandle &lt;- FileSystemDirectoryHandle</span></span><br><span class="line">  <span class="keyword">const</span> dirHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showDirectoryPicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 遍历目录</span></span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">await</span> (<span class="keyword">const</span> [name, handle] <span class="keyword">of</span> dirHandle.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (handle.<span class="property">key</span> == <span class="string">&#x27;file&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> dirHandle.<span class="title function_">getFileHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(fileHandle);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> dh = dirHandle.<span class="title function_">getDirectoryHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(dh);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h4 id="SDP-实例方法"><a href="#SDP-实例方法" class="headerlink" title="SDP 实例方法"></a>SDP 实例方法</h4><h5 id="entries"><a href="#entries" class="headerlink" title="entries()"></a>entries()</h5><p>返回给定对象自己的可枚举属性对的新**异步迭代[key, value]**器</p>
-<h5 id="getFileHandle"><a href="#getFileHandle" class="headerlink" title="getFileHandle()"></a>getFileHandle()</h5><p>返回指定名称的文件的已兑现的 <code>FileSystemFileHandle</code> 对象</p>
-<h5 id="getDirectoryHandle"><a href="#getDirectoryHandle" class="headerlink" title="getDirectoryHandle()"></a>getDirectoryHandle()</h5><p>返回指定名称的目录的已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
-<h5 id="resolve"><a href="#resolve" class="headerlink" title="resolve()"></a>resolve()</h5><p>返回一个从父句柄到指定子项的目录名称的 Promise, 子项的名称作为最后一个数组项</p>
-<h5 id="removeEntry"><a href="#removeEntry" class="headerlink" title="removeEntry()"></a>removeEntry()</h5><p>尝试异步删除指定名称的文件或目录</p>
-<h5 id="keys"><a href="#keys" class="headerlink" title="keys()"></a>keys()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含每个项目的键 <code>FileSystemDirectoryHandle</code></p>
-<h5 id="values"><a href="#values" class="headerlink" title="values()"></a>values()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含对象中每个索引的值 <code>FileSystemDirectoryHandle</code></p>
-]]></content>
-      <categories>
-        <category>WebAPI</category>
-      </categories>
-      <tags>
-        <tag>API</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -746,6 +746,60 @@
       </tags>
   </entry>
   <entry>
+    <title>JSSDK</title>
+    <url>/2022/05/2261dfd57ebf/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
+<li>转发</li>
+<li>转发给客户</li>
+<li>群发到客户群</li>
+<li>发表到客户的朋友圈</li>
+<li>分享到同事吧</li>
+<li>分享到微信</li>
+<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>shareAppMessage 自定义转发到会话</li>
+<li>shareWechatMessage 自定义转发到微信</li>
+<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
+<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>wx</category>
+      </categories>
+      <tags>
+        <tag>wx</tag>
+        <tag>jweixin</tag>
+        <tag>JSSDK</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HTTP</title>
     <url>/2021/07/1ddfb1010b19/</url>
     <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
@@ -825,60 +879,6 @@
       </categories>
       <tags>
         <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JSSDK</title>
-    <url>/2022/05/2261dfd57ebf/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
-<li>转发</li>
-<li>转发给客户</li>
-<li>群发到客户群</li>
-<li>发表到客户的朋友圈</li>
-<li>分享到同事吧</li>
-<li>分享到微信</li>
-<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
-</ul>
-<span id="more"></span>
-
-<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>shareAppMessage 自定义转发到会话</li>
-<li>shareWechatMessage 自定义转发到微信</li>
-<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
-<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>wx</category>
-      </categories>
-      <tags>
-        <tag>wx</tag>
-        <tag>jweixin</tag>
-        <tag>JSSDK</tag>
       </tags>
   </entry>
   <entry>
@@ -1688,392 +1688,6 @@
       </categories>
   </entry>
   <entry>
-    <title>shell语法</title>
-    <url>/2022/04/616714173ca1/</url>
-    <content><![CDATA[<h3 id="shell-重置密码"><a href="#shell-重置密码" class="headerlink" title="shell 重置密码"></a>shell 重置密码</h3><ol>
-<li>开机按 <code>e</code> 键进入内核编辑</li>
-<li>光标移动到倒数第二段 <code>Linux16</code> 末尾添加 <code>init=/bin/sh</code></li>
-<li><code>ctrl + x</code> 进行引导启动, 成功进入命令提示界面</li>
-<li>输入 <code>mount -o remount, rw /</code> 挂载根目录</li>
-<li>使用 <code>passwd</code> 命令修改指定用户密码</li>
-<li>直到提示 <code>passwd: all authentication tokens updated successfully.</code></li>
-<li>输入 <code>touch /.autorelabel</code> 回车</li>
-<li>输入 <code>exec /sbin/init</code> 回车重启系统</li>
-</ol>
-<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
-<li>export 导出全局变量</li>
-<li>declare 声明变量</li>
-<li>unset 删除变量</li>
-<li>local 声明局部变量,一般用于函数内部</li>
-</ul>
-<span id="more"></span>
-
-<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><h4 id=""><a href="#" class="headerlink" title="[ ] | [[]]"></a>[ ] | [[]]</h4><p>运算表达式两边必须要有空格</p>
-<h4 id="-1"><a href="#-1" class="headerlink" title="${}"></a>${}</h4><p>用于变量替换, 便于理解</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">A=B</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$AB</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;A&#125;</span>B</span><br><span class="line">BB</span><br></pre></td></tr></table></figure>
-
-<h4 id="高版本支持"><a href="#高版本支持" class="headerlink" title="$[ ] | $(( )) | (()) 高版本支持"></a>$[ ] | $(( )) | (()) 高版本支持</h4><p>用于进行数学计算，对于浮点数是当作字符串处理</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a=5;b=7;c=2</span><br><span class="line"><span class="built_in">echo</span> $((a+b*c))</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $[a+b*c]</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $((<span class="variable">$a</span>+<span class="variable">$b</span>*<span class="variable">$c</span>))</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $[<span class="variable">$a</span>+<span class="variable">$b</span>*<span class="variable">$c</span>]</span><br><span class="line">19</span><br></pre></td></tr></table></figure>
-
-<h4 id="-2"><a href="#-2" class="headerlink" title="$( )"></a>$( )</h4><p>命令替换</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker rm -f $(docker ps -aq) # 移除所有容器</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h4><table>
-<thead>
-<tr>
-<th align="center">算术运算符</th>
-<th align="center">说明</th>
-<th align="center">举例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">+</td>
-<td align="center">加法</td>
-<td align="center">echo $((a+b))</td>
-</tr>
-<tr>
-<td align="center">-</td>
-<td align="center">减法</td>
-<td align="center">echo $((a-b))</td>
-</tr>
-<tr>
-<td align="center">*</td>
-<td align="center">乘法</td>
-<td align="center">echo $((a*b))</td>
-</tr>
-<tr>
-<td align="center">/</td>
-<td align="center">除法</td>
-<td align="center">echo $((a/b))</td>
-</tr>
-<tr>
-<td align="center">%</td>
-<td align="center">取余</td>
-<td align="center">echo $((a%b))</td>
-</tr>
-<tr>
-<td align="center">=</td>
-<td align="center">赋值</td>
-<td align="center">a=b</td>
-</tr>
-<tr>
-<td align="center">==</td>
-<td align="center">相等，判断两个数字是否相等，相等则返回 true</td>
-<td align="center">echo $[ ${a} == ${b} ]</td>
-</tr>
-<tr>
-<td align="center">!=</td>
-<td align="center">不相等，判断两个数字是否相等，不相等则返回 true</td>
-<td align="center">echo $[ ${a} != ${b} ]</td>
-</tr>
-</tbody></table>
-<h4 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a>关系运算符</h4><table>
-<thead>
-<tr>
-<th align="center">在 [ ] 中使用的比较符</th>
-<th align="center">在 (( )) 和 [[]] 中使用的比较符</th>
-<th align="center">说明</th>
-<th align="center">举例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">-eq</td>
-<td align="center">==</td>
-<td align="center">equal 的缩写，表示相等</td>
-<td align="center">[ ${a} -eq ${b} ] | [[${a} == ${b}]] | ((${a} == ${b}))</td>
-</tr>
-<tr>
-<td align="center">-ne</td>
-<td align="center">!=</td>
-<td align="center">not equal 的缩写，表示不相等</td>
-<td align="center">[ ${a} -ne ${b} ] | [[${a} != ${b}]] | ((${a} != ${b}))</td>
-</tr>
-<tr>
-<td align="center">-gt</td>
-<td align="center">&gt;</td>
-<td align="center">greater than 的缩写，表示大于</td>
-<td align="center">[ ${a} -gt ${b} ] | [[${a} &gt; ${b}]] | ((${a} &gt; ${b}))</td>
-</tr>
-<tr>
-<td align="center">-ge</td>
-<td align="center">&gt;=</td>
-<td align="center">greater equal 的缩写，表示大于等于</td>
-<td align="center">[ ${a} -ge ${b} ] | [[${a} &gt;= ${b}]]|((${a} &gt;= ${b}))</td>
-</tr>
-<tr>
-<td align="center">-lt</td>
-<td align="center">&lt;</td>
-<td align="center">least than 的缩写，表示小于</td>
-<td align="center">[ ${a} -lt ${b} ] | [[${a} &lt; ${b}]] | ((${a} &lt; ${b}))</td>
-</tr>
-<tr>
-<td align="center">-le</td>
-<td align="center">&lt;=</td>
-<td align="center">least equal 的缩写，表示小于等于</td>
-<td align="center">[ ${a} -le ${b} ] | [[${a} &lt;= ${b}]]|((${a} &lt;= ${b}))</td>
-</tr>
-</tbody></table>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$string</span> -ne <span class="string">&#x27;abc&#x27;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Not equal&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Equal&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -ge <span class="variable">$b</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Greater equal&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Not greater equal&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h4><table>
-<thead>
-<tr>
-<th align="center">在 [ ] 中使用的比较符</th>
-<th align="center">在 (( )) 和 [[]] 中使用的比较符</th>
-<th align="center">说明</th>
-<th align="center">举例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">赋值</td>
-<td align="center">a=10</td>
-<td align="center">b=25</td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="center">-a</td>
-<td align="center">&amp;&amp;</td>
-<td align="center">与运算，两个表达式都为 true,才返回 true</td>
-<td align="center">[ $a -lt 20 -a $b -gt 20 ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-o</td>
-<td align="center">||</td>
-<td align="center">或运算，有一个表达式都为 true,则返回 true</td>
-<td align="center">[ $a -lt 20 -o $b -gt 100 ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">!</td>
-<td align="center">!</td>
-<td align="center">非运算，表达式为 true,则返回 false</td>
-<td align="center">[ ! false ] 返回 true</td>
-</tr>
-</tbody></table>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a=5</span><br><span class="line">b=12</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -lt 50 -a  <span class="variable">$b</span> -gt 8 ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;And(-a) expr result is true&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;And(-a) expr result is false&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -lt 50 -o <span class="variable">$b</span> -gt 12 ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Or(-o) expr result is true&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Or(-o) expr result is false&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="字符串运算符-字符串运算不需要转义"><a href="#字符串运算符-字符串运算不需要转义" class="headerlink" title="字符串运算符, [ ] 字符串运算不需要转义"></a>字符串运算符, [ ] 字符串运算不需要转义</h4><table>
-<thead>
-<tr>
-<th align="center">字符串运算符</th>
-<th align="center">说明</th>
-<th align="center">举例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">=</td>
-<td align="center">检测两个字符串是否相等，相等则返回 true</td>
-<td align="center">[ ${a} = ${b} ]</td>
-</tr>
-<tr>
-<td align="center">!=</td>
-<td align="center">检测两个字符串是否相等，不相等则返回 true</td>
-<td align="center">[ ${a} != ${b} ]</td>
-</tr>
-<tr>
-<td align="center">-z</td>
-<td align="center">检测字符串长度是否为 0，为 0 则返回 true</td>
-<td align="center">[ -z ${b} ]</td>
-</tr>
-<tr>
-<td align="center">-n</td>
-<td align="center">检测字符串长度是否不为 0，不为 0 则返回 true</td>
-<td align="center">[ -n ${b} ]</td>
-</tr>
-<tr>
-<td align="center">str</td>
-<td align="center">检测字符串是否为 null，不为 null 则返回 true</td>
-<td align="center">[ ${b} ]</td>
-</tr>
-</tbody></table>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a=hello</span><br><span class="line">b=world</span><br><span class="line"><span class="keyword">if</span> [ a = b ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;string a equal string b&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;string a not equal string b&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="文件测试运算符"><a href="#文件测试运算符" class="headerlink" title="文件测试运算符"></a>文件测试运算符</h4><table>
-<thead>
-<tr>
-<th align="center">文件测试运算符</th>
-<th align="center">说明</th>
-<th align="center">举例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">-b</td>
-<td align="center">检测文件是否是块设备文件，如果是，则返回 true</td>
-<td align="center">[ -b $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-c</td>
-<td align="center">检测文件是否是字符设备文件，如果是，则返回 true</td>
-<td align="center">[ -c $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-d</td>
-<td align="center">检测文件是否是目录文件，如果是，则返回 true</td>
-<td align="center">[ -d $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-f</td>
-<td align="center">检测文件是否是普通文件（既不是目录也不是设备文件），如果是，则返回 true</td>
-<td align="center">[ -f $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-g</td>
-<td align="center">检测文件是否设置了 SGID 位，如果是，则返回 true</td>
-<td align="center">[ -g $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-k</td>
-<td align="center">检测文件是否设置了粘着位（stucky Bit），如果是，则返回 true</td>
-<td align="center">[ -k $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-p</td>
-<td align="center">检测文件是否具名管道，如果是，则返回 true</td>
-<td align="center">[ -p $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-u</td>
-<td align="center">检测文件是否设置了 SUID 位，如果是，则返回 true</td>
-<td align="center">[ -u $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-r</td>
-<td align="center">检测文件是否可读，如果是，则返回 true</td>
-<td align="center">[ -r $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-w</td>
-<td align="center">检测文件是否可写，如果是，则返回 true</td>
-<td align="center">[ -w $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-x</td>
-<td align="center">检测文件是否可执行，如果是，则返回 true</td>
-<td align="center">[ -x $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-s</td>
-<td align="center">检测文件是否为不为空（文件大小是否不为 0），如果不为 0，则返回 true</td>
-<td align="center">[ -s $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-e</td>
-<td align="center">检测文件(包括目录)是否存在，如果存在，则返回 true</td>
-<td align="center">[ -e $file ] 返回 true</td>
-</tr>
-<tr>
-<td align="center">-a</td>
-<td align="center">检测文件(包括目录)是否存在(此命令已废弃)，如果存在，则返回 true</td>
-<td align="center">[ -e $file ] 返回 true</td>
-</tr>
-</tbody></table>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> [ -e .node ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;this file is exists&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;this file not exists&#x27;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ -s .zshrc ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;file not empty&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;file is empty&#x27;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="重定向-管道-流"><a href="#重定向-管道-流" class="headerlink" title="重定向 | 管道 | 流"></a>重定向 | 管道 | 流</h4><h5 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h5><ul>
-<li><code>&gt;</code> 输出重定向, 文件覆盖</li>
-<li><code>&gt;&gt;</code> 输出重定向, 文件末尾追加</li>
-<li><code>2&gt;</code> 标准错误输出, 文件覆盖</li>
-<li><code>2&gt;&gt;</code> 标准错误输出, 文件末尾追加</li>
-<li><code>2&gt;&amp;1</code> 标准输出和标准错误输出</li>
-<li><code>&lt;</code> 输入重定向</li>
-<li><code>&lt;&lt;</code> 输入重定向</li>
-</ul>
-<h5 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h5><ul>
-<li><code>|</code> 连接两个命令, 第一个命令的输出作为第二个命令的输入</li>
-</ul>
-<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><h4 id="if"><a href="#if" class="headerlink" title="if"></a>if</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if [-e /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  printf &quot;hello world %s %s\n&quot; $(/bin/date +&quot;%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">elif [ -s /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  printf &quot;hello world\n&quot;</span><br><span class="line">else</span><br><span class="line">  printf &quot;hello gg\n&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
-
-<h4 id="case"><a href="#case" class="headerlink" title="case"></a>case</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a=20</span><br><span class="line">case $a in</span><br><span class="line">  10)</span><br><span class="line">    echo &quot;a的值为 10&quot;</span><br><span class="line">  ;;</span><br><span class="line">  20)</span><br><span class="line">    echo &quot;a的值为 20&quot; # 输出 a 的值为 20</span><br><span class="line">  ;;</span><br><span class="line">  *)</span><br><span class="line">    echo &quot;a的值不是10也不是20&quot;</span><br><span class="line">  ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
-
-<h4 id="for"><a href="#for" class="headerlink" title="for"></a>for</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for i in &#123;1..10&#125;; do  # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;for do &quot; $&#123;i&#125; # 依次输出 for do 1 到 10</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<h4 id="while"><a href="#while" class="headerlink" title="while"></a>while</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">j=1</span><br><span class="line">while [ $j -lt 10 ]; do # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;while do &quot; $&#123;j&#125; # 依次输出 while do 1 到 9</span><br><span class="line">  j=$[j+1]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<h4 id="until"><a href="#until" class="headerlink" title="until"></a>until</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">k=1</span><br><span class="line">until [ $k -gt 10 ]; do # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;until do &quot; $&#123;k&#125; # 依次输出 until do 1 到 10</span><br><span class="line">  k=$[k+1]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><h4 id="一维数组"><a href="#一维数组" class="headerlink" title="一维数组"></a>一维数组</h4><ul>
-<li>bash 只支持一维数组</li>
-<li>初始化时不需要定义数组的大小, 定义时用小括号将用空格分隔的元素包含起来</li>
-<li>数组元素的下标由 0 开始</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">arr=(1 2 3 &#x27;a&#x27;)</span><br><span class="line">echo &quot;arr[0]=&quot; $&#123;arr[0]&#125;</span><br><span class="line">echo &quot;arr[1]=&quot; $&#123;arr[1]&#125;</span><br><span class="line">echo &quot;arr[2]=&quot; $&#123;arr[2]&#125;</span><br><span class="line">echo &quot;arr[3]=&quot; $&#123;arr[3]&#125;</span><br><span class="line">echo &quot;arr[*]=&quot; $&#123;arr[*]&#125;  # 输出所有元素</span><br><span class="line">echo &quot;arr[@]=&quot; $&#123;arr[@]&#125;  # 输出所有元素</span><br><span class="line">echo &quot;arr的键为 &quot; $&#123;!arr[*]&#125;  # arr的键为  0 1 2 3</span><br><span class="line">echo &quot;arr的长度为 &quot; $&#123;#arr[*]&#125; # 获取数组的长度与获取字符串长度的方法相同</span><br><span class="line"></span><br><span class="line">str=helloworld</span><br><span class="line">echo &quot;str 的长度为 &quot; $&#123;#str&#125;  # str 的长度为 10</span><br></pre></td></tr></table></figure>
-
-<h4 id="关联数组"><a href="#关联数组" class="headerlink" title="关联数组"></a>关联数组</h4><ul>
-<li>关联数组, 使用 <code>declare -A</code> 声明</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">declare -A site=([&#x27;google&#x27;]=&#x27;www.google.com&#x27; [&#x27;baidu&#x27;]=&#x27;www.baidu.com&#x27; [&#x27;taobao&#x27;]=&#x27;www.taobao.com&#x27;)</span><br><span class="line">echo &quot;site[&#x27;google&#x27;]=&quot; $&#123;site[&#x27;google&#x27;]&#125;  # site[&#x27;google&#x27;]= www.google.com</span><br><span class="line">echo &quot;site[&#x27;baidu&#x27;]=&quot; $&#123;site[&#x27;baidu&#x27;]&#125;  # site[&#x27;baidu&#x27;]= www.baidu.com</span><br><span class="line">echo &quot;site[&#x27;taobao&#x27;]=&quot; $&#123;site[&#x27;taobao&#x27;]&#125;  # site[&#x27;taobao&#x27;]= www.taobao.com</span><br><span class="line">echo &quot;site的所有元素是 &quot; $&#123;site[*]&#125; # site的所有元素是  www.google.com www.taobao.com www.baidu.com</span><br><span class="line">echo &quot;site的所有元素是 &quot; $&#123;site[@]&#125; # site的所有元素是  www.google.com www.taobao.com www.baidu.com</span><br><span class="line">echo &quot;site的键为 &quot; $&#123;!site[*]&#125;  # site的键为  google taobao baidu</span><br><span class="line">echo &quot;site的长度为 &quot; $&#123;#site[*]&#125;  # site的长度为  3</span><br></pre></td></tr></table></figure>
-
-<h4 id="数组操作"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作</h4><ul>
-<li>*|@ 获取数组的所有元素, <code>$&#123;arr[*]&#125;</code></li>
-<li>! 获取数组的所有键, <code>$&#123;!arr[*]&#125;</code></li>
-<li># 获取数组的长度, <code>$&#123;#arr[*]&#125;</code></li>
-</ul>
-<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
-<li>function 是关键字, 用来定义函数</li>
-<li>name 是函数名</li>
-<li>statements 函数体中的执行语句</li>
-<li>return value 函数的返回值, 一般表示函数的返回状态, 0 表示成功, 其他值表示失败, 只能是 0 - 255 之间的数字</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">标准语法</span></span><br><span class="line">[function] function_name [()] &#123;</span><br><span class="line">  statements</span><br><span class="line">  [return value]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>定义函数时, 关键字 function 和 () 可以二选一</li>
-<li>定义函数时, 不需要提前指定参数, 在函数体内使用参数时, 使用 <code>特殊变量</code> 获取</li>
-<li>函数调用时, 函数名后面不需要带小括号, 如果有参数时，多个参数之间用空格分隔</li>
-<li>获取函数的返回值<ul>
-<li>一种是借助全局变量, 将得到的结果赋值给全局变量</li>
-<li>一种是在函数内使用 <code>echo</code>, <code>printf</code> 命令将结果输出, 在函数外部使用 <code>$( )</code> 或者 <code>\</code>`` 捕获结果</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">function dateFormat() &#123;</span><br><span class="line">  echo $(/bin/date +&quot;hello crontab %Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo $(dateFormat) # 获取函数的结果</span><br></pre></td></tr></table></figure>
-
-<h4 id="特殊变量"><a href="#特殊变量" class="headerlink" title="特殊变量"></a>特殊变量</h4><table>
-<thead>
-<tr>
-<th align="center">变量</th>
-<th align="center">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">$0</td>
-<td align="center">当前脚本的文件名</td>
-</tr>
-<tr>
-<td align="center">$n(n&gt;=1)</td>
-<td align="center">传递给脚本或函数的参数, n 是一个数字, 表示第几个参数</td>
-</tr>
-<tr>
-<td align="center">$#</td>
-<td align="center">传递给脚本或函数的参数个数</td>
-</tr>
-<tr>
-<td align="center">$*</td>
-<td align="center">传递给脚本或函数的所有参数, 当前脚本的所有参数作为一个参数</td>
-</tr>
-<tr>
-<td align="center">$@</td>
-<td align="center">传递给脚本或函数的所有参数,当前脚本的所有参数分别作为一个参数, 当被双引号包含时, $@ 和 $* 有所不同</td>
-</tr>
-<tr>
-<td align="center">$?</td>
-<td align="center">上个命令的退出状态,或函数的返回值</td>
-</tr>
-<tr>
-<td align="center">$$</td>
-<td align="center">当前 Shell 进程 ID, 对于 Shell 脚本, 就是这些脚本所在的进程 ID</td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>linux</category>
-        <category>shell</category>
-      </categories>
-      <tags>
-        <tag>linux</tag>
-        <tag>shell</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>nginx</title>
     <url>/2022/04/1e58889c42cf/</url>
     <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
@@ -2480,6 +2094,392 @@
 <li>-l 列出目前的时程表</li>
 </ul>
 <h4 id="每分钟向指定文件追加写入一条数据"><a href="#每分钟向指定文件追加写入一条数据" class="headerlink" title="每分钟向指定文件追加写入一条数据"></a>每分钟向指定文件追加写入一条数据</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">/root/workspace/crontab-out-format.sh</span></span><br><span class="line"></span><br><span class="line">file=/root/workspace/crontab-out-format.txt</span><br><span class="line"></span><br><span class="line">function dateFormat() &#123;</span><br><span class="line">  echo $(/bin/date +&quot;hello crontab %Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if [ -e $file ]; then</span><br><span class="line">  echo $(dateFormat) &gt;&gt; $file</span><br><span class="line">else</span><br><span class="line">  touch $file</span><br><span class="line">  echo $(dateFormat) &gt;&gt; $file</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">[root@centos7 workspace]# crontab -l  # 列出当前用户的所有任务</span><br><span class="line">* * * * * /bin/bash /root/workspace/crontab-out-format.sh # 定时任务</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>linux</category>
+        <category>shell</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shell语法</title>
+    <url>/2022/04/616714173ca1/</url>
+    <content><![CDATA[<h3 id="shell-重置密码"><a href="#shell-重置密码" class="headerlink" title="shell 重置密码"></a>shell 重置密码</h3><ol>
+<li>开机按 <code>e</code> 键进入内核编辑</li>
+<li>光标移动到倒数第二段 <code>Linux16</code> 末尾添加 <code>init=/bin/sh</code></li>
+<li><code>ctrl + x</code> 进行引导启动, 成功进入命令提示界面</li>
+<li>输入 <code>mount -o remount, rw /</code> 挂载根目录</li>
+<li>使用 <code>passwd</code> 命令修改指定用户密码</li>
+<li>直到提示 <code>passwd: all authentication tokens updated successfully.</code></li>
+<li>输入 <code>touch /.autorelabel</code> 回车</li>
+<li>输入 <code>exec /sbin/init</code> 回车重启系统</li>
+</ol>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
+<li>export 导出全局变量</li>
+<li>declare 声明变量</li>
+<li>unset 删除变量</li>
+<li>local 声明局部变量,一般用于函数内部</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><h4 id=""><a href="#" class="headerlink" title="[ ] | [[]]"></a>[ ] | [[]]</h4><p>运算表达式两边必须要有空格</p>
+<h4 id="-1"><a href="#-1" class="headerlink" title="${}"></a>${}</h4><p>用于变量替换, 便于理解</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">A=B</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$AB</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;A&#125;</span>B</span><br><span class="line">BB</span><br></pre></td></tr></table></figure>
+
+<h4 id="高版本支持"><a href="#高版本支持" class="headerlink" title="$[ ] | $(( )) | (()) 高版本支持"></a>$[ ] | $(( )) | (()) 高版本支持</h4><p>用于进行数学计算，对于浮点数是当作字符串处理</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a=5;b=7;c=2</span><br><span class="line"><span class="built_in">echo</span> $((a+b*c))</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $[a+b*c]</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $((<span class="variable">$a</span>+<span class="variable">$b</span>*<span class="variable">$c</span>))</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $[<span class="variable">$a</span>+<span class="variable">$b</span>*<span class="variable">$c</span>]</span><br><span class="line">19</span><br></pre></td></tr></table></figure>
+
+<h4 id="-2"><a href="#-2" class="headerlink" title="$( )"></a>$( )</h4><p>命令替换</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker rm -f $(docker ps -aq) # 移除所有容器</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h4><table>
+<thead>
+<tr>
+<th align="center">算术运算符</th>
+<th align="center">说明</th>
+<th align="center">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">+</td>
+<td align="center">加法</td>
+<td align="center">echo $((a+b))</td>
+</tr>
+<tr>
+<td align="center">-</td>
+<td align="center">减法</td>
+<td align="center">echo $((a-b))</td>
+</tr>
+<tr>
+<td align="center">*</td>
+<td align="center">乘法</td>
+<td align="center">echo $((a*b))</td>
+</tr>
+<tr>
+<td align="center">/</td>
+<td align="center">除法</td>
+<td align="center">echo $((a/b))</td>
+</tr>
+<tr>
+<td align="center">%</td>
+<td align="center">取余</td>
+<td align="center">echo $((a%b))</td>
+</tr>
+<tr>
+<td align="center">=</td>
+<td align="center">赋值</td>
+<td align="center">a=b</td>
+</tr>
+<tr>
+<td align="center">==</td>
+<td align="center">相等，判断两个数字是否相等，相等则返回 true</td>
+<td align="center">echo $[ ${a} == ${b} ]</td>
+</tr>
+<tr>
+<td align="center">!=</td>
+<td align="center">不相等，判断两个数字是否相等，不相等则返回 true</td>
+<td align="center">echo $[ ${a} != ${b} ]</td>
+</tr>
+</tbody></table>
+<h4 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a>关系运算符</h4><table>
+<thead>
+<tr>
+<th align="center">在 [ ] 中使用的比较符</th>
+<th align="center">在 (( )) 和 [[]] 中使用的比较符</th>
+<th align="center">说明</th>
+<th align="center">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-eq</td>
+<td align="center">==</td>
+<td align="center">equal 的缩写，表示相等</td>
+<td align="center">[ ${a} -eq ${b} ] | [[${a} == ${b}]] | ((${a} == ${b}))</td>
+</tr>
+<tr>
+<td align="center">-ne</td>
+<td align="center">!=</td>
+<td align="center">not equal 的缩写，表示不相等</td>
+<td align="center">[ ${a} -ne ${b} ] | [[${a} != ${b}]] | ((${a} != ${b}))</td>
+</tr>
+<tr>
+<td align="center">-gt</td>
+<td align="center">&gt;</td>
+<td align="center">greater than 的缩写，表示大于</td>
+<td align="center">[ ${a} -gt ${b} ] | [[${a} &gt; ${b}]] | ((${a} &gt; ${b}))</td>
+</tr>
+<tr>
+<td align="center">-ge</td>
+<td align="center">&gt;=</td>
+<td align="center">greater equal 的缩写，表示大于等于</td>
+<td align="center">[ ${a} -ge ${b} ] | [[${a} &gt;= ${b}]]|((${a} &gt;= ${b}))</td>
+</tr>
+<tr>
+<td align="center">-lt</td>
+<td align="center">&lt;</td>
+<td align="center">least than 的缩写，表示小于</td>
+<td align="center">[ ${a} -lt ${b} ] | [[${a} &lt; ${b}]] | ((${a} &lt; ${b}))</td>
+</tr>
+<tr>
+<td align="center">-le</td>
+<td align="center">&lt;=</td>
+<td align="center">least equal 的缩写，表示小于等于</td>
+<td align="center">[ ${a} -le ${b} ] | [[${a} &lt;= ${b}]]|((${a} &lt;= ${b}))</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$string</span> -ne <span class="string">&#x27;abc&#x27;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Not equal&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Equal&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -ge <span class="variable">$b</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Greater equal&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Not greater equal&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h4><table>
+<thead>
+<tr>
+<th align="center">在 [ ] 中使用的比较符</th>
+<th align="center">在 (( )) 和 [[]] 中使用的比较符</th>
+<th align="center">说明</th>
+<th align="center">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">赋值</td>
+<td align="center">a=10</td>
+<td align="center">b=25</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">-a</td>
+<td align="center">&amp;&amp;</td>
+<td align="center">与运算，两个表达式都为 true,才返回 true</td>
+<td align="center">[ $a -lt 20 -a $b -gt 20 ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-o</td>
+<td align="center">||</td>
+<td align="center">或运算，有一个表达式都为 true,则返回 true</td>
+<td align="center">[ $a -lt 20 -o $b -gt 100 ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">!</td>
+<td align="center">!</td>
+<td align="center">非运算，表达式为 true,则返回 false</td>
+<td align="center">[ ! false ] 返回 true</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a=5</span><br><span class="line">b=12</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -lt 50 -a  <span class="variable">$b</span> -gt 8 ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;And(-a) expr result is true&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;And(-a) expr result is false&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -lt 50 -o <span class="variable">$b</span> -gt 12 ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Or(-o) expr result is true&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Or(-o) expr result is false&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="字符串运算符-字符串运算不需要转义"><a href="#字符串运算符-字符串运算不需要转义" class="headerlink" title="字符串运算符, [ ] 字符串运算不需要转义"></a>字符串运算符, [ ] 字符串运算不需要转义</h4><table>
+<thead>
+<tr>
+<th align="center">字符串运算符</th>
+<th align="center">说明</th>
+<th align="center">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">=</td>
+<td align="center">检测两个字符串是否相等，相等则返回 true</td>
+<td align="center">[ ${a} = ${b} ]</td>
+</tr>
+<tr>
+<td align="center">!=</td>
+<td align="center">检测两个字符串是否相等，不相等则返回 true</td>
+<td align="center">[ ${a} != ${b} ]</td>
+</tr>
+<tr>
+<td align="center">-z</td>
+<td align="center">检测字符串长度是否为 0，为 0 则返回 true</td>
+<td align="center">[ -z ${b} ]</td>
+</tr>
+<tr>
+<td align="center">-n</td>
+<td align="center">检测字符串长度是否不为 0，不为 0 则返回 true</td>
+<td align="center">[ -n ${b} ]</td>
+</tr>
+<tr>
+<td align="center">str</td>
+<td align="center">检测字符串是否为 null，不为 null 则返回 true</td>
+<td align="center">[ ${b} ]</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a=hello</span><br><span class="line">b=world</span><br><span class="line"><span class="keyword">if</span> [ a = b ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;string a equal string b&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;string a not equal string b&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="文件测试运算符"><a href="#文件测试运算符" class="headerlink" title="文件测试运算符"></a>文件测试运算符</h4><table>
+<thead>
+<tr>
+<th align="center">文件测试运算符</th>
+<th align="center">说明</th>
+<th align="center">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-b</td>
+<td align="center">检测文件是否是块设备文件，如果是，则返回 true</td>
+<td align="center">[ -b $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-c</td>
+<td align="center">检测文件是否是字符设备文件，如果是，则返回 true</td>
+<td align="center">[ -c $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-d</td>
+<td align="center">检测文件是否是目录文件，如果是，则返回 true</td>
+<td align="center">[ -d $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-f</td>
+<td align="center">检测文件是否是普通文件（既不是目录也不是设备文件），如果是，则返回 true</td>
+<td align="center">[ -f $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-g</td>
+<td align="center">检测文件是否设置了 SGID 位，如果是，则返回 true</td>
+<td align="center">[ -g $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-k</td>
+<td align="center">检测文件是否设置了粘着位（stucky Bit），如果是，则返回 true</td>
+<td align="center">[ -k $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-p</td>
+<td align="center">检测文件是否具名管道，如果是，则返回 true</td>
+<td align="center">[ -p $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-u</td>
+<td align="center">检测文件是否设置了 SUID 位，如果是，则返回 true</td>
+<td align="center">[ -u $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-r</td>
+<td align="center">检测文件是否可读，如果是，则返回 true</td>
+<td align="center">[ -r $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-w</td>
+<td align="center">检测文件是否可写，如果是，则返回 true</td>
+<td align="center">[ -w $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-x</td>
+<td align="center">检测文件是否可执行，如果是，则返回 true</td>
+<td align="center">[ -x $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-s</td>
+<td align="center">检测文件是否为不为空（文件大小是否不为 0），如果不为 0，则返回 true</td>
+<td align="center">[ -s $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-e</td>
+<td align="center">检测文件(包括目录)是否存在，如果存在，则返回 true</td>
+<td align="center">[ -e $file ] 返回 true</td>
+</tr>
+<tr>
+<td align="center">-a</td>
+<td align="center">检测文件(包括目录)是否存在(此命令已废弃)，如果存在，则返回 true</td>
+<td align="center">[ -e $file ] 返回 true</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> [ -e .node ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;this file is exists&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;this file not exists&#x27;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ -s .zshrc ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;file not empty&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;file is empty&#x27;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="重定向-管道-流"><a href="#重定向-管道-流" class="headerlink" title="重定向 | 管道 | 流"></a>重定向 | 管道 | 流</h4><h5 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h5><ul>
+<li><code>&gt;</code> 输出重定向, 文件覆盖</li>
+<li><code>&gt;&gt;</code> 输出重定向, 文件末尾追加</li>
+<li><code>2&gt;</code> 标准错误输出, 文件覆盖</li>
+<li><code>2&gt;&gt;</code> 标准错误输出, 文件末尾追加</li>
+<li><code>2&gt;&amp;1</code> 标准输出和标准错误输出</li>
+<li><code>&lt;</code> 输入重定向</li>
+<li><code>&lt;&lt;</code> 输入重定向</li>
+</ul>
+<h5 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h5><ul>
+<li><code>|</code> 连接两个命令, 第一个命令的输出作为第二个命令的输入</li>
+</ul>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><h4 id="if"><a href="#if" class="headerlink" title="if"></a>if</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if [-e /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  printf &quot;hello world %s %s\n&quot; $(/bin/date +&quot;%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">elif [ -s /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  printf &quot;hello world\n&quot;</span><br><span class="line">else</span><br><span class="line">  printf &quot;hello gg\n&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h4 id="case"><a href="#case" class="headerlink" title="case"></a>case</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a=20</span><br><span class="line">case $a in</span><br><span class="line">  10)</span><br><span class="line">    echo &quot;a的值为 10&quot;</span><br><span class="line">  ;;</span><br><span class="line">  20)</span><br><span class="line">    echo &quot;a的值为 20&quot; # 输出 a 的值为 20</span><br><span class="line">  ;;</span><br><span class="line">  *)</span><br><span class="line">    echo &quot;a的值不是10也不是20&quot;</span><br><span class="line">  ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<h4 id="for"><a href="#for" class="headerlink" title="for"></a>for</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for i in &#123;1..10&#125;; do  # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;for do &quot; $&#123;i&#125; # 依次输出 for do 1 到 10</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="while"><a href="#while" class="headerlink" title="while"></a>while</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">j=1</span><br><span class="line">while [ $j -lt 10 ]; do # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;while do &quot; $&#123;j&#125; # 依次输出 while do 1 到 9</span><br><span class="line">  j=$[j+1]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="until"><a href="#until" class="headerlink" title="until"></a>until</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">k=1</span><br><span class="line">until [ $k -gt 10 ]; do # do 可以单独另写一行, 但是分号不能省略</span><br><span class="line">  echo &quot;until do &quot; $&#123;k&#125; # 依次输出 until do 1 到 10</span><br><span class="line">  k=$[k+1]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><h4 id="一维数组"><a href="#一维数组" class="headerlink" title="一维数组"></a>一维数组</h4><ul>
+<li>bash 只支持一维数组</li>
+<li>初始化时不需要定义数组的大小, 定义时用小括号将用空格分隔的元素包含起来</li>
+<li>数组元素的下标由 0 开始</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">arr=(1 2 3 &#x27;a&#x27;)</span><br><span class="line">echo &quot;arr[0]=&quot; $&#123;arr[0]&#125;</span><br><span class="line">echo &quot;arr[1]=&quot; $&#123;arr[1]&#125;</span><br><span class="line">echo &quot;arr[2]=&quot; $&#123;arr[2]&#125;</span><br><span class="line">echo &quot;arr[3]=&quot; $&#123;arr[3]&#125;</span><br><span class="line">echo &quot;arr[*]=&quot; $&#123;arr[*]&#125;  # 输出所有元素</span><br><span class="line">echo &quot;arr[@]=&quot; $&#123;arr[@]&#125;  # 输出所有元素</span><br><span class="line">echo &quot;arr的键为 &quot; $&#123;!arr[*]&#125;  # arr的键为  0 1 2 3</span><br><span class="line">echo &quot;arr的长度为 &quot; $&#123;#arr[*]&#125; # 获取数组的长度与获取字符串长度的方法相同</span><br><span class="line"></span><br><span class="line">str=helloworld</span><br><span class="line">echo &quot;str 的长度为 &quot; $&#123;#str&#125;  # str 的长度为 10</span><br></pre></td></tr></table></figure>
+
+<h4 id="关联数组"><a href="#关联数组" class="headerlink" title="关联数组"></a>关联数组</h4><ul>
+<li>关联数组, 使用 <code>declare -A</code> 声明</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">declare -A site=([&#x27;google&#x27;]=&#x27;www.google.com&#x27; [&#x27;baidu&#x27;]=&#x27;www.baidu.com&#x27; [&#x27;taobao&#x27;]=&#x27;www.taobao.com&#x27;)</span><br><span class="line">echo &quot;site[&#x27;google&#x27;]=&quot; $&#123;site[&#x27;google&#x27;]&#125;  # site[&#x27;google&#x27;]= www.google.com</span><br><span class="line">echo &quot;site[&#x27;baidu&#x27;]=&quot; $&#123;site[&#x27;baidu&#x27;]&#125;  # site[&#x27;baidu&#x27;]= www.baidu.com</span><br><span class="line">echo &quot;site[&#x27;taobao&#x27;]=&quot; $&#123;site[&#x27;taobao&#x27;]&#125;  # site[&#x27;taobao&#x27;]= www.taobao.com</span><br><span class="line">echo &quot;site的所有元素是 &quot; $&#123;site[*]&#125; # site的所有元素是  www.google.com www.taobao.com www.baidu.com</span><br><span class="line">echo &quot;site的所有元素是 &quot; $&#123;site[@]&#125; # site的所有元素是  www.google.com www.taobao.com www.baidu.com</span><br><span class="line">echo &quot;site的键为 &quot; $&#123;!site[*]&#125;  # site的键为  google taobao baidu</span><br><span class="line">echo &quot;site的长度为 &quot; $&#123;#site[*]&#125;  # site的长度为  3</span><br></pre></td></tr></table></figure>
+
+<h4 id="数组操作"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作</h4><ul>
+<li>*|@ 获取数组的所有元素, <code>$&#123;arr[*]&#125;</code></li>
+<li>! 获取数组的所有键, <code>$&#123;!arr[*]&#125;</code></li>
+<li># 获取数组的长度, <code>$&#123;#arr[*]&#125;</code></li>
+</ul>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
+<li>function 是关键字, 用来定义函数</li>
+<li>name 是函数名</li>
+<li>statements 函数体中的执行语句</li>
+<li>return value 函数的返回值, 一般表示函数的返回状态, 0 表示成功, 其他值表示失败, 只能是 0 - 255 之间的数字</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">标准语法</span></span><br><span class="line">[function] function_name [()] &#123;</span><br><span class="line">  statements</span><br><span class="line">  [return value]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定义函数时, 关键字 function 和 () 可以二选一</li>
+<li>定义函数时, 不需要提前指定参数, 在函数体内使用参数时, 使用 <code>特殊变量</code> 获取</li>
+<li>函数调用时, 函数名后面不需要带小括号, 如果有参数时，多个参数之间用空格分隔</li>
+<li>获取函数的返回值<ul>
+<li>一种是借助全局变量, 将得到的结果赋值给全局变量</li>
+<li>一种是在函数内使用 <code>echo</code>, <code>printf</code> 命令将结果输出, 在函数外部使用 <code>$( )</code> 或者 <code>\</code>`` 捕获结果</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">function dateFormat() &#123;</span><br><span class="line">  echo $(/bin/date +&quot;hello crontab %Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo $(dateFormat) # 获取函数的结果</span><br></pre></td></tr></table></figure>
+
+<h4 id="特殊变量"><a href="#特殊变量" class="headerlink" title="特殊变量"></a>特殊变量</h4><table>
+<thead>
+<tr>
+<th align="center">变量</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">$0</td>
+<td align="center">当前脚本的文件名</td>
+</tr>
+<tr>
+<td align="center">$n(n&gt;=1)</td>
+<td align="center">传递给脚本或函数的参数, n 是一个数字, 表示第几个参数</td>
+</tr>
+<tr>
+<td align="center">$#</td>
+<td align="center">传递给脚本或函数的参数个数</td>
+</tr>
+<tr>
+<td align="center">$*</td>
+<td align="center">传递给脚本或函数的所有参数, 当前脚本的所有参数作为一个参数</td>
+</tr>
+<tr>
+<td align="center">$@</td>
+<td align="center">传递给脚本或函数的所有参数,当前脚本的所有参数分别作为一个参数, 当被双引号包含时, $@ 和 $* 有所不同</td>
+</tr>
+<tr>
+<td align="center">$?</td>
+<td align="center">上个命令的退出状态,或函数的返回值</td>
+</tr>
+<tr>
+<td align="center">$$</td>
+<td align="center">当前 Shell 进程 ID, 对于 Shell 脚本, 就是这些脚本所在的进程 ID</td>
+</tr>
+</tbody></table>
 ]]></content>
       <categories>
         <category>linux</category>
@@ -6001,9 +6001,14 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>); <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line">count.<span class="property">value</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
 
 <ul>
+<li>一个包含对象类型值的 ref 可以响应式的替换整个对象</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> objRef = <span class="title function_">ref</span>(&#123; <span class="attr">count</span>: <span class="number">0</span> &#125;);</span><br><span class="line">objRef.<span class="property">value</span> = &#123; <span class="attr">count</span>: <span class="number">1</span> &#125;; <span class="comment">// 响应式替换</span></span><br></pre></td></tr></table></figure>
+
+<ul>
 <li>ref 被传递给函数或是从一般对象上被解构时, 不会丢失响应性</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> objRef = <span class="title function_">ref</span>(&#123; <span class="attr">count</span>: <span class="number">0</span> &#125;);</span><br><span class="line">objRef.<span class="property">value</span> = &#123; <span class="attr">count</span>: <span class="number">1</span> &#125;; <span class="comment">// 响应式替换</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  <span class="attr">foo</span>: <span class="title function_">ref</span>(<span class="number">0</span>),</span><br><span class="line">  <span class="attr">bar</span>: <span class="title function_">ref</span>(<span class="number">1</span>),</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 该函数接收一个 ref 需要通过 .value 取值, 但会保持响应性</span></span><br><span class="line"><span class="title function_">callSomeFn</span>(obj.<span class="property">foo</span>);</span><br><span class="line"><span class="comment">// 解构 ref 仍然是响应性的</span></span><br><span class="line"><span class="keyword">const</span> &#123; foo, bar &#125; = obj;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  <span class="attr">foo</span>: <span class="title function_">ref</span>(<span class="number">0</span>),</span><br><span class="line">  <span class="attr">bar</span>: <span class="title function_">ref</span>(<span class="number">1</span>),</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 该函数接收一个 ref 需要通过 .value 取值, 但会保持响应性</span></span><br><span class="line"><span class="title function_">callSomeFn</span>(obj.<span class="property">foo</span>);</span><br><span class="line"><span class="comment">// 解构 ref 仍然是响应性的</span></span><br><span class="line"><span class="keyword">const</span> &#123; foo, bar &#125; = obj;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>当 ref 在模板中作为<strong>顶层属性</strong>被访问时, 它们会被自动解包, 不需要使用 <code>.value</code></li>
@@ -6123,7 +6128,7 @@
 </blockquote>
 <p>将一个响应式对象转换为一个普通对象, 这个普通对象的每个属性都指向源对象相应属性的 ref, 每个单独的 ref 都是使用 <code>toRef()</code> 创建的</p>
 <ul>
-<li>toRefs 在调用时智慧为源对象上的可以枚举的属性创建 ref, 如果为可能还不存在的属性创建 ref 时, 使用 toRef</li>
+<li>toRefs 在调用时只为源对象上的可以枚举的属性创建 ref, 如果为可能还不存在的属性创建 ref 时, 使用 toRef</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> state = <span class="title function_">reactive</span>(&#123; <span class="attr">foo</span>: <span class="number">1</span>, <span class="attr">bar</span>: <span class="number">2</span> &#125;);</span><br><span class="line"><span class="keyword">const</span> stateAsRefs = <span class="title function_">toRefs</span>(state);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">stateAsRefs 的类型:</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  foo: Ref&lt;number&gt;,</span></span><br><span class="line"><span class="comment">  bar: Ref&lt;number&gt;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ref 和原始 property 已经 &quot;链接&quot; 起来了</span></span><br><span class="line">state.<span class="property">foo</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(stateAsRefs.<span class="property">foo</span>.<span class="property">value</span>); <span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line">stateAsRefs.<span class="property">foo</span>.<span class="property">value</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(state.<span class="property">foo</span>); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
 
