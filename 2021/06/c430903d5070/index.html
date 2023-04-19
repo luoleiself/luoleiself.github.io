@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://luoleiself.github.io/images/vue3-directives-hooks-2.jpg">
 <meta property="og:image" content="https://luoleiself.github.io/images/vue3-directives-hooks-3.jpg">
 <meta property="article:published_time" content="2021-06-19T07:19:26.000Z">
-<meta property="article:modified_time" content="2023-04-18T12:01:54.457Z">
+<meta property="article:modified_time" content="2023-04-19T02:17:58.145Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="js">
 <meta property="article:tag" content="VueJs">
@@ -244,7 +244,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-18 20:01:54" itemprop="dateModified" datetime="2023-04-18T20:01:54+08:00">2023-04-18</time>
+                <time title="修改时间：2023-04-19 10:17:58" itemprop="dateModified" datetime="2023-04-19T10:17:58+08:00">2023-04-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -265,13 +265,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>59k</span>
+              <span>60k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>54 分钟</span>
+              <span>55 分钟</span>
             </span>
 
         </div>
@@ -459,6 +459,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h, ref, reactive &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params">props, &#123; expose &#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">const</span> object = <span class="title function_">reactive</span>(&#123; <span class="attr">foo</span>: <span class="string">&#x27;bar&#x27;</span> &#125;);</span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">increment</span> = (<span class="params"></span>) =&gt; ++count.<span class="property">value</span>;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">expose</span>(&#123; increment &#125;); <span class="comment">// 组件暴露 increment 方法</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>, [count.<span class="property">value</span>, object.<span class="property">foo</span>]);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h3 id="响应式-核心"><a href="#响应式-核心" class="headerlink" title="响应式: 核心"></a>响应式: 核心</h3><ul>
+<li>响应式状态默认是深层次的, 即对深层次的响应式状态的更改也能被检测到</li>
 <li>只有代理对象是响应式的, 更改原始对象不会触发更新, 使用响应式系统时仅使用声明对象的代理版本</li>
 <li>对同一个<strong>原始对象</strong>调用 <code>reactive()</code> 总是返回同样的<strong>代理对象</strong></li>
 <li>对一个已存在的<strong>代理对象</strong>调用 <code>reactive()</code> 总是返回其本身</li>
@@ -468,6 +469,16 @@
 <li>如果将一个对象赋值给 ref, 那么这个对象将通过 <code>reactive()</code> 转为具有深层次响应式的对象, 如果对象中包含了嵌套的 ref, 它们将被深层地解包</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>); <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line">count.<span class="property">value</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ref 被传递给函数或是从一般对象上被解构时, 不会丢失响应性</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> objRef = <span class="title function_">ref</span>(&#123; <span class="attr">count</span>: <span class="number">0</span> &#125;);</span><br><span class="line">objRef.<span class="property">value</span> = &#123; <span class="attr">count</span>: <span class="number">1</span> &#125;; <span class="comment">// 响应式替换</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  <span class="attr">foo</span>: <span class="title function_">ref</span>(<span class="number">0</span>),</span><br><span class="line">  <span class="attr">bar</span>: <span class="title function_">ref</span>(<span class="number">1</span>),</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 该函数接收一个 ref 需要通过 .value 取值, 但会保持响应性</span></span><br><span class="line"><span class="title function_">callSomeFn</span>(obj.<span class="property">foo</span>);</span><br><span class="line"><span class="comment">// 解构 ref 仍然是响应性的</span></span><br><span class="line"><span class="keyword">const</span> &#123; foo, bar &#125; = obj;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>当 ref 在模板中作为<strong>顶层属性</strong>被访问时, 它们会被自动解包, 不需要使用 <code>.value</code></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; ref &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// ref 非渲染上下文顶层属性</span></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> obj = &#123; <span class="attr">foo</span>: <span class="title function_">ref</span>(<span class="number">1</span>) &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// ref 为渲染上下文顶层属性</span></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">0</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">function</span> <span class="title function_">increment</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">    count.<span class="property">value</span>++;</span></span><br><span class="line"><span class="language-javascript">  &#125;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 不需要使用 .value 访问 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;increment&quot;</span>&gt;</span>&#123;&#123;count&#125;&#125;<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 需要使用 .value 访问 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123;obj.foo.value&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="computed"><a href="#computed" class="headerlink" title="computed()  "></a>computed() <em id="computed"></em> <!-- markdownlint-disable-line --></h4><p>返回一个只读的响应式 ref 对象, 该 ref 通过 .value 暴露 getter 函数的返回值</p>
 <ul>
@@ -488,7 +499,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> count = <span class="title function_">ref</span>(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">const</span> obj = <span class="title function_">reactive</span>(&#123;&#125;);</span><br><span class="line">obj.<span class="property">count</span> = count;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="property">count</span>); <span class="comment">// 1</span></span><br><span class="line"><span class="comment">// ref 会解包</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="property">count</span> === count.<span class="property">value</span>); <span class="comment">// true</span></span><br><span class="line"><span class="comment">// 自动更新 `obj.value`</span></span><br><span class="line">count.<span class="property">value</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>); <span class="comment">// 2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="property">count</span>); <span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 自动更新 `count` ref</span></span><br><span class="line">obj.<span class="property">count</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="property">count</span>); <span class="comment">// 3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>当访问到某个响应式 <strong>数组</strong> 或 <code>Map</code> 这样的原生集合类型中的 ref 元素时, 不会执行 ref 的解包</li>
+<li>当访问到某个响应式 <strong>数组</strong> 或 <code>Map</code> 这样的原生集合类型中的 ref 元素时, 不会进行解包</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原生集合中包含 ref 元素时, ref 不会解包</span></span><br><span class="line"><span class="keyword">const</span> books = <span class="title function_">reactive</span>([<span class="title function_">ref</span>(<span class="string">&#x27;Vue 3.0&#x27;</span>)]);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(books[<span class="number">0</span>].<span class="property">value</span>); <span class="comment">// 需要使用 .value</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> map = <span class="title function_">reactive</span>(<span class="keyword">new</span> <span class="title class_">Map</span>([[<span class="string">&#x27;count&#x27;</span>, <span class="title function_">ref</span>(<span class="number">0</span>)]]));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(map.<span class="title function_">get</span>(<span class="string">&#x27;count&#x27;</span>).<span class="property">value</span>); <span class="comment">// 需要使用 .value</span></span><br></pre></td></tr></table></figure>
 
@@ -1616,7 +1627,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">346k</span>
+    <span title="站点总字数">347k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
