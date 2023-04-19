@@ -623,7 +623,8 @@ console.log(map.get('count').value); // 需要使用 .value
 
 #### readonly() <em id="readonly"></em> <!-- markdownlint-disable-line -->
 
-接受一个对象(响应式或普通)或一个 ref, 返回原值的只读代理, 任何被访问的嵌套属性也是只读的, 它的 ref 解包行为与 reactive() 相同, 但解包得到的值是只读的
+- 接受一个对象(响应式或普通)或一个 ref, 返回原值的只读代理
+- 任何被访问的嵌套属性也是只读的, 它的 ref 解包行为与 reactive() 相同, 但解包得到的值是只读的
 
 ```javascript
 import { reactive, readonly, watchEffect } from 'vue';
@@ -632,8 +633,10 @@ const copy = readonly(original);
 watchEffect(() => {
   console.log(copy.count); // 用于响应性追踪
 });
-original.count++; // 变更 original 会触发依赖于副本的侦听器
-copy.count++; // 警告! // 变更副本将失败并导致警告
+// 变更 original 会触发依赖于副本的侦听器
+original.count++;
+// 警告! // 变更副本将失败并导致警告
+copy.count++;
 ```
 
 #### watchEffect() <em id="watchEffect"></em> <!-- markdownlint-disable-line -->
