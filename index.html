@@ -204,6 +204,116 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2023/04/ec2526e79bc5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/04/ec2526e79bc5/" class="post-title-link" itemprop="url">IntersectionObserver</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-04-20 19:04:10 / 修改时间：19:58:27" itemprop="dateCreated datePublished" datetime="2023-04-20T19:04:10+08:00">2023-04-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebAPI/" itemprop="url" rel="index"><span itemprop="name">WebAPI</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="IntersectionObserver"><a href="#IntersectionObserver" class="headerlink" title="IntersectionObserver"></a>IntersectionObserver</h2><blockquote>
+<p>之前需要频繁调用 Element.getBoundingClientRect() 方法以获取相关元素的边界信息, 并使用事件通知的方式同步进行计算, 可能造成性能问题</p>
+</blockquote>
+<p>IntersectionObserver 接口提供了一种<strong>异步观察</strong>目标元素与其祖先元素或顶级文档视口(viewport)交叉状态的方法<br>当一个 IntersectionObserver 对象被创建时, 其被配置为监听根中一段给定比例的可见区域, 一旦 IntersectionObserver 被创建, 则无法更改其配置, 所以一个给定的观察者对象只能用来监听可见区域的特定变化值, 但是, 可以在同一个观察者对象中配置监听多个目标元素</p>
+<h3 id="应用范围"><a href="#应用范围" class="headerlink" title="应用范围"></a>应用范围</h3><ul>
+<li>图片懒加载, 当图片滚动到可见区域时才进行加载</li>
+<li>内容无限滚动, 用户滚动到接近内容底部时直接加载更多而无需用户操作翻页</li>
+<li>检测广告的曝光情况, 为了计算广告收益, 需要直到广告元素的曝光情况</li>
+<li>在到达可见区域时执行任务或播放动画</li>
+</ul>
+<h3 id="触发时机"><a href="#触发时机" class="headerlink" title="触发时机"></a>触发时机</h3><p>通常只需要关注文档最接近的可滚动祖先元素的交集更改, 如果元素不是可滚动元素的后代, 则默认为设备视窗<br>如果要观察相对于根元素的交集, 则指定根元素为 null</p>
+<ul>
+<li>每当目标元素与设备视窗或者其他指定元素发生交集的时候执行, 设备视窗或者其他元素被称为根元素或根</li>
+<li>Observer 第一次监听目标元素时</li>
+</ul>
+<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>创建并返回一个新的 <code>IntersectionObserver</code> 实例, 当其监听到目标元素的可见部分(的比例)超过了一个或多个<strong>阈值</strong>(threshold)时, 执行指定的回调函数<br>如果指定 <code>rootMargin</code> 则会检查其是否符合语法规定, 检查阈值以确保全部在 <code>0.0</code> 到 <code>1.0</code> 之间, 并且阈值列表会按升序排列, 如果阈值列表为空, 则默认为一个 [0.0] 的数组</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> observer = <span class="keyword">new</span> <span class="title class_">IntersectionObserver</span>(</span><br><span class="line">  <span class="function">(<span class="params">entries, observer</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 如果 intersectionRatio 为 0, 则目标在视野外</span></span><br><span class="line">    <span class="keyword">if</span> (entries[<span class="number">0</span>].<span class="property">intersectionRatio</span> &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(entries, observer);</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">root</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">rootMargin</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">    <span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">0.75</span>, <span class="number">1</span>],</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="参数-callback"><a href="#参数-callback" class="headerlink" title="参数 callback"></a>参数 callback</h4><p>当元素的可见比例超过指定阈值后, 会调用此回调函数</p>
+<ul>
+<li>entries 一个 IntersectionObserverEntry 对象的数组, 每个被触发的阈值都稍微与指定阈值有偏差</li>
+<li>observer 被调用的 IntersectionObserver 实例</li>
+</ul>
+<h4 id="可选-options"><a href="#可选-options" class="headerlink" title="可选 options"></a>可选 options</h4><p>用来配置 observer 实例的对象, 如果未指定, observer 实例默认使用文档视口作为 root, 并且没有 <code>rootMargin</code>, 阈值为 0%</p>
+<h5 id="root"><a href="#root" class="headerlink" title="root"></a>root</h5><p>监听元素的祖先元素对象, 其边界盒将被视作视口, 如果未指定或者为 null, 则默认为浏览器视窗</p>
+<h5 id="rootMargin"><a href="#rootMargin" class="headerlink" title="rootMargin"></a>rootMargin</h5><p>一个计算交叉值时添加至根的边界盒中的一组偏移量, 类型为字符串, 可以有效的缩小或扩大根的判定范围从而满足计算需要, 默认为 <code>0px 0px 0px 0px</code></p>
+<h5 id="threshold"><a href="#threshold" class="headerlink" title="threshold"></a>threshold</h5><p>规定了一个监听目标与边界盒交叉区域的比例值, 可以为一个具体的数值或是一组 <code>0.0</code> 到 <code>1.0</code> 之间的数组<br>如果指定元素在根的可见程度每多 25% 执行一次回调, 则指定为数组 <code>[0, 0.25, 0.5, 0.75, 1]</code><br>如果指定元素在根的可见程度超过 50% 执行一次回调, 则指定为 <code>0.5</code></p>
+<ul>
+<li>若指定为 0.0, 监听元素与根即使有 1 像素交叉, 此元素也会被视为可见, 默认为 0.0</li>
+<li>若指定为 1.0, 监听元素都在可见范围内时才被视为可见</li>
+</ul>
+<h3 id="实例属性"><a href="#实例属性" class="headerlink" title="实例属性"></a>实例属性</h3><h4 id="observer-root"><a href="#observer-root" class="headerlink" title="observer.root"></a>observer.root</h4>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2023/04/628a49166594/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1195,110 +1305,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/05/2261dfd57ebf/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/05/2261dfd57ebf/" class="post-title-link" itemprop="url">JSSDK</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-05-06 12:19:31" itemprop="dateCreated datePublished" datetime="2022-05-06T12:19:31+08:00">2022-05-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-07 14:27:22" itemprop="dateModified" datetime="2022-05-07T14:27:22+08:00">2022-05-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/wx/" itemprop="url" rel="index"><span itemprop="name">wx</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>1.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
-<li>转发</li>
-<li>转发给客户</li>
-<li>群发到客户群</li>
-<li>发表到客户的朋友圈</li>
-<li>分享到同事吧</li>
-<li>分享到微信</li>
-<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/05/2261dfd57ebf/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1370,7 +1376,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1440,12 +1446,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">347k</span>
+    <span title="站点总字数">349k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:15</span>
+    <span title="站点阅读时长">5:17</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
