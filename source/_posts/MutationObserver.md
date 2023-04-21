@@ -9,11 +9,11 @@ tags:
 
 ## MutationObserver
 
-MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是异步触发, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知
+MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替代 Mutation Events 的新 API, 与 Events 不同的是: 事件是同步触发, 即 DOM 发生变动会立刻触发相应事件, MutationObserver 则是**异步触发**, DOM 发生变动以后并不会马上触发, 而是要等到当前所有 DOM 操作都结束后才触发, 所有监听操作以及相应的处理都是在其他任务执行完成之后异步执行的, 并且在 DOM 更改触发之后,将更改记录存储在数组之中, 统一进行回调通知
 
 ### 构造函数
 
-创建并返回一个新的 `MutationObserver` 会在指定的 DOM 发生变化时被调用
+创建并返回一个新的 `MutationObserver` 实例, 会在指定的 DOM 发生变化时被调用
 
 - 参数 callback
 
@@ -23,7 +23,8 @@ MutationObserver 接口提供监视对 DOM 树所做更改的能力, 用于替�
   - MutationObserver 调用该函数的 MutationObserver 对象
 
 ```javascript
-var observer = new MutationObserver(function (MutationRecord, observer) {
+// 创建一个观察器并传入回调函数
+const observer = new MutationObserver(function (MutationRecord, observer) {
   console.log(MutationRecord, observer);
   // [{
   //   addedNodes: NodeList []
@@ -37,6 +38,14 @@ var observer = new MutationObserver(function (MutationRecord, observer) {
   //   type: "attributes"
   // }]
 });
+// 指定观察变动的 DOM 节点和配置项
+observer.observe(document.querySelector('#someElement'), {
+  subtree: true,
+  childList: true,
+  attributes: true,
+});
+// 停止观察器
+observer.disconnect();
 ```
 
 - 返回值 MutationObserver 对象
@@ -45,7 +54,7 @@ var observer = new MutationObserver(function (MutationRecord, observer) {
 
 ### 实例方法
 
-#### disconnect
+#### observer.disconnect()
 
 阻止 MutationObserver 实例继续接收的通知, 直到再次调用其 observe 方法, 该观察者对象包含的回调函数都不会再被调用
 
@@ -56,7 +65,7 @@ var observer = new MutationObserver(function (MutationRecord, observer) {
 observer.disconnect();
 ```
 
-#### observe
+#### observer.observe()
 
 配置 MutationObserver 在 DOM 更改匹配给定选项时, 通过其回调函数开始接收通知
 
@@ -69,23 +78,22 @@ observer.disconnect();
 observer.observe(Element, { subtree: true, childList: true, attributes: true });
 ```
 
-#### takeRecords
+#### observer.takeRecords()
 
-返回已检测到但尚未由观察者的回调函数处理的所有匹配 DOM 更改的列表, 使变更队列保持为空
-使用场景是在断开观察者之前立即获取所有未处理的更改记录, 以便在停止观察者时可以处理任何未处理的更改
+> 使用场景是在断开观察者之前立即获取所有未处理的更改记录, 以便在停止观察者时可以处理任何未处理的更改
+
+返回所有匹配 DOM 更改的**挂起的**状态队列并清除队列, 使变更队列保持为空
 
 - 参数 无
 - 返回值 `MutationRecord` 对象列表, 每个对象都描述了应用于 DOM 树某部分的一次改动
 
 ```javascript
-var mutations = observer.takeRecords();
+const mutations = observer.takeRecords();
 ```
 
 ##### MutationRecord
 
 每个 `MutationRecord` 代表一个独立的 DOM 变化在每次随 DOM 变化时作为 MutationObserver 回调函数的参数传入
-
-###### record 属性
 
 - type String,
   - 如果是属性变化, 则返回 "attributes"
@@ -105,11 +113,10 @@ var mutations = observer.takeRecords();
   - 如果子节点树 childList 变化, 返回 null
 
 ```javascript
-var root = document.querySelector('#root');
-var observer = new MutationObserver((mutationRecord, observer) => {
+const observer = new MutationObserver((mutationRecord, observer) => {
   console.log(mutationRecord, observer);
 });
-observer.observe(root, {
+observer.observe(document.querySelector('#root'), {
   attributes: true,
   attributeOldValue: true,
   attributeFilter: ['title'],
