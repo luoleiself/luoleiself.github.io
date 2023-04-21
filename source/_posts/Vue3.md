@@ -2084,11 +2084,13 @@ const app = createApp({
     const v2 = ref('hello with args');
 
     return () => [
+      // 渲染 v-model 不带参数的组件
       h(WithoutArgs, {
         modelValue: v1.value,
         modelModifiers: { capitalize: true },
         'onUpdate:modelValue': (value) => (v1.value = value),
       }),
+      // 渲染 v-model 带参数的组件
       h(WithArgs, {
         description: v2.value,
         descriptionModifiers: { uppercase: true },
@@ -2975,7 +2977,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 
   return () =>
     // <div v-pin:top.animate="200"></div>
-    withDirectives(h('div', 'hello world'), [
+    withDirectives(h('div', 'hello withDirectives'), [
       [pin, 200, 'top', { animate: true }],
     ]);
 </script>
@@ -3086,7 +3088,14 @@ const HelloWorld = defineComponent({
               [[foo, fooV.value, 'bar1', { uppercase: true }]]
             )
           : '',
-        h('p', h('button', { onClick: changeFooDirective }, 'Click Me')),
+        h(
+          'p',
+          h(
+            'button',
+            { onClick: changeFooDirective },
+            'Click Me - ' + props.age
+          )
+        ),
       ]);
   },
 });
