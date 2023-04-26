@@ -64,7 +64,7 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 
 ### 镜像操作
 
-镜像的操作命令可直接跟在 `docker` 命令后使用, 也可以跟在 `docker image` 命令后使用
+镜像的操作命令可直接用在 `docker` 或 `docker image` 命令后面
 
 - images 查看本地镜像列表, 作用同 `image ls`
 - rmi 删除本地镜像, 作用同 `image rm`
@@ -120,7 +120,8 @@ Accept-Ranges: bytes
 CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                   NAMES
 91b34829d2d8   nginx     "/docker-entrypoint.…"   38 seconds ago   Up 36 seconds   0.0.0.0:6666->80/tcp, :::6666->80/tcp   laughing_kowalevski
 a441e0564165   centos    "/bin/bash"              2 days ago       Up 2 hours                                              vigorous_turing
-[root@localhost ~]# docker commit -a 'll' -m 'nginx 01' 91b34829d2d8 nginx01:1.0 # 提交指定容器的镜像并添加作者,提交信息,版本号等
+# 提交指定容器的镜像并添加作者,提交信息,版本号等
+[root@localhost ~]# docker commit -a 'l.l' -m 'nginx 01' 91b34829d2d8 nginx01:1.0 
 [root@localhost ~]# docker images # 查看所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
 nginx01      1.0       9e81333043cc   2 seconds ago   142MB
@@ -130,9 +131,9 @@ centos       latest    5d0da3dc9764   6 months ago    231MB
 
 ### 从 Dockerfile 构建镜像
 
-. 上下文路径
+`.` 上下文路径
 
-- -f 指定配置文件, 默认 PWD/Dockerfile
+- -f 指定配置文件, 默认 `${PWD}/Dockerfile`
 - -t 指定新创建的镜像名称和标签
 - \-\-no-cache 构建镜像时不使用缓存
 - \-\-compress 使用 gzip 压缩构建上下文环境
@@ -158,7 +159,7 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
 
 ### 容器操作
 
-容器的操作命令可直接跟在 `docker` 命令后使用, 也可以跟在 `docker container` 命令后使用
+容器的操作命令可直接用在 `docker` 或 `docker container` 命令后面
 
 - create 创建新容器
 - run 创建并启动一个容器
@@ -334,7 +335,7 @@ CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                    
 a441e0564165   centos    "/bin/bash"   25 hours ago   Exited (0) 2 seconds ago             vigorous_turing
 ```
 
-### 文件拷贝 cp <em id="dockercp"></em>
+### 文件拷贝 cp <em id="dockercp"></em> <!--markdownlint-disable-line-->
 
 - -a, \-\-archive 复制文档的所有信息
 
@@ -435,7 +436,9 @@ a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB
 
 ### 数据卷类型
 
-默认挂载数据卷的权限为 `RW`, 可以在挂载数据卷时指定数据卷的权限 `-v [source/path]:[destination/path]:[rw]`
+默认挂载数据卷的权限为 `RW`
+
+可以在挂载数据卷时指定数据卷的权限 `-v [source/path]:[destination/path]:[rw]`
 
 - \-\-mount 不指定 type 选项默认为 volume
 - -v 不能建立 tmpfs mounts
@@ -475,7 +478,7 @@ docker run -v ${PWD}/${CONTAINER_NAME}/app:/app # 作用同上一行
 
 #### tmpfs mounts
 
-是临时挂载 放在内存, 挂载存储在宿主机系统的内存中, 不会写入宿主机的文件系统
+临时挂载到宿主机系统的内存中, 不会写入宿主机的文件系统
 
 ```bash
 docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
@@ -483,11 +486,11 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 
 ![docker-5](/images/docker-5.jpg)
 
-### 挂载数据卷 <em id="guazaishujujuan"></em>
+### 挂载数据卷 <em id="guazaishujujuan"></em> <!--markdownlint-disable-line-->
 
 #### -v 挂载方式
 
-##### -v 容器内路径 匿名挂载 <em id="nimingguazai"></em>
+##### -v 容器内路径 匿名挂载 <em id="nimingguazai"></em> <!--markdownlint-disable-line-->
 
 ```bash
 [root@localhost ~]# docker run -tid --name centos01 -v /centosVolume centos /bin/bash
@@ -613,13 +616,13 @@ hello.txt
 
 - .dockerignore 根目录上下文忽略文件
 
-用来构建镜像的文本文件, 文本内容包含一条条构建镜像所需要的指令和说明, 指令每执行一次都会在 docker 上新建一层
+Dockerfile 是用来构建 Docker 镜像的构建文件, 一个命令脚本, 脚本中的每条指令执行一次都会在镜像上新建一层
 
 - FROM 构建镜像时的基础镜像层
 - MAINTAINER(deprecated) 维护者信息, 使用 `LABEL` 指令代替
 - EXPOSE 对外暴露端口
 
-  ```conf
+  ```yaml
   EXPOSE 80/tcp
   EXPOSE 80/udp
   ```
@@ -627,7 +630,7 @@ hello.txt
 - ADD 复制指令, 增强版的 `COPY` 指令, 支持文件解压和远程 URL 资源
 - COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径
 
-  ```conf
+  ```yaml
   # [--chown=<user>:<group>] 可选参数，用户改变复制到容器内文件的拥有者和属组
   COPY ["src", "dest"]
   ```
@@ -636,11 +639,11 @@ hello.txt
 - CMD 容器运行时执行的命令, 如果存在多个 `CMD` 指令, 仅最后一个生效
 - ENTRYPOINT 容器运行时执行的命令, 参数不会被 `docker run` 的命令行参数覆盖, 如果存在多个 `ENTRYPOINT` 指令，仅最后一个生效
 
-  ```conf
+  ```yaml
   RUN yum -y install vim
   RUN yum -y install wget \
-    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
-    && tar -xvf redis.tar.gz
+  && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+  && tar -xvf redis.tar.gz
 
   ENTRYPOINT '<exec_cmd>' '<param1>'
   ENTRYPOINT ["<executeable>","<param1>","<param2>",...]
@@ -652,7 +655,7 @@ hello.txt
 - ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
 - ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
 
-  ```conf
+  ```yaml
   ARG VERSION1 1
   ARG VERSION=1
 
@@ -662,7 +665,9 @@ hello.txt
 
 - VOLUME 定义匿名数据卷, 在启动容器时会自动挂载到 /var/lib/docker/volumes/
 
-  ```conf
+  ```yaml
+  # 出于可移植和分享的考虑, 具名挂载 和 指定路径挂载 方式不能直接在 Dockerfile 中支持
+  # 因为宿主机目录是依赖于特定宿主机的, 并不能够保证在所有的宿主机上都存在这样的目录
   VOLUME ["<路径1>", "<路径2>"...]
   VOLUME <路径> <路径>
   ```
@@ -670,7 +675,7 @@ hello.txt
 - WORKDIR 为`RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
 - USER 指定执行后续命令的用户和用户组, 用户名和用户组必须提前存在
 
-  ```conf
+  ```yaml
   WORKDIR /usr/local
 
   USER <用户名>[:<用户组>]
@@ -684,18 +689,11 @@ hello.txt
 
 - ONBUILD 当前镜像作为其他镜像的基础镜像构建时触发
 
-```conf
-ONBUILD ADD . /app/src
-```
+  ```yaml
+  ONBUILD ADD . /app/src
+  ```
 
 - HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式
-
-<!-- 不知道为什么要写这块内容
-### 区分是否新建镜像层
-
-- 如果指令的作用是向镜像中增添新的文件或者程序，那么这条指令就会新建镜像层, FROM、RUN 以及 COPY
-- 如果只是告诉 Docker 如何完成构建或者如何运行应用程序，那么就只会增加镜像的元数据 EXPOSE、WORKDIR、ENV、CMD 以及 ENTRYPOINT
--->
 
 ### ADD 和 COPY
 
@@ -718,7 +716,7 @@ ONBUILD ADD . /app/src
 
 - CMD 情况下, run 后面的参数将作为整体替换 `CMD` 配置项中的命令
 
-```conf
+```yaml
 # Dockerfile
 FROM ubuntu
 #...
@@ -735,7 +733,7 @@ docker run -it ubuntu /bin/bash ls -al
 
 - ENTRYPOINT 情况下, `docker run` 后面的参数将作为 ENTRYPOINT 配置项指令的一部分
 
-```conf
+```yaml
 # Dockerfile
 FROM ubuntu
 #...
@@ -752,7 +750,7 @@ docker run -it ubuntu -a
 
 - CMD 和 ENTRYPOINT 同时存在时, CMD 作为 ENTRYPOINT 配置项命令的一部分, 与书写位置没有关系
 
-```conf
+```yaml
 # Dockerfile
 FROM ubuntu
 #...
@@ -783,7 +781,7 @@ CMD ['/etc/nginx/nginx.conf']
 
 #### Dockerfile 配置文件
 
-```conf
+```yaml
 # Dockerfile
 FROM centos:7 # 基础镜像
 
