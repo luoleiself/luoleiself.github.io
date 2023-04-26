@@ -1,80 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Charles-手机代理-Https-证书管理</title>
-    <url>/2021/12/a521f7947aed/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
-<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
-</ul>
-<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
-<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img data-src="/images/charles-11.jpg" alt="charles-11"></li>
-<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img data-src="/images/charles-12.png" alt="charles-12"></li>
-</ol>
-<span id="more"></span>
-
-<ol start="3">
-<li>在弹框中左侧列表选择 “证书”, 点击 “添加” 按钮, 在弹出的对话框选择 “我的用户账户” 点击 “完成” 后, 右侧列表会出现 证书 选项, 最后点击 “确定”<br><img data-src="/images/charles-13.jpg" alt="charles-13"><br><img data-src="/images/charles-14.jpg" alt="charles-14"></li>
-<li>在第 2 步的窗口中会出现证书菜单, 依次展开这些菜单, 中间窗口会出现所有已安装的证书<br><img data-src="/images/charles-15.jpg" alt="charles-15"></li>
-<li>选择需要删除的证书 “右键单击”, 选择 “删除”, 在弹出的对话框中选择 “是”, 完成证书删除<br><img data-src="/images/charles-16.jpg" alt="charles-16"></li>
-<li>点击右上角的 “关闭” 按钮关闭控制台, 在弹出的对话框中选择 “否” 不存入控制台配置, 如果有需要也可以选择 “是” 存入控制台配置<br><img data-src="/images/charles-17.jpg" alt="charles-17"></li>
-</ol>
-<h3 id="电脑安装-charles-证书"><a href="#电脑安装-charles-证书" class="headerlink" title="电脑安装 charles 证书"></a>电脑安装 charles 证书</h3><ol>
-<li><p>打开 charles, 选择 Help -&gt; SSL Proxing -&gt; Install Charles Root Certificate<br><img data-src="/images/charles-1.png" alt="charles-1"></p>
-</li>
-<li><p>在 “证书” 对话框中点击 “安装证书”<br><img data-src="/images/charles-2.jpg" alt="charles-2"></p>
-</li>
-<li><p>在 “证书导入向导” 对话框中选择 “本地计算机”, 点击 “下一步”<br><img data-src="/images/charles-3.jpg" alt="charles-3"></p>
-</li>
-<li><p>在 “证书导入向导” 对话框中选择 “将所有的证书都放入下列存储”, 点击 “浏览”<br><img data-src="/images/charles-4.jpg" alt="charles-4"></p>
-</li>
-<li><p>在 “选择证书存储” 对话框中选择 “受信任的根证书颁发机构”, 点击 “确认”<br><img data-src="/images/charles-5.jpg" alt="charles-5"></p>
-</li>
-<li><p>在弹出的对话框选择 “是” 将证书导入到浏览器的证书列表中<br><img data-src="/images/charles-10.jpg" alt="charles-10"></p>
-</li>
-<li><p>点击 “确定” 完成证书添加<br><img data-src="/images/charles-6.jpg" alt="charles-6"></p>
-</li>
-</ol>
-<h3 id="手机添加-charles-证书"><a href="#手机添加-charles-证书" class="headerlink" title="手机添加 charles 证书"></a>手机添加 charles 证书</h3><ol>
-<li>手机绑定 charles 代理(电脑 IP 和端口):<ol>
-<li>WLAN -&gt; 修改已连接网络</li>
-<li>代理改为 “手动”</li>
-<li>服务器主机名添加电脑 IP</li>
-<li>服务器端口添加 charles 监听端口</li>
-<li>保存后连接 wifi</li>
-</ol>
-</li>
-<li>安卓手机使用 Chrome, 苹果手机使用 safari</li>
-<li>浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理</li>
-<li>安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定<ol>
-<li>输入 “证明名称(可任意起名)”, 后期删除证书时可根据此名称查找</li>
-<li>凭证用途 默认为 “VPN 和应用”, 如果改为 WLAN 会导致无效</li>
-</ol>
-</li>
-<li>苹果手机打开设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置 -&gt; 找到已下载的 charles 证书打开信任</li>
-<li>使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试<br><img data-src="/images/charles-7.jpg" alt="charles-7"></li>
-</ol>
-<h3 id="电脑使用-charles-无法访问百度等其他页面"><a href="#电脑使用-charles-无法访问百度等其他页面" class="headerlink" title="电脑使用 charles 无法访问百度等其他页面"></a>电脑使用 charles 无法访问百度等其他页面</h3><p>黑名单和白名单设置</p>
-<ol>
-<li>打开 charles, 选择 Tools -&gt; Block List | Allow List( 部分版本为 White List)<br><img data-src="/images/charles-8.png" alt="charles-8"></li>
-<li>此配置为黑名单和白名单设置<br><img data-src="/images/charles-9.jpg" alt="charles-9"></li>
-</ol>
-<h3 id="手机微信扫码后显示白屏"><a href="#手机微信扫码后显示白屏" class="headerlink" title="手机微信扫码后显示白屏"></a>手机微信扫码后显示白屏</h3><ul>
-<li>手机未安装 charles 证书会显示白屏</li>
-<li>其他部分浏览器会在 地址栏 中出现非安全链接的提示图标</li>
-</ul>
-<h3 id="手机卸载安装的-charles-证书"><a href="#手机卸载安装的-charles-证书" class="headerlink" title="手机卸载安装的 charles 证书"></a>手机卸载安装的 charles 证书</h3><ol>
-<li>打开手机 设置 -&gt; 安全 -&gt; 更多安全设置 -&gt; 加密和凭据 -&gt; 用户凭据</li>
-<li>根据安装手机证书时填写的证明名称找到指定项, 点击后选择 “删除”</li>
-</ol>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>charles</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BABELRC</title>
     <url>/2021/12/2f42f14b8489/</url>
     <content><![CDATA[<h2 id="babel-cli"><a href="#babel-cli" class="headerlink" title="@babel/cli"></a>@babel/cli</h2><h3 id="install"><a href="#install" class="headerlink" title="install"></a>install</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -D @babel/cli @babel/core @babel/preset-env</span><br></pre></td></tr></table></figure>
@@ -159,6 +85,80 @@
       <tags>
         <tag>ES6</tag>
         <tag>Babel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Charles-手机代理-Https-证书管理</title>
+    <url>/2021/12/a521f7947aed/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
+<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
+</ul>
+<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
+<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img data-src="/images/charles-11.jpg" alt="charles-11"></li>
+<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img data-src="/images/charles-12.png" alt="charles-12"></li>
+</ol>
+<span id="more"></span>
+
+<ol start="3">
+<li>在弹框中左侧列表选择 “证书”, 点击 “添加” 按钮, 在弹出的对话框选择 “我的用户账户” 点击 “完成” 后, 右侧列表会出现 证书 选项, 最后点击 “确定”<br><img data-src="/images/charles-13.jpg" alt="charles-13"><br><img data-src="/images/charles-14.jpg" alt="charles-14"></li>
+<li>在第 2 步的窗口中会出现证书菜单, 依次展开这些菜单, 中间窗口会出现所有已安装的证书<br><img data-src="/images/charles-15.jpg" alt="charles-15"></li>
+<li>选择需要删除的证书 “右键单击”, 选择 “删除”, 在弹出的对话框中选择 “是”, 完成证书删除<br><img data-src="/images/charles-16.jpg" alt="charles-16"></li>
+<li>点击右上角的 “关闭” 按钮关闭控制台, 在弹出的对话框中选择 “否” 不存入控制台配置, 如果有需要也可以选择 “是” 存入控制台配置<br><img data-src="/images/charles-17.jpg" alt="charles-17"></li>
+</ol>
+<h3 id="电脑安装-charles-证书"><a href="#电脑安装-charles-证书" class="headerlink" title="电脑安装 charles 证书"></a>电脑安装 charles 证书</h3><ol>
+<li><p>打开 charles, 选择 Help -&gt; SSL Proxing -&gt; Install Charles Root Certificate<br><img data-src="/images/charles-1.png" alt="charles-1"></p>
+</li>
+<li><p>在 “证书” 对话框中点击 “安装证书”<br><img data-src="/images/charles-2.jpg" alt="charles-2"></p>
+</li>
+<li><p>在 “证书导入向导” 对话框中选择 “本地计算机”, 点击 “下一步”<br><img data-src="/images/charles-3.jpg" alt="charles-3"></p>
+</li>
+<li><p>在 “证书导入向导” 对话框中选择 “将所有的证书都放入下列存储”, 点击 “浏览”<br><img data-src="/images/charles-4.jpg" alt="charles-4"></p>
+</li>
+<li><p>在 “选择证书存储” 对话框中选择 “受信任的根证书颁发机构”, 点击 “确认”<br><img data-src="/images/charles-5.jpg" alt="charles-5"></p>
+</li>
+<li><p>在弹出的对话框选择 “是” 将证书导入到浏览器的证书列表中<br><img data-src="/images/charles-10.jpg" alt="charles-10"></p>
+</li>
+<li><p>点击 “确定” 完成证书添加<br><img data-src="/images/charles-6.jpg" alt="charles-6"></p>
+</li>
+</ol>
+<h3 id="手机添加-charles-证书"><a href="#手机添加-charles-证书" class="headerlink" title="手机添加 charles 证书"></a>手机添加 charles 证书</h3><ol>
+<li>手机绑定 charles 代理(电脑 IP 和端口):<ol>
+<li>WLAN -&gt; 修改已连接网络</li>
+<li>代理改为 “手动”</li>
+<li>服务器主机名添加电脑 IP</li>
+<li>服务器端口添加 charles 监听端口</li>
+<li>保存后连接 wifi</li>
+</ol>
+</li>
+<li>安卓手机使用 Chrome, 苹果手机使用 safari</li>
+<li>浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理</li>
+<li>安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定<ol>
+<li>输入 “证明名称(可任意起名)”, 后期删除证书时可根据此名称查找</li>
+<li>凭证用途 默认为 “VPN 和应用”, 如果改为 WLAN 会导致无效</li>
+</ol>
+</li>
+<li>苹果手机打开设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置 -&gt; 找到已下载的 charles 证书打开信任</li>
+<li>使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试<br><img data-src="/images/charles-7.jpg" alt="charles-7"></li>
+</ol>
+<h3 id="电脑使用-charles-无法访问百度等其他页面"><a href="#电脑使用-charles-无法访问百度等其他页面" class="headerlink" title="电脑使用 charles 无法访问百度等其他页面"></a>电脑使用 charles 无法访问百度等其他页面</h3><p>黑名单和白名单设置</p>
+<ol>
+<li>打开 charles, 选择 Tools -&gt; Block List | Allow List( 部分版本为 White List)<br><img data-src="/images/charles-8.png" alt="charles-8"></li>
+<li>此配置为黑名单和白名单设置<br><img data-src="/images/charles-9.jpg" alt="charles-9"></li>
+</ol>
+<h3 id="手机微信扫码后显示白屏"><a href="#手机微信扫码后显示白屏" class="headerlink" title="手机微信扫码后显示白屏"></a>手机微信扫码后显示白屏</h3><ul>
+<li>手机未安装 charles 证书会显示白屏</li>
+<li>其他部分浏览器会在 地址栏 中出现非安全链接的提示图标</li>
+</ul>
+<h3 id="手机卸载安装的-charles-证书"><a href="#手机卸载安装的-charles-证书" class="headerlink" title="手机卸载安装的 charles 证书"></a>手机卸载安装的 charles 证书</h3><ol>
+<li>打开手机 设置 -&gt; 安全 -&gt; 更多安全设置 -&gt; 加密和凭据 -&gt; 用户凭据</li>
+<li>根据安装手机证书时填写的证明名称找到指定项, 点击后选择 “删除”</li>
+</ol>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>charles</tag>
       </tags>
   </entry>
   <entry>
@@ -491,6 +491,88 @@
       </tags>
   </entry>
   <entry>
+    <title>HTTP</title>
+    <url>/2021/07/1ddfb1010b19/</url>
+    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
+<li><p>100 Continue 请求继续</p>
+</li>
+<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
+</li>
+<li><p>102 Processing 继续执行</p>
+</li>
+<li><p>200 OK 请求成功</p>
+</li>
+<li><p>204 No Content 没有响应实体</p>
+</li>
+<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
+</li>
+<li><p>301 Moved Permanently 资源永久移动</p>
+</li>
+<li><p>302 Move Temporarily 资源临时移动</p>
+</li>
+<li><p>303 See Other 参见其他</p>
+</li>
+<li><p>304 Not Modified 资源没有改动</p>
+</li>
+<li><p>305 Use Proxy 使用代理</p>
+</li>
+<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
+</li>
+<li><p>400 Bad Request 错误的请求</p>
+</li>
+<li><p>401 Unauthorized 需要验证</p>
+</li>
+<li><p>403 Forbidden 服务器拒绝执行</p>
+</li>
+<li><p>404 Not Found 资源未找到</p>
+</li>
+<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
+</li>
+<li><p>408 Request Timeout 请求超时</p>
+</li>
+<li><p>413 Request Entity Too Large 请求体超长</p>
+</li>
+<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
+</li>
+<li><p>500 Internal Server Error 服务器错误</p>
+</li>
+<li><p>502 Bad Gateway 网关错误</p>
+</li>
+<li><p>504 Gateway Timeout 网关超时</p>
+</li>
+<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
+</li>
+</ul>
+<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
+<li>%21 !</li>
+<li>%22 “</li>
+<li>%23 #</li>
+<li>%24 $</li>
+<li>%25 %</li>
+<li>%26 &amp;</li>
+<li>%27 ‘</li>
+<li>%28 (</li>
+<li>%29 )</li>
+<li>%2F /</li>
+<li>%30-9 0..9</li>
+<li>%3A :</li>
+<li>%3B ;</li>
+<li>%3C &lt;</li>
+<li>%3D =</li>
+<li>%3E &gt;</li>
+<li>%3F ?</li>
+<li>%40 @</li>
+<li>%41 A</li>
+</ul>
+]]></content>
+      <categories>
+        <category>network</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git命令操作篇</title>
     <url>/2021/04/b0420868a4bc/</url>
     <content><![CDATA[<h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name]</span><br></pre></td></tr></table></figure>
@@ -743,88 +825,6 @@
       </categories>
       <tags>
         <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HTTP</title>
-    <url>/2021/07/1ddfb1010b19/</url>
-    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
-<li><p>100 Continue 请求继续</p>
-</li>
-<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
-</li>
-<li><p>102 Processing 继续执行</p>
-</li>
-<li><p>200 OK 请求成功</p>
-</li>
-<li><p>204 No Content 没有响应实体</p>
-</li>
-<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
-</li>
-<li><p>301 Moved Permanently 资源永久移动</p>
-</li>
-<li><p>302 Move Temporarily 资源临时移动</p>
-</li>
-<li><p>303 See Other 参见其他</p>
-</li>
-<li><p>304 Not Modified 资源没有改动</p>
-</li>
-<li><p>305 Use Proxy 使用代理</p>
-</li>
-<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
-</li>
-<li><p>400 Bad Request 错误的请求</p>
-</li>
-<li><p>401 Unauthorized 需要验证</p>
-</li>
-<li><p>403 Forbidden 服务器拒绝执行</p>
-</li>
-<li><p>404 Not Found 资源未找到</p>
-</li>
-<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
-</li>
-<li><p>408 Request Timeout 请求超时</p>
-</li>
-<li><p>413 Request Entity Too Large 请求体超长</p>
-</li>
-<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
-</li>
-<li><p>500 Internal Server Error 服务器错误</p>
-</li>
-<li><p>502 Bad Gateway 网关错误</p>
-</li>
-<li><p>504 Gateway Timeout 网关超时</p>
-</li>
-<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
-</li>
-</ul>
-<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
-<li>%21 !</li>
-<li>%22 “</li>
-<li>%23 #</li>
-<li>%24 $</li>
-<li>%25 %</li>
-<li>%26 &amp;</li>
-<li>%27 ‘</li>
-<li>%28 (</li>
-<li>%29 )</li>
-<li>%2F /</li>
-<li>%30-9 0..9</li>
-<li>%3A :</li>
-<li>%3B ;</li>
-<li>%3C &lt;</li>
-<li>%3D =</li>
-<li>%3E &gt;</li>
-<li>%3F ?</li>
-<li>%40 @</li>
-<li>%41 A</li>
-</ul>
-]]></content>
-      <categories>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -1766,6 +1766,198 @@
       </categories>
   </entry>
   <entry>
+    <title>nginx</title>
+    <url>/2022/04/1e58889c42cf/</url>
+    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
+<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
+<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
+<li><p>$nginx_version nginx 版本</p>
+</li>
+<li><p>$connection_requests TCP 链接当前的请求数量</p>
+</li>
+<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
+<span id="more"></span></li>
+</ul>
+<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
+<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
+</li>
+<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
+</li>
+<li><p>$document_uri 同 $uri</p>
+</li>
+<li><p>$document_root 当前请求的文档根目录或别名</p>
+</li>
+<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
+</li>
+<li><p>$remote_addr 客户端的 IP 地址</p>
+</li>
+<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
+</li>
+<li><p>$remote_port 客户端的端口号</p>
+</li>
+<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
+</li>
+<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
+</li>
+<li><p>$hostname 主机名</p>
+</li>
+<li><p>$http_user_agent 客户端 agent 信息</p>
+</li>
+<li><p>$http_cookie 客户端所有的 cookie 信息</p>
+</li>
+<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
+</li>
+<li><p>$http_referer 引用地址</p>
+</li>
+<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
+</li>
+<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
+</li>
+</ul>
+<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
+<li><p>$request 代表客户端的请求地址</p>
+</li>
+<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
+</li>
+<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
+</li>
+<li><p>$request_body 客户端的请求主体</p>
+</li>
+<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
+</li>
+<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
+</li>
+<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
+</li>
+<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
+</li>
+<li><p>$uri 当前请求的 URI</p>
+</li>
+<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
+</li>
+<li><p>$args 请求中的参数值</p>
+</li>
+<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
+</li>
+<li><p>$query_string 同$args</p>
+</li>
+<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
+</li>
+</ul>
+<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
+<li><p>$time_local 服务器时间(LOG Format 格式)</p>
+</li>
+<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
+<ul>
+<li>$sent_http_content_type ‘text/html’</li>
+<li>$sent_http_content_length 1024</li>
+</ul>
+</li>
+</ul>
+<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
+<li><p>$scheme HTTP 方法(如 http, https)</p>
+</li>
+<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
+</li>
+<li><p>$server_addr 服务器地址</p>
+</li>
+<li><p>$server_name 服务器名称</p>
+</li>
+<li><p>$server_port 服务器端口号</p>
+</li>
+<li><p>$status HTTP 响应代码</p>
+</li>
+<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
+</li>
+<li><p>$limit_rate 限制连接速率</p>
+</li>
+</ul>
+<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
+<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
+<li>none 允许 Referer 头域中不存在的情况</li>
+<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
+<li>server_names 设置一个或多个 URL</li>
+<li>arbitrary string 任意字符串</li>
+<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
+<li>http</li>
+<li>server</li>
+<li>location</li>
+<li>if in location</li>
+</ul>
+<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
+<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
+<ul>
+<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
+<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
+<thead>
+<tr>
+<th align="center">符号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">~</td>
+<td>正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td align="center">~*</td>
+<td>正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td align="center">^~</td>
+<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
+</tr>
+<tr>
+<td align="center">=</td>
+<td>普通字符匹配，精确匹配</td>
+</tr>
+<tr>
+<td align="center">@</td>
+<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
+</tr>
+</tbody></table>
+<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
+<li><p>精确匹配：</p>
+<p>= 前缀的指令严格匹配这个查询。</p>
+<p>如果找到，停止搜索。</p>
+</li>
+<li><p>普通字符匹配：</p>
+<p>所有剩下的常规字符串，最长的匹配。</p>
+<p>如果这个匹配使用^〜前缀，搜索停止。</p>
+</li>
+<li><p>正则匹配：</p>
+<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
+</li>
+<li><p>默认匹配：</p>
+<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
+<p>否则，如同从第 2 条规则被使用。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>server</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>shell工具</title>
     <url>/2022/05/4881d8683e6d/</url>
     <content><![CDATA[<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
@@ -1988,236 +2180,6 @@
       <tags>
         <tag>linux</tag>
         <tag>shell</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>nginx</title>
-    <url>/2022/04/1e58889c42cf/</url>
-    <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
-<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
-<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
-<li><p>$nginx_version nginx 版本</p>
-</li>
-<li><p>$connection_requests TCP 链接当前的请求数量</p>
-</li>
-<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
-<span id="more"></span></li>
-</ul>
-<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
-<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
-</li>
-<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
-</li>
-<li><p>$document_uri 同 $uri</p>
-</li>
-<li><p>$document_root 当前请求的文档根目录或别名</p>
-</li>
-<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
-</li>
-<li><p>$remote_addr 客户端的 IP 地址</p>
-</li>
-<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
-</li>
-<li><p>$remote_port 客户端的端口号</p>
-</li>
-<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
-</li>
-<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
-</li>
-<li><p>$hostname 主机名</p>
-</li>
-<li><p>$http_user_agent 客户端 agent 信息</p>
-</li>
-<li><p>$http_cookie 客户端所有的 cookie 信息</p>
-</li>
-<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
-</li>
-<li><p>$http_referer 引用地址</p>
-</li>
-<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
-</li>
-<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
-</li>
-</ul>
-<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
-<li><p>$request 代表客户端的请求地址</p>
-</li>
-<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
-</li>
-<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
-</li>
-<li><p>$request_body 客户端的请求主体</p>
-</li>
-<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
-</li>
-<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
-</li>
-<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
-</li>
-<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
-</li>
-<li><p>$uri 当前请求的 URI</p>
-</li>
-<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
-</li>
-<li><p>$args 请求中的参数值</p>
-</li>
-<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
-</li>
-<li><p>$query_string 同$args</p>
-</li>
-<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
-</li>
-</ul>
-<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
-<li><p>$time_local 服务器时间(LOG Format 格式)</p>
-</li>
-<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
-<ul>
-<li>$sent_http_content_type ‘text/html’</li>
-<li>$sent_http_content_length 1024</li>
-</ul>
-</li>
-</ul>
-<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
-<li><p>$scheme HTTP 方法(如 http, https)</p>
-</li>
-<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
-</li>
-<li><p>$server_addr 服务器地址</p>
-</li>
-<li><p>$server_name 服务器名称</p>
-</li>
-<li><p>$server_port 服务器端口号</p>
-</li>
-<li><p>$status HTTP 响应代码</p>
-</li>
-<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
-</li>
-<li><p>$limit_rate 限制连接速率</p>
-</li>
-</ul>
-<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
-<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
-<li>none 允许 Referer 头域中不存在的情况</li>
-<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
-<li>server_names 设置一个或多个 URL</li>
-<li>arbitrary string 任意字符串</li>
-<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
-<li>http</li>
-<li>server</li>
-<li>location</li>
-<li>if in location</li>
-</ul>
-<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
-<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
-<ul>
-<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
-<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
-<thead>
-<tr>
-<th align="center">符号</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">~</td>
-<td>正则匹配，区分大小写</td>
-</tr>
-<tr>
-<td align="center">~*</td>
-<td>正则匹配，不区分大小写</td>
-</tr>
-<tr>
-<td align="center">^~</td>
-<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
-</tr>
-<tr>
-<td align="center">=</td>
-<td>普通字符匹配，精确匹配</td>
-</tr>
-<tr>
-<td align="center">@</td>
-<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
-</tr>
-</tbody></table>
-<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
-<li><p>精确匹配：</p>
-<p>= 前缀的指令严格匹配这个查询。</p>
-<p>如果找到，停止搜索。</p>
-</li>
-<li><p>普通字符匹配：</p>
-<p>所有剩下的常规字符串，最长的匹配。</p>
-<p>如果这个匹配使用^〜前缀，搜索停止。</p>
-</li>
-<li><p>正则匹配：</p>
-<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
-</li>
-<li><p>默认匹配：</p>
-<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
-<p>否则，如同从第 2 条规则被使用。</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>server</category>
-      </categories>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>即将废弃或已经废弃的API</title>
-    <url>/2021/07/6ab3a6a88944/</url>
-    <content><![CDATA[<ul>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr">String.prototype.substr()</a></p>
-<blockquote>
-<p>并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee">arguments.callee</a></p>
-<blockquote>
-<p>ES5 严格模式下禁止使用此方法，建议使用方法名调用自己</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/arguments">Function.arguments</a> 已废弃</p>
-<blockquote>
-<p>是一个类数组对象,表示传入函数的实参. 在函数内部直接使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments">arguments</a> 对象访问</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/compile">regexObj.compile</a> 已废弃</p>
-<blockquote>
-<p>用于编译正则表达式, 和 RegExp 构造函数的作用基本一样</p>
-</blockquote>
-</li>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear">Date.prototype.getYear</a> 已废弃</p>
-<blockquote>
-<p>使用 getFullYear 代替</p>
-</blockquote>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>WebAPI</category>
-      </categories>
-      <tags>
-        <tag>API</tag>
       </tags>
   </entry>
   <entry>
@@ -2607,6 +2569,44 @@
       </tags>
   </entry>
   <entry>
+    <title>即将废弃或已经废弃的API</title>
+    <url>/2021/07/6ab3a6a88944/</url>
+    <content><![CDATA[<ul>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr">String.prototype.substr()</a></p>
+<blockquote>
+<p>并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee">arguments.callee</a></p>
+<blockquote>
+<p>ES5 严格模式下禁止使用此方法，建议使用方法名调用自己</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/arguments">Function.arguments</a> 已废弃</p>
+<blockquote>
+<p>是一个类数组对象,表示传入函数的实参. 在函数内部直接使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments">arguments</a> 对象访问</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/compile">regexObj.compile</a> 已废弃</p>
+<blockquote>
+<p>用于编译正则表达式, 和 RegExp 构造函数的作用基本一样</p>
+</blockquote>
+</li>
+<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear">Date.prototype.getYear</a> 已废弃</p>
+<blockquote>
+<p>使用 getFullYear 代替</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>vagrant</title>
     <url>/2022/04/6a14bcf31f14/</url>
     <content><![CDATA[<h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
@@ -2647,7 +2647,7 @@
 <h4 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h4><p><img data-src="/images/docker-1.jpg" alt="docker-1"></p>
 <h2 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h2><p>是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）</p>
 <p>镜像由多个层组成, 每层叠加之后, 从外部看来就如一个独立的对象</p>
-<h3 id="UnionFS-联合文件系统"><a href="#UnionFS-联合文件系统" class="headerlink" title="UnionFS 联合文件系统"></a>UnionFS 联合文件系统</h3><h3 id="镜像操作"><a href="#镜像操作" class="headerlink" title="镜像操作"></a>镜像操作</h3><p>镜像的操作命令可直接跟在 <code>docker</code> 命令后使用, 也可以跟在 <code>docker image</code> 命令后使用</p>
+<h3 id="UnionFS-联合文件系统"><a href="#UnionFS-联合文件系统" class="headerlink" title="UnionFS 联合文件系统"></a>UnionFS 联合文件系统</h3><h3 id="镜像操作"><a href="#镜像操作" class="headerlink" title="镜像操作"></a>镜像操作</h3><p>镜像的操作命令可直接用在 <code>docker</code> 或 <code>docker image</code> 命令后面</p>
 <ul>
 <li>images 查看本地镜像列表, 作用同 <code>image ls</code></li>
 <li>rmi 删除本地镜像, 作用同 <code>image rm</code></li>
@@ -2669,11 +2669,11 @@
 <li>-m, --message 提交信息</li>
 <li>-p, --pause 提交过程中是否中断容器运行, 默认为 true</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker images  # 显示所有镜像</span></span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED        SIZE</span><br><span class="line">nginx        latest    12766a6745ee   2 days ago     142MB</span><br><span class="line">centos       latest    5d0da3dc9764   6 months ago   231MB</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -p 6666:80 nginx # 后台运行nginx并配置端口映射</span></span><br><span class="line">[root@localhost ~]<span class="comment"># curl -I localhost:6666 # 测试服务</span></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.21.6</span><br><span class="line">Date: Fri, 01 Apr 2022 08:44:03 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 615</span><br><span class="line">Last-Modified: Tue, 25 Jan 2022 15:03:52 GMT</span><br><span class="line">Connection: keep-alive</span><br><span class="line">ETag: <span class="string">&quot;61f01158-267&quot;</span></span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                   NAMES</span><br><span class="line">91b34829d2d8   nginx     <span class="string">&quot;/docker-entrypoint.…&quot;</span>   38 seconds ago   Up 36 seconds   0.0.0.0:6666-&gt;80/tcp, :::6666-&gt;80/tcp   laughing_kowalevski</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>              2 days ago       Up 2 hours                                              vigorous_turing</span><br><span class="line">[root@localhost ~]<span class="comment"># docker commit -a &#x27;ll&#x27; -m &#x27;nginx 01&#x27; 91b34829d2d8 nginx01:1.0 # 提交指定容器的镜像并添加作者,提交信息,版本号等</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images # 查看所有镜像</span></span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED         SIZE</span><br><span class="line">nginx01      1.0       9e81333043cc   2 seconds ago   142MB</span><br><span class="line">nginx        latest    12766a6745ee   2 days ago      142MB</span><br><span class="line">centos       latest    5d0da3dc9764   6 months ago    231MB</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker images  # 显示所有镜像</span></span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED        SIZE</span><br><span class="line">nginx        latest    12766a6745ee   2 days ago     142MB</span><br><span class="line">centos       latest    5d0da3dc9764   6 months ago   231MB</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -p 6666:80 nginx # 后台运行nginx并配置端口映射</span></span><br><span class="line">[root@localhost ~]<span class="comment"># curl -I localhost:6666 # 测试服务</span></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.21.6</span><br><span class="line">Date: Fri, 01 Apr 2022 08:44:03 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 615</span><br><span class="line">Last-Modified: Tue, 25 Jan 2022 15:03:52 GMT</span><br><span class="line">Connection: keep-alive</span><br><span class="line">ETag: <span class="string">&quot;61f01158-267&quot;</span></span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                   NAMES</span><br><span class="line">91b34829d2d8   nginx     <span class="string">&quot;/docker-entrypoint.…&quot;</span>   38 seconds ago   Up 36 seconds   0.0.0.0:6666-&gt;80/tcp, :::6666-&gt;80/tcp   laughing_kowalevski</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>              2 days ago       Up 2 hours                                              vigorous_turing</span><br><span class="line"><span class="comment"># 提交指定容器的镜像并添加作者,提交信息,版本号等</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker commit -a &#x27;l.l&#x27; -m &#x27;nginx 01&#x27; 91b34829d2d8 nginx01:1.0 </span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images # 查看所有镜像</span></span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED         SIZE</span><br><span class="line">nginx01      1.0       9e81333043cc   2 seconds ago   142MB</span><br><span class="line">nginx        latest    12766a6745ee   2 days ago      142MB</span><br><span class="line">centos       latest    5d0da3dc9764   6 months ago    231MB</span><br></pre></td></tr></table></figure>
 
-<h3 id="从-Dockerfile-构建镜像"><a href="#从-Dockerfile-构建镜像" class="headerlink" title="从 Dockerfile 构建镜像"></a>从 Dockerfile 构建镜像</h3><p>. 上下文路径</p>
+<h3 id="从-Dockerfile-构建镜像"><a href="#从-Dockerfile-构建镜像" class="headerlink" title="从 Dockerfile 构建镜像"></a>从 Dockerfile 构建镜像</h3><p><code>.</code> 上下文路径</p>
 <ul>
-<li>-f 指定配置文件, 默认 PWD/Dockerfile</li>
+<li>-f 指定配置文件, 默认 <code>$&#123;PWD&#125;/Dockerfile</code></li>
 <li>-t 指定新创建的镜像名称和标签</li>
 <li>--no-cache 构建镜像时不使用缓存</li>
 <li>--compress 使用 gzip 压缩构建上下文环境</li>
@@ -2689,7 +2689,7 @@
 </ul>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                   PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   28 hours ago   Exited (0) 3 hours ago             vigorous_turing</span><br></pre></td></tr></table></figure>
 
-<h3 id="容器操作"><a href="#容器操作" class="headerlink" title="容器操作"></a>容器操作</h3><p>容器的操作命令可直接跟在 <code>docker</code> 命令后使用, 也可以跟在 <code>docker container</code> 命令后使用</p>
+<h3 id="容器操作"><a href="#容器操作" class="headerlink" title="容器操作"></a>容器操作</h3><p>容器的操作命令可直接用在 <code>docker</code> 或 <code>docker container</code> 命令后面</p>
 <ul>
 <li><p>create 创建新容器</p>
 </li>
@@ -2812,7 +2812,7 @@
 </ul>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   25 hours ago   Up 31 minutes             vigorous_turing</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it a441e0564165 /bin/bash # 交互方式进入容器</span></span><br><span class="line">[root@a441e0564165 /]<span class="comment"># exit # 退出</span></span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   25 hours ago   Up 32 minutes             vigorous_turing</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker attach a441e0564165 # 进入容器</span></span><br><span class="line">[root@a441e0564165 /]<span class="comment"># exit # 退出</span></span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                     PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   25 hours ago   Exited (0) 2 seconds ago             vigorous_turing</span><br></pre></td></tr></table></figure>
 
-<h3 id="文件拷贝-cp"><a href="#文件拷贝-cp" class="headerlink" title="文件拷贝 cp "></a>文件拷贝 cp <em id="dockercp"></em></h3><ul>
+<h3 id="文件拷贝-cp"><a href="#文件拷贝-cp" class="headerlink" title="文件拷贝 cp  "></a>文件拷贝 cp <em id="dockercp"></em> <!--markdownlint-disable-line--></h3><ul>
 <li>-a, --archive 复制文档的所有信息</li>
 </ul>
 <h4 id="拷贝宿主机到容器内"><a href="#拷贝宿主机到容器内" class="headerlink" title="拷贝宿主机到容器内"></a>拷贝宿主机到容器内</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">cp</span> [宿主机路径] [容器标识]:[容器内路径]</span><br></pre></td></tr></table></figure>
@@ -2856,7 +2856,8 @@
 <li>数据卷中的更改不会包含在镜像的更新中</li>
 <li>数据卷的生命周期一直持续到没有容器使用它为止</li>
 </ul>
-<h3 id="数据卷类型"><a href="#数据卷类型" class="headerlink" title="数据卷类型"></a>数据卷类型</h3><p>默认挂载数据卷的权限为 <code>RW</code>, 可以在挂载数据卷时指定数据卷的权限 <code>-v [source/path]:[destination/path]:[rw]</code></p>
+<h3 id="数据卷类型"><a href="#数据卷类型" class="headerlink" title="数据卷类型"></a>数据卷类型</h3><p>默认挂载数据卷的权限为 <code>RW</code></p>
+<p>可以在挂载数据卷时指定数据卷的权限 <code>-v [source/path]:[destination/path]:[rw]</code></p>
 <ul>
 <li>--mount 不指定 type 选项默认为 volume</li>
 <li>-v 不能建立 tmpfs mounts</li>
@@ -2920,11 +2921,11 @@
 <h4 id="bind-mounts"><a href="#bind-mounts" class="headerlink" title="bind mounts"></a>bind mounts</h4><p>是宿主机任意文件系统, 可以存储在宿主机系统的任意位置</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run --mount <span class="built_in">type</span>=<span class="built_in">bind</span>,<span class="built_in">source</span>=<span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$&#123;CONTAINER_NAME&#125;</span>/app,destination=/app centos01 /bin/bash</span><br><span class="line"><span class="comment"># 如果挂载到容器中的非空目录, 则会隐藏容器中非空目录中的文件</span></span><br><span class="line">docker run -v <span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$&#123;CONTAINER_NAME&#125;</span>/app:/app <span class="comment"># 作用同上一行</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="tmpfs-mounts"><a href="#tmpfs-mounts" class="headerlink" title="tmpfs mounts"></a>tmpfs mounts</h4><p>是临时挂载 放在内存, 挂载存储在宿主机系统的内存中, 不会写入宿主机的文件系统</p>
+<h4 id="tmpfs-mounts"><a href="#tmpfs-mounts" class="headerlink" title="tmpfs mounts"></a>tmpfs mounts</h4><p>临时挂载到宿主机系统的内存中, 不会写入宿主机的文件系统</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run --mount <span class="built_in">type</span>=tmpfs,tmpfs-size=512M,destination=/path/in/container</span><br></pre></td></tr></table></figure>
 
 <p><img data-src="/images/docker-5.jpg" alt="docker-5"></p>
-<h3 id="挂载数据卷"><a href="#挂载数据卷" class="headerlink" title="挂载数据卷 "></a>挂载数据卷 <em id="guazaishujujuan"></em></h3><h4 id="v-挂载方式"><a href="#v-挂载方式" class="headerlink" title="-v 挂载方式"></a>-v 挂载方式</h4><h5 id="v-容器内路径-匿名挂载"><a href="#v-容器内路径-匿名挂载" class="headerlink" title="-v 容器内路径 匿名挂载 "></a>-v 容器内路径 匿名挂载 <em id="nimingguazai"></em></h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos01 -v /centosVolume centos /bin/bash</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker container inspect centos01</span></span><br><span class="line"><span class="string">&quot;Mounts&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;volume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Name&quot;</span>: <span class="string">&quot;2d25068e7e073ed051b075c3d454de4cd8db89871e6e19b38aa2c44b34cee647&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Source&quot;</span>: <span class="string">&quot;/var/lib/docker/volumes/2d25068e7e073ed051b075c3d454de4cd8db89871e6e19b38aa2c44b34cee647/_data&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Destination&quot;</span>: <span class="string">&quot;/centosVolume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Driver&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Mode&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RW&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;Propagation&quot;</span>: <span class="string">&quot;&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="挂载数据卷"><a href="#挂载数据卷" class="headerlink" title="挂载数据卷  "></a>挂载数据卷 <em id="guazaishujujuan"></em> <!--markdownlint-disable-line--></h3><h4 id="v-挂载方式"><a href="#v-挂载方式" class="headerlink" title="-v 挂载方式"></a>-v 挂载方式</h4><h5 id="v-容器内路径-匿名挂载"><a href="#v-容器内路径-匿名挂载" class="headerlink" title="-v 容器内路径 匿名挂载  "></a>-v 容器内路径 匿名挂载 <em id="nimingguazai"></em> <!--markdownlint-disable-line--></h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos01 -v /centosVolume centos /bin/bash</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker container inspect centos01</span></span><br><span class="line"><span class="string">&quot;Mounts&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;volume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Name&quot;</span>: <span class="string">&quot;2d25068e7e073ed051b075c3d454de4cd8db89871e6e19b38aa2c44b34cee647&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Source&quot;</span>: <span class="string">&quot;/var/lib/docker/volumes/2d25068e7e073ed051b075c3d454de4cd8db89871e6e19b38aa2c44b34cee647/_data&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Destination&quot;</span>: <span class="string">&quot;/centosVolume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Driver&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Mode&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RW&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;Propagation&quot;</span>: <span class="string">&quot;&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 
 <h5 id="v-卷名-容器内路径-具名挂载"><a href="#v-卷名-容器内路径-具名挂载" class="headerlink" title="-v 卷名:容器内路径 具名挂载"></a>-v 卷名:容器内路径 具名挂载</h5><ul>
 <li>如果 <code>不需要</code> 对容器内的数据卷挂载点进行 <code>写操作</code> 时, 使用具名挂载方式备份容器内数据到宿主机中</li>
@@ -2948,34 +2949,34 @@
 <h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><ul>
 <li>.dockerignore 根目录上下文忽略文件</li>
 </ul>
-<p>用来构建镜像的文本文件, 文本内容包含一条条构建镜像所需要的指令和说明, 指令每执行一次都会在 docker 上新建一层</p>
+<p>Dockerfile 是用来构建 Docker 镜像的构建文件, 一个命令脚本, 脚本中的每条指令执行一次都会在镜像上新建一层</p>
 <ul>
 <li><p>FROM 构建镜像时的基础镜像层</p>
 </li>
 <li><p>MAINTAINER(deprecated) 维护者信息, 使用 <code>LABEL</code> 指令代替</p>
 </li>
 <li><p>EXPOSE 对外暴露端口</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">EXPOSE 80/tcp</span><br><span class="line">EXPOSE 80/udp</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">EXPOSE</span> <span class="number">80</span><span class="string">/tcp</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">80</span><span class="string">/udp</span></span><br></pre></td></tr></table></figure></li>
 <li><p>ADD 复制指令, 增强版的 <code>COPY</code> 指令, 支持文件解压和远程 URL 资源</p>
 </li>
 <li><p>COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># [--chown=&lt;user&gt;:&lt;group&gt;] 可选参数，用户改变复制到容器内文件的拥有者和属组</span><br><span class="line">COPY [&quot;src&quot;, &quot;dest&quot;]</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># [--chown=&lt;user&gt;:&lt;group&gt;] 可选参数，用户改变复制到容器内文件的拥有者和属组</span></span><br><span class="line"><span class="string">COPY</span> [<span class="string">&quot;src&quot;</span>, <span class="string">&quot;dest&quot;</span>]</span><br></pre></td></tr></table></figure></li>
 <li><p>RUN 构建镜像时执行的命令 可以存在多条指令</p>
 </li>
 <li><p>CMD 容器运行时执行的命令, 如果存在多个 <code>CMD</code> 指令, 仅最后一个生效</p>
 </li>
 <li><p>ENTRYPOINT 容器运行时执行的命令, 参数不会被 <code>docker run</code> 的命令行参数覆盖, 如果存在多个 <code>ENTRYPOINT</code> 指令，仅最后一个生效</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">RUN yum -y install vim</span><br><span class="line">RUN yum -y install wget \</span><br><span class="line">  &amp;&amp; wget -O redis.tar.gz &quot;http://download.redis.io/releases/redis-5.0.3.tar.gz&quot; \</span><br><span class="line">  &amp;&amp; tar -xvf redis.tar.gz</span><br><span class="line"></span><br><span class="line">ENTRYPOINT &#x27;&lt;exec_cmd&gt;&#x27; &#x27;&lt;param1&gt;&#x27;</span><br><span class="line">ENTRYPOINT [&quot;&lt;executeable&gt;&quot;,&quot;&lt;param1&gt;&quot;,&quot;&lt;param2&gt;&quot;,...]</span><br><span class="line"></span><br><span class="line">CMD &#x27;&lt;exec_cmd&gt;&#x27; &#x27;&lt;param1&gt;&#x27;</span><br><span class="line">CMD [&quot;&lt;可执行文件或命令&gt;&quot;,&quot;&lt;param1&gt;&quot;,&quot;&lt;param2&gt;&quot;,...]</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">RUN</span> <span class="string">yum</span> <span class="string">-y</span> <span class="string">install</span> <span class="string">vim</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">yum</span> <span class="string">-y</span> <span class="string">install</span> <span class="string">wget</span> <span class="string">\</span></span><br><span class="line"><span class="string">&amp;&amp;</span> <span class="string">wget</span> <span class="string">-O</span> <span class="string">redis.tar.gz</span> <span class="string">&quot;http://download.redis.io/releases/redis-5.0.3.tar.gz&quot;</span> <span class="string">\</span></span><br><span class="line"><span class="string">&amp;&amp;</span> <span class="string">tar</span> <span class="string">-xvf</span> <span class="string">redis.tar.gz</span></span><br><span class="line"></span><br><span class="line"><span class="string">ENTRYPOINT</span> <span class="string">&#x27;&lt;exec_cmd&gt;&#x27;</span> <span class="string">&#x27;&lt;param1&gt;&#x27;</span></span><br><span class="line"><span class="string">ENTRYPOINT</span> [<span class="string">&quot;&lt;executeable&gt;&quot;</span>,<span class="string">&quot;&lt;param1&gt;&quot;</span>,<span class="string">&quot;&lt;param2&gt;&quot;</span>,<span class="string">...</span>]</span><br><span class="line"></span><br><span class="line"><span class="string">CMD</span> <span class="string">&#x27;&lt;exec_cmd&gt;&#x27;</span> <span class="string">&#x27;&lt;param1&gt;&#x27;</span></span><br><span class="line"><span class="string">CMD</span> [<span class="string">&quot;&lt;可执行文件或命令&gt;&quot;</span>,<span class="string">&quot;&lt;param1&gt;&quot;</span>,<span class="string">&quot;&lt;param2&gt;&quot;</span>,<span class="string">...</span>]</span><br></pre></td></tr></table></figure></li>
 <li><p>ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 <code>Dockerfile</code> 内有效</p>
 </li>
 <li><p>ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 <code>ARG</code> 指令</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ARG VERSION1 1</span><br><span class="line">ARG VERSION=1</span><br><span class="line"></span><br><span class="line">ENV NAME1 hello</span><br><span class="line">ENV NAME2=hello</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">ARG</span> <span class="string">VERSION1</span> <span class="number">1</span></span><br><span class="line"><span class="string">ARG</span> <span class="string">VERSION=1</span></span><br><span class="line"></span><br><span class="line"><span class="string">ENV</span> <span class="string">NAME1</span> <span class="string">hello</span></span><br><span class="line"><span class="string">ENV</span> <span class="string">NAME2=hello</span></span><br></pre></td></tr></table></figure></li>
 <li><p>VOLUME 定义匿名数据卷, 在启动容器时会自动挂载到 /var/lib/docker/volumes/</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">VOLUME [&quot;&lt;路径1&gt;&quot;, &quot;&lt;路径2&gt;&quot;...]</span><br><span class="line">VOLUME &lt;路径&gt; &lt;路径&gt;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 出于可移植和分享的考虑, 具名挂载 和 指定路径挂载 方式不能直接在 Dockerfile 中支持</span></span><br><span class="line"><span class="comment"># 因为宿主机目录是依赖于特定宿主机的, 并不能够保证在所有的宿主机上都存在这样的目录</span></span><br><span class="line"><span class="string">VOLUME</span> [<span class="string">&quot;&lt;路径1&gt;&quot;</span>, <span class="string">&quot;&lt;路径2&gt;&quot;</span><span class="string">...</span>]</span><br><span class="line"><span class="string">VOLUME</span> <span class="string">&lt;路径&gt;</span> <span class="string">&lt;路径&gt;</span></span><br></pre></td></tr></table></figure></li>
 <li><p>WORKDIR 为<code>RUN</code>, <code>CMD</code>, <code>ENTRYPOINT</code>, <code>COPY</code>, <code>ADD</code> 指定工作目录</p>
 </li>
 <li><p>USER 指定执行后续命令的用户和用户组, 用户名和用户组必须提前存在</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">WORKDIR /usr/local</span><br><span class="line"></span><br><span class="line">USER &lt;用户名&gt;[:&lt;用户组&gt;]</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local</span></span><br><span class="line"></span><br><span class="line"><span class="string">USER</span> <span class="string">&lt;用户名&gt;[:&lt;用户组&gt;]</span></span><br></pre></td></tr></table></figure></li>
 <li><p>LABEL 给镜像添加元数据</p>
 </li>
 <li><p>SHELL 允许重写默认的 shell</p>
@@ -2983,20 +2984,10 @@
 <li><p>STOPSIGNAL 设置当容器退出时系统调用的指令</p>
 </li>
 <li><p>ONBUILD 当前镜像作为其他镜像的基础镜像构建时触发</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">ONBUILD</span> <span class="string">ADD</span> <span class="string">.</span> <span class="string">/app/src</span></span><br></pre></td></tr></table></figure></li>
+<li><p>HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式</p>
 </li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ONBUILD ADD . /app/src</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式</li>
-</ul>
-<!-- 不知道为什么要写这块内容
-### 区分是否新建镜像层
-
-- 如果指令的作用是向镜像中增添新的文件或者程序，那么这条指令就会新建镜像层, FROM、RUN 以及 COPY
-- 如果只是告诉 Docker 如何完成构建或者如何运行应用程序，那么就只会增加镜像的元数据 EXPOSE、WORKDIR、ENV、CMD 以及 ENTRYPOINT
--->
-
 <h3 id="ADD-和-COPY"><a href="#ADD-和-COPY" class="headerlink" title="ADD 和 COPY"></a>ADD 和 COPY</h3><ul>
 <li>ADD 复制指令, 增强版的 <code>COPY</code> 指令, 支持文件解压和远程 URL 资源</li>
 <li>COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径</li>
@@ -3012,21 +3003,21 @@
 <h3 id="CMD-和-ENTRYPOINT"><a href="#CMD-和-ENTRYPOINT" class="headerlink" title="CMD 和 ENTRYPOINT"></a>CMD 和 ENTRYPOINT</h3><h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4><ul>
 <li>CMD 情况下, run 后面的参数将作为整体替换 <code>CMD</code> 配置项中的命令</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Dockerfile</span><br><span class="line">FROM ubuntu</span><br><span class="line">#...</span><br><span class="line">CMD [&#x27;/bin/bash&#x27;, &#x27;cat&#x27;, &#x27;/etc/hosts&#x27;]</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">ubuntu</span></span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"><span class="string">CMD</span> [<span class="string">&#x27;/bin/bash&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>, <span class="string">&#x27;/etc/hosts&#x27;</span>]</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># /bin/bash ls -al 命令会整体替换 Dockerfile 中的 CMD 指令</span></span><br><span class="line">docker run -it ubuntu /bin/bash <span class="built_in">ls</span> -al</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实际命令</span></span><br><span class="line">/bin/bash <span class="built_in">ls</span> -al</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>ENTRYPOINT 情况下, <code>docker run</code> 后面的参数将作为 ENTRYPOINT 配置项指令的一部分</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Dockerfile</span><br><span class="line">FROM ubuntu</span><br><span class="line">#...</span><br><span class="line">ENTRYPOINT [&#x27;/bin/bash&#x27;, &#x27;ls&#x27;, &#x27;-l&#x27;]</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">ubuntu</span></span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"><span class="string">ENTRYPOINT</span> [<span class="string">&#x27;/bin/bash&#x27;</span>, <span class="string">&#x27;ls&#x27;</span>, <span class="string">&#x27;-l&#x27;</span>]</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># run 后面的参数作为 ENTRYPOINT 配置项命令参数的一部分</span></span><br><span class="line">docker run -it ubuntu -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实际命令</span></span><br><span class="line">/bin/bash <span class="built_in">ls</span> -al</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>CMD 和 ENTRYPOINT 同时存在时, CMD 作为 ENTRYPOINT 配置项命令的一部分, 与书写位置没有关系</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Dockerfile</span><br><span class="line">FROM ubuntu</span><br><span class="line">#...</span><br><span class="line">ENTRYPOINT [&#x27;nginx&#x27;, &#x27;-c&#x27;]</span><br><span class="line">CMD [&#x27;/etc/nginx/nginx.conf&#x27;]</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">ubuntu</span></span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"><span class="string">ENTRYPOINT</span> [<span class="string">&#x27;nginx&#x27;</span>, <span class="string">&#x27;-c&#x27;</span>]</span><br><span class="line"><span class="string">CMD</span> [<span class="string">&#x27;/etc/nginx/nginx.conf&#x27;</span>]</span><br></pre></td></tr></table></figure>
 
 <table>
 <thead>
@@ -3087,7 +3078,7 @@
 <td>entry p1_entry /bin/sh -c cmd p1_cmd</td>
 </tr>
 </tbody></table>
-<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><h4 id="Dockerfile-配置文件"><a href="#Dockerfile-配置文件" class="headerlink" title="Dockerfile 配置文件"></a>Dockerfile 配置文件</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Dockerfile</span><br><span class="line">FROM centos:7 # 基础镜像</span><br><span class="line"></span><br><span class="line">LABEL authors=luoleiself&lt;luoleiself@163.com&gt; # 镜像元数据</span><br><span class="line"></span><br><span class="line">WORKDIR /usr/local/   # 设置工作目录</span><br><span class="line">COPY hello.txt $PWD   # 复制文件</span><br><span class="line"></span><br><span class="line">VOLUME [&quot;/var/log&quot;] # 挂载匿名数据卷</span><br><span class="line"></span><br><span class="line">CMD [&quot;cat&quot;, &quot;/usr/local/hello.txt&quot;]   # 容器运行时执行的命令</span><br></pre></td></tr></table></figure>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><h4 id="Dockerfile-配置文件"><a href="#Dockerfile-配置文件" class="headerlink" title="Dockerfile 配置文件"></a>Dockerfile 配置文件</h4><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">centos:7</span> <span class="comment"># 基础镜像</span></span><br><span class="line"></span><br><span class="line"><span class="string">LABEL</span> <span class="string">authors=luoleiself&lt;luoleiself@163.com&gt;</span> <span class="comment"># 镜像元数据</span></span><br><span class="line"></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local/</span>   <span class="comment"># 设置工作目录</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">hello.txt</span> <span class="string">$PWD</span>   <span class="comment"># 复制文件</span></span><br><span class="line"></span><br><span class="line"><span class="string">VOLUME</span> [<span class="string">&quot;/var/log&quot;</span>] <span class="comment"># 挂载匿名数据卷</span></span><br><span class="line"></span><br><span class="line"><span class="string">CMD</span> [<span class="string">&quot;cat&quot;</span>, <span class="string">&quot;/usr/local/hello.txt&quot;</span>]   <span class="comment"># 容器运行时执行的命令</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 构建镜像并指定镜像名称和版本号, 最后的 . 很重要,表示在当前目录下进行构建, 可以使用</span></span><br><span class="line">[root@localhost workspace]<span class="comment"># docker build -t hello:v1.0 .</span></span><br><span class="line">Sending build context to Docker daemon  3.072kB</span><br><span class="line">Step 1/6 : FROM centos:7</span><br><span class="line"> ---&gt; eeb6ee3f44bd</span><br><span class="line">Step 2/6 : LABEL maintainer=luoleiself&lt;luoleiself@163.com&gt;</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 42aee4c83238</span><br><span class="line">Removing intermediate container 42aee4c83238</span><br><span class="line"> ---&gt; c0a8427ea1ca</span><br><span class="line">Step 3/6 : WORKDIR /usr/local/</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 0b1c0da5bfdb                   <span class="comment"># 启动临时容器</span></span><br><span class="line">Removing intermediate container 0b1c0da5bfdb    <span class="comment"># 修改元数据内部使用 `docker commit` 提交镜像后, 立即删除临时容器</span></span><br><span class="line"> ---&gt; 63cd399d1589</span><br><span class="line">Step 4/6 : COPY hello.txt <span class="variable">$PWD</span></span><br><span class="line"> ---&gt; 2e6fe81c553d</span><br><span class="line">Step 5/6 : VOLUME [<span class="string">&quot;/var/log&quot;</span>]                  <span class="comment"># 挂载匿名数据卷</span></span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 35e67913cfb2</span><br><span class="line">Removing intermediate container 35e67913cfb2</span><br><span class="line"> ---&gt; 60419e54ac19</span><br><span class="line">Step 6/6 : CMD [<span class="string">&quot;cat&quot;</span>, <span class="string">&quot;/usr/local/hello.txt&quot;</span>]</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 1785744ac7aa</span><br><span class="line">Removing intermediate container 1785744ac7aa</span><br><span class="line"> ---&gt; 4cd89659cce0</span><br><span class="line">Successfully built 4cd89659cce0</span><br><span class="line">Successfully tagged hello:v1.0</span><br><span class="line"></span><br><span class="line">[root@localhost workspace]<span class="comment"># docker run --name hello-v1 hello:v1.0 # 基于镜像创建容器</span></span><br><span class="line">hello docker</span><br></pre></td></tr></table></figure>
 
