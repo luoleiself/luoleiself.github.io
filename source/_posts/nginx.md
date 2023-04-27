@@ -45,11 +45,20 @@ tags:
 - $http_cookie 客户端所有的 cookie 信息
 - $cookie_NAME 获取指定 cookie, 后面的 `NAME` 为 cookie 的 key
 
-- $http_referer 引用地址
-
 - $http_via 最后一个访问服务器的 Ip 地址
 
 - $http_x_forwarded_for 相当于网络访问路径
+
+- $http_referer 引用地址
+
+```yaml
+# 日志配置
+log_format main '$remote_addr - $remote_user [$time_local] \
+  "$request" $status $body_bytes_sent "$http_referer" \
+  "$http_user_agent" "$http_x_forwarded_for" "$gzip_ratio"';
+
+access_log /var/log/nginx/access.log main;
+```
 
 #### $request_uri
 

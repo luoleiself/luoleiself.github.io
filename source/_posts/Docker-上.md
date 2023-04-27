@@ -33,7 +33,7 @@ docker:!::vagrant
 groupadd docker # 添加 docker 用户组
 gpasswd -a $USER docker # 添加登陆用户到 docker 用户组中
 newgrp docker # 更新用户组
-&&
+或者
 usermod -aG docker $USER # 给用户添加一个新的附属组
 newgrp docker # 重新登陆组
 
@@ -61,6 +61,16 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 镜像由多个层组成, 每层叠加之后, 从外部看来就如一个独立的对象
 
 ### UnionFS 联合文件系统
+
+### 镜像加速
+
+`/etc/docker/daemon.json` 配置文件修改默认镜像源
+
+```json
+{
+  "registry-mirrors": []
+}
+```
 
 ### 镜像操作
 
@@ -121,7 +131,7 @@ CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS       
 91b34829d2d8   nginx     "/docker-entrypoint.…"   38 seconds ago   Up 36 seconds   0.0.0.0:6666->80/tcp, :::6666->80/tcp   laughing_kowalevski
 a441e0564165   centos    "/bin/bash"              2 days ago       Up 2 hours                                              vigorous_turing
 # 提交指定容器的镜像并添加作者,提交信息,版本号等
-[root@localhost ~]# docker commit -a 'l.l' -m 'nginx 01' 91b34829d2d8 nginx01:1.0 
+[root@localhost ~]# docker commit -a 'l.l' -m 'nginx 01' 91b34829d2d8 nginx01:1.0
 [root@localhost ~]# docker images # 查看所有镜像
 REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
 nginx01      1.0       9e81333043cc   2 seconds ago   142MB
@@ -636,15 +646,18 @@ Dockerfile 是用来构建 Docker 镜像的构建文件, 一个命令脚本, 脚
   ```
 
 - RUN 构建镜像时执行的命令 可以存在多条指令
-- CMD 容器运行时执行的命令, 如果存在多个 `CMD` 指令, 仅最后一个生效
-- ENTRYPOINT 容器运行时执行的命令, 参数不会被 `docker run` 的命令行参数覆盖, 如果存在多个 `ENTRYPOINT` 指令，仅最后一个生效
 
   ```yaml
   RUN yum -y install vim
   RUN yum -y install wget \
   && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
   && tar -xvf redis.tar.gz
+  ```
 
+- CMD 容器运行时执行的命令, 如果存在多个 `CMD` 指令, 仅最后一个生效
+- ENTRYPOINT 容器运行时执行的命令, 参数不会被 `docker run` 的命令行参数覆盖, 如果存在多个 `ENTRYPOINT` 指令，仅最后一个生效
+
+  ```yaml
   ENTRYPOINT '<exec_cmd>' '<param1>'
   ENTRYPOINT ["<executeable>","<param1>","<param2>",...]
 
