@@ -203,9 +203,11 @@ fi
 #### if
 
 ```shell
-if [-e /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略
+# 当 then 单独另写一行时, 分号不能省略
+if [-e /root/workspace/test.txt ]; then
   printf "hello world %s %s\n" $(/bin/date +"%Y-%m-%d %H:%M:%S")
-elif [ -s /root/workspace/test.txt ]; then # then 可以单独另写一行, 但是分号不能省略
+# 当 then 单独另写一行时, 分号不能省略
+elif [ -s /root/workspace/test.txt ]; then
   printf "hello world\n"
 else
   printf "hello gg\n"
@@ -232,8 +234,10 @@ esac
 #### for
 
 ```shell
-for i in {1..10}; do  # do 可以单独另写一行, 但是分号不能省略
-  echo "for do " ${i} # 依次输出 for do 1 到 10
+# 当 do 单独另写一行时, 分号不能省略
+for i in {1..10}; do
+  # 依次输出 for do 1 到 10
+  echo "for do " ${i}
 done
 ```
 
@@ -241,8 +245,10 @@ done
 
 ```shell
 j=1
-while [ $j -lt 10 ]; do # do 可以单独另写一行, 但是分号不能省略
-  echo "while do " ${j} # 依次输出 while do 1 到 9
+# 当 do 单独另写一行时, 分号不能省略
+while [ $j -lt 10 ]; do
+  # 依次输出 while do 1 到 9
+  echo "while do " ${j}
   j=$[j+1]
 done
 ```
@@ -251,8 +257,10 @@ done
 
 ```shell
 k=1
-until [ $k -gt 10 ]; do # do 可以单独另写一行, 但是分号不能省略
-  echo "until do " ${k} # 依次输出 until do 1 到 10
+# 当 do 单独另写一行时, 分号不能省略
+until [ $k -gt 10 ]; do
+  # 依次输出 until do 1 到 10
+  echo "until do " ${k}
   k=$[k+1]
 done
 ```
@@ -273,8 +281,10 @@ echo "arr[2]=" ${arr[2]}
 echo "arr[3]=" ${arr[3]}
 echo "arr[*]=" ${arr[*]}  # 输出所有元素
 echo "arr[@]=" ${arr[@]}  # 输出所有元素
-echo "arr的键为 " ${!arr[*]}  # arr的键为  0 1 2 3
-echo "arr的长度为 " ${#arr[*]} # 获取数组的长度与获取字符串长度的方法相同
+echo "arr的键为 " ${!arr[*]}
+# arr的键为  0 1 2 3
+echo "arr的长度为 " ${#arr[*]}
+# 获取数组的长度与获取字符串长度的方法相同
 
 str=helloworld
 echo "str 的长度为 " ${#str}  # str 的长度为 10
@@ -286,13 +296,20 @@ echo "str 的长度为 " ${#str}  # str 的长度为 10
 
 ```shell
 declare -A site=(['google']='www.google.com' ['baidu']='www.baidu.com' ['taobao']='www.taobao.com')
-echo "site['google']=" ${site['google']}  # site['google']= www.google.com
-echo "site['baidu']=" ${site['baidu']}  # site['baidu']= www.baidu.com
-echo "site['taobao']=" ${site['taobao']}  # site['taobao']= www.taobao.com
-echo "site的所有元素是 " ${site[*]} # site的所有元素是  www.google.com www.taobao.com www.baidu.com
-echo "site的所有元素是 " ${site[@]} # site的所有元素是  www.google.com www.taobao.com www.baidu.com
-echo "site的键为 " ${!site[*]}  # site的键为  google taobao baidu
-echo "site的长度为 " ${#site[*]}  # site的长度为  3
+echo "site['google']=" ${site['google']}
+# site['google']= www.google.com
+echo "site['baidu']=" ${site['baidu']}
+# site['baidu']= www.baidu.com
+echo "site['taobao']=" ${site['taobao']}
+# site['taobao']= www.taobao.com
+echo "site的所有元素是 " ${site[*]}
+# site的所有元素是  www.google.com www.taobao.com www.baidu.com
+echo "site的所有元素是 " ${site[@]}
+# site的所有元素是  www.google.com www.taobao.com www.baidu.com
+echo "site的键为 " ${!site[*]}
+# site的键为  google taobao baidu
+echo "site的长度为 " ${#site[*]}
+# site的长度为  3
 ```
 
 #### 数组操作

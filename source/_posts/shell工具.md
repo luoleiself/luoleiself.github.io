@@ -10,6 +10,13 @@ tags:
 
 ### awk
 
+awk 是一种可以对文本和数据进行处理的编程语言, 默认情况下, awk 文件的每一行都被视为一条记录, 然后 awk 记录进一步分解成一系列的字段
+
+```bash
+awk '{ sum += $1 }; END { print sum }' file
+awk -F : '{ print $1 }' /etc/passwd
+```
+
 #### 内建变量
 
 - OFMT 输出数字格式(默认%.6g)
@@ -20,11 +27,11 @@ tags:
 - FIELDWIDTHS 以空格分隔的字段宽度
 - PROCINFO 数组, 存储当前系统运行时信息, PROCINFO['uid']
 - IGNORECASE 如果为真, 则进行忽略大小写的匹配
+
 - 字段分隔符
   - FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置
   - OFS 输出的字段分隔符, 默认为空格
 - 记录分隔符
-
   - RS 输入记录的分隔符, 默认为换行符
   - ORS 输出的记录分隔符, 默认为换行符
 
@@ -42,9 +49,9 @@ tags:
   - ARGIND 命令行中当前文件的位置(从 0 开始算)
 - 流程控制
 
-  - BEGIN { 这里面放的是执行前的语句 }
-  - END { 这里面放的是处理完所有的行后要执行的语句 }
-  - { 这里面放的是处理每一行时要执行的语句 }
+  - BEGIN { 这里面是行处理语句执行前的语句 }
+  - END { 这里面是行处理语句执行完成后的语句 }
+  - { 这里面是处理每一行时要执行的语句 }
 
 - 内置函数
   - gsub(r, s) 在整个 $0 中用 s 替换 r
@@ -64,22 +71,30 @@ git branch -r | awk 'BEGIN {print "hello awk, I am coming\n"}END{print "hello aw
 
 ### xargs
 
-- -t 执行命令之前先打印执行命令
-- -n 指定传递给执行命令的参数个数, 默认是所有
-- -I 同时运行多个命令, 并替换所有匹配的项为传递给 xargs 的参数
-- -p 每执行一个 argument 时询问一次用户
-- -a file 从文件中读入作为 stdin
-- -s num 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
+将参数列表转换成小块分段传递给其他命令, 以避免参数列表过长的问题, 可单独使用, 也可以使用管道符、重定位符等其他命令配合使用
 
 ```bash
-echo "file1 file2 file3"| xargs -t -I % sh -c 'touch %;ls -l %'
+xargs [OPTION]... COMMAND INITIAL-ARGS...
+```
+
+- -E EOFString 指定逻辑 EOF 字符串以替换缺省的下划线(\_), xargs 命令读取标准输入直到达到 EOF 或指定的字符串
+- -I replaceString 插入标准输入的每一行作为 command 参数的自变量, 把它插入每个发生的 replaceString 的 Argument 中
+- -n number 指定传递给执行命令的参数个数, 默认是所有
+- -p 每执行一个 argument 时询问一次用户
+- -a file 从文件中读入作为 stdin
+- -s size 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
+- -t 执行命令之前先打印执行命令
+
+```bash
+# -I 指定参数自变量
+echo "file1 file2 file3" | xargs -t -I % sh -c 'touch %;ls -l %'
 sh -c touch file1 file2 file3;ls -l file1 file2 file3
 ```
 
 - -d 设置自定义分隔符
 
 ```bash
-echo -n file1#file2#file3#file4|xargs -d \# -t touch
+echo -n file1#file2#file3#file4 | xargs -d \# -t touch
 touch file1 file2 file3 file4
 ```
 
@@ -87,6 +102,10 @@ touch file1 file2 file3 file4
 
 > BRE 定义了 4 组元字符 `[ ]` `.` `^` `$`
 > ERE 增加了 3 组元字符 `{ }` `()` `|`
+
+```bash
+grep [OPTION]... PATTERN [FILE]...
+```
 
 - -V,\-\-version 显示版本信息
 - -c,\-\-count 统计符合字符串条件的行数
@@ -178,6 +197,10 @@ $ git branch -a | \
 
 ### scp 主机之间复制文件
 
+```bash
+scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
+```
+
 - -C 传输过程中允许压缩文件
 - -p 保留源文件的修改时间, 访问时间, 访问权限
 - -q 不显示传输进度条
@@ -189,7 +212,6 @@ $ git branch -a | \
 #### 本地复制到远程
 
 ```bash
-scp local_file remote_username@remote_ip:remote_folder
 # 拷贝文件, 可以使用原文件名也可以重新命名文件
 scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/
 
@@ -219,10 +241,10 @@ scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 [root@centos7 ~]firewall-cmd --add-port=<port>/<protocol> --permanent # 永久修改防火墙配置
 ```
 
-### tar 归档压缩工具
+### tar 归档
 
 ```shell
-tar [option...] [files]...
+tar [OPTION...] [FILE]...
 ```
 
 - \-c,\-\-create 创建新的 tar 文件
@@ -241,6 +263,8 @@ tar [option...] [files]...
 - \-m,\-\-modification-time 当从一个档案中恢复文件时, 不使用新的时间标签
 - \-C,\-\-directory DIR 转到指定的目录
 
+#### 压缩工具
+
 - \-j,\-\-bzip2 调用 bzip2 执行压缩或解压缩
 - \-J,\-\-xz,\-\-lzma 调用 XZ Utils 执行压缩或解压缩
 - \-z,\-\-gzip,\-\-gunzip,\-\-ungzip 调用 gzip 执行压缩或解压缩
@@ -249,13 +273,15 @@ tar [option...] [files]...
 #### 归档压缩
 
 ```shell
-[root@centos7 ~]tar -czvf workspace.tar.gz ./workspace  # 使用 gzip 压缩归档 workspace 目录
+# 使用 gzip 压缩归档 workspace 目录
+[root@centos7 ~]tar -czvf workspace.tar.gz ./workspace
 ```
 
 #### 解压缩
 
 ```shell
-[root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable  # 使用 gzip 解压缩到当前目录下的 redis-stable 目录
+# 使用 gzip 解压缩到当前目录下的 redis-stable 目录
+[root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable
 ```
 
 ### crontab 定时任务
