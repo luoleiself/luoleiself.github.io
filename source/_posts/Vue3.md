@@ -628,6 +628,7 @@ console.log(map.get('count').value); // 需要使用 .value
 
 ```javascript
 import { reactive, readonly, watchEffect } from 'vue';
+
 const original = reactive({ count: 0 });
 const copy = readonly(original);
 watchEffect(() => {
@@ -733,6 +734,8 @@ watchEffect(() => {}, {
   - onTrack/onTrigger 调试侦听器的依赖, 见 [watchEffect()](#watchEffect)
 
 ```javascript
+import { reactive, ref, watch } from 'vue';
+
 // 侦听一个 getter 函数
 const state = reactive({ count: 0 });
 watch(
@@ -792,6 +795,8 @@ watch(id, async (newValue, oldValue, onCleanup) => {
 基于响应式对象上的一个属性, 新创建一个对应的 ref, 此 ref 与其源属性保持同步, 改变源属性的值将更新 ref 的值, 反之亦然
 
 ```javascript
+import { reactive, toRef } from 'vue';
+
 const state = reactive({ foo: 1, bar: 2 });
 const fooRef = toRef(state, 'foo');
 // 更改 ref 会更新源属性
@@ -811,6 +816,8 @@ console.log(fooRef.value); // 3
 - toRefs 在调用时只为源对象上的可以枚举的属性创建 ref, 如果为可能还不存在的属性创建 ref 时, 使用 toRef
 
 ```javascript
+import { reactive, toRefs } from 'vue';
+
 const state = reactive({ foo: 1, bar: 2 });
 const stateAsRefs = toRefs(state);
 /*
@@ -851,6 +858,8 @@ console.log(state.foo); // 3
 - 只有对 `.value` 的访问是响应式的
 
 ```javascript
+import { shallowRef } from 'vue';
+
 const state = shallowRef({ count: 1 });
 // 不会触发更改
 state.value.count = 2;
@@ -864,6 +873,8 @@ state.value = { count: 2 };
 强制触发依赖一个 `浅层 ref` 的副作用, 通常对浅引用的内部值进行深度变更后使用
 
 ```javascript
+import { shallowRef, watchEffect, triggerRef } from 'vue';
+
 const shallow = shallowRef({ name: 'hello world' });
 
 // 立刻执行一次副作用, 输出 hello world
@@ -892,6 +903,8 @@ triggerRef(shallow);
 </script>
 
 <script>
+  import { customRef } from 'vue';
+
   // 创建一个防抖 ref, 只在最后一次 set 调用后的一段固定间隔后再调用
   function useDebouncedRef(value, delay = 200) {
     let timeout;
@@ -922,6 +935,8 @@ triggerRef(shallow);
 - 属性的值会被原样存储和暴露, 值为 ref 的属性不会自动解包
 
 ```javascript
+import { shallowReactive, isReactive } from 'vue';
+
 const state = shallowReactive({ foo: 1, nested: { bar: 2 } });
 // 更改状态自身的属性是响应式的
 state.foo++;
@@ -939,6 +954,8 @@ state.nested.bar++;
 - 属性的值会被原样存储和暴露, 值为 ref 的属性不会自动解包
 
 ```javascript
+import { shallowReadonly, isReadonly } from 'vue';
+
 const state = shallowReadonly({ foo: 1, nested: { bar: 2 } });
 // 更改状态自身的属性会失败
 state.foo++;
@@ -968,6 +985,8 @@ console.log(toRaw(reactiveFoo) === foo); // true
 - 当渲染具有不可变数据源的大列表时，跳过代理转换可以提高性能
 
 ```javascript
+import { markRaw, reactive, isReactive } from 'vue';
+
 const foo = markRaw({});
 console.log(isReactive(reactive(foo))); // false
 
@@ -981,6 +1000,8 @@ console.log(isReactive(bar.foo)); // false
 创建一个 effect 作用域, 可以捕获其中所创建的响应式副作用(计算属性和侦听器), 这样捕获到的副作用可以一起处理
 
 ```javascript
+import { effectScope, watch, watchEffect } from 'vue';
+
 // 创建 effect 作用域
 const scope = effectScope();
 
@@ -1007,6 +1028,14 @@ scope.stop();
 > 此方法可以作为可复用的组合式函数中 `onUnmounted` 的替代品, 它并不与组件耦合, 因为每个 Vue 组件的 setup 函数也是在一个 effect 作用域中调用的
 
 在当前活跃的 effect 作用域上注册一个处理回调函数, 当相关的 effect 作用域停止时会调用注册的回调函数
+
+```javascript
+import { onScopeDispose } from 'vue';
+
+onScopeDispose(() => {
+  console.log('活跃的 effect 作用域被停止...');
+});
+```
 
 ### 生命周期钩子
 
