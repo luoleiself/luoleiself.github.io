@@ -1915,24 +1915,31 @@ export default {
 
 ```html
 <template>
+  <!-- 带参数 -->
   <my-component :title.sync="pageTitle" />
   <!-- 替换为 -->
-  <my-component v-model:title="pageTitle" />
+  <my-component :title="pageTitle" @update:title="pageTile = $event" />
+</template>
+<script setup>
+  const props = defineProps({ title: String });
+  const emit = defineEmits(['update:title']);
 
-  <!-- 未带参数的 v-model -->
+  const changePageTitle = function (title) {
+    emit('update:title', title);
+  };
+</script>
+
+<template>
+  <!-- 未带参数替换为 v-model -->
   <ChildComponent v-model="pageTitle" />
 </template>
-<script>
-  export default {
-    props: {
-      modelValue: String, // 以前是`value：String`
-    },
-    emits: ['update:modelValue'],
-    methods: {
-      changePageTitle(title) {
-        this.$emit('update:modelValue', title); // 以前是 `this.$emit('input', title)`
-      },
-    },
+<script setup>
+  // 以前是`value: String`
+  const props = defineProps({ modelValue: String });
+  const emit = defineEmits(['update:modelValue']);
+
+  const changePageTitle = function (title) {
+    emit('update:modelValue', title); // 以前是 `this.$emit('input', title)`
   };
 </script>
 ```
