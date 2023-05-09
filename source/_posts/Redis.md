@@ -52,7 +52,7 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - CONFIG GET parameter [parameter...] 获取指定配置项的值
 - CONFIG HELP 显示 CONFIG 命令的帮助信息
 - CONFIG RESETSTAT 重置 INFO 返回的统计信息, ok 成功
-- CONFIG REWRITE 使用内存配置重写配置文件
+- CONFIG REWRITE 将内存中的配置项重写到配置文件中
 - CONFIG SET parameter value [parameter value ...] 设置配置项
 
 ### Keys 命令
@@ -90,11 +90,13 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 
 - MONITOR 启动监听模式输出服务器执行的每条命令
 
+- clear 清空屏幕
+
 #### 操作 key
 
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
 - EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
-- KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array)
+- KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array), `KEYS *` 返回所有 key
 - SCAN cursor [MATCH pattern] [COUNT count] [TYPE type] 查找给定模式(pattern)的 key, 返回列表和上次遍历时的游标
 - DEL key [key...] 阻塞删除 key 并返回成功删除 key 的数量
 - UNLINK key [key ...] 非阻塞从键空间中取消键指定 key 的链接(在其他线程中执行实际的内存回收), 并返回成功取消 key 的数量, 如果 key 不存在则忽略
@@ -369,34 +371,6 @@ save <seconds> <changes> [<seconds> <changes> ...]
 
 ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis 客户端在访问 Redis 服务器时, 能够执行的命令和能够获取的 key, 提高操作安全性, 避免对数据造成损坏
 
-#### 规则分类
-
-|         参数         | 说明                                                                                    |
-| :------------------: | --------------------------------------------------------------------------------------- |
-|          on          | 表示启动该用户, 默认为 off                                                              |
-|        nopass        | 删除所有与用户关联的密码                                                                |
-|        reset         | 移除用户的所有功能, 并关闭用户                                                          |
-|      +[command]      | 将命令添加到用户可以调用的命令列表中                                                    |
-|      -[command]      | 将命令从用户可以调用的命令列表中移除                                                    |
-|  +[command]\|subcmd  | 允许使用已禁用命令的特定子命令                                                          |
-|     +@[category]     | 允许用户调用 category 类别中的所有命令, 可以使用 `ACL CAT` 命令查看所有类别             |
-|     -@[category]     | 禁止用户调用 category 类别中的所有命令                                                  |
-|     allcommands      | +@all 的别名                                                                            |
-|      nocommands      | -@all 的别名                                                                            |
-|     ~\<pattern\>     | 允许用户可以访问的 key(正则匹配), 例如: ~foo:\* 只允许访问 foo:\* 的 key                |
-|    %R~\<pattern\>    | 添加指定的只读 key(正则匹配), 例如: %R~app:\* 只允许读 app:\* 的 key, 7.0 支持          |
-|    %W~\<pattern\>    | 添加指定的只写 key(正则匹配), 例如: %W~app:\* 只允许写 app:\* 的 key, 7.0 支持          |
-|   %RW~\<pattern\>    | 添加指定的可读可写的 key(正则匹配), 例如: %RW~app:\* 只允许读写 app:\* 的 key, 7.0 支持 |
-|       allkeys        | ~\* 的别名                                                                              |
-|      resetkeys       | 移除所有的 key 匹配模式                                                                 |
-|     &\<pattern\>     | 允许用户可使用的 Pub/Sub 通道(正则匹配)                                                 |
-|     allchannels      | &\* 的别名                                                                              |
-|    resetchannels     | 移除所有的通道匹配模式                                                                  |
-|    \>\<password\>    | 为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: >123456                           |
-|    \<\<password\>    | 从有效密码列表中删除密码                                                                |
-| #\<hashedpassword\>  | 为用户添加 hash 密码, 例如: #cab3...c4f2                                                |
-| \!\<hashedpassword\> | 从有效密码列表中删除密码                                                                |
-
 - ACL HELP 显示 ACL 的帮助信息
 
 ```shell
@@ -432,8 +406,69 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 29)     Prints this help.
 ```
 
+#### 规则分类
+
+|         参数         | 说明                                                                                    |
+| :------------------: | --------------------------------------------------------------------------------------- |
+|          on          | 表示启动该用户, 默认为 off                                                              |
+|        nopass        | 删除所有与用户关联的密码                                                                |
+|        reset         | 移除用户的所有功能, 并关闭用户                                                          |
+|      +[command]      | 将命令添加到用户可以调用的命令列表中                                                    |
+|      -[command]      | 将命令从用户可以调用的命令列表中移除                                                    |
+|  +[command]\|subcmd  | 允许使用已禁用命令的特定子命令                                                          |
+|     +@[category]     | 允许用户调用 category 类别中的所有命令, 可以使用 `ACL CAT` 命令查看所有类别             |
+|     -@[category]     | 禁止用户调用 category 类别中的所有命令                                                  |
+|     allcommands      | +@all 的别名                                                                            |
+|      nocommands      | -@all 的别名                                                                            |
+|     ~\<pattern\>     | 允许用户可以访问的 key(正则匹配), 例如: ~foo:\* 只允许访问 foo:\* 的 key                |
+|    %R~\<pattern\>    | 添加指定的只读 key(正则匹配), 例如: %R~app:\* 只允许读 app:\* 的 key, 7.0 支持          |
+|    %W~\<pattern\>    | 添加指定的只写 key(正则匹配), 例如: %W~app:\* 只允许写 app:\* 的 key, 7.0 支持          |
+|   %RW~\<pattern\>    | 添加指定的可读可写的 key(正则匹配), 例如: %RW~app:\* 只允许读写 app:\* 的 key, 7.0 支持 |
+|       allkeys        | ~\* 的别名                                                                              |
+|      resetkeys       | 移除所有的 key 匹配模式                                                                 |
+|     &\<pattern\>     | 允许用户可使用的 Pub/Sub 通道(正则匹配)                                                 |
+|     allchannels      | &\* 的别名                                                                              |
+|    resetchannels     | 移除所有的通道匹配模式                                                                  |
+|    \>\<password\>    | 为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: >123456                           |
+|    \<\<password\>    | 从有效密码列表中删除密码                                                                |
+| #\<hashedpassword\>  | 为用户添加 hash 密码, 例如: #cab3...c4f2                                                |
+| \!\<hashedpassword\> | 从有效密码列表中删除密码                                                                |
+
+- ACL CAT 显示 Redis 的所有分类
+
+```shell
+127.0.0.1:6379> ACL CAT
+ 1) "keyspace"
+ 2) "read"
+ 3) "write"
+ 4) "set"
+ 5) "sortedset"
+ 6) "list"
+ 7) "hash"
+ 8) "string"
+ 9) "bitmap"
+10) "hyperloglog"
+11) "geo"
+12) "stream"
+13) "pubsub"
+14) "admin"
+15) "fast"
+16) "slow"
+17) "blocking"
+18) "dangerous"
+19) "connection"
+20) "transaction"
+21) "scripting"
+```
+
 - ACL USERS 列出所有已配置用户名
 - ACL WHOAMI 返回当前连接服务器的用户名, 默认 default
+
+```shell
+127.0.0.1:6379> ACL WHOAMI
+"default"
+```
+
 - ACL SAVE 将 ACLs 配置项从内存保存到 ACL 文件中
 
 - ACL DELUSER [username...] 删除指定的 ACL 用户, default 用户不能被删除
@@ -475,6 +510,9 @@ OK
 10) "&zhang:*"
 11) "selectors"
 12) (empty array)
+# 删除用户的密码
+127.0.0.1:6379> ACL SETUSER zhangsan !8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92
+OK
 ```
 
 - ACL LIST 显示 Redis 服务器当前活动的 ACL 规则
@@ -889,12 +927,12 @@ replicaof <masterip> <masterport>
 # 主服务器认证密码, 如果需要
 masterauth <master-password>
 masteruser <username> # 主服务器用户
-replica-read-only yes # 只读模式, 默认开启
-# 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件
+replica-read-only yes # 只读模式, 默认 yes
+# 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes
 repl-diskless-sync yes
 # 同步延迟, 默认 5 秒
 repl-diskless-sync-delay 5
-# 哨兵模式下被选为主服务器的优先级, 值越小优先级越高
+# 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100
 replica-priority 100
 ```
 

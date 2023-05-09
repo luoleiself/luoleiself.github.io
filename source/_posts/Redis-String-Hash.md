@@ -15,17 +15,62 @@ Strings: 键名: key, 键类型: string, 键值: string
 
 #### 设置值
 
-- SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL] 为 key 设置字符串的值, 执行成功返回 ok
-- SETNX key value 设置指定 key 的值且当 key 不存在时, 1 成功, 0 失败
+- SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]
 
-- APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 `SET`
+  为 key 设置字符串的值, 执行成功返回 ok
+
+  - NX 仅当 key 不存在时设置
+  - XX 仅当 key 存在时设置
+  - EX 过期时间, 单位秒
+  - PX 过期时间, 单位毫秒
+  - EXAT 过期时间戳, 单位秒
+  - PXAT 过期时间戳, 单位毫秒
+  - KEEPTTL 保留 key 关联的生存时间
+
+- SETNX key value 当 key 不存在时设置指定 key 的值, 1 成功, 0 失败
+
+```shell
+127.0.0.1:6379> KEYS *
+1) "xiaoming"
+2) "name"
+127.0.0.1:6379> SETNX age 18
+(integer) 1
+127.0.0.1:6379> SETNX age 18
+(integer) 0
+127.0.0.1:6379> KEYS *
+1) "xiaoming"
+2) "age"
+3) "name"
+```
+
+- APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 `SET` 并返回追加内容的长度
+
+```shell
+127.0.0.1:6379> APPEND age 1
+(integer) 3
+127.0.0.1:6379> GET age
+"181"
+127.0.0.1:6379> APPEND addr beijing
+(integer) 7
+127.0.0.1:6379> KEYS *
+1) "xiaoming"
+2) "age"
+3) "addr"
+4) "name"
+127.0.0.1:6379> APPEND a hello
+(integer) 5
+127.0.0.1:6379> APPEND b gg
+(integer) 2
+```
 
 ##### 批量设置值
 
 - MSET key value [key value ...] 批量设置 key 的值
 - MSETNX key value [key value ...] 批量设置 key 的值且当所有的 key 不存在时, 1 成功, 0 失败
 
-- SETRANGE key offset value 覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建
+- SETRANGE key offset value
+
+  覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建
 
 ##### 过期时间
 
@@ -36,19 +81,38 @@ Strings: 键名: key, 键类型: string, 键值: string
 
 #### 获取值
 
-- GET key 获取一个 key 的值, 不存在返回 &lt;nil&gt;
+- GET key 获取一个 key 的值, 不存在返回 \<nil\>
 
-- GETSET key value 设置指定 key 的值并返回原来的值, key 不存在返回 &lt;nil&gt;
+- GETSET key value 设置指定 key 的值并返回原来的值, key 不存在返回 \<nil\>
 
-- GETEX key [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|PERSIST] 获取指定 key 的值并设置过期时间, key 不存在返回 &lt;nil&gt;
+```shell
+127.0.0.1:6379> GETSET age 18
+(nil)
+127.0.0.1:6379> KEYS *
+1) "name"
+2) "age"
+```
 
-- GETDEL key 获取指定 key 的值并删除, key 不存在返回 &lt;nil&gt;
+- GETEX key [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|PERSIST]
 
-- STRLEN key 返回指定 key 的长度, key 不存在返回 0
+  获取指定 key 的值并设置过期时间, key 不存在返回 \<nil\>
+
+  - PERSIST 移除 key 关联的生存时间
+
+- GETDEL key 获取指定 key 的值并删除, key 不存在返回 \<nil\>
+
+```shell
+127.0.0.1:6379> GETDEL age
+"18"
+127.0.0.1:6379> KEYS *
+1) "name"
+```
+
+- STRLEN key 返回指定 key 的值的长度, key 不存在返回 0
 
 ##### 批量获取值
 
-- MGET key [key ...] 批量获取 key 的值, key 不存在返回 &lt;nil&gt;
+- MGET key [key ...] 批量获取 key 的值, key 不存在返回 \<nil\>
 
 - GETRANGE key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 `""`
   - start, end 只支持整数, 其他类型会报错
@@ -117,8 +181,8 @@ OK
 
 - HSETNX key field value 将键值对存入到哈希表中且当指定 field 不存在时, 1 成功, 0 失败(字段已存在)
 
-- HGET key field 获取哈希表指定 field 的值, field 或者 哈希表不存在返回 &lt;nil&gt;
-- HMGET key field [field ...] 批量获取哈希表中指定 field 的值, 哈希表或者指定字段不存在返回 &lt;nil&gt;
+- HGET key field 获取哈希表指定 field 的值, field 或者 哈希表不存在返回 \<nil\>
+- HMGET key field [field ...] 批量获取哈希表中指定 field 的值, 哈希表或者指定字段不存在返回 \<nil\>
 - HGETALL key 获取哈希表中所有的字段和值, 未找到或者哈希表不存在返回 (empty array)
 
 #### 获取哈希表的键、值、长度
@@ -151,7 +215,7 @@ OK
 
 #### 获取哈希表随机字段
 
-- HRANDFIELD key [count [WITHVALUES]] 从哈希表中获取一个或多个随机字段, 哈希表为空返回 &lt;nil&gt;
+- HRANDFIELD key [count [WITHVALUES]] 从哈希表中获取一个或多个随机字段, 哈希表为空返回 \<nil\>
   - count 指定返回随机的字段的数量, 默认为 1
   - WITHVALUES 指定返回随机的字段和值
 
