@@ -819,7 +819,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-07 19:35:02" itemprop="dateModified" datetime="2023-02-07T19:35:02+08:00">2023-02-07</time>
+                <time title="修改时间：2023-05-09 18:53:19" itemprop="dateModified" datetime="2023-05-09T18:53:19+08:00">2023-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -840,7 +840,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>4k</span>
+              <span>4.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -861,19 +861,35 @@
           <h3 id="Strings-命令"><a href="#Strings-命令" class="headerlink" title="Strings 命令"></a>Strings 命令</h3><p>字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.</p>
 <p>Strings: 键名: key, 键类型: string, 键值: string</p>
 <h4 id="设置值"><a href="#设置值" class="headerlink" title="设置值"></a>设置值</h4><ul>
-<li><p>SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL] 为 key 设置字符串的值, 执行成功返回 ok</p>
+<li><p>SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]</p>
+<p>为 key 设置字符串的值, 执行成功返回 ok</p>
+<ul>
+<li>NX 仅当 key 不存在时设置</li>
+<li>XX 仅当 key 存在时设置</li>
+<li>EX 过期时间, 单位秒</li>
+<li>PX 过期时间, 单位毫秒</li>
+<li>EXAT 过期时间戳, 单位秒</li>
+<li>PXAT 过期时间戳, 单位毫秒</li>
+<li>KEEPTTL 保留 key 关联的生存时间</li>
+</ul>
 </li>
-<li><p>SETNX key value 设置指定 key 的值且当 key 不存在时, 1 成功, 0 失败</p>
-</li>
-<li><p>APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 <code>SET</code></p>
+<li><p>SETNX key value 当 key 不存在时设置指定 key 的值, 1 成功, 0 失败</p>
 </li>
 </ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;xiaoming&quot;</span><br><span class="line">2) &quot;name&quot;</span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;xiaoming&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;name&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 <code>SET</code> 并返回追加内容的长度</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; APPEND age 1</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; GET age</span><br><span class="line">&quot;181&quot;</span><br><span class="line">127.0.0.1:6379&gt; APPEND addr beijing</span><br><span class="line">(integer) 7</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;xiaoming&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;addr&quot;</span><br><span class="line">4) &quot;name&quot;</span><br><span class="line">127.0.0.1:6379&gt; APPEND a hello</span><br><span class="line">(integer) 5</span><br><span class="line">127.0.0.1:6379&gt; APPEND b gg</span><br><span class="line">(integer) 2</span><br></pre></td></tr></table></figure>
+
 <h5 id="批量设置值"><a href="#批量设置值" class="headerlink" title="批量设置值"></a>批量设置值</h5><ul>
 <li><p>MSET key value [key value …] 批量设置 key 的值</p>
 </li>
 <li><p>MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 1 成功, 0 失败</p>
 </li>
-<li><p>SETRANGE key offset value 覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建</p>
+<li><p>SETRANGE key offset value</p>
+<p>覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建</p>
 </li>
 </ul>
 <h5 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h5><ul>
@@ -1155,7 +1171,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-17 19:56:53" itemprop="dateModified" datetime="2023-04-17T19:56:53+08:00">2023-04-17</time>
+                <time title="修改时间：2023-05-09 18:21:02" itemprop="dateModified" datetime="2023-05-09T18:21:02+08:00">2023-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1182,7 +1198,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>35 分钟</span>
+              <span>36 分钟</span>
             </span>
 
         </div>
@@ -1488,12 +1504,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">352k</span>
+    <span title="站点总字数">354k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:20</span>
+    <span title="站点阅读时长">5:22</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

@@ -181,25 +181,41 @@
     <link href="https://luoleiself.github.io/2022/11/80b3dfc88923/"/>
     <id>https://luoleiself.github.io/2022/11/80b3dfc88923/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2023-02-07T11:35:02.970Z</updated>
+    <updated>2023-05-09T10:53:19.124Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;Strings-命令&quot;&gt;&lt;a href=&quot;#Strings-命令&quot; class=&quot;headerlink&quot; title=&quot;Strings 命令&quot;&gt;&lt;/a&gt;Strings 命令&lt;/h3&gt;&lt;p&gt;字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.&lt;/p&gt;
 &lt;p&gt;Strings: 键名: key, 键类型: string, 键值: string&lt;/p&gt;
 &lt;h4 id=&quot;设置值&quot;&gt;&lt;a href=&quot;#设置值&quot; class=&quot;headerlink&quot; title=&quot;设置值&quot;&gt;&lt;/a&gt;设置值&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL] 为 key 设置字符串的值, 执行成功返回 ok&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]&lt;/p&gt;
+&lt;p&gt;为 key 设置字符串的值, 执行成功返回 ok&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;NX 仅当 key 不存在时设置&lt;/li&gt;
+&lt;li&gt;XX 仅当 key 存在时设置&lt;/li&gt;
+&lt;li&gt;EX 过期时间, 单位秒&lt;/li&gt;
+&lt;li&gt;PX 过期时间, 单位毫秒&lt;/li&gt;
+&lt;li&gt;EXAT 过期时间戳, 单位秒&lt;/li&gt;
+&lt;li&gt;PXAT 过期时间戳, 单位毫秒&lt;/li&gt;
+&lt;li&gt;KEEPTTL 保留 key 关联的生存时间&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SETNX key value 设置指定 key 的值且当 key 不存在时, 1 成功, 0 失败&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 &lt;code&gt;SET&lt;/code&gt;&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;SETNX key value 当 key 不存在时设置指定 key 的值, 1 成功, 0 失败&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &amp;quot;name&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETNX age 18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETNX age 18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &amp;quot;age&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &amp;quot;name&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 &lt;code&gt;SET&lt;/code&gt; 并返回追加内容的长度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND age 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; GET age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;quot;181&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND addr beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &amp;quot;age&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &amp;quot;addr&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &amp;quot;name&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND a hello&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND b gg&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(integer) 2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
 &lt;h5 id=&quot;批量设置值&quot;&gt;&lt;a href=&quot;#批量设置值&quot; class=&quot;headerlink&quot; title=&quot;批量设置值&quot;&gt;&lt;/a&gt;批量设置值&lt;/h5&gt;&lt;ul&gt;
 &lt;li&gt;&lt;p&gt;MSET key value [key value …] 批量设置 key 的值&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p&gt;MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 1 成功, 0 失败&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SETRANGE key offset value 覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;SETRANGE key offset value&lt;/p&gt;
+&lt;p&gt;覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h5 id=&quot;过期时间&quot;&gt;&lt;a href=&quot;#过期时间&quot; class=&quot;headerlink&quot; title=&quot;过期时间&quot;&gt;&lt;/a&gt;过期时间&lt;/h5&gt;&lt;ul&gt;
@@ -289,7 +305,7 @@
     <link href="https://luoleiself.github.io/2022/11/819f95816ecc/"/>
     <id>https://luoleiself.github.io/2022/11/819f95816ecc/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2023-04-17T11:56:53.359Z</updated>
+    <updated>2023-05-09T10:21:02.900Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;Redis&quot;&gt;&lt;a href=&quot;#Redis&quot; class=&quot;headerlink&quot; title=&quot;Redis&quot;&gt;&lt;/a&gt;Redis&lt;/h3&gt;&lt;p&gt;Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API&lt;br&gt;Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能&lt;/p&gt;
