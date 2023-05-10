@@ -168,8 +168,9 @@ Hashes: 键名: key, 键类型: hash, 键值: string {field => value}
 - HSET key field value [field value ...] 同时将多个键值对存入到哈希表中并返回新添加的数量, 如果 field 已存在则修改 field 的值
 
 ```shell
+# 成功添加一个 field 并修改已存在的 field
 127.0.0.1:6379> HSET runoob name "new-redis" age 19 addr "beijing" sex "男"
-(integer) 3 # 成功添加一个 field 并修改已存在的 field
+(integer) 3
 ```
 
 - HMSET key field value [field value ...] 批量向哈希表中存入多个键值对, 如果 field 存在则修改 field 的值, 执行成功返回 ok
@@ -185,12 +186,47 @@ OK
 - HMGET key field [field ...] 批量获取哈希表中指定 field 的值, 哈希表或者指定字段不存在返回 \<nil\>
 - HGETALL key 获取哈希表中所有的字段和值, 未找到或者哈希表不存在返回 (empty array)
 
+```shell
+127.0.0.1:6379> HGET xiaoming name
+"xiaoming"
+127.0.0.1:6379> HMGET xiaoming name age addr
+1) "xiaoming"
+2) "1"
+3) "beijing"
+127.0.0.1:6379> HGETALL xiaoming
+1) "name"
+2) "xiaoming"
+3) "age"
+4) "1"
+5) "addr"
+6) "beijing"
+```
+
 #### 获取哈希表的键、值、长度
 
 - HLEN key 获取哈希表中字段的数量, 0 表示哈希表为空或者不存在
 - HSTRLEN key field 返回哈希表中指定 field 的值的字符串长度, 哈希表或者指定字段不存在返回 0
+
+```shell
+127.0.0.1:6379> HLEN xiaoming
+(integer) 3
+127.0.0.1:6379> HSTRLEN xiaoming name
+(integer) 8
+```
+
 - HKEYS key 获取哈希表中所有的字段, 哈希表为空或者不存在返回 (empty array)
 - HVALS key 获取哈希表中所有的值, 哈希表为空或者不存在返回 (empty array)
+
+```shell
+127.0.0.1:6379> HKEYS xiaoming
+1) "name"
+2) "age"
+3) "addr"
+127.0.0.1:6379> HVALS xiaoming
+1) "xiaoming"
+2) "1"
+3) "beijing"
+```
 
 #### 哈希表字段数值操作
 

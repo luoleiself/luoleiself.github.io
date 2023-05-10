@@ -47,6 +47,8 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - redis-check-aof 检查 aof 备份文件
 - redis-check-rdb 检查 rdb 备份文件
 
+- redis-cli --user \<username\> --pass \<password\> 使用用户名密码连接 redis
+
 ### CONFIG 命令
 
 - CONFIG GET parameter [parameter...] 获取指定配置项的值
@@ -97,20 +99,56 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
 - EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
 - KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array), `KEYS *` 返回所有 key
-- SCAN cursor [MATCH pattern] [COUNT count] [TYPE type] 查找给定模式(pattern)的 key, 返回列表和上次遍历时的游标
 - DEL key [key...] 阻塞删除 key 并返回成功删除 key 的数量
 - UNLINK key [key ...] 非阻塞从键空间中取消键指定 key 的链接(在其他线程中执行实际的内存回收), 并返回成功取消 key 的数量, 如果 key 不存在则忽略
 
 - RENAME key newKey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在则覆盖
 - RENAMENX key newkey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在不执行任何操作返回 0, 否则返回 1
 
-- SORT key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE destination] 对 list、set、zset 集合中的元素进行排序, 默认是按照数字或者元素的双精度浮点数去比较
-
 - MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中
 
 - DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;
 
 - TOUCH key [key ...] 更改指定 key 的最后一次访问时间并返回修改成功的数量, 如果 key 不存在则忽略
+- SORT key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE destination]
+
+  对 list、set、zset 集合中的元素进行排序, 默认是按照数字或者元素的双精度浮点数去比较
+
+- SCAN cursor [MATCH pattern] [COUNT count] [TYPE type] 查找给定模式(pattern)的 key, 返回列表和上次遍历时的游标
+  - COUNT 控制匹配结果的数量, 默认为 10
+  - TYPE 过滤匹配结果中的类型, 可取值 string, list, set 等 redis 支持的数据类型
+
+```shell
+127.0.0.1:6379> KEYS *
+1) "age"
+2) "name"
+3) "bit:zhang"
+4) "xiaoming"
+127.0.0.1:6379> SCAN 0 COUNT 10
+1) "0"
+2) 1) "age"
+   2) "bit:zhang"
+   3) "name"
+   4) "xiaoming"
+127.0.0.1:6379> SCAN 0 MATCH *n*
+1) "0"
+2) 1) "bit:zhang"
+   2) "name"
+   3) "xiaoming"
+127.0.0.1:6379> SCAN 0 MATCH *n* COUNT 2
+1) "1"
+2) 1) "bit:zhang"
+127.0.0.1:6379> SCAN 0 MATCH *n* TYPE list
+1) "0"
+2) (empty array)
+127.0.0.1:6379> SCAN 0 MATCH *n* TYPE string
+1) "0"
+2) 1) "bit:zhang"
+   2) "name"
+127.0.0.1:6379> SCAN 0 MATCH *n* TYPE hash
+1) "0"
+2) 1) "xiaoming"
+```
 
 #### 副本
 
@@ -137,6 +175,15 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 
   - \-2 key 不存在
   - \-1 key 存在但没有设置剩余生存时间
+
+```shell
+127.0.0.1:6379> TTL age
+(integer) -1
+127.0.0.1:6379> EXPIRE age 30
+(integer) 1
+127.0.0.1:6379> TTL age
+(integer) 23
+```
 
 - PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间
 
@@ -699,13 +746,11 @@ OK
 - EVAL script numkeys key [key ...] arg [arg ...] 执行 Lua 脚本
   - script 要执行的脚本语句
   - numkeys 指定后续的参数有几个 key
-  - key 要操作的键, 在 Lua 脚本中通过 KEYS[1], KEYS[2] 获取
-  - arg 参数, 在 Lua 脚本中通过 ARGV[1], ARGV[2] 获取
-- EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行 Lua 脚本
+  - key 要操作的键的数量, 在 Lua 脚本中通过 `KEYS[1]`, `KEYS[2]` 获取
+  - arg 参数, 在 Lua 脚本中通过 `ARGV[1]`, `ARGV[2]` 获取
 - SCRIPT EXISTS script [script ...] 查看指定的脚本是否已经被保存在缓存中
 - SCRIPT FLUSH 从脚本缓存中移除所有脚本
 - SCRIPT KILL 杀死系统当前正在运行的 Lua 脚本
-- SCRIPT LOAD script 将脚本 script 添加到脚本缓存中, 但并不立即执行这个脚本
 
 ```shell
 127.0.0.1:6379> EVAL "return 10" 0
@@ -715,21 +760,29 @@ OK
 127.0.0.1:6379> EVAL "return {ARGV[1], ARGV[2]}" 0 100 101
 1) "100"
 2) "101"
-127.0.0.1:6379> EVAL "return {KEYS[1], KEYS[2], ARGV[1], ARGV[2]}" 2 key1 key2 first second
-1) "key1"
-2) "key2"
-3) "first"
-4) "second"
+127.0.0.1:6379> EVAL "return {KEYS[1], KEYS[2], ARGV[1], ARGV[2], ARGV[3]}" 2 name age v1 v2
+1) "name"
+2) "age"
+3) "v1"
+4) "v2"
 127.0.0.1:6379> EVAL "return {1, 2, { 3, 'hello world' } }" 0
 1) (integer) 1
 2) (integer) 2
 3) 1) (integer) 3
    2) "hello world"
+```
 
+- SCRIPT LOAD script 将脚本 script 添加到脚本缓存中, 但并不立即执行这个脚本
+
+```shell
 # 添加 Lua 缓存脚本
 127.0.0.1:6379> SCRIPT LOAD "return redis.call('GET', 'name')"
 "948239fda87f9ddfa987fda97dfs8fsd8d7s8"
+```
 
+- EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行 Lua 脚本
+
+```shell
 # 使用 sha 执行脚本
 127.0.0.1:6379> EVALSHA 948239fda87f9ddfa987fda97dfs8fsd8d7s8 0
 "hello world"
