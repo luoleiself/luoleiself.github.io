@@ -48,6 +48,9 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - redis-check-rdb 检查 rdb 备份文件
 
 - redis-cli --user \<username\> --pass \<password\> 使用用户名密码连接 redis
+  - \-x 从标准输入中读取最后一个参数
+  - \-\-eval \<file\> 使用 EVAL 命令解析 lua 脚本
+  - \-\-function-rdb \<filename\> 从现有服务器中提取函数(不包含 key)
 
 ### CONFIG 命令
 
@@ -584,6 +587,284 @@ OK
 OK
 ```
 
+### Redis 编程
+
+#### Redis 函数
+
+> Redis 7 以上支持
+
+Redis 函数是临时脚本的进化步骤, 函数提供与脚本相同的核心功能但却是数据库的一流软件工件
+
+Redis 将函数作为数据库的一个组成部分进行管理, 并通过数据持久化和复制确保它们的可用性. 由于函数是数据库的一部分, 因此在使用前声明, 因此应用程序不需要在运行时加载它们, 也不必冒事务中止的风险. 使用函数的应用程序仅依赖于它们的 API, 而不依赖于数据库中的嵌入式脚本逻辑
+
+Redis 函数可以将 Lua 的所有可用功能用于临时脚本, 唯一例外的是 Redis Lua 脚本调试器
+
+Redis 函数还通过启用代码共享来简化开发, 每个函数都属于一个库, 任何给定的库都可以包含多个函数, 库的内容是不可变的, 并且不允许对其功能进行选择性更新. 取而代之的是, 库作为一个整体进行更新, 在一个操作中将它们的所有功能一起更新. 这允许从同一库中的其他函数调用函数, 或者通过使用库内部方法中的公共代码在函数之间共享代码, 这些函数也可以采用语言本机参数
+
+Redis 函数也被持久化到 AOF 文件中, 并从主服务器复制到副本服务器, 因此它们与数据一样可以持久化
+
+Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所有服务器活动, 类似于事务的语义, 已执行函数的阻塞语义始终适用于所有连接的客户端, 因为运行一个函数会阻塞 Redis 服务器
+
+##### 函数命令
+
+- FUNCTION help 显示 FUNCTION 的帮助信息
+
+```shell
+127.0.0.1:6379> FUNCTION help
+ 1) FUNCTION <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
+ 2) LOAD [REPLACE] <FUNCTION CODE>
+ 3)     Create a new library with the given library name and code.
+ 4) DELETE <LIBRARY NAME>
+ 5)     Delete the given library.
+ 6) LIST [LIBRARYNAME PATTERN] [WITHCODE]
+ 7)     Return general information on all the libraries:
+ 8)     * Library name
+ 9)     * The engine used to run the Library
+10)     * Library description
+11)     * Functions list
+12)     * Library code (if WITHCODE is given)
+13)     It also possible to get only function that matches a pattern using LIBRARYNAME argument.
+14) STATS
+15)     Return information about the current function running:
+16)     * Function name
+17)     * Command used to run the function
+18)     * Duration in MS that the function is running
+19)     If no function is running, return nil
+20)     In addition, returns a list of available engines.
+21) KILL
+22)     Kill the current running function.
+23) FLUSH [ASYNC|SYNC]
+24)     Delete all the libraries.
+25)     When called without the optional mode argument, the behavior is determined by the
+26)     lazyfree-lazy-user-flush configuration directive. Valid modes are:
+27)     * ASYNC: Asynchronously flush the libraries.
+28)     * SYNC: Synchronously flush the libraries.
+29) DUMP
+30)     Return a serialized payload representing the current libraries, can be restored using FUNCTION RESTORE command
+31) RESTORE <PAYLOAD> [FLUSH|APPEND|REPLACE]
+32)     Restore the libraries represented by the given payload, it is possible to give a restore policy to
+33)     control how to handle existing libraries (default APPEND):
+34)     * FLUSH: delete all existing libraries.
+35)     * APPEND: appends the restored libraries to the existing libraries. On collision, abort.
+36)     * REPLACE: appends the restored libraries to the existing libraries, On collision, replace the old
+37)       libraries with the new libraries (notice that even on this option there is a chance of failure
+38)       in case of functions name collision with another library).
+39) HELP
+40)     Prints this help.
+```
+
+- FUNCTION LIST 查看所有库和函数
+
+```shell
+127.0.0.1:6379> FUNCTION LIST
+1) 1) "library_name"
+   2) "mylib"
+   3) "engine"
+   4) "LUA"
+   5) "functions"
+   6) 1) 1) "name"
+         2) "knockknock"
+         3) "description"
+         4) (nil)
+         5) "flags"
+         6) (empty array)
+```
+
+##### 加载库和函数
+
+每个 Redis 函数都属于一个加载到 Redis 的库, 使用命令 `FUNCTION LOAD` 将库加载到数据库, 库必须以 shebang 语句开头 `#!<engine name> name=<library name>`
+
+```shell
+# 加载一个空库
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\n"
+(error) ERR No functions registered
+```
+
+##### 函数注册调用
+
+- `redis.register_function()` 注册函数
+- `FCALL function numkeys [key [key ...]] [arg [arg ...]]` 调用注册的函数
+- `FCALL_RO function numkeys [key [key ...]] [arg [arg ...]]` 调用注册的只读函数
+
+```lua
+#!lua name=mylib
+--[[redis.register_function(
+   'knockknock',
+   function() return 'Who\'s there?' end
+)]]
+local function knockknock()
+   return 'Who\'s there?'
+end
+
+local function my_hset(keys, args)
+   local key = keys[1]
+   -- 调用 redis 命令 TIME 获取当前时间戳
+   local time = redis.call('TIME')[1]
+   return redis.call('HSET',key, '_last_modified_', time, unpack(args))
+end
+
+local function my_hgetall(keys, args)
+   -- 使用 resp3 协议进行请求应答
+   redis.setresp(3)
+   local key = keys[1]
+   local res = redis.call('HGETALL', key)
+   res['map']['_last_modified_'] = nil
+   return res
+end
+
+redis.register_function('knockknock', knockknock)
+redis.register_function('my_hset', my_hset)
+redis.register_function('my_hgetall', my_hgetall)
+
+-- 注册 FCALL_RO 执行的函数
+redis.register_function{
+   function_name='my_hgetall_ro',
+   callback=my_hgetall,
+   flags={'no-writes'}
+}
+```
+
+```shell
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nredis.register_function('knockknock', function() return 'Who\\'s there?' end)"
+"mylib"
+127.0.0.1:6379> FCALL knockknock 0
+"Who's there?"
+[root@centos7 workspace]# cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
+"mylib"
+127.0.0.1:6379> FCALL my_hset 1 hash:zhang name "zhangsan" age 18 addr "beijing"
+(integer) 4
+127.0.0.1:6379> KEYS *
+1) "hash:zhang"
+2) "bit:zhang"
+3) "xiaoming"
+4) "name"
+
+127.0.0.1:6379> FCALL my_hgetall 1 hash:zhang
+1) "age"
+2) "18"
+3) "addr"
+4) "beijing"
+5) "name"
+6) "zhangsan"
+127.0.0.1:6379> FCALL my_hgetall_ro 1 hash:zhang
+1) "age"
+2) "18"
+3) "addr"
+4) "beijing"
+5) "name"
+6) "zhangsan"
+127.0.0.1:6379> FCALL_RO my_hgetall 1 hash:zhang
+(error) ERR Can not execute a script with write flag using *_ro command.
+127.0.0.1:6379> FCALL_RO my_hgetall_ro 1 hash:zhang
+1) "age"
+2) "18"
+3) "addr"
+4) "beijing"
+5) "name"
+6) "zhangsan"
+```
+
+#### Lua 中调用 Redis 命令
+
+- `redis.call(command [, arg...])` 执行一个 redis 命令并返回结果
+- `redis.pcall(command [, arg...])` 行为与 `redis.call()` 命令相同, 并且能用于处理 redis 服务器引发的运行时错误
+
+```shell
+127.0.0.1:6379> SET name 'hello world'
+OK
+127.0.0.1:6379> GET name
+"hello world"
+127.0.0.1:6379> EVAL "return redis.call('GET', KEYS[1])" 1 name
+"hello world"
+127.0.0.1:6379> EVAL "return redis.call('GET', 'name')" 0
+"hello world"
+```
+
+- `redis.error_reply(x)` 辅助函数, 返回一个错误信息
+- `redis.status_reply(x)` 辅助函数, 可以修改 Redis 命令的默认返回值 OK
+
+```shell
+# 返回错误信息
+127.0.0.1:6379> EVAL "return redis.error_reply('ERR This is a special error')" 0
+(error) ERR This is a special error
+
+# 修改默认返回值
+127.0.0.1:6379> EVAL "return { ok = 'TICK' }" 0
+"TICK"
+127.0.0.1:6379> EVAL "return redis.status_reply('TOCK')" 0
+"TOCK"
+```
+
+- `redis.sha1hex(x)` 返回字符串参数的 SHA1 摘要信息
+- `redis.log(level, message)` 写入 Redis 日志
+
+```shell
+127.0.0.1:6379> EVAL "return redis.sha1hex('')" 0
+"da39a3ee5e6b40d3255bfef95601890afd80709"
+```
+
+- `bit.tobit(x)` 将数字格式化为位运算的数值范围并返回
+- `bit.tohex(x [, n])` 将第一个参数转换为十六进制并返回, 第二个参数的绝对值控制返回值的数量
+- `bit.bnot(x), bit.bor(x1 [, x2...]), bit.band(x1 [, x2...]), bit.bxor(x1 [, x2...])` 返回参数的按位运算
+
+```shell
+127.0.0.1:6379> EVAL "return bit.tobit(1)" 0
+(integer) 1
+
+127.0.0.1:6379> EVAL "return bit.tohex(422342)" 0
+"000671cd"
+
+127.0.0.1:6379> EVAL "return bit.bor(1,2,4,8,16,32,64,255)" 0
+(integer) 255
+```
+
+#### 执行脚本
+
+- EVAL script numkeys key [key ...] arg [arg ...] 执行 Lua 脚本
+  - script 要执行的脚本语句
+  - numkeys 指定后续的参数有几个 key
+  - key 要操作的键的数量, 在 Lua 脚本中通过 `KEYS[1]`, `KEYS[2]` 获取
+  - arg 参数, 在 Lua 脚本中通过 `ARGV[1]`, `ARGV[2]` 获取
+- SCRIPT EXISTS script [script ...] 查看指定的脚本是否已经被保存在缓存中
+- SCRIPT FLUSH 从脚本缓存中移除所有脚本
+- SCRIPT KILL 杀死系统当前正在运行的 Lua 脚本
+
+```shell
+127.0.0.1:6379> EVAL "return 10" 0
+(integer) 10
+127.0.0.1:6379> EVAL "return ARGV[1]" 0 100
+"100"
+127.0.0.1:6379> EVAL "return {ARGV[1], ARGV[2]}" 0 100 101
+1) "100"
+2) "101"
+127.0.0.1:6379> EVAL "return {KEYS[1], KEYS[2], ARGV[1], ARGV[2], ARGV[3]}" 2 name age v1 v2
+1) "name"
+2) "age"
+3) "v1"
+4) "v2"
+127.0.0.1:6379> EVAL "return {1, 2, { 3, 'hello world' } }" 0
+1) (integer) 1
+2) (integer) 2
+3) 1) (integer) 3
+   2) "hello world"
+```
+
+- SCRIPT LOAD script 将脚本 script 添加到脚本缓存中, 但并不立即执行这个脚本
+
+```shell
+# 添加 Lua 缓存脚本
+127.0.0.1:6379> SCRIPT LOAD "return redis.call('GET', 'name')"
+"948239fda87f9ddfa987fda97dfs8fsd8d7s8"
+```
+
+- EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行 Lua 脚本
+
+```shell
+# 使用 sha 执行脚本
+127.0.0.1:6379> EVALSHA 948239fda87f9ddfa987fda97dfs8fsd8d7s8 0
+"hello world"
+```
+
 ### 事务
 
 === Redis 单条命令是保证原子性的, 但是 Redis 事务不保证原子性 ===
@@ -683,109 +964,6 @@ QUEUED
 4) "key2"
 127.0.0.1:6379> get key2
 "key2"
-```
-
-#### Redis-Lua
-
-##### Lua 中调用 Redis 命令
-
-- `redis.call(command [, arg...])` 执行一个 redis 命令并返回结果
-- `redis.pcall(command [, arg...])` 行为与 `redis.call()` 命令相同, 并且能用于处理 redis 服务器引发的运行时错误
-
-```shell
-127.0.0.1:6379> SET name 'hello world'
-OK
-127.0.0.1:6379> GET name
-"hello world"
-127.0.0.1:6379> EVAL "return redis.call('GET', KEYS[1])" 1 name
-"hello world"
-127.0.0.1:6379> EVAL "return redis.call('GET', 'name')" 0
-"hello world"
-```
-
-- `redis.error_reply(x)` 辅助函数, 返回一个错误信息
-- `redis.status_reply(x)` 辅助函数, 可以修改 Redis 命令的默认返回值 OK
-
-```shell
-# 返回错误信息
-127.0.0.1:6379> EVAL "return redis.error_reply('ERR This is a special error')" 0
-(error) ERR This is a special error
-
-# 修改默认返回值
-127.0.0.1:6379> EVAL "return { ok = 'TICK' }" 0
-"TICK"
-127.0.0.1:6379> EVAL "return redis.status_reply('TOCK')" 0
-"TOCK"
-```
-
-- `redis.sha1hex(x)` 返回字符串参数的 SHA1 摘要信息
-- `redis.log(level, message)` 写入 Redis 日志
-
-```shell
-127.0.0.1:6379> EVAL "return redis.sha1hex('')" 0
-"da39a3ee5e6b40d3255bfef95601890afd80709"
-```
-
-- `bit.tobit(x)` 将数字格式化为位运算的数值范围并返回
-- `bit.tohex(x [, n])` 将第一个参数转换为十六进制并返回, 第二个参数的绝对值控制返回值的数量
-- `bit.bnot(x), bit.bor(x1 [, x2...]), bit.band(x1 [, x2...]), bit.bxor(x1 [, x2...])` 返回参数的按位运算
-
-```shell
-127.0.0.1:6379> EVAL "return bit.tobit(1)" 0
-(integer) 1
-
-127.0.0.1:6379> EVAL "return bit.tohex(422342)" 0
-"000671cd"
-
-127.0.0.1:6379> EVAL "return bit.bor(1,2,4,8,16,32,64,255)" 0
-(integer) 255
-```
-
-##### 执行脚本
-
-- EVAL script numkeys key [key ...] arg [arg ...] 执行 Lua 脚本
-  - script 要执行的脚本语句
-  - numkeys 指定后续的参数有几个 key
-  - key 要操作的键的数量, 在 Lua 脚本中通过 `KEYS[1]`, `KEYS[2]` 获取
-  - arg 参数, 在 Lua 脚本中通过 `ARGV[1]`, `ARGV[2]` 获取
-- SCRIPT EXISTS script [script ...] 查看指定的脚本是否已经被保存在缓存中
-- SCRIPT FLUSH 从脚本缓存中移除所有脚本
-- SCRIPT KILL 杀死系统当前正在运行的 Lua 脚本
-
-```shell
-127.0.0.1:6379> EVAL "return 10" 0
-(integer) 10
-127.0.0.1:6379> EVAL "return ARGV[1]" 0 100
-"100"
-127.0.0.1:6379> EVAL "return {ARGV[1], ARGV[2]}" 0 100 101
-1) "100"
-2) "101"
-127.0.0.1:6379> EVAL "return {KEYS[1], KEYS[2], ARGV[1], ARGV[2], ARGV[3]}" 2 name age v1 v2
-1) "name"
-2) "age"
-3) "v1"
-4) "v2"
-127.0.0.1:6379> EVAL "return {1, 2, { 3, 'hello world' } }" 0
-1) (integer) 1
-2) (integer) 2
-3) 1) (integer) 3
-   2) "hello world"
-```
-
-- SCRIPT LOAD script 将脚本 script 添加到脚本缓存中, 但并不立即执行这个脚本
-
-```shell
-# 添加 Lua 缓存脚本
-127.0.0.1:6379> SCRIPT LOAD "return redis.call('GET', 'name')"
-"948239fda87f9ddfa987fda97dfs8fsd8d7s8"
-```
-
-- EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行 Lua 脚本
-
-```shell
-# 使用 sha 执行脚本
-127.0.0.1:6379> EVALSHA 948239fda87f9ddfa987fda97dfs8fsd8d7s8 0
-"hello world"
 ```
 
 ### 持久化
@@ -1131,6 +1309,14 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 - redis-cli \-\-cluster check \<host:port\> # 检查指定节点
 - redis-cli \-\-cluster del-node host:port node_id # 删除集群节点
 - redis-cli \-\-cluster call host:port command arg arg ... arg # 集群节点执行指定命令
+  - \-\-cluster-only-masters 所有主节点
+  - \-\-cluster-only-replicas 所有副本节点
+
+```shell
+#在所有主节点上执行加载的命令
+[root@centos7 workspace]# redis-cli --cluster --cluster-only-masters call host:port FUNCTION LOAD ...
+```
+
 - redis-cli \-\-cluster set-timeout host:port milliseconds # 设置节点的超时时间
 - redis-cli \-\-cluster backup host:port backup_directory # 备份节点数据到指定目录
 
