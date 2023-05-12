@@ -2680,6 +2680,77 @@ import { FooBar as FooBarChild } from './components';
 </script>
 ```
 
+#### definePropsRefs()
+
+> Vue 3.3 支持
+
+#### defineRender()
+
+> Vue 3.3 支持 <em id="vue3.3"></em> <!-- markdownlint-disable-line -->
+
+在 `<script setup>` 中定义一个渲染函数
+
+```html
+<script setup>
+  // JSX passed directly
+  defineRender(
+    <div>
+      <span>hello world</span>
+    </div>
+  );
+
+  // Or using render function
+  defineRender(() => {
+    return (
+      <div>
+        <span>hello world</span>
+      </div>
+    );
+  });
+</script>
+```
+
+#### defineModels()
+
+> Vue 3.3 支持
+
+#### defineSlots()
+
+> Vue 3.3 支持
+
+#### defineOptions()
+
+> Vue 3.3 支持
+
+在 `<script setup>` 中使用选项式 API 的**宏**
+
+```html
+<script setup>
+  import { useSlots } from 'vue';
+
+  defineOptions({
+    name: 'Foo',
+    inheritAttrs: false,
+  });
+
+  const slots = useSlots();
+</script>
+
+<!-- compiled Code -->
+
+<script>
+  export default {
+    name: 'Foo',
+    inheritAttrs: false,
+  };
+</script>
+<script setup>
+  import { useSlots } from 'vue';
+
+  const slots = useSlots();
+</script>
+```
+
 #### useSlots()|useAttrs()
 
 - 在 SFC 中使用的辅助函数获取 slots 和 attrs
