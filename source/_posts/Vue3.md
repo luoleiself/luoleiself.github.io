@@ -2684,6 +2684,21 @@ import { FooBar as FooBarChild } from './components';
 
 > Vue 3.3 支持
 
+在 `<script setup>` 中定义一个不会丢失响应性的解构 props 的响应式对象
+
+```html
+<script setup>
+  // won't lose reactivity with destructuring
+  const {foo, bar} = definePropsRefs<{
+    foo: string,
+    bar: number
+  }>();
+
+  // Ref<string>
+  console.log(foo.value, bar.value);
+</script>
+```
+
 #### defineRender()
 
 > Vue 3.3 支持 <em id="vue3.3"></em> <!-- markdownlint-disable-line -->
@@ -2714,6 +2729,39 @@ import { FooBar as FooBarChild } from './components';
 
 > Vue 3.3 支持
 
+- 只支持泛型类型参数, 不支持运行时参数
+
+```html
+<script setup lang="ts">
+  const { modelValue, count } = defineModels<{
+    modelVale: string,
+    count: number
+  }>();
+
+  console.log(modelValue.value);
+  modelValue.value = 'newValue';
+  count++;
+</script>
+
+<!-- Compiled Code -->
+
+<script setup lang="ts">
+  const { modelValue, count } = defineProps<{
+    modelValue: string,
+    count: number
+  }>();
+
+  const emit = defineEmits<{
+    (evt: 'update:modelValue', value: string): void,
+    (evt: 'update:count', value: number): void
+  }>();
+
+  console.log(modelValue.value);
+  emit('update:modelValue', 'newValue');
+  emit('update:count', count + 1);
+</script>
+```
+
 #### defineSlots()
 
 > Vue 3.3 支持
@@ -2736,7 +2784,7 @@ import { FooBar as FooBarChild } from './components';
   const slots = useSlots();
 </script>
 
-<!-- compiled Code -->
+<!-- Compiled Code -->
 
 <script>
   export default {
