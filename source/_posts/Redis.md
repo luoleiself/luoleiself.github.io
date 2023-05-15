@@ -957,16 +957,185 @@ OK
 (integer) 458757
 ```
 
+#### 数据类型转换
 
+##### RESP2
 
+- RESP2 -> Lua
+  - RESP2 整数 -> Lua 数
+  - RESP2 批量字符串 -> Lua 字符串
+  - RESP2 数组 -> Lua 表(可能嵌套额其他 Redis 数据类型)
+  - RESP2 状态 -> 包含状态字符串的单个 ok 字段的 Lua 表
+  - RESP2 错误 -> 包含错误字符串的单个 err 字段的 Lua 表
+  - RESP 空批量|空多批量 -> Lua false 布尔类型
+- Lua -> RESP2
+  - Lua 数字 -> RESP2 整数(数字转为整数, 舍去小数部分)
+  - Lua 字符串 -> RESP 批量字符串
+  - Lua 表(索引, 非关联数组) -> RESP2 数组(在表中遇到第一个 nil 时截断)
+  - 带有单个 ok 字段的 Lua 表 -> RESP2 状态
+  - 带有单个 err 字段的 Lua 表 -> RESP2 错误
+  - Lua false 布尔类型 -> RESP2 空批量
+  - Lua true 布尔类型 -> RESP2 整数 1
 
+```shell
+127.0.0.1:6379> EVAL "return {1, 2, {3, 'hello world'}, 'bar'}" 0
+1) (integer) 1
+2) (integer) 2
+3) 1) (integer) 3
+   2) "hello world"
+4) "bar"
+# 忽略表中的 键、数值的小数部分，nil 处截断
+127.0.0.1:6379> EVAL "return {1, 2, 3.33, somekey = 'somevalue', 'foo', nil, 'bar'}" 0
+1) (integer) 1
+2) (integer) 2
+3) (integer) 3
+4) "foo"
+```
 
+##### RESP3
 
+> 一旦 Redis 的回复采用 RESP3 协议, 所有 RESP2 到 Lua 的转换规则都适用, 并添加以下内容
 
+- RESP3 -> Lua
+  - RESP3 map -> 带有单个映射字段的 Lua 表, 其中包含表示映射字段和值的 Lua 表
+  - RESP3 set -> 具有单个集合字段的 Lua 表
+  - RESP3 null -> Lua nil
+  - RESP3 true -> Lua true 布尔类型
+  - RESP3 false -> Lua false 布尔类型
+  - RESP3 浮点数 -> 带有一个浮点数字段的 Lua 表
+  - RESP3 大数字 -> 带有单个大数字字段的 Lua 表. Redis 7.0 支持
+  - RESP3 逐句逐字字符串 -> Lua 表, 其中包含单个 verbatim_string 字段的 Lua 表, 其中包含两个字段 string 和 format,分别表示 verbatim string 和它的格式. Redis 7.0 支持
+- Lua -> RESP3
+  - Lua Boolean -> RESP3 Boolean
+  - 将单个映射字段设置为关联 Lua 表的 Lua 表 -> RESP3 map
+  - 将单个集合字段设置为关联 Lua 表的 Lua 表 -> RESP3 set, 值可以为任何值, 都会被丢弃
+  - 带有单个浮点数字段的 Lua 表到关联的 Lua 表 -> RESP3 浮点数
+  - Lua nil -> RESP3 null
 
-- `bit.tobit(x)` 将数字格式化为位运算的数值范围并返回
-- `bit.tohex(x [, n])` 将第一个参数转换为十六进制并返回, 第二个参数的绝对值控制返回值的数量
-- `bit.bnot(x), bit.bor(x1 [, x2...]), bit.band(x1 [, x2...]), bit.bxor(x1 [, x2...])` 返回参数的按位运算
+#### 外部库
+
+##### struct
+
+- struct.pack(x) 返回一个结构编码的字符串, 接收一个结构格式字符串作为第一个参数, 后面是要编码的值
+
+```shell
+127.0.0.1:6379> EVAL "return struct.pack('bb', 1, 2)" 0
+"\x01\x02"
+127.0.0.1:6379> EVAL "return struct.pack('BB', 1, 2)" 0
+"\x01\x02"
+127.0.0.1:6379> EVAL "return struct.pack('B', 1, 2)" 0
+"\x01"
+127.0.0.1:6379> EVAL "return struct.pack('xB', 1, 2)" 0
+"\x00\x01"
+127.0.0.1:6379> EVAL "return struct.pack('xBx', 1, 2)" 0
+"\x00\x01\x00"
+127.0.0.1:6379> EVAL "return struct.pack('xBxx', 1, 2)" 0
+"\x00\x01\x00\x00"
+127.0.0.1:6379> EVAL "return struct.pack('xBxxH', 1, 2)" 0
+"\x00\x01\x00\x00\x02\x00"
+127.0.0.1:6379> EVAL "return struct.pack('BxxH', 1, 2)" 0
+"\x01\x00\x00\x02\x00"
+127.0.0.1:6379> EVAL "return struct.pack('Bxxh', 1, 2)" 0
+"\x01\x00\x00\x02\x00"
+127.0.0.1:6379> EVAL "return struct.pack('BxxB', 1, 2)" 0
+"\x01\x00\x00\x02"
+127.0.0.1:6379> EVAL "return struct.pack('Bxxl', 1, 2)" 0
+"\x01\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00"
+```
+
+- struct.unpack(x) 返回结构的解码值, 接收一个结构格式字符串作为第一个参数, 然后是编码结构的字符串
+
+```shell
+127.0.0.1:6379> EVAL "return {struct.unpack('BxxH', ARGV[1])}" 0 "\x01\x00\x00\x02\x00"
+1) (integer) 1
+2) (integer) 2
+3) (integer) 6
+127.0.0.1:6379> EVAL "return {struct.unpack('BB', ARGV[1])}" 0 "\x01\x02"
+1) (integer) 1
+2) (integer) 2
+3) (integer)
+```
+
+- struct.size(x) 返回结构的大小(以字节为单位), 接收结构格式字符串作为唯一参数
+
+```shell
+127.0.0.1:6379> EVAL "return struct.size('b')" 0
+(integer) 1
+127.0.0.1:6379> EVAL "return struct.size('B')" 0
+(integer) 1
+127.0.0.1:6379> EVAL "return struct.size('h')" 0
+(integer) 2
+127.0.0.1:6379> EVAL "return struct.size('H')" 0
+(integer) 2
+127.0.0.1:6379> EVAL "return struct.size('l')" 0
+(integer) 8
+127.0.0.1:6379> EVAL "return struct.size('L')" 0
+(integer) 8
+```
+
+###### 结构格式
+
+- \> 大端
+- < 小端
+- ![num] 结盟
+- x 填充
+- b/B 有/无符号字节
+- h/H 有/无符号短
+- l/L 有/无符号长
+- T 大小
+- i/In 大小为 n 的有/无符号整数(默认为 int 的大小)
+- cn n 个字符的序列, 打包时, n ==0 表示整个字符串, 解包时, n == 0 表示使用先前读取的数字作为字符串的长度
+- s 零终止字符串
+- f float
+- d double
+- (space) 忽略
+
+##### cjson
+
+cjson 库提供了来自 Lua 的快速 JSON 编码和解码
+
+- cjson.encode(x) 返回作为其参数提供的 Lua 数据类型的 JSON 编码字符串
+- cjson.decode(x) 从作为其参数提供的 JSON 编码字符串返回 Lua 数据类型
+
+```shell
+127.0.0.1:6379> EVAL "return cjson.encode({ 1, 2, 'foo', 'bar' })" 0
+"[1,2,\"foo\",\"bar\"]"
+127.0.0.1:6379> EVAL "return cjson.encode({ 1, 2, 3.33, 'foo', 'bar' })" 0
+"[1,2,3.33,\"foo\",\"bar\"]"
+127.0.0.1:6379> EVAL "return cjson.encode({ ['foo'] = 'bar' })" 0
+"{\"foo\":\"bar\"}"
+127.0.0.1:6379> EVAL "return cjson.encode({ ['foo'] = 'bar', ['fov'] = 'baz' })" 0
+"{\"fov\":\"baz\",\"foo\":\"bar\"}"
+
+127.0.0.1:6379> EVAL "return cjson.decode(ARGV[1])[4]" 0 "[1,2,3.33,\"foo\",\"bar\"]"
+"foo"
+127.0.0.1:6379> EVAL "return cjson.decode(ARGV[1])['fov']" 0 "{\"fov\":\"baz\",\"foo\":\"bar\"}"
+"baz"
+```
+
+##### cmsgpack
+
+cmsgpack 库提供了来自 Lua 的快速 MessagePack 编码和解码
+
+- cmsgpack.pack(x) 返回作为参数给出的 Lua 数据类型的压缩字符串编码
+- cmsgpack.unpack(x) 返回解码其输入字符串参数的解压缩值
+
+```shell
+127.0.0.1:6379> EVAL "return cmsgpack.pack({'foo', 'bar', 'baz', 'hello'})" 0
+"\x94\xa3foo\xa3bar\xa3baz\xa5hello"
+127.0.0.1:6379> EVAL "return cmsgpack.unpack(ARGV[1])" 0 "\x94\xa3foo\xa3bar\xa3baz\xa5hello"
+1) "foo"
+2) "bar"
+3) "baz"
+4) "hello"
+```
+
+##### bit
+
+bit 提供对数字的按位运算
+
+- bit.tobit(x)` 将数字格式化为位运算的数值范围并返回
+- bit.tohex(x [, n]) 将第一个参数转换为十六进制并返回, 第二个参数的绝对值控制返回值的数量
 
 ```shell
 127.0.0.1:6379> EVAL "return bit.tobit(1)" 0
@@ -974,23 +1143,100 @@ OK
 
 127.0.0.1:6379> EVAL "return bit.tohex(422342)" 0
 "000671cd"
-
-127.0.0.1:6379> EVAL "return bit.bor(1,2,4,8,16,32,64,255)" 0
-(integer) 255
 ```
 
-#### 数据类型转换
+- bit.bnot(x) 返回其参数的按位非运算
+- bit.bor(x1 [, x2...]) 返回其所有参数的按位或运算
+- bit.band(x1 [, x2...]) 返回其所有参数的按位与运算
+- bit.bxor(x1 [, x2...]) 返回其所有参数的按位异或运算
 
+```shell
+# 0000 1100 12
+#         !
+# 1111 0011 -13
+127.0.0.1:6379> EVAL "return bit.bnot(12)" 0
+(integer) -13
+# 0010 0000 32
+#         !
+# 1101 1111 -33
+127.0.0.1:6379> EVAL "return bit.bnot(32)" 0
+(integer) -33
 
+127.0.0.1:6379> EVAL "return bit.bor(1,2,4,8,16,32,64)" 0
+(integer) 127
 
+# 0100 1010 74
+# 0000 1100 12
+#         &
+# 0000 1000 8
+127.0.0.1:6379> EVAL "return bit.band(12, 74)" 0
+(integer) 8
 
+# 0100 1010 74
+# 0000 1100 12
+#         ^
+# 0100 0110 70
+127.0.0.1:6379> EVAL "return bit.bxor(12, 74)" 0
+(integer) 70
+```
 
+- bit.lshift(x, n) 返回第一个参数按位左移 n 位的结果
+- bit.rshift(x, n) 返回第一个参数按位右移 n 位的结果
+- bit.arshift(x, n) 返回第一个参数按位**算术右移** n 位的结果, 不改变符号位的移位操作
 
+```shell
+127.0.0.1:6379> EVAL "return bit.lshift(1, 3)" 0
+(integer) 8
+127.0.0.1:6379> EVAL "return bit.lshift(2, 1)" 0
+(integer) 4
+127.0.0.1:6379> EVAL "return bit.lshift(3, 2)" 0
+(integer) 12
+127.0.0.1:6379> EVAL "return bit.rshift(1, 1)" 0
+(integer) 0
+127.0.0.1:6379> EVAL "return bit.rshift(2, 1)" 0
+(integer) 1
+127.0.0.1:6379> EVAL "return bit.rshift(3, 1)" 0
+(integer) 1
+127.0.0.1:6379> EVAL "return bit.arshift(10, 1)" 0
+(integer) 5
+127.0.0.1:6379> EVAL "return bit.arshift(128, 1)" 0
+(integer) 64
 
+127.0.0.1:6379> EVAL "return bit.rshift(-12, 1)" 0
+(integer) 2147483642
+127.0.0.1:6379> EVAL "return bit.arshift(-12, 1)" 0
+(integer) -6
+```
 
+- bit.rol(x, n) 按第二个参数给定的位数返回其第一个参数的按位左旋转
+- bit.ror(x, n) 按第二个参数给定的位数返回其第一个参数的按位右旋转
 
+```shell
+127.0.0.1:6379> EVAL "return bit.rol(12, 1)" 0
+(integer) 24
+127.0.0.1:6379> EVAL "return bit.rol(12, 2)" 0
+(integer) 48
+127.0.0.1:6379> EVAL "return bit.rol(12, 6)" 0
+(integer) 768
 
+127.0.0.1:6379> EVAL "return bit.ror(12, 1)" 0
+(integer) 6
+127.0.0.1:6379> EVAL "return bit.ror(12, 4)" 0
+(integer) -1073741824
+127.0.0.1:6379> EVAL "return bit.ror(12, 6)" 0
+(integer) 805306368
+```
 
+- bit.bswap(x) 交换其参数的字节并返回它, 可用于将小端 32 位数字转换位大端 32 位数字, 反之亦然
+
+```shell
+127.0.0.1:6379> EVAL "return bit.bswap(1)" 0
+(integer) 16777216
+127.0.0.1:6379> EVAL "return bit.bswap(2)" 0
+(integer) 33554432
+127.0.0.1:6379> EVAL "return bit.bswap(12)" 0
+(integer) 201326592
+```
 
 ### 事务
 
