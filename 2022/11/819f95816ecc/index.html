@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-2.png">
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-3.png">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2023-05-15T09:53:04.218Z">
+<meta property="article:modified_time" content="2023-05-16T09:14:07.682Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -242,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-05-15 17:53:04" itemprop="dateModified" datetime="2023-05-15T17:53:04+08:00">2023-05-15</time>
+                <time title="修改时间：2023-05-16 17:14:07" itemprop="dateModified" datetime="2023-05-16T17:14:07+08:00">2023-05-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -465,56 +465,6 @@
 <h4 id="安全认证"><a href="#安全认证" class="headerlink" title="安全认证"></a>安全认证</h4><ul>
 <li>AUTH [username] password 对当前连接的认证</li>
 </ul>
-<h3 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h3><p>Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息<br>它采用事件作为基本的通信机制，提供大规模系统所要求的松散耦合的交互模式: 订阅者(如客户端)以事件订阅的方式表达出它有兴趣接收的一个事件或一类事件;发布者(如服务器)可将订阅者感兴趣的事件随时通知相关订阅者<br>订阅者对一个或多个频道感兴趣,只需接收感兴趣的消息,不需要知道什么样的发布者发布的. 这种发布者和订阅者的解耦合可以带来更大的扩展性和更加动态的网络拓扑</p>
-<ul>
-<li>发布者: 无需独占链接, 可以在 publish 发布消息的同时, 使用同一个链接进行其他操作</li>
-<li>订阅者: 需要独占链接, 在 subscribe 期间, 以阻塞的方式等待消息</li>
-</ul>
-<h4 id="普通订阅"><a href="#普通订阅" class="headerlink" title="普通订阅"></a>普通订阅</h4><ul>
-<li>SUBSCRIBE channel [channel …] 订阅指定频道立即进入阻塞状态等待接收消息</li>
-<li>UNSUBSCRIBE [channel [channel …]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅</li>
-</ul>
-<h4 id="碎片频道订阅"><a href="#碎片频道订阅" class="headerlink" title="碎片频道订阅"></a>碎片频道订阅</h4><ul>
-<li>SSUBSCRIBE shardchannel [shardchannel …] 订阅指定的碎片频道, 7.0.0 支持</li>
-<li>SUNSUBSCRIBE [shardchannel [shardchannel …]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持</li>
-</ul>
-<h4 id="模式订阅"><a href="#模式订阅" class="headerlink" title="模式订阅"></a>模式订阅</h4><ul>
-<li>PSUBSCRIBE pattern [pattern …] 根据给定模式订阅频道立即进入阻塞状态等待接收消息<ul>
-<li>pattern 可以使用正则表达式匹配多个频道</li>
-</ul>
-</li>
-<li>PUNSUBSCRIBE [pattern [pattern …]] 根据给定模式取消客户端订阅, 如果未指定则取消所有模式订阅</li>
-</ul>
-<h4 id="发布消息"><a href="#发布消息" class="headerlink" title="发布消息"></a>发布消息</h4><ul>
-<li>PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者</li>
-<li>SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">订阅频道</span></span><br><span class="line">127.0.0.1:6379&gt; PSUBSCRIBE h?llo</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line">1) &quot;psubscribe&quot;</span><br><span class="line">2) &quot;h?llo&quot;</span><br><span class="line">3) (integer) 1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">接收到的消息</span></span><br><span class="line">1) &quot;pmessage&quot;</span><br><span class="line">2) &quot;h?llo&quot;</span><br><span class="line">3) &quot;hello&quot;</span><br><span class="line">4) &quot;hello,world&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">接收到的消息</span></span><br><span class="line">1) &quot;pmessage&quot;</span><br><span class="line">2) &quot;h?llo&quot;</span><br><span class="line">3) &quot;hallo&quot;</span><br><span class="line">4) &quot;hallo,world&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">发布消息到 hello 和 hallo 频道</span></span><br><span class="line">127.0.0.1:6379&gt; PUBLISH hello hello,world</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; PUBLISH hello hello,world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; PUBLISH hallo hallo,world</span><br><span class="line">(integer) 2</span><br></pre></td></tr></table></figure>
-
-<h4 id="统计订阅信息"><a href="#统计订阅信息" class="headerlink" title="统计订阅信息"></a>统计订阅信息</h4><ul>
-<li>PUBSUB CHANNELS [pattern] 返回当前活跃频道列表(不包含使用模式订阅的频道)</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBSUB CHANNELS</span><br><span class="line">1) &quot;conn&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>PUBSUB NUMSUB [channel [channel …]] 返回订阅者的数量(不包含使用模式订阅的频道)<ul>
-<li>如果不指定 channel 将返回 (empty array)</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBSUB NUMSUB hello conn</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line">2) (integer) 1</span><br><span class="line">3) &quot;conn&quot;</span><br><span class="line">4) (integer) 1</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>PUBSUB NUMPAT 返回订阅者通过模式订阅的频道的数量</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBSUB NUMPAT</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; PUBSUB NUMPAT</span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>PUBSUB SHARDCHANNELS [pattern] 返回当前活动的碎片频道, 未找到返回 empty array, 7.0.0 支持</li>
-<li>PUBSUB SHARDNUMSUB [shardchannel [shardchannel …]] 返回指定的碎片频道的订阅者数量, 未找到返回 empty arryay, 7.0.0 支持</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBSUB SHARDNUMSUB conn</span><br><span class="line">1) &quot;conn&quot;</span><br><span class="line">2) (integer) 0</span><br></pre></td></tr></table></figure>
-
 <h3 id="配置文件配置项"><a href="#配置文件配置项" class="headerlink" title="配置文件配置项"></a>配置文件配置项</h3><ul>
 <li><p>include /path/to/*.conf # 导入其他 redis 配置文件</p>
 </li>
@@ -650,144 +600,61 @@
 <li><p>io-threads 4 # I/O 线程</p>
 </li>
 </ul>
-<h3 id="ACL"><a href="#ACL" class="headerlink" title="ACL"></a>ACL</h3><p>ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis 客户端在访问 Redis 服务器时, 能够执行的命令和能够获取的 key, 提高操作安全性, 避免对数据造成损坏</p>
+<h3 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h3><p>Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息<br>它采用事件作为基本的通信机制，提供大规模系统所要求的松散耦合的交互模式: 订阅者(如客户端)以事件订阅的方式表达出它有兴趣接收的一个事件或一类事件;发布者(如服务器)可将订阅者感兴趣的事件随时通知相关订阅者<br>订阅者对一个或多个频道感兴趣,只需接收感兴趣的消息,不需要知道什么样的发布者发布的. 这种发布者和订阅者的解耦合可以带来更大的扩展性和更加动态的网络拓扑</p>
 <ul>
-<li>ACL HELP 显示 ACL 的帮助信息</li>
+<li>发布者: 无需独占链接, 可以在 publish 发布消息的同时, 使用同一个链接进行其他操作</li>
+<li>订阅者: 需要独占链接, 在 subscribe 期间, 以阻塞的方式等待消息</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL HELP</span><br><span class="line"> 1) ACL &lt;subcommand&gt; [&lt;arg&gt; [value] [opt] ...]. Subcommands are:</span><br><span class="line"> 2) CAT [&lt;category&gt;]</span><br><span class="line"> 3)     List all commands that belong to &lt;category&gt;, or all command categories</span><br><span class="line"> 4)     when no category is specified.</span><br><span class="line"> 5) DELUSER &lt;username&gt; [&lt;username&gt; ...]</span><br><span class="line"> 6)     Delete a list of users.</span><br><span class="line"> 7) DRYRUN &lt;username&gt; &lt;command&gt; [&lt;arg&gt; ...]</span><br><span class="line"> 8)     Returns whether the user can execute the given command without executing the command.</span><br><span class="line"> 9) GETUSER &lt;username&gt;</span><br><span class="line">10)     Get the user\&#x27;s details.</span><br><span class="line">11) GENPASS [&lt;bits&gt;]</span><br><span class="line">12)     Generate a secure 256-bit user password. The optional `bits` argument can</span><br><span class="line">13)     be used to specify a different size.</span><br><span class="line">14) LIST</span><br><span class="line">15)     Show users details in config file format.</span><br><span class="line">16) LOAD</span><br><span class="line">17)     Reload users from the ACL file.</span><br><span class="line">18) LOG [&lt;count&gt; | RESET]</span><br><span class="line">19)     Show the ACL log entries.</span><br><span class="line">20) SAVE</span><br><span class="line">21)     Save the current config to the ACL file.</span><br><span class="line">22) SETUSER &lt;username&gt; &lt;attribute&gt; [&lt;attribute&gt; ...]</span><br><span class="line">23)     Create or modify a user with the specified attributes.</span><br><span class="line">24) USERS</span><br><span class="line">25)     List all the registered usernames.</span><br><span class="line">26) WHOAMI</span><br><span class="line">27)     Return the current connection username.</span><br><span class="line">28) HELP</span><br><span class="line">29)     Prints this help.</span><br></pre></td></tr></table></figure>
+<h4 id="普通订阅"><a href="#普通订阅" class="headerlink" title="普通订阅"></a>普通订阅</h4><ul>
+<li>SUBSCRIBE channel [channel …] 订阅指定频道立即进入阻塞状态等待接收消息</li>
+<li>UNSUBSCRIBE [channel [channel …]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅</li>
+</ul>
+<h4 id="碎片频道订阅"><a href="#碎片频道订阅" class="headerlink" title="碎片频道订阅"></a>碎片频道订阅</h4><ul>
+<li>SSUBSCRIBE shardchannel [shardchannel …] 订阅指定的碎片频道, 7.0.0 支持</li>
+<li>SUNSUBSCRIBE [shardchannel [shardchannel …]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持</li>
+</ul>
+<h4 id="模式订阅"><a href="#模式订阅" class="headerlink" title="模式订阅"></a>模式订阅</h4><ul>
+<li>PSUBSCRIBE pattern [pattern …] 根据给定模式订阅频道立即进入阻塞状态等待接收消息<ul>
+<li>pattern 可以使用正则表达式匹配多个频道</li>
+</ul>
+</li>
+<li>PUNSUBSCRIBE [pattern [pattern …]] 根据给定模式取消客户端订阅, 如果未指定则取消所有模式订阅</li>
+</ul>
+<h4 id="发布消息"><a href="#发布消息" class="headerlink" title="发布消息"></a>发布消息</h4><ul>
+<li>PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者</li>
+<li>SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">订阅频道</span></span><br><span class="line">127.0.0.1:6379&gt; PSUBSCRIBE h?llo</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line">1) &quot;psubscribe&quot;</span><br><span class="line">2) &quot;h?llo&quot;</span><br><span class="line">3) (integer) 1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">接收到的消息</span></span><br><span class="line">1) &quot;pmessage&quot;</span><br><span class="line">2) &quot;h?llo&quot;</span><br><span class="line">3) &quot;hello&quot;</span><br><span class="line">4) &quot;hello,world&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">接收到的消息</span></span><br><span class="line">1) &quot;pmessage&quot;</span><br><span class="line">2) &quot;h?llo&quot;</span><br><span class="line">3) &quot;hallo&quot;</span><br><span class="line">4) &quot;hallo,world&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">发布消息到 hello 和 hallo 频道</span></span><br><span class="line">127.0.0.1:6379&gt; PUBLISH hello hello,world</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; PUBLISH hello hello,world</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; PUBLISH hallo hallo,world</span><br><span class="line">(integer) 2</span><br></pre></td></tr></table></figure>
 
-<h4 id="规则分类"><a href="#规则分类" class="headerlink" title="规则分类"></a>规则分类</h4><table>
-<thead>
-<tr>
-<th align="center">参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">on</td>
-<td>表示启动该用户, 默认为 off</td>
-</tr>
-<tr>
-<td align="center">nopass</td>
-<td>删除所有与用户关联的密码</td>
-</tr>
-<tr>
-<td align="center">reset</td>
-<td>移除用户的所有功能, 并关闭用户</td>
-</tr>
-<tr>
-<td align="center">+[command]</td>
-<td>将命令添加到用户可以调用的命令列表中</td>
-</tr>
-<tr>
-<td align="center">-[command]</td>
-<td>将命令从用户可以调用的命令列表中移除</td>
-</tr>
-<tr>
-<td align="center">+[command]|subcmd</td>
-<td>允许使用已禁用命令的特定子命令</td>
-</tr>
-<tr>
-<td align="center">+@[category]</td>
-<td>允许用户调用 category 类别中的所有命令, 可以使用 <code>ACL CAT</code> 命令查看所有类别</td>
-</tr>
-<tr>
-<td align="center">-@[category]</td>
-<td>禁止用户调用 category 类别中的所有命令</td>
-</tr>
-<tr>
-<td align="center">allcommands</td>
-<td>+@all 的别名</td>
-</tr>
-<tr>
-<td align="center">nocommands</td>
-<td>-@all 的别名</td>
-</tr>
-<tr>
-<td align="center">~&lt;pattern&gt;</td>
-<td>允许用户可以访问的 key(正则匹配), 例如: ~foo:* 只允许访问 foo:* 的 key</td>
-</tr>
-<tr>
-<td align="center">%R~&lt;pattern&gt;</td>
-<td>添加指定的只读 key(正则匹配), 例如: %R~app:* 只允许读 app:* 的 key, 7.0 支持</td>
-</tr>
-<tr>
-<td align="center">%W~&lt;pattern&gt;</td>
-<td>添加指定的只写 key(正则匹配), 例如: %W~app:* 只允许写 app:* 的 key, 7.0 支持</td>
-</tr>
-<tr>
-<td align="center">%RW~&lt;pattern&gt;</td>
-<td>添加指定的可读可写的 key(正则匹配), 例如: %RW~app:* 只允许读写 app:* 的 key, 7.0 支持</td>
-</tr>
-<tr>
-<td align="center">allkeys</td>
-<td>~* 的别名</td>
-</tr>
-<tr>
-<td align="center">resetkeys</td>
-<td>移除所有的 key 匹配模式</td>
-</tr>
-<tr>
-<td align="center">&amp;&lt;pattern&gt;</td>
-<td>允许用户可使用的 Pub/Sub 通道(正则匹配)</td>
-</tr>
-<tr>
-<td align="center">allchannels</td>
-<td>&amp;* 的别名</td>
-</tr>
-<tr>
-<td align="center">resetchannels</td>
-<td>移除所有的通道匹配模式</td>
-</tr>
-<tr>
-<td align="center">&gt;&lt;password&gt;</td>
-<td>为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: &gt;123456</td>
-</tr>
-<tr>
-<td align="center">&lt;&lt;password&gt;</td>
-<td>从有效密码列表中删除密码</td>
-</tr>
-<tr>
-<td align="center">#&lt;hashedpassword&gt;</td>
-<td>为用户添加 hash 密码, 例如: #cab3…c4f2</td>
-</tr>
-<tr>
-<td align="center">!&lt;hashedpassword&gt;</td>
-<td>从有效密码列表中删除密码</td>
-</tr>
-</tbody></table>
-<ul>
-<li>ACL CAT 显示 Redis 的所有分类</li>
+<h4 id="统计订阅信息"><a href="#统计订阅信息" class="headerlink" title="统计订阅信息"></a>统计订阅信息</h4><ul>
+<li>PUBSUB CHANNELS [pattern] 返回当前活跃频道列表(不包含使用模式订阅的频道)</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL CAT</span><br><span class="line"> 1) &quot;keyspace&quot;</span><br><span class="line"> 2) &quot;read&quot;</span><br><span class="line"> 3) &quot;write&quot;</span><br><span class="line"> 4) &quot;set&quot;</span><br><span class="line"> 5) &quot;sortedset&quot;</span><br><span class="line"> 6) &quot;list&quot;</span><br><span class="line"> 7) &quot;hash&quot;</span><br><span class="line"> 8) &quot;string&quot;</span><br><span class="line"> 9) &quot;bitmap&quot;</span><br><span class="line">10) &quot;hyperloglog&quot;</span><br><span class="line">11) &quot;geo&quot;</span><br><span class="line">12) &quot;stream&quot;</span><br><span class="line">13) &quot;pubsub&quot;</span><br><span class="line">14) &quot;admin&quot;</span><br><span class="line">15) &quot;fast&quot;</span><br><span class="line">16) &quot;slow&quot;</span><br><span class="line">17) &quot;blocking&quot;</span><br><span class="line">18) &quot;dangerous&quot;</span><br><span class="line">19) &quot;connection&quot;</span><br><span class="line">20) &quot;transaction&quot;</span><br><span class="line">21) &quot;scripting&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBSUB CHANNELS</span><br><span class="line">1) &quot;conn&quot;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>ACL USERS 列出所有已配置用户名</li>
-<li>ACL WHOAMI 返回当前连接服务器的用户名, 默认 default</li>
+<li>PUBSUB NUMSUB [channel [channel …]] 返回订阅者的数量(不包含使用模式订阅的频道)<ul>
+<li>如果不指定 channel 将返回 (empty array)</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">&quot;default&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>ACL SAVE 将 ACLs 配置项从内存保存到 ACL 文件中</p>
-</li>
-<li><p>ACL DELUSER [username…] 删除指定的 ACL 用户, default 用户不能被删除</p>
-</li>
-<li><p>ACL SETUSER 设置用户访问权限</p>
-</li>
-<li><p>ACL GETUSER username 获取指定用户的权限</p>
 </li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加 lisi 账号, 明文密码 123456, 添加所有分类的命令</span></span><br><span class="line">127.0.0.1:6379&gt; ACL SETUSER lisi &gt;123456 off +@all</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL GETUSER lisi</span><br><span class="line"> 1) &quot;flags&quot;</span><br><span class="line"> 2) 1) &quot;off&quot;</span><br><span class="line"> 3) &quot;passwords&quot;</span><br><span class="line"> 4) 1) &quot;8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92&quot;</span><br><span class="line"> 5) &quot;commands&quot;</span><br><span class="line"> 6) &quot;+@all&quot;</span><br><span class="line"> 7) &quot;keys&quot;</span><br><span class="line"> 8) &quot;&quot;</span><br><span class="line"> 9) &quot;channels&quot;</span><br><span class="line">10) &quot;&quot;</span><br><span class="line">11) &quot;selectors&quot;</span><br><span class="line">12) (empty array)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加禁用账号 zhangsan</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只包含 string, <span class="built_in">hash</span>, list, <span class="built_in">set</span>分类下的命令</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只能操作以 zhang 开头匹配模式的 key 和通道</span></span><br><span class="line">127.0.0.1:6379&gt; ACL SETUSER zhangsan off +@string +@hash +@list +@set ~zhang:* &amp;zhang:*</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL GETUSER zhangsan</span><br><span class="line"> 1) &quot;flags&quot;</span><br><span class="line"> 2) 1) &quot;off&quot;</span><br><span class="line"> 3) &quot;passwords&quot;</span><br><span class="line"> 4) 1) &quot;8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92&quot;</span><br><span class="line"> 5) &quot;commands&quot;</span><br><span class="line"> 6) &quot;-@all +@list +@string +@hash +@set&quot;</span><br><span class="line"> 7) &quot;keys&quot;</span><br><span class="line"> 8) &quot;~zhang:*&quot;</span><br><span class="line"> 9) &quot;channels&quot;</span><br><span class="line">10) &quot;&amp;zhang:*&quot;</span><br><span class="line">11) &quot;selectors&quot;</span><br><span class="line">12) (empty array)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除用户的密码</span></span><br><span class="line">127.0.0.1:6379&gt; ACL SETUSER zhangsan !8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBSUB NUMSUB hello conn</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line">2) (integer) 1</span><br><span class="line">3) &quot;conn&quot;</span><br><span class="line">4) (integer) 1</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>ACL LIST 显示 Redis 服务器当前活动的 ACL 规则</li>
+<li>PUBSUB NUMPAT 返回订阅者通过模式订阅的频道的数量</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL LIST</span><br><span class="line">1) &quot;user default on nopass ~* &amp;* +@all&quot;</span><br><span class="line">2) &quot;user zhangsan off ~zhang:* resetchannels &amp;zhang:* -@all +@list +@string +@hash +@set&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBSUB NUMPAT</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; PUBSUB NUMPAT</span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>ACL DRYRUN username command [arg [arg …]] 模拟指定用户对给定命令的执行, 此命令可以用来测试用户的权限而无需启用用户, 7.0.0 支持</li>
+<li>PUBSUB SHARDCHANNELS [pattern] 返回当前活动的碎片频道, 未找到返回 empty array, 7.0.0 支持</li>
+<li>PUBSUB SHARDNUMSUB [shardchannel [shardchannel …]] 返回指定的碎片频道的订阅者数量, 未找到返回 empty arryay, 7.0.0 支持</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL DRYRUN zhangsan ZADD zs 1 hello 2 world 3 zs</span><br><span class="line">&quot;This user has no permissions to run the &#x27;zadd&#x27; command&quot;</span><br><span class="line">127.0.0.1:6379&gt; ACL DRYRUN zhangsan SADD s1 hello world gg s1</span><br><span class="line">&quot;This user has no permissions to access the &#x27;s1&#x27; key&quot;</span><br><span class="line">127.0.0.1:6379&gt; ACL DRYRUN zhangsan SET name zhangsan</span><br><span class="line">&quot;This user has no permissions to access the &#x27;name&#x27; key&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只能操作以 zhang 开头匹配模式的 key</span></span><br><span class="line">127.0.0.1:6379&gt; ACL DRYRUN zhangsan SADD zhang:set hello world s1</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PUBSUB SHARDNUMSUB conn</span><br><span class="line">1) &quot;conn&quot;</span><br><span class="line">2) (integer) 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis-Pipelining"><a href="#Redis-Pipelining" class="headerlink" title="Redis Pipelining"></a>Redis Pipelining</h3><blockquote>
+<p>当客户端使用流水线发送命令时, 服务器将被迫使用内存对回复进行排队. 因此, 如果需要使用流水线发送大量命令时最好尽量等分分批发送命令</p>
+</blockquote>
+<p>Redis 流水线是一种通过一次发出多个命令而无需等待每个命令的响应来提高性能的技术, 大多数 Redis 客户端都支持流水线.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用 netcat 命令测试</span></span><br><span class="line">[root@centos7 workspace]# (printf &quot;PING\r\nPING\r\nPING\r\n&quot;; sleep 1) | nc localhost 6379</span><br><span class="line">+PONG</span><br><span class="line">+PONG</span><br><span class="line">+PONG</span><br><span class="line">^C</span><br></pre></td></tr></table></figure>
 
 <h3 id="Redis-编程"><a href="#Redis-编程" class="headerlink" title="Redis 编程"></a>Redis 编程</h3><h4 id="Redis-函数"><a href="#Redis-函数" class="headerlink" title="Redis 函数"></a>Redis 函数</h4><blockquote>
 <p>Redis 7.0 以上支持</p>
@@ -861,7 +728,7 @@
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; GET name</span><br><span class="line">&quot;hello world&quot;</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return redis.call(&#x27;SET&#x27;, KEYS[1], ARGV[1])&quot; 1 name &quot;hello redis&quot;</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; GET name</span><br><span class="line">&quot;hello redis&quot;</span><br></pre></td></tr></table></figure>
 
-<p>=== <strong>脚本缓存</strong> ===</p>
+<p>===<strong>脚本缓存</strong>===</p>
 <p>存储在服务器的脚本专用缓存中, 缓存内容由脚本的 SHA1 摘要作为缓存中的唯一标识</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SCRIPT help # 脚本帮助命令</span><br><span class="line"> 1) SCRIPT &lt;subcommand&gt; [&lt;arg&gt; [value] [opt] ...]. Subcommands are:</span><br><span class="line"> 2) DEBUG (YES|SYNC|NO)</span><br><span class="line"> 3)     Set the debug mode for subsequent scripts executed.</span><br><span class="line"> 4) EXISTS &lt;sha1&gt; [&lt;sha1&gt; ...]</span><br><span class="line"> 5)     Return information about the existence of the scripts in the script cache.</span><br><span class="line"> 6) FLUSH [ASYNC|SYNC]</span><br><span class="line"> 7)     Flush the Lua scripts cache. Very dangerous on replicas.</span><br><span class="line"> 8)     When called without the optional mode argument, the behavior is determined by the</span><br><span class="line"> 9)     lazyfree-lazy-user-flush configuration directive. Valid modes are:</span><br><span class="line">10)     * ASYNC: Asynchronously flush the scripts cache.</span><br><span class="line">11)     * SYNC: Synchronously flush the scripts cache.</span><br><span class="line">12) KILL</span><br><span class="line">13)     Kill the currently executing Lua script.</span><br><span class="line">14) LOAD &lt;script&gt;</span><br><span class="line">15)     Load a script into the scripts cache without executing it.</span><br><span class="line">16) HELP</span><br><span class="line">17)     Prints this help.</span><br></pre></td></tr></table></figure>
 
@@ -1052,6 +919,145 @@
 <li>bit.bswap(x) 交换其参数的字节并返回它, 可用于将小端 32 位数字转换位大端 32 位数字, 反之亦然</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL &quot;return bit.bswap(1)&quot; 0</span><br><span class="line">(integer) 16777216</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return bit.bswap(2)&quot; 0</span><br><span class="line">(integer) 33554432</span><br><span class="line">127.0.0.1:6379&gt; EVAL &quot;return bit.bswap(12)&quot; 0</span><br><span class="line">(integer) 201326592</span><br></pre></td></tr></table></figure>
+
+<h3 id="ACL"><a href="#ACL" class="headerlink" title="ACL"></a>ACL</h3><p>ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis 客户端在访问 Redis 服务器时, 能够执行的命令和能够获取的 key, 提高操作安全性, 避免对数据造成损坏</p>
+<ul>
+<li>ACL HELP 显示 ACL 的帮助信息</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL HELP</span><br><span class="line"> 1) ACL &lt;subcommand&gt; [&lt;arg&gt; [value] [opt] ...]. Subcommands are:</span><br><span class="line"> 2) CAT [&lt;category&gt;]</span><br><span class="line"> 3)     List all commands that belong to &lt;category&gt;, or all command categories</span><br><span class="line"> 4)     when no category is specified.</span><br><span class="line"> 5) DELUSER &lt;username&gt; [&lt;username&gt; ...]</span><br><span class="line"> 6)     Delete a list of users.</span><br><span class="line"> 7) DRYRUN &lt;username&gt; &lt;command&gt; [&lt;arg&gt; ...]</span><br><span class="line"> 8)     Returns whether the user can execute the given command without executing the command.</span><br><span class="line"> 9) GETUSER &lt;username&gt;</span><br><span class="line">10)     Get the user\&#x27;s details.</span><br><span class="line">11) GENPASS [&lt;bits&gt;]</span><br><span class="line">12)     Generate a secure 256-bit user password. The optional `bits` argument can</span><br><span class="line">13)     be used to specify a different size.</span><br><span class="line">14) LIST</span><br><span class="line">15)     Show users details in config file format.</span><br><span class="line">16) LOAD</span><br><span class="line">17)     Reload users from the ACL file.</span><br><span class="line">18) LOG [&lt;count&gt; | RESET]</span><br><span class="line">19)     Show the ACL log entries.</span><br><span class="line">20) SAVE</span><br><span class="line">21)     Save the current config to the ACL file.</span><br><span class="line">22) SETUSER &lt;username&gt; &lt;attribute&gt; [&lt;attribute&gt; ...]</span><br><span class="line">23)     Create or modify a user with the specified attributes.</span><br><span class="line">24) USERS</span><br><span class="line">25)     List all the registered usernames.</span><br><span class="line">26) WHOAMI</span><br><span class="line">27)     Return the current connection username.</span><br><span class="line">28) HELP</span><br><span class="line">29)     Prints this help.</span><br></pre></td></tr></table></figure>
+
+<h4 id="规则分类"><a href="#规则分类" class="headerlink" title="规则分类"></a>规则分类</h4><table>
+<thead>
+<tr>
+<th align="center">参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">on</td>
+<td>表示启动该用户, 默认为 off</td>
+</tr>
+<tr>
+<td align="center">nopass</td>
+<td>删除所有与用户关联的密码</td>
+</tr>
+<tr>
+<td align="center">reset</td>
+<td>移除用户的所有功能, 并关闭用户</td>
+</tr>
+<tr>
+<td align="center">+[command]</td>
+<td>将命令添加到用户可以调用的命令列表中</td>
+</tr>
+<tr>
+<td align="center">-[command]</td>
+<td>将命令从用户可以调用的命令列表中移除</td>
+</tr>
+<tr>
+<td align="center">+[command]|subcmd</td>
+<td>允许使用已禁用命令的特定子命令</td>
+</tr>
+<tr>
+<td align="center">+@[category]</td>
+<td>允许用户调用 category 类别中的所有命令, 可以使用 <code>ACL CAT</code> 命令查看所有类别</td>
+</tr>
+<tr>
+<td align="center">-@[category]</td>
+<td>禁止用户调用 category 类别中的所有命令</td>
+</tr>
+<tr>
+<td align="center">allcommands</td>
+<td>+@all 的别名</td>
+</tr>
+<tr>
+<td align="center">nocommands</td>
+<td>-@all 的别名</td>
+</tr>
+<tr>
+<td align="center">~&lt;pattern&gt;</td>
+<td>允许用户可以访问的 key(正则匹配), 例如: ~foo:* 只允许访问 foo:* 的 key</td>
+</tr>
+<tr>
+<td align="center">%R~&lt;pattern&gt;</td>
+<td>添加指定的只读 key(正则匹配), 例如: %R~app:* 只允许读 app:* 的 key, 7.0 支持</td>
+</tr>
+<tr>
+<td align="center">%W~&lt;pattern&gt;</td>
+<td>添加指定的只写 key(正则匹配), 例如: %W~app:* 只允许写 app:* 的 key, 7.0 支持</td>
+</tr>
+<tr>
+<td align="center">%RW~&lt;pattern&gt;</td>
+<td>添加指定的可读可写的 key(正则匹配), 例如: %RW~app:* 只允许读写 app:* 的 key, 7.0 支持</td>
+</tr>
+<tr>
+<td align="center">allkeys</td>
+<td>~* 的别名</td>
+</tr>
+<tr>
+<td align="center">resetkeys</td>
+<td>移除所有的 key 匹配模式</td>
+</tr>
+<tr>
+<td align="center">&amp;&lt;pattern&gt;</td>
+<td>允许用户可使用的 Pub/Sub 通道(正则匹配)</td>
+</tr>
+<tr>
+<td align="center">allchannels</td>
+<td>&amp;* 的别名</td>
+</tr>
+<tr>
+<td align="center">resetchannels</td>
+<td>移除所有的通道匹配模式</td>
+</tr>
+<tr>
+<td align="center">&gt;&lt;password&gt;</td>
+<td>为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: &gt;123456</td>
+</tr>
+<tr>
+<td align="center">&lt;&lt;password&gt;</td>
+<td>从有效密码列表中删除密码</td>
+</tr>
+<tr>
+<td align="center">#&lt;hashedpassword&gt;</td>
+<td>为用户添加 hash 密码, 例如: #cab3…c4f2</td>
+</tr>
+<tr>
+<td align="center">!&lt;hashedpassword&gt;</td>
+<td>从有效密码列表中删除密码</td>
+</tr>
+</tbody></table>
+<ul>
+<li>ACL CAT 显示 Redis 的所有分类</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL CAT</span><br><span class="line"> 1) &quot;keyspace&quot;</span><br><span class="line"> 2) &quot;read&quot;</span><br><span class="line"> 3) &quot;write&quot;</span><br><span class="line"> 4) &quot;set&quot;</span><br><span class="line"> 5) &quot;sortedset&quot;</span><br><span class="line"> 6) &quot;list&quot;</span><br><span class="line"> 7) &quot;hash&quot;</span><br><span class="line"> 8) &quot;string&quot;</span><br><span class="line"> 9) &quot;bitmap&quot;</span><br><span class="line">10) &quot;hyperloglog&quot;</span><br><span class="line">11) &quot;geo&quot;</span><br><span class="line">12) &quot;stream&quot;</span><br><span class="line">13) &quot;pubsub&quot;</span><br><span class="line">14) &quot;admin&quot;</span><br><span class="line">15) &quot;fast&quot;</span><br><span class="line">16) &quot;slow&quot;</span><br><span class="line">17) &quot;blocking&quot;</span><br><span class="line">18) &quot;dangerous&quot;</span><br><span class="line">19) &quot;connection&quot;</span><br><span class="line">20) &quot;transaction&quot;</span><br><span class="line">21) &quot;scripting&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ACL USERS 列出所有已配置用户名</li>
+<li>ACL WHOAMI 返回当前连接服务器的用户名, 默认 default</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">&quot;default&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>ACL SAVE 将 ACLs 配置项从内存保存到 ACL 文件中</p>
+</li>
+<li><p>ACL DELUSER [username…] 删除指定的 ACL 用户, default 用户不能被删除</p>
+</li>
+<li><p>ACL SETUSER 设置用户访问权限</p>
+</li>
+<li><p>ACL GETUSER username 获取指定用户的权限</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加 lisi 账号, 明文密码 123456, 添加所有分类的命令</span></span><br><span class="line">127.0.0.1:6379&gt; ACL SETUSER lisi &gt;123456 off +@all</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL GETUSER lisi</span><br><span class="line"> 1) &quot;flags&quot;</span><br><span class="line"> 2) 1) &quot;off&quot;</span><br><span class="line"> 3) &quot;passwords&quot;</span><br><span class="line"> 4) 1) &quot;8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92&quot;</span><br><span class="line"> 5) &quot;commands&quot;</span><br><span class="line"> 6) &quot;+@all&quot;</span><br><span class="line"> 7) &quot;keys&quot;</span><br><span class="line"> 8) &quot;&quot;</span><br><span class="line"> 9) &quot;channels&quot;</span><br><span class="line">10) &quot;&quot;</span><br><span class="line">11) &quot;selectors&quot;</span><br><span class="line">12) (empty array)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加禁用账号 zhangsan</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只包含 string, <span class="built_in">hash</span>, list, <span class="built_in">set</span>分类下的命令</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只能操作以 zhang 开头匹配模式的 key 和通道</span></span><br><span class="line">127.0.0.1:6379&gt; ACL SETUSER zhangsan off +@string +@hash +@list +@set ~zhang:* &amp;zhang:*</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL GETUSER zhangsan</span><br><span class="line"> 1) &quot;flags&quot;</span><br><span class="line"> 2) 1) &quot;off&quot;</span><br><span class="line"> 3) &quot;passwords&quot;</span><br><span class="line"> 4) 1) &quot;8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92&quot;</span><br><span class="line"> 5) &quot;commands&quot;</span><br><span class="line"> 6) &quot;-@all +@list +@string +@hash +@set&quot;</span><br><span class="line"> 7) &quot;keys&quot;</span><br><span class="line"> 8) &quot;~zhang:*&quot;</span><br><span class="line"> 9) &quot;channels&quot;</span><br><span class="line">10) &quot;&amp;zhang:*&quot;</span><br><span class="line">11) &quot;selectors&quot;</span><br><span class="line">12) (empty array)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除用户的密码</span></span><br><span class="line">127.0.0.1:6379&gt; ACL SETUSER zhangsan !8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ACL LIST 显示 Redis 服务器当前活动的 ACL 规则</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL LIST</span><br><span class="line">1) &quot;user default on nopass ~* &amp;* +@all&quot;</span><br><span class="line">2) &quot;user zhangsan off ~zhang:* resetchannels &amp;zhang:* -@all +@list +@string +@hash +@set&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ACL DRYRUN username command [arg [arg …]] 模拟指定用户对给定命令的执行, 此命令可以用来测试用户的权限而无需启用用户, 7.0.0 支持</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ACL DRYRUN zhangsan ZADD zs 1 hello 2 world 3 zs</span><br><span class="line">&quot;This user has no permissions to run the &#x27;zadd&#x27; command&quot;</span><br><span class="line">127.0.0.1:6379&gt; ACL DRYRUN zhangsan SADD s1 hello world gg s1</span><br><span class="line">&quot;This user has no permissions to access the &#x27;s1&#x27; key&quot;</span><br><span class="line">127.0.0.1:6379&gt; ACL DRYRUN zhangsan SET name zhangsan</span><br><span class="line">&quot;This user has no permissions to access the &#x27;name&#x27; key&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只能操作以 zhang 开头匹配模式的 key</span></span><br><span class="line">127.0.0.1:6379&gt; ACL DRYRUN zhangsan SADD zhang:set hello world s1</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
 
 <h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><p>=== Redis 单条命令是保证原子性的, 但是 Redis 事务不保证原子性 ===<br>=== Redis 事务没有隔离级别的概念 ===<br>所有的命令在事务中, 并没有被执行而是加入队列, 只有发起执行命令的时候才会执行! EXEC</p>
 <p>Redis 事务允许在一个步骤中执行一组命令, 事务中的所有命令都是串行化的, 并按顺序执行. 在 Redis 事务执行过程中, 另一个客户端发送的请求将永远不会被处理. 这保证了命令作为一个单独的操作执行<br>Redis 事务执行的三个重要保证:</p>
@@ -1477,7 +1483,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis"><span class="nav-number">1.</span> <span class="nav-text">Redis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">工具命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CONFIG-%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">CONFIG 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keys-%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">Keys 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C-key"><span class="nav-number">5.1.</span> <span class="nav-text">操作 key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC"><span class="nav-number">5.2.</span> <span class="nav-text">副本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-key-%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">5.3.</span> <span class="nav-text">设置 key 的过期时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-key-%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">5.4.</span> <span class="nav-text">获取 key 的过期时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="nav-number">5.5.</span> <span class="nav-text">数据库操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81"><span class="nav-number">5.6.</span> <span class="nav-text">安全认证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85"><span class="nav-number">6.</span> <span class="nav-text">发布订阅</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E8%AE%A2%E9%98%85"><span class="nav-number">6.1.</span> <span class="nav-text">普通订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A2%8E%E7%89%87%E9%A2%91%E9%81%93%E8%AE%A2%E9%98%85"><span class="nav-number">6.2.</span> <span class="nav-text">碎片频道订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E8%AE%A2%E9%98%85"><span class="nav-number">6.3.</span> <span class="nav-text">模式订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E6%B6%88%E6%81%AF"><span class="nav-number">6.4.</span> <span class="nav-text">发布消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E8%AE%A2%E9%98%85%E4%BF%A1%E6%81%AF"><span class="nav-number">6.5.</span> <span class="nav-text">统计订阅信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">7.</span> <span class="nav-text">配置文件配置项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TLS-SSL"><span class="nav-number">7.1.</span> <span class="nav-text">TLS&#x2F;SSL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E8%AE%BE%E7%BD%AE"><span class="nav-number">7.2.</span> <span class="nav-text">通用设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#REPLICATION"><span class="nav-number">7.3.</span> <span class="nav-text">REPLICATION</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CLUSTER"><span class="nav-number">7.4.</span> <span class="nav-text">CLUSTER</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MEMORY"><span class="nav-number">7.5.</span> <span class="nav-text">MEMORY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SNAPSHOTTING"><span class="nav-number">7.6.</span> <span class="nav-text">SNAPSHOTTING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SECURITY"><span class="nav-number">7.7.</span> <span class="nav-text">SECURITY</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ACL"><span class="nav-number">8.</span> <span class="nav-text">ACL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E5%88%86%E7%B1%BB"><span class="nav-number">8.1.</span> <span class="nav-text">规则分类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-%E7%BC%96%E7%A8%8B"><span class="nav-number">9.</span> <span class="nav-text">Redis 编程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis-%E5%87%BD%E6%95%B0"><span class="nav-number">9.1.</span> <span class="nav-text">Redis 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%91%BD%E4%BB%A4"><span class="nav-number">9.1.1.</span> <span class="nav-text">函数命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E5%BA%93%E5%92%8C%E5%87%BD%E6%95%B0"><span class="nav-number">9.1.2.</span> <span class="nav-text">加载库和函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%B3%A8%E5%86%8C%E8%B0%83%E7%94%A8"><span class="nav-number">9.1.3.</span> <span class="nav-text">函数注册调用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lua-%E8%84%9A%E6%9C%AC"><span class="nav-number">9.2.</span> <span class="nav-text">Lua 脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">9.2.1.</span> <span class="nav-text">脚本命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%A4%8D%E5%88%B6"><span class="nav-number">9.2.2.</span> <span class="nav-text">脚本复制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Lua-API"><span class="nav-number">9.2.3.</span> <span class="nav-text">Lua API</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">9.2.3.1.</span> <span class="nav-text">全局变量</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Redis-%E5%AE%9E%E4%BE%8B-API"><span class="nav-number">9.2.3.2.</span> <span class="nav-text">Redis 实例 API</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">9.3.</span> <span class="nav-text">数据类型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RESP2"><span class="nav-number">9.3.1.</span> <span class="nav-text">RESP2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RESP3"><span class="nav-number">9.3.2.</span> <span class="nav-text">RESP3</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E5%BA%93"><span class="nav-number">9.4.</span> <span class="nav-text">外部库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#struct"><span class="nav-number">9.4.1.</span> <span class="nav-text">struct</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%A0%BC%E5%BC%8F"><span class="nav-number">9.4.1.1.</span> <span class="nav-text">结构格式</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cjson"><span class="nav-number">9.4.2.</span> <span class="nav-text">cjson</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cmsgpack"><span class="nav-number">9.4.3.</span> <span class="nav-text">cmsgpack</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bit"><span class="nav-number">9.4.4.</span> <span class="nav-text">bit</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">10.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">10.1.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">10.2.</span> <span class="nav-text">编译时错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">10.3.</span> <span class="nav-text">运行时错误</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">11.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="nav-number">11.1.</span> <span class="nav-text">触发方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB"><span class="nav-number">11.2.</span> <span class="nav-text">RDB</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RDB-%E4%BC%98%E7%82%B9"><span class="nav-number">11.2.1.</span> <span class="nav-text">RDB 优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDB-%E7%BC%BA%E7%82%B9"><span class="nav-number">11.2.2.</span> <span class="nav-text">RDB 缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF"><span class="nav-number">11.3.</span> <span class="nav-text">AOF</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF-%E4%BC%98%E7%82%B9"><span class="nav-number">11.3.1.</span> <span class="nav-text">AOF 优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF-%E7%BC%BA%E7%82%B9"><span class="nav-number">11.3.2.</span> <span class="nav-text">AOF 缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB-%E5%92%8C-AOF-%E7%BB%84%E5%90%88"><span class="nav-number">11.4.</span> <span class="nav-text">RDB 和 AOF 组合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-number">12.</span> <span class="nav-text">主从复制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">12.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">12.2.</span> <span class="nav-text">复制原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">12.2.1.</span> <span class="nav-text">全量复制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">12.2.2.</span> <span class="nav-text">增量复制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="nav-number">12.3.</span> <span class="nav-text">命令模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9C%89%E6%95%88"><span class="nav-number">12.3.1.</span> <span class="nav-text">运行时有效</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">12.4.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">12.5.</span> <span class="nav-text">哨兵模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%80%E4%B8%BB%E4%B8%89%E4%BB%8E%E5%93%A8%E5%85%B5%E9%85%8D%E7%BD%AE"><span class="nav-number">12.5.1.</span> <span class="nav-text">一主三从哨兵配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">13.</span> <span class="nav-text">集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">13.1.</span> <span class="nav-text">集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%96%E8%BE%91%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">13.1.1.</span> <span class="nav-text">编辑配置文件  </span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-Redis-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">13.1.2.</span> <span class="nav-text">启动 Redis 服务器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9"><span class="nav-number">13.1.3.</span> <span class="nav-text">创建集群节点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5-Redis-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">13.1.4.</span> <span class="nav-text">连接 Redis 服务器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%91%BD%E4%BB%A4"><span class="nav-number">13.1.5.</span> <span class="nav-text">集群命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF"><span class="nav-number">13.1.6.</span> <span class="nav-text">查看节点信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C"><span class="nav-number">13.1.7.</span> <span class="nav-text">数据操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E8%8A%82%E7%82%B9"><span class="nav-number">13.1.8.</span> <span class="nav-text">测试节点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">13.1.9.</span> <span class="nav-text">查看节点配置文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%B0%E8%8A%82%E7%82%B9"><span class="nav-number">13.1.10.</span> <span class="nav-text">添加新节点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E4%BC%98%E7%82%B9"><span class="nav-number">13.2.</span> <span class="nav-text">集群优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E7%BC%BA%E7%82%B9"><span class="nav-number">13.3.</span> <span class="nav-text">集群缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E3%80%81%E5%87%BB%E7%A9%BF%E3%80%81%E9%9B%AA%E5%B4%A9"><span class="nav-number">14.</span> <span class="nav-text">缓存穿透、击穿、雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">14.1.</span> <span class="nav-text">缓存穿透</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">14.1.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">14.2.</span> <span class="nav-text">缓存击穿</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95-1"><span class="nav-number">14.2.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">14.3.</span> <span class="nav-text">缓存雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95-2"><span class="nav-number">14.3.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="nav-number">15.</span> <span class="nav-text">慢查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%8D%E6%9D%82%E5%BA%A6%E8%BF%87%E9%AB%98%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="nav-number">15.1.</span> <span class="nav-text">使用复杂度过高的命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%A7-Key-%E9%97%AE%E9%A2%98"><span class="nav-number">15.2.</span> <span class="nav-text">大 Key 问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E8%BF%87%E6%9C%9F"><span class="nav-number">15.3.</span> <span class="nav-text">集中过期</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis"><span class="nav-number">1.</span> <span class="nav-text">Redis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">工具命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CONFIG-%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">CONFIG 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keys-%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">Keys 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C-key"><span class="nav-number">5.1.</span> <span class="nav-text">操作 key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC"><span class="nav-number">5.2.</span> <span class="nav-text">副本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-key-%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">5.3.</span> <span class="nav-text">设置 key 的过期时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-key-%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">5.4.</span> <span class="nav-text">获取 key 的过期时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="nav-number">5.5.</span> <span class="nav-text">数据库操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81"><span class="nav-number">5.6.</span> <span class="nav-text">安全认证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">6.</span> <span class="nav-text">配置文件配置项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TLS-SSL"><span class="nav-number">6.1.</span> <span class="nav-text">TLS&#x2F;SSL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E8%AE%BE%E7%BD%AE"><span class="nav-number">6.2.</span> <span class="nav-text">通用设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#REPLICATION"><span class="nav-number">6.3.</span> <span class="nav-text">REPLICATION</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CLUSTER"><span class="nav-number">6.4.</span> <span class="nav-text">CLUSTER</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MEMORY"><span class="nav-number">6.5.</span> <span class="nav-text">MEMORY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SNAPSHOTTING"><span class="nav-number">6.6.</span> <span class="nav-text">SNAPSHOTTING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SECURITY"><span class="nav-number">6.7.</span> <span class="nav-text">SECURITY</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85"><span class="nav-number">7.</span> <span class="nav-text">发布订阅</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E8%AE%A2%E9%98%85"><span class="nav-number">7.1.</span> <span class="nav-text">普通订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A2%8E%E7%89%87%E9%A2%91%E9%81%93%E8%AE%A2%E9%98%85"><span class="nav-number">7.2.</span> <span class="nav-text">碎片频道订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E8%AE%A2%E9%98%85"><span class="nav-number">7.3.</span> <span class="nav-text">模式订阅</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E6%B6%88%E6%81%AF"><span class="nav-number">7.4.</span> <span class="nav-text">发布消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E8%AE%A2%E9%98%85%E4%BF%A1%E6%81%AF"><span class="nav-number">7.5.</span> <span class="nav-text">统计订阅信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Pipelining"><span class="nav-number">8.</span> <span class="nav-text">Redis Pipelining</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-%E7%BC%96%E7%A8%8B"><span class="nav-number">9.</span> <span class="nav-text">Redis 编程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis-%E5%87%BD%E6%95%B0"><span class="nav-number">9.1.</span> <span class="nav-text">Redis 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%91%BD%E4%BB%A4"><span class="nav-number">9.1.1.</span> <span class="nav-text">函数命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E5%BA%93%E5%92%8C%E5%87%BD%E6%95%B0"><span class="nav-number">9.1.2.</span> <span class="nav-text">加载库和函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%B3%A8%E5%86%8C%E8%B0%83%E7%94%A8"><span class="nav-number">9.1.3.</span> <span class="nav-text">函数注册调用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lua-%E8%84%9A%E6%9C%AC"><span class="nav-number">9.2.</span> <span class="nav-text">Lua 脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">9.2.1.</span> <span class="nav-text">脚本命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%A4%8D%E5%88%B6"><span class="nav-number">9.2.2.</span> <span class="nav-text">脚本复制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Lua-API"><span class="nav-number">9.2.3.</span> <span class="nav-text">Lua API</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">9.2.3.1.</span> <span class="nav-text">全局变量</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Redis-%E5%AE%9E%E4%BE%8B-API"><span class="nav-number">9.2.3.2.</span> <span class="nav-text">Redis 实例 API</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">9.3.</span> <span class="nav-text">数据类型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RESP2"><span class="nav-number">9.3.1.</span> <span class="nav-text">RESP2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RESP3"><span class="nav-number">9.3.2.</span> <span class="nav-text">RESP3</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E5%BA%93"><span class="nav-number">9.4.</span> <span class="nav-text">外部库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#struct"><span class="nav-number">9.4.1.</span> <span class="nav-text">struct</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%A0%BC%E5%BC%8F"><span class="nav-number">9.4.1.1.</span> <span class="nav-text">结构格式</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cjson"><span class="nav-number">9.4.2.</span> <span class="nav-text">cjson</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cmsgpack"><span class="nav-number">9.4.3.</span> <span class="nav-text">cmsgpack</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bit"><span class="nav-number">9.4.4.</span> <span class="nav-text">bit</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ACL"><span class="nav-number">10.</span> <span class="nav-text">ACL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E5%88%86%E7%B1%BB"><span class="nav-number">10.1.</span> <span class="nav-text">规则分类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">11.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">11.1.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">11.2.</span> <span class="nav-text">编译时错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">11.3.</span> <span class="nav-text">运行时错误</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">12.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="nav-number">12.1.</span> <span class="nav-text">触发方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB"><span class="nav-number">12.2.</span> <span class="nav-text">RDB</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RDB-%E4%BC%98%E7%82%B9"><span class="nav-number">12.2.1.</span> <span class="nav-text">RDB 优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RDB-%E7%BC%BA%E7%82%B9"><span class="nav-number">12.2.2.</span> <span class="nav-text">RDB 缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF"><span class="nav-number">12.3.</span> <span class="nav-text">AOF</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF-%E4%BC%98%E7%82%B9"><span class="nav-number">12.3.1.</span> <span class="nav-text">AOF 优点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF-%E7%BC%BA%E7%82%B9"><span class="nav-number">12.3.2.</span> <span class="nav-text">AOF 缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB-%E5%92%8C-AOF-%E7%BB%84%E5%90%88"><span class="nav-number">12.4.</span> <span class="nav-text">RDB 和 AOF 组合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-number">13.</span> <span class="nav-text">主从复制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">13.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">13.2.</span> <span class="nav-text">复制原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">13.2.1.</span> <span class="nav-text">全量复制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">13.2.2.</span> <span class="nav-text">增量复制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="nav-number">13.3.</span> <span class="nav-text">命令模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9C%89%E6%95%88"><span class="nav-number">13.3.1.</span> <span class="nav-text">运行时有效</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">13.4.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">13.5.</span> <span class="nav-text">哨兵模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%80%E4%B8%BB%E4%B8%89%E4%BB%8E%E5%93%A8%E5%85%B5%E9%85%8D%E7%BD%AE"><span class="nav-number">13.5.1.</span> <span class="nav-text">一主三从哨兵配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">14.</span> <span class="nav-text">集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">14.1.</span> <span class="nav-text">集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%96%E8%BE%91%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">14.1.1.</span> <span class="nav-text">编辑配置文件  </span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-Redis-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">14.1.2.</span> <span class="nav-text">启动 Redis 服务器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9"><span class="nav-number">14.1.3.</span> <span class="nav-text">创建集群节点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5-Redis-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">14.1.4.</span> <span class="nav-text">连接 Redis 服务器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%91%BD%E4%BB%A4"><span class="nav-number">14.1.5.</span> <span class="nav-text">集群命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF"><span class="nav-number">14.1.6.</span> <span class="nav-text">查看节点信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C"><span class="nav-number">14.1.7.</span> <span class="nav-text">数据操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E8%8A%82%E7%82%B9"><span class="nav-number">14.1.8.</span> <span class="nav-text">测试节点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">14.1.9.</span> <span class="nav-text">查看节点配置文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%B0%E8%8A%82%E7%82%B9"><span class="nav-number">14.1.10.</span> <span class="nav-text">添加新节点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E4%BC%98%E7%82%B9"><span class="nav-number">14.2.</span> <span class="nav-text">集群优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E7%BC%BA%E7%82%B9"><span class="nav-number">14.3.</span> <span class="nav-text">集群缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E3%80%81%E5%87%BB%E7%A9%BF%E3%80%81%E9%9B%AA%E5%B4%A9"><span class="nav-number">15.</span> <span class="nav-text">缓存穿透、击穿、雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">15.1.</span> <span class="nav-text">缓存穿透</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">15.1.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">15.2.</span> <span class="nav-text">缓存击穿</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95-1"><span class="nav-number">15.2.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">15.3.</span> <span class="nav-text">缓存雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95-2"><span class="nav-number">15.3.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="nav-number">16.</span> <span class="nav-text">慢查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%8D%E6%9D%82%E5%BA%A6%E8%BF%87%E9%AB%98%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="nav-number">16.1.</span> <span class="nav-text">使用复杂度过高的命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%A7-Key-%E9%97%AE%E9%A2%98"><span class="nav-number">16.2.</span> <span class="nav-text">大 Key 问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E8%BF%87%E6%9C%9F"><span class="nav-number">16.3.</span> <span class="nav-text">集中过期</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1563,12 +1569,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">374k</span>
+    <span title="站点总字数">375k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:40</span>
+    <span title="站点阅读时长">5:41</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
