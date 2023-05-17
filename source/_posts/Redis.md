@@ -57,6 +57,32 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 [root@centos7 workspace]# cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
 ```
 
+#### 开机启动
+
+- `/usr/lib/systemd/system/` 目录中创建 `redis.service` 文件, 使用 `yum install` 安装 Redis 自动创建此文件
+- 使用命令 `ln -s /usr/lib/systemd/system/redis.service /etc/systemd/system/redis.service` 创建到系统服务目录的软链接
+- 编辑 `redis.service` 文件
+
+```conf
+[Unit]   # 控制单元定义
+Description=redis-service # 当前配置文件的描述信息
+After=network.target # 表示当前服务在哪个服务后面启动，一般定义为网络服务启动之后
+
+[Service]   # 服务定义
+Type=forking   # 定义启动类型
+ExecStart=/usr/local/bin/redis-server /root/workspace/redis6379.conf # 定义启动进程时执行的命令
+#ExecReload=   # 定义重启服务时执行的命令
+#ExecStop=  # 定义关闭进程时执行的命令
+PrivateTmp=true   # 是否分配独立空间
+
+[Install]   # 安装定义
+WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服务
+```
+
+- 使用命令 `systemctl daemon-reload` 重启系统服务管理守护进程
+- 使用命令 `systemctl start redis.service` 启动 Redis 服务
+- 使用命令 `systemctl enable redis.service` 允许 Redis 服务开机启动
+
 ### CONFIG 命令
 
 - CONFIG GET parameter [parameter...] 获取指定配置项的值

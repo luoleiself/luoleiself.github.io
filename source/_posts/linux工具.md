@@ -1,5 +1,5 @@
 ---
-title: shell工具
+title: linux工具
 date: 2022-05-31 14:40:43
 categories:
   - [linux, shell]
@@ -313,4 +313,222 @@ fi
 
 [root@centos7 workspace]# crontab -l  # 列出当前用户的所有任务
 * * * * * /bin/bash /root/workspace/crontab-out-format.sh # 定时任务
+```
+
+### systemctl
+
+systemd 系统控制和服务管理工具的主命令, systemd 开启和监督整个系统是基于 Unit 的概念, Unit 是由一个与配置文件名同名的名字和类型组成
+
+| Runlevel | Target Unit                         | Description                              |
+| :------: | ----------------------------------- | ---------------------------------------- |
+|    0     | runlevel0.target, poweroff.target   | Shut down and power off the system       |
+|    1     | runlevel1.target, rescue.target     | Set up a rescue shell                    |
+|    2     | runlevel2.target, multi-user.target | Set up a non-graphical multi-user system |
+|    3     | runlevel3.target, multi-user.target | Set up a non-graphical multi-user system |
+|    4     | runlevel4.target, multi-user.target | Set up a non-graphical multi-user system |
+|    5     | runlevel5.target, graphical.target  | Set up a graphical multi-user system     |
+|    6     | runlevel6.target, reboot.target     | Shut down and reboot the system          |
+
+- start 启动服务
+- stop 停止服务
+- reload 重新加载配置文件不重启服务
+- restart 重启服务
+- enable 允许开机启动
+- disable 取消开机启动
+- status 查看服务的状态
+- is-active 查看服务是否正在运行
+- is-enabled 查看服务是否开机启动
+- show 查看服务的详细信息
+
+- default 进入系统默认模式
+- rescue 进入系统救援模式
+- emergency 进入系统应急模式
+
+- halt 关闭系统
+- poweroff 关闭系统
+- reboot 重启系统
+
+- daemon-reload 重新加载 systemd 系统管理配置项
+- daemon-reexec 重新执行 systemd 系统管理器
+
+#### Unit 类型
+
+每个配置单元都有一个对应的配置文件
+
+- service 代表一个后台服务进程, 例如 mysqld、nginx
+- socket 此类配置单元封装系统和互联网中的一个套接字, 每个套接字配置单元都有一个相应的服务配置单元, 相应的服务在第一个连接进入套接字时就会自动启动(例如 nscd.socket 在有新连接后会启动 nscd.service)
+- device 此类配置单元封装一个存在于 linux 设备树中的设备, 每个使用 udev 规则标记的设备都会在 systemd 中作为一个设备配置单元出现
+- mount 此类配置单元封装文件系统结构层次中的一个挂载点, systemd 将对这个挂载点进行监控和管理, systemd 会将 /etc/fstab 中的条目都转换为挂载点, 并在开机时处理
+- automount 此类配置单元封装文件系统结构层次中的一个自动挂载点, 每个自动挂载配置单元对应一个挂载配置单元
+- swap 和挂载配置单元类似, 可以用交换配置单元来定义系统中的交换分区, 让这些交换分区在启动时被激活
+- target 此类配置单元为其它配置单元进行逻辑分组, 它们本身没有任何行为, 只是引用其他配置单元, 这样就可以对配置单元做一个统计的控制
+- timer 定时器配置单元用来定时触发用户定义的操作, 这类配置单元取代了 atd, crond 等传统的定时服务
+- snapshot 与 target 配置单元类似, 快照是一组配置单元, 保存了系统当前的运行状态
+
+#### 配置文件项
+
+##### Unit
+
+用来定义单元的元数据, 以及配置与其他 Unit 的关系
+
+- Description 当前服务的简单描述
+- Documentation 文档地址
+- Requires 表示强依赖关系, 即某些服务停止运行或退出, 该服务也必须停止或退出
+- Wants 表示弱依赖关系, 即某些服务停止运行或退出不会影响该服务继续运行
+- After 表示在什么服务之后启动
+- Before 表示在什么服务之前启动
+- Conflicts 表示指定的 Unit 不能与当前 Unit 同时运行
+- Condition 表示当前 Unit 运行必须满足的条件, 否则不会运行
+- Assert 表示当前 Unit 运行必须满足的条件, 否则会报启动失败
+
+##### Install
+
+定义如何安装此配置文件
+
+- Alias 为当前 Unit 定义一个用于启动的别名
+- Also 当前 Unit 被激活时, 同时被激活的其他 Unit
+- RequiredBy 当前 Unit 被允许运行需要的一系列依赖 Unit, RequiredBy 列表从 Require 获得依赖信息
+- DefaultInstance 实例单元的限制, 这个选项指定如果 Unit 被允许运行时的默认实例
+- WantedBy 表示该服务所在的 target, target 表示一组服务, 大多的服务都附在 multi-user.target 组, 这个组的所有服务都将开机启动
+
+##### Service
+
+配置 service, 只有 service 类型的 Unit 才有此项
+
+- Type 定义启动时的进程行为
+  - simple 默认值, 执行 ExecStart 指定的命令, 启动主进程
+  - forking 以 fork 方式从父进程创建子进程, 此时父进程将会退出, 子进程成为主进程
+  - oneshot 与 simple 类似, 但只执行一次, Systemd 等待此进程执行完后, 才启动其他服务
+  - dbus 与 simple 类似, 但会等待 D-Bus 信号后启动
+  - notify 与 simple 类似, 启动结束后会发出通知信号, Systemd 再启动其他服务
+  - idle 与 simple 类似, 等待其他任务都执行完成, 才会启动该服务
+- ExecStart 定义启动进程时执行的命令
+- ExecReload 定义重启服务时执行的命令
+- ExecStop 定义停止服务时执行的命令
+- ExecStartPre 定义启动服务之前执行的命令
+- ExecStartPost 定义启动服务之后执行的命令
+- ExecStopPost 定义停止服务之后执行的命令
+- KillMode 定义 Systemd 如何停止服务
+  - control-group 默认值, 当前控制组内的所有子进程都会被杀掉
+  - process 只杀主进程
+  - mixed 主进程将受到 SIGTERM 信号, 子进程受到 SIGKILL 信号
+  - none 不杀掉任何进程, 只执行服务的 stop 命令
+- Restart 定义 Systemd 重启服务的方式
+  - no 默认值, 退出后不会重启
+  - on-success 只有正常退出时(退出状态码为 0), 才会重启
+  - on-failure 非正常退出时(退出状态码非 0), 包括信号被终止和超时才会重启
+  - on-abnormal 只有被信号终止和超时才会重启
+  - on-abort 只有在收到没有捕捉到的信号终止时才会重启
+  - on-watchdog 超时退出才会重启
+  - always 不管什么原因总是重启
+- RestartSec 定义 Systemd 重启服务之前等待的秒数
+- TimeoutSec 定义 Systemd 停止服务之前等待的秒数
+- user 定义服务的用户名
+- WorkingDirectory 定义服务的安装目录
+- EnvironmentFile 定义环境变量配置文件
+- PrivateTmp 定义是否分配独立空间
+
+##### Timer
+
+- OnBootSec 当开机多久后才执行当前 Unit
+- OnUnitActiveSec 这个 timer 配置文件所管理的那个 Unit 在最后一次启动后, 相隔多久再执行一次
+- OnUnitInactiveSec 这个 timer 配置文件所管理的那个 Unit 在最后一次停止后, 相隔多久再执行一次
+- OnCalendar 使用实际时间(非循环时间)的方式来启动服务
+- OnActiveSec 当 timers.target 启动多久后才执行当前 Unit
+- OnStartupSec 当 Systemd 第一次启动后多久才执行当前 Unit
+
+#### 配置 service
+
+- Redis.service
+
+```conf
+[Unit]
+Description=redis-server
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/redis-server /root/workspace/redis6379.conf
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+#### 配置 target
+
+- multi-user.target
+
+```conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Multi-User System
+Documentation=man:systemd.special(7)
+Requires=basic.target
+Conflicts=rescue.service rescue.target
+After=basic.target rescue.service rescue.target
+AllowIsolate=yes
+```
+
+#### 配置 timer
+
+- systemd-tmpfiles-clean.timer
+
+```conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Daily Cleanup of Temporary Directories
+Documentation=man:tmpfiles.d(5) man:systemd-tmpfiles(8)
+
+[Timer]
+OnBootSec=15min # 当开机多久后才执行当前 Unit
+OnUnitActiveSec=1d  # 这个 timer 配置文件所管理的那个 Unit 在最后一次启动后, 相隔多久再执行一次
+#OnUnitInactiveSec # 这个 timer 配置文件所管理的那个 Unit 在最后一次停止后, 相隔多久再执行一次
+#OnCalendar # 使用实际时间(非循环时间)的方式来启动服务
+#OnActiveSec  # 当 timers.target 启动多久后才执行当前 Unit
+#OnStartupSec # 当 Systemd 第一次启动后多久才执行当前 Unit
+```
+
+#### 配置 mount
+
+- tmp.mount
+
+```conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Temporary Directory
+Documentation=man:hier(7)
+Documentation=http://www.freedesktop.org/wiki/Software/systemd/APIFileSystems
+ConditionPathIsSymbolicLink=!/tmp
+DefaultDependencies=no
+Conflicts=umount.target
+Before=local-fs.target umount.target
+
+[Mount]
+What=tmpfs
+Where=/tmp
+Type=tmpfs
+Options=mode=1777,strictatime
+
+# Make 'systemctl enable tmp.mount' work:
+[Install]
+WantedBy=local-fs.target
 ```
