@@ -204,6 +204,117 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/05/0d965ffa3e9b/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/05/0d965ffa3e9b/" class="post-title-link" itemprop="url">systemd</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-31 14:40:43" itemprop="dateCreated datePublished" datetime="2022-05-31T14:40:43+08:00">2022-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-05-18 17:38:23" itemprop="dateModified" datetime="2023-05-18T17:38:23+08:00">2023-05-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="systemd"><a href="#systemd" class="headerlink" title="systemd"></a>systemd</h2><p>systemd(system daemon)是 linux 下的一种 init 软件, 提供更优秀的框架以表示系统服务间的依赖关系, 并依此实现系统初始化时服务的并行启动, 同时达到降低 shell 的系统开销的效果, 最终代替常用的 System V 与 BSD 风格 init 程序</p>
+<ul>
+<li>采用 socket 激活式与总线激活式服务, 以提高相互依赖的各服务的并行运行性能</li>
+<li>采用 cgroup 代替 PID 来追踪进程, 依此即使是两次 fork 之后生成的守护进程也不会脱离 systemd 的控制</li>
+</ul>
+<h3 id="CGroup"><a href="#CGroup" class="headerlink" title="CGroup"></a>CGroup</h3><blockquote>
+<p>cgroup 是 linux 内核的一个功能, 用来限制、控制与分离一个进程组的资源(如 CPU、内存、磁盘输入输出等)</p>
+</blockquote>
+<p>cgroup 是 linux 内核提供的一种机制, 这种机制可以根据需求把一系列系统任务及其子任务整合(或分隔)到按资源划分等级的不同组内, 从而为系统资源管理提供一个统一的框架. 简单说, cgroup 可以限制、记录任务组所使用的物理资源, 本质上来说, cgroup 是内核附加在程序上的一系列钩子(hook), 通过程序运行时对资源的调度触发相应的钩子以达到资源追踪和限制的目的.</p>
+<h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><ul>
+<li>资源限制: cgroup 可以对任务需要的资源总额进行限制, 例如设定任务运行使用的内存上限, 一旦超出就触发 OOM</li>
+<li>优先级分配: 通过分配的 CPU 时间片数量和磁盘 IO 带宽, 实际上就等于控制了任务运行的优先级</li>
+<li>资源统计: cgroup 可以统计系统的资源使用量, 例如 CPU 使用时长、内存使用量等</li>
+<li>任务控制: cgroup 可以对任务执行挂起、恢复等操作</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/05/0d965ffa3e9b/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/05/2261dfd57ebf/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1178,162 +1289,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/12/da90853b6cb5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/12/da90853b6cb5/" class="post-title-link" itemprop="url">微信小程序</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-12-24 11:54:05" itemprop="dateCreated datePublished" datetime="2021-12-24T11:54:05+08:00">2021-12-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-29 12:00:55" itemprop="dateModified" datetime="2022-07-29T12:00:55+08:00">2022-07-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/wx/" itemprop="url" rel="index"><span itemprop="name">wx</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>12k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>11 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="头像昵称-API-调整"><a href="#头像昵称-API-调整" class="headerlink" title="头像昵称 API 调整"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/00022c683e8a80b29bed2142b56c01">头像昵称 API 调整</a></h4><ul>
-<li>20221026 起, 小程序 wx.getUserProfile 接口将被收回, wx.getUserInfo 接口获取用户头像将统一返回默认灰色头像，昵称将统一返回 “微信用户”</li>
-<li>2.21.2 基础库开始, 如果业务需获取用户头像昵称，可以使用 <a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/userProfile.html">头像昵称填写能力</a></li>
-</ul>
-<h4 id="地理位置"><a href="#地理位置" class="headerlink" title="地理位置"></a>地理位置</h4><h5 id="地理位置-API-调整"><a href="#地理位置-API-调整" class="headerlink" title="地理位置 API 调整"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/000a02f2c5026891650e7f40351c01?blockType=1">地理位置 API 调整</a></h5><ul>
-<li>20220628 起, 使用地理位置 API 需要在 app.json 配置项 requirePrivateInfos 提前声明</li>
-</ul>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;requirePrivateInfos&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;chooseAddress&quot;</span><span class="punctuation">,</span> <span class="string">&quot;getFuzzyLocation&quot;</span><span class="punctuation">]</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>部分 API 需要在管理后台申请接口权限</li>
-</ul>
-<p><img src="/images/wx-1.png" alt="wx-1"></p>
-<h5 id="接口权限申请"><a href="#接口权限申请" class="headerlink" title="接口权限申请"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/000e8ccb5ac498318cbd26c495bc01?blockType=1">接口权限申请</a></h5><ul>
-<li><p>getFuzzyLocation</p>
-</li>
-<li><p>getLocation</p>
-</li>
-<li><p>onLocationChange</p>
-</li>
-<li><p>chooseAddress</p>
-</li>
-<li><p>choosePoi</p>
-</li>
-<li><p>chooseLocation</p>
-</li>
-<li><p>20220418 起, 如果使用以上接口, 需要在小程序管理后台申请接口权限</p>
-</li>
-<li><p>地理位置新增接口和相关流程调整</p>
-</li>
-</ul>
-<h5 id="choosePoi-chooseLocation"><a href="#choosePoi-chooseLocation" class="headerlink" title="choosePoi|chooseLocation"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/0006e45df2cac030e6edf367c56001?blockType=1">choosePoi|chooseLocation</a></h5><ul>
-<li>20220613 起, 使用该接口不在需要用户授权 scope.userLocation</li>
-<li>wx.choosePoi 回调信息中不再返回真实的经纬度信息, 全部返回(0,0)</li>
-</ul>
-<h5 id="getFuzzyLocation"><a href="#getFuzzyLocation" class="headerlink" title="getFuzzyLocation"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html">getFuzzyLocation</a></h5><ul>
-<li>2.25.0 开始, 新增获取模糊地理位置接口, 接口规则同 <a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html">chooseLocation</a></li>
-</ul>
-<h4 id="getPhoneNumber"><a href="#getPhoneNumber" class="headerlink" title="getPhoneNumber"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html">getPhoneNumber</a></h4><ul>
-<li>e.detail.encryptedData</li>
-<li>e.detail.iv</li>
-</ul>
-<h4 id="wx-openSetting"><a href="#wx-openSetting" class="headerlink" title="wx.openSetting"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html">wx.openSetting</a></h4><ul>
-<li>2.3.0 开始, <a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008">打开小程序设置页</a> 改为用户行为触发, 直接调用此 API 无效</li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 方法一 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">open-type</span>=<span class="string">&quot;openSetting&quot;</span> <span class="attr">bindopensetting</span>=<span class="string">&quot;callback&quot;</span>&gt;</span>打开设置页<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 方法二 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">bindtap</span>=<span class="string">&quot;openSetting&quot;</span>&gt;</span>打开设置页<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">openSetting()&#123; wx.openSetting() &#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="behaviors"><a href="#behaviors" class="headerlink" title="behaviors"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html">behaviors</a></h4><ul>
-<li>自定义组件混入 behaviors, 在 attached 钩子函数中调用混入的方法获取不到, 需要在 ready 中调用</li>
-</ul>
-<h4 id="ios-微信小程序-input-输入框使用-bind-focus-时-在-input-获取焦点后会出现输入法键盘-然后点击其他下拉框或自定义组件会出现-input-仍然可以编辑状态"><a href="#ios-微信小程序-input-输入框使用-bind-focus-时-在-input-获取焦点后会出现输入法键盘-然后点击其他下拉框或自定义组件会出现-input-仍然可以编辑状态" class="headerlink" title="ios 微信小程序 input 输入框使用 bind:focus 时, 在 input 获取焦点后会出现输入法键盘,然后点击其他下拉框或自定义组件会出现 input 仍然可以编辑状态"></a>ios 微信小程序 input 输入框使用 bind:focus 时, 在 input 获取焦点后会出现输入法键盘,然后点击其他下拉框或自定义组件会出现 input 仍然可以编辑状态</h4><ul>
-<li>修改 input 的 focus 属性</li>
-</ul>
-<h4 id="小程序多-appId-平台提审和接口域名切换"><a href="#小程序多-appId-平台提审和接口域名切换" class="headerlink" title="小程序多 appId 平台提审和接口域名切换"></a>小程序多 appId 平台提审和接口域名切换</h4><p>使用以下 API 获取小程序 appId, 根据 appid 推送不同平台和切换不同接口域名</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.getLaunchOptionsSync.html">wx.getLaunchOptionsSync</a> 获取小程序启动时的参数, 与 App.onLaunch 的回调参数一致<ul>
-<li>2.1.2 支持</li>
-</ul>
-</li>
-<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html">wx.getAccountInfoSync</a> 获取当前帐号信息, 线上小程序版本号仅支持在正式版小程序中获取, 开发版和体验版中无法获取<ul>
-<li>2.2.2 支持</li>
-</ul>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/12/da90853b6cb5/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1405,7 +1360,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1475,12 +1430,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">392k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:57</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

@@ -235,7 +235,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-23 15:16:39" itemprop="dateModified" datetime="2023-04-23T15:16:39+08:00">2023-04-23</time>
+                <time title="修改时间：2023-05-18 12:16:27" itemprop="dateModified" datetime="2023-05-18T12:16:27+08:00">2023-05-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -289,52 +289,14 @@
 <li>每当目标元素与设备视窗或者其他指定元素发生交集的时候执行, 设备视窗或者其他元素被称为根元素或根</li>
 <li>Observer 第一次监听目标元素时</li>
 </ul>
-<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>创建并返回一个新的 <code>IntersectionObserver</code> 实例, 当其监听到目标元素的可见部分(的比例)超过了一个或多个<strong>阈值</strong>(threshold)时, 执行指定的回调函数<br>如果指定 <code>rootMargin</code> 则会检查其是否符合语法规定, 检查阈值以确保全部在 <code>0.0</code> 到 <code>1.0</code> 之间, 并且阈值列表会按升序排列, 如果阈值列表为空, 则默认为一个 [0.0] 的数组</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ob = <span class="keyword">new</span> <span class="title class_">IntersectionObserver</span>(</span><br><span class="line">  <span class="function">(<span class="params">entries, observer</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 如果 intersectionRatio 为 0, 则目标在视野外</span></span><br><span class="line">    <span class="keyword">if</span> (entries[<span class="number">0</span>].<span class="property">intersectionRatio</span> &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(entries, observer);</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// 使用文档视口作为 root</span></span><br><span class="line">    <span class="attr">root</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="comment">// 添加到根的边界盒中的一组偏移量用于计算交叉值</span></span><br><span class="line">    <span class="attr">rootMargin</span>: <span class="string">&#x27;0px 0px 0px 0px&#x27;</span>,</span><br><span class="line">    <span class="comment">// 指定元素在根的可见程度每多 25% 执行一次回调函数</span></span><br><span class="line">    <span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">0.75</span>, <span class="number">1</span>],</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<h4 id="参数-callback"><a href="#参数-callback" class="headerlink" title="参数 callback"></a>参数 callback</h4><p>当元素的可见比例超过指定阈值后, 会调用此回调函数</p>
-<ul>
-<li>entries 一个 <code>IntersectionObserverEntry</code> 对象的数组, 每个被触发的阈值都稍微与指定阈值有偏差</li>
-<li>observer 被调用的 <code>IntersectionObserver</code> 实例</li>
-</ul>
-<h4 id="可选-options"><a href="#可选-options" class="headerlink" title="可选 options"></a>可选 options</h4><p>用来配置 observer 实例的对象, 如果未指定, observer 实例默认使用文档视口作为 root, 并且没有 <code>rootMargin</code>, 阈值为 0%</p>
-<h5 id="root"><a href="#root" class="headerlink" title="root"></a>root</h5><p>监听元素的祖先元素对象, 其边界盒将被视作视口, 如果未指定或者为 null, 则默认为浏览器视窗</p>
-<h5 id="rootMargin"><a href="#rootMargin" class="headerlink" title="rootMargin"></a>rootMargin</h5><p>一个计算交叉值时添加至根的边界盒中的一组偏移量, 类型为字符串, 可以有效的缩小或扩大根的判定范围从而满足计算需要, 默认为 <code>0px 0px 0px 0px</code></p>
-<h5 id="threshold"><a href="#threshold" class="headerlink" title="threshold"></a>threshold</h5><p>规定了一个监听目标与边界盒交叉区域的比例值, 可以为一个具体的数值或是一组 <code>0.0</code> 到 <code>1.0</code> 之间的数组<br>如果指定元素在根的可见程度每多 25% 执行一次回调, 则指定为数组 <code>[0, 0.25, 0.5, 0.75, 1]</code><br>如果指定元素在根的可见程度超过 50% 执行一次回调, 则指定为 <code>0.5</code></p>
-<ul>
-<li>若指定为 0.0, 监听元素与根即使有 1 像素交叉, 此元素也会被视为可见, 默认为 0.0</li>
-<li>若指定为 1.0, 监听元素都在可见范围内时才被视为可见</li>
-</ul>
-<h3 id="实例属性"><a href="#实例属性" class="headerlink" title="实例属性"></a>实例属性</h3><h4 id="ob-root"><a href="#ob-root" class="headerlink" title="ob.root"></a>ob.root</h4><p>只读属性, 获取当前的 <code>IntersectionObserver</code> 实例的根元素</p>
-<h4 id="ob-rootMargin"><a href="#ob-rootMargin" class="headerlink" title="ob.rootMargin"></a>ob.rootMargin</h4><p>只读属性, 获取当前 <code>IntersectionObserver</code> 实例的根元素的边界盒的偏移量</p>
-<h4 id="ob-thresholds"><a href="#ob-thresholds" class="headerlink" title="ob.thresholds"></a>ob.thresholds</h4><p>只读属性, 获取当前 <code>IntersectionObserver</code> 实例的根元素与监听目标的交叉区域的比例值</p>
-<h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h4 id="ob-disconnect"><a href="#ob-disconnect" class="headerlink" title="ob.disconnect()"></a>ob.disconnect()</h4><p>停止 <code>IntersectionObserver</code> 实例对所有目标元素的监听行为</p>
-<h4 id="ob-observe-targetElement"><a href="#ob-observe-targetElement" class="headerlink" title="ob.observe(targetElement)"></a>ob.observe(targetElement)</h4><p>开始监听指定元素</p>
-<ul>
-<li>targetElement 可见性区域被监控的元素, 此元素必须是根元素的后代元素</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ob = <span class="keyword">new</span> <span class="title class_">IntersectionObserver</span>(</span><br><span class="line">  <span class="function">(<span class="params">entries, observer</span>) =&gt;</span> &#123;</span><br><span class="line">    entries.<span class="title function_">forEach</span>(<span class="function">(<span class="params">entry</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (entry.<span class="property">intersectionRatio</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        entry.<span class="property">target</span>.<span class="property">classList</span>.<span class="title function_">add</span>(<span class="string">&#x27;active&#x27;</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        entry.<span class="property">target</span>.<span class="property">classList</span>.<span class="title function_">remove</span>(<span class="string">&#x27;active&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">root</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">rootMargin</span>: <span class="string">&#x27;0px 0px 0px 0px&#x27;</span>,</span><br><span class="line">    <span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>],</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"><span class="comment">// 监听多个目标元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.section-content&#x27;</span>).<span class="title function_">forEach</span>(<span class="function">(<span class="params">el</span>) =&gt;</span> &#123;</span><br><span class="line">  ob.<span class="title function_">observe</span>(el);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="ob-takeRecords"><a href="#ob-takeRecords" class="headerlink" title="ob.takeRecords()"></a>ob.takeRecords()</h4><blockquote>
-<p>使用构造函数回调监听则不需要调用此方法, 调用此方法会清除挂起的交叉区域状态列表并不会执行构造函数中的回调</p>
-</blockquote>
-<p>返回所有观察目标的<strong>挂起的</strong>交叉区域状态的 <code>IntersectionObserverEntry</code> 对象的数组</p>
-<h4 id="ob-unobserve-target"><a href="#ob-unobserve-target" class="headerlink" title="ob.unobserve(target)"></a>ob.unobserve(target)</h4><p>取消对指定目标的监听行为</p>
-<ul>
-<li>target 要取消监听的目标, 如果未提供参数, 则不做任何操作</li>
-</ul>
-<h3 id="IntersectionObserverEntry"><a href="#IntersectionObserverEntry" class="headerlink" title="IntersectionObserverEntry"></a>IntersectionObserverEntry</h3><p>接口描述了目标元素与其根元素容器在某一特定过渡时刻的交叉状态, <code>IntersectionObserverEntry</code> 的实例作为 entries 参数被传递到 IntersectionObserver 实例的回调函数中.<br>此外, 这些对象只能通过调用 <code>observer.takeRecords()</code> 来获取</p>
-<h4 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h4><ul>
-<li>boundingClientRect 只读属性, 返回包含目标元素的边界信息, 计算方式与 <code>Element.getBoundingClientRect()</code> 相同</li>
-<li>intersectionRatio 只读属性, 返回 <code>intersectionRect</code> 与 <code>boundingClientRect</code> 的比例值</li>
-<li>intersectionRect 只读属性, 返回一个 <code>DOMRectReadOnly</code> 用来描述根与目标元素的相交区域</li>
-<li>isIntersecting 只读属性, 返回一个布尔值, 如果目标元素与交叉区域观察者对象的根相交则返回 true, 否则返回 false</li>
-<li>rootBounds 只读属性, 返回一个 <code>DOMRectReadOnly</code> 用来描述交叉区域观察者中的根</li>
-<li>target 只读属性, 与根出现相交区域改变的元素</li>
-<li>time 只读属性, 返回一个记录从 IntersectionObserver 的时间原点到交叉被触发的时间的时间戳</li>
-</ul>
-<p><img data-src="/images/IntersectionObserver-1.jpg" alt="IntersectionObserver-1"><br><img data-src="/images/IntersectionObserver-2.jpg" alt="IntersectionObserver-2"></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/04/ec2526e79bc5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1269,7 +1231,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-05-17 18:38:05" itemprop="dateModified" datetime="2023-05-17T18:38:05+08:00">2023-05-17</time>
+                <time title="修改时间：2023-05-18 14:22:14" itemprop="dateModified" datetime="2023-05-18T14:22:14+08:00">2023-05-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1290,13 +1252,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>11k</span>
+              <span>6.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>10 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -1434,7 +1396,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1504,12 +1466,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">380k</span>
+    <span title="站点总字数">392k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:46</span>
+    <span title="站点阅读时长">5:57</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

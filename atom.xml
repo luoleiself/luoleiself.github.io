@@ -6,7 +6,7 @@
   <link href="https://luoleiself.github.io/atom.xml" rel="self"/>
   
   <link href="https://luoleiself.github.io/"/>
-  <updated>2023-04-23T07:16:39.631Z</updated>
+  <updated>2023-05-18T04:16:27.298Z</updated>
   <id>https://luoleiself.github.io/</id>
   
   <author>
@@ -21,16 +21,28 @@
     <link href="https://luoleiself.github.io/2023/04/ec2526e79bc5/"/>
     <id>https://luoleiself.github.io/2023/04/ec2526e79bc5/</id>
     <published>2023-04-20T11:04:10.000Z</published>
-    <updated>2023-04-23T07:16:39.631Z</updated>
+    <updated>2023-05-18T04:16:27.298Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;IntersectionObserver&quot;&gt;&lt;a href=&quot;#IntersectionObserver&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">&lt;h2 id=&quot;IntersectionObserver&quot;&gt;&lt;a href=&quot;#IntersectionObserver&quot; class=&quot;headerlink&quot; title=&quot;IntersectionObserver&quot;&gt;&lt;/a&gt;IntersectionObserver&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;之前通常要使用事件监听, 并且需要频繁调用 Element.getBoundingClientRect() 方法以获取相关元素的边界信息, 并使用事件通知的方式同步进行计算, 可能造成性能问题&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;IntersectionObserver&lt;/code&gt; 接口提供了一种&lt;strong&gt;异步观察&lt;/strong&gt;目标元素与祖先元素或顶级文档视口(viewport)交叉状态的方法&lt;br&gt;当一个 &lt;code&gt;IntersectionObserver&lt;/code&gt; 对象被创建时, 其被配置为监听根中一段给定比例的可见区域, 一旦 &lt;code&gt;IntersectionObserver&lt;/code&gt; 被创建, 则无法更改其配置, 所以一个给定的观察者对象只能用来监听可见区域的特定变化值, 但是, 可以在同一个观察者对象中配置监听多个目标元素&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;交叉状态触发是成对出现的, 就像 &lt;code&gt;mouseenter&lt;/code&gt; 和 &lt;code&gt;mouseleave&lt;/code&gt; 事件一样, 有进入状态在未来某一时刻肯定会有移出状态&lt;/li&gt;
+&lt;li&gt;在非交叉区域内的操作不会触发, 和 &lt;code&gt;scroll&lt;/code&gt; 事件的触发是有区别的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;应用范围&quot;&gt;&lt;a href=&quot;#应用范围&quot; class=&quot;headerlink&quot; title=&quot;应用范围&quot;&gt;&lt;/a&gt;应用范围&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;图片懒加载, 当图片滚动到可见区域时才进行加载&lt;/li&gt;
+&lt;li&gt;内容无限滚动, 用户滚动到接近内容底部时直接加载更多而无需用户操作翻页&lt;/li&gt;
+&lt;li&gt;检测广告的曝光情况, 为了计算广告收益, 需要直到广告元素的曝光情况&lt;/li&gt;
+&lt;li&gt;在到达可见区域时执行任务或播放动画&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;触发时机&quot;&gt;&lt;a href=&quot;#触发时机&quot; class=&quot;headerlink&quot; title=&quot;触发时机&quot;&gt;&lt;/a&gt;触发时机&lt;/h3&gt;&lt;p&gt;通常只需要关注文档最接近的可滚动祖先元素的交集更改, 如果元素不是可滚动元素的后代, 则默认为设备视窗&lt;br&gt;如果要观察相对于根元素的交集, 则指定根元素为 null&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每当目标元素与设备视窗或者其他指定元素发生交集的时候执行, 设备视窗或者其他元素被称为根元素或根&lt;/li&gt;
+&lt;li&gt;Observer 第一次监听目标元素时&lt;/li&gt;
+&lt;/ul&gt;</summary>
     
     
     
@@ -327,7 +339,7 @@
     <link href="https://luoleiself.github.io/2022/05/bc4d38208f0f/"/>
     <id>https://luoleiself.github.io/2022/05/bc4d38208f0f/</id>
     <published>2022-05-31T06:40:43.000Z</published>
-    <updated>2023-05-17T10:38:05.568Z</updated>
+    <updated>2023-05-18T06:22:14.705Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;awk&quot;&gt;&lt;a href=&quot;#awk&quot; class=&quot;headerlink&quot; title=&quot;awk&quot;&gt;&lt;/a&gt;awk&lt;/h3&gt;&lt;p&gt;awk 是一种可以对文本和数据进行处理的编程语言, 默认情况下, awk 文件的每一行都被视为一条记录, 然后 awk 记录进一步分解成一系列的字段&lt;/p&gt;
@@ -362,6 +374,43 @@
 &lt;li&gt;ORS 输出的记录分隔符, 默认为换行符&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="linux" scheme="https://luoleiself.github.io/categories/linux/"/>
+    
+    <category term="shell" scheme="https://luoleiself.github.io/categories/linux/shell/"/>
+    
+    
+    <category term="linux" scheme="https://luoleiself.github.io/tags/linux/"/>
+    
+    <category term="shell" scheme="https://luoleiself.github.io/tags/shell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>systemd</title>
+    <link href="https://luoleiself.github.io/2022/05/0d965ffa3e9b/"/>
+    <id>https://luoleiself.github.io/2022/05/0d965ffa3e9b/</id>
+    <published>2022-05-31T06:40:43.000Z</published>
+    <updated>2023-05-18T09:38:23.923Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;systemd&quot;&gt;&lt;a href=&quot;#systemd&quot; class=&quot;headerlink&quot; title=&quot;systemd&quot;&gt;&lt;/a&gt;systemd&lt;/h2&gt;&lt;p&gt;systemd(system daemon)是 linux 下的一种 init 软件, 提供更优秀的框架以表示系统服务间的依赖关系, 并依此实现系统初始化时服务的并行启动, 同时达到降低 shell 的系统开销的效果, 最终代替常用的 System V 与 BSD 风格 init 程序&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;采用 socket 激活式与总线激活式服务, 以提高相互依赖的各服务的并行运行性能&lt;/li&gt;
+&lt;li&gt;采用 cgroup 代替 PID 来追踪进程, 依此即使是两次 fork 之后生成的守护进程也不会脱离 systemd 的控制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;CGroup&quot;&gt;&lt;a href=&quot;#CGroup&quot; class=&quot;headerlink&quot; title=&quot;CGroup&quot;&gt;&lt;/a&gt;CGroup&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;cgroup 是 linux 内核的一个功能, 用来限制、控制与分离一个进程组的资源(如 CPU、内存、磁盘输入输出等)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;cgroup 是 linux 内核提供的一种机制, 这种机制可以根据需求把一系列系统任务及其子任务整合(或分隔)到按资源划分等级的不同组内, 从而为系统资源管理提供一个统一的框架. 简单说, cgroup 可以限制、记录任务组所使用的物理资源, 本质上来说, cgroup 是内核附加在程序上的一系列钩子(hook), 通过程序运行时对资源的调度触发相应的钩子以达到资源追踪和限制的目的.&lt;/p&gt;
+&lt;h4 id=&quot;作用&quot;&gt;&lt;a href=&quot;#作用&quot; class=&quot;headerlink&quot; title=&quot;作用&quot;&gt;&lt;/a&gt;作用&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;资源限制: cgroup 可以对任务需要的资源总额进行限制, 例如设定任务运行使用的内存上限, 一旦超出就触发 OOM&lt;/li&gt;
+&lt;li&gt;优先级分配: 通过分配的 CPU 时间片数量和磁盘 IO 带宽, 实际上就等于控制了任务运行的优先级&lt;/li&gt;
+&lt;li&gt;资源统计: cgroup 可以统计系统的资源使用量, 例如 CPU 使用时长、内存使用量等&lt;/li&gt;
+&lt;li&gt;任务控制: cgroup 可以对任务执行挂起、恢复等操作&lt;/li&gt;
 &lt;/ul&gt;</summary>
     
     
@@ -686,88 +735,6 @@
     <category term="jsx" scheme="https://luoleiself.github.io/tags/jsx/"/>
     
     <category term="React" scheme="https://luoleiself.github.io/tags/React/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>微信小程序</title>
-    <link href="https://luoleiself.github.io/2021/12/da90853b6cb5/"/>
-    <id>https://luoleiself.github.io/2021/12/da90853b6cb5/</id>
-    <published>2021-12-24T03:54:05.000Z</published>
-    <updated>2022-07-29T04:00:55.824Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;敲黑板&quot;&gt;&lt;a href=&quot;#敲黑板&quot; class=&quot;headerlink&quot; title=&quot;敲黑板&quot;&gt;&lt;/a&gt;敲黑板&lt;/h3&gt;&lt;h4 id=&quot;头像昵称-API-调整&quot;&gt;&lt;a href=&quot;#头像昵称-API-调整&quot; class=&quot;headerlink&quot; title=&quot;头像昵称 API 调整&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.weixin.qq.com/community/develop/doc/00022c683e8a80b29bed2142b56c01&quot;&gt;头像昵称 API 调整&lt;/a&gt;&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;20221026 起, 小程序 wx.getUserProfile 接口将被收回, wx.getUserInfo 接口获取用户头像将统一返回默认灰色头像，昵称将统一返回 “微信用户”&lt;/li&gt;
-&lt;li&gt;2.21.2 基础库开始, 如果业务需获取用户头像昵称，可以使用 &lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/userProfile.html&quot;&gt;头像昵称填写能力&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;地理位置&quot;&gt;&lt;a href=&quot;#地理位置&quot; class=&quot;headerlink&quot; title=&quot;地理位置&quot;&gt;&lt;/a&gt;地理位置&lt;/h4&gt;&lt;h5 id=&quot;地理位置-API-调整&quot;&gt;&lt;a href=&quot;#地理位置-API-调整&quot; class=&quot;headerlink&quot; title=&quot;地理位置 API 调整&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.weixin.qq.com/community/develop/doc/000a02f2c5026891650e7f40351c01?blockType=1&quot;&gt;地理位置 API 调整&lt;/a&gt;&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;20220628 起, 使用地理位置 API 需要在 app.json 配置项 requirePrivateInfos 提前声明&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight json&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;punctuation&quot;&gt;&amp;#123;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;&amp;quot;requirePrivateInfos&amp;quot;&lt;/span&gt;&lt;span class=&quot;punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;chooseAddress&amp;quot;&lt;/span&gt;&lt;span class=&quot;punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;quot;getFuzzyLocation&amp;quot;&lt;/span&gt;&lt;span class=&quot;punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;punctuation&quot;&gt;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-&lt;li&gt;部分 API 需要在管理后台申请接口权限&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&quot;/images/wx-1.png&quot; alt=&quot;wx-1&quot;&gt;&lt;/p&gt;
-&lt;h5 id=&quot;接口权限申请&quot;&gt;&lt;a href=&quot;#接口权限申请&quot; class=&quot;headerlink&quot; title=&quot;接口权限申请&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.weixin.qq.com/community/develop/doc/000e8ccb5ac498318cbd26c495bc01?blockType=1&quot;&gt;接口权限申请&lt;/a&gt;&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;getFuzzyLocation&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;getLocation&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;onLocationChange&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;chooseAddress&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;choosePoi&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;chooseLocation&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;20220418 起, 如果使用以上接口, 需要在小程序管理后台申请接口权限&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;地理位置新增接口和相关流程调整&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5 id=&quot;choosePoi-chooseLocation&quot;&gt;&lt;a href=&quot;#choosePoi-chooseLocation&quot; class=&quot;headerlink&quot; title=&quot;choosePoi|chooseLocation&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.weixin.qq.com/community/develop/doc/0006e45df2cac030e6edf367c56001?blockType=1&quot;&gt;choosePoi|chooseLocation&lt;/a&gt;&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;20220613 起, 使用该接口不在需要用户授权 scope.userLocation&lt;/li&gt;
-&lt;li&gt;wx.choosePoi 回调信息中不再返回真实的经纬度信息, 全部返回(0,0)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5 id=&quot;getFuzzyLocation&quot;&gt;&lt;a href=&quot;#getFuzzyLocation&quot; class=&quot;headerlink&quot; title=&quot;getFuzzyLocation&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html&quot;&gt;getFuzzyLocation&lt;/a&gt;&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;2.25.0 开始, 新增获取模糊地理位置接口, 接口规则同 &lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html&quot;&gt;chooseLocation&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;getPhoneNumber&quot;&gt;&lt;a href=&quot;#getPhoneNumber&quot; class=&quot;headerlink&quot; title=&quot;getPhoneNumber&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html&quot;&gt;getPhoneNumber&lt;/a&gt;&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;e.detail.encryptedData&lt;/li&gt;
-&lt;li&gt;e.detail.iv&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;wx-openSetting&quot;&gt;&lt;a href=&quot;#wx-openSetting&quot; class=&quot;headerlink&quot; title=&quot;wx.openSetting&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html&quot;&gt;wx.openSetting&lt;/a&gt;&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;2.3.0 开始, &lt;a href=&quot;https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008&quot;&gt;打开小程序设置页&lt;/a&gt; 改为用户行为触发, 直接调用此 API 无效&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight html&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 方法一 --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;open-type&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;openSetting&amp;quot;&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;bindopensetting&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;callback&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;打开设置页&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;button&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;&amp;lt;!-- 方法二 --&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;bindtap&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt;&amp;quot;openSetting&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;打开设置页&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;button&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;openSetting()&amp;#123; wx.openSetting() &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;behaviors&quot;&gt;&lt;a href=&quot;#behaviors&quot; class=&quot;headerlink&quot; title=&quot;behaviors&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html&quot;&gt;behaviors&lt;/a&gt;&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;自定义组件混入 behaviors, 在 attached 钩子函数中调用混入的方法获取不到, 需要在 ready 中调用&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;ios-微信小程序-input-输入框使用-bind-focus-时-在-input-获取焦点后会出现输入法键盘-然后点击其他下拉框或自定义组件会出现-input-仍然可以编辑状态&quot;&gt;&lt;a href=&quot;#ios-微信小程序-input-输入框使用-bind-focus-时-在-input-获取焦点后会出现输入法键盘-然后点击其他下拉框或自定义组件会出现-input-仍然可以编辑状态&quot; class=&quot;headerlink&quot; title=&quot;ios 微信小程序 input 输入框使用 bind:focus 时, 在 input 获取焦点后会出现输入法键盘,然后点击其他下拉框或自定义组件会出现 input 仍然可以编辑状态&quot;&gt;&lt;/a&gt;ios 微信小程序 input 输入框使用 bind:focus 时, 在 input 获取焦点后会出现输入法键盘,然后点击其他下拉框或自定义组件会出现 input 仍然可以编辑状态&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;修改 input 的 focus 属性&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&quot;小程序多-appId-平台提审和接口域名切换&quot;&gt;&lt;a href=&quot;#小程序多-appId-平台提审和接口域名切换&quot; class=&quot;headerlink&quot; title=&quot;小程序多 appId 平台提审和接口域名切换&quot;&gt;&lt;/a&gt;小程序多 appId 平台提审和接口域名切换&lt;/h4&gt;&lt;p&gt;使用以下 API 获取小程序 appId, 根据 appid 推送不同平台和切换不同接口域名&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.getLaunchOptionsSync.html&quot;&gt;wx.getLaunchOptionsSync&lt;/a&gt; 获取小程序启动时的参数, 与 App.onLaunch 的回调参数一致&lt;ul&gt;
-&lt;li&gt;2.1.2 支持&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html&quot;&gt;wx.getAccountInfoSync&lt;/a&gt; 获取当前帐号信息, 线上小程序版本号仅支持在正式版小程序中获取, 开发版和体验版中无法获取&lt;ul&gt;
-&lt;li&gt;2.2.2 支持&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="wx" scheme="https://luoleiself.github.io/categories/wx/"/>
-    
-    
-    <category term="wx" scheme="https://luoleiself.github.io/tags/wx/"/>
     
   </entry>
   
