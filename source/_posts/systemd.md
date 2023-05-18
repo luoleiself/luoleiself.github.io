@@ -87,7 +87,7 @@ Operating System: CentOS Linux 7 (Core)
 
 ```shell
 [root@centos7 workspace]# localectl status
-System Locale: LANG=zh_cn.UTF-8
+System Locale: LANG=zh_CN.utf8
     VC Keymap: us
   X11 Layout: n/a
 ```
