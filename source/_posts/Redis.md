@@ -1568,10 +1568,12 @@ port 6379 # 修改绑定的端口号
 daemonize yes # 开启后台运行, 默认为 no
 # 修改进程文件, 默认为 redis_6379.pid
 pidfile /var/run/redis_6379.pid
+loglevel notice
 # 修改日志文件名, 默认为空
 logfile "6379.log"
 # 修改持久化文件名, 默认为 dump.rdb
 dbfilename dump6379.rdb
+dir "" # 持久化文件存放目录
 # 配置主服务器 ip 和 port
 replicaof <masterip> <masterport>
 # 主服务器认证密码, 如果需要
@@ -1584,10 +1586,18 @@ repl-diskless-sync yes
 repl-diskless-sync-delay 5
 # 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100
 replica-priority 100
+# 哨兵模式下被包含在报告中, 设置为 no 表示报告中不包含副本
+# 但不影响被选举为 master 的优先级
+replica-announced yes
 
-# 支持最多的 key 的数量
+# 副本用于监听 master 连接副本的 ip 和 端口
+# 可以被 master 自动检测到
+replica-announce-ip 5.5.5.5
+replica-announce-port 1234
+
+# 支持存储最多的 key 的数量, 默认 1000000
 tracking-table-max-keys 1000000
-# 支持同时最多连接的客户端数量
+# 支持同时最多连接的客户端数量, 默认 10000
 maxclients 10000
 ```
 
@@ -1606,8 +1616,8 @@ protected-mode no # 保护模式, 默认不开启
 port 26379 # 服务端口号
 daemonize no # 是否后台运行模式
 pidfile /var/run/redis-sentinel.pid # 进程文件
-# sentinel announce-ip <ip> # 广播地址
-# sentinel announce-port <port> # 广播端口
+# sentinel announce-ip <ip> # 监听指定地址和端口的实例
+# sentinel announce-port <port>
 logfile "" # 日志文件
 dir /tmp # 工作目录
 # 监测服务器配置, 数字表示确认主服务器宕机的票数
@@ -1767,6 +1777,7 @@ protected-mode no
 daemonize yes
 # 修改 redis 进程文件名
 pidfile /var/run/redis_6379.pid
+
 cluster-enabled yes # 开启集群模式
 # 修改集群节点文件名, 默认在存储在当前目录下
 cluster-config-file nodes-6379.conf
@@ -1774,10 +1785,17 @@ cluster-config-file nodes-6379.conf
 cluster-node-timeout 15000
 # 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes
 cluster-require-full-coverage no
-#cluster-announce-ip ip # 集群模式下节点的 ip
-#cluster-announce-port 6379 # 集群模式下节点的端口
-#cluster-announce-tls-port # 集群模式下节点的安全端口
-#cluster-announce-bus-port 16379
+
+# 集群模式使用 hostname 进行节点间通信
+# 设置为空字符串表示将删除 hostname 并同步给其他节点
+cluster-announce-hostname ""
+# 指定集群模式连接节点的方式是使用 ip、hostname或unknown-endpoint 方式
+# 如果设置为 hostname 但未设置 cluster-announce-hostname 将返回 ?
+cluster-preferred-endpoint-type ip
+cluster-announce-ip ip # 集群模式下节点的 ip
+cluster-announce-port 6379 # 集群模式下节点的端口
+cluster-announce-tls-port 0 # 集群模式下节点的安全端口
+cluster-announce-bus-port 16379
 ```
 
 ##### 启动 Redis 服务器
