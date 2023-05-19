@@ -95,6 +95,28 @@ System Locale: LANG=zh_CN.utf8
 - list-locales 查看系统中的本地化配置
 - set-locale LOCALE 设置系统的本地化
 
+```shell
+[root@centos7 workspace]# localectl set-locale LANG=zh_CN.utf8
+[root@centos7 workspace]# source /etc/locale.conf # 重新加载本地化配置文件
+# 或者使用 newgrp - # 如果有 - 标志表示重新初始化用户环境同重新登陆, 没有 - 表示当前的环境和工作目录不做改变
+[root@centos7 workspace]# newgrp -
+[root@centos7 workspace]# locale  # 显示本地化设置
+LANG=zh_CN.utf8
+LC_CTYPE="zh_CN.utf8"
+LC_NUMERIC="zh_CN.utf8"
+LC_TIME="zh_CN.utf8"
+LC_COLLATE="zh_CN.utf8"
+LC_MONETARY="zh_CN.utf8"
+LC_MESSAGES="zh_CN.utf8"
+LC_PAPER="zh_CN.utf8"
+LC_NAME="zh_CN.utf8"
+LC_ADDRESS="zh_CN.utf8"
+LC_TELEPHONE="zh_CN.utf8"
+LC_MEASUREMENT="zh_CN.utf8"
+LC_IDENTIFICATION="zh_CN.utf8"
+LC_ALL=
+```
+
 ### timedatectl
 
 管理系统的日期时间设置
@@ -563,15 +585,16 @@ systemd 系统控制和服务管理工具的主命令, systemd 开启和监督�
 
 每个配置单元都有一个对应的配置文件
 
-- service 代表一个后台服务进程, 例如 mysqld、nginx
-- socket 此类配置单元封装系统和互联网中的一个套接字, 每个套接字配置单元都有一个相应的服务配置单元, 相应的服务在第一个连接进入套接字时就会自动启动(例如 nscd.socket 在有新连接后会启动 nscd.service)
-- device 此类配置单元封装一个存在于 linux 设备树中的设备, 每个使用 udev 规则标记的设备都会在 systemd 中作为一个设备配置单元出现
-- mount 此类配置单元封装文件系统结构层次中的一个挂载点, systemd 将对这个挂载点进行监控和管理, systemd 会将 /etc/fstab 中的条目都转换为挂载点, 并在开机时处理
-- automount 此类配置单元封装文件系统结构层次中的一个自动挂载点, 每个自动挂载配置单元对应一个挂载配置单元
-- swap 和挂载配置单元类似, 可以用交换配置单元来定义系统中的交换分区, 让这些交换分区在启动时被激活
-- target 此类配置单元为其它配置单元进行逻辑分组, 它们本身没有任何行为, 只是引用其他配置单元, 这样就可以对配置单元做一个统计的控制
-- timer 定时器配置单元用来定时触发用户定义的操作, 这类配置单元取代了 atd, crond 等传统的定时服务
-- snapshot 与 target 配置单元类似, 快照是一组配置单元, 保存了系统当前的运行状态
+- service: .service, 代表一个后台服务进程, 例如 mysqld、nginx
+- socket: .socket, 此类配置单元封装系统和互联网中的一个套接字, 每个套接字配置单元都有一个相应的服务配置单元, 相应的服务在第一个连接进入套接字时就会自动启动(例如 nscd.socket 在有新连接后会启动 nscd.service)
+- device: .device, 此类配置单元封装一个存在于 linux 设备树中的设备, 每个使用 udev 规则标记的设备都会在 systemd 中作为一个设备配置单元出现
+- mount: .mount, 此类配置单元封装文件系统结构层次中的一个挂载点, systemd 将对这个挂载点进行监控和管理, systemd 会将 /etc/fstab 中的条目都转换为挂载点, 并在开机时处理
+- automount: .automount, 此类配置单元封装文件系统结构层次中的一个自动挂载点, 每个自动挂载配置单元对应一个挂载配置单元
+- swap: .swap, 和挂载配置单元类似, 可以用交换配置单元来定义系统中的交换分区, 让这些交换分区在启动时被激活
+- target: .target, 此类配置单元为其它配置单元进行逻辑分组, 它们本身没有任何行为, 只是引用其他配置单元, 这样就可以对配置单元做一个统计的控制
+- timer: .timer, 定时器配置单元用来定时触发用户定义的操作, 这类配置单元取代了 atd, crond 等传统的定时服务
+- snapshot: .snapshot, 与 target 配置单元类似, 快照是一组配置单元, 保存了系统当前的运行状态
+- path: .path, 用于定义文件系统中的文件或目录
 
 #### 配置文件项
 

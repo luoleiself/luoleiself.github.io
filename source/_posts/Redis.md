@@ -1150,31 +1150,36 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 
 #### 规则分类
 
-|         参数         | 说明                                                                                    |
-| :------------------: | --------------------------------------------------------------------------------------- |
-|          on          | 表示启动该用户, 默认为 off                                                              |
-|        nopass        | 删除所有与用户关联的密码                                                                |
-|        reset         | 移除用户的所有功能, 并关闭用户                                                          |
-|      +[command]      | 将命令添加到用户可以调用的命令列表中                                                    |
-|      -[command]      | 将命令从用户可以调用的命令列表中移除                                                    |
-|  +[command]\|subcmd  | 允许使用已禁用命令的特定子命令                                                          |
-|     +@[category]     | 允许用户调用 category 类别中的所有命令, 可以使用 `ACL CAT` 命令查看所有类别             |
-|     -@[category]     | 禁止用户调用 category 类别中的所有命令                                                  |
-|     allcommands      | +@all 的别名                                                                            |
-|      nocommands      | -@all 的别名                                                                            |
-|     ~\<pattern\>     | 允许用户可以访问的 key(正则匹配), 例如: ~foo:\* 只允许访问 foo:\* 的 key                |
-|    %R~\<pattern\>    | 添加指定的只读 key(正则匹配), 例如: %R~app:\* 只允许读 app:\* 的 key, 7.0 支持          |
-|    %W~\<pattern\>    | 添加指定的只写 key(正则匹配), 例如: %W~app:\* 只允许写 app:\* 的 key, 7.0 支持          |
-|   %RW~\<pattern\>    | 添加指定的可读可写的 key(正则匹配), 例如: %RW~app:\* 只允许读写 app:\* 的 key, 7.0 支持 |
-|       allkeys        | ~\* 的别名                                                                              |
-|      resetkeys       | 移除所有的 key 匹配模式                                                                 |
-|     &\<pattern\>     | 允许用户可使用的 Pub/Sub 通道(正则匹配)                                                 |
-|     allchannels      | &\* 的别名                                                                              |
-|    resetchannels     | 移除所有的通道匹配模式                                                                  |
-|    \>\<password\>    | 为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: >123456                           |
-|    \<\<password\>    | 从有效密码列表中删除密码                                                                |
-| #\<hashedpassword\>  | 为用户添加 hash 密码, 例如: #cab3...c4f2                                                |
-| \!\<hashedpassword\> | 从有效密码列表中删除密码                                                                |
+|        参数        | 说明                                                                                    |
+| :----------------: | --------------------------------------------------------------------------------------- |
+|         on         | 启用用户, 默认为 off                                                                    |
+|        off         | 禁用用户                                                                                |
+|                    |                                                                                         |
+|     +[command]     | 将命令添加到用户可以调用的命令列表中                                                    |
+|     -[command]     | 将命令从用户可以调用的命令列表中移除                                                    |
+| +[command]\|subcmd | 允许使用已禁用命令的特定子命令                                                          |
+|    +@[category]    | 允许用户调用 category 类别中的所有命令, 可以使用 `ACL CAT` 命令查看所有类别             |
+|    -@[category]    | 禁止用户调用 category 类别中的所有命令                                                  |
+|    allcommands     | +@all 的别名                                                                            |
+|     nocommands     | -@all 的别名                                                                            |
+|                    |                                                                                         |
+|    ~\<pattern\>    | 允许用户可以访问的 key(正则匹配), 例如: ~foo:\* 只允许访问 foo:\* 的 key                |
+|   %R~\<pattern\>   | 添加指定的只读 key(正则匹配), 例如: %R~app:\* 只允许读 app:\* 的 key, 7.0 支持          |
+|   %W~\<pattern\>   | 添加指定的只写 key(正则匹配), 例如: %W~app:\* 只允许写 app:\* 的 key, 7.0 支持          |
+|  %RW~\<pattern\>   | 添加指定的可读可写的 key(正则匹配), 例如: %RW~app:\* 只允许读写 app:\* 的 key, 7.0 支持 |
+|      allkeys       | ~\* 的别名                                                                              |
+|     resetkeys      | 移除所有的 key 匹配模式                                                                 |
+|                    |                                                                                         |
+|    &\<pattern\>    | 允许用户可使用的 Pub/Sub 通道(正则匹配)                                                 |
+|    allchannels     | &\* 的别名                                                                              |
+|   resetchannels    | 移除所有的通道匹配模式                                                                  |
+|                    |                                                                                         |
+|   \>\<password\>   | 为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: >123456                           |
+|   \<\<password\>   | 从有效密码列表中删除密码                                                                |
+|     #\<hash\>      | 为用户添加 hash 密码, 例如: #cab3...c4f2                                                |
+|     \!\<hash\>     | 从有效密码列表中删除密码                                                                |
+|       nopass       | 删除所有与用户关联的密码                                                                |
+|     resetpass      | 刷新密码列表并删除 nopass 状态                                                          |
 
 - ACL CAT 显示 Redis 的所有分类
 
@@ -1579,6 +1584,11 @@ repl-diskless-sync yes
 repl-diskless-sync-delay 5
 # 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100
 replica-priority 100
+
+# 支持最多的 key 的数量
+tracking-table-max-keys 1000000
+# 支持同时最多连接的客户端数量
+maxclients 10000
 ```
 
 #### 哨兵模式
@@ -1764,8 +1774,9 @@ cluster-config-file nodes-6379.conf
 cluster-node-timeout 15000
 # 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes
 cluster-require-full-coverage no
-#cluster-announce-ip ip
-#cluster-announce-port 6379
+#cluster-announce-ip ip # 集群模式下节点的 ip
+#cluster-announce-port 6379 # 集群模式下节点的端口
+#cluster-announce-tls-port # 集群模式下节点的安全端口
 #cluster-announce-bus-port 16379
 ```
 
@@ -2087,7 +2098,7 @@ Waiting for the cluster to join
 
 #### 缓存穿透
 
-缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对同一 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃
+缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃
 
 ##### 解决办法 <!-- markdownlint-disable-line -->
 
