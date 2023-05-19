@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-2.png">
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-3.png">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2023-05-17T10:38:10.591Z">
+<meta property="article:modified_time" content="2023-05-19T10:23:27.381Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -242,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-05-17 18:38:10" itemprop="dateModified" datetime="2023-05-17T18:38:10+08:00">2023-05-17</time>
+                <time title="修改时间：2023-05-19 18:23:27" itemprop="dateModified" datetime="2023-05-19T18:23:27+08:00">2023-05-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -947,15 +947,15 @@
 </thead>
 <tbody><tr>
 <td align="center">on</td>
-<td>表示启动该用户, 默认为 off</td>
+<td>启用用户, 默认为 off</td>
 </tr>
 <tr>
-<td align="center">nopass</td>
-<td>删除所有与用户关联的密码</td>
+<td align="center">off</td>
+<td>禁用用户</td>
 </tr>
 <tr>
-<td align="center">reset</td>
-<td>移除用户的所有功能, 并关闭用户</td>
+<td align="center"></td>
+<td></td>
 </tr>
 <tr>
 <td align="center">+[command]</td>
@@ -986,6 +986,10 @@
 <td>-@all 的别名</td>
 </tr>
 <tr>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
 <td align="center">~&lt;pattern&gt;</td>
 <td>允许用户可以访问的 key(正则匹配), 例如: ~foo:* 只允许访问 foo:* 的 key</td>
 </tr>
@@ -1010,6 +1014,10 @@
 <td>移除所有的 key 匹配模式</td>
 </tr>
 <tr>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
 <td align="center">&amp;&lt;pattern&gt;</td>
 <td>允许用户可使用的 Pub/Sub 通道(正则匹配)</td>
 </tr>
@@ -1022,6 +1030,10 @@
 <td>移除所有的通道匹配模式</td>
 </tr>
 <tr>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
 <td align="center">&gt;&lt;password&gt;</td>
 <td>为用户添加明文密码, 服务器自动转换成 hash 存储, 例如: &gt;123456</td>
 </tr>
@@ -1030,12 +1042,20 @@
 <td>从有效密码列表中删除密码</td>
 </tr>
 <tr>
-<td align="center">#&lt;hashedpassword&gt;</td>
+<td align="center">#&lt;hash&gt;</td>
 <td>为用户添加 hash 密码, 例如: #cab3…c4f2</td>
 </tr>
 <tr>
-<td align="center">!&lt;hashedpassword&gt;</td>
+<td align="center">!&lt;hash&gt;</td>
 <td>从有效密码列表中删除密码</td>
+</tr>
+<tr>
+<td align="center">nopass</td>
+<td>删除所有与用户关联的密码</td>
+</tr>
+<tr>
+<td align="center">resetpass</td>
+<td>刷新密码列表并删除 nopass 状态</td>
 </tr>
 </tbody></table>
 <ul>
@@ -1201,7 +1221,7 @@
 
 <h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>使用配置文件的方式永久有效</p>
 <p>redis.conf</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="comment"># 修改绑定的 ip</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span> <span class="comment"># 修改绑定的端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span> <span class="comment"># 开启后台运行, 默认为 no</span></span><br><span class="line"><span class="comment"># 修改进程文件, 默认为 redis_6379.pid</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="comment"># 修改日志文件名, 默认为空</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="comment"># 修改持久化文件名, 默认为 dump.rdb</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="string">&lt;masterip&gt;</span> <span class="string">&lt;masterport&gt;</span></span><br><span class="line"><span class="comment"># 主服务器认证密码, 如果需要</span></span><br><span class="line"><span class="string">masterauth</span> <span class="string">&lt;master-password&gt;</span></span><br><span class="line"><span class="string">masteruser</span> <span class="string">&lt;username&gt;</span> <span class="comment"># 主服务器用户</span></span><br><span class="line"><span class="string">replica-read-only</span> <span class="literal">yes</span> <span class="comment"># 只读模式, 默认 yes</span></span><br><span class="line"><span class="comment"># 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes</span></span><br><span class="line"><span class="string">repl-diskless-sync</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 同步延迟, 默认 5 秒</span></span><br><span class="line"><span class="string">repl-diskless-sync-delay</span> <span class="number">5</span></span><br><span class="line"><span class="comment"># 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100</span></span><br><span class="line"><span class="string">replica-priority</span> <span class="number">100</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="comment"># 修改绑定的 ip</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span> <span class="comment"># 修改绑定的端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span> <span class="comment"># 开启后台运行, 默认为 no</span></span><br><span class="line"><span class="comment"># 修改进程文件, 默认为 redis_6379.pid</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="comment"># 修改日志文件名, 默认为空</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="comment"># 修改持久化文件名, 默认为 dump.rdb</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="string">&lt;masterip&gt;</span> <span class="string">&lt;masterport&gt;</span></span><br><span class="line"><span class="comment"># 主服务器认证密码, 如果需要</span></span><br><span class="line"><span class="string">masterauth</span> <span class="string">&lt;master-password&gt;</span></span><br><span class="line"><span class="string">masteruser</span> <span class="string">&lt;username&gt;</span> <span class="comment"># 主服务器用户</span></span><br><span class="line"><span class="string">replica-read-only</span> <span class="literal">yes</span> <span class="comment"># 只读模式, 默认 yes</span></span><br><span class="line"><span class="comment"># 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes</span></span><br><span class="line"><span class="string">repl-diskless-sync</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 同步延迟, 默认 5 秒</span></span><br><span class="line"><span class="string">repl-diskless-sync-delay</span> <span class="number">5</span></span><br><span class="line"><span class="comment"># 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100</span></span><br><span class="line"><span class="string">replica-priority</span> <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 支持最多的 key 的数量</span></span><br><span class="line"><span class="string">tracking-table-max-keys</span> <span class="number">1000000</span></span><br><span class="line"><span class="comment"># 支持同时最多连接的客户端数量</span></span><br><span class="line"><span class="string">maxclients</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h4><p>哨兵模式是一种特殊的模式, 首先 Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行<br>哨兵模式选举: 首先, 领头 sentinel 根据从服务器的信号反馈将从服务器列表中失联的服务器剔除, 按照从服务器的优先级(replica-priority)进行排序并选择优先级最高的从服务器, 如果有多个具有相同最高优先级的从服务器, 那么, 领头 sentinel 将多个具有相同最高优先级的从服务器按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从服务器进行 PSYNC 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从服务器, 如果有多个优先级最高, 复制偏移量最大的从服务器, 那么 领头 sentinel 将按照从服务器的运行 ID 进行排序并选择其中 ID 最小的从服务器</p>
 <ul>
@@ -1273,7 +1293,7 @@
 </ul>
 <p>使用 <code>redis-cli -c -p port</code> 命令接入集群节点</p>
 <h4 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h4><h5 id="编辑配置文件"><a href="#编辑配置文件" class="headerlink" title="编辑配置文件  "></a>编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line --></h5><p>创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式<br>创建 <code>redis6379.conf</code>, <code>redis6380.conf</code>, <code>redis6381.conf</code>, <code>redis6382.conf</code>, <code>redis6383.conf</code>, <code>redis6384.conf</code> 6 个文件<br>修改其中的 ip, port, pidfile, cluster-enabled, cluster-config-file</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 引入 redis 默认配置文件</span></span><br><span class="line"><span class="string">include</span> <span class="string">/root/redis-cluster/redis.conf</span></span><br><span class="line"><span class="comment"># 修改绑定 ip, 此处演示全为本机</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="comment"># 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span></span><br><span class="line"><span class="comment"># 关闭保护模式, 默认 yes</span></span><br><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span></span><br><span class="line"><span class="comment"># 开启后台运行, 默认 no</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 修改 redis 进程文件名</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">cluster-enabled</span> <span class="literal">yes</span> <span class="comment"># 开启集群模式</span></span><br><span class="line"><span class="comment"># 修改集群节点文件名, 默认在存储在当前目录下</span></span><br><span class="line"><span class="string">cluster-config-file</span> <span class="string">nodes-6379.conf</span></span><br><span class="line"><span class="comment"># 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒</span></span><br><span class="line"><span class="string">cluster-node-timeout</span> <span class="number">15000</span></span><br><span class="line"><span class="comment"># 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes</span></span><br><span class="line"><span class="string">cluster-require-full-coverage</span> <span class="literal">no</span></span><br><span class="line"><span class="comment">#cluster-announce-ip ip</span></span><br><span class="line"><span class="comment">#cluster-announce-port 6379</span></span><br><span class="line"><span class="comment">#cluster-announce-bus-port 16379</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 引入 redis 默认配置文件</span></span><br><span class="line"><span class="string">include</span> <span class="string">/root/redis-cluster/redis.conf</span></span><br><span class="line"><span class="comment"># 修改绑定 ip, 此处演示全为本机</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="comment"># 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span></span><br><span class="line"><span class="comment"># 关闭保护模式, 默认 yes</span></span><br><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span></span><br><span class="line"><span class="comment"># 开启后台运行, 默认 no</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 修改 redis 进程文件名</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">cluster-enabled</span> <span class="literal">yes</span> <span class="comment"># 开启集群模式</span></span><br><span class="line"><span class="comment"># 修改集群节点文件名, 默认在存储在当前目录下</span></span><br><span class="line"><span class="string">cluster-config-file</span> <span class="string">nodes-6379.conf</span></span><br><span class="line"><span class="comment"># 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒</span></span><br><span class="line"><span class="string">cluster-node-timeout</span> <span class="number">15000</span></span><br><span class="line"><span class="comment"># 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes</span></span><br><span class="line"><span class="string">cluster-require-full-coverage</span> <span class="literal">no</span></span><br><span class="line"><span class="comment">#cluster-announce-ip ip # 集群模式下节点的 ip</span></span><br><span class="line"><span class="comment">#cluster-announce-port 6379 # 集群模式下节点的端口</span></span><br><span class="line"><span class="comment">#cluster-announce-tls-port # 集群模式下节点的安全端口</span></span><br><span class="line"><span class="comment">#cluster-announce-bus-port 16379</span></span><br></pre></td></tr></table></figure>
 
 <h5 id="启动-Redis-服务器"><a href="#启动-Redis-服务器" class="headerlink" title="启动 Redis 服务器"></a>启动 Redis 服务器</h5><p>启动所有的 redis 服务器, 使用 <code>ps -ef | grep redis</code> 命令查看 redis 服务器进程</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 redis-cluster]# redis-server redis6379.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6380.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6381.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6382.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6383.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6384.conf</span><br><span class="line">[root@centos7 redis-cluster]# ps -ef | grep redis</span><br><span class="line">root      3731     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6379 [cluster]</span><br><span class="line">root      3737     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6380 [cluster]</span><br><span class="line">root      3743     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6381 [cluster]</span><br><span class="line">root      3749     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6382 [cluster]</span><br><span class="line">root      3755     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6383 [cluster]</span><br><span class="line">root      3761     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6384 [cluster]</span><br></pre></td></tr></table></figure>
@@ -1328,7 +1348,7 @@
 <li>Lua 脚本不支持</li>
 <li>迁移方案需要整体迁移而不是逐步过渡, 复杂度较大</li>
 </ul>
-<h3 id="缓存穿透、击穿、雪崩"><a href="#缓存穿透、击穿、雪崩" class="headerlink" title="缓存穿透、击穿、雪崩"></a>缓存穿透、击穿、雪崩</h3><h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对同一 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃</p>
+<h3 id="缓存穿透、击穿、雪崩"><a href="#缓存穿透、击穿、雪崩" class="headerlink" title="缓存穿透、击穿、雪崩"></a>缓存穿透、击穿、雪崩</h3><h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><p>缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃</p>
 <h5 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h5><ul>
 <li>接口层增加校验, 如用户鉴权校验、id 做基础校验、 id &lt;= 0 的直接拦截</li>
 <li>从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击</li>
@@ -1581,7 +1601,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">392k</span>
+    <span title="站点总字数">393k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
