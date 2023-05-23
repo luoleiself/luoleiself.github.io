@@ -97,16 +97,51 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
   - server 返回 redis 服务的通用信息
   - clients 返回客户端链接的信息
+
+    ```shell
+    # Clients
+    connected_clients:1
+    cluster_connections:0
+    maxclients:10000
+    client_recent_max_input_buffer:20480
+    client_recent_max_output_buffer:0
+    blocked_clients:0
+    tracking_clients:0
+    clients_in_timeout_table:0
+    ```
+
   - memory 返回内存的信息
   - persistence 返回持久化的信息 RDB 和 AOF
   - stats 返回统计信息
   - replication 返回副本的信息
+
+    ```shell
+    # Replication
+    role:master
+    connected_slaves:0
+    master_failover_state:no-failover
+    master_replid:5b0d7d50614d939be22b4bedb80450d13bfd64a0
+    master_replid2:0000000000000000000000000000000000000000
+    master_repl_offset:0
+    second_repl_offset:-1
+    repl_backlog_active:0
+    repl_backlog_size:1048576
+    repl_backlog_first_byte_offset:0
+    repl_backlog_histlen:0
+    ```
+
   - cpu 返回 cpu 的信息
   - commandstats 返回命令统计信息
   - latencystats 返回命令延迟百分比统计信息
   - cluster 返回集群信息
   - modules 返回模块信息
   - keyspace 返回数据库相关统计信息
+
+    ```shell
+    # Keyspace
+    db0:keys=3,expires=0,avg_ttl=0
+    ```
+
   - errorstats 返回错误统计信息
   - all 返回所有信息(除了 modules)
   - default 返回默认配置信息
@@ -1560,7 +1595,7 @@ OK
 
 使用配置文件的方式永久有效
 
-redis.conf
+redis.conf 基础配置，[集群配置](#redisclusterconfigure) <em id="redisbaseconfigure"></em> <!-- markdownlint-disable-line-->
 
 ```yaml
 bind 127.0.0.1 # 修改绑定的 ip
@@ -1576,9 +1611,12 @@ dbfilename dump6379.rdb
 dir "" # 持久化文件存放目录
 # 配置主服务器 ip 和 port
 replicaof <masterip> <masterport>
-# 主服务器认证密码, 如果需要
+
+# 副本和主服务器同步时的认证密码，如果主服务器开启验证
 masterauth <master-password>
-masteruser <username> # 主服务器用户
+# 副本和主服务器同步时的认证用户
+masteruser <username>
+
 replica-read-only yes # 只读模式, 默认 yes
 # 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes
 repl-diskless-sync yes
@@ -1586,7 +1624,8 @@ repl-diskless-sync yes
 repl-diskless-sync-delay 5
 # 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100
 replica-priority 100
-# 哨兵模式下被包含在报告中, 设置为 no 表示报告中不包含副本
+# 默认情况哨兵模式下所有副本被包含在报告中
+# 设置为 no 表示报告中不包含副本
 # 但不影响被选举为 master 的优先级
 replica-announced yes
 
@@ -1599,6 +1638,36 @@ replica-announce-port 1234
 tracking-table-max-keys 1000000
 # 支持同时最多连接的客户端数量, 默认 10000
 maxclients 10000
+
+# 从 Redis 6.0 开始作为新 ACL 系统之上的一个兼容配置
+# 该选项将只是为默认用户设置密码
+# 客户端仍需要使用 AUTH [username] password 进行身份认证
+requirepass foobared
+```
+
+- requirepass
+
+```shell
+# 第一种方式: 连接 redis 后使用 AUTH 命令认证
+[root@centos7 workspace]# redis-cli
+127.0.0.1:6379> KEYS *
+(error) NOAUTH Authentication required.
+127.0.0.1:6379> ACL WHOAMI
+(error) NOAUTH Authentication required.
+127.0.0.1:6379> AUTH 1006611
+OK
+127.0.0.1:6379> ACL WHOAMI
+"default"
+
+# 第二种方式: 连接 redis 时直接认证
+[root@centos7 workspace]# redis-cli --user default --pass 1006611
+Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
+127.0.0.1:6379> ACL WHOAMI
+"default"
+127.0.0.1:6379> KEYS *
+1) "hash:zhang"
+2) "age"
+3) "name"
 ```
 
 #### 哨兵模式
@@ -1609,7 +1678,7 @@ maxclients 10000
 - 哨兵通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器
 - 当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件并关联新的主服务器
 
-默认配置文件 `sentinel.conf`
+sentinel.conf
 
 ```yaml
 protected-mode no # 保护模式, 默认不开启
@@ -1763,6 +1832,8 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式
 创建 `redis6379.conf`, `redis6380.conf`, `redis6381.conf`, `redis6382.conf`, `redis6383.conf`, `redis6384.conf` 6 个文件
 修改其中的 ip, port, pidfile, cluster-enabled, cluster-config-file
+
+redis.conf 集群配置, [基础配置](#redisbaseconfigure) <em id="redisclusterconfigure"></em> <!-- markdownlint-disable-line -->
 
 ```yaml
 # 引入 redis 默认配置文件
