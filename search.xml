@@ -219,64 +219,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Generator和async</title>
     <url>/2021/07/bc748f2ea976/</url>
     <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
@@ -351,6 +293,64 @@
       </categories>
       <tags>
         <tag>ES6</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -746,83 +746,6 @@
       </tags>
   </entry>
   <entry>
-    <title>IntersectionObserver</title>
-    <url>/2023/04/ec2526e79bc5/</url>
-    <content><![CDATA[<h2 id="IntersectionObserver"><a href="#IntersectionObserver" class="headerlink" title="IntersectionObserver"></a>IntersectionObserver</h2><blockquote>
-<p>之前通常要使用事件监听, 并且需要频繁调用 Element.getBoundingClientRect() 方法以获取相关元素的边界信息, 并使用事件通知的方式同步进行计算, 可能造成性能问题</p>
-</blockquote>
-<p><code>IntersectionObserver</code> 接口提供了一种<strong>异步观察</strong>目标元素与祖先元素或顶级文档视口(viewport)交叉状态的方法<br>当一个 <code>IntersectionObserver</code> 对象被创建时, 其被配置为监听根中一段给定比例的可见区域, 一旦 <code>IntersectionObserver</code> 被创建, 则无法更改其配置, 所以一个给定的观察者对象只能用来监听可见区域的特定变化值, 但是, 可以在同一个观察者对象中配置监听多个目标元素</p>
-<ul>
-<li>交叉状态触发是成对出现的, 就像 <code>mouseenter</code> 和 <code>mouseleave</code> 事件一样, 有进入状态在未来某一时刻肯定会有移出状态</li>
-<li>在非交叉区域内的操作不会触发, 和 <code>scroll</code> 事件的触发是有区别的</li>
-</ul>
-<h3 id="应用范围"><a href="#应用范围" class="headerlink" title="应用范围"></a>应用范围</h3><ul>
-<li>图片懒加载, 当图片滚动到可见区域时才进行加载</li>
-<li>内容无限滚动, 用户滚动到接近内容底部时直接加载更多而无需用户操作翻页</li>
-<li>检测广告的曝光情况, 为了计算广告收益, 需要直到广告元素的曝光情况</li>
-<li>在到达可见区域时执行任务或播放动画</li>
-</ul>
-<h3 id="触发时机"><a href="#触发时机" class="headerlink" title="触发时机"></a>触发时机</h3><p>通常只需要关注文档最接近的可滚动祖先元素的交集更改, 如果元素不是可滚动元素的后代, 则默认为设备视窗<br>如果要观察相对于根元素的交集, 则指定根元素为 null</p>
-<ul>
-<li>每当目标元素与设备视窗或者其他指定元素发生交集的时候执行, 设备视窗或者其他元素被称为根元素或根</li>
-<li>Observer 第一次监听目标元素时</li>
-</ul>
-<span id="more"></span>
-
-<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>创建并返回一个新的 <code>IntersectionObserver</code> 实例, 当其监听到目标元素的可见部分(的比例)超过了一个或多个<strong>阈值</strong>(threshold)时, 执行指定的回调函数<br>如果指定 <code>rootMargin</code> 则会检查其是否符合语法规定, 检查阈值以确保全部在 <code>0.0</code> 到 <code>1.0</code> 之间, 并且阈值列表会按升序排列, 如果阈值列表为空, 则默认为一个 [0.0] 的数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ob = <span class="keyword">new</span> <span class="title class_">IntersectionObserver</span>(</span><br><span class="line">  <span class="function">(<span class="params">entries, observer</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 如果 intersectionRatio 为 0, 则目标在视野外</span></span><br><span class="line">    <span class="keyword">if</span> (entries[<span class="number">0</span>].<span class="property">intersectionRatio</span> &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(entries, observer);</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// 使用文档视口作为 root</span></span><br><span class="line">    <span class="attr">root</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="comment">// 添加到根的边界盒中的一组偏移量用于计算交叉值</span></span><br><span class="line">    <span class="attr">rootMargin</span>: <span class="string">&#x27;0px 0px 0px 0px&#x27;</span>,</span><br><span class="line">    <span class="comment">// 指定元素在根的可见程度每多 25% 执行一次回调函数</span></span><br><span class="line">    <span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">0.75</span>, <span class="number">1</span>],</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<h4 id="参数-callback"><a href="#参数-callback" class="headerlink" title="参数 callback"></a>参数 callback</h4><p>当元素的可见比例超过指定阈值后, 会调用此回调函数</p>
-<ul>
-<li>entries 一个 <code>IntersectionObserverEntry</code> 对象的数组, 每个被触发的阈值都稍微与指定阈值有偏差</li>
-<li>observer 被调用的 <code>IntersectionObserver</code> 实例</li>
-</ul>
-<h4 id="可选-options"><a href="#可选-options" class="headerlink" title="可选 options"></a>可选 options</h4><p>用来配置 observer 实例的对象, 如果未指定, observer 实例默认使用文档视口作为 root, 并且没有 <code>rootMargin</code>, 阈值为 0%</p>
-<h5 id="root"><a href="#root" class="headerlink" title="root"></a>root</h5><p>监听元素的祖先元素对象, 其边界盒将被视作视口, 如果未指定或者为 null, 则默认为浏览器视窗</p>
-<h5 id="rootMargin"><a href="#rootMargin" class="headerlink" title="rootMargin"></a>rootMargin</h5><p>一个计算交叉值时添加至根的边界盒中的一组偏移量, 类型为字符串, 可以有效的缩小或扩大根的判定范围从而满足计算需要, 默认为 <code>0px 0px 0px 0px</code></p>
-<h5 id="threshold"><a href="#threshold" class="headerlink" title="threshold"></a>threshold</h5><p>规定了一个监听目标与边界盒交叉区域的比例值, 可以为一个具体的数值或是一组 <code>0.0</code> 到 <code>1.0</code> 之间的数组<br>如果指定元素在根的可见程度每多 25% 执行一次回调, 则指定为数组 <code>[0, 0.25, 0.5, 0.75, 1]</code><br>如果指定元素在根的可见程度超过 50% 执行一次回调, 则指定为 <code>0.5</code></p>
-<ul>
-<li>若指定为 0.0, 监听元素与根即使有 1 像素交叉, 此元素也会被视为可见, 默认为 0.0</li>
-<li>若指定为 1.0, 监听元素都在可见范围内时才被视为可见</li>
-</ul>
-<h3 id="实例属性"><a href="#实例属性" class="headerlink" title="实例属性"></a>实例属性</h3><h4 id="ob-root"><a href="#ob-root" class="headerlink" title="ob.root"></a>ob.root</h4><p>只读属性, 获取当前的 <code>IntersectionObserver</code> 实例的根元素</p>
-<h4 id="ob-rootMargin"><a href="#ob-rootMargin" class="headerlink" title="ob.rootMargin"></a>ob.rootMargin</h4><p>只读属性, 获取当前 <code>IntersectionObserver</code> 实例的根元素的边界盒的偏移量</p>
-<h4 id="ob-thresholds"><a href="#ob-thresholds" class="headerlink" title="ob.thresholds"></a>ob.thresholds</h4><p>只读属性, 获取当前 <code>IntersectionObserver</code> 实例的根元素与监听目标的交叉区域的比例值</p>
-<h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h4 id="ob-disconnect"><a href="#ob-disconnect" class="headerlink" title="ob.disconnect()"></a>ob.disconnect()</h4><p>停止 <code>IntersectionObserver</code> 实例对所有目标元素的监听行为</p>
-<h4 id="ob-observe-targetElement"><a href="#ob-observe-targetElement" class="headerlink" title="ob.observe(targetElement)"></a>ob.observe(targetElement)</h4><p>开始监听指定元素</p>
-<ul>
-<li>targetElement 可见性区域被监控的元素, 此元素必须是根元素的后代元素</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ob = <span class="keyword">new</span> <span class="title class_">IntersectionObserver</span>(</span><br><span class="line">  <span class="function">(<span class="params">entries, observer</span>) =&gt;</span> &#123;</span><br><span class="line">    entries.<span class="title function_">forEach</span>(<span class="function">(<span class="params">entry</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (entry.<span class="property">intersectionRatio</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        entry.<span class="property">target</span>.<span class="property">classList</span>.<span class="title function_">add</span>(<span class="string">&#x27;active&#x27;</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        entry.<span class="property">target</span>.<span class="property">classList</span>.<span class="title function_">remove</span>(<span class="string">&#x27;active&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">root</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">rootMargin</span>: <span class="string">&#x27;0px 0px 0px 0px&#x27;</span>,</span><br><span class="line">    <span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>],</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"><span class="comment">// 监听多个目标元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.section-content&#x27;</span>).<span class="title function_">forEach</span>(<span class="function">(<span class="params">el</span>) =&gt;</span> &#123;</span><br><span class="line">  ob.<span class="title function_">observe</span>(el);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="ob-takeRecords"><a href="#ob-takeRecords" class="headerlink" title="ob.takeRecords()"></a>ob.takeRecords()</h4><blockquote>
-<p>使用构造函数回调监听则不需要调用此方法, 调用此方法会清除挂起的交叉区域状态列表并不会执行构造函数中的回调</p>
-</blockquote>
-<p>返回所有观察目标的<strong>挂起的</strong>交叉区域状态的 <code>IntersectionObserverEntry</code> 对象的数组</p>
-<h4 id="ob-unobserve-target"><a href="#ob-unobserve-target" class="headerlink" title="ob.unobserve(target)"></a>ob.unobserve(target)</h4><p>取消对指定目标的监听行为</p>
-<ul>
-<li>target 要取消监听的目标, 如果未提供参数, 则不做任何操作</li>
-</ul>
-<h3 id="IntersectionObserverEntry"><a href="#IntersectionObserverEntry" class="headerlink" title="IntersectionObserverEntry"></a>IntersectionObserverEntry</h3><p>接口描述了目标元素与其根元素容器在某一特定过渡时刻的交叉状态, <code>IntersectionObserverEntry</code> 的实例作为 entries 参数被传递到 IntersectionObserver 实例的回调函数中.<br>此外, 这些对象只能通过调用 <code>observer.takeRecords()</code> 来获取</p>
-<h4 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h4><ul>
-<li>boundingClientRect 只读属性, 返回包含目标元素的边界信息, 计算方式与 <code>Element.getBoundingClientRect()</code> 相同</li>
-<li>intersectionRatio 只读属性, 返回 <code>intersectionRect</code> 与 <code>boundingClientRect</code> 的比例值</li>
-<li>intersectionRect 只读属性, 返回一个 <code>DOMRectReadOnly</code> 用来描述根与目标元素的相交区域</li>
-<li>isIntersecting 只读属性, 返回一个布尔值, 如果目标元素与交叉区域观察者对象的根相交则返回 true, 否则返回 false</li>
-<li>rootBounds 只读属性, 返回一个 <code>DOMRectReadOnly</code> 用来描述交叉区域观察者中的根</li>
-<li>target 只读属性, 与根出现相交区域改变的元素</li>
-<li>time 只读属性, 返回一个记录从 IntersectionObserver 的时间原点到交叉被触发的时间的时间戳</li>
-</ul>
-<p><img data-src="/images/IntersectionObserver-1.jpg" alt="IntersectionObserver-1"><br><img data-src="/images/IntersectionObserver-2.jpg" alt="IntersectionObserver-2"></p>
-]]></content>
-      <categories>
-        <category>WebAPI</category>
-      </categories>
-      <tags>
-        <tag>API</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>HTTP</title>
     <url>/2021/07/1ddfb1010b19/</url>
     <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
@@ -956,6 +879,83 @@
         <tag>wx</tag>
         <tag>jweixin</tag>
         <tag>JSSDK</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>IntersectionObserver</title>
+    <url>/2023/04/ec2526e79bc5/</url>
+    <content><![CDATA[<h2 id="IntersectionObserver"><a href="#IntersectionObserver" class="headerlink" title="IntersectionObserver"></a>IntersectionObserver</h2><blockquote>
+<p>之前通常要使用事件监听, 并且需要频繁调用 Element.getBoundingClientRect() 方法以获取相关元素的边界信息, 并使用事件通知的方式同步进行计算, 可能造成性能问题</p>
+</blockquote>
+<p><code>IntersectionObserver</code> 接口提供了一种<strong>异步观察</strong>目标元素与祖先元素或顶级文档视口(viewport)交叉状态的方法<br>当一个 <code>IntersectionObserver</code> 对象被创建时, 其被配置为监听根中一段给定比例的可见区域, 一旦 <code>IntersectionObserver</code> 被创建, 则无法更改其配置, 所以一个给定的观察者对象只能用来监听可见区域的特定变化值, 但是, 可以在同一个观察者对象中配置监听多个目标元素</p>
+<ul>
+<li>交叉状态触发是成对出现的, 就像 <code>mouseenter</code> 和 <code>mouseleave</code> 事件一样, 有进入状态在未来某一时刻肯定会有移出状态</li>
+<li>在非交叉区域内的操作不会触发, 和 <code>scroll</code> 事件的触发是有区别的</li>
+</ul>
+<h3 id="应用范围"><a href="#应用范围" class="headerlink" title="应用范围"></a>应用范围</h3><ul>
+<li>图片懒加载, 当图片滚动到可见区域时才进行加载</li>
+<li>内容无限滚动, 用户滚动到接近内容底部时直接加载更多而无需用户操作翻页</li>
+<li>检测广告的曝光情况, 为了计算广告收益, 需要直到广告元素的曝光情况</li>
+<li>在到达可见区域时执行任务或播放动画</li>
+</ul>
+<h3 id="触发时机"><a href="#触发时机" class="headerlink" title="触发时机"></a>触发时机</h3><p>通常只需要关注文档最接近的可滚动祖先元素的交集更改, 如果元素不是可滚动元素的后代, 则默认为设备视窗<br>如果要观察相对于根元素的交集, 则指定根元素为 null</p>
+<ul>
+<li>每当目标元素与设备视窗或者其他指定元素发生交集的时候执行, 设备视窗或者其他元素被称为根元素或根</li>
+<li>Observer 第一次监听目标元素时</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>创建并返回一个新的 <code>IntersectionObserver</code> 实例, 当其监听到目标元素的可见部分(的比例)超过了一个或多个<strong>阈值</strong>(threshold)时, 执行指定的回调函数<br>如果指定 <code>rootMargin</code> 则会检查其是否符合语法规定, 检查阈值以确保全部在 <code>0.0</code> 到 <code>1.0</code> 之间, 并且阈值列表会按升序排列, 如果阈值列表为空, 则默认为一个 [0.0] 的数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ob = <span class="keyword">new</span> <span class="title class_">IntersectionObserver</span>(</span><br><span class="line">  <span class="function">(<span class="params">entries, observer</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 如果 intersectionRatio 为 0, 则目标在视野外</span></span><br><span class="line">    <span class="keyword">if</span> (entries[<span class="number">0</span>].<span class="property">intersectionRatio</span> &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(entries, observer);</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// 使用文档视口作为 root</span></span><br><span class="line">    <span class="attr">root</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="comment">// 添加到根的边界盒中的一组偏移量用于计算交叉值</span></span><br><span class="line">    <span class="attr">rootMargin</span>: <span class="string">&#x27;0px 0px 0px 0px&#x27;</span>,</span><br><span class="line">    <span class="comment">// 指定元素在根的可见程度每多 25% 执行一次回调函数</span></span><br><span class="line">    <span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">0.75</span>, <span class="number">1</span>],</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h4 id="参数-callback"><a href="#参数-callback" class="headerlink" title="参数 callback"></a>参数 callback</h4><p>当元素的可见比例超过指定阈值后, 会调用此回调函数</p>
+<ul>
+<li>entries 一个 <code>IntersectionObserverEntry</code> 对象的数组, 每个被触发的阈值都稍微与指定阈值有偏差</li>
+<li>observer 被调用的 <code>IntersectionObserver</code> 实例</li>
+</ul>
+<h4 id="可选-options"><a href="#可选-options" class="headerlink" title="可选 options"></a>可选 options</h4><p>用来配置 observer 实例的对象, 如果未指定, observer 实例默认使用文档视口作为 root, 并且没有 <code>rootMargin</code>, 阈值为 0%</p>
+<h5 id="root"><a href="#root" class="headerlink" title="root"></a>root</h5><p>监听元素的祖先元素对象, 其边界盒将被视作视口, 如果未指定或者为 null, 则默认为浏览器视窗</p>
+<h5 id="rootMargin"><a href="#rootMargin" class="headerlink" title="rootMargin"></a>rootMargin</h5><p>一个计算交叉值时添加至根的边界盒中的一组偏移量, 类型为字符串, 可以有效的缩小或扩大根的判定范围从而满足计算需要, 默认为 <code>0px 0px 0px 0px</code></p>
+<h5 id="threshold"><a href="#threshold" class="headerlink" title="threshold"></a>threshold</h5><p>规定了一个监听目标与边界盒交叉区域的比例值, 可以为一个具体的数值或是一组 <code>0.0</code> 到 <code>1.0</code> 之间的数组<br>如果指定元素在根的可见程度每多 25% 执行一次回调, 则指定为数组 <code>[0, 0.25, 0.5, 0.75, 1]</code><br>如果指定元素在根的可见程度超过 50% 执行一次回调, 则指定为 <code>0.5</code></p>
+<ul>
+<li>若指定为 0.0, 监听元素与根即使有 1 像素交叉, 此元素也会被视为可见, 默认为 0.0</li>
+<li>若指定为 1.0, 监听元素都在可见范围内时才被视为可见</li>
+</ul>
+<h3 id="实例属性"><a href="#实例属性" class="headerlink" title="实例属性"></a>实例属性</h3><h4 id="ob-root"><a href="#ob-root" class="headerlink" title="ob.root"></a>ob.root</h4><p>只读属性, 获取当前的 <code>IntersectionObserver</code> 实例的根元素</p>
+<h4 id="ob-rootMargin"><a href="#ob-rootMargin" class="headerlink" title="ob.rootMargin"></a>ob.rootMargin</h4><p>只读属性, 获取当前 <code>IntersectionObserver</code> 实例的根元素的边界盒的偏移量</p>
+<h4 id="ob-thresholds"><a href="#ob-thresholds" class="headerlink" title="ob.thresholds"></a>ob.thresholds</h4><p>只读属性, 获取当前 <code>IntersectionObserver</code> 实例的根元素与监听目标的交叉区域的比例值</p>
+<h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><h4 id="ob-disconnect"><a href="#ob-disconnect" class="headerlink" title="ob.disconnect()"></a>ob.disconnect()</h4><p>停止 <code>IntersectionObserver</code> 实例对所有目标元素的监听行为</p>
+<h4 id="ob-observe-targetElement"><a href="#ob-observe-targetElement" class="headerlink" title="ob.observe(targetElement)"></a>ob.observe(targetElement)</h4><p>开始监听指定元素</p>
+<ul>
+<li>targetElement 可见性区域被监控的元素, 此元素必须是根元素的后代元素</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ob = <span class="keyword">new</span> <span class="title class_">IntersectionObserver</span>(</span><br><span class="line">  <span class="function">(<span class="params">entries, observer</span>) =&gt;</span> &#123;</span><br><span class="line">    entries.<span class="title function_">forEach</span>(<span class="function">(<span class="params">entry</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (entry.<span class="property">intersectionRatio</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        entry.<span class="property">target</span>.<span class="property">classList</span>.<span class="title function_">add</span>(<span class="string">&#x27;active&#x27;</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        entry.<span class="property">target</span>.<span class="property">classList</span>.<span class="title function_">remove</span>(<span class="string">&#x27;active&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">root</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">rootMargin</span>: <span class="string">&#x27;0px 0px 0px 0px&#x27;</span>,</span><br><span class="line">    <span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>],</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"><span class="comment">// 监听多个目标元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.section-content&#x27;</span>).<span class="title function_">forEach</span>(<span class="function">(<span class="params">el</span>) =&gt;</span> &#123;</span><br><span class="line">  ob.<span class="title function_">observe</span>(el);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="ob-takeRecords"><a href="#ob-takeRecords" class="headerlink" title="ob.takeRecords()"></a>ob.takeRecords()</h4><blockquote>
+<p>使用构造函数回调监听则不需要调用此方法, 调用此方法会清除挂起的交叉区域状态列表并不会执行构造函数中的回调</p>
+</blockquote>
+<p>返回所有观察目标的<strong>挂起的</strong>交叉区域状态的 <code>IntersectionObserverEntry</code> 对象的数组</p>
+<h4 id="ob-unobserve-target"><a href="#ob-unobserve-target" class="headerlink" title="ob.unobserve(target)"></a>ob.unobserve(target)</h4><p>取消对指定目标的监听行为</p>
+<ul>
+<li>target 要取消监听的目标, 如果未提供参数, 则不做任何操作</li>
+</ul>
+<h3 id="IntersectionObserverEntry"><a href="#IntersectionObserverEntry" class="headerlink" title="IntersectionObserverEntry"></a>IntersectionObserverEntry</h3><p>接口描述了目标元素与其根元素容器在某一特定过渡时刻的交叉状态, <code>IntersectionObserverEntry</code> 的实例作为 entries 参数被传递到 IntersectionObserver 实例的回调函数中.<br>此外, 这些对象只能通过调用 <code>observer.takeRecords()</code> 来获取</p>
+<h4 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h4><ul>
+<li>boundingClientRect 只读属性, 返回包含目标元素的边界信息, 计算方式与 <code>Element.getBoundingClientRect()</code> 相同</li>
+<li>intersectionRatio 只读属性, 返回 <code>intersectionRect</code> 与 <code>boundingClientRect</code> 的比例值</li>
+<li>intersectionRect 只读属性, 返回一个 <code>DOMRectReadOnly</code> 用来描述根与目标元素的相交区域</li>
+<li>isIntersecting 只读属性, 返回一个布尔值, 如果目标元素与交叉区域观察者对象的根相交则返回 true, 否则返回 false</li>
+<li>rootBounds 只读属性, 返回一个 <code>DOMRectReadOnly</code> 用来描述交叉区域观察者中的根</li>
+<li>target 只读属性, 与根出现相交区域改变的元素</li>
+<li>time 只读属性, 返回一个记录从 IntersectionObserver 的时间原点到交叉被触发的时间的时间戳</li>
+</ul>
+<p><img data-src="/images/IntersectionObserver-1.jpg" alt="IntersectionObserver-1"><br><img data-src="/images/IntersectionObserver-2.jpg" alt="IntersectionObserver-2"></p>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
       </tags>
   </entry>
   <entry>
@@ -5602,22 +5602,38 @@
 <h3 id="Keys-命令"><a href="#Keys-命令" class="headerlink" title="Keys 命令"></a>Keys 命令</h3><ul>
 <li><p>INFO [section [section …]] 返回服务的相关信息, 没有参数返回所有</p>
 <ul>
-<li>server 返回 redis 服务的通用信息</li>
-<li>clients 返回客户端链接的信息</li>
-<li>memory 返回内存的信息</li>
-<li>persistence 返回持久化的信息 RDB 和 AOF</li>
-<li>stats 返回统计信息</li>
-<li>replication 返回副本的信息</li>
-<li>cpu 返回 cpu 的信息</li>
-<li>commandstats 返回命令统计信息</li>
-<li>latencystats 返回命令延迟百分比统计信息</li>
-<li>cluster 返回集群信息</li>
-<li>modules 返回模块信息</li>
-<li>keyspace 返回数据库相关统计信息</li>
-<li>errorstats 返回错误统计信息</li>
-<li>all 返回所有信息(除了 modules)</li>
-<li>default 返回默认配置信息</li>
-<li>everything 返回所有信息(包含 all 和 modules)</li>
+<li><p>server 返回 redis 服务的通用信息</p>
+</li>
+<li><p>clients 返回客户端链接的信息</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Clients</span></span><br><span class="line">connected_clients:1</span><br><span class="line">cluster_connections:0</span><br><span class="line">maxclients:10000</span><br><span class="line">client_recent_max_input_buffer:20480</span><br><span class="line">client_recent_max_output_buffer:0</span><br><span class="line">blocked_clients:0</span><br><span class="line">tracking_clients:0</span><br><span class="line">clients_in_timeout_table:0</span><br></pre></td></tr></table></figure></li>
+<li><p>memory 返回内存的信息</p>
+</li>
+<li><p>persistence 返回持久化的信息 RDB 和 AOF</p>
+</li>
+<li><p>stats 返回统计信息</p>
+</li>
+<li><p>replication 返回副本的信息</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:5b0d7d50614d939be22b4bedb80450d13bfd64a0</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:0</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:0</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:0</span><br><span class="line">repl_backlog_histlen:0</span><br></pre></td></tr></table></figure></li>
+<li><p>cpu 返回 cpu 的信息</p>
+</li>
+<li><p>commandstats 返回命令统计信息</p>
+</li>
+<li><p>latencystats 返回命令延迟百分比统计信息</p>
+</li>
+<li><p>cluster 返回集群信息</p>
+</li>
+<li><p>modules 返回模块信息</p>
+</li>
+<li><p>keyspace 返回数据库相关统计信息</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Keyspace</span></span><br><span class="line">db0:keys=3,expires=0,avg_ttl=0</span><br></pre></td></tr></table></figure></li>
+<li><p>errorstats 返回错误统计信息</p>
+</li>
+<li><p>all 返回所有信息(除了 modules)</p>
+</li>
+<li><p>default 返回默认配置信息</p>
+</li>
+<li><p>everything 返回所有信息(包含 all 和 modules)</p>
+</li>
 </ul>
 </li>
 <li><p>help command 显示命令的帮助信息</p>
@@ -6475,15 +6491,20 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">主机写入数据</span></span><br><span class="line">127.0.0.1:6379&gt; SET name helloworld</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从机读取数据</span></span><br><span class="line">127.0.0.1:6380&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6380&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can\&#x27;t write against a read only replica.</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从机读取数据</span></span><br><span class="line">127.0.0.1:6381&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6381&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can\&#x27;t write against a read only replica.</span><br></pre></td></tr></table></figure>
 
 <h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>使用配置文件的方式永久有效</p>
-<p>redis.conf</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="comment"># 修改绑定的 ip</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span> <span class="comment"># 修改绑定的端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span> <span class="comment"># 开启后台运行, 默认为 no</span></span><br><span class="line"><span class="comment"># 修改进程文件, 默认为 redis_6379.pid</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">loglevel</span> <span class="string">notice</span></span><br><span class="line"><span class="comment"># 修改日志文件名, 默认为空</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="comment"># 修改持久化文件名, 默认为 dump.rdb</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"><span class="string">dir</span> <span class="string">&quot;&quot;</span> <span class="comment"># 持久化文件存放目录</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="string">&lt;masterip&gt;</span> <span class="string">&lt;masterport&gt;</span></span><br><span class="line"><span class="comment"># 主服务器认证密码, 如果需要</span></span><br><span class="line"><span class="string">masterauth</span> <span class="string">&lt;master-password&gt;</span></span><br><span class="line"><span class="string">masteruser</span> <span class="string">&lt;username&gt;</span> <span class="comment"># 主服务器用户</span></span><br><span class="line"><span class="string">replica-read-only</span> <span class="literal">yes</span> <span class="comment"># 只读模式, 默认 yes</span></span><br><span class="line"><span class="comment"># 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes</span></span><br><span class="line"><span class="string">repl-diskless-sync</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 同步延迟, 默认 5 秒</span></span><br><span class="line"><span class="string">repl-diskless-sync-delay</span> <span class="number">5</span></span><br><span class="line"><span class="comment"># 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100</span></span><br><span class="line"><span class="string">replica-priority</span> <span class="number">100</span></span><br><span class="line"><span class="comment"># 哨兵模式下被包含在报告中, 设置为 no 表示报告中不包含副本</span></span><br><span class="line"><span class="comment"># 但不影响被选举为 master 的优先级</span></span><br><span class="line"><span class="string">replica-announced</span> <span class="literal">yes</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本用于监听 master 连接副本的 ip 和 端口</span></span><br><span class="line"><span class="comment"># 可以被 master 自动检测到</span></span><br><span class="line"><span class="string">replica-announce-ip</span> <span class="number">5.5</span><span class="number">.5</span><span class="number">.5</span></span><br><span class="line"><span class="string">replica-announce-port</span> <span class="number">1234</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 支持存储最多的 key 的数量, 默认 1000000</span></span><br><span class="line"><span class="string">tracking-table-max-keys</span> <span class="number">1000000</span></span><br><span class="line"><span class="comment"># 支持同时最多连接的客户端数量, 默认 10000</span></span><br><span class="line"><span class="string">maxclients</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
+<p>redis.conf 基础配置，<a href="#redisclusterconfigure">集群配置</a> <em id="redisbaseconfigure"></em> <!-- markdownlint-disable-line--></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="comment"># 修改绑定的 ip</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span> <span class="comment"># 修改绑定的端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span> <span class="comment"># 开启后台运行, 默认为 no</span></span><br><span class="line"><span class="comment"># 修改进程文件, 默认为 redis_6379.pid</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">loglevel</span> <span class="string">notice</span></span><br><span class="line"><span class="comment"># 修改日志文件名, 默认为空</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="comment"># 修改持久化文件名, 默认为 dump.rdb</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"><span class="string">dir</span> <span class="string">&quot;&quot;</span> <span class="comment"># 持久化文件存放目录</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="string">&lt;masterip&gt;</span> <span class="string">&lt;masterport&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本和主服务器同步时的认证密码，如果主服务器开启验证</span></span><br><span class="line"><span class="string">masterauth</span> <span class="string">&lt;master-password&gt;</span></span><br><span class="line"><span class="comment"># 副本和主服务器同步时的认证用户</span></span><br><span class="line"><span class="string">masteruser</span> <span class="string">&lt;username&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="string">replica-read-only</span> <span class="literal">yes</span> <span class="comment"># 只读模式, 默认 yes</span></span><br><span class="line"><span class="comment"># 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes</span></span><br><span class="line"><span class="string">repl-diskless-sync</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 同步延迟, 默认 5 秒</span></span><br><span class="line"><span class="string">repl-diskless-sync-delay</span> <span class="number">5</span></span><br><span class="line"><span class="comment"># 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100</span></span><br><span class="line"><span class="string">replica-priority</span> <span class="number">100</span></span><br><span class="line"><span class="comment"># 默认情况哨兵模式下所有副本被包含在报告中</span></span><br><span class="line"><span class="comment"># 设置为 no 表示报告中不包含副本</span></span><br><span class="line"><span class="comment"># 但不影响被选举为 master 的优先级</span></span><br><span class="line"><span class="string">replica-announced</span> <span class="literal">yes</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本用于监听 master 连接副本的 ip 和 端口</span></span><br><span class="line"><span class="comment"># 可以被 master 自动检测到</span></span><br><span class="line"><span class="string">replica-announce-ip</span> <span class="number">5.5</span><span class="number">.5</span><span class="number">.5</span></span><br><span class="line"><span class="string">replica-announce-port</span> <span class="number">1234</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 支持存储最多的 key 的数量, 默认 1000000</span></span><br><span class="line"><span class="string">tracking-table-max-keys</span> <span class="number">1000000</span></span><br><span class="line"><span class="comment"># 支持同时最多连接的客户端数量, 默认 10000</span></span><br><span class="line"><span class="string">maxclients</span> <span class="number">10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从 Redis 6.0 开始作为新 ACL 系统之上的一个兼容配置</span></span><br><span class="line"><span class="comment"># 该选项将只是为默认用户设置密码</span></span><br><span class="line"><span class="comment"># 客户端仍需要使用 AUTH [username] password 进行身份认证</span></span><br><span class="line"><span class="string">requirepass</span> <span class="string">foobared</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>requirepass</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第一种方式: 连接 redis 后使用 AUTH 命令认证</span></span><br><span class="line">[root@centos7 workspace]# redis-cli</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">(error) NOAUTH Authentication required.</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">(error) NOAUTH Authentication required.</span><br><span class="line">127.0.0.1:6379&gt; AUTH 1006611</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">&quot;default&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第二种方式: 连接 redis 时直接认证</span></span><br><span class="line">[root@centos7 workspace]# redis-cli --user default --pass 1006611</span><br><span class="line">Warning: Using a password with &#x27;-a&#x27; or &#x27;-u&#x27; option on the command line interface may not be safe.</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">&quot;default&quot;</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;hash:zhang&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;name&quot;</span><br></pre></td></tr></table></figure>
 
 <h4 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h4><p>哨兵模式是一种特殊的模式, 首先 Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行<br>哨兵模式选举: 首先, 领头 sentinel 根据从服务器的信号反馈将从服务器列表中失联的服务器剔除, 按照从服务器的优先级(replica-priority)进行排序并选择优先级最高的从服务器, 如果有多个具有相同最高优先级的从服务器, 那么, 领头 sentinel 将多个具有相同最高优先级的从服务器按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从服务器进行 PSYNC 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从服务器, 如果有多个优先级最高, 复制偏移量最大的从服务器, 那么 领头 sentinel 将按照从服务器的运行 ID 进行排序并选择其中 ID 最小的从服务器</p>
 <ul>
 <li>哨兵通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器</li>
 <li>当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件并关联新的主服务器</li>
 </ul>
-<p>默认配置文件 <code>sentinel.conf</code></p>
+<p>sentinel.conf</p>
 <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span> <span class="comment"># 保护模式, 默认不开启</span></span><br><span class="line"><span class="string">port</span> <span class="number">26379</span> <span class="comment"># 服务端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">no</span> <span class="comment"># 是否后台运行模式</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel.pid</span> <span class="comment"># 进程文件</span></span><br><span class="line"><span class="comment"># sentinel announce-ip &lt;ip&gt; # 监听指定地址和端口的实例</span></span><br><span class="line"><span class="comment"># sentinel announce-port &lt;port&gt;</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;&quot;</span> <span class="comment"># 日志文件</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span> <span class="comment"># 工作目录</span></span><br><span class="line"><span class="comment"># 监测服务器配置, 数字表示确认主服务器宕机的票数</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">mymaster</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br><span class="line"><span class="comment"># sentinel auth-pass &lt;master-name&gt; &lt;password&gt; # 认证配置</span></span><br><span class="line"><span class="comment"># 不可触达的超时时间, 默认 30 s</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">down-after-milliseconds</span> <span class="string">mymaster</span> <span class="number">30000</span></span><br><span class="line"><span class="comment"># 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">parallel-syncs</span> <span class="string">mymaster</span> <span class="number">1</span></span><br><span class="line"><span class="comment"># 当服务器宕机后等待再次重启的时间, 默认 3 min</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">failover-timeout</span> <span class="string">mymaster</span> <span class="number">180000</span></span><br><span class="line"><span class="comment"># 服务器唤起脚本文件</span></span><br><span class="line"><span class="comment"># sentinel notification-script &lt;master-name&gt; &lt;script-path&gt;</span></span><br><span class="line"><span class="comment"># 拒绝脚本配置, 默认拒绝</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">deny-scripts-reconfig</span> <span class="literal">yes</span></span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -6548,6 +6569,7 @@
 </ul>
 <p>使用 <code>redis-cli -c -p port</code> 命令接入集群节点</p>
 <h4 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h4><h5 id="编辑配置文件"><a href="#编辑配置文件" class="headerlink" title="编辑配置文件  "></a>编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line --></h5><p>创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式<br>创建 <code>redis6379.conf</code>, <code>redis6380.conf</code>, <code>redis6381.conf</code>, <code>redis6382.conf</code>, <code>redis6383.conf</code>, <code>redis6384.conf</code> 6 个文件<br>修改其中的 ip, port, pidfile, cluster-enabled, cluster-config-file</p>
+<p>redis.conf 集群配置, <a href="#redisbaseconfigure">基础配置</a> <em id="redisclusterconfigure"></em> <!-- markdownlint-disable-line --></p>
 <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 引入 redis 默认配置文件</span></span><br><span class="line"><span class="string">include</span> <span class="string">/root/redis-cluster/redis.conf</span></span><br><span class="line"><span class="comment"># 修改绑定 ip, 此处演示全为本机</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="comment"># 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span></span><br><span class="line"><span class="comment"># 关闭保护模式, 默认 yes</span></span><br><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span></span><br><span class="line"><span class="comment"># 开启后台运行, 默认 no</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 修改 redis 进程文件名</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"></span><br><span class="line"><span class="string">cluster-enabled</span> <span class="literal">yes</span> <span class="comment"># 开启集群模式</span></span><br><span class="line"><span class="comment"># 修改集群节点文件名, 默认在存储在当前目录下</span></span><br><span class="line"><span class="string">cluster-config-file</span> <span class="string">nodes-6379.conf</span></span><br><span class="line"><span class="comment"># 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒</span></span><br><span class="line"><span class="string">cluster-node-timeout</span> <span class="number">15000</span></span><br><span class="line"><span class="comment"># 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes</span></span><br><span class="line"><span class="string">cluster-require-full-coverage</span> <span class="literal">no</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 集群模式使用 hostname 进行节点间通信</span></span><br><span class="line"><span class="comment"># 设置为空字符串表示将删除 hostname 并同步给其他节点</span></span><br><span class="line"><span class="string">cluster-announce-hostname</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="comment"># 指定集群模式连接节点的方式是使用 ip、hostname或unknown-endpoint 方式</span></span><br><span class="line"><span class="comment"># 如果设置为 hostname 但未设置 cluster-announce-hostname 将返回 ?</span></span><br><span class="line"><span class="string">cluster-preferred-endpoint-type</span> <span class="string">ip</span></span><br><span class="line"><span class="string">cluster-announce-ip</span> <span class="string">ip</span> <span class="comment"># 集群模式下节点的 ip</span></span><br><span class="line"><span class="string">cluster-announce-port</span> <span class="number">6379</span> <span class="comment"># 集群模式下节点的端口</span></span><br><span class="line"><span class="string">cluster-announce-tls-port</span> <span class="number">0</span> <span class="comment"># 集群模式下节点的安全端口</span></span><br><span class="line"><span class="string">cluster-announce-bus-port</span> <span class="number">16379</span></span><br></pre></td></tr></table></figure>
 
 <h5 id="启动-Redis-服务器"><a href="#启动-Redis-服务器" class="headerlink" title="启动 Redis 服务器"></a>启动 Redis 服务器</h5><p>启动所有的 redis 服务器, 使用 <code>ps -ef | grep redis</code> 命令查看 redis 服务器进程</p>
