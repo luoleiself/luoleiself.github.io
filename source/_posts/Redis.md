@@ -613,7 +613,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 --[[redis.register_function(
    'knockknock',
    function() return 'Who\'s there?' end
-)]]
+)]]--
 local function knockknock()
    return 'Who\'s there?'
 end
