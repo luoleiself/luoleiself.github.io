@@ -661,7 +661,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-28 10:51:00" itemprop="dateModified" datetime="2022-11-28T10:51:00+08:00">2022-11-28</time>
+                <time title="修改时间：2023-05-25 16:46:42" itemprop="dateModified" datetime="2023-05-25T16:46:42+08:00">2023-05-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -682,13 +682,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>6.8k</span>
+              <span>8.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>6 分钟</span>
+              <span>8 分钟</span>
             </span>
 
         </div>
@@ -702,28 +702,12 @@
       
           <h3 id="Lists-命令"><a href="#Lists-命令" class="headerlink" title="Lists 命令"></a>Lists 命令</h3><p>List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.</p>
 <p>List: 键名: key, 键类型: list, 键值: string</p>
-<h4 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h4><ul>
-<li><p>LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建</p>
-</li>
-<li><p>LPUSHX key element [element …] 批量添加多个元素到已存在的列表头部并返回列表的长度, 列表为空或者不存在返回 0</p>
-</li>
-<li><p>RPUSH key element [element …] 批量追加多个元素到列表尾部并返回列表的长度, 列表为空或者不存在新建</p>
-</li>
-<li><p>RPUSHX key element [element …] 批量追加多个元素到已存在的列表尾部并返回列表的长度, 列表为空或者不存在返回 0</p>
-</li>
-</ul>
-<h5 id="指定位置添加"><a href="#指定位置添加" class="headerlink" title="指定位置添加"></a>指定位置添加</h5><ul>
-<li><p>LSET key index element 设置列表指定索引的值, 操作成功返回 ok, 列表为空或者不存在或者索引参数超出范围返回错误信息</p>
-</li>
-<li><p>LINSERT key BEFORE|AFTER pivot element 在列表的指定元素第 1 次出现的前或后添加元素, 列表为空或者不存在不执行任何操作, 否则未找到指定元素返回 -1, 元素添加成功返回列表的长度</p>
+<h4 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h4><p>LPUSH 和 LPUSHX 命令将多个元素<strong>逆序</strong>插入到列表头部</p>
 <ul>
-<li>BEFORE|AFTER 添加的位置</li>
-<li>pivot 查找的基准元素</li>
-<li>element 插入的元素</li>
+<li>LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建</li>
+<li>LPUSHX key element [element …] 批量添加多个元素到已存在的列表头部并返回列表的长度, 列表为空或者不存在返回 0</li>
 </ul>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; LINSERT list BEFORE a hello   # 向 list 中第 1 次出现 a 的前面添加 hello</span><br><span class="line">(integer) 5</span><br><span class="line">127.0.0.1:6379&gt; LRANGE list 0 -1 # 遍历 list</span><br><span class="line">1) &quot;hello&quot;</span><br><span class="line">2) &quot;a&quot;</span><br><span class="line">3) &quot;d&quot;</span><br><span class="line">4) &quot;c&quot;</span><br><span class="line">5) &quot;b&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; LPUSH list:zhang name1 name2 name3</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; LPUSHX list:zhang name1 name4 name5 name6</span><br><span class="line">(integer) 7</span><br><span class="line">127.0.0.1:6379&gt; LPUSH list:zhang name1 name4 name5 name6</span><br><span class="line">(integer) 11</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部</span></span><br><span class="line">127.0.0.1:6379&gt; LRANGE list:zhang 0 11</span><br><span class="line"> 1) &quot;name6&quot;</span><br><span class="line"> 2) &quot;name5&quot;</span><br><span class="line"> 3) &quot;name4&quot;</span><br><span class="line"> 4) &quot;name1&quot;</span><br><span class="line"> 5) &quot;name6&quot;</span><br><span class="line"> 6) &quot;name5&quot;</span><br><span class="line"> 7) &quot;name4&quot;</span><br><span class="line"> 8) &quot;name1&quot;</span><br><span class="line"> 9) &quot;name3&quot;</span><br><span class="line">10) &quot;name2&quot;</span><br><span class="line">11) &quot;name1&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">LPUSHX 对空列表或不存在的列表不进行操作</span></span><br><span class="line">127.0.0.1:6379&gt; LPUSHX list:zhang:1 name1 name2 name3</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;list:zhang&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;name&quot;</span><br><span class="line">4) &quot;hash:zhang&quot;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/3f42dc25499d/#more" rel="contents">
@@ -781,7 +765,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-05-10 10:00:54" itemprop="dateModified" datetime="2023-05-10T10:00:54+08:00">2023-05-10</time>
+                <time title="修改时间：2023-05-25 17:56:55" itemprop="dateModified" datetime="2023-05-25T17:56:55+08:00">2023-05-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -802,7 +786,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>5.5k</span>
+              <span>6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -820,7 +804,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="Strings-命令"><a href="#Strings-命令" class="headerlink" title="Strings 命令"></a>Strings 命令</h3><p>字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.</p>
+          <h3 id="Strings-命令"><a href="#Strings-命令" class="headerlink" title="Strings 命令"></a>Strings 命令</h3><p>字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 <strong>512MB</strong>.</p>
 <p>Strings: 键名: key, 键类型: string, 键值: string</p>
 <h4 id="设置值"><a href="#设置值" class="headerlink" title="设置值"></a>设置值</h4><ul>
 <li><p>SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]</p>
@@ -835,7 +819,7 @@
 <li>KEEPTTL 保留 key 关联的生存时间</li>
 </ul>
 </li>
-<li><p>SETNX key value 当 key 不存在时设置指定 key 的值, 1 成功, 0 失败</p>
+<li><p>SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败</p>
 </li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;xiaoming&quot;</span><br><span class="line">2) &quot;name&quot;</span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;xiaoming&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;name&quot;</span><br></pre></td></tr></table></figure>
@@ -845,18 +829,22 @@
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; APPEND age 1</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; GET age</span><br><span class="line">&quot;181&quot;</span><br><span class="line">127.0.0.1:6379&gt; APPEND addr beijing</span><br><span class="line">(integer) 7</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;xiaoming&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;addr&quot;</span><br><span class="line">4) &quot;name&quot;</span><br><span class="line">127.0.0.1:6379&gt; APPEND a hello</span><br><span class="line">(integer) 5</span><br><span class="line">127.0.0.1:6379&gt; APPEND b gg</span><br><span class="line">(integer) 2</span><br></pre></td></tr></table></figure>
 
-<h5 id="批量设置值"><a href="#批量设置值" class="headerlink" title="批量设置值"></a>批量设置值</h5><ul>
-<li><p>MSET key value [key value …] 批量设置 key 的值</p>
-</li>
-<li><p>MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 1 成功, 0 失败</p>
-</li>
-<li><p>SETRANGE key offset value</p>
-<p>覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建</p>
-</li>
-</ul>
 <h5 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h5><ul>
 <li>SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok</li>
 <li>PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SETEX addr 20 beijing</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; PSETEX addr 20000 beijing</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<h5 id="批量设置值"><a href="#批量设置值" class="headerlink" title="批量设置值"></a>批量设置值</h5><ul>
+<li>MSET key value [key value …] 批量设置 key 的值</li>
+<li>MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;age&quot;</span><br><span class="line">2) &quot;name&quot;</span><br><span class="line">3) &quot;hash:zhang&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">当且仅当所有 key 都不存在时设置成功返回 1</span></span><br><span class="line">127.0.0.1:6379&gt; MSETNX name zhangsan age 18 addr beijing</span><br><span class="line">(integer) 0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>SETRANGE key offset value</p>
+<p>覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建</p>
+</li>
 </ul>
           <!--noindex-->
             <div class="post-button">
@@ -915,7 +903,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-05-10 18:27:57" itemprop="dateModified" datetime="2023-05-10T18:27:57+08:00">2023-05-10</time>
+                <time title="修改时间：2023-05-25 17:07:25" itemprop="dateModified" datetime="2023-05-25T17:07:25+08:00">2023-05-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1022,7 +1010,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-05-10 18:02:21" itemprop="dateModified" datetime="2023-05-10T18:02:21+08:00">2023-05-10</time>
+                <time title="修改时间：2023-05-25 17:51:35" itemprop="dateModified" datetime="2023-05-25T17:51:35+08:00">2023-05-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1133,7 +1121,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-05-24 11:10:56" itemprop="dateModified" datetime="2023-05-24T11:10:56+08:00">2023-05-24</time>
+                <time title="修改时间：2023-05-25 18:35:33" itemprop="dateModified" datetime="2023-05-25T18:35:33+08:00">2023-05-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1466,12 +1454,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">395k</span>
+    <span title="站点总字数">398k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:59</span>
+    <span title="站点阅读时长">6:01</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
