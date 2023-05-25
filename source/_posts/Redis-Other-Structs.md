@@ -148,7 +148,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 ###### 获取经纬度
 
-- GEOPOS key member [member ...] 返回指定成员的经纬度信息, 如果集合为空或者不存在或者指定成员不存在则返回 &lt;nil&gt;
+- GEOPOS key member [member ...] 返回指定成员的经纬度信息, 如果集合为空或者不存在或者指定成员不存在则返回 \<nil\>
 
 ```shell
 127.0.0.1:6379> GEOPOS city1 beijing shanghai
@@ -167,7 +167,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 ###### 获取经纬度 hash
 
-- GEOHASH key member [member ...] 返回指定成员的经纬度信息的 hash 编码后的字符串表示, 如果集合为空或者不存在或者指定成员不存在则返回 &lt;nil&gt;
+- GEOHASH key member [member ...] 返回指定成员的经纬度信息的 hash 编码后的字符串表示, 如果集合为空或者不存在或者指定成员不存在则返回 \<nil\>
 
 ```shell
 127.0.0.1:6379> GEOHASH citys hello world
@@ -181,7 +181,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 ##### 获取指定成员间距离
 
-- GEODIST key member1 member2 [M|KM|FT|MI] 返回集合指定成员之间的距离, 默认距离单位 M, 如果集合为空或者不存在或者指定成员不存在则返回 &lt;nil&gt;
+- GEODIST key member1 member2 [M|KM|FT|MI] 返回集合指定成员之间的距离, 默认距离单位 M, 如果集合为空或者不存在或者指定成员不存在则返回 \<nil\>
   - M 米
   - KM 公里
   - FT 英里
@@ -206,7 +206,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 ##### 范围搜索
 
-- GEOSEARCH key <FROMMEMBER member|FROMLONLAT longitude latitude> <BYRADIUS radius <M|KM|FT|MI>|BYBOX width height <M|KM|FT|MI>> [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH] 返回集合中符合属于给定形状区域的边界内的成员的信息, 默认返回所有的匹配项且没有排序, 如果集合为空或者不存在返回 (empty array), 6.2.0 支持
+- GEOSEARCH key \<FROMMEMBER member|FROMLONLAT longitude latitude\> \<BYRADIUS radius \<M|KM|FT|MI\>|BYBOX width height \<M|KM|FT|MI\>\> [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH] 返回集合中符合属于给定形状区域的边界内的成员的信息, 默认返回所有的匹配项且没有排序, 如果集合为空或者不存在返回 (empty array), 6.2.0 支持
 
   - FROMMEMBER 使用给定的已存在的成员进行搜索, 如果指定成员不属于非空集合则报错 ERR could not decode requested zset member
   - FROMLONLAT 使用给定的 longitude 和 latitude 搜索, 如果指定的经纬度超出范围则报错 ERR invalid longitude,latitude pair
@@ -283,7 +283,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 ##### 范围搜索存储
 
-- GEOSEARCHSTORE destination source <FROMMEMBER member|FROMLONLAT longitude latitude> <BYRADIUS radius <M|KM|FT|MI>|BYBOX width height <M|KM|FT|MI>> [ASC|DESC] [COUNT count [ANY]] [STOREDIST] 命令同 `GEOSEARCH`, 区别是将结果存储到指定排序集合并返回指定集合的数量, 默认存储匹配项的名称和匹配项 `GEOHASH` 的无符号整数, 如果指定集合为空或者不存在则新建, 如果指定集合已存在则覆盖指定集合, 6.2.0 支持
+- GEOSEARCHSTORE destination source \<FROMMEMBER member|FROMLONLAT longitude latitude\> \<BYRADIUS radius \<M|KM|FT|MI\>|BYBOX width height \<M|KM|FT|MI\>\> [ASC|DESC] [COUNT count [ANY]] [STOREDIST] 命令同 `GEOSEARCH`, 区别是将结果存储到指定排序集合并返回指定集合的数量, 默认存储匹配项的名称和匹配项 `GEOHASH` 的无符号整数, 如果指定集合为空或者不存在则新建, 如果指定集合已存在则覆盖指定集合, 6.2.0 支持
   - 部分参数同 `GEOSEARCH`
   - STOREDIST 返回匹配项距离中心点的距离
 
@@ -568,7 +568,7 @@ offset 的格式: {uid}
 
 Redis Bitfields 是一种可以自定义设置、递增和获取任意位长度的整数值, 这些值使用二进制编码的 Redis 字符串存储, 位字段支持原子读取、写入和增量操作, 使其成为管理计数器和类似数值的好选择.
 
-- BITFIELD key <GET encoding offset | [OVERFLOW <WRAP | SAT | FAIL>] <SET encoding offset value | INCRBY encoding offset increment> [GET encoding offset | [OVERFLOW <WRAP | SAT | FAIL>] <SET encoding offset value | INCRBY encoding offset increment> ...]> 自定义存储位数
+- BITFIELD key \<GET encoding offset | [OVERFLOW \<WRAP | SAT | FAIL\>] \<SET encoding offset value | INCRBY encoding offset increment\> [GET encoding offset | [OVERFLOW \<WRAP | SAT | FAIL\>] \<SET encoding offset value | INCRBY encoding offset increment\> ...]\> 自定义存储位数
 
 ```shell
 127.0.0.1:6379> BITFIELD mykey incrby u2 100 1 OVERFLOW SAT incrby u2 102 1

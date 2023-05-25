@@ -9,7 +9,7 @@ tags:
 
 ### Strings 命令
 
-字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 512MB.
+字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 **512MB**.
 
 Strings: 键名: key, 键类型: string, 键值: string
 
@@ -27,7 +27,7 @@ Strings: 键名: key, 键类型: string, 键值: string
   - PXAT 过期时间戳, 单位毫秒
   - KEEPTTL 保留 key 关联的生存时间
 
-- SETNX key value 当 key 不存在时设置指定 key 的值, 1 成功, 0 失败
+- SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败
 
 ```shell
 127.0.0.1:6379> KEYS *
@@ -63,26 +63,42 @@ Strings: 键名: key, 键类型: string, 键值: string
 (integer) 2
 ```
 
-##### 批量设置值
-
-- MSET key value [key value ...] 批量设置 key 的值
-- MSETNX key value [key value ...] 批量设置 key 的值且当所有的 key 不存在时, 1 成功, 0 失败
-
-- SETRANGE key offset value
-
-  覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建
-
 ##### 过期时间
 
 - SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok
 - PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok
+
+```shell
+127.0.0.1:6379> SETEX addr 20 beijing
+OK
+127.0.0.1:6379> PSETEX addr 20000 beijing
+OK
+```
+
+##### 批量设置值
+
+- MSET key value [key value ...] 批量设置 key 的值
+- MSETNX key value [key value ...] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败
+
+```shell
+127.0.0.1:6379> KEYS *
+1) "age"
+2) "name"
+3) "hash:zhang"
+# 当且仅当所有 key 都不存在时设置成功返回 1
+127.0.0.1:6379> MSETNX name zhangsan age 18 addr beijing
+(integer) 0
+```
+
+- SETRANGE key offset value
+
+  覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建
 
 <!-- more -->
 
 #### 获取值
 
 - GET key 获取一个 key 的值, 不存在返回 \<nil\>
-
 - GETSET key value 设置指定 key 的值并返回原来的值, key 不存在返回 \<nil\>
 
 ```shell
@@ -98,6 +114,19 @@ Strings: 键名: key, 键类型: string, 键值: string
   获取指定 key 的值并设置过期时间, key 不存在返回 \<nil\>
 
   - PERSIST 移除 key 关联的生存时间
+
+```shell
+127.0.0.1:6379> GETEX addr EX 50
+"beijing"
+127.0.0.1:6379> TTL addr
+(integer) 46
+127.0.0.1:6379> PTTL addr
+(integer) 42757
+127.0.0.1:6379> PERSIST addr # 移除过期时间
+(integer) 1
+127.0.0.1:6379> TTL addr
+(integer) -1
+```
 
 - GETDEL key 获取指定 key 的值并删除, key 不存在返回 \<nil\>
 
@@ -152,6 +181,13 @@ Strings: 键名: key, 键类型: string, 键值: string
 
 - DECR key 将 key 中存储的数字值减 1 并返回修改后的值, 非数字值或者值为浮点数会报错, key 不存在从 0 开始计算
 - DECRBY key decrement 将 key 中存储的数字值减去给定的增量值(decrement), 返回值同 `DECR`
+
+#### 应用
+
+- 共享 session
+- 分布式锁
+- 计数器
+- 限流
 
 ### Hashes 命令
 

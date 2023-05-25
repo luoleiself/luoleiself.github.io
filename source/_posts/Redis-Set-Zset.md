@@ -134,7 +134,7 @@ OK
 
 #### 随机获取成员
 
-- SPOP key [count] 移除指定集合随机的多个成员并返回移除的成员, 改变原集合, 不带 count 如果集合为空或者不存在返回 &lt;nil&gt;, 否则返回 (empty array), count 不能为负数
+- SPOP key [count] 移除指定集合随机的多个成员并返回移除的成员, 改变原集合, 不带 count 如果集合为空或者不存在返回 \<nil\>, 否则返回 (empty array), count 不能为负数
   - count 指定随机移除的数量, 默认为 1
     - count >= 1 时, 空集合返回 (empty array)
     - count = 0 时, 任何集合都返回 (empty array)
@@ -175,7 +175,7 @@ OK
 2) "hello"
 ```
 
-- SRANDMEMBER key [count] 返回指定集合随机的多个成员, 不改变原集合, 不带 count 如果集合为空或者不存在返回 &lt;nil&gt;, 否则返回 (empty array), count 为负数将会取绝对值
+- SRANDMEMBER key [count] 返回指定集合随机的多个成员, 不改变原集合, 不带 count 如果集合为空或者不存在返回 \<nil\>, 否则返回 (empty array), count 为负数将会取绝对值
   - count 指定随机返回的数量, 默认为 1
     - count >= 1 时, 空集合返回 (empty array)
     - count = 0 时, 任意集合都返回 (empty array)
@@ -477,6 +477,12 @@ OK
 4) "hello"
 ```
 
+#### 应用
+
+- 用户标签
+- 生成随机数字抽奖
+- 社交需求
+
 ### Sorted sets 命令
 
 Sorted sets 和 set 一样也是 string 类型元素的集合, 且不允许重复的成员, 不同的是每个元素都会关联一个 double 类型的分值, Redis 正是通过分值来为集合中的成员进行从小到大的排序, 有序集合的成员是唯一的,但分值(score)却可以重复, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.
@@ -666,13 +672,13 @@ Zset: 键名: key, 键类型: zset, 键值: string {value => score}
   - count = 0 时, 不做任何操作, 返回 empty array
   - count > 1 时, 指定移除数量
 
-- BZPOPMAX key [key ...] timeout 阻塞版 `ZPOPMAX`, 从多个集合中第 1 个非空集合中移除并返回 1 个最高分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 &lt;nil&gt;, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, 5.0.0 支持
+- BZPOPMAX key [key ...] timeout 阻塞版 `ZPOPMAX`, 从多个集合中第 1 个非空集合中移除并返回 1 个最高分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, 5.0.0 支持
 
 - ZPOPMIN key [count] 移除指定集合的指定数量的最低分值成员并返回移除的成员和分值, count 默认为 1, 如果集合为空或者不存在返回 (empty array), 5.0.0 支持
 
   - 参数同 `ZPOPMAX`
 
-- BZPOPMIN key [key ...] timeout 阻塞版 `ZPOPMIN`, 从多个集合中第 1 个非空集合中移除并返回 1 个最低分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 &lt;nil&gt;, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, 5.0.0 支持
+- BZPOPMIN key [key ...] timeout 阻塞版 `ZPOPMIN`, 从多个集合中第 1 个非空集合中移除并返回 1 个最低分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, 5.0.0 支持
 
 ```shell
 127.0.0.1:6379> ZPOPMAX myz -1
@@ -811,9 +817,9 @@ Zset: 键名: key, 键类型: zset, 键值: string {value => score}
 
 ##### 批量移除相邻成员
 
-- ZMPOP numkeys key [key ...] MIN|MAX [COUNT count] 从多个集合中第 1 个非空集合中移除指定数量的最高或最低分值的成员并返回移除的成员和分值及成员所属的集合名称, count 默认为 1, 集合为空或者不存在返回 &lt;nil&gt;, 7.0.0 支持
+- ZMPOP numkeys key [key ...] MIN|MAX [COUNT count] 从多个集合中第 1 个非空集合中移除指定数量的最高或最低分值的成员并返回移除的成员和分值及成员所属的集合名称, count 默认为 1, 集合为空或者不存在返回 \<nil\>, 7.0.0 支持
   - COUNT count 移除成员的数量, 默认为 1
-- BZMPOP timeout numkeys key [key ...] MIN|MAX [COUNT count] 阻塞版 `ZMPOP`, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 &lt;nil&gt;, 7.0.0 支持
+- BZMPOP timeout numkeys key [key ...] MIN|MAX [COUNT count] 阻塞版 `ZMPOP`, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 7.0.0 支持
 
 ```shell
 # 如果集合都为空, 阻塞指定时间后返回 nil
@@ -909,7 +915,7 @@ Zset: 键名: key, 键类型: zset, 键值: string {value => score}
 
 #### 随机获取指定数量成员
 
-- ZRANDMEMBER key [count [WITHSCORES]] 返回指定集合随机的多个成员, 不改变原集合, 如果集合为空或者不存在返回 &lt;nil&gt;, 否则返回 (empty array), 6.2.0 支持
+- ZRANDMEMBER key [count [WITHSCORES]] 返回指定集合随机的多个成员, 不改变原集合, 如果集合为空或者不存在返回 \<nil\>, 否则返回 (empty array), 6.2.0 支持
   - count 指定随机返回的数量, 默认为 1
     - count >= 1 时, 空集合返回 (empty array)
     - count = 0 时, 任意集合都返回 (empty array)
@@ -954,7 +960,7 @@ Zset: 键名: key, 键类型: zset, 键值: string {value => score}
 12) "5"
 ```
 
-- ZRANK key member 返回指定成员的按递增顺序的排名, 从 0 开始计算, 如果指定成员不属于指定集合则返回 &lt;nil&gt;
+- ZRANK key member 返回指定成员的按递增顺序的排名, 从 0 开始计算, 如果指定成员不属于指定集合则返回 \<nil\>
 
 ```shell
 127.0.0.1:6379> ZRANK myz yy
@@ -965,7 +971,7 @@ Zset: 键名: key, 键类型: zset, 键值: string {value => score}
 (nil)
 ```
 
-- ZREVRANK key member 返回指定成员的按递减顺序的排名, 从 0 开始计算, 如果指定成员不属于指定集合则返回 &lt;nil&gt;
+- ZREVRANK key member 返回指定成员的按递减顺序的排名, 从 0 开始计算, 如果指定成员不属于指定集合则返回 \<nil\>
 
 ```shell
 127.0.0.1:6379> ZREVRANK myz yy
@@ -994,7 +1000,7 @@ Zset: 键名: key, 键类型: zset, 键值: string {value => score}
 12) "5"
 ```
 
-- ZSCORE key member 获取指定成员的分值, 如果集合为空或者指定成员不属于集合返回 &lt;nil&gt;
+- ZSCORE key member 获取指定成员的分值, 如果集合为空或者指定成员不属于集合返回 \<nil\>
 
 ```shell
 127.0.0.1:6379> ZSCORE myz1 hehe
@@ -1005,7 +1011,7 @@ Zset: 键名: key, 键类型: zset, 键值: string {value => score}
 "3"
 ```
 
-- ZMSCORE key member [member ...] 批量获取指定成员的分值, 如果集合为空或者指定成员不属于集合返回 &lt;nil&gt;, 6.2.0 支持
+- ZMSCORE key member [member ...] 批量获取指定成员的分值, 如果集合为空或者指定成员不属于集合返回 \<nil\>, 6.2.0 支持
 
 ```shell
 127.0.0.1:6379> ZMSCORE myz HAHA hehe
@@ -1275,3 +1281,8 @@ Zset: 键名: key, 键类型: zset, 键值: string {value => score}
 11) "f"
 12) "32"
 ```
+
+#### 应用 <!-- markdownlint-disable-line -->
+
+- 排行榜
+- 用户点赞

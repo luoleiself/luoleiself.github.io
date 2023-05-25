@@ -176,7 +176,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 - MOVE key db 将当前数据库中的 key 移动到指定的数据库(db)中
 
-- DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 &lt;nil&gt;
+- DUMP key 序列化指定 key, 并返回被序列化的值, 不存在返回 \<nil\>
 
 - TOUCH key [key ...] 更改指定 key 的最后一次访问时间并返回修改成功的数量, 如果 key 不存在则忽略
 - SORT key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE destination]
@@ -240,8 +240,8 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 #### 获取 key 的过期时间
 
-- TTL key 以秒为单位返回指定 key 的剩余生存时间
-
+- TTL key 返回指定 key 以**秒**为单位剩余的生存时间
+- PTTL key 返回指定 key 以**毫秒**为单位剩余的生存时间
   - \-2 key 不存在
   - \-1 key 存在但没有设置剩余生存时间
 
@@ -252,18 +252,15 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 (integer) 1
 127.0.0.1:6379> TTL age
 (integer) 23
+127.0.0.1:6379> PTTL age
+(integer) 23000
 ```
-
-- PTTL key 以毫秒为单位返回指定 key 的剩余的过期时间
-
-  - \-2 key 不存在
-  - \-1 key 存在但没有设置剩余生存时间
 
 - PERSIST key 移除指定 key 的过期时间, key 将永久保持, 1 成功, 0 key 不存在或者未设置过期时间
 
 #### 数据库操作
 
-- RANDOMKEY 从当前数据库随机返回一个 key, 如果当前数据库为空则返回 &lt;nil&gt;
+- RANDOMKEY 从当前数据库随机返回一个 key, 如果当前数据库为空则返回 \<nil\>
 - SWAPDB index1 index2 切换两个数据库
 - SELECT index 更改当前连接的选定的数据库
 - DBSIZE 返回当前数据库中 key 的数量
@@ -1338,7 +1335,7 @@ Redis 事务执行的三个重要保证:
 - 命令入队: 命令不会被立即执行, 而是被放入一个事务队列
 - 执行事务(exec)或丢弃(discard)
 
-#### 命令
+#### 事务命令
 
 - MULTI 标记一个事务块的开启, 通常返回 ok
 - EXEC 执行事务, 通常返回 ok
@@ -1790,6 +1787,16 @@ Redis Cluster 是一种服务器 Sharding 技术, Redis 3.0 版本开始支持
 Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, 当动态添加或减少 node 时, 需要将 16384 个 slot 再分配, slot 中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个 node 发生故障, 则此 node 负责的 slot 也就失效, 整个集群将不能工作
 官方推荐的方案是将 node 配置成主从结构, 即 1:n, 如果主节点失效, Redis Cluster 根据选举算法从 slave 节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则作为新的主节点的从节点
 
+#### Cluster Slot
+
+> 从心跳包的大小、网络带宽、心跳并发、压缩率鞥维度考虑, 16384 个插槽更具有优势且能满足业务需求
+
+- 正常的心跳数据包携带节点的完整配置, 它能以幂等方式来更新配置. 如果采用 16384 个插槽, 占空间 2KB(16384/8); 如果采用 65536 个插槽,占空间 8KB(65536/8). 8KB 的心跳包看似不大, 比起 16384 个插槽, 头大小增加了 4 倍,ping 消息的消息头太大, 浪费带宽
+- Redis Cluster 不太可能扩展到超过 1000 个主节点, 太多可能导致网络拥堵
+- 16384 个插槽比较合适, 当集群扩展到 1000 个节点时, 也能确保每个主节点有足够的插槽
+
+#### 命令
+
 - redis-cli \-\-cluster help # 查看集群命令帮助信息
 - redis-cli \-\-cluster create host1:port1 ... hostN:portN # 创建指定 IP 和 Port 的服务器作为集群
   - \-\-cluster-replicas \<arg\> # 指定集群中主节点和从节点数量的比例, 1 表示 1:1
@@ -1854,7 +1861,8 @@ cluster-enabled yes # 开启集群模式
 cluster-config-file nodes-6379.conf
 # 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒
 cluster-node-timeout 15000
-# 关闭当某一插槽主从服务器挂掉时, 整个集群都挂掉, no 只是该插槽不可用, 默认 yes
+# 默认当某一插槽不可用时, 整个集群都挂掉
+# no 表示仅该插槽不可用, 默认 yes
 cluster-require-full-coverage no
 
 # 集群模式使用 hostname 进行节点间通信
