@@ -9,9 +9,11 @@ tags:
 
 ### Strings 命令
 
-字符串是基础类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 **512MB**.
+字符串是基础的 key-value 类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 **512MB**.
 
-Strings: 键名: key, 键类型: string, 键值: string
+String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic String)
+
+> 因为 C 语言的字符串并不记录自身长度, 所以获取长度的复杂度为 O(n), SDS 结构里用 len 属性记录字符串长度, 所有复杂度为 O(1)
 
 #### 设置值
 
@@ -191,9 +193,22 @@ OK
 
 ### Hashes 命令
 
+> Redis 7.0 之后, 压缩列表数据结构由 listpack 数据结构实现
+
 hash 是一个 string 类型的 field(字段) 和 value(值)的映射表, hash 适合用于存储对象, 每个 hash 可以存储 2^32-1(40 多亿)键值对
 
 Hashes: 键名: key, 键类型: hash, 键值: string {field => value}
+
+Hash 类型的底层数据结构是由**压缩列表**或**哈希表**实现的
+
+- 如果哈希类型元素的个数小于 512 个, 每个元素值都小于 64B 时, Redis 使用**压缩列表作**为底层数据结构
+- 如果哈希类型元素不满足上面的条件, Redis 使用**哈希表**作为底层数据结构
+
+```yaml
+# 配置底层数据结构存储数量限制
+hash-max-listpack-entries 512
+hash-max-listpack-value 64
+```
 
 #### 哈希表存取
 
