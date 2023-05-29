@@ -23,7 +23,7 @@ tags:
 - vagrant 2.3.6
 - VirtualBox 7.0.8
 
-win 11 下, 使用 VirtualBox 的默认虚拟电脑存储位置(在C盘)时, vagrant 可以正常启动虚拟机,
+win 11 下, 使用 VirtualBox 的默认虚拟电脑存储位置(在 C 盘)时, vagrant 可以正常启动虚拟机,
 
 如果修改 VirtualBox 的默认虚拟电脑存储位置为 D:\VirtualBox\vms 时, vagrant 启动虚拟机会提示以下错误
 
@@ -37,9 +37,7 @@ There was an error while executing `VBoxManage`, a CLI used by Vagrant
 
 for controlling VirtualBox. The command and stderr is shown below.
 
-
 Command: ["import", "\\\\?\\C:\\Users\\Administrator\\.vagrant.d\\boxes\\hashicorp-VAGRANTSLASH-bionic64\\1.0.282\\virtualbox\\box.ovf", "--vsys", "0", "--vmname", "ubuntu-18.04-amd64_1685247283628_30042", "--vsys", "0", "--unit", "11", "--disk", "D:/VirtualBox/vms/ubuntu-18.04-amd64_1685247283628_30042/ubuntu-18.04-amd64-disk001.vmdk"]
-
 
 Stderr: 0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
 
@@ -53,4 +51,4 @@ VBoxManage.exe: error: Appliance import failed
 
 VBoxManage.exe: error: Code E_INVALIDARG (0x80070057) (extended info not available)
 
-VBoxManage.exe: error: Context: "enum RTEXITCODE __cdecl handleImportAppliance(struct HandlerArg *)" at line 1416 of file VBoxManageAppliance.cpp
+VBoxManage.exe: error: Context: "enum RTEXITCODE \_\_cdecl handleImportAppliance(struct HandlerArg \*)" at line 1416 of file VBoxManageAppliance.cpp
