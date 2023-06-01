@@ -276,10 +276,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 - include /path/to/\*.conf # 导入其他 redis 配置文件
 
-- bind 127.0.0.1 -::1 # 默认绑定本地 127.0.0.1
 - protected-mode yes # 保护模式, 默认开启
-- port 6379 # 默认端口号
-
 - tcp-backlog 511 # tcp 连接数
 - timeout 0 # 关闭客户端连接的延迟, 0 表示禁用, 单位秒
 - tcp-keepalive 300 # 保持长连接的时间, 单位秒
@@ -304,14 +301,11 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 #### 通用设置
 
-- daemonize no 是否后台模式启动服务
-- pidfile /var/run/redis_6379.pid # 进程 id 文件
 - loglevel notice # 设置日志级别, 默认 notice
   - debug (a lot of information, useful for development/testing)
   - verbose (many rarely useful info, but not a mess like the debug level)
   - notice (moderately verbose, what you want in production probably)
   - warning (only very important / critical messages are logged)
-- logfile "" # 日志文件, 守护进程模式将指定 /dev/null
 - syslog-enabled no # 是否允许指向 系统 日志
 - syslog-ident redis # 日志标识符
 
@@ -320,28 +314,8 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - always-show-logo no # 是否总是显示 logo
 - set-proc-title yes # 设置进程标题
 
-#### REPLICATION
-
-- replicaof \<masterip\> \<masterport\> 设置主服务器的 IP 和 Port
-- masterauth \<master-password\> 设置主服务器的认证密码
-- masteruser \<username\> 设置主服务器的用户名
-- replica-read-only yes 只读模式, 默认开启
-- repl-diskless-sync-delay 5 服务器同步延迟, 默认 5 秒
-- replica-priority 100 哨兵模式下被选为主服务器的优先级, 值越小优先级越高
-- replica-ignore-maxmemory yes 副本忽略最大内存限制
-
-#### CLUSTER
-
-- cluster-enabled yes 打开集群模式
-- cluster-config-file nodes-6379.conf 设置节点配置文件
-- cluster-node-timeout 15000 设置节点失联时间, 超过该时间集群自动主从切换, 默认毫秒
-- cluster-allow-replica-migration yes 允许集群副本迁移
-- cluster-require-full-coverage yes 当某一段插槽主从服务器都宕机, 设置 yes 则整个集群都挂掉, 设置 no 则只是该插槽不可用
-- cluster-allow-pubsubshard-when-down yes 允许集群服务器宕机时发布/订阅
-
 #### MEMORY
 
-- maxmemory \<bytes\> # 设置内存容量
 - maxmemory-policy noeviction # 内存管理策略
   - volatile-lru 使用 LRU 算法移除 key, 只对设置了过期时间的 key
   - allkeys-lru 在所有集合 key 中, 使用 LRU 算法移除 key
@@ -364,26 +338,11 @@ save <seconds> <changes> [<seconds> <changes> ...]
 - stop-writes-on-bgsave-error yes # 是否开启停止在保存快照发生错误的时的写操作
 - rdbcompression yes # 开启 rdb 文件压缩
 - rdbchecksum yes # 开启 rdb 文件的校验检查
-- dbfilename dump.rdb # rdb 文件名称
-- dir ./ # rdb 文件存储目录
-
-- appendonly no # 是否启动 aof 备份
-- appendfilename "appendonly.aof" # aof 备份文件名
-- appenddirname "appendonlydir" # aof 备份目录
-- appendfsync everysec # aof 备份模式, 每秒中执行
-  - always 只要 key 发生改变就要备份
-  - no 不备份
-- auto-aof-rewrite-percentage 100 # 代表当前 AOF 文件大小和上一次重写后 AOF 文件大小的比值
-- auto-aof-rewrite-min-size 64mb # 触发 AOF 重写的文件最小值, 默认 64MB
 
 #### SECURITY
 
 - acllog-max-len 128 # ACL 日志在内存中时的最大条目数
 - aclfile /etc/redis/users.acl # 默认 ACL 配置文件
-- requirepass foobared # 认证密码
-
-- maxclients 10000 # 客户端最大连接数
-
 - io-threads 4 # I/O 线程
 
 ### 发布订阅
@@ -1492,7 +1451,7 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 
 将一台 Redis 服务器的数据,复制到其他的 Redis 服务器. 前者称为主节点(Master/Leader),后者称为从节点(Slave/Follower), 数据的复制是单向的！只能由主节点复制到从节点(主节点以写为主、从节点以读为主)—— 读写分离.
 ===每台 Redis 服务器都是主节点===
-一个主节点可以有 0 个或者多个从节点, 但每个从节点只能由一个主节点
+一个主节点可以有 0 个或者多个从节点, 但每个从节点只能有一个主节点
 
 ```shell
 127.0.0.1:6379> INFO replication # 当前副本的信息
@@ -1519,32 +1478,24 @@ repl_backlog_histlen:0
 
 #### 复制原理
 
-- 从服务器向主服务器发送 `SYNC` 命令
-- 接到 `SYNC` 命令的主服务器会调用 `BGSAVE` 命令, 创建一个 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令
-- 当主服务器执行完 `BGSAVE` 命令时, 它会向从服务器发送 RDB 文件, 而从服务器则会接收并载入这个文件
-- 主服务器将缓冲区储存的所有写命令发送给从服务器执行
+> Redis 2.8 以上使用 psync 命令完成同步
 
-##### 全量复制
+1. 从服务器向主服务器发送 `SYNC` 命令
+2. 接到 `SYNC` 命令的主服务器会调用 `BGSAVE` 命令, 创建一个 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令
+3. 当主服务器执行完 `BGSAVE` 命令时, 它会向从服务器发送 RDB 文件, 而从服务器则会接收并载入这个文件
+4. 主服务器将缓冲区储存的所有写命令发送给从服务器执行
 
-从服务器接收到数据库文件后, 将其全部加载到内存中
-
-##### 增量复制
-
-主服务器将新的所有收集到的修改命令依次传给从服务器, 完成同步
+- 全量复制: 从服务器接收到数据库文件后, 将其全部加载到内存中
+- 增量复制: 主服务器将新的所有收集到的修改命令依次传给从服务器, 完成同步
 
 #### 命令模式
 
 ===每台 Redis 服务器都是主节点===, 只用配置从服务器即可
-使用`命令配置`只能在`本次服务器运行时有效`, 重启服务器后将会丢失配置信息, 使用配置文件永久生效
 
-##### 运行时有效
+**运行时有效**, 只在`本次服务器运行时有效`, 重启服务器后将会丢失配置信息
 
-- 方式一: **启动** Redis 服务器时参数指定 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
+- 方式一: **启动** Redis 服务器时使用指定参数 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
 - 方式二: **连接** Redis 服务器使用内置命令 `REPLICAOF host port`
-
-提升从服务器角色
-
-- `REPLICAOF NO ONE` 将从服务器更改为主服务器
 
 ```shell
 # 设置关联主服务器
@@ -1570,27 +1521,29 @@ repl_backlog_first_byte_offset:133525
 repl_backlog_histlen:20165
 ```
 
-- 读写数据
-
 ```shell
-# 主机写入数据
+# 主节点写入数据
 127.0.0.1:6379> SET name helloworld
 OK
-# 从机读取数据
+# 从节点读取数据
 127.0.0.1:6380> GET name
 "helloworld"
 127.0.0.1:6380> SET age 18 # 从机写入数据报错
 (error) READONLY You can\'t write against a read only replica.
-# 从机读取数据
+# 从节点读取数据
 127.0.0.1:6381> GET name
 "helloworld"
 127.0.0.1:6381> SET age 18 # 从机写入数据报错
 (error) READONLY You can\'t write against a read only replica.
 ```
 
-#### 配置文件
+提升从服务器角色
 
-使用配置文件的方式永久有效
+- `REPLICAOF NO ONE` 将从服务器更改为主服务器
+
+#### 配置文件模式
+
+**永久有效**, 但是缺少可扩展性, 每次修改主从节点配置都需要重启 Redis 服务
 
 redis.conf 基础配置，[集群配置](#redisclusterconfigure) <em id="redisbaseconfigure"></em> <!-- markdownlint-disable-line-->
 
@@ -1602,50 +1555,73 @@ daemonize yes # 开启后台运行, 默认为 no
 pidfile /var/run/redis_6379.pid
 loglevel notice
 # 修改日志文件名, 默认为空
+# 守护进程模式将指定 /dev/null
 logfile "6379.log"
 # 修改持久化文件名, 默认为 dump.rdb
 dbfilename dump6379.rdb
 dir "" # 持久化文件存放目录
 # 配置主服务器 ip 和 port
-replicaof <masterip> <masterport>
+# replicaof <masterip> <masterport>
 
 # 副本和主服务器同步时的认证密码，如果主服务器开启验证
-masterauth <master-password>
+# masterauth <master-password>
 # 副本和主服务器同步时的认证用户
-masteruser <username>
+# masteruser <username>
 
-replica-read-only yes # 只读模式, 默认 yes
+# 从节点只读模式, 默认 yes
+# replica-read-only yes
 # 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes
-repl-diskless-sync yes
-# 同步延迟, 默认 5 秒
-repl-diskless-sync-delay 5
+# repl-diskless-sync yes
+# 同步延迟, 默认 5 sec
+# repl-diskless-sync-delay 5
+
+# 主服务器发送 PING 指令到副本的平均时间间隔, 默认 10 sec
+# repl-ping-replica-period 10
+
+# 副本的超时时间, 默认 60 sec
+# 确保此项值大于 repl-ping-replica-period 的值, 否则
+# 每当主服务器和副本之间的流量较低时，都会检测到超时
+# repl-timeout 60
+
+# 如果设置为 yes, Redis 将使用更小的 tcp 包和更少的带宽同步数据
+# 主从同步延迟取决于Linux 内核的配置默认 40 毫秒一次
+# 是否关闭主从节点同步的无延迟, 默认 no
+# repl-disable-tcp-nodelay no
+
 # 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100
-replica-priority 100
+# replica-priority 100
+
 # 默认情况哨兵模式下所有副本被包含在报告中
 # 设置为 no 表示报告中不包含副本
 # 但不影响被选举为 master 的优先级
-replica-announced yes
+# replica-announced yes
 
 # 副本用于监听 master 连接副本的 ip 和 端口
 # 可以被 master 自动检测到
-replica-announce-ip 5.5.5.5
-replica-announce-port 1234
+# replica-announce-ip 5.5.5.5
+# replica-announce-port 1234
 
 # 支持存储最多的 key 的数量, 默认 1000000
-tracking-table-max-keys 1000000
+# tracking-table-max-keys 1000000
 # 支持同时最多连接的客户端数量, 默认 10000
-maxclients 10000
+# maxclients 10000
+
+# 最大内容
+# maxmemory <bytes>
+
+# 副本忽略最大内存限制
+# replica-ignore-maxmemory yes
 
 # 从 Redis 6.0 开始作为新 ACL 系统之上的一个兼容配置
 # 该选项将只是为默认用户设置密码
 # 客户端仍需要使用 AUTH [username] password 进行身份认证
-requirepass foobared
+# requirepass foobared
 ```
 
-- requirepass
+- requirepass 认证
 
 ```shell
-# 第一种方式: 连接 redis 后使用 AUTH 命令认证
+# 第一种方式: 连接 redis 后使用内置命令 AUTH 命令认证
 [root@centos7 workspace]# redis-cli
 127.0.0.1:6379> KEYS *
 (error) NOAUTH Authentication required.
@@ -1656,7 +1632,7 @@ OK
 127.0.0.1:6379> ACL WHOAMI
 "default"
 
-# 第二种方式: 连接 redis 时直接认证
+# 第二种方式: 连接 redis 时使用参数认证
 [root@centos7 workspace]# redis-cli --user default --pass 1006611
 Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
 127.0.0.1:6379> ACL WHOAMI
@@ -1670,43 +1646,68 @@ Warning: Using a password with '-a' or '-u' option on the command line interface
 #### 哨兵模式
 
 哨兵模式是一种特殊的模式, 首先 Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行
-哨兵模式选举: 首先, 领头 sentinel 根据从服务器的信号反馈将从服务器列表中失联的服务器剔除, 按照从服务器的优先级(replica-priority)进行排序并选择优先级最高的从服务器, 如果有多个具有相同最高优先级的从服务器, 那么, 领头 sentinel 将多个具有相同最高优先级的从服务器按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从服务器进行 PSYNC 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从服务器, 如果有多个优先级最高, 复制偏移量最大的从服务器, 那么 领头 sentinel 将按照从服务器的运行 ID 进行排序并选择其中 ID 最小的从服务器
 
 - 哨兵通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器
 - 当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件并关联新的主服务器
 
-sentinel.conf
+##### 选举算法
+
+首先, 领头 sentinel 根据从服务器的信号反馈将从服务器列表中失联的服务器剔除, 按照从服务器的优先级(replica-priority)进行排序并选择优先级最高的从服务器, 如果有多个具有相同最高优先级的从服务器, 那么, 领头 sentinel 将多个具有相同最高优先级的从服务器按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从服务器进行 PSYNC 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从服务器, 如果有多个优先级最高, 复制偏移量最大的从服务器, 那么 领头 sentinel 将按照从服务器的运行 ID 进行排序并选择其中 ID 最小的从服务器
+
+##### 配置方式
+
+- 方式一: 使用命令指定参数 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
+- 方式二: 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
+
+sentinel.conf 配置文件
 
 ```yaml
 protected-mode no # 保护模式, 默认不开启
 port 26379 # 服务端口号
 daemonize no # 是否后台运行模式
-pidfile /var/run/redis-sentinel.pid # 进程文件
+pidfile /var/run/redis-sentinel-26379.pid # 进程文件
 # sentinel announce-ip <ip> # 监听指定地址和端口的实例
 # sentinel announce-port <port>
 logfile "" # 日志文件
 dir /tmp # 工作目录
+
 # 监测服务器配置, 数字表示确认主服务器宕机的票数
+# sentinel monitor <master-name> <ip> <redis-port> <quorum>
 sentinel monitor mymaster 127.0.0.1 6379 2
-# sentinel auth-pass <master-name> <password> # 认证配置
-# 不可触达的超时时间, 默认 30 s
+
+# 通过本地地址监听外部网络中的 redis
+# sentinel announce-ip <ip>
+# sentinel announce-port <port>
+
+# 认证配置
+# sentinel auth-pass <master-name> <password>
+
+# 不可触达的超时时间, 默认 30 sec
+# sentinel down-after-milliseconds <master-name> <milliseconds>
 sentinel down-after-milliseconds mymaster 30000
+
+# 功能同 redis.conf 中的配置项
+# requirepass <password>
+
+# 配置其他 sentinel 认证的用户, 如果没有配置 sentinel-user
+# 将使用 default 用户 和 sentinel-pass 进行认证
+# sentinel sentinel-user <username>
+# sentinel sentinel-pass <password>
+
 # 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1
+# sentinel parallel-syncs <master-name> <numreplicas>
 sentinel parallel-syncs mymaster 1
+
 # 当服务器宕机后等待再次重启的时间, 默认 3 min
+# sentinel failover-timeout <master-name> <milliseconds>
 sentinel failover-timeout mymaster 180000
+
 # 服务器唤起脚本文件
 # sentinel notification-script <master-name> <script-path>
-# 拒绝脚本配置, 默认拒绝
+sentinel notification-script mymaster /var/redis/notify.sh
+
+# 拒绝脚本配置, 默认 yes
 sentinel deny-scripts-reconfig yes
-```
-
-- 方式一: 使用命令 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
-- 方式二: 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
-
-```yaml
-# sentinel.conf
-sentinel monitor myredis 127.0.0.1 6379 1
 ```
 
 ![redis-2](/images/redis-2.png)
@@ -1714,7 +1715,7 @@ sentinel monitor myredis 127.0.0.1 6379 1
 
 ##### 一主三从哨兵配置
 
-3 个哨兵配置文件
+- 3 个哨兵配置
 
 ```yaml
 # sentinel26379.conf
@@ -1739,7 +1740,7 @@ dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 ```
 
-3 台 redis 服务器配置文件
+- 3 台 redis 服务器配置
 
 ```yaml
 # redis6379.conf
@@ -1770,6 +1771,8 @@ dbfilename dump6381.rdb
 # 配置主服务器 ip 和 port
 replicaof 127.0.0.1 6379
 ```
+
+- 根据配置文件启动所有服务
 
 ```shell
 [root@centos7 ~]# redis-server .config/redis6379.conf # 启动 redis 服务器
@@ -1859,22 +1862,38 @@ pidfile /var/run/redis_6379.pid
 cluster-enabled yes # 开启集群模式
 # 修改集群节点文件名, 默认在存储在当前目录下
 cluster-config-file nodes-6379.conf
-# 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒
+# 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认 15000 milsec
 cluster-node-timeout 15000
+
+# (cluster-node-timeout * cluster-replica-validity-factor) + repl-ping-replica-period
+# 例如, 集群节点超时为 30 sec, 并且集群副本有效性因子为 10 sec,
+# 并且假设默认的 repl-ping-replica-period 为 10 sec,
+# 则如果副本无法与主机进行超过 310 sec的通话, 则副本将不会尝试故障转移
+# 集群副本有效性因子, 默认 10 sec
+# cluster-replica-validity-factor 10
+
+# 允许使用较少的自动集群配置, 默认 yes
+# cluster-allow-replica-migration yes
+
 # 默认当某一插槽不可用时, 整个集群都挂掉
 # no 表示仅该插槽不可用, 默认 yes
 cluster-require-full-coverage no
 
+# 允许集群服务器宕机时发布/订阅
+# cluster-allow-pubsubshard-when-down yes
+
 # 集群模式使用 hostname 进行节点间通信
 # 设置为空字符串表示将删除 hostname 并同步给其他节点
-cluster-announce-hostname ""
+# cluster-announce-hostname ""
+
 # 指定集群模式连接节点的方式是使用 ip、hostname或unknown-endpoint 方式
 # 如果设置为 hostname 但未设置 cluster-announce-hostname 将返回 ?
-cluster-preferred-endpoint-type ip
-cluster-announce-ip ip # 集群模式下节点的 ip
-cluster-announce-port 6379 # 集群模式下节点的端口
-cluster-announce-tls-port 0 # 集群模式下节点的安全端口
-cluster-announce-bus-port 16379
+# cluster-preferred-endpoint-type ip
+
+# cluster-announce-ip ip # 集群模式下节点的 ip
+# cluster-announce-port 6379 # 集群模式下节点的端口
+# cluster-announce-tls-port 0 # 集群模式下节点的安全端口
+# cluster-announce-bus-port 16379
 ```
 
 ##### 启动 Redis 服务器
