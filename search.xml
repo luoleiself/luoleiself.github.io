@@ -162,6 +162,63 @@
       </tags>
   </entry>
   <entry>
+    <title>FileSystemAccessAPI</title>
+    <url>/2023/04/12766d614e53/</url>
+    <content><![CDATA[<blockquote>
+<p>目前仅在 chrome 86 (edge 86, opera 72)及以上版本支持, safari 和 firefox 暂时不支持</p>
+</blockquote>
+<p>允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a> 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用该 API 时, 会提示用户授权应用程序访问文件系统</p>
+<ul>
+<li>将文件从本地文件系统上传到 Web 应用程序</li>
+<li>将 Web 应用程中的数据写入到本地文件系统中</li>
+<li>在用户的本地文件系统中创建、重命名和删除文件</li>
+<li>读取本地文件系统上的文件内容</li>
+</ul>
+<h3 id="FileSystemHandle接口"><a href="#FileSystemHandle接口" class="headerlink" title="FileSystemHandle接口"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle">FileSystemHandle</a>接口</h3><p>是 File System Access API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 <code>FileSystemFileHandle</code> 和 <code>FileSystemDirectoryHandle</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承</span></span><br><span class="line"><span class="comment"> * FileSystemHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemFileHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemDirectoryHandle</span></span><br><span class="line"><span class="comment"> * FileSystemSyncAccessHandle</span></span><br><span class="line"><span class="comment"> * WritableStream</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemWritableFileStream</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h4 id="FSH-实例属性"><a href="#FSH-实例属性" class="headerlink" title="FSH 实例属性"></a>FSH 实例属性</h4><ul>
+<li>kind 返回条目的类型, <code>file</code> 表示文件, <code>directory</code> 表示目录</li>
+<li>name 返回关联条目的名称</li>
+</ul>
+<h4 id="FSH-实例方法"><a href="#FSH-实例方法" class="headerlink" title="FSH 实例方法"></a>FSH 实例方法</h4><ul>
+<li>isSameEntry() 比较两者 handle 以查看相关条目(文件或目录)是否匹配</li>
+<li>queryPermission() 查询当前句柄的当前权限状态</li>
+<li>remove() 请求从底层文件系统中删除由句柄表示的条目</li>
+<li>requestPermission() 请求文件句柄的读取或读写权限</li>
+</ul>
+<h3 id="showOpenFilePicker"><a href="#showOpenFilePicker" class="headerlink" title="showOpenFilePicker"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showOpenFilePicker">showOpenFilePicker</a></h3><p>显示一个文件选择器, 允许用户选择一个或多个文件并返回这些文件的句柄, 返回一个 Promise 对象, 并兑现一个包含 <code>FileSystemFileHandle</code> 对象的 Array 数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的包含 `FileSystemFileHandle` 对象的 Array 数组</span></span><br><span class="line">  <span class="keyword">const</span> fileHandles = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showOpenFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个文件对象</span></span><br><span class="line">  <span class="keyword">const</span> file = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">getFile</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于同步读取和写入文件的对象,</span></span><br><span class="line">  <span class="comment">// 但只能用在专用的 web workers 中</span></span><br><span class="line">  <span class="keyword">const</span> syncAccessFile = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createSyncAccessHandle</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于写入文件的新创建的对象</span></span><br><span class="line">  <span class="comment">// WritableStream &lt;- FileSystemWritableFileStream</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="comment">// 在流关闭之前, 通常将对流做的任何修改写入临时文件来实现,</span></span><br><span class="line">  <span class="comment">// 并且仅在可写文件流关闭时才将文件句柄表示的文件替换为临时文件</span></span><br><span class="line">  <span class="keyword">const</span> writer = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createWritable</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SOFP-实例方法"><a href="#SOFP-实例方法" class="headerlink" title="SOFP 实例方法  "></a>SOFP 实例方法 <em id="showopenfilePickerfn"></em> <!-- markdownlint-disable-line--></h4><h5 id="getFile"><a href="#getFile" class="headerlink" title="getFile()"></a>getFile()</h5><p>返回一个已兑现的由句柄表示的条目在磁盘上的状态的对象</p>
+<h5 id="createSyncAccessHandle"><a href="#createSyncAccessHandle" class="headerlink" title="createSyncAccessHandle()"></a>createSyncAccessHandle()</h5><p>返回一个已兑现的可用于同步读取和写入文件的 <code>FileSystemSyncAccessHandle</code> 对象</p>
+<h5 id="createWritable"><a href="#createWritable" class="headerlink" title="createWritable()"></a>createWritable()</h5><p>返回一个已兑现的可用于写入文件的新创建的 <code>FileSystemWritableFileStream</code> 对象</p>
+<h3 id="showSaveFilePicker"><a href="#showSaveFilePicker" class="headerlink" title="showSaveFilePicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker">showSaveFilePicker</a></h3><p>显示一个允许用户保存文件的文件选择器, 通过选择现有文件或者输入新文件的名称, 返回一个已兑现的 <code>FileSystemFileHandle</code> 对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemFileHandle` 对象</span></span><br><span class="line">  <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showSaveFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建一个可写流</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="keyword">const</span> writable = <span class="keyword">await</span> fileHandle.<span class="title function_">createWritable</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 写入数据</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">write</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 关闭流</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">close</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SSFP-实例方法"><a href="#SSFP-实例方法" class="headerlink" title="SSFP 实例方法"></a>SSFP 实例方法</h4><p>实例方法同 <a href="#showopenfilePickerfn"><code>showOpenFilePicker</code></a> 方法返回的实例的方法</p>
+<h3 id="showDirectoryPicker"><a href="#showDirectoryPicker" class="headerlink" title="showDirectoryPicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">showDirectoryPicker</a></h3><p>显示一个目录选择器, 允许用户选择一个目录, 返回一个已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个目录选择器筛选目录的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemDirectoryHandle` 对象</span></span><br><span class="line">  <span class="comment">// FileSystemHandle &lt;- FileSystemDirectoryHandle</span></span><br><span class="line">  <span class="keyword">const</span> dirHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showDirectoryPicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 遍历目录</span></span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">await</span> (<span class="keyword">const</span> [name, handle] <span class="keyword">of</span> dirHandle.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (handle.<span class="property">key</span> == <span class="string">&#x27;file&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> dirHandle.<span class="title function_">getFileHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(fileHandle);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> dh = dirHandle.<span class="title function_">getDirectoryHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(dh);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SDP-实例方法"><a href="#SDP-实例方法" class="headerlink" title="SDP 实例方法"></a>SDP 实例方法</h4><h5 id="entries"><a href="#entries" class="headerlink" title="entries()"></a>entries()</h5><p>返回给定对象自己的可枚举属性对的新**异步迭代[key, value]**器</p>
+<h5 id="getFileHandle"><a href="#getFileHandle" class="headerlink" title="getFileHandle()"></a>getFileHandle()</h5><p>返回指定名称的文件的已兑现的 <code>FileSystemFileHandle</code> 对象</p>
+<h5 id="getDirectoryHandle"><a href="#getDirectoryHandle" class="headerlink" title="getDirectoryHandle()"></a>getDirectoryHandle()</h5><p>返回指定名称的目录的已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
+<h5 id="resolve"><a href="#resolve" class="headerlink" title="resolve()"></a>resolve()</h5><p>返回一个从父句柄到指定子项的目录名称的 Promise, 子项的名称作为最后一个数组项</p>
+<h5 id="removeEntry"><a href="#removeEntry" class="headerlink" title="removeEntry()"></a>removeEntry()</h5><p>尝试异步删除指定名称的文件或目录</p>
+<h5 id="keys"><a href="#keys" class="headerlink" title="keys()"></a>keys()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含每个项目的键 <code>FileSystemDirectoryHandle</code></p>
+<h5 id="values"><a href="#values" class="headerlink" title="values()"></a>values()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含对象中每个索引的值 <code>FileSystemDirectoryHandle</code></p>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Generator和async</title>
     <url>/2021/07/bc748f2ea976/</url>
     <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
@@ -239,60 +296,61 @@
       </tags>
   </entry>
   <entry>
-    <title>FileSystemAccessAPI</title>
-    <url>/2023/04/12766d614e53/</url>
-    <content><![CDATA[<blockquote>
-<p>目前仅在 chrome 86 (edge 86, opera 72)及以上版本支持, safari 和 firefox 暂时不支持</p>
-</blockquote>
-<p>允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验</p>
-<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a> 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用该 API 时, 会提示用户授权应用程序访问文件系统</p>
-<ul>
-<li>将文件从本地文件系统上传到 Web 应用程序</li>
-<li>将 Web 应用程中的数据写入到本地文件系统中</li>
-<li>在用户的本地文件系统中创建、重命名和删除文件</li>
-<li>读取本地文件系统上的文件内容</li>
-</ul>
-<h3 id="FileSystemHandle接口"><a href="#FileSystemHandle接口" class="headerlink" title="FileSystemHandle接口"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle">FileSystemHandle</a>接口</h3><p>是 File System Access API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 <code>FileSystemFileHandle</code> 和 <code>FileSystemDirectoryHandle</code></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承</span></span><br><span class="line"><span class="comment"> * FileSystemHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemFileHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemDirectoryHandle</span></span><br><span class="line"><span class="comment"> * FileSystemSyncAccessHandle</span></span><br><span class="line"><span class="comment"> * WritableStream</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemWritableFileStream</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
-<h4 id="FSH-实例属性"><a href="#FSH-实例属性" class="headerlink" title="FSH 实例属性"></a>FSH 实例属性</h4><ul>
-<li>kind 返回条目的类型, <code>file</code> 表示文件, <code>directory</code> 表示目录</li>
-<li>name 返回关联条目的名称</li>
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h4 id="FSH-实例方法"><a href="#FSH-实例方法" class="headerlink" title="FSH 实例方法"></a>FSH 实例方法</h4><ul>
-<li>isSameEntry() 比较两者 handle 以查看相关条目(文件或目录)是否匹配</li>
-<li>queryPermission() 查询当前句柄的当前权限状态</li>
-<li>remove() 请求从底层文件系统中删除由句柄表示的条目</li>
-<li>requestPermission() 请求文件句柄的读取或读写权限</li>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h3 id="showOpenFilePicker"><a href="#showOpenFilePicker" class="headerlink" title="showOpenFilePicker"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showOpenFilePicker">showOpenFilePicker</a></h3><p>显示一个文件选择器, 允许用户选择一个或多个文件并返回这些文件的句柄, 返回一个 Promise 对象, 并兑现一个包含 <code>FileSystemFileHandle</code> 对象的 Array 数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的包含 `FileSystemFileHandle` 对象的 Array 数组</span></span><br><span class="line">  <span class="keyword">const</span> fileHandles = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showOpenFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个文件对象</span></span><br><span class="line">  <span class="keyword">const</span> file = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">getFile</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于同步读取和写入文件的对象,</span></span><br><span class="line">  <span class="comment">// 但只能用在专用的 web workers 中</span></span><br><span class="line">  <span class="keyword">const</span> syncAccessFile = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createSyncAccessHandle</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于写入文件的新创建的对象</span></span><br><span class="line">  <span class="comment">// WritableStream &lt;- FileSystemWritableFileStream</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="comment">// 在流关闭之前, 通常将对流做的任何修改写入临时文件来实现,</span></span><br><span class="line">  <span class="comment">// 并且仅在可写文件流关闭时才将文件句柄表示的文件替换为临时文件</span></span><br><span class="line">  <span class="keyword">const</span> writer = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createWritable</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
 
-<h4 id="SOFP-实例方法"><a href="#SOFP-实例方法" class="headerlink" title="SOFP 实例方法  "></a>SOFP 实例方法 <em id="showopenfilePickerfn"></em> <!-- markdownlint-disable-line--></h4><h5 id="getFile"><a href="#getFile" class="headerlink" title="getFile()"></a>getFile()</h5><p>返回一个已兑现的由句柄表示的条目在磁盘上的状态的对象</p>
-<h5 id="createSyncAccessHandle"><a href="#createSyncAccessHandle" class="headerlink" title="createSyncAccessHandle()"></a>createSyncAccessHandle()</h5><p>返回一个已兑现的可用于同步读取和写入文件的 <code>FileSystemSyncAccessHandle</code> 对象</p>
-<h5 id="createWritable"><a href="#createWritable" class="headerlink" title="createWritable()"></a>createWritable()</h5><p>返回一个已兑现的可用于写入文件的新创建的 <code>FileSystemWritableFileStream</code> 对象</p>
-<h3 id="showSaveFilePicker"><a href="#showSaveFilePicker" class="headerlink" title="showSaveFilePicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker">showSaveFilePicker</a></h3><p>显示一个允许用户保存文件的文件选择器, 通过选择现有文件或者输入新文件的名称, 返回一个已兑现的 <code>FileSystemFileHandle</code> 对象</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemFileHandle` 对象</span></span><br><span class="line">  <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showSaveFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建一个可写流</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="keyword">const</span> writable = <span class="keyword">await</span> fileHandle.<span class="title function_">createWritable</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 写入数据</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">write</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 关闭流</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">close</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h4 id="SSFP-实例方法"><a href="#SSFP-实例方法" class="headerlink" title="SSFP 实例方法"></a>SSFP 实例方法</h4><p>实例方法同 <a href="#showopenfilePickerfn"><code>showOpenFilePicker</code></a> 方法返回的实例的方法</p>
-<h3 id="showDirectoryPicker"><a href="#showDirectoryPicker" class="headerlink" title="showDirectoryPicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">showDirectoryPicker</a></h3><p>显示一个目录选择器, 允许用户选择一个目录, 返回一个已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个目录选择器筛选目录的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemDirectoryHandle` 对象</span></span><br><span class="line">  <span class="comment">// FileSystemHandle &lt;- FileSystemDirectoryHandle</span></span><br><span class="line">  <span class="keyword">const</span> dirHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showDirectoryPicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 遍历目录</span></span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">await</span> (<span class="keyword">const</span> [name, handle] <span class="keyword">of</span> dirHandle.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (handle.<span class="property">key</span> == <span class="string">&#x27;file&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> dirHandle.<span class="title function_">getFileHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(fileHandle);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> dh = dirHandle.<span class="title function_">getDirectoryHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(dh);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h4 id="SDP-实例方法"><a href="#SDP-实例方法" class="headerlink" title="SDP 实例方法"></a>SDP 实例方法</h4><h5 id="entries"><a href="#entries" class="headerlink" title="entries()"></a>entries()</h5><p>返回给定对象自己的可枚举属性对的新**异步迭代[key, value]**器</p>
-<h5 id="getFileHandle"><a href="#getFileHandle" class="headerlink" title="getFileHandle()"></a>getFileHandle()</h5><p>返回指定名称的文件的已兑现的 <code>FileSystemFileHandle</code> 对象</p>
-<h5 id="getDirectoryHandle"><a href="#getDirectoryHandle" class="headerlink" title="getDirectoryHandle()"></a>getDirectoryHandle()</h5><p>返回指定名称的目录的已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
-<h5 id="resolve"><a href="#resolve" class="headerlink" title="resolve()"></a>resolve()</h5><p>返回一个从父句柄到指定子项的目录名称的 Promise, 子项的名称作为最后一个数组项</p>
-<h5 id="removeEntry"><a href="#removeEntry" class="headerlink" title="removeEntry()"></a>removeEntry()</h5><p>尝试异步删除指定名称的文件或目录</p>
-<h5 id="keys"><a href="#keys" class="headerlink" title="keys()"></a>keys()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含每个项目的键 <code>FileSystemDirectoryHandle</code></p>
-<h5 id="values"><a href="#values" class="headerlink" title="values()"></a>values()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含对象中每个索引的值 <code>FileSystemDirectoryHandle</code></p>
+<hr>
 ]]></content>
       <categories>
-        <category>WebAPI</category>
+        <category>tools</category>
       </categories>
       <tags>
-        <tag>API</tag>
+        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -551,146 +609,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HTTP</title>
-    <url>/2021/07/1ddfb1010b19/</url>
-    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
-<li><p>100 Continue 请求继续</p>
-</li>
-<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
-</li>
-<li><p>102 Processing 继续执行</p>
-</li>
-<li><p>200 OK 请求成功</p>
-</li>
-<li><p>204 No Content 没有响应实体</p>
-</li>
-<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
-</li>
-<li><p>301 Moved Permanently 资源永久移动</p>
-</li>
-<li><p>302 Move Temporarily 资源临时移动</p>
-</li>
-<li><p>303 See Other 参见其他</p>
-</li>
-<li><p>304 Not Modified 资源没有改动</p>
-</li>
-<li><p>305 Use Proxy 使用代理</p>
-</li>
-<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
-</li>
-<li><p>400 Bad Request 错误的请求</p>
-</li>
-<li><p>401 Unauthorized 需要验证</p>
-</li>
-<li><p>403 Forbidden 服务器拒绝执行</p>
-</li>
-<li><p>404 Not Found 资源未找到</p>
-</li>
-<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
-</li>
-<li><p>408 Request Timeout 请求超时</p>
-</li>
-<li><p>413 Request Entity Too Large 请求体超长</p>
-</li>
-<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
-</li>
-<li><p>500 Internal Server Error 服务器错误</p>
-</li>
-<li><p>502 Bad Gateway 网关错误</p>
-</li>
-<li><p>504 Gateway Timeout 网关超时</p>
-</li>
-<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
-</li>
-</ul>
-<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
-<li>%21 !</li>
-<li>%22 “</li>
-<li>%23 #</li>
-<li>%24 $</li>
-<li>%25 %</li>
-<li>%26 &amp;</li>
-<li>%27 ‘</li>
-<li>%28 (</li>
-<li>%29 )</li>
-<li>%2F /</li>
-<li>%30-9 0..9</li>
-<li>%3A :</li>
-<li>%3B ;</li>
-<li>%3C &lt;</li>
-<li>%3D =</li>
-<li>%3E &gt;</li>
-<li>%3F ?</li>
-<li>%40 @</li>
-<li>%41 A</li>
-</ul>
-]]></content>
-      <categories>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Git命令配置篇</title>
     <url>/2021/04/00ea2bbb2db0/</url>
     <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
@@ -825,6 +743,88 @@
       </categories>
       <tags>
         <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTTP</title>
+    <url>/2021/07/1ddfb1010b19/</url>
+    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
+<li><p>100 Continue 请求继续</p>
+</li>
+<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
+</li>
+<li><p>102 Processing 继续执行</p>
+</li>
+<li><p>200 OK 请求成功</p>
+</li>
+<li><p>204 No Content 没有响应实体</p>
+</li>
+<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
+</li>
+<li><p>301 Moved Permanently 资源永久移动</p>
+</li>
+<li><p>302 Move Temporarily 资源临时移动</p>
+</li>
+<li><p>303 See Other 参见其他</p>
+</li>
+<li><p>304 Not Modified 资源没有改动</p>
+</li>
+<li><p>305 Use Proxy 使用代理</p>
+</li>
+<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
+</li>
+<li><p>400 Bad Request 错误的请求</p>
+</li>
+<li><p>401 Unauthorized 需要验证</p>
+</li>
+<li><p>403 Forbidden 服务器拒绝执行</p>
+</li>
+<li><p>404 Not Found 资源未找到</p>
+</li>
+<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
+</li>
+<li><p>408 Request Timeout 请求超时</p>
+</li>
+<li><p>413 Request Entity Too Large 请求体超长</p>
+</li>
+<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
+</li>
+<li><p>500 Internal Server Error 服务器错误</p>
+</li>
+<li><p>502 Bad Gateway 网关错误</p>
+</li>
+<li><p>504 Gateway Timeout 网关超时</p>
+</li>
+<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
+</li>
+</ul>
+<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
+<li>%21 !</li>
+<li>%22 “</li>
+<li>%23 #</li>
+<li>%24 $</li>
+<li>%25 %</li>
+<li>%26 &amp;</li>
+<li>%27 ‘</li>
+<li>%28 (</li>
+<li>%29 )</li>
+<li>%2F /</li>
+<li>%30-9 0..9</li>
+<li>%3A :</li>
+<li>%3B ;</li>
+<li>%3C &lt;</li>
+<li>%3D =</li>
+<li>%3E &gt;</li>
+<li>%3F ?</li>
+<li>%40 @</li>
+<li>%41 A</li>
+</ul>
+]]></content>
+      <categories>
+        <category>network</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -6010,11 +6010,7 @@
 <h3 id="配置文件配置项"><a href="#配置文件配置项" class="headerlink" title="配置文件配置项"></a>配置文件配置项</h3><ul>
 <li><p>include /path/to/*.conf # 导入其他 redis 配置文件</p>
 </li>
-<li><p>bind 127.0.0.1 -::1 # 默认绑定本地 127.0.0.1</p>
-</li>
 <li><p>protected-mode yes # 保护模式, 默认开启</p>
-</li>
-<li><p>port 6379 # 默认端口号</p>
 </li>
 <li><p>tcp-backlog 511 # tcp 连接数</p>
 </li>
@@ -6040,10 +6036,6 @@
 <li>tls-session-cache-timeout 60 # TLS 缓存有效期, 默认 300 秒</li>
 </ul>
 <h4 id="通用设置"><a href="#通用设置" class="headerlink" title="通用设置"></a>通用设置</h4><ul>
-<li><p>daemonize no 是否后台模式启动服务</p>
-</li>
-<li><p>pidfile /var/run/redis_6379.pid # 进程 id 文件</p>
-</li>
 <li><p>loglevel notice # 设置日志级别, 默认 notice</p>
 <ul>
 <li>debug (a lot of information, useful for development/testing)</li>
@@ -6051,8 +6043,6 @@
 <li>notice (moderately verbose, what you want in production probably)</li>
 <li>warning (only very important / critical messages are logged)</li>
 </ul>
-</li>
-<li><p>logfile “” # 日志文件, 守护进程模式将指定 /dev/null</p>
 </li>
 <li><p>syslog-enabled no # 是否允许指向 系统 日志</p>
 </li>
@@ -6065,25 +6055,7 @@
 <li><p>set-proc-title yes # 设置进程标题</p>
 </li>
 </ul>
-<h4 id="REPLICATION"><a href="#REPLICATION" class="headerlink" title="REPLICATION"></a>REPLICATION</h4><ul>
-<li>replicaof &lt;masterip&gt; &lt;masterport&gt; 设置主服务器的 IP 和 Port</li>
-<li>masterauth &lt;master-password&gt; 设置主服务器的认证密码</li>
-<li>masteruser &lt;username&gt; 设置主服务器的用户名</li>
-<li>replica-read-only yes 只读模式, 默认开启</li>
-<li>repl-diskless-sync-delay 5 服务器同步延迟, 默认 5 秒</li>
-<li>replica-priority 100 哨兵模式下被选为主服务器的优先级, 值越小优先级越高</li>
-<li>replica-ignore-maxmemory yes 副本忽略最大内存限制</li>
-</ul>
-<h4 id="CLUSTER"><a href="#CLUSTER" class="headerlink" title="CLUSTER"></a>CLUSTER</h4><ul>
-<li>cluster-enabled yes 打开集群模式</li>
-<li>cluster-config-file nodes-6379.conf 设置节点配置文件</li>
-<li>cluster-node-timeout 15000 设置节点失联时间, 超过该时间集群自动主从切换, 默认毫秒</li>
-<li>cluster-allow-replica-migration yes 允许集群副本迁移</li>
-<li>cluster-require-full-coverage yes 当某一段插槽主从服务器都宕机, 设置 yes 则整个集群都挂掉, 设置 no 则只是该插槽不可用</li>
-<li>cluster-allow-pubsubshard-when-down yes 允许集群服务器宕机时发布/订阅</li>
-</ul>
 <h4 id="MEMORY"><a href="#MEMORY" class="headerlink" title="MEMORY"></a>MEMORY</h4><ul>
-<li>maxmemory &lt;bytes&gt; # 设置内存容量</li>
 <li>maxmemory-policy noeviction # 内存管理策略<ul>
 <li>volatile-lru 使用 LRU 算法移除 key, 只对设置了过期时间的 key</li>
 <li>allkeys-lru 在所有集合 key 中, 使用 LRU 算法移除 key</li>
@@ -6103,44 +6075,14 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">save &lt;seconds&gt; &lt;changes&gt; [&lt;seconds&gt; &lt;changes&gt; ...]</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p>stop-writes-on-bgsave-error yes # 是否开启停止在保存快照发生错误的时的写操作</p>
-</li>
-<li><p>rdbcompression yes # 开启 rdb 文件压缩</p>
-</li>
-<li><p>rdbchecksum yes # 开启 rdb 文件的校验检查</p>
-</li>
-<li><p>dbfilename dump.rdb # rdb 文件名称</p>
-</li>
-<li><p>dir ./ # rdb 文件存储目录</p>
-</li>
-<li><p>appendonly no # 是否启动 aof 备份</p>
-</li>
-<li><p>appendfilename “appendonly.aof” # aof 备份文件名</p>
-</li>
-<li><p>appenddirname “appendonlydir” # aof 备份目录</p>
-</li>
-<li><p>appendfsync everysec # aof 备份模式, 每秒中执行</p>
-<ul>
-<li>always 只要 key 发生改变就要备份</li>
-<li>no 不备份</li>
-</ul>
-</li>
-<li><p>auto-aof-rewrite-percentage 100 # 代表当前 AOF 文件大小和上一次重写后 AOF 文件大小的比值</p>
-</li>
-<li><p>auto-aof-rewrite-min-size 64mb # 触发 AOF 重写的文件最小值, 默认 64MB</p>
-</li>
+<li>stop-writes-on-bgsave-error yes # 是否开启停止在保存快照发生错误的时的写操作</li>
+<li>rdbcompression yes # 开启 rdb 文件压缩</li>
+<li>rdbchecksum yes # 开启 rdb 文件的校验检查</li>
 </ul>
 <h4 id="SECURITY"><a href="#SECURITY" class="headerlink" title="SECURITY"></a>SECURITY</h4><ul>
-<li><p>acllog-max-len 128 # ACL 日志在内存中时的最大条目数</p>
-</li>
-<li><p>aclfile /etc/redis/users.acl # 默认 ACL 配置文件</p>
-</li>
-<li><p>requirepass foobared # 认证密码</p>
-</li>
-<li><p>maxclients 10000 # 客户端最大连接数</p>
-</li>
-<li><p>io-threads 4 # I/O 线程</p>
-</li>
+<li>acllog-max-len 128 # ACL 日志在内存中时的最大条目数</li>
+<li>aclfile /etc/redis/users.acl # 默认 ACL 配置文件</li>
+<li>io-threads 4 # I/O 线程</li>
 </ul>
 <h3 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h3><p>Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息<br>它采用事件作为基本的通信机制，提供大规模系统所要求的松散耦合的交互模式: 订阅者(如客户端)以事件订阅的方式表达出它有兴趣接收的一个事件或一类事件;发布者(如服务器)可将订阅者感兴趣的事件随时通知相关订阅者<br>订阅者对一个或多个频道感兴趣,只需接收感兴趣的消息,不需要知道什么样的发布者发布的. 这种发布者和订阅者的解耦合可以带来更大的扩展性和更加动态的网络拓扑</p>
 <ul>
@@ -6716,7 +6658,7 @@
 <li>即使 AOF 有写入策略, 但是本质上速度还是慢于 RDB</li>
 </ul>
 <h4 id="RDB-和-AOF-组合"><a href="#RDB-和-AOF-组合" class="headerlink" title="RDB 和 AOF 组合"></a>RDB 和 AOF 组合</h4><p><code>aof-use-rdb-preamble yes</code></p>
-<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>将一台 Redis 服务器的数据,复制到其他的 Redis 服务器. 前者称为主节点(Master/Leader),后者称为从节点(Slave/Follower), 数据的复制是单向的！只能由主节点复制到从节点(主节点以写为主、从节点以读为主)—— 读写分离.<br>===每台 Redis 服务器都是主节点===<br>一个主节点可以有 0 个或者多个从节点, 但每个从节点只能由一个主节点</p>
+<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>将一台 Redis 服务器的数据,复制到其他的 Redis 服务器. 前者称为主节点(Master/Leader),后者称为从节点(Slave/Follower), 数据的复制是单向的！只能由主节点复制到从节点(主节点以写为主、从节点以读为主)—— 读写分离.<br>===每台 Redis 服务器都是主节点===<br>一个主节点可以有 0 个或者多个从节点, 但每个从节点只能有一个主节点</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; INFO replication # 当前副本的信息</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:e49c9c650c72cd6e3f369365808da6de6efd3825</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:0</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:0</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:0</span><br><span class="line">repl_backlog_histlen:0</span><br></pre></td></tr></table></figure>
 
 <h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><ul>
@@ -6725,60 +6667,69 @@
 <li>负载均衡: 在主从复制的基础上, 配合读写分离, 由主节点进行写操作, 从节点进行读操作, 分担服务器的负载; 尤其是在多读少写的场景下, 通过多个从节点分担负载, 提高并发量</li>
 <li>高可用(集群)基石: 主从复制还是哨兵和集群能够实施的基础</li>
 </ul>
-<h4 id="复制原理"><a href="#复制原理" class="headerlink" title="复制原理"></a>复制原理</h4><ul>
+<h4 id="复制原理"><a href="#复制原理" class="headerlink" title="复制原理"></a>复制原理</h4><blockquote>
+<p>Redis 2.8 以上使用 psync 命令完成同步</p>
+</blockquote>
+<ol>
 <li>从服务器向主服务器发送 <code>SYNC</code> 命令</li>
 <li>接到 <code>SYNC</code> 命令的主服务器会调用 <code>BGSAVE</code> 命令, 创建一个 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令</li>
 <li>当主服务器执行完 <code>BGSAVE</code> 命令时, 它会向从服务器发送 RDB 文件, 而从服务器则会接收并载入这个文件</li>
 <li>主服务器将缓冲区储存的所有写命令发送给从服务器执行</li>
+</ol>
+<ul>
+<li>全量复制: 从服务器接收到数据库文件后, 将其全部加载到内存中</li>
+<li>增量复制: 主服务器将新的所有收集到的修改命令依次传给从服务器, 完成同步</li>
 </ul>
-<h5 id="全量复制"><a href="#全量复制" class="headerlink" title="全量复制"></a>全量复制</h5><p>从服务器接收到数据库文件后, 将其全部加载到内存中</p>
-<h5 id="增量复制"><a href="#增量复制" class="headerlink" title="增量复制"></a>增量复制</h5><p>主服务器将新的所有收集到的修改命令依次传给从服务器, 完成同步</p>
-<h4 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h4><p>===每台 Redis 服务器都是主节点===, 只用配置从服务器即可<br>使用<code>命令配置</code>只能在<code>本次服务器运行时有效</code>, 重启服务器后将会丢失配置信息, 使用配置文件永久生效</p>
-<h5 id="运行时有效"><a href="#运行时有效" class="headerlink" title="运行时有效"></a>运行时有效</h5><ul>
-<li>方式一: <strong>启动</strong> Redis 服务器时参数指定 <code>redis-server --port 6380 --replicaof 127.0.0.1 6379</code></li>
+<h4 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h4><p>===每台 Redis 服务器都是主节点===, 只用配置从服务器即可</p>
+<p><strong>运行时有效</strong>, 只在<code>本次服务器运行时有效</code>, 重启服务器后将会丢失配置信息</p>
+<ul>
+<li>方式一: <strong>启动</strong> Redis 服务器时使用指定参数 <code>redis-server --port 6380 --replicaof 127.0.0.1 6379</code></li>
 <li>方式二: <strong>连接</strong> Redis 服务器使用内置命令 <code>REPLICAOF host port</code></li>
 </ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置关联主服务器</span></span><br><span class="line">127.0.0.1:6380&gt; REPLICAOF 127.0.0.1 6379</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6381&gt; REPLICAOF 127.0.0.1 6379</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看主服务器配置信息</span></span><br><span class="line">127.0.0.1:6379&gt; INFO replication</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:2</span><br><span class="line">slave0:ip=127.0.0.1,port=6380,state=online,offset=153689,lag=0</span><br><span class="line">slave1:ip=127.0.0.1,port=6381,state=online,offset=153557,lag=0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:749aaed3f58b97f7c01d3732a6f6c55be205c4b2</span><br><span class="line">master_replid2:451a270c3954af29f43878dd9bfeac579d011972</span><br><span class="line">master_repl_offset:153689</span><br><span class="line">second_repl_offset:133525</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:133525</span><br><span class="line">repl_backlog_histlen:20165</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">主节点写入数据</span></span><br><span class="line">127.0.0.1:6379&gt; SET name helloworld</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从节点读取数据</span></span><br><span class="line">127.0.0.1:6380&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6380&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can\&#x27;t write against a read only replica.</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从节点读取数据</span></span><br><span class="line">127.0.0.1:6381&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6381&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can\&#x27;t write against a read only replica.</span><br></pre></td></tr></table></figure>
+
 <p>提升从服务器角色</p>
 <ul>
 <li><code>REPLICAOF NO ONE</code> 将从服务器更改为主服务器</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置关联主服务器</span></span><br><span class="line">127.0.0.1:6380&gt; REPLICAOF 127.0.0.1 6379</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6381&gt; REPLICAOF 127.0.0.1 6379</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看主服务器配置信息</span></span><br><span class="line">127.0.0.1:6379&gt; INFO replication</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:2</span><br><span class="line">slave0:ip=127.0.0.1,port=6380,state=online,offset=153689,lag=0</span><br><span class="line">slave1:ip=127.0.0.1,port=6381,state=online,offset=153557,lag=0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:749aaed3f58b97f7c01d3732a6f6c55be205c4b2</span><br><span class="line">master_replid2:451a270c3954af29f43878dd9bfeac579d011972</span><br><span class="line">master_repl_offset:153689</span><br><span class="line">second_repl_offset:133525</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:133525</span><br><span class="line">repl_backlog_histlen:20165</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>读写数据</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">主机写入数据</span></span><br><span class="line">127.0.0.1:6379&gt; SET name helloworld</span><br><span class="line">OK</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从机读取数据</span></span><br><span class="line">127.0.0.1:6380&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6380&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can\&#x27;t write against a read only replica.</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从机读取数据</span></span><br><span class="line">127.0.0.1:6381&gt; GET name</span><br><span class="line">&quot;helloworld&quot;</span><br><span class="line">127.0.0.1:6381&gt; SET age 18 # 从机写入数据报错</span><br><span class="line">(error) READONLY You can\&#x27;t write against a read only replica.</span><br></pre></td></tr></table></figure>
-
-<h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>使用配置文件的方式永久有效</p>
+<h4 id="配置文件模式"><a href="#配置文件模式" class="headerlink" title="配置文件模式"></a>配置文件模式</h4><p><strong>永久有效</strong>, 但是缺少可扩展性, 每次修改主从节点配置都需要重启 Redis 服务</p>
 <p>redis.conf 基础配置，<a href="#redisclusterconfigure">集群配置</a> <em id="redisbaseconfigure"></em> <!-- markdownlint-disable-line--></p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="comment"># 修改绑定的 ip</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span> <span class="comment"># 修改绑定的端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span> <span class="comment"># 开启后台运行, 默认为 no</span></span><br><span class="line"><span class="comment"># 修改进程文件, 默认为 redis_6379.pid</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">loglevel</span> <span class="string">notice</span></span><br><span class="line"><span class="comment"># 修改日志文件名, 默认为空</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="comment"># 修改持久化文件名, 默认为 dump.rdb</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"><span class="string">dir</span> <span class="string">&quot;&quot;</span> <span class="comment"># 持久化文件存放目录</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="string">&lt;masterip&gt;</span> <span class="string">&lt;masterport&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本和主服务器同步时的认证密码，如果主服务器开启验证</span></span><br><span class="line"><span class="string">masterauth</span> <span class="string">&lt;master-password&gt;</span></span><br><span class="line"><span class="comment"># 副本和主服务器同步时的认证用户</span></span><br><span class="line"><span class="string">masteruser</span> <span class="string">&lt;username&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="string">replica-read-only</span> <span class="literal">yes</span> <span class="comment"># 只读模式, 默认 yes</span></span><br><span class="line"><span class="comment"># 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes</span></span><br><span class="line"><span class="string">repl-diskless-sync</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 同步延迟, 默认 5 秒</span></span><br><span class="line"><span class="string">repl-diskless-sync-delay</span> <span class="number">5</span></span><br><span class="line"><span class="comment"># 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100</span></span><br><span class="line"><span class="string">replica-priority</span> <span class="number">100</span></span><br><span class="line"><span class="comment"># 默认情况哨兵模式下所有副本被包含在报告中</span></span><br><span class="line"><span class="comment"># 设置为 no 表示报告中不包含副本</span></span><br><span class="line"><span class="comment"># 但不影响被选举为 master 的优先级</span></span><br><span class="line"><span class="string">replica-announced</span> <span class="literal">yes</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本用于监听 master 连接副本的 ip 和 端口</span></span><br><span class="line"><span class="comment"># 可以被 master 自动检测到</span></span><br><span class="line"><span class="string">replica-announce-ip</span> <span class="number">5.5</span><span class="number">.5</span><span class="number">.5</span></span><br><span class="line"><span class="string">replica-announce-port</span> <span class="number">1234</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 支持存储最多的 key 的数量, 默认 1000000</span></span><br><span class="line"><span class="string">tracking-table-max-keys</span> <span class="number">1000000</span></span><br><span class="line"><span class="comment"># 支持同时最多连接的客户端数量, 默认 10000</span></span><br><span class="line"><span class="string">maxclients</span> <span class="number">10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从 Redis 6.0 开始作为新 ACL 系统之上的一个兼容配置</span></span><br><span class="line"><span class="comment"># 该选项将只是为默认用户设置密码</span></span><br><span class="line"><span class="comment"># 客户端仍需要使用 AUTH [username] password 进行身份认证</span></span><br><span class="line"><span class="string">requirepass</span> <span class="string">foobared</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="comment"># 修改绑定的 ip</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span> <span class="comment"># 修改绑定的端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span> <span class="comment"># 开启后台运行, 默认为 no</span></span><br><span class="line"><span class="comment"># 修改进程文件, 默认为 redis_6379.pid</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">loglevel</span> <span class="string">notice</span></span><br><span class="line"><span class="comment"># 修改日志文件名, 默认为空</span></span><br><span class="line"><span class="comment"># 守护进程模式将指定 /dev/null</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="comment"># 修改持久化文件名, 默认为 dump.rdb</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"><span class="string">dir</span> <span class="string">&quot;&quot;</span> <span class="comment"># 持久化文件存放目录</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="comment"># replicaof &lt;masterip&gt; &lt;masterport&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本和主服务器同步时的认证密码，如果主服务器开启验证</span></span><br><span class="line"><span class="comment"># masterauth &lt;master-password&gt;</span></span><br><span class="line"><span class="comment"># 副本和主服务器同步时的认证用户</span></span><br><span class="line"><span class="comment"># masteruser &lt;username&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从节点只读模式, 默认 yes</span></span><br><span class="line"><span class="comment"># replica-read-only yes</span></span><br><span class="line"><span class="comment"># 不使用向磁盘写 rdb 文件通信的方式直接通过新建进程 socket 同步 rdb 文件, 默认 yes</span></span><br><span class="line"><span class="comment"># repl-diskless-sync yes</span></span><br><span class="line"><span class="comment"># 同步延迟, 默认 5 sec</span></span><br><span class="line"><span class="comment"># repl-diskless-sync-delay 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 主服务器发送 PING 指令到副本的平均时间间隔, 默认 10 sec</span></span><br><span class="line"><span class="comment"># repl-ping-replica-period 10</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本的超时时间, 默认 60 sec</span></span><br><span class="line"><span class="comment"># 确保此项值大于 repl-ping-replica-period 的值, 否则</span></span><br><span class="line"><span class="comment"># 每当主服务器和副本之间的流量较低时，都会检测到超时</span></span><br><span class="line"><span class="comment"># repl-timeout 60</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果设置为 yes, Redis 将使用更小的 tcp 包和更少的带宽同步数据</span></span><br><span class="line"><span class="comment"># 主从同步延迟取决于Linux 内核的配置默认 40 毫秒一次</span></span><br><span class="line"><span class="comment"># 是否关闭主从节点同步的无延迟, 默认 no</span></span><br><span class="line"><span class="comment"># repl-disable-tcp-nodelay no</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 哨兵模式下被选为主服务器的优先级, 值越小优先级越高, 默认 100</span></span><br><span class="line"><span class="comment"># replica-priority 100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认情况哨兵模式下所有副本被包含在报告中</span></span><br><span class="line"><span class="comment"># 设置为 no 表示报告中不包含副本</span></span><br><span class="line"><span class="comment"># 但不影响被选举为 master 的优先级</span></span><br><span class="line"><span class="comment"># replica-announced yes</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本用于监听 master 连接副本的 ip 和 端口</span></span><br><span class="line"><span class="comment"># 可以被 master 自动检测到</span></span><br><span class="line"><span class="comment"># replica-announce-ip 5.5.5.5</span></span><br><span class="line"><span class="comment"># replica-announce-port 1234</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 支持存储最多的 key 的数量, 默认 1000000</span></span><br><span class="line"><span class="comment"># tracking-table-max-keys 1000000</span></span><br><span class="line"><span class="comment"># 支持同时最多连接的客户端数量, 默认 10000</span></span><br><span class="line"><span class="comment"># maxclients 10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 最大内容</span></span><br><span class="line"><span class="comment"># maxmemory &lt;bytes&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 副本忽略最大内存限制</span></span><br><span class="line"><span class="comment"># replica-ignore-maxmemory yes</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从 Redis 6.0 开始作为新 ACL 系统之上的一个兼容配置</span></span><br><span class="line"><span class="comment"># 该选项将只是为默认用户设置密码</span></span><br><span class="line"><span class="comment"># 客户端仍需要使用 AUTH [username] password 进行身份认证</span></span><br><span class="line"><span class="comment"># requirepass foobared</span></span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>requirepass</li>
+<li>requirepass 认证</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第一种方式: 连接 redis 后使用 AUTH 命令认证</span></span><br><span class="line">[root@centos7 workspace]# redis-cli</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">(error) NOAUTH Authentication required.</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">(error) NOAUTH Authentication required.</span><br><span class="line">127.0.0.1:6379&gt; AUTH 1006611</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">&quot;default&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第二种方式: 连接 redis 时直接认证</span></span><br><span class="line">[root@centos7 workspace]# redis-cli --user default --pass 1006611</span><br><span class="line">Warning: Using a password with &#x27;-a&#x27; or &#x27;-u&#x27; option on the command line interface may not be safe.</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">&quot;default&quot;</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;hash:zhang&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;name&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第一种方式: 连接 redis 后使用内置命令 AUTH 命令认证</span></span><br><span class="line">[root@centos7 workspace]# redis-cli</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">(error) NOAUTH Authentication required.</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">(error) NOAUTH Authentication required.</span><br><span class="line">127.0.0.1:6379&gt; AUTH 1006611</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">&quot;default&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第二种方式: 连接 redis 时使用参数认证</span></span><br><span class="line">[root@centos7 workspace]# redis-cli --user default --pass 1006611</span><br><span class="line">Warning: Using a password with &#x27;-a&#x27; or &#x27;-u&#x27; option on the command line interface may not be safe.</span><br><span class="line">127.0.0.1:6379&gt; ACL WHOAMI</span><br><span class="line">&quot;default&quot;</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;hash:zhang&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;name&quot;</span><br></pre></td></tr></table></figure>
 
-<h4 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h4><p>哨兵模式是一种特殊的模式, 首先 Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行<br>哨兵模式选举: 首先, 领头 sentinel 根据从服务器的信号反馈将从服务器列表中失联的服务器剔除, 按照从服务器的优先级(replica-priority)进行排序并选择优先级最高的从服务器, 如果有多个具有相同最高优先级的从服务器, 那么, 领头 sentinel 将多个具有相同最高优先级的从服务器按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从服务器进行 PSYNC 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从服务器, 如果有多个优先级最高, 复制偏移量最大的从服务器, 那么 领头 sentinel 将按照从服务器的运行 ID 进行排序并选择其中 ID 最小的从服务器</p>
+<h4 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h4><p>哨兵模式是一种特殊的模式, 首先 Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程, 作为进程, 它会独立运行</p>
 <ul>
 <li>哨兵通过发送命令, 让 Redis 服务器返回监控其运行状态, 包括主服务器和从服务器</li>
 <li>当哨兵监测到 master 宕机, 会自动将 slave 切换成 master, 然后通过发布订阅模式通知其他的从服务器, 修改配置文件并关联新的主服务器</li>
 </ul>
-<p>sentinel.conf</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span> <span class="comment"># 保护模式, 默认不开启</span></span><br><span class="line"><span class="string">port</span> <span class="number">26379</span> <span class="comment"># 服务端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">no</span> <span class="comment"># 是否后台运行模式</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel.pid</span> <span class="comment"># 进程文件</span></span><br><span class="line"><span class="comment"># sentinel announce-ip &lt;ip&gt; # 监听指定地址和端口的实例</span></span><br><span class="line"><span class="comment"># sentinel announce-port &lt;port&gt;</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;&quot;</span> <span class="comment"># 日志文件</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span> <span class="comment"># 工作目录</span></span><br><span class="line"><span class="comment"># 监测服务器配置, 数字表示确认主服务器宕机的票数</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">mymaster</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br><span class="line"><span class="comment"># sentinel auth-pass &lt;master-name&gt; &lt;password&gt; # 认证配置</span></span><br><span class="line"><span class="comment"># 不可触达的超时时间, 默认 30 s</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">down-after-milliseconds</span> <span class="string">mymaster</span> <span class="number">30000</span></span><br><span class="line"><span class="comment"># 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">parallel-syncs</span> <span class="string">mymaster</span> <span class="number">1</span></span><br><span class="line"><span class="comment"># 当服务器宕机后等待再次重启的时间, 默认 3 min</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">failover-timeout</span> <span class="string">mymaster</span> <span class="number">180000</span></span><br><span class="line"><span class="comment"># 服务器唤起脚本文件</span></span><br><span class="line"><span class="comment"># sentinel notification-script &lt;master-name&gt; &lt;script-path&gt;</span></span><br><span class="line"><span class="comment"># 拒绝脚本配置, 默认拒绝</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">deny-scripts-reconfig</span> <span class="literal">yes</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>方式一: 使用命令 <code>redis-server /path/to/sentinel.conf --sentinel</code> 开启哨兵模式</li>
+<h5 id="选举算法"><a href="#选举算法" class="headerlink" title="选举算法"></a>选举算法</h5><p>首先, 领头 sentinel 根据从服务器的信号反馈将从服务器列表中失联的服务器剔除, 按照从服务器的优先级(replica-priority)进行排序并选择优先级最高的从服务器, 如果有多个具有相同最高优先级的从服务器, 那么, 领头 sentinel 将多个具有相同最高优先级的从服务器按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从服务器进行 PSYNC 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从服务器, 如果有多个优先级最高, 复制偏移量最大的从服务器, 那么 领头 sentinel 将按照从服务器的运行 ID 进行排序并选择其中 ID 最小的从服务器</p>
+<h5 id="配置方式"><a href="#配置方式" class="headerlink" title="配置方式"></a>配置方式</h5><ul>
+<li>方式一: 使用命令指定参数 <code>redis-server /path/to/sentinel.conf --sentinel</code> 开启哨兵模式</li>
 <li>方式二: 使用命令 <code>redis-sentinel /path/to/sentinel.conf</code> 开启哨兵模式</li>
 </ul>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># sentinel.conf</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">myredis</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>sentinel.conf 配置文件</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span> <span class="comment"># 保护模式, 默认不开启</span></span><br><span class="line"><span class="string">port</span> <span class="number">26379</span> <span class="comment"># 服务端口号</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">no</span> <span class="comment"># 是否后台运行模式</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel-26379.pid</span> <span class="comment"># 进程文件</span></span><br><span class="line"><span class="comment"># sentinel announce-ip &lt;ip&gt; # 监听指定地址和端口的实例</span></span><br><span class="line"><span class="comment"># sentinel announce-port &lt;port&gt;</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;&quot;</span> <span class="comment"># 日志文件</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span> <span class="comment"># 工作目录</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 监测服务器配置, 数字表示确认主服务器宕机的票数</span></span><br><span class="line"><span class="comment"># sentinel monitor &lt;master-name&gt; &lt;ip&gt; &lt;redis-port&gt; &lt;quorum&gt;</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">mymaster</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过本地地址监听外部网络中的 redis</span></span><br><span class="line"><span class="comment"># sentinel announce-ip &lt;ip&gt;</span></span><br><span class="line"><span class="comment"># sentinel announce-port &lt;port&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 认证配置</span></span><br><span class="line"><span class="comment"># sentinel auth-pass &lt;master-name&gt; &lt;password&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 不可触达的超时时间, 默认 30 sec</span></span><br><span class="line"><span class="comment"># sentinel down-after-milliseconds &lt;master-name&gt; &lt;milliseconds&gt;</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">down-after-milliseconds</span> <span class="string">mymaster</span> <span class="number">30000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 功能同 redis.conf 中的配置项</span></span><br><span class="line"><span class="comment"># requirepass &lt;password&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置其他 sentinel 认证的用户, 如果没有配置 sentinel-user</span></span><br><span class="line"><span class="comment"># 将使用 default 用户 和 sentinel-pass 进行认证</span></span><br><span class="line"><span class="comment"># sentinel sentinel-user &lt;username&gt;</span></span><br><span class="line"><span class="comment"># sentinel sentinel-pass &lt;password&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1</span></span><br><span class="line"><span class="comment"># sentinel parallel-syncs &lt;master-name&gt; &lt;numreplicas&gt;</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">parallel-syncs</span> <span class="string">mymaster</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当服务器宕机后等待再次重启的时间, 默认 3 min</span></span><br><span class="line"><span class="comment"># sentinel failover-timeout &lt;master-name&gt; &lt;milliseconds&gt;</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">failover-timeout</span> <span class="string">mymaster</span> <span class="number">180000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 服务器唤起脚本文件</span></span><br><span class="line"><span class="comment"># sentinel notification-script &lt;master-name&gt; &lt;script-path&gt;</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">notification-script</span> <span class="string">mymaster</span> <span class="string">/var/redis/notify.sh</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拒绝脚本配置, 默认 yes</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">deny-scripts-reconfig</span> <span class="literal">yes</span></span><br></pre></td></tr></table></figure>
 
 <p><img data-src="/images/redis-2.png" alt="redis-2"><br><img data-src="/images/redis-3.png" alt="redis-3"></p>
-<h5 id="一主三从哨兵配置"><a href="#一主三从哨兵配置" class="headerlink" title="一主三从哨兵配置"></a>一主三从哨兵配置</h5><p>3 个哨兵配置文件</p>
+<h5 id="一主三从哨兵配置"><a href="#一主三从哨兵配置" class="headerlink" title="一主三从哨兵配置"></a>一主三从哨兵配置</h5><ul>
+<li>3 个哨兵配置</li>
+</ul>
 <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># sentinel26379.conf</span></span><br><span class="line"><span class="string">port</span> <span class="number">26379</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel-26379.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;26379.log&quot;</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">myredis</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># sentinel36379.conf</span></span><br><span class="line"><span class="string">port</span> <span class="number">36379</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel-36379.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;36379.log&quot;</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">myredis</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># sentinel46379.conf</span></span><br><span class="line"><span class="string">port</span> <span class="number">46379</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis-sentinel-46379.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;46379.log&quot;</span></span><br><span class="line"><span class="string">dir</span> <span class="string">/tmp</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">myredis</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379 </span><span class="number">2</span></span><br></pre></td></tr></table></figure>
 
-<p>3 台 redis 服务器配置文件</p>
+<ul>
+<li>3 台 redis 服务器配置</li>
+</ul>
 <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># redis6379.conf</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6379.log&quot;</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6379.rdb</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># redis6380.conf</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="string">port</span> <span class="number">6380</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6380.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6380.log&quot;</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6380.rdb</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># redis6381.conf</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="string">port</span> <span class="number">6381</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6381.pid</span></span><br><span class="line"><span class="string">logfile</span> <span class="string">&quot;6381.log&quot;</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump6381.rdb</span></span><br><span class="line"><span class="comment"># 配置主服务器 ip 和 port</span></span><br><span class="line"><span class="string">replicaof</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379</span></span><br></pre></td></tr></table></figure>
 
+<ul>
+<li>根据配置文件启动所有服务</li>
+</ul>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@centos7 ~]# redis-server .config/redis6379.conf # 启动 redis 服务器</span><br><span class="line">[root@centos7 ~]# redis-server .config/redis6380.conf # 启动 redis 服务器</span><br><span class="line">[root@centos7 ~]# redis-server .config/redis6381.conf # 启动 redis 服务器</span><br><span class="line">[root@centos7 ~]# redis-sentinel .config/sentinel26379.conf # 启动哨兵</span><br><span class="line">[root@centos7 ~]# redis-sentinel .config/sentinel36379.conf # 启动哨兵</span><br><span class="line">[root@centos7 ~]# redis-sentinel .config/sentinel46379.conf # 启动哨兵</span><br></pre></td></tr></table></figure>
 
 <h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p>Redis Cluster 是一种服务器 Sharding 技术, Redis 3.0 版本开始支持<br>在 Redis Cluster 中, Sharding 采用 slot 的概念, 一共分成 16384 个 slot, 对于每个进入 Redis 的键值对, 对 key 执行 CRC16 算法然后再对 16384 取模, 得到的结果就是对应的 slot.<br>Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, 当动态添加或减少 node 时, 需要将 16384 个 slot 再分配, slot 中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个 node 发生故障, 则此 node 负责的 slot 也就失效, 整个集群将不能工作<br>官方推荐的方案是将 node 配置成主从结构, 即 1:n, 如果主节点失效, Redis Cluster 根据选举算法从 slave 节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则作为新的主节点的从节点</p>
@@ -6837,7 +6788,7 @@
 <p>使用 <code>redis-cli -c -p port</code> 命令接入集群节点</p>
 <h4 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h4><h5 id="编辑配置文件"><a href="#编辑配置文件" class="headerlink" title="编辑配置文件  "></a>编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line --></h5><p>创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式<br>创建 <code>redis6379.conf</code>, <code>redis6380.conf</code>, <code>redis6381.conf</code>, <code>redis6382.conf</code>, <code>redis6383.conf</code>, <code>redis6384.conf</code> 6 个文件<br>修改其中的 ip, port, pidfile, cluster-enabled, cluster-config-file</p>
 <p>redis.conf 集群配置, <a href="#redisbaseconfigure">基础配置</a> <em id="redisclusterconfigure"></em> <!-- markdownlint-disable-line --></p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 引入 redis 默认配置文件</span></span><br><span class="line"><span class="string">include</span> <span class="string">/root/redis-cluster/redis.conf</span></span><br><span class="line"><span class="comment"># 修改绑定 ip, 此处演示全为本机</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="comment"># 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span></span><br><span class="line"><span class="comment"># 关闭保护模式, 默认 yes</span></span><br><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span></span><br><span class="line"><span class="comment"># 开启后台运行, 默认 no</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 修改 redis 进程文件名</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"></span><br><span class="line"><span class="string">cluster-enabled</span> <span class="literal">yes</span> <span class="comment"># 开启集群模式</span></span><br><span class="line"><span class="comment"># 修改集群节点文件名, 默认在存储在当前目录下</span></span><br><span class="line"><span class="string">cluster-config-file</span> <span class="string">nodes-6379.conf</span></span><br><span class="line"><span class="comment"># 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认毫秒</span></span><br><span class="line"><span class="string">cluster-node-timeout</span> <span class="number">15000</span></span><br><span class="line"><span class="comment"># 默认当某一插槽不可用时, 整个集群都挂掉</span></span><br><span class="line"><span class="comment"># no 表示仅该插槽不可用, 默认 yes</span></span><br><span class="line"><span class="string">cluster-require-full-coverage</span> <span class="literal">no</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 集群模式使用 hostname 进行节点间通信</span></span><br><span class="line"><span class="comment"># 设置为空字符串表示将删除 hostname 并同步给其他节点</span></span><br><span class="line"><span class="string">cluster-announce-hostname</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="comment"># 指定集群模式连接节点的方式是使用 ip、hostname或unknown-endpoint 方式</span></span><br><span class="line"><span class="comment"># 如果设置为 hostname 但未设置 cluster-announce-hostname 将返回 ?</span></span><br><span class="line"><span class="string">cluster-preferred-endpoint-type</span> <span class="string">ip</span></span><br><span class="line"><span class="string">cluster-announce-ip</span> <span class="string">ip</span> <span class="comment"># 集群模式下节点的 ip</span></span><br><span class="line"><span class="string">cluster-announce-port</span> <span class="number">6379</span> <span class="comment"># 集群模式下节点的端口</span></span><br><span class="line"><span class="string">cluster-announce-tls-port</span> <span class="number">0</span> <span class="comment"># 集群模式下节点的安全端口</span></span><br><span class="line"><span class="string">cluster-announce-bus-port</span> <span class="number">16379</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 引入 redis 默认配置文件</span></span><br><span class="line"><span class="string">include</span> <span class="string">/root/redis-cluster/redis.conf</span></span><br><span class="line"><span class="comment"># 修改绑定 ip, 此处演示全为本机</span></span><br><span class="line"><span class="string">bind</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="comment"># 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用</span></span><br><span class="line"><span class="string">port</span> <span class="number">6379</span></span><br><span class="line"><span class="comment"># 关闭保护模式, 默认 yes</span></span><br><span class="line"><span class="string">protected-mode</span> <span class="literal">no</span></span><br><span class="line"><span class="comment"># 开启后台运行, 默认 no</span></span><br><span class="line"><span class="string">daemonize</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 修改 redis 进程文件名</span></span><br><span class="line"><span class="string">pidfile</span> <span class="string">/var/run/redis_6379.pid</span></span><br><span class="line"></span><br><span class="line"><span class="string">cluster-enabled</span> <span class="literal">yes</span> <span class="comment"># 开启集群模式</span></span><br><span class="line"><span class="comment"># 修改集群节点文件名, 默认在存储在当前目录下</span></span><br><span class="line"><span class="string">cluster-config-file</span> <span class="string">nodes-6379.conf</span></span><br><span class="line"><span class="comment"># 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认 15000 milsec</span></span><br><span class="line"><span class="string">cluster-node-timeout</span> <span class="number">15000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># (cluster-node-timeout * cluster-replica-validity-factor) + repl-ping-replica-period</span></span><br><span class="line"><span class="comment"># 例如, 集群节点超时为 30 sec, 并且集群副本有效性因子为 10 sec,</span></span><br><span class="line"><span class="comment"># 并且假设默认的 repl-ping-replica-period 为 10 sec,</span></span><br><span class="line"><span class="comment"># 则如果副本无法与主机进行超过 310 sec的通话, 则副本将不会尝试故障转移</span></span><br><span class="line"><span class="comment"># 集群副本有效性因子, 默认 10 sec</span></span><br><span class="line"><span class="comment"># cluster-replica-validity-factor 10</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许使用较少的自动集群配置, 默认 yes</span></span><br><span class="line"><span class="comment"># cluster-allow-replica-migration yes</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认当某一插槽不可用时, 整个集群都挂掉</span></span><br><span class="line"><span class="comment"># no 表示仅该插槽不可用, 默认 yes</span></span><br><span class="line"><span class="string">cluster-require-full-coverage</span> <span class="literal">no</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许集群服务器宕机时发布/订阅</span></span><br><span class="line"><span class="comment"># cluster-allow-pubsubshard-when-down yes</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 集群模式使用 hostname 进行节点间通信</span></span><br><span class="line"><span class="comment"># 设置为空字符串表示将删除 hostname 并同步给其他节点</span></span><br><span class="line"><span class="comment"># cluster-announce-hostname &quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定集群模式连接节点的方式是使用 ip、hostname或unknown-endpoint 方式</span></span><br><span class="line"><span class="comment"># 如果设置为 hostname 但未设置 cluster-announce-hostname 将返回 ?</span></span><br><span class="line"><span class="comment"># cluster-preferred-endpoint-type ip</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># cluster-announce-ip ip # 集群模式下节点的 ip</span></span><br><span class="line"><span class="comment"># cluster-announce-port 6379 # 集群模式下节点的端口</span></span><br><span class="line"><span class="comment"># cluster-announce-tls-port 0 # 集群模式下节点的安全端口</span></span><br><span class="line"><span class="comment"># cluster-announce-bus-port 16379</span></span><br></pre></td></tr></table></figure>
 
 <h5 id="启动-Redis-服务器"><a href="#启动-Redis-服务器" class="headerlink" title="启动 Redis 服务器"></a>启动 Redis 服务器</h5><p>启动所有的 redis 服务器, 使用 <code>ps -ef | grep redis</code> 命令查看 redis 服务器进程</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@centos7 redis-cluster]# redis-server redis6379.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6380.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6381.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6382.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6383.conf</span><br><span class="line">[root@centos7 redis-cluster]# redis-server redis6384.conf</span><br><span class="line">[root@centos7 redis-cluster]# ps -ef | grep redis</span><br><span class="line">root      3731     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6379 [cluster]</span><br><span class="line">root      3737     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6380 [cluster]</span><br><span class="line">root      3743     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6381 [cluster]</span><br><span class="line">root      3749     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6382 [cluster]</span><br><span class="line">root      3755     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6383 [cluster]</span><br><span class="line">root      3761     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6384 [cluster]</span><br></pre></td></tr></table></figure>
