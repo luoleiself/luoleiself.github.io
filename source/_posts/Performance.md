@@ -163,7 +163,7 @@ const entries = performance.getEntriesByType('paint');
 // }]
 ```
 
-#### p9e.mark()
+#### p9e.mark() <em id="performance.mark"></em> <!--markdownlint-disable-line-->
 
 > 通过 `performance.getEntries*` 方法可以获取到
 
@@ -195,7 +195,7 @@ performance.getEntriesByName('dog', 'mark');
 // }];
 ```
 
-#### p9e.measure()
+#### p9e.measure() <em id="performance.measure"></em> <!--markdownlint-disable-line-->
 
 > 通过 `performance.getEntries*` 方法可以获取到
 
@@ -293,7 +293,7 @@ performance.toJSON();
 
 ## PerformanceEntry <em id="PerformanceEntry"></em> <!-- markdownlint-disable-line -->
 
-PerformanceEntry 对象代表了 performance 时间列表中的单个 metric 数据, 每个 performance entry 都可以在应用运行过程中通过手动调用 `performance.mark` 或 `performance.measure` 方法创建, 同时, performance entry 在资源加载的时候也会被动生成(例如 img, css, script 等资源)
+PerformanceEntry 对象代表了 performance 时间列表中的单个 metric 数据, 每个 performance entry 都可以在应用运行过程中通过手动调用 [performance.mark](#performance.mark) 或 [performance.measure](#performance.measure) 方法创建, 同时, performance entry 在资源加载的时候也会被动生成(例如 img, css, script 等资源)
 
 ### 属性
 

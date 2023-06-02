@@ -197,8 +197,6 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
 0
 ```
 
-<!-- more -->
-
 ### 运行
 
 如果本地不存在镜像时则先从远程拉取镜像(docker pull 镜像名)
@@ -540,7 +538,7 @@ docker run --mount type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 ]
 ```
 
-##### -v /宿主机路径:容器内路径 指定路劲挂载
+##### -v /宿主机路径:容器内路径 指定路径挂载
 
 - 如果 `需要` 对容器内的数据卷挂载点进行 `写操作` 时, 使用指定路径挂载方式, 此方式会将宿主机中的数据卷挂载点数据覆盖容器内指定路径
 
@@ -624,9 +622,11 @@ hello.txt
 
 ## Dockerfile
 
-- .dockerignore 根目录上下文忽略文件
+- .dockerignore 构建上下文忽略文件
 
-Dockerfile 是用来构建 Docker 镜像的构建文件, 一个命令脚本, 脚本中的每条指令执行一次都会在镜像上新建一层
+Dockerfile 是用来构建 Docker 镜像的一个指令脚本, 脚本中的每条指令执行一次都会在镜像上新建一层
+
+### 指令
 
 - FROM 构建镜像时的基础镜像层
 - MAINTAINER(deprecated) 维护者信息, 使用 `LABEL` 指令代替
@@ -649,9 +649,10 @@ Dockerfile 是用来构建 Docker 镜像的构建文件, 一个命令脚本, 脚
 
   ```yaml
   RUN yum -y install vim
+  # 合并多个相同作用的指令以减少新建镜像层数
   RUN yum -y install wget \
-  && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
-  && tar -xvf redis.tar.gz
+    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+    && tar -xvf redis.tar.gz
   ```
 
 - CMD 容器运行时执行的命令, 如果存在多个 `CMD` 指令, 仅最后一个生效
@@ -679,7 +680,8 @@ Dockerfile 是用来构建 Docker 镜像的构建文件, 一个命令脚本, 脚
 - VOLUME 定义匿名数据卷, 在启动容器时会自动挂载到 /var/lib/docker/volumes/
 
   ```yaml
-  # 出于可移植和分享的考虑, 具名挂载 和 指定路径挂载 方式不能直接在 Dockerfile 中支持
+  # 出于可移植和分享的考虑, 不支持 具名挂载 和 指定路径挂载 在 Dockerfile 中配置
+  # 只能使用 匿名挂载 配置方式
   # 因为宿主机目录是依赖于特定宿主机的, 并不能够保证在所有的宿主机上都存在这样的目录
   VOLUME ["<路径1>", "<路径2>"...]
   VOLUME <路径> <路径>
@@ -695,11 +697,8 @@ Dockerfile 是用来构建 Docker 镜像的构建文件, 一个命令脚本, 脚
   ```
 
 - LABEL 给镜像添加元数据
-
 - SHELL 允许重写默认的 shell
-
 - STOPSIGNAL 设置当容器退出时系统调用的指令
-
 - ONBUILD 当前镜像作为其他镜像的基础镜像构建时触发
 
   ```yaml
@@ -708,24 +707,24 @@ Dockerfile 是用来构建 Docker 镜像的构建文件, 一个命令脚本, 脚
 
 - HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式
 
-### ADD 和 COPY
+#### ADD 和 COPY
 
 - ADD 复制指令, 增强版的 `COPY` 指令, 支持文件解压和远程 URL 资源
 - COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径
 
-### ARG 和 ENV
+#### ARG 和 ENV
 
 - ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
 - ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
 
-### VOLUME
+#### VOLUME
 
-- Dockerfile VOLUME 配置项不支持挂载宿主机目录,只能使用 [匿名挂载](#nimingguazai) 方式
-- docker-compose yaml 文件配置项可以支持任意挂载方式 [挂载数据卷](#guazaishujujuan)
+- 不支持 具名挂载 和 指定路径挂载, 只能使用 [匿名挂载](#nimingguazai) 方式
+- docker-compose.yml 配置项支持任意挂载方式 [挂载数据卷](#guazaishujujuan)
 
-### CMD 和 ENTRYPOINT
+#### CMD 和 ENTRYPOINT
 
-#### 区别
+##### 区别
 
 - CMD 情况下, run 后面的参数将作为整体替换 `CMD` 配置项中的命令
 
@@ -776,7 +775,7 @@ CMD ['/etc/nginx/nginx.conf']
 |   Docker 命令    | docker run nginx               | docker run nginx /etc/nginx/new.conf |
 | 衍生出的实际命令 | nginx -c /etc/nginx/nginx.conf | nginx -c /etc/new.conf               |
 
-#### 使用场景
+##### 使用场景
 
 - Dockerfile 应至少指定一个 CMD 或 ENTRYPOINT 指令
 - ENTRYPOINT 应在将容器作为可执行文件时定义
@@ -790,9 +789,18 @@ CMD ['/etc/nginx/nginx.conf']
 | CMD ['p1_cmd','p2_cmd'] | p1_cmd p2_cmd         | /bin/sh -c entry p1_entry | entry p1_entry p1_cmd p2_cmd         |
 | CMD cmd p1_cmd          | /bin/sh -c cmd p1_cmd | /bin/sh -c entry p1_entry | entry p1_entry /bin/sh -c cmd p1_cmd |
 
+### 镜像优化
+
+- 合并多个相同作用的指令以减少新建镜像层数
+- 使用较小的基础镜像
+- 使用 .dockerignore 文件, 从构建上下文中忽略指定的文件
+- 在 RUN 之后放置 COPY 指令, 有助于 docker 能够更好的使用缓存功能
+- 在安装后删除软件包
+- 使用 Docker 镜像缩容工具
+
 ### 应用
 
-#### Dockerfile 配置文件
+- Dockerfile 配置文件
 
 ```yaml
 # Dockerfile
