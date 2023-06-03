@@ -465,6 +465,34 @@ Startup finished in 492ms (kernel) + 3.958s (initrd) + 38.325s (userspace) = 42.
 ```
 
 - blame 查看每个服务的启动耗时
+
+```shell
+[root@localhost ~]# systemd-analyze blame
+    3.804s docker.service
+    3.677s dev-mapper-centos\x2droot.device
+    3.581s NetworkManager-wait-online.service
+    3.362s lvm2-monitor.service
+    2.831s boot.mount
+    2.692s containerd.service
+    2.666s tuned.service
+    1.988s lvm2-pvscan@8:2.service
+    1.464s sysroot.mount
+    1.413s dracut-initqueue.service
+    1.164s firewalld.service
+     875ms vboxadd.service
+     560ms systemd-journald.service
+     548ms initrd-switch-root.service
+     490ms kmod-static-nodes.service
+     481ms vboxadd-x11.service
+     481ms polkit.service
+     471ms rhel-domainname.service
+     443ms systemd-remount-fs.service
+     418ms vboxadd-service.service
+     407ms sshd.service
+     396ms auditd.service
+     392ms systemd-sysctl.service
+```
+
 - critical-chain 显示瀑布状的启动过程流
 
 ### systemd-cgls
