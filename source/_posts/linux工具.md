@@ -8,13 +8,24 @@ tags:
   - shell
 ---
 
+### 删除无用内核
+
+```shell
+# 查看系统内核版本
+[root@localhost ~]# uname -r
+# 移除系统无用内容	
+[root@localhost ~]# yum remove $(rpm -qa | grep kernel | grep -v $(uname -r))
+# 查看系统已安装的包
+[root@localhost ~]# rpm -qa | grep kernel
+```
+
 ### awk
 
 awk 是一种可以对文本和数据进行处理的编程语言, 默认情况下, awk 文件的每一行都被视为一条记录, 然后 awk 记录进一步分解成一系列的字段
 
-```bash
-awk '{ sum += $1 }; END { print sum }' file
-awk -F : '{ print $1 }' /etc/passwd
+```shell
+[root@localhost ~]# awk '{ sum += $1 }; END { print sum }' file
+[root@localhost ~]# awk -F : '{ print $1 }' /etc/passwd
 ```
 
 #### 内建变量
@@ -66,14 +77,14 @@ awk -F : '{ print $1 }' /etc/passwd
   - substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分
 
 ```shell
-git branch -r | awk 'BEGIN {print "hello awk, I am coming\n"}END{print "hello awk, good bye\n"}{printf "NF--%s NR--%s FNR--%s $0--%s\n",NF,NR,FNR,$0;}'
+[root@localhost ~]# git branch -r | awk 'BEGIN {print "hello awk, I am coming\n"}END{print "hello awk, good bye\n"}{printf "NF--%s NR--%s FNR--%s $0--%s\n",NF,NR,FNR,$0;}'
 ```
 
 ### xargs
 
 将参数列表转换成小块分段传递给其他命令, 以避免参数列表过长的问题, 可单独使用, 也可以使用管道符、重定位符等其他命令配合使用
 
-```bash
+```shell
 xargs [OPTION]... COMMAND INITIAL-ARGS...
 ```
 
@@ -85,17 +96,17 @@ xargs [OPTION]... COMMAND INITIAL-ARGS...
 - -s size 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
 - -t 执行命令之前先打印执行命令
 
-```bash
+```shell
 # -I 指定参数自变量
-echo "file1 file2 file3" | xargs -t -I % sh -c 'touch %;ls -l %'
-sh -c touch file1 file2 file3;ls -l file1 file2 file3
+[root@localhost ~]# echo "file1 file2 file3" | xargs -t -I % sh -c 'touch %;ls -l %'
+[root@localhost ~]# sh -c touch file1 file2 file3;ls -l file1 file2 file3
 ```
 
 - -d 设置自定义分隔符
 
-```bash
-echo -n file1#file2#file3#file4 | xargs -d \# -t touch
-touch file1 file2 file3 file4
+```shell
+[root@localhost ~]# echo -n file1#file2#file3#file4 | xargs -d \# -t touch
+[root@localhost ~]# touch file1 file2 file3 file4
 ```
 
 ### grep
@@ -103,7 +114,7 @@ touch file1 file2 file3 file4
 > BRE 定义了 4 组元字符 `[ ]` `.` `^` `$`
 > ERE 增加了 3 组元字符 `{ }` `()` `|`
 
-```bash
+```shell
 grep [OPTION]... PATTERN [FILE]...
 ```
 
@@ -112,14 +123,15 @@ grep [OPTION]... PATTERN [FILE]...
 - -i,\-\-ignore-case 忽略大小写
 - -e,\-\-regexp=PATTERN 使用正则表达式匹配
 
-  ```bash
-  grep -i -e "foo\|bar" # 使用 -e 参数 需要将正则中的部分字符转义才能使用
+  ```shell
+  # 使用 -e 参数 需要将正则中的部分字符转义才能使用
+  [root@localhost ~]# grep -i -e "foo\|bar" 
   ```
 
 - -E,\-\-extended-regexp 使用扩展正则表达式匹配(ERE)
 
-  ```bash
-  grep -i -E "foo|bar" # 此处不需要进行字符转义
+  ```shell
+  [root@localhost ~]# grep -i -E "foo|bar" # 此处不需要进行字符转义
   ```
 
 - -G,\-\-basic-regexp 使用基础正则表达式(BRE)
@@ -142,7 +154,7 @@ grep [OPTION]... PATTERN [FILE]...
 
 - 不带远程名称的过滤
 
-```bash
+```shell
 # 格式化输出所有本地关联的分支名
 $ git branch -r | \
   grep -i 'origin/feature*' | \
@@ -181,7 +193,7 @@ $ git branch -r | \
 
 - 包含主机名的过滤
 
-```bash
+```shell
 # IGNORECASE=1 开启忽略大小写
 # $0~/origin\/feature/ 判断分支名是否包含 origin/feature
 # 使用内置函数 gsub 全局替换 remotes 为空
@@ -197,7 +209,7 @@ $ git branch -a | \
 
 ### scp 主机之间复制文件
 
-```bash
+```shell
 scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 ```
 
@@ -211,21 +223,21 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 
 #### 本地复制到远程
 
-```bash
+```shell
 # 拷贝文件, 可以使用原文件名也可以重新命名文件
-scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/
+[root@localhost ~]# scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/
 
 # 拷贝目录
-scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/
+[root@localhost ~]# scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/
 ```
 
 #### 远程复制到本地
 
-```bash
+```shell
 # 拷贝文件, 可以使用原文件名也可以重新命名文件
-scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/
+[root@localhost ~]# scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/
 # 拷贝目录
-scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
+[root@localhost ~]# scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 ```
 
 ### firewall-cmd 防火墙
@@ -233,7 +245,7 @@ scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 - \-\-permanent # 永久修改
 - \-\-reload # 重新加载防火墙配置
 
-```bash
+```shell
 [root@centos7 ~]firewall-cmd --list-all # 显示所有信息
 [root@centos7 ~]firewall-cmd --list-ports # 显示端口信息
 [root@centos7 ~]firewall-cmd --remove-ports=<port>/<protocol> # 显示端口信息
