@@ -13,7 +13,7 @@ tags:
 ```shell
 # 查看系统内核版本
 [root@localhost ~]# uname -r
-# 移除系统无用内容	
+# 移除系统无用内容
 [root@localhost ~]# yum remove $(rpm -qa | grep kernel | grep -v $(uname -r))
 # 查看系统已安装的包
 [root@localhost ~]# rpm -qa | grep kernel
@@ -125,7 +125,7 @@ grep [OPTION]... PATTERN [FILE]...
 
   ```shell
   # 使用 -e 参数 需要将正则中的部分字符转义才能使用
-  [root@localhost ~]# grep -i -e "foo\|bar" 
+  [root@localhost ~]# grep -i -e "foo\|bar"
   ```
 
 - -E,\-\-extended-regexp 使用扩展正则表达式匹配(ERE)
