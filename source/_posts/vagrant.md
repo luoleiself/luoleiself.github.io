@@ -25,6 +25,8 @@ tags:
 
 > Authentication failure 是 ssh 登录证书错误, 但虚拟机已经启动完成
 
+- `.ssh/authorized_keys` 或 `.vagrant/machines/default/virtualbox/private_key` 有变化(内容改动/文件存在)
+
 ```shell
 ...
 ==> default: Forwarding ports...
