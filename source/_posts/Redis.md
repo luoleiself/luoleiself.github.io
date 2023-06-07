@@ -1878,6 +1878,11 @@ cluster-config-file nodes-6379.conf
 # 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认 15000 milsec
 cluster-node-timeout 15000
 
+# 集群总线监听 TCP 连接的端口, 默认端口为客户端命令端口+10000(eg: 6379+10000)
+# 每个集群节点都需要开放两个端口, 一个(6379)用于客户端的 TCP 连接, 
+# 另一个(16379)用于节点使用集群总线进行故障监测、配置更新、故障转移等
+# cluster-port 0
+
 # (cluster-node-timeout * cluster-replica-validity-factor) + repl-ping-replica-period
 # 例如, 集群节点超时为 30 sec, 并且集群副本有效性因子为 10 sec,
 # 并且假设默认的 repl-ping-replica-period 为 10 sec,
@@ -1892,7 +1897,10 @@ cluster-node-timeout 15000
 # no 表示仅该插槽不可用, 默认 yes
 cluster-require-full-coverage no
 
-# 允许集群服务器宕机时发布/订阅
+# 允许集群失效的情况下依然可以从节点中读取数据, 保证了高可用性
+# 默认 no, 不允许
+# cluster-allow-reads-when-down no
+# 允许集群服务器宕机时发布/订阅, 默认 yes
 # cluster-allow-pubsubshard-when-down yes
 
 # 集群模式使用 hostname 进行节点间通信
