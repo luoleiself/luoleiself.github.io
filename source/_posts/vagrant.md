@@ -45,8 +45,8 @@ tags:
 
 <!-- more -->
 
-因为 vagrant 官方提供了一对默认的 keypair,
-公钥预先存放在 box 的 vagrant 家目录 `.ssh/authorized_keys` 文件中,
+vagrant 官方提供了一对默认的 keypair,
+公钥预先存放在 box 的 vagrant 家目录 `.ssh/authorized_keys` 文件中(公钥末尾包含 vagrant insecure public key),
 私钥存放在宿主机 vagrant 安装目录的 .vagrant.d 下的 `insecure_private_key` 文件中.
 
 当 vagrant up 启动虚拟机时, 第一次登录虚拟机使用的是官方提供的 keypair, 然后 vagrant 在宿主机生成一对新的 keypair,

@@ -1563,9 +1563,10 @@ dir "" # 持久化文件存放目录
 # 配置主服务器 ip 和 port
 # replicaof <masterip> <masterport>
 
-# 副本和主服务器同步时的认证密码，如果主服务器开启验证
+# 副本和主服务器同步时的认证密码, 如果主服务器开启验证
 # masterauth <master-password>
 # 副本和主服务器同步时的认证用户
+# 如果主服务器使用 requirepass 配置项, 则必须配置此项
 # masteruser <username>
 
 # 从节点只读模式, 默认 yes
