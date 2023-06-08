@@ -1617,6 +1617,37 @@ dir "" # 持久化文件存放目录
 # 该选项将只是为默认用户设置密码
 # 客户端仍需要使用 AUTH [username] password 进行身份认证
 # requirepass foobared
+
+# 高级配置
+# 哈希类型元素的个数小于 512 个, 每个元素值都小于 64B 时
+# 使用 压缩列表 作为底层数据结构
+# 否则使用 哈希表 作为底层数据结构
+# hash-max-listpack-entries 512
+# hash-max-listpack-value 64
+
+# -2: max size: 8kb
+# list-max-listpack-size -2
+# 0 表示禁用所有的列表压缩
+# list-compress-depth 0
+
+# 集合元素都是整数且元素个数小于 512 个使用 整数集合 作为底层数据结构
+# 否则使用 哈希表 作为底层数据结构
+# set-max-intset-entries 512
+# set-max-listpack-entries 128
+# set-max-listpack-value 64
+
+# 有序集合的元素个数小于 128 个并且每个元素的值小于 64B 时
+# 使用 压缩列表 作为底层数据结构
+# 否则使用 跳表 作为数据结构
+# zset-max-listpack-entries 128
+# zset-max-listpack-value 64
+
+# HyperLogLog
+# hll-sparse-max-bytes 3000
+
+# Streams 
+# stream-node-max-bytes 4096
+# stream-node-max-entries 100
 ```
 
 - requirepass 认证
