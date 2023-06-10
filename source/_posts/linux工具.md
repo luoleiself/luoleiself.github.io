@@ -19,6 +19,55 @@ tags:
 [root@localhost ~]# rpm -qa | grep kernel
 ```
 
+### ssh 操作
+
+- ssh-keyscan 收集公钥中的主机地址
+- ssh-copy-id 将本地的公钥文件复制到远程主机对应账户下的 authorized\_keys 文件中
+- ssh-keygen 生成非对称密钥对
+
+```shell
+[vagrant@centos8s ~]# ssh-keygen -t <密钥类型> -f <input_keyfile> -C <comment>
+```
+
+- ssh-agent ssh认证代理, 通常和 ssh-add 配合使用管理本地密钥
+- ssh-add 管理本地密钥
+  - \-l 列出所有的密钥摘要信息
+  - \-L 列出所有的公钥信息
+  - \-d \<input\_keyfile\> 移除指定的密钥
+  - \-D 移除所有的密钥
+  - \-x 锁定agent(代理)
+  - \-X 解锁agent(代理)
+
+```shell
+# 使用 ssh -T 测试连通性
+[vagrant@centos8s ~]$ ssh -T git@github.com
+git@github.com: Permission denied (publickey).
+# 或者使用 -i 每次都指定密钥
+[vagrant@centos8s ~]$ ssh -i ~/.ssh/github_25519 -T git@github.com
+Hi ##########! You've successfully authenticated, but GitHub does not provide shell access.
+
+# 使用 ssh-add 将密钥添加到 ssh 认证代理
+[vagrant@centos8s ~]$ ssh-add ~/.ssh/github_25519
+Identity added: /home/vagrant/.ssh/github_25519 (##########@163.com)
+[vagrant@centos8s ~]$ ssh-add -l
+256 SHA256:CfRvLFZMgJ/p7r5ywt8BSQ2T1qEYtjCGDvVDVeYOtmY ##########@163.com (ED25519)
+# 不需要使用 -i 指定密钥
+[vagrant@centos8s ~]$ ssh -T git@github.com
+Hi ##########! You've successfully authenticated, but GitHub does not provide shell access.
+
+# 移除指定的密钥
+[vagrant@centos8s ~]$ ssh-add -d ~/.ssh/github_25519
+Identity removed: /home/vagrant/.ssh/github_25519 (##########@163.com)
+# 移除所有的密钥
+[vagrant@centos8s ~]$ ssh-add -D
+All identities removed.
+# 列出所有的密钥摘要信息
+[vagrant@centos8s ~]$ ssh-add -l
+The agent has no identities.
+```
+
+<!-- more -->
+
 ### awk
 
 awk 是一种可以对文本和数据进行处理的编程语言, 默认情况下, awk 文件的每一行都被视为一条记录, 然后 awk 记录进一步分解成一系列的字段
@@ -45,8 +94,6 @@ awk 是一种可以对文本和数据进行处理的编程语言, 默认情况�
 - 记录分隔符
   - RS 输入记录的分隔符, 默认为换行符
   - ORS 输出的记录分隔符, 默认为换行符
-
-<!-- more -->
 
 - 记录统计
   - $0 完整的输入记录
