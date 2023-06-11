@@ -46,7 +46,7 @@ tags:
 git@github.com: Permission denied (publickey).
 # 或者使用 -i 每次都指定密钥
 [vagrant@centos8s ~]$ ssh -i ~/.ssh/github_25519 -T git@github.com
-Hi ......! You've successfully authenticated, but GitHub does not provide shell access.
+Hi ......! You\'ve successfully authenticated, but GitHub does not provide shell access.
 
 # 如果出现提示
 # Could not open a connection to your authentication agent.
@@ -60,11 +60,11 @@ Identity added: /home/vagrant/.ssh/github_25519 (......@163.com)
 256 SHA256:CfRvLFZMgJ/p7r5ywt8BSQ2T1qEYtjCGDvVDVeYOtmY ......@163.com (ED25519)
 # 不需要使用 -i 指定密钥
 [vagrant@centos8s ~]$ ssh -T git@github.com
-Hi ......! You've successfully authenticated, but GitHub does not provide shell access.
+Hi ......! You\'ve successfully authenticated, but GitHub does not provide shell access.
 
 # 移除指定的密钥
-[vagrant@centos8s ~]$ ssh-add -d ~/.ssh/github_25519
-Identity removed: /home/vagrant/.ssh/github_25519 (......@163.com)
+[vagrant@centos8s ~]$ ssh-add -d ~/.ssh/github\_25519
+Identity removed: /home/vagrant/.ssh/github\_25519 (......@163.com)
 # 移除所有的密钥
 [vagrant@centos8s ~]$ ssh-add -D
 All identities removed.
