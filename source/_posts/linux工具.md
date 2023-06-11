@@ -30,6 +30,8 @@ tags:
 ```
 
 - ssh-agent ssh认证代理, 通常和 ssh-add 配合使用管理本地密钥
+  - \-s 在标准输出上初始化 bourne shell
+  - \-k 关闭当前的 agent(代理), 通过环境变量 SSH\_AGNENT\_PID
 - ssh-add 管理本地密钥
   - \-l 列出所有的密钥摘要信息
   - \-L 列出所有的公钥信息
@@ -45,6 +47,11 @@ git@github.com: Permission denied (publickey).
 # 或者使用 -i 每次都指定密钥
 [vagrant@centos8s ~]$ ssh -i ~/.ssh/github_25519 -T git@github.com
 Hi ......! You've successfully authenticated, but GitHub does not provide shell access.
+
+# 如果出现提示
+# Could not open a connection to your authentication agent.
+# 初始化一个 bash
+[vagrant@centos8s ~]$ eval `ssh-agent -s`
 
 # 使用 ssh-add 将密钥添加到 ssh 认证代理
 [vagrant@centos8s ~]$ ssh-add ~/.ssh/github_25519
