@@ -376,44 +376,35 @@
     <link href="https://luoleiself.github.io/2022/05/bc4d38208f0f/"/>
     <id>https://luoleiself.github.io/2022/05/bc4d38208f0f/</id>
     <published>2022-05-31T06:40:43.000Z</published>
-    <updated>2023-06-05T01:20:56.028Z</updated>
+    <updated>2023-06-12T10:34:46.518Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;删除无用内核&quot;&gt;&lt;a href=&quot;#删除无用内核&quot; class=&quot;headerlink&quot; title=&quot;删除无用内核&quot;&gt;&lt;/a&gt;删除无用内核&lt;/h3&gt;&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;查看系统内核版本&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[root@localhost ~]# uname -r&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;移除系统无用内容&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[root@localhost ~]# yum remove $(rpm -qa | grep kernel | grep -v $(uname -r))&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;查看系统已安装的包&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[root@localhost ~]# rpm -qa | grep kernel&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 
-&lt;h3 id=&quot;awk&quot;&gt;&lt;a href=&quot;#awk&quot; class=&quot;headerlink&quot; title=&quot;awk&quot;&gt;&lt;/a&gt;awk&lt;/h3&gt;&lt;p&gt;awk 是一种可以对文本和数据进行处理的编程语言, 默认情况下, awk 文件的每一行都被视为一条记录, 然后 awk 记录进一步分解成一系列的字段&lt;/p&gt;
-&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[root@localhost ~]# awk &amp;#x27;&amp;#123; sum += $1 &amp;#125;; END &amp;#123; print sum &amp;#125;&amp;#x27; file&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[root@localhost ~]# awk -F : &amp;#x27;&amp;#123; print $1 &amp;#125;&amp;#x27; /etc/passwd&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;ssh-操作&quot;&gt;&lt;a href=&quot;#ssh-操作&quot; class=&quot;headerlink&quot; title=&quot;ssh 操作&quot;&gt;&lt;/a&gt;ssh 操作&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;ssh-keyscan 收集公钥中的主机地址&lt;/li&gt;
+&lt;li&gt;ssh-copy-id 将本地的公钥文件复制到远程主机对应账户下的 authorized_keys 文件中&lt;/li&gt;
+&lt;li&gt;ssh-keygen 生成非对称密钥对&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]# ssh-keygen -t &amp;lt;密钥类型&amp;gt; -f &amp;lt;input_keyfile&amp;gt; -C &amp;lt;comment&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 
-&lt;h4 id=&quot;内建变量&quot;&gt;&lt;a href=&quot;#内建变量&quot; class=&quot;headerlink&quot; title=&quot;内建变量&quot;&gt;&lt;/a&gt;内建变量&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;OFMT 输出数字格式(默认%.6g)&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;CONVFMT 数字转换格式(默认值为%.6g)ENVIRON 环境变量关联数组&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;ENVIRON 数组, 存储当前系统的环境变量, ENVIRON[‘PATH’]&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;ERRNO 最后一个系统错误的描述&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;FILENAME 当前正在处理的文件名&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;FIELDWIDTHS 以空格分隔的字段宽度&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;PROCINFO 数组, 存储当前系统运行时信息, PROCINFO[‘uid’]&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;IGNORECASE 如果为真, 则进行忽略大小写的匹配&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;字段分隔符&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置&lt;/li&gt;
-&lt;li&gt;OFS 输出的字段分隔符, 默认为空格&lt;/li&gt;
+&lt;li&gt;ssh-agent ssh 认证代理, 通常和 ssh-add 配合使用管理本地密钥&lt;ul&gt;
+&lt;li&gt;-s 在标准输出上初始化 bourne shell&lt;/li&gt;
+&lt;li&gt;-k 关闭当前的 agent(代理), 通过环境变量 SSH_AGNENT_PID&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;记录分隔符&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;RS 输入记录的分隔符, 默认为换行符&lt;/li&gt;
-&lt;li&gt;ORS 输出的记录分隔符, 默认为换行符&lt;/li&gt;
+&lt;li&gt;ssh-add 管理本地密钥&lt;ul&gt;
+&lt;li&gt;-l 列出所有的密钥摘要信息&lt;/li&gt;
+&lt;li&gt;-L 列出所有的公钥信息&lt;/li&gt;
+&lt;li&gt;-d &amp;lt;input_keyfile&amp;gt; 移除指定的密钥&lt;/li&gt;
+&lt;li&gt;-D 移除所有的密钥&lt;/li&gt;
+&lt;li&gt;-x 锁定 agent(代理)&lt;/li&gt;
+&lt;li&gt;-X 解锁 agent(代理)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</summary>
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;使用 ssh -T 测试连通性&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ ssh -T git@github.com&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;git@github.com: Permission denied (publickey).&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;或者使用 -i 每次都指定密钥&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ ssh -i ~/.ssh/github_25519 -T git@github.com&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Hi ......! You\&amp;#x27;ve successfully authenticated, but GitHub does not provide shell access.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;如果出现提示&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;Could not open a connection to your authentication agent.&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;初始化一个 bash&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ eval `ssh-agent -s`&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;使用 ssh-add 将密钥添加到 ssh 认证代理&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ ssh-add ~/.ssh/github_25519&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Identity added: /home/vagrant/.ssh/github_25519 (......@163.com)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ ssh-add -l&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;256 SHA256:CfRvLFZMgJ/p7r5ywt8BSQ2T1qEYtjCGDvVDVeYOtmY ......@163.com (ED25519)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;不需要使用 -i 指定密钥&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ ssh -T git@github.com&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Hi ......! You\&amp;#x27;ve successfully authenticated, but GitHub does not provide shell access.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;移除指定的密钥&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ ssh-add -d ~/.ssh/github\_25519&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Identity removed: /home/vagrant/.ssh/github\_25519 (......@163.com)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;移除所有的密钥&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ ssh-add -D&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;All identities removed.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta prompt_&quot;&gt;# &lt;/span&gt;&lt;span class=&quot;language-bash&quot;&gt;列出所有的密钥摘要信息&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[vagrant@centos8s ~]$ ssh-add -l&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;The agent has no identities.&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
     
     
     
@@ -746,9 +737,9 @@
     <category term="tools" scheme="https://luoleiself.github.io/categories/tools/"/>
     
     
-    <category term="API" scheme="https://luoleiself.github.io/tags/API/"/>
-    
     <category term="js" scheme="https://luoleiself.github.io/tags/js/"/>
+    
+    <category term="API" scheme="https://luoleiself.github.io/tags/API/"/>
     
   </entry>
   
