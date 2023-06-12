@@ -22,23 +22,23 @@ tags:
 ### ssh 操作
 
 - ssh-keyscan 收集公钥中的主机地址
-- ssh-copy-id 将本地的公钥文件复制到远程主机对应账户下的 authorized\_keys 文件中
+- ssh-copy-id 将本地的公钥文件复制到远程主机对应账户下的 authorized_keys 文件中
 - ssh-keygen 生成非对称密钥对
 
 ```shell
 [vagrant@centos8s ~]# ssh-keygen -t <密钥类型> -f <input_keyfile> -C <comment>
 ```
 
-- ssh-agent ssh认证代理, 通常和 ssh-add 配合使用管理本地密钥
+- ssh-agent ssh 认证代理, 通常和 ssh-add 配合使用管理本地密钥
   - \-s 在标准输出上初始化 bourne shell
-  - \-k 关闭当前的 agent(代理), 通过环境变量 SSH\_AGNENT\_PID
+  - \-k 关闭当前的 agent(代理), 通过环境变量 SSH_AGNENT_PID
 - ssh-add 管理本地密钥
   - \-l 列出所有的密钥摘要信息
   - \-L 列出所有的公钥信息
-  - \-d \<input\_keyfile\> 移除指定的密钥
+  - \-d \<input_keyfile\> 移除指定的密钥
   - \-D 移除所有的密钥
-  - \-x 锁定agent(代理)
-  - \-X 解锁agent(代理)
+  - \-x 锁定 agent(代理)
+  - \-X 解锁 agent(代理)
 
 ```shell
 # 使用 ssh -T 测试连通性
@@ -99,6 +99,7 @@ awk 是一种可以对文本和数据进行处理的编程语言, 默认情况�
   - FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置
   - OFS 输出的字段分隔符, 默认为空格
 - 记录分隔符
+
   - RS 输入记录的分隔符, 默认为换行符
   - ORS 输出的记录分隔符, 默认为换行符
 
