@@ -19,7 +19,7 @@ String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic 
 
 - SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]
 
-  为 key 设置字符串的值, 执行成功返回 ok
+  为 key 设置字符串的值, 执行成功返回 ok, 每次更新 key 的值时会自动清除过期时间
 
   - NX 仅当 key 不存在时设置
   - XX 仅当 key 存在时设置
@@ -28,6 +28,31 @@ String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic 
   - EXAT 过期时间戳, 单位秒
   - PXAT 过期时间戳, 单位毫秒
   - KEEPTTL 保留 key 关联的生存时间
+
+```shell
+127.0.0.1:6379> SET age 18
+OK
+127.0.0.1:6379> EXPIRE age 100
+(integer) 1
+127.0.0.1:6379> TTL age
+(integer) 98
+127.0.0.1:6379> SET age 20
+OK
+127.0.0.1:6379> TTL age
+(integer) -1
+
+# 使用 KEEPTTL 保留 key 关联的生存时间
+127.0.0.1:6379> SET age 18 EX 100
+OK
+127.0.0.1:6379> TTL age
+(integer) 98
+127.0.0.1:6379> SET age 20 KEEPTTL
+OK
+127.0.0.1:6379> GET age
+"20"
+127.0.0.1:6379> TTL age
+(integer) 79
+```
 
 - SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败
 

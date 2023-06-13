@@ -342,6 +342,26 @@ OK
 
 - LINDEX key index 获取列表中指定索引的元素, 如果列表或者索引不存在返回 \<nil\>
 
+```shell
+127.0.0.1:6379> LRANGE list:zhang 0 11
+ 1) "li10"
+ 2) "li9"
+ 3) "li8"
+ 4) "li7"
+ 5) "li6"
+ 6) "li5"
+ 7) "li4"
+ 8) "li3"
+ 9) "li2"
+10) "li1"
+127.0.0.1:6379> LINDEX list:zhang 11
+(nil)
+127.0.0.1:6379> LINDEX list:zhang 5
+"li5"
+127.0.0.1:6379> LINDEX list:zhang 8
+"li2"
+```
+
 ##### 查找匹配项的下标
 
 - LPOS key element [RANK rank] [COUNT num-matches] [MAXLEN len] 返回列表中匹配元素的下标, 列表为空或者不存在返回 \<nil\>
