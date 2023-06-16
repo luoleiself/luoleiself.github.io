@@ -154,14 +154,16 @@ xargs [OPTION]... COMMAND INITIAL-ARGS...
 ```shell
 # -I 指定参数自变量
 [root@localhost ~]# echo "file1 file2 file3" | xargs -t -I % sh -c 'touch %;ls -l %'
-[root@localhost ~]# sh -c touch file1 file2 file3;ls -l file1 file2 file3
+
+[root@localhost ~]# sh -c "touch file{1..3}";ls -l
 ```
 
 - -d 设置自定义分隔符
 
 ```shell
 [root@localhost ~]# echo -n file1#file2#file3#file4 | xargs -d \# -t touch
-[root@localhost ~]# touch file1 file2 file3 file4
+
+[root@localhost ~]# touch file{1..4}
 ```
 
 ### grep
