@@ -126,8 +126,9 @@ docker run ... centos02 --network centos01 ...
 
 #### 借助 docker0 路由功能
 
+- 自定义网络 不适用 docker0
 - 此方式需要查看容器的 ip 信息
-- docker0 不支持容器名别名连接访问
+- docker0 **不支持** 容器名 **别名** 连接访问
 
 ```bash
 # 查看 centos01 的 ip 信息
@@ -151,17 +152,15 @@ rtt min/avg/max/mdev = 0.041/0.048/0.065/0.012 ms
 
 #### \-\-link 参数方式
 
-本质上是在容器内部 hosts 文件中添加 ip 映射, 只能单向使用容器别名通信
+本质上是在容器内部 hosts 文件中添加 ip 映射, 只能单向通信
 
-在未知容器 ip 信息的情况下不能使用别名通信
-
-- 自定义网络 不适用 docker0
-- docker0 不支持容器名别名连接访问
+在未知对方容器 ip 信息的情况下不能通信
 
 ```bash
 # 创建 centos02 连接到 centos01
 [root@localhost ~]# docker run -tid --name centos02 --link centos01 centos /bin/bash
-[root@localhost ~]# docker exec -it centos02 ping centos01 # centos02 ping centos01
+# centos02 ping centos01
+[root@localhost ~]# docker exec -it centos02 ping centos01
 PING centos01 (172.17.0.2) 56(84) bytes of data.
 64 bytes from centos01 (172.17.0.2): icmp_seq=1 ttl=64 time=0.076 ms
 64 bytes from centos01 (172.17.0.2): icmp_seq=2 ttl=64 time=0.044 ms
@@ -185,7 +184,7 @@ ff02::2 ip6-allrouters
 ping: centos02: Name or service not known
 ```
 
-### 自定义网络模式 <em id="zidingyiwangluomoshi"></em>
+### 自定义网络模式 <em id="zidingyiwangluomoshi"></em> <!-- markdownlint-disable-line -->
 
 - ls 显示所有网络模式状态
 - create 创建网络模式
@@ -195,7 +194,12 @@ ping: centos02: Name or service not known
 - connect 连接容器到另一个网络
 - disconnect 断开容器到另一个网络的连接
 
-#### bridge 模式
+#### overlay 模式 <!-- markdownlint-disable-line -->
+
+- docker 运行在 swarm 模式
+- 使用键值存储的 docker 主机集群
+
+#### bridge 模式 <!-- markdownlint-disable-line -->
 
 - \-\-driver 网络模式, 默认 bridge
 - \-\-subnet CIDR 格式的子网网段
@@ -216,7 +220,7 @@ b97686d7890c   my-docker-net   bridge    local
 b2f23805b5e5   none            null      local
 ```
 
-2. 查看宿主机 ip 相关信息
+2. 查看宿主机 ip 相关信息 <!-- markdownlint-disable-line -->
 
 ```bash
 [root@localhost ~]# ip addr
@@ -238,14 +242,14 @@ b2f23805b5e5   none            null      local
        valid_lft forever preferred_lft forever
 ```
 
-3. 基于自定义网络模式创建容器
+3. 基于自定义网络模式创建容器 <!-- markdownlint-disable-line -->
 
 ```bash
 [root@localhost ~]# docker run -tid --name my-docker-net01 --network my-docker-net centos /bin/bash
 [root@localhost ~]# docker run -tid --name my-docker-net02 --network my-docker-net centos /bin/bash
 ```
 
-4. 查看自定义网络信息
+4. 查看自定义网络信息 <!-- markdownlint-disable-line -->
 
 ```bash
 [root@localhost ~]# docker network inspect my-docker-net
@@ -285,11 +289,6 @@ b2f23805b5e5   none            null      local
   "Options": {}
 }]
 ```
-
-#### overlay 模式 <!-- markdownlint-disable-line -->
-
-- docker 运行在 swarm 模式
-- 使用键值存储的 docker 主机集群
 
 ### 自定义网络模式容器通信
 
@@ -358,7 +357,7 @@ d0f5bf60fb85   centos    "/bin/bash"   22 hours ago    Up 6 hours              m
 ad9cdd7a0edf   centos    "/bin/bash"   22 hours ago    Up 6 hours              my-docker-net01
 ```
 
-2. connect 命令连接容器到自定义网络
+2. connect 命令连接容器到自定义网络 <!-- markdownlint-disable-line -->
 
 ```bash
 docker network connect [OPTIONS] NETWORK CONTAINER
@@ -412,7 +411,7 @@ docker network connect [OPTIONS] NETWORK CONTAINER
       valid_lft forever preferred_lft forever
 ```
 
-3. 与自定义网络模式中的容器通信
+3. 与自定义网络模式中的容器通信 <!-- markdownlint-disable-line -->
 
 ```bash
 # 默认网络模式中容器 ping 自定义网络模式中容器
@@ -454,7 +453,7 @@ PING centos01 (192.168.0.4) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.000/0.031/0.048/0.021 ms
 ```
 
-4. 断开容器到另一个网络的连接
+4. 断开容器到另一个网络的连接 <!-- markdownlint-disable-line -->
 
 ```bash
 # 断开自定义网络和 centos01 的连接
