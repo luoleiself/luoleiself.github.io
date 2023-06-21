@@ -8,15 +8,46 @@ tags:
   - shell
 ---
 
-### 删除无用内核
+### 命令行输出内容变身
+
+格式: \033\[显示方式;前景色;背景色m ...... \033\[0m
+
+- \033[ 固定格式
+- \033[0m 非必需, 如果省略表示后面输出内容的样式都会应用当前设置的样式
+
+#### 属性集
+
+| 前景色 | 背景色 | 色值   |
+| ------ | ------ | ------ |
+| 30     | 40     | 黑色   |
+| 31     | 41     | 红色   |
+| 32     | 42     | 绿色   |
+| 33     | 43     | 黄色   |
+| 34     | 44     | 蓝色   |
+| 35     | 45     | 紫红色 |
+| 36     | 46     | 青蓝色 |
+| 37     | 47     | 白色   |
+
+#### 显示方式
+
+| 显示方式 | 表现行为 |
+| :------: | -------- |
+|    0     | 默认     |
+|    1     | 高亮     |
+|    4     | 下划线   |
+|    5     | 闪烁     |
+|    7     | 反色     |
+|    8     | 不可见   |
 
 ```shell
-# 查看系统内核版本
-[root@localhost ~]# uname -r
-# 移除系统无用内容
-[root@localhost ~]# yum remove $(rpm -qa | grep kernel | grep -v $(uname -r))
-# 查看系统已安装的包
-[root@localhost ~]# rpm -qa | grep kernel
+# 输出字体为绿色的 你好hello world
+[root@localhost ~]# printf '\033[1;32m你好hello world\033[0m\n'
+# 输出字体为绿色并带有下划线的 你好hello world
+[root@localhost ~]# printf '\033[4;32m你好hello world\033[0m\n'
+# 输出背景色为绿色的 你好hello world
+[root@localhost ~]# printf '\033[7;32m你好hello world\033[0m\n'
+# 输出内容不可见
+[root@localhost ~]# printf '\033[8;32m你好hello world\033[0m\n'
 ```
 
 ### ssh 操作
@@ -63,8 +94,8 @@ Identity added: /home/vagrant/.ssh/github_25519 (......@163.com)
 Hi ......! You\'ve successfully authenticated, but GitHub does not provide shell access.
 
 # 移除指定的密钥
-[vagrant@centos8s ~]$ ssh-add -d ~/.ssh/github\_25519
-Identity removed: /home/vagrant/.ssh/github\_25519 (......@163.com)
+[vagrant@centos8s ~]$ ssh-add -d ~/.ssh/github_25519
+Identity removed: /home/vagrant/.ssh/github_25519 (......@163.com)
 # 移除所有的密钥
 [vagrant@centos8s ~]$ ssh-add -D
 All identities removed.
