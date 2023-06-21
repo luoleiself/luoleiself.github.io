@@ -219,141 +219,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Generator和async</title>
-    <url>/2021/07/bc748f2ea976/</url>
-    <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
-<p>Generator 函数是 ES6 提供的一种异步编程解决方案, 语法行为和传统普通函数完全不同, Generator 函数是一个状态机, 封装了多个内部状态, 执行函数会返回一个迭代器对象, 返回的迭代器对象可以依次遍历 Generator 函数内部的每一个状态.</p>
-</blockquote>
-<ul>
-<li>function 关键字和函数名之间有一个星号, 星号写在哪个位置都可以</li>
-<li>函数体内部使用 yield 表达式定义不同的状态</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">helloWorld</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;world&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = <span class="title function_">helloWorld</span>();</span><br><span class="line">gen.<span class="title function_">next</span>();</span><br><span class="line"><span class="comment">// &#123; value: &#x27;hello&#x27;, done: false &#125;</span></span><br><span class="line">gen.<span class="title function_">next</span>();</span><br><span class="line"><span class="comment">// &#123; value: &#x27;world&#x27;, done: false &#125;</span></span><br><span class="line">gen.<span class="title function_">next</span>();</span><br><span class="line"><span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>调用 Generator 函数, 返回一个迭代器对象, 代表 Generator 函数的内部指针, 每次调用迭代器对象的 next 方法, 就会返回一个包含 value 和 done 属性的对象, value 属性表示当前的内部状态(yield 表达式)的值, done 属性表示遍历是否结束的 boolean 值</p>
-<h4 id="yield-表达式"><a href="#yield-表达式" class="headerlink" title="yield 表达式"></a>yield 表达式</h4><blockquote>
-<p>yield 表达式只能用在 Generator 函数里面, 用在其他地方都会报错</p>
-</blockquote>
-<ol>
-<li>遇到 yield 表达式, 就暂停执行后面的操作, 并将 yield 后面紧跟的表达式的值作为返回对象的 value 属性值</li>
-<li>下一次调用 next 方法时, 再继续往下执行, 直到遇到下一个 yield 表达式</li>
-<li>如果没有再遇到新的 yield 表达式, 就一直运行到函数结束, 直到 return 语句为止, 并将 return 语句后面的表达式的值作为返回的对象的 value 属性值</li>
-<li>如果该函数没有 return 语句, 则返回的对象的 value 属性值为 undefined</li>
-</ol>
-<span id="more"></span>
-
-<h4 id="与-Iterator-接口的关系"><a href="#与-Iterator-接口的关系" class="headerlink" title="与 Iterator 接口的关系"></a>与 Iterator 接口的关系</h4><blockquote>
-<p>任意数据结构的 Symbol.iterator 方法,等于该数据结构的迭代器生成函数,调用该方法会返回一个该数据结构的迭代器对象</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myIterator = &#123;</span><br><span class="line">  <span class="comment">// [Symbol.iterator]: function* () &#123;</span></span><br><span class="line">  <span class="comment">// 简洁写法</span></span><br><span class="line">  *[<span class="title class_">Symbol</span>.<span class="property">iterator</span>]() &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">[...myIterator]; <span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="next-方法的参数"><a href="#next-方法的参数" class="headerlink" title="next 方法的参数"></a>next 方法的参数</h4><blockquote>
-<p>next 方法可以带一个参数,该参数被作为上一个 yield 表达式的结果, 第一次使用 next 方法时, 传递参数会被解释器忽略</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">foo</span>(<span class="params">x</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> y = <span class="number">2</span> * (<span class="keyword">yield</span> x + <span class="number">1</span>); <span class="comment">// 第一个 yield 表达式</span></span><br><span class="line">  <span class="keyword">var</span> z = <span class="keyword">yield</span> y / <span class="number">3</span>; <span class="comment">// 第二个 yield 表达式</span></span><br><span class="line">  <span class="keyword">return</span> x + y + z;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="title function_">foo</span>(<span class="number">5</span>);</span><br><span class="line">a.<span class="title function_">next</span>(); <span class="comment">// Object&#123;value:6, done:false&#125;</span></span><br><span class="line">a.<span class="title function_">next</span>(); <span class="comment">// Object&#123;value:NaN, done:false&#125;</span></span><br><span class="line">a.<span class="title function_">next</span>(); <span class="comment">// Object&#123;value:NaN, done:true&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = <span class="title function_">foo</span>(<span class="number">5</span>);</span><br><span class="line">b.<span class="title function_">next</span>(); <span class="comment">// &#123; value:6, done:false &#125;</span></span><br><span class="line">b.<span class="title function_">next</span>(<span class="number">12</span>); <span class="comment">// &#123; value:8, done:false &#125; // 12 作为第一个 yield 表达式的结果</span></span><br><span class="line">b.<span class="title function_">next</span>(<span class="number">13</span>); <span class="comment">// &#123; value:42, done:true &#125; // 13 作为第二个 yield 表达式的结果</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="for…of-循环"><a href="#for…of-循环" class="headerlink" title="for…of 循环"></a>for…of 循环</h4><blockquote>
-<p>for…of 循环可以自动循环 Generator 函数运行时生成的 Iterator 对象, 此时不再需要调用 next 方法, next 返回的对象的 done 属性为 true 时则自动中止循环且不包含该返回对象</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> <span class="title function_">foo</span>()) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(v);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 1 2 3 4</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="throw"><a href="#throw" class="headerlink" title="throw"></a>throw</h4><p>迭代器对象的 throw 方法可以在函数体外抛出错误异常, 在 Generator 函数体内捕获</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span>;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;内部捕获&#x27;</span>, err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> gen = <span class="title function_">foo</span>();</span><br><span class="line">gen.<span class="title function_">next</span>();</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  gen.<span class="keyword">throw</span>(<span class="string">&#x27;err1&#x27;</span>);</span><br><span class="line">  gen.<span class="keyword">throw</span>(<span class="string">&#x27;err2&#x27;</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;外部捕获&#x27;</span>, err);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 内部捕获 err1</span></span><br><span class="line"><span class="comment">// 外部捕获 err2</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="return"><a href="#return" class="headerlink" title="return"></a>return</h4><p>迭代器对象的 return 方法返回给定的值并且中止遍历 Generator 函数, 如果 Generator 函数内部有 try…finally, 并且正在执行 try 内部代码, 则立刻进入 finally 执行直到函数结束</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">numbers</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">5</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">6</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> g = <span class="title function_">numbers</span>();</span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line">g.<span class="keyword">return</span>(<span class="number">7</span>); <span class="comment">// &#123; value: 4, done: false &#125;</span></span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// &#123; value: 5, done: false &#125;</span></span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// &#123; value: 7, done: true &#125;</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="next-throw-return-的共同点"><a href="#next-throw-return-的共同点" class="headerlink" title="next throw return 的共同点"></a>next throw return 的共同点</h4><blockquote>
-<p>此三个方法本质上是一件事, 共同的作用是让 Generator 函数恢复执行并且使用不同的语句替换 yield 表达式</p>
-</blockquote>
-<ul>
-<li>next 将 yield 表达式替换成一个值</li>
-<li>throw 将 yield 表达式替换成一个 throw 语句</li>
-<li>return 将 yield 表达式替换成一个 return 语句</li>
-</ul>
-<h4 id="yield-表达式-1"><a href="#yield-表达式-1" class="headerlink" title="yield* 表达式"></a>yield* 表达式</h4><p>用于在一个 Generator 函数内执行另外一个 Generator 函数</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">bar</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span>* <span class="title function_">foo</span>();</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;y&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line"><span class="keyword">function</span>* <span class="title function_">bar</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;b&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;y&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line"><span class="keyword">function</span>* <span class="title function_">bar</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> <span class="title function_">foo</span>()) &#123;</span><br><span class="line">    <span class="keyword">yield</span> v;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;y&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> <span class="title function_">bar</span>()) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(v);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// &quot;x&quot;</span></span><br><span class="line"><span class="comment">// &quot;a&quot;</span></span><br><span class="line"><span class="comment">// &quot;b&quot;</span></span><br><span class="line"><span class="comment">// &quot;y&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="async"><a href="#async" class="headerlink" title="async"></a>async</h3><blockquote>
-<p>ES8 标准, Generator 函数的语法糖</p>
-</blockquote>
-<h4 id="与-Generator-函数的区别"><a href="#与-Generator-函数的区别" class="headerlink" title="与 Generator 函数的区别"></a>与 Generator 函数的区别</h4><h5 id="内置执行器"><a href="#内置执行器" class="headerlink" title="内置执行器"></a>内置执行器</h5><p>Generator 函数的自动执行需要依赖执行器 co 模块, async 函数自带执行器只要调用即可</p>
-<h5 id="更好的语义"><a href="#更好的语义" class="headerlink" title="更好的语义"></a>更好的语义</h5><p>async 表示函数内有异步操作, await 表示后面的表达式需要等待结果</p>
-<h5 id="更广的适用性"><a href="#更广的适用性" class="headerlink" title="更广的适用性"></a>更广的适用性</h5><p>co 模块规定 yield 命令后面只能是 thunk 函数或者 Promise 对象, async 函数的 await 命令后面可以是 Promise 对象和原始类型的值(数值、字符串和布尔值,此时会自动转成 Resolve 的 Promise 对象)</p>
-<h5 id="返回值是-Promise"><a href="#返回值是-Promise" class="headerlink" title="返回值是 Promise"></a>返回值是 Promise</h5><p>async 的返回值是 Promise, 可以使用 then 方法指定下一步的操作</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">  <span class="keyword">await</span> <span class="string">&#x27;2&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="async-的实现原理"><a href="#async-的实现原理" class="headerlink" title="async 的实现原理"></a>async 的实现原理</h4><p>将 Generator 函数和自动执行器包装在一个函数内</p>
-<h4 id="await"><a href="#await" class="headerlink" title="await"></a>await</h4><h5 id="Promise-对象"><a href="#Promise-对象" class="headerlink" title="Promise 对象"></a>Promise 对象</h5><p>返回该对象的结果</p>
-<h5 id="定义了-then-方法的对象"><a href="#定义了-then-方法的对象" class="headerlink" title="定义了 then 方法的对象"></a>定义了 then 方法的对象</h5><p>await 将当作 Promise 对象执行</p>
-<h5 id="reject-状态"><a href="#reject-状态" class="headerlink" title="reject 状态"></a>reject 状态</h5><p>如果 Promise 对象变成 reject 状态,则整个 async 函数都会中断执行</p>
-]]></content>
-      <categories>
-        <category>ES</category>
-      </categories>
-      <tags>
-        <tag>ES6</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Git命令操作篇</title>
     <url>/2021/04/b0420868a4bc/</url>
     <content><![CDATA[<h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init [project-name]</span><br></pre></td></tr></table></figure>
@@ -609,6 +474,277 @@
       </tags>
   </entry>
   <entry>
+    <title>Generator和async</title>
+    <url>/2021/07/bc748f2ea976/</url>
+    <content><![CDATA[<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><blockquote>
+<p>Generator 函数是 ES6 提供的一种异步编程解决方案, 语法行为和传统普通函数完全不同, Generator 函数是一个状态机, 封装了多个内部状态, 执行函数会返回一个迭代器对象, 返回的迭代器对象可以依次遍历 Generator 函数内部的每一个状态.</p>
+</blockquote>
+<ul>
+<li>function 关键字和函数名之间有一个星号, 星号写在哪个位置都可以</li>
+<li>函数体内部使用 yield 表达式定义不同的状态</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">helloWorld</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;world&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = <span class="title function_">helloWorld</span>();</span><br><span class="line">gen.<span class="title function_">next</span>();</span><br><span class="line"><span class="comment">// &#123; value: &#x27;hello&#x27;, done: false &#125;</span></span><br><span class="line">gen.<span class="title function_">next</span>();</span><br><span class="line"><span class="comment">// &#123; value: &#x27;world&#x27;, done: false &#125;</span></span><br><span class="line">gen.<span class="title function_">next</span>();</span><br><span class="line"><span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>调用 Generator 函数, 返回一个迭代器对象, 代表 Generator 函数的内部指针, 每次调用迭代器对象的 next 方法, 就会返回一个包含 value 和 done 属性的对象, value 属性表示当前的内部状态(yield 表达式)的值, done 属性表示遍历是否结束的 boolean 值</p>
+<h4 id="yield-表达式"><a href="#yield-表达式" class="headerlink" title="yield 表达式"></a>yield 表达式</h4><blockquote>
+<p>yield 表达式只能用在 Generator 函数里面, 用在其他地方都会报错</p>
+</blockquote>
+<ol>
+<li>遇到 yield 表达式, 就暂停执行后面的操作, 并将 yield 后面紧跟的表达式的值作为返回对象的 value 属性值</li>
+<li>下一次调用 next 方法时, 再继续往下执行, 直到遇到下一个 yield 表达式</li>
+<li>如果没有再遇到新的 yield 表达式, 就一直运行到函数结束, 直到 return 语句为止, 并将 return 语句后面的表达式的值作为返回的对象的 value 属性值</li>
+<li>如果该函数没有 return 语句, 则返回的对象的 value 属性值为 undefined</li>
+</ol>
+<span id="more"></span>
+
+<h4 id="与-Iterator-接口的关系"><a href="#与-Iterator-接口的关系" class="headerlink" title="与 Iterator 接口的关系"></a>与 Iterator 接口的关系</h4><blockquote>
+<p>任意数据结构的 Symbol.iterator 方法,等于该数据结构的迭代器生成函数,调用该方法会返回一个该数据结构的迭代器对象</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myIterator = &#123;</span><br><span class="line">  <span class="comment">// [Symbol.iterator]: function* () &#123;</span></span><br><span class="line">  <span class="comment">// 简洁写法</span></span><br><span class="line">  *[<span class="title class_">Symbol</span>.<span class="property">iterator</span>]() &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">[...myIterator]; <span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="next-方法的参数"><a href="#next-方法的参数" class="headerlink" title="next 方法的参数"></a>next 方法的参数</h4><blockquote>
+<p>next 方法可以带一个参数,该参数被作为上一个 yield 表达式的结果, 第一次使用 next 方法时, 传递参数会被解释器忽略</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">foo</span>(<span class="params">x</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> y = <span class="number">2</span> * (<span class="keyword">yield</span> x + <span class="number">1</span>); <span class="comment">// 第一个 yield 表达式</span></span><br><span class="line">  <span class="keyword">var</span> z = <span class="keyword">yield</span> y / <span class="number">3</span>; <span class="comment">// 第二个 yield 表达式</span></span><br><span class="line">  <span class="keyword">return</span> x + y + z;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="title function_">foo</span>(<span class="number">5</span>);</span><br><span class="line">a.<span class="title function_">next</span>(); <span class="comment">// Object&#123;value:6, done:false&#125;</span></span><br><span class="line">a.<span class="title function_">next</span>(); <span class="comment">// Object&#123;value:NaN, done:false&#125;</span></span><br><span class="line">a.<span class="title function_">next</span>(); <span class="comment">// Object&#123;value:NaN, done:true&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = <span class="title function_">foo</span>(<span class="number">5</span>);</span><br><span class="line">b.<span class="title function_">next</span>(); <span class="comment">// &#123; value:6, done:false &#125;</span></span><br><span class="line">b.<span class="title function_">next</span>(<span class="number">12</span>); <span class="comment">// &#123; value:8, done:false &#125; // 12 作为第一个 yield 表达式的结果</span></span><br><span class="line">b.<span class="title function_">next</span>(<span class="number">13</span>); <span class="comment">// &#123; value:42, done:true &#125; // 13 作为第二个 yield 表达式的结果</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="for…of-循环"><a href="#for…of-循环" class="headerlink" title="for…of 循环"></a>for…of 循环</h4><blockquote>
+<p>for…of 循环可以自动循环 Generator 函数运行时生成的 Iterator 对象, 此时不再需要调用 next 方法, next 返回的对象的 done 属性为 true 时则自动中止循环且不包含该返回对象</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> <span class="title function_">foo</span>()) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(v);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 1 2 3 4</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="throw"><a href="#throw" class="headerlink" title="throw"></a>throw</h4><p>迭代器对象的 throw 方法可以在函数体外抛出错误异常, 在 Generator 函数体内捕获</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span>;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;内部捕获&#x27;</span>, err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> gen = <span class="title function_">foo</span>();</span><br><span class="line">gen.<span class="title function_">next</span>();</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  gen.<span class="keyword">throw</span>(<span class="string">&#x27;err1&#x27;</span>);</span><br><span class="line">  gen.<span class="keyword">throw</span>(<span class="string">&#x27;err2&#x27;</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;外部捕获&#x27;</span>, err);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 内部捕获 err1</span></span><br><span class="line"><span class="comment">// 外部捕获 err2</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="return"><a href="#return" class="headerlink" title="return"></a>return</h4><p>迭代器对象的 return 方法返回给定的值并且中止遍历 Generator 函数, 如果 Generator 函数内部有 try…finally, 并且正在执行 try 内部代码, 则立刻进入 finally 执行直到函数结束</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">numbers</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">5</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">6</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> g = <span class="title function_">numbers</span>();</span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line">g.<span class="keyword">return</span>(<span class="number">7</span>); <span class="comment">// &#123; value: 4, done: false &#125;</span></span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// &#123; value: 5, done: false &#125;</span></span><br><span class="line">g.<span class="title function_">next</span>(); <span class="comment">// &#123; value: 7, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="next-throw-return-的共同点"><a href="#next-throw-return-的共同点" class="headerlink" title="next throw return 的共同点"></a>next throw return 的共同点</h4><blockquote>
+<p>此三个方法本质上是一件事, 共同的作用是让 Generator 函数恢复执行并且使用不同的语句替换 yield 表达式</p>
+</blockquote>
+<ul>
+<li>next 将 yield 表达式替换成一个值</li>
+<li>throw 将 yield 表达式替换成一个 throw 语句</li>
+<li>return 将 yield 表达式替换成一个 return 语句</li>
+</ul>
+<h4 id="yield-表达式-1"><a href="#yield-表达式-1" class="headerlink" title="yield* 表达式"></a>yield* 表达式</h4><p>用于在一个 Generator 函数内执行另外一个 Generator 函数</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">bar</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span>* <span class="title function_">foo</span>();</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;y&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line"><span class="keyword">function</span>* <span class="title function_">bar</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;b&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;y&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line"><span class="keyword">function</span>* <span class="title function_">bar</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;x&#x27;</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> <span class="title function_">foo</span>()) &#123;</span><br><span class="line">    <span class="keyword">yield</span> v;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;y&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> v <span class="keyword">of</span> <span class="title function_">bar</span>()) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(v);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// &quot;x&quot;</span></span><br><span class="line"><span class="comment">// &quot;a&quot;</span></span><br><span class="line"><span class="comment">// &quot;b&quot;</span></span><br><span class="line"><span class="comment">// &quot;y&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="async"><a href="#async" class="headerlink" title="async"></a>async</h3><blockquote>
+<p>ES8 标准, Generator 函数的语法糖</p>
+</blockquote>
+<h4 id="与-Generator-函数的区别"><a href="#与-Generator-函数的区别" class="headerlink" title="与 Generator 函数的区别"></a>与 Generator 函数的区别</h4><h5 id="内置执行器"><a href="#内置执行器" class="headerlink" title="内置执行器"></a>内置执行器</h5><p>Generator 函数的自动执行需要依赖执行器 co 模块, async 函数自带执行器只要调用即可</p>
+<h5 id="更好的语义"><a href="#更好的语义" class="headerlink" title="更好的语义"></a>更好的语义</h5><p>async 表示函数内有异步操作, await 表示后面的表达式需要等待结果</p>
+<h5 id="更广的适用性"><a href="#更广的适用性" class="headerlink" title="更广的适用性"></a>更广的适用性</h5><p>co 模块规定 yield 命令后面只能是 thunk 函数或者 Promise 对象, async 函数的 await 命令后面可以是 Promise 对象和原始类型的值(数值、字符串和布尔值,此时会自动转成 Resolve 的 Promise 对象)</p>
+<h5 id="返回值是-Promise"><a href="#返回值是-Promise" class="headerlink" title="返回值是 Promise"></a>返回值是 Promise</h5><p>async 的返回值是 Promise, 可以使用 then 方法指定下一步的操作</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">  <span class="keyword">await</span> <span class="string">&#x27;2&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="async-的实现原理"><a href="#async-的实现原理" class="headerlink" title="async 的实现原理"></a>async 的实现原理</h4><p>将 Generator 函数和自动执行器包装在一个函数内</p>
+<h4 id="await"><a href="#await" class="headerlink" title="await"></a>await</h4><h5 id="Promise-对象"><a href="#Promise-对象" class="headerlink" title="Promise 对象"></a>Promise 对象</h5><p>返回该对象的结果</p>
+<h5 id="定义了-then-方法的对象"><a href="#定义了-then-方法的对象" class="headerlink" title="定义了 then 方法的对象"></a>定义了 then 方法的对象</h5><p>await 将当作 Promise 对象执行</p>
+<h5 id="reject-状态"><a href="#reject-状态" class="headerlink" title="reject 状态"></a>reject 状态</h5><p>如果 Promise 对象变成 reject 状态,则整个 async 函数都会中断执行</p>
+]]></content>
+      <categories>
+        <category>ES</category>
+      </categories>
+      <tags>
+        <tag>ES6</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTTP</title>
+    <url>/2021/07/1ddfb1010b19/</url>
+    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
+<li><p>100 Continue 请求继续</p>
+</li>
+<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
+</li>
+<li><p>102 Processing 继续执行</p>
+</li>
+<li><p>200 OK 请求成功</p>
+</li>
+<li><p>204 No Content 没有响应实体</p>
+</li>
+<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
+</li>
+<li><p>301 Moved Permanently 资源永久移动</p>
+</li>
+<li><p>302 Move Temporarily 资源临时移动</p>
+</li>
+<li><p>303 See Other 参见其他</p>
+</li>
+<li><p>304 Not Modified 资源没有改动</p>
+</li>
+<li><p>305 Use Proxy 使用代理</p>
+</li>
+<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
+</li>
+<li><p>400 Bad Request 错误的请求</p>
+</li>
+<li><p>401 Unauthorized 需要验证</p>
+</li>
+<li><p>403 Forbidden 服务器拒绝执行</p>
+</li>
+<li><p>404 Not Found 资源未找到</p>
+</li>
+<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
+</li>
+<li><p>408 Request Timeout 请求超时</p>
+</li>
+<li><p>413 Request Entity Too Large 请求体超长</p>
+</li>
+<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
+</li>
+<li><p>500 Internal Server Error 服务器错误</p>
+</li>
+<li><p>502 Bad Gateway 网关错误</p>
+</li>
+<li><p>504 Gateway Timeout 网关超时</p>
+</li>
+<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
+</li>
+</ul>
+<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
+<li>%21 !</li>
+<li>%22 “</li>
+<li>%23 #</li>
+<li>%24 $</li>
+<li>%25 %</li>
+<li>%26 &amp;</li>
+<li>%27 ‘</li>
+<li>%28 (</li>
+<li>%29 )</li>
+<li>%2F /</li>
+<li>%30-9 0..9</li>
+<li>%3A :</li>
+<li>%3B ;</li>
+<li>%3C &lt;</li>
+<li>%3D =</li>
+<li>%3E &gt;</li>
+<li>%3F ?</li>
+<li>%40 @</li>
+<li>%41 A</li>
+</ul>
+]]></content>
+      <categories>
+        <category>network</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JSSDK</title>
+    <url>/2022/05/2261dfd57ebf/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
+<li>转发</li>
+<li>转发给客户</li>
+<li>群发到客户群</li>
+<li>发表到客户的朋友圈</li>
+<li>分享到同事吧</li>
+<li>分享到微信</li>
+<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>shareAppMessage 自定义转发到会话</li>
+<li>shareWechatMessage 自定义转发到微信</li>
+<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
+<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>wx</category>
+      </categories>
+      <tags>
+        <tag>wx</tag>
+        <tag>jweixin</tag>
+        <tag>JSSDK</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git命令配置篇</title>
     <url>/2021/04/00ea2bbb2db0/</url>
     <content><![CDATA[<p><a href="https://git-scm.com/"><img data-src="/images/git-flow-1.jpg" alt="概念图"></a></p>
@@ -820,142 +956,6 @@
       </categories>
       <tags>
         <tag>API</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HTTP</title>
-    <url>/2021/07/1ddfb1010b19/</url>
-    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
-<li><p>100 Continue 请求继续</p>
-</li>
-<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
-</li>
-<li><p>102 Processing 继续执行</p>
-</li>
-<li><p>200 OK 请求成功</p>
-</li>
-<li><p>204 No Content 没有响应实体</p>
-</li>
-<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
-</li>
-<li><p>301 Moved Permanently 资源永久移动</p>
-</li>
-<li><p>302 Move Temporarily 资源临时移动</p>
-</li>
-<li><p>303 See Other 参见其他</p>
-</li>
-<li><p>304 Not Modified 资源没有改动</p>
-</li>
-<li><p>305 Use Proxy 使用代理</p>
-</li>
-<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
-</li>
-<li><p>400 Bad Request 错误的请求</p>
-</li>
-<li><p>401 Unauthorized 需要验证</p>
-</li>
-<li><p>403 Forbidden 服务器拒绝执行</p>
-</li>
-<li><p>404 Not Found 资源未找到</p>
-</li>
-<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
-</li>
-<li><p>408 Request Timeout 请求超时</p>
-</li>
-<li><p>413 Request Entity Too Large 请求体超长</p>
-</li>
-<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
-</li>
-<li><p>500 Internal Server Error 服务器错误</p>
-</li>
-<li><p>502 Bad Gateway 网关错误</p>
-</li>
-<li><p>504 Gateway Timeout 网关超时</p>
-</li>
-<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
-</li>
-</ul>
-<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
-<li>%21 !</li>
-<li>%22 “</li>
-<li>%23 #</li>
-<li>%24 $</li>
-<li>%25 %</li>
-<li>%26 &amp;</li>
-<li>%27 ‘</li>
-<li>%28 (</li>
-<li>%29 )</li>
-<li>%2F /</li>
-<li>%30-9 0..9</li>
-<li>%3A :</li>
-<li>%3B ;</li>
-<li>%3C &lt;</li>
-<li>%3D =</li>
-<li>%3E &gt;</li>
-<li>%3F ?</li>
-<li>%40 @</li>
-<li>%41 A</li>
-</ul>
-]]></content>
-      <categories>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JSSDK</title>
-    <url>/2022/05/2261dfd57ebf/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
-<li>转发</li>
-<li>转发给客户</li>
-<li>群发到客户群</li>
-<li>发表到客户的朋友圈</li>
-<li>分享到同事吧</li>
-<li>分享到微信</li>
-<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
-</ul>
-<span id="more"></span>
-
-<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>shareAppMessage 自定义转发到会话</li>
-<li>shareWechatMessage 自定义转发到微信</li>
-<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
-<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>wx</category>
-      </categories>
-      <tags>
-        <tag>wx</tag>
-        <tag>jweixin</tag>
-        <tag>JSSDK</tag>
       </tags>
   </entry>
   <entry>
@@ -1784,6 +1784,27 @@
       </tags>
   </entry>
   <entry>
+    <title>Hello World</title>
+    <url>/2021/04/7df03390b905/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Vue3-migration</title>
     <url>/2021/08/9fc9b29dd769/</url>
     <content><![CDATA[<h3 id="全局-API"><a href="#全局-API" class="headerlink" title="全局 API"></a>全局 API</h3><h4 id="全局-API-应用实例"><a href="#全局-API-应用实例" class="headerlink" title="全局 API 应用实例"></a>全局 API 应用实例</h4><ul>
@@ -2008,9 +2029,7 @@
   <entry>
     <title>linux工具</title>
     <url>/2022/05/bc4d38208f0f/</url>
-    <content><![CDATA[<h3 id="命令行输出内容变身"><a href="#命令行输出内容变身" class="headerlink" title="命令行输出内容变身"></a>命令行输出内容变身</h3><blockquote>
-<p>格式 \033[显示方式;前景色;背景色\m …… \033[0m</p>
-</blockquote>
+    <content><![CDATA[<h3 id="命令行输出内容变身"><a href="#命令行输出内容变身" class="headerlink" title="命令行输出内容变身"></a>命令行输出内容变身</h3><p>格式: \033[显示方式;前景色;背景色m …… \033[0m</p>
 <ul>
 <li>\033[ 固定格式</li>
 <li>\033[0m 非必需, 如果省略表示后面输出内容的样式都会应用当前设置的样式</li>
@@ -2351,27 +2370,6 @@
         <tag>linux</tag>
         <tag>shell</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2021/04/7df03390b905/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
   </entry>
   <entry>
     <title>nginx</title>
