@@ -51,6 +51,8 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
   - \-x 从标准输入中读取最后一个参数
   - \-\-eval \<file\> 使用 EVAL 命令解析 lua 脚本
   - \-\-function-rdb \<filename\> 从现有服务器中提取函数(不包含 key)
+  - \-\-bigkeys 查找大键
+  - \-\-stat 监控当前 redis 的使用情况
 
 ```shell
 # 加载 lua 脚本注册的 redis 函数
@@ -169,7 +171,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
 - KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array), `KEYS *` 返回所有 key
 - DEL key [key...] 阻塞删除 key 并返回成功删除 key 的数量
-- UNLINK key [key ...] 非阻塞从键空间中取消键指定 key 的链接(在其他线程中执行实际的内存回收), 并返回成功取消 key 的数量, 如果 key 不存在则忽略
+- UNLINK key [key ...] 非阻塞从键空间中取消指定 key 的链接(在其他线程中执行实际的内存回收), 并返回成功取消 key 的数量, 如果 key 不存在则忽略
 
 - RENAME key newKey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在则覆盖
 - RENAMENX key newkey 修改 key 的名称, 如果指定 key 不存在返回 错误, 如果 newkey 已存在不执行任何操作返回 0, 否则返回 1
