@@ -48,14 +48,20 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 - redis-check-rdb 检查 rdb 备份文件
 
 - redis-cli --user \<username\> --pass \<password\> 使用用户名密码连接 redis
+  - \-r 指定运行命令的次数
+  - \-i 设置不同命令调用之间的延迟(以秒为单位)
   - \-x 从标准输入中读取最后一个参数
-  - \-\-eval \<file\> 使用 EVAL 命令解析 lua 脚本
-  - \-\-function-rdb \<filename\> 从现有服务器中提取函数(不包含 key)
   - \-\-bigkeys 查找大键
   - \-\-stat 监控当前 redis 的使用情况
+  - \-\-eval \<file\> 使用 EVAL 命令解析 lua 脚本
+  - \-\-function-rdb \<filename\> 从现有服务器中提取函数(不包含 key)
 
 ```shell
 # 加载 lua 脚本注册的 redis 函数
+# 第一种方式
+[root@centos7 workspace]# redis-cli -x FUNCTION LOAD < ./mylib.lua
+
+# 第二种方式
 [root@centos7 workspace]# cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
 ```
 
@@ -539,6 +545,9 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
          6) (empty array)
 ```
 
+- FCALL function numkeys [key [key ...]] [arg [arg ...]] 调用注册的函数
+- FCALL_RO function numkeys [key [key ...]] [arg [arg ...]] 调用注册的只读函数
+
 ##### 加载库和函数
 
 每个 Redis 函数都属于一个加载到 Redis 的库, 使用命令 `FUNCTION LOAD` 将库加载到数据库, 库必须以 shebang 语句开头 `#!<engine name> name=<library name>`
@@ -552,22 +561,33 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 ##### 函数注册调用
 
 - redis.register_function(name, callback, flags, description) 注册函数 <em id="redis.register_function"></em> <!-- markdownlint-disable-line -->
+  - name 注册的函数名
+  - callback 注册的函数
   - flags
     - no-writes 标识脚本只能读取但不能写入
     - allow-oom 标识允许脚本在服务器内存不足(OOM)时执行
     - allow-stable
     - no-cluster 标识脚本在 Redis 集群模式下返回错误, 防止对集群中的节点执行脚本
     - allow-cross-slot-keys 允许脚本从多个 slot 访问密钥
+  - description 函数描述
 
 ```shell
-127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\n redis.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
-```
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nredis.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
 
-- FCALL function numkeys [key [key ...]] [arg [arg ...]] 调用注册的函数
-- FCALL_RO function numkeys [key [key ...]] [arg [arg ...]] 调用注册的只读函数
+127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nredis.register_function('knockknock', function() return 'Who\\'s there?' end)"
+"mylib"
+127.0.0.1:6379> FCALL knockknock 0
+"Who's there?"
+```
 
 ```lua
 #!lua name=mylib
+--[[redis.register_function{
+  function_name='knockknock',
+  callback=function() return 'Who\'s there?' end,
+  flags={ },
+  description='Does nothing'
+}]]--
 --[[redis.register_function(
    'knockknock',
    function() return 'Who\'s there?' end
@@ -601,14 +621,11 @@ redis.register_function{
    function_name='my_hgetall_ro',
    callback=my_hgetall,
    flags={'no-writes'}
+   description='read-only hash getall command'
 }
 ```
 
 ```shell
-127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nredis.register_function('knockknock', function() return 'Who\\'s there?' end)"
-"mylib"
-127.0.0.1:6379> FCALL knockknock 0
-"Who's there?"
 [root@centos7 workspace]# cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
 "mylib"
 127.0.0.1:6379> FCALL my_hset 1 hash:zhang name "zhangsan" age 18 addr "beijing"
@@ -626,6 +643,7 @@ redis.register_function{
 4) "beijing"
 5) "name"
 6) "zhangsan"
+
 # FCALL 调用只读函数 my_hgetall_ro
 127.0.0.1:6379> FCALL my_hgetall_ro 1 hash:zhang
 1) "age"
@@ -634,6 +652,7 @@ redis.register_function{
 4) "beijing"
 5) "name"
 6) "zhangsan"
+
 # FCALL_RO 调用普通函数 my_hgetall
 127.0.0.1:6379> FCALL_RO my_hgetall 1 hash:zhang
 (error) ERR Can not execute a script with write flag using *_ro command.
@@ -665,7 +684,9 @@ Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它�
   - numkeys 指定后续的参数有几个 key
   - key 要操作的键的数量, 在 Lua 脚本中通过 `KEYS[1]`, `KEYS[2]` 获取
   - arg 参数, 在 Lua 脚本中通过 `ARGV[1]`, `ARGV[2]` 获取
+- EVAL_RO script numkeys [key [key ...]] [arg [arg ...]] 只读版本的 EVAL 命令, Redis 7.0 支持
 - EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行脚本
+- EVALSHA_RO sha1 numkeys [key [key ...]] [arg [arg ...]] 只读版本的 EVALSHA 命令, Redis 7.0 支持
 
 ```shell
 127.0.0.1:6379> EVAL "return 10" 0
