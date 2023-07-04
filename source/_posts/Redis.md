@@ -176,6 +176,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
 - EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
 - KEYS pattern 查找给定模式(pattern)的 key, 返回列表, 未找到返回 (empty array), `KEYS *` 返回所有 key
+
 - DEL key [key...] 阻塞删除 key 并返回成功删除 key 的数量
 - UNLINK key [key ...] 非阻塞从键空间中取消指定 key 的链接(在其他线程中执行实际的内存回收), 并返回成功取消 key 的数量, 如果 key 不存在则忽略
 
@@ -238,8 +239,8 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - EXPIRE key seconds [NX|XX|GT|LT] 为指定 key 设置过期时间(单位秒), 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
 - EXPIREAT key unix-time-seconds [NX|XX|GT|LT] 为指定 key 设置过期使用 unix 时间戳, 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
 - PEXPIRE key milliseconds [NX|XX|GT|LT] 为指定 key 设置过期时间(单位毫秒), 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
-- EXPIRETIME key 返回指定 key 将过期的绝对 Unix 时间戳(以秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, 7.0.0 支持
 - PEXPIREAT key unix-time-milliseconds [NX|XX|GT|LT] 为指定 key 设置过期时间使用 unix 时间戳, 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
+- EXPIRETIME key 返回指定 key 将过期的绝对 Unix 时间戳(以秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, 7.0.0 支持
 - PEXPIRETIME key 返回指定 key 将过期的绝对 Unix 时间戳(以毫秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, 7.0.0 支持
   - NX 以上命令该参数作用相同, 仅当指定 key 没有过期时间时
   - XX 以上命令该参数作用相同, 仅当指定 key 存在过期时间时
@@ -278,7 +279,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 #### 安全认证
 
-- AUTH [username] password 对当前连接的认证
+- AUTH [username] password 对当前连接的认证, 或者切换用户
 
 ### 配置文件配置项
 
@@ -362,15 +363,77 @@ Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消
 - 发布者: 无需独占链接, 可以在 publish 发布消息的同时, 使用同一个链接进行其他操作
 - 订阅者: 需要独占链接, 在 subscribe 期间, 以阻塞的方式等待消息
 
+#### 发布消息
+
+- PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者
+- SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持
+
 #### 普通订阅
 
 - SUBSCRIBE channel [channel ...] 订阅指定频道立即进入阻塞状态等待接收消息
 - UNSUBSCRIBE [channel [channel ...]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅
 
-#### 碎片频道订阅
+```shell
+# 1
+127.0.0.1:6379> SUBSCRIBE first second
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "first"
+3) (integer) 1
+1) "subscribe"
+2) "second"
+3) (integer) 2
+# 2
+127.0.0.1:6379> SUBSCRIBE first third
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "first"
+3) (integer) 1
+1) "subscribe"
+2) "third"
+3) (integer) 2
+# 3
+127.0.0.1:6379> PUBSUB CHANNELS
+1) "third"
+2) "first"
+3) "second"
 
-- SSUBSCRIBE shardchannel [shardchannel ...] 订阅指定的碎片频道, 7.0.0 支持
-- SUNSUBSCRIBE [shardchannel [shardchannel ...]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持
+# 3
+127.0.0.1:6379> PUBLISH first 'hello first'
+(integer) 2
+# 1
+127.0.0.1:6379> SUBSCRIBE first second
+...
+1) "message"
+2) "first"
+3) "hello first"
+# 2
+127.0.0.1:6379> SUBSCRIBE first third
+...
+1) "message"
+2) "first"
+3) "hello first"
+
+# 3
+127.0.0.1:6379> PUBLISH second 'hello second'
+(integer) 1
+# 1
+127.0.0.1:6379> SUBSCRIBE first second
+...
+1) "message"
+2) "second"
+3) "hello second"
+
+# 3
+127.0.0.1:6379> PUBLISH third 'hello third'
+(integer) 1
+# 2
+127.0.0.1:6379> SUBSCRIBE first third
+...
+1) "message"
+2) "third"
+3) "hello third"
+```
 
 #### 模式订阅
 
@@ -378,50 +441,93 @@ Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消
   - pattern 可以使用正则表达式匹配多个频道
 - PUNSUBSCRIBE [pattern [pattern ...]] 根据给定模式取消客户端订阅, 如果未指定则取消所有模式订阅
 
-#### 发布消息
-
-- PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者
-- SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持
-
 ```shell
-# 订阅频道
-127.0.0.1:6379> PSUBSCRIBE h?llo
+# 1
+127.0.0.1:6379> PSUBSCRIBE __key*__:*
 Reading messages... (press Ctrl-C to quit)
 1) "psubscribe"
-2) "h?llo"
+2) "__key*__:*"
 3) (integer) 1
-# 接收到的消息
-1) "pmessage"
-2) "h?llo"
-3) "hello"
-4) "hello,world"
-# 接收到的消息
-1) "pmessage"
-2) "h?llo"
-3) "hallo"
-4) "hallo,world"
-# 发布消息到 hello 和 hallo 频道
-127.0.0.1:6379> PUBLISH hello hello,world
-(integer) 0
-127.0.0.1:6379> PUBLISH hello hello,world
+# 2
+127.0.0.1:6379> PSUBSCRIBE __key*__:*
+Reading messages... (press Ctrl-C to quit)
+1) "psubscribe"
+2) "__key*__:*"
+3) (integer) 1
+# 3
+127.0.0.1:6379> PUBSUB NUMPAT
+(integer) 1
+
+# 3
+127.0.0.1:6379> PUBLISH __key@__:foo 'hello key at foo'
 (integer) 2
-127.0.0.1:6379> PUBLISH hallo hallo,world
+# 1
+127.0.0.1:6379> PSUBSCRIBE __key*__:*
+...
+1) "pmessage"
+2) "__key*__:*"
+3) "__key@__:foo"
+4) "hello key at foo"
+# 2
+127.0.0.1:6379> PSUBSCRIBE __key*__:*
+...
+1) "pmessage"
+2) "__key*__:*"
+3) "__key@__:foo"
+4) "hello key at foo"
+
+# 3
+127.0.0.1:6379> PUBLISH __key@__:bar 'hello key at bar'
 (integer) 2
+# 1
+127.0.0.1:6379> PSUBSCRIBE __key*__:*
+...
+1) "pmessage"
+2) "__key*__:*"
+3) "__key@__:bar"
+4) "hello key at bar"
+# 2
+127.0.0.1:6379> PSUBSCRIBE __key*__:*
+...
+1) "pmessage"
+2) "__key*__:*"
+3) "__key@__:bar"
+4) "hello key at bar"
 ```
+
+#### 碎片频道订阅
+
+- SSUBSCRIBE shardchannel [shardchannel ...] 订阅指定的碎片频道, 7.0.0 支持
+- SUNSUBSCRIBE [shardchannel [shardchannel ...]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持
 
 #### 统计订阅信息
 
-- PUBSUB CHANNELS [pattern] 返回当前活跃频道列表(不包含使用模式订阅的频道)
-
 ```shell
-127.0.0.1:6379> PUBSUB CHANNELS
-1) "conn"
+127.0.0.1:6379> PUBSUB HELP
+ 1) PUBSUB <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
+ 2) CHANNELS [<pattern>]
+ 3)     Return the currently active channels matching a <pattern> (default: '*').
+ 4) NUMPAT
+ 5)     Return number of subscriptions to patterns.
+ 6) NUMSUB [<channel> ...]
+ 7)     Return the number of subscribers for the specified channels, excluding
+ 8)     pattern subscriptions(default: no channels).
+ 9) SHARDCHANNELS [<pattern>]
+10)     Return the currently active shard level channels matching a <pattern> (default: '*').
+11) SHARDNUMSUB [<shardchannel> ...]
+12)     Return the number of subscribers for the specified shard level channel(s)
+13) HELP
+14)     Prints this help.
 ```
 
+- PUBSUB CHANNELS [pattern] 返回当前活跃频道列表(不包含使用模式订阅的频道)
 - PUBSUB NUMSUB [channel [channel ...]] 返回订阅者的数量(不包含使用模式订阅的频道)
   - 如果不指定 channel 将返回 (empty array)
 
 ```shell
+127.0.0.1:6379> PUBSUB CHANNELS
+1) "conn"
+
 127.0.0.1:6379> PUBSUB NUMSUB hello conn
 1) "hello"
 2) (integer) 1
