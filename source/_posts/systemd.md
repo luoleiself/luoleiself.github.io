@@ -468,6 +468,7 @@ Startup finished in 492ms (kernel) + 3.958s (initrd) + 38.325s (userspace) = 42.
 
 ```shell
 [root@localhost ~]# systemd-analyze blame
+    ...    
     3.804s docker.service
     3.677s dev-mapper-centos\x2droot.device
     3.581s NetworkManager-wait-online.service
@@ -491,6 +492,7 @@ Startup finished in 492ms (kernel) + 3.958s (initrd) + 38.325s (userspace) = 42.
      407ms sshd.service
      396ms auditd.service
      392ms systemd-sysctl.service
+    ...
 ```
 
 - critical-chain 显示瀑布状的启动过程流
@@ -646,8 +648,8 @@ systemd 系统控制和服务管理工具的主命令, systemd 开启和监督�
 
 - Alias 为当前 Unit 定义一个用于启动的别名
 - Also 当前 Unit 被激活时, 同时被激活的其他 Unit
-- RequiredBy 当前 Unit 被允许运行需要的一系列依赖 Unit, RequiredBy 列表从 Require 获得依赖信息
 - DefaultInstance 实例单元的限制, 这个选项指定如果 Unit 被允许运行时的默认实例
+- RequiredBy 当前 Unit 被允许运行需要的一系列依赖 Unit, RequiredBy 列表从 Require 获得依赖信息
 - WantedBy 表示该服务所在的 target, target 表示一组服务, 大多的服务都附在 multi-user.target 组, 这个组的所有服务都将开机启动
 
 ##### Service
@@ -661,12 +663,15 @@ systemd 系统控制和服务管理工具的主命令, systemd 开启和监督�
   - dbus 与 simple 类似, 但会等待 D-Bus 信号后启动
   - notify 与 simple 类似, 启动结束后会发出通知信号, Systemd 再启动其他服务
   - idle 与 simple 类似, 等待其他任务都执行完成, 才会启动该服务
-- ExecStart 定义启动进程时执行的命令
-- ExecReload 定义重启服务时执行的命令
-- ExecStop 定义停止服务时执行的命令
-- ExecStartPre 定义启动服务之前执行的命令
-- ExecStartPost 定义启动服务之后执行的命令
-- ExecStopPost 定义停止服务之后执行的命令
+
+- ExecStart 定义启动进程时执行的命令或脚本
+- ExecStartPre 定义启动服务之前执行的命令或脚本
+- ExecStartPost 定义启动服务之后执行的命令或脚本
+- ExecStop 定义停止服务时执行的命令或脚本
+- ExecStopPost 定义停止服务之后执行的命令或脚本
+- RestartSec 定义 Systemd 重启服务之前等待的秒数
+- TimeoutSec 定义 Systemd 停止服务之前等待的秒数
+- ExecReload 定义重启服务时执行的命令或脚本
 - KillMode 定义 Systemd 如何停止服务
   - control-group 默认值, 当前控制组内的所有子进程都会被杀掉
   - process 只杀主进程
@@ -680,12 +685,19 @@ systemd 系统控制和服务管理工具的主命令, systemd 开启和监督�
   - on-abort 只有在收到没有捕捉到的信号终止时才会重启
   - on-watchdog 超时退出才会重启
   - always 不管什么原因总是重启
-- RestartSec 定义 Systemd 重启服务之前等待的秒数
-- TimeoutSec 定义 Systemd 停止服务之前等待的秒数
-- user 定义服务的用户名
-- WorkingDirectory 定义服务的安装目录
+- TimeoutStartSec 设置该服务允许的最大启动时长, 设置为0 表示永不超时
+- TimeoutStopSec 设置该服务允许的最大停止时长, 设置为0 表示永不超时
+
+- User 定义服务的用户名
+- Group 运行服务的用户组, 会影响服务对本地文件系统的访问权限
+- PIDFile 定义守护进程的 PID 文件, 必须为绝对路径
+- Nice 定义服务的进程优先级,值越小优先级越高, 默认为0, -20 ~ 19
+- Environment 为服务添加环境变量
 - EnvironmentFile 定义环境变量配置文件
 - PrivateTmp 定义是否分配独立空间
+
+- RootDirectory 配置服务进程的根目录, 服务将无法访问指定目录以外的任何文件
+- WorkingDirectory 定义服务的安装目录
 
 ##### Timer
 
