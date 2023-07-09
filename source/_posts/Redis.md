@@ -156,6 +156,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - everything 返回所有信息(包含 all 和 modules)
 
 - help command 显示命令的帮助信息
+  - @[string] 显示当前数据类型的帮助信息
 - ECHO message 打印信息
 
 - SAVE 保存数据到本地磁盘
