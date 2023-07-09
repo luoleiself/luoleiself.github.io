@@ -206,7 +206,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 ##### 范围搜索
 
-- GEOSEARCH key \<FROMMEMBER member|FROMLONLAT longitude latitude\> \<BYRADIUS radius \<M|KM|FT|MI\>|BYBOX width height \<M|KM|FT|MI\>\> [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH] 返回集合中符合属于给定形状区域的边界内的成员的信息, 默认返回所有的匹配项且没有排序, 如果集合为空或者不存在返回 (empty array), 6.2.0 支持
+- GEOSEARCH key \<FROMMEMBER member|FROMLONLAT longitude latitude\> \<BYRADIUS radius \<M|KM|FT|MI\>|BYBOX width height \<M|KM|FT|MI\>\> [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH] 返回集合中符合属于给定形状区域的边界内的成员的信息, 默认返回所有的匹配项且没有排序, 如果集合为空或者不存在返回 (empty array), Redis 6.2.0 支持
 
   - FROMMEMBER 使用给定的已存在的成员进行搜索, 如果指定成员不属于非空集合则报错 ERR could not decode requested zset member
   - FROMLONLAT 使用给定的 longitude 和 latitude 搜索, 如果指定的经纬度超出范围则报错 ERR invalid longitude,latitude pair
@@ -283,7 +283,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 ##### 范围搜索存储
 
-- GEOSEARCHSTORE destination source \<FROMMEMBER member|FROMLONLAT longitude latitude\> \<BYRADIUS radius \<M|KM|FT|MI\>|BYBOX width height \<M|KM|FT|MI\>\> [ASC|DESC] [COUNT count [ANY]] [STOREDIST] 命令同 `GEOSEARCH`, 区别是将结果存储到指定排序集合并返回指定集合的数量, 默认存储匹配项的名称和匹配项 `GEOHASH` 的无符号整数, 如果指定集合为空或者不存在则新建, 如果指定集合已存在则覆盖指定集合, 6.2.0 支持
+- GEOSEARCHSTORE destination source \<FROMMEMBER member|FROMLONLAT longitude latitude\> \<BYRADIUS radius \<M|KM|FT|MI\>|BYBOX width height \<M|KM|FT|MI\>\> [ASC|DESC] [COUNT count [ANY]] [STOREDIST] 命令同 `GEOSEARCH`, 区别是将结果存储到指定排序集合并返回指定集合的数量, 默认存储匹配项的名称和匹配项 `GEOHASH` 的无符号整数, 如果指定集合为空或者不存在则新建, 如果指定集合已存在则覆盖指定集合, Redis 6.2.0 支持
   - 部分参数同 `GEOSEARCH`
   - STOREDIST 返回匹配项距离中心点的距离
 
@@ -336,7 +336,7 @@ Redis Bitmaps 是字符串数据类型的一种扩展, 可以将字符串视为�
 > 集合成员对应于整数 0-N 的情况的有效集合表示
 > 对象权限, 其中每一位表示一个特定的权限, 类似于文件系统存储权限的方式
 
-#### 操作值
+#### 位存取 
 
 - SETBIT key offset value 设置指定偏移量的值 0 或 1, 当 key 的指定偏移量的值从 1 修改为 0 时返回 1, 其他情况返回 0
 
@@ -366,6 +366,8 @@ Redis Bitmaps 是字符串数据类型的一种扩展, 可以将字符串视为�
 127.0.0.1:6379> GETBIT user 1
 (integer) 0
 ```
+
+#### 位统计 
 
 - BITCOUNT key [start end [BYTE|BIT]] 统计 key 中状态为 1 的下标数量, 默认以 BYTE 为单位, 如果 key 不存在或者
   - BYTE 以字节(8bit)为单位, 默认
