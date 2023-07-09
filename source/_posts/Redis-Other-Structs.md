@@ -81,9 +81,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 - 有效经度在 -180 度到 180 度
 - 有效维度在 -85.05112878 度到 85.05112878 度
 
-#### 成员操作
-
-##### 添加成员
+#### 添加成员
 
 - GEOADD key [NX|XX] [CH] longitude latitude member [longitude latitude member ...] 添加地理位置信息(经度、纬度、名称)到指定集合中, 通常只返回添加的新成员的数量
   - NX 仅添加新成员, 不再更新已存在的成员
@@ -144,9 +142,9 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 12) "4069885370671010"
 ```
 
-##### 经纬度
+#### 经纬度
 
-###### 获取经纬度
+##### 获取经纬度
 
 - GEOPOS key member [member ...] 返回指定成员的经纬度信息, 如果集合为空或者不存在或者指定成员不存在则返回 \<nil\>
 
@@ -165,7 +163,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
    2) "31.23170490709807012"
 ```
 
-###### 获取经纬度 hash
+##### 获取经纬度 hash
 
 - GEOHASH key member [member ...] 返回指定成员的经纬度信息的 hash 编码后的字符串表示, 如果集合为空或者不存在或者指定成员不存在则返回 \<nil\>
 
@@ -179,7 +177,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 3) "w6zzsxczvm0"
 ```
 
-##### 获取指定成员间距离
+#### 获取指定成员间距离
 
 - GEODIST key member1 member2 [M|KM|FT|MI] 返回集合指定成员之间的距离, 默认距离单位 M, 如果集合为空或者不存在或者指定成员不存在则返回 \<nil\>
   - M 米
@@ -204,7 +202,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 "2596.1770"
 ```
 
-##### 范围搜索
+#### 范围搜索
 
 - GEOSEARCH key \<FROMMEMBER member|FROMLONLAT longitude latitude\> \<BYRADIUS radius \<M|KM|FT|MI\>|BYBOX width height \<M|KM|FT|MI\>\> [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH] 返回集合中符合属于给定形状区域的边界内的成员的信息, 默认返回所有的匹配项且没有排序, 如果集合为空或者不存在返回 (empty array), Redis 6.2.0 支持
 
@@ -281,7 +279,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 #       2) "31.23170490709807012"
 ```
 
-##### 范围搜索存储
+#### 范围搜索存储
 
 - GEOSEARCHSTORE destination source \<FROMMEMBER member|FROMLONLAT longitude latitude\> \<BYRADIUS radius \<M|KM|FT|MI\>|BYBOX width height \<M|KM|FT|MI\>\> [ASC|DESC] [COUNT count [ANY]] [STOREDIST] 命令同 `GEOSEARCH`, 区别是将结果存储到指定排序集合并返回指定集合的数量, 默认存储匹配项的名称和匹配项 `GEOHASH` 的无符号整数, 如果指定集合为空或者不存在则新建, 如果指定集合已存在则覆盖指定集合, Redis 6.2.0 支持
   - 部分参数同 `GEOSEARCH`
