@@ -242,28 +242,20 @@ hash-max-listpack-entries 512
 hash-max-listpack-value 64
 ```
 
-#### 哈希表存取
+#### 哈希存取
 
-- HEXISTS key field 查看哈希表中是否存在 field, 1 表示存在, 0 表示不存在或者哈希表不存在
-
-- HDEL key field [field ...] 批量删除多个 field 并返回删除字段成功的数量, 0 表示 field 未找到或者哈希表不存在
-
+- HSETNX key field value 将键值对存入到哈希表中且当指定 field 不存在时, 1 成功, 0 失败(字段已存在)
 - HSET key field value [field value ...] 同时将多个键值对存入到哈希表中并返回新添加的数量, 如果 field 已存在则修改 field 的值
+- HMSET key field value [field value ...] 批量向哈希表中存入多个键值对, 如果 field 存在则修改 field 的值, 执行成功返回 ok
 
 ```shell
 # 成功添加一个 field 并修改已存在的 field
 127.0.0.1:6379> HSET runoob name "new-redis" age 19 addr "beijing" sex "男"
 (integer) 3
-```
 
-- HMSET key field value [field value ...] 批量向哈希表中存入多个键值对, 如果 field 存在则修改 field 的值, 执行成功返回 ok
-
-```shell
 127.0.0.1:6379> HMSET runoob name redis newname "new-redis" age 18 addr "beijing" sex "男"
 OK
 ```
-
-- HSETNX key field value 将键值对存入到哈希表中且当指定 field 不存在时, 1 成功, 0 失败(字段已存在)
 
 - HGET key field 获取哈希表指定 field 的值, field 或者 哈希表不存在返回 \<nil\>
 - HMGET key field [field ...] 批量获取哈希表中指定 field 的值, 哈希表或者指定字段不存在返回 \<nil\>
@@ -285,7 +277,13 @@ OK
 6) "beijing"
 ```
 
-#### 获取哈希表的键、值、长度
+#### 哈希删除字段
+
+- HEXISTS key field 查看哈希表中是否存在 field, 1 表示存在, 0 表示不存在或者哈希表不存在
+
+- HDEL key field [field ...] 批量删除多个 field 并返回删除字段成功的数量, 0 表示 field 未找到或者哈希表不存在
+
+#### 获取哈希键、值、长度
 
 - HLEN key 获取哈希表中字段的数量, 0 表示哈希表为空或者不存在
 - HSTRLEN key field 返回哈希表中指定 field 的值的字符串长度, 哈希表或者指定字段不存在返回 0
@@ -311,12 +309,12 @@ OK
 3) "beijing"
 ```
 
-#### 哈希表字段数值操作
+#### 哈希字段数值操作
 
 - HINCRBY key field increment 为哈希表中指定的 field 的数字值加上给定的增量值(increment)并返回修改后的值, 非数字值报错, 哈希表不存在新建, 字段不存在从 0 开始计算
 - HINCRBYFLOAT key field increment 为哈希表中指定的 field 的数字值加上给定的浮点数增量值(increment)并返回修改后的值, 非数字值报错, 哈希表不存在新建, 字段不存在从 0 开始计算
 
-#### 迭代哈希表
+#### 迭代哈希
 
 - HSCAN key cursor [MATCH pattern] [COUNT count] 使用模式(pattern)匹配迭代哈希表中的键值对
   - cursor 游标
@@ -332,7 +330,7 @@ OK
    4) "new-redis"
 ```
 
-#### 获取哈希表随机字段
+#### 随机获取哈希字段
 
 - HRANDFIELD key [count [WITHVALUES]] 从哈希表中获取一个或多个随机字段, 哈希表为空返回 \<nil\>
   - count 指定返回随机的字段的数量, 默认为 1

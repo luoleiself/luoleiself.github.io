@@ -34,7 +34,7 @@ set-max-intset-entries 512
 ##### 是否包含成员
 
 - SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在
-- SMISMEMBER key member [member ...] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, 6.2.0 支持
+- SMISMEMBER key member [member ...] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, Redis 6.2.0 支持
 
 ```shell
 127.0.0.1:6379> KEYS *  # 查看当前数据库中的 key
@@ -91,9 +91,12 @@ set-max-intset-entries 512
 (empty array)
 ```
 
-##### 移除成员添加到其他集合
+##### 移除指定成员并添加到其他集合
 
-- SMOVE source destination member 将源集合中的指定成员移除并添加到指定集合中, 1 表示源集合指定成员移除成功(目标集合中可能包含该成员也可能不包含), 0 表示源集合为空或者源集合不包含指定成员
+- SMOVE source destination member 将源集合中的指定成员移除并添加到目标集合中
+  - 返回值 
+    - 1 表示源集合指定成员移除成功(目标集合中可能包含该成员也可能不包含)
+    - 0 表示源集合为空或者源集合不包含指定成员
 
 ```shell
 127.0.0.1:6379> FLUSHALL    # 清空所有数据库
@@ -392,7 +395,7 @@ OK
 1) "hello"
 ```
 
-- SINTERCARD numkeys key [key ...] [LIMIT limit] 返回给定多个集合的交集的数量, 0 表示未找到结果, 7.0.0 支持
+- SINTERCARD numkeys key [key ...] [LIMIT limit] 返回给定多个集合的交集的数量, 0 表示未找到结果, Redis 7.0.0 支持
   - numkeys 指定集合的数量, 值和 key 的数量不一致时返回语法错误 syntax error
   - limit 指定返回结果的偏移量, 默认为 0, limit < 0 时, 报错不能为负数
 
@@ -519,8 +522,8 @@ zset-max-listpack-value 64
 - \- 负
 - \+ 正
 - inf 无穷大
-- ({val} 不包含 val
-- [{val} 包含 val
+- \(val 不包含 val
+- \[val 包含 val
 
 #### 添加成员
 
@@ -689,19 +692,19 @@ zset-max-listpack-value 64
 
 ##### 分值最大或最小
 
-- ZPOPMAX key [count] 移除指定集合的指定数量的最高分值成员并返回移除的成员和分值, count 默认为 1, 如果集合为空或者不存在返回 (empty array), 5.0.0 支持
+- ZPOPMAX key [count] 移除指定集合的指定数量的最高分值成员并返回移除的成员和分值, count 默认为 1, 如果集合为空或者不存在返回 (empty array), Redis `5.0.0 支持
 
   - count < 0 时, 报错 ERR value is out of range, must be positive
   - count = 0 时, 不做任何操作, 返回 empty array
   - count > 1 时, 指定移除数量
 
-- BZPOPMAX key [key ...] timeout 阻塞版 `ZPOPMAX`, 从多个集合中第 1 个非空集合中移除并返回 1 个最高分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, 5.0.0 支持
+- BZPOPMAX key [key ...] timeout 阻塞版 `ZPOPMAX`, 从多个集合中第 1 个非空集合中移除并返回 1 个最高分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, Redis 5.0.0 支持
 
-- ZPOPMIN key [count] 移除指定集合的指定数量的最低分值成员并返回移除的成员和分值, count 默认为 1, 如果集合为空或者不存在返回 (empty array), 5.0.0 支持
+- ZPOPMIN key [count] 移除指定集合的指定数量的最低分值成员并返回移除的成员和分值, count 默认为 1, 如果集合为空或者不存在返回 (empty array), Redis 5.0.0 支持
 
   - 参数同 `ZPOPMAX`
 
-- BZPOPMIN key [key ...] timeout 阻塞版 `ZPOPMIN`, 从多个集合中第 1 个非空集合中移除并返回 1 个最低分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, 5.0.0 支持
+- BZPOPMIN key [key ...] timeout 阻塞版 `ZPOPMIN`, 从多个集合中第 1 个非空集合中移除并返回 1 个最低分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, Redis 5.0.0 支持
 
 ```shell
 127.0.0.1:6379> ZPOPMAX myz -1
@@ -840,9 +843,9 @@ zset-max-listpack-value 64
 
 ##### 批量移除相邻成员
 
-- ZMPOP numkeys key [key ...] MIN|MAX [COUNT count] 从多个集合中第 1 个非空集合中移除指定数量的最高或最低分值的成员并返回移除的成员和分值及成员所属的集合名称, count 默认为 1, 集合为空或者不存在返回 \<nil\>, 7.0.0 支持
+- ZMPOP numkeys key [key ...] MIN|MAX [COUNT count] 从多个集合中第 1 个非空集合中移除指定数量的最高或最低分值的成员并返回移除的成员和分值及成员所属的集合名称, count 默认为 1, 集合为空或者不存在返回 \<nil\>, Redis 7.0.0 支持
   - COUNT count 移除成员的数量, 默认为 1
-- BZMPOP timeout numkeys key [key ...] MIN|MAX [COUNT count] 阻塞版 `ZMPOP`, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 7.0.0 支持
+- BZMPOP timeout numkeys key [key ...] MIN|MAX [COUNT count] 阻塞版 `ZMPOP`, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, Redis 7.0.0 支持
 
 ```shell
 # 如果集合都为空, 阻塞指定时间后返回 nil
@@ -938,7 +941,7 @@ zset-max-listpack-value 64
 
 #### 随机获取指定数量成员
 
-- ZRANDMEMBER key [count [WITHSCORES]] 返回指定集合随机的多个成员, 不改变原集合, 如果集合为空或者不存在返回 \<nil\>, 否则返回 (empty array), 6.2.0 支持
+- ZRANDMEMBER key [count [WITHSCORES]] 返回指定集合随机的多个成员, 不改变原集合, 如果集合为空或者不存在返回 \<nil\>, 否则返回 (empty array), Redis 6.2.0 支持
   - count 指定随机返回的数量, 默认为 1
     - count >= 1 时, 空集合返回 (empty array)
     - count = 0 时, 任意集合都返回 (empty array)
@@ -1034,7 +1037,7 @@ zset-max-listpack-value 64
 "3"
 ```
 
-- ZMSCORE key member [member ...] 批量获取指定成员的分值, 如果集合为空或者指定成员不属于集合返回 \<nil\>, 6.2.0 支持
+- ZMSCORE key member [member ...] 批量获取指定成员的分值, 如果集合为空或者指定成员不属于集合返回 \<nil\>, Redis 6.2.0 支持
 
 ```shell
 127.0.0.1:6379> ZMSCORE myz HAHA hehe
@@ -1133,11 +1136,11 @@ zset-max-listpack-value 64
 (integer) 4
 ```
 
-- ZDIFF numkeys key [key ...] [WITHSCORES] 比较第一个集合和其他集合之间的差异并返回差异的结果, 第一个集合为空或者第一个集合的所有成员在出现在其他集合中返回(empty array), 6.2.0 支持
+- ZDIFF numkeys key [key ...] [WITHSCORES] 比较第一个集合和其他集合之间的差异并返回差异的结果, 第一个集合为空或者第一个集合的所有成员在出现在其他集合中返回(empty array), Redis 6.2.0 支持
 
   - 部分参数同 `ZDIFFSTORE`
 
-- ZDIFFSTORE destination numkeys key [key ...] 比较第一个集合和其他集合之间的差异把差异结果存储到指定的集合中并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合存在则覆盖指定集合, 0 表示未找到结果, 6.2.0 支持
+- ZDIFFSTORE destination numkeys key [key ...] 比较第一个集合和其他集合之间的差异把差异结果存储到指定的集合中并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合存在则覆盖指定集合, 0 表示未找到结果, Redis 6.2.0 支持
   - numkeys 指定集合的数量, 值和 key 的数量不一致时返回语法错误 syntax error
 
 ```shell
@@ -1166,7 +1169,7 @@ zset-max-listpack-value 64
 (integer) 3
 ```
 
-- ZINTER numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] [WITHSCORES] 返回多个有序集合的交集, key 不存在被当作空集合, 当给定集合中有一个空集合时返回结果也为空集合(empty array), 6.2.0 支持
+- ZINTER numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] [WITHSCORES] 返回多个有序集合的交集, key 不存在被当作空集合, 当给定集合中有一个空集合时返回结果也为空集合(empty array), Redis 6.2.0 支持
 
   - 部分参数同 `ZINTERSTORE`
 
@@ -1185,7 +1188,7 @@ zset-max-listpack-value 64
 4) "15"
 ```
 
-- ZINTERCARD numkeys key [key ...] [LIMIT limit] 返回多个有序集合的交集的数量, 0 表示未找到结果, 7.0.0 支持
+- ZINTERCARD numkeys key [key ...] [LIMIT limit] 返回多个有序集合的交集的数量, 0 表示未找到结果, Redis 7.0.0 支持
 
 - ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] 计算多个有序集合的交集将结果存储到指定集合并返回保存到指定集合的成员数量, 0 表示未找到结果
   - destination 指定存储结果集的集合名字
@@ -1262,7 +1265,7 @@ zset-max-listpack-value 64
 (integer) 4
 ```
 
-- ZUNION numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] [WITHSCORES] 返回多个有序集合的并集并移除相同的成员只保留一个, 不存在的 key 被当作空集合, 集合都为空返回 (empty array), 6.2.0 支持
+- ZUNION numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] [WITHSCORES] 返回多个有序集合的并集并移除相同的成员只保留一个, 不存在的 key 被当作空集合, 集合都为空返回 (empty array), Redis 6.2.0 支持
 
   - 部分参数同 `ZUNIONSTORE`
 

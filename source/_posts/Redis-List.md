@@ -29,7 +29,7 @@ hash-max-listpack-value 64
 LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部
 
 - LPUSH key element [element ...] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建
-- LPUSHX key element [element ...] 批量添加多个元素到已存在的列表头部并返回列表的长度, 列表为空或者不存在返回 0
+- LPUSHX key element [element ...] 批量添加多个元素到**已存在**的列表头部并返回列表的长度, 列表为空或者不存在返回 0
 
 ```shell
 127.0.0.1:6379> LPUSH list:zhang name1 name2 name3
@@ -68,7 +68,7 @@ LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部
 RPUSH 和 RPUSHX 命令将多个元素**顺序**追加到列表尾部
 
 - RPUSH key element [element ...] 批量追加多个元素到列表尾部并返回列表的长度, 列表为空或者不存在新建
-- RPUSHX key element [element ...] 批量追加多个元素到已存在的列表尾部并返回列表的长度, 列表为空或者不存在返回 0
+- RPUSHX key element [element ...] 批量追加多个元素到**已存在**的列表尾部并返回列表的长度, 列表为空或者不存在返回 0
 
 ```shell
 127.0.0.1:6379> RPUSH list:zhang name1 name2 name3
@@ -210,11 +210,11 @@ OK
 2) "g"
 ```
 
-- LMPOP numkeys key [key ...] LEFT|RIGHT [COUNT count] 从多个列表中第 1 个非空列表中指定位置批量移除指定数量的元素并返回操作成功的 key 和移除的元素, 如果列表都为空或者不存在返回 \<nil\>, 7.0.0 支持
+- LMPOP numkeys key [key ...] LEFT|RIGHT [COUNT count] 从多个列表中第 1 个非空列表中指定位置批量移除指定数量的元素并返回操作成功的 key 和移除的元素, 如果列表都为空或者不存在返回 \<nil\>, Redis 7.0.0 支持
   - numkeys 指定列表名的数量, 值和 key 的数量不一致时返回语法错误
   - LEFT | RIGHT 移除元素的位置
   - COUNT count 移除元素的数量, 默认为 1
-- BLMPOP timeout numkeys key [key ...] LEFT|RIGHT [COUNT count] 阻塞版的 `LMPOP`, 列表为空时会阻塞直到等待超时或发现可弹出元素为止, 7.0.0 支持
+- BLMPOP timeout numkeys key [key ...] LEFT|RIGHT [COUNT count] 阻塞版的 `LMPOP`, 列表为空时会阻塞直到等待超时或发现可弹出元素为止, Redis 7.0.0 支持
 
 ```shell
 127.0.0.1:6379> RPUSH list a b c d e f  # 创建列表 list
