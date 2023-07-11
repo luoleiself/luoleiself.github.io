@@ -1689,15 +1689,23 @@ OK
 redis.conf 基础配置，[集群配置](#redisclusterconfigure) <em id="redisbaseconfigure"></em> <!-- markdownlint-disable-line-->
 
 ```yaml
-bind 127.0.0.1 # 修改绑定的 ip
-port 6379 # 修改绑定的端口号
-daemonize yes # 开启后台运行, 默认为 no
-# 修改进程文件, 默认为 redis_6379.pid
+# 引入 redis 默认配置文件
+include /root/redis-cluster/redis.conf
+# 修改绑定 ip, 此处演示全为本机
+bind 127.0.0.1
+# 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用
+port 6379
+# 关闭保护模式, 默认 yes
+protected-mode no
+# 开启后台运行, 默认 no
+daemonize yes
+# 修改 redis 进程文件名
 pidfile /var/run/redis_6379.pid
+
 loglevel notice
 # 修改日志文件名, 默认为空
 # 守护进程模式将指定 /dev/null
-logfile "6379.log"
+logfile "/temp/log/6379.log"
 # 修改持久化文件名, 默认为 dump.rdb
 dbfilename dump6379.rdb
 dir "" # 持久化文件存放目录
@@ -1828,9 +1836,10 @@ Warning: Using a password with '-a' or '-u' option on the command line interface
 
 ##### 执行任务
 
-- 监控: Sentinel 会不断地检查主服务器和从服务器是否正常运行
-- 提醒: 当被监控的某个服务器出现问题时, Sentinel 可以通过 API 向管理员或其他应用程序发送通知
+- 监控: 定期检查主节点和从节点的健康状态, 包括发送 PING 命令、检查返回结果和检测通信故障
 - 自动故障转移: 当一个主服务器不能正常工作时, Sentinel 会开始一次自动故障迁移操作, 它会将失效主服务器的其中一个从服务器升级为新的主服务器, 并让失败的主服务器的其他从服务器改为复制新的主服务器. 当客户端试图连接失效的主服务器时, 集群也会向客户端返回新的主服务器的地址, 使得集群可以使用新主服务器代替失效服务器
+- 高可用性切换: 选举新的主节点后, 哨兵节点会自动将从节点切换为新的主节点, 并通知其它从节点更新复制目标
+- 配置提供者: 当客户端连接到哨兵节点时, 哨兵节点可以根据 Redis 集群的配置信息, 将其重定向到正确的主节点
 
 ##### 选举算法
 
@@ -1903,21 +1912,21 @@ sentinel deny-scripts-reconfig yes
 # sentinel26379.conf
 port 26379
 pidfile /var/run/redis-sentinel-26379.pid
-logfile "26379.log"
+logfile "/tmp/log/redis_26379.log"
 dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 
 # sentinel36379.conf
 port 36379
 pidfile /var/run/redis-sentinel-36379.pid
-logfile "36379.log"
+logfile "/tmp/log/redis_36379.log"
 dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 
 # sentinel46379.conf
 port 46379
 pidfile /var/run/redis-sentinel-46379.pid
-logfile "46379.log"
+logfile "/tmp/log/redis_46379.log"
 dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 ```
@@ -1930,7 +1939,8 @@ bind 127.0.0.1
 port 6379
 daemonize yes
 pidfile /var/run/redis_6379.pid
-logfile "6379.log"
+logfile "/tmp/log/redis_6379.log"
+dir /tmp
 dbfilename dump6379.rdb
 
 # redis6380.conf
@@ -1938,7 +1948,8 @@ bind 127.0.0.1
 port 6380
 daemonize yes
 pidfile /var/run/redis_6380.pid
-logfile "6380.log"
+logfile "/tmp/log/redis_6380.log"
+dir /tmp
 dbfilename dump6380.rdb
 # 配置主服务器 ip 和 port
 replicaof 127.0.0.1 6379
@@ -1948,7 +1959,8 @@ bind 127.0.0.1
 port 6381
 daemonize yes
 pidfile /var/run/redis_6381.pid
-logfile "6381.log"
+logfile "/tmp/log/redis_6381.log"
+dir /tmp
 dbfilename dump6381.rdb
 # 配置主服务器 ip 和 port
 replicaof 127.0.0.1 6379
@@ -1969,9 +1981,10 @@ replicaof 127.0.0.1 6379
 
 > Redis 3.0 支持
 
-Redis Cluster 是一种服务器 Sharding 技术, Redis 3.0 版本开始支持
-在 Redis Cluster 中, Sharding 采用 slot 的概念, 一共分成 16384 个 slot, 对于每个进入 Redis 的键值对, 对 key 执行 CRC16 算法然后再对 16384 取模, 得到的结果就是对应的 slot.
+Redis Cluster 是一种服务器 Sharding(分片) 技术, Sharding 采用 slot 的概念, 一共分成 16384 个 slot, 对于每个进入 Redis 的键值对, 对 key 执行 CRC16 算法然后再对 16384 取模, 得到的结果就是对应的 slot.
+
 Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, 当动态添加或减少 node 时, 需要将 16384 个 slot 再分配, slot 中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个 node 发生故障, 则此 node 负责的 slot 也就失效, 整个集群将不能工作
+
 官方推荐的方案是将 node 配置成主从结构, 即 1:n, 如果主节点失效, Redis Cluster 根据选举算法从 slave 节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则作为新的主节点的从节点
 
 #### Cluster Slot
@@ -1981,6 +1994,16 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 - 正常的心跳数据包携带节点的完整配置, 它能以幂等方式来更新配置. 如果采用 16384 个插槽, 占空间 2KB(16384/8); 如果采用 65536 个插槽,占空间 8KB(65536/8). 8KB 的心跳包看似不大, 比起 16384 个插槽, 头大小增加了 4 倍,ping 消息的消息头太大, 浪费带宽
 - Redis Cluster 不太可能扩展到超过 1000 个主节点, 太多可能导致网络拥堵
 - 16384 个插槽比较合适, 当集群扩展到 1000 个节点时, 也能确保每个主节点有足够的插槽
+
+#### 集群特点
+
+- 数据自动分片: 集群自动将数据分布到不同的节点上, 实现数据的均衡存储和负载均衡
+- 自动故障转移: 当主节点发生故障时, 集群会自动进行故障检测, 并将从节点升级为新的主节点, 以保证系统的可用性
+- 内部通信协议: 集集群使用 Gossip 协议进行节点之间的通信和状态更新, 确保集群的一致性和高效性
+- 客户端路由: 客户端可以通过集群提供的路由机制, 自动将请求发送到正确的节点上, 实现透明访问
+- 负载均衡: 在 Redis 集群中, 数据和请求会自动分布到不同的节点上, 实现负载均衡, 这样可以避免单个节点过载, 提高系统的稳定性和性能
+- 扩展性好: 通过使用 Redis 集群, 可以便利地扩展系统的容量和性能, 将数据和请求分布到多个节点上, 提高整体系统的吞吐量和承载能力
+- 高可用性: 通过 Redis 集群, 可以将数据分布到多个节点上, 实现数据的冗余备份和容错能力, 当部分节点不可用时, 集群仍然可以继续提供服务, 保证系统的可用性
 
 #### 命令
 
@@ -2026,23 +2049,13 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 
 创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式
 创建 `redis6379.conf`, `redis6380.conf`, `redis6381.conf`, `redis6382.conf`, `redis6383.conf`, `redis6384.conf` 6 个文件
-修改其中的 ip, port, pidfile, cluster-enabled, cluster-config-file
+修改其中的 bind, port, pidfile, cluster-enabled, cluster-config-file
 
 redis.conf 集群配置, [基础配置](#redisbaseconfigure) <em id="redisclusterconfigure"></em> <!-- markdownlint-disable-line -->
 
 ```yaml
-# 引入 redis 默认配置文件
-include /root/redis-cluster/redis.conf
-# 修改绑定 ip, 此处演示全为本机
-bind 127.0.0.1
-# 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用
-port 6379
-# 关闭保护模式, 默认 yes
-protected-mode no
-# 开启后台运行, 默认 no
-daemonize yes
-# 修改 redis 进程文件名
-pidfile /var/run/redis_6379.pid
+# # 引入 redis 默认配置文件
+# include /root/redis-cluster/redis.conf
 
 cluster-enabled yes # 开启集群模式
 # 修改集群节点文件名, 默认在存储在当前目录下
