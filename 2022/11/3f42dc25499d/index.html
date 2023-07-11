@@ -28,7 +28,7 @@
 <meta property="og:description" content="Lists 命令 Redis 3.2 之后, List 数据类型底层使用 quickList 代替双向链表和压缩列表  List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素. List 类型的底层数据结构是由双向链表或压缩列表实现的  如果列表元素的个数小于 512 个,列表每个元">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2023-06-13T09:35:12.162Z">
+<meta property="article:modified_time" content="2023-07-11T10:07:46.654Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-13 17:35:12" itemprop="dateModified" datetime="2023-06-13T17:35:12+08:00">2023-06-13</time>
+                <time title="修改时间：2023-07-11 18:07:46" itemprop="dateModified" datetime="2023-07-11T18:07:46+08:00">2023-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -291,7 +291,7 @@
 <h4 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h4><p>LPUSH 和 LPUSHX 命令将多个元素<strong>逆序</strong>插入到列表头部</p>
 <ul>
 <li>LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建</li>
-<li>LPUSHX key element [element …] 批量添加多个元素到已存在的列表头部并返回列表的长度, 列表为空或者不存在返回 0</li>
+<li>LPUSHX key element [element …] 批量添加多个元素到<strong>已存在</strong>的列表头部并返回列表的长度, 列表为空或者不存在返回 0</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; LPUSH list:zhang name1 name2 name3</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; LPUSHX list:zhang name1 name4 name5 name6</span><br><span class="line">(integer) 7</span><br><span class="line">127.0.0.1:6379&gt; LPUSH list:zhang name1 name4 name5 name6</span><br><span class="line">(integer) 11</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部</span></span><br><span class="line">127.0.0.1:6379&gt; LRANGE list:zhang 0 11</span><br><span class="line"> 1) &quot;name6&quot;</span><br><span class="line"> 2) &quot;name5&quot;</span><br><span class="line"> 3) &quot;name4&quot;</span><br><span class="line"> 4) &quot;name1&quot;</span><br><span class="line"> 5) &quot;name6&quot;</span><br><span class="line"> 6) &quot;name5&quot;</span><br><span class="line"> 7) &quot;name4&quot;</span><br><span class="line"> 8) &quot;name1&quot;</span><br><span class="line"> 9) &quot;name3&quot;</span><br><span class="line">10) &quot;name2&quot;</span><br><span class="line">11) &quot;name1&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">LPUSHX 对空列表或不存在的列表不进行操作</span></span><br><span class="line">127.0.0.1:6379&gt; LPUSHX list:zhang:1 name1 name2 name3</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;list:zhang&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;name&quot;</span><br><span class="line">4) &quot;hash:zhang&quot;</span><br></pre></td></tr></table></figure>
 
@@ -300,7 +300,7 @@
 <p>RPUSH 和 RPUSHX 命令将多个元素<strong>顺序</strong>追加到列表尾部</p>
 <ul>
 <li>RPUSH key element [element …] 批量追加多个元素到列表尾部并返回列表的长度, 列表为空或者不存在新建</li>
-<li>RPUSHX key element [element …] 批量追加多个元素到已存在的列表尾部并返回列表的长度, 列表为空或者不存在返回 0</li>
+<li>RPUSHX key element [element …] 批量追加多个元素到<strong>已存在</strong>的列表尾部并返回列表的长度, 列表为空或者不存在返回 0</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; RPUSH list:zhang name1 name2 name3</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; RPUSHX list:zhang name1 name4 name5 name6</span><br><span class="line">(integer) 7</span><br><span class="line">127.0.0.1:6379&gt; RPUSH list:zhang name1 name4 name5 name6</span><br><span class="line">(integer) 11</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RPUSH 和 RPUSHX 命令将多个元素**顺序**追加到列表尾部</span></span><br><span class="line">127.0.0.1:6379&gt; LRANGE list:zhang 0 11</span><br><span class="line"> 1) &quot;name1&quot;</span><br><span class="line"> 2) &quot;name2&quot;</span><br><span class="line"> 3) &quot;name3&quot;</span><br><span class="line"> 4) &quot;name1&quot;</span><br><span class="line"> 5) &quot;name4&quot;</span><br><span class="line"> 6) &quot;name5&quot;</span><br><span class="line"> 7) &quot;name6&quot;</span><br><span class="line"> 8) &quot;name1&quot;</span><br><span class="line"> 9) &quot;name4&quot;</span><br><span class="line">10) &quot;name5&quot;</span><br><span class="line">11) &quot;name6&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RPUSHX 对空列表或不存在的列表不进行操作</span></span><br><span class="line">127.0.0.1:6379&gt; RPUSHX list:zhang:1 name1 name2 name3</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) &quot;list:zhang&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">3) &quot;name&quot;</span><br><span class="line">4) &quot;hash:zhang&quot;</span><br></pre></td></tr></table></figure>
 
@@ -348,13 +348,13 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">向 list 尾部添加元素</span></span><br><span class="line">127.0.0.1:6379&gt; RPUSH list c d e</span><br><span class="line">(integer) 3</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">newlist 为空或者不存在, 会删除 list 的尾部的元素</span></span><br><span class="line">127.0.0.1:6379&gt; BRPOP newlist list 0</span><br><span class="line">1) &quot;list&quot;</span><br><span class="line">2) &quot;e&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">向 newlist 尾部添加元素</span></span><br><span class="line">127.0.0.1:6379&gt; RPUSH newlist g a b f</span><br><span class="line">(integer) 4</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">list 和 newlist 都是非空的列表, 会删除返回 list 的头部的元素</span></span><br><span class="line">127.0.0.1:6379&gt; BLPOP list newlist 0</span><br><span class="line">1) &quot;list&quot;</span><br><span class="line">2) &quot;c&quot;</span><br><span class="line">127.0.0.1:6379&gt; del list  # 删除 list</span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">list 为空或者不存在, 会删除返回 newlist 的头部的元素</span></span><br><span class="line">127.0.0.1:6379&gt; BLPOP list newlist 0</span><br><span class="line">1) &quot;newlist&quot;</span><br><span class="line">2) &quot;g&quot;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>LMPOP numkeys key [key …] LEFT|RIGHT [COUNT count] 从多个列表中第 1 个非空列表中指定位置批量移除指定数量的元素并返回操作成功的 key 和移除的元素, 如果列表都为空或者不存在返回 &lt;nil&gt;, 7.0.0 支持<ul>
+<li>LMPOP numkeys key [key …] LEFT|RIGHT [COUNT count] 从多个列表中第 1 个非空列表中指定位置批量移除指定数量的元素并返回操作成功的 key 和移除的元素, 如果列表都为空或者不存在返回 &lt;nil&gt;, Redis 7.0.0 支持<ul>
 <li>numkeys 指定列表名的数量, 值和 key 的数量不一致时返回语法错误</li>
 <li>LEFT | RIGHT 移除元素的位置</li>
 <li>COUNT count 移除元素的数量, 默认为 1</li>
 </ul>
 </li>
-<li>BLMPOP timeout numkeys key [key …] LEFT|RIGHT [COUNT count] 阻塞版的 <code>LMPOP</code>, 列表为空时会阻塞直到等待超时或发现可弹出元素为止, 7.0.0 支持</li>
+<li>BLMPOP timeout numkeys key [key …] LEFT|RIGHT [COUNT count] 阻塞版的 <code>LMPOP</code>, 列表为空时会阻塞直到等待超时或发现可弹出元素为止, Redis 7.0.0 支持</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; RPUSH list a b c d e f  # 创建列表 list</span><br><span class="line">(integer) 6</span><br><span class="line">127.0.0.1:6379&gt; RPUSH newlist 1 2 3 4 5 6 # 创建列表 newlist</span><br><span class="line">(integer) 6</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">list 不为空, 从 list 的头部删除返回 3 个 元素</span></span><br><span class="line">127.0.0.1:6379&gt; LMPOP 2 list newlist LEFT COUNT 3</span><br><span class="line">1) &quot;list&quot;</span><br><span class="line">2) 1) &quot;a&quot;</span><br><span class="line">   2) &quot;b&quot;</span><br><span class="line">   3) &quot;c&quot;</span><br><span class="line">127.0.0.1:6379&gt; del list  # 删除列表 list</span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">list 为空, 从 newlist 的尾部删除返回 3 个元素</span></span><br><span class="line">127.0.0.1:6379&gt; LMPOP 2 list newlist right COUNT 3</span><br><span class="line">1) &quot;newlist&quot;</span><br><span class="line">2) 1) &quot;6&quot;</span><br><span class="line">   2) &quot;5&quot;</span><br><span class="line">   3) &quot;4&quot;</span><br></pre></td></tr></table></figure>
 
@@ -612,12 +612,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">419k</span>
+    <span title="站点总字数">420k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">6:21</span>
+    <span title="站点阅读时长">6:22</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
