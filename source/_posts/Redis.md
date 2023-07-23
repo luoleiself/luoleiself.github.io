@@ -1558,12 +1558,13 @@ Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任
 
 AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍, AOF 的持久化策略在开启后默认是每秒钟 sync 一次
 
-- `appendonly yes` 启动 AOF 模式
+- `appendonly yes` 启动 AOF 模式, 默认为 no
 - `appendfilename appendonly.aof` 默认文件名
 - `appenddirname appendonlydir` 默认存储目录
 - `appendfsync everysec` 持久化策略, 每秒钟执行一次, 可以修改为 `always` 和 `no`
   - `always` 每次将新命令附加到 AOF 时, 速度慢, 但是最安全
   - `no` 将写入策略权交给操作系统, 速度快, 但是不安全
+- `no-appendfsync-on-rewrite no`
 - `auto-aof-rewrite-percentage 100` aof 重写的基准值, 当达到 100% 时重写
 - `auto-aof-rewrite-min-size 64mb` 当文件大小达到 64mb 的 100% 时重写
 
@@ -1766,6 +1767,9 @@ dir "" # 持久化文件存放目录
 # 该选项将只是为默认用户设置密码
 # 客户端仍需要使用 AUTH [username] password 进行身份认证
 # requirepass foobared
+
+# 主服务器关机时副本的最大等待时间, 默认 10 sec
+# shutdown-timeout 10
 
 # 高级配置
 # 哈希类型元素的个数小于 512 个, 每个元素值都小于 64B 时
