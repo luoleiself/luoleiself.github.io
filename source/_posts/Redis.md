@@ -1710,6 +1710,10 @@ loglevel notice
 logfile "/temp/log/6379.log"
 # 修改持久化文件名, 默认为 dump.rdb
 dbfilename dump6379.rdb
+
+# 是否在未开启持久化模式下删除复制中使用的 RDB 文件, 默认 no
+# rdb-del-sync-files no
+
 dir "" # 持久化文件存放目录
 # 配置主服务器 ip 和 port
 # replicaof <masterip> <masterport>
