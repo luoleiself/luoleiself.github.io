@@ -1531,6 +1531,8 @@ Redis 在持久化的过程中, 会先将数据写入到一个临时的文件中
 # redis 7.0 写法
 # 3600秒至少有 1 次修改, 300秒至少有 100 次修改, 60秒至少有 10000 次修改
 save 3600 1 300 100 60 10000
+
+# save "" 禁用 RDB, 但仍然可以使用 SAVE 和 BGSAVE 命令生成 RDB 文件
 ```
 
 #### RDB
@@ -1557,7 +1559,11 @@ Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任
 
 #### AOF
 
-AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍, AOF 的持久化策略在开启后默认是每秒钟 sync 一次
+===如果 appendonly.aof 文件有错误, Redis 服务将会启动失败===
+
+- redis-check-aof 检查 AOF 文件, \-\-fix 参数修复文件的错误, 通常会丢弃文件中无法识别的命令
+
+AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍
 
 - `appendonly yes` 启动 AOF 模式, 默认为 no
 - `appendfilename appendonly.aof` 默认文件名
@@ -1565,13 +1571,20 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 - `appendfsync everysec` 持久化策略, 每秒钟执行一次, 可以修改为 `always` 和 `no`
   - `always` 每次将新命令附加到 AOF 时, 速度慢, 但是最安全
   - `no` 将写入策略权交给操作系统, 速度快, 但是不安全
-- `no-appendfsync-on-rewrite no`
-- `auto-aof-rewrite-percentage 100` aof 重写的基准值, 当达到 100% 时重写
+- `no-appendfsync-on-rewrite no` AOF 重写期间是否同步, 默认 no
+
+> Redis 7.0 支持使用新的 AOF 持久化方式, 包含三个文件, 当触发重写机制时, 自动创建新的基础文件和增量文件
+
+- 以 appendfilename 为前缀命名的基础文件 `appendfilename.*.base.rdb`, 基础文件可以是 RDB 或 AOF
+- 以 appendfilename 为前缀命名的增量文件 `appendfilename.*.incr.aof`, 包含在上一个文件之后应用于数据集的其他命令
+- 以 appendfilename 为前缀命名的清单文件 `appendfilename.aof.manifest`, 用于追踪文件及其创建和应用的顺序
+
+##### 重写机制
+
+- `auto-aof-rewrite-percentage 100` AOF 重写的基准值, 当达到 100% 时重写
 - `auto-aof-rewrite-min-size 64mb` 当文件大小达到 64mb 的 100% 时重写
 
-如果 appendonly.aof 文件有错误, Redis 服务将会启动失败
-
-- redis-check-aof 检查 AOF 文件, \-\-fix 参数修复文件的错误, 通常会丢弃文件中无法识别的命令
+`BGREWRITEAOF` 命令将会在后台开启 AOF 文件重写进程, 创建一个当前 AOF 文件的更小的优化版本, 如果重写失败不会丢失任何数据, 旧的 AOF 文件也不会受到影响
 
 ##### AOF 优点
 
@@ -1587,7 +1600,11 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 
 #### RDB 和 AOF 组合
 
-`aof-use-rdb-preamble yes`
+- `aof-use-rdb-preamble yes` 是否开始混合模式, 默认 yes
+
+- RDB 做全量持久化
+- AOF 做增量持久化
+如果同时开始 RDB 和 AOF 持久化时, Redis 重启时只会加载 AOF 文件, 不会加载 RDB 文件
 
 ### 主从复制
 
@@ -1620,7 +1637,7 @@ repl_backlog_histlen:0
 
 #### 复制原理
 
-> Redis 2.8 以上使用 psync 命令完成同步
+> Redis 2.8 以上使用 PSYNC 命令完成同步
 
 1. 从服务器向主服务器发送 `SYNC` 命令
 2. 接到 `SYNC` 命令的主服务器会调用 `BGSAVE` 命令, 创建一个 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令
