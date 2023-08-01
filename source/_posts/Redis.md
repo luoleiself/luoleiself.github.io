@@ -1537,13 +1537,13 @@ save 3600 1 300 100 60 10000
 
 #### RDB
 
-RDB(Redis Database), 在某一时刻将 Redis 中的数据生成一份快照保存到磁盘中
+RDB(Redis Database), 在指定的时间间隔以指定的次数将内存中的数据集以快照的方式写入一个二进制文件中, 然后保存到磁盘中, 也就是 snapshot 快照, 默认生成的文件为 dump.rdb
 Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任何 I/O 操作, 这样就保证了 Redis 极高的性能, 如果需要进行大规模数据的恢复,且对于数据恢复的完整性不是非常敏感, 此方式比 AOF 方式更加的高效
 
 - `dbfilename dump.rdb` 默认文件名
 - `dir ./` 默认存储目录
 
-检查 RDB 文件的命令 `redis-check-rdb`
+- `redis-check-rdb` 检查 RDB 文件
 
 ##### RDB 优点
 
@@ -1604,7 +1604,7 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 
 - RDB 做全量持久化
 - AOF 做增量持久化
-如果同时开始 RDB 和 AOF 持久化时, Redis 重启时只会加载 AOF 文件, 不会加载 RDB 文件
+  如果同时开始 RDB 和 AOF 持久化时, Redis 重启时只会加载 AOF 文件, 不会加载 RDB 文件
 
 ### 主从复制
 
