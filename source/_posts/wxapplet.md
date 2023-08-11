@@ -76,7 +76,7 @@ tags:
 openSetting(){ wx.openSetting() }
 ```
 
-#### [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
+#### 组件[behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
 - 自定义组件混入 behaviors, 在 attached 钩子函数中调用混入的方法获取不到, 需要在 ready 中调用
 
@@ -342,7 +342,7 @@ Page({
 });
 ```
 
-### 自定义组件
+### 自定义组件 <em id="zidingyizujian"></em> <!-- markdownlint-disable-line -->
 
 - 1.6.3 支持
 
@@ -604,33 +604,60 @@ Component({
 
 - 2.10.1 支持在 json 配置文件中配置 pureDataPattern 项
 
-#### [抽象节点](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/generics.html)
+#### [抽象节点](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/generics.html) <em id="generic-node"></em> <!-- markdownlint-disable-line -->
 
-自定义组件模板中的一些节点，其对应的自定义组件不是由自定义组件本身确定的，而是自定义组件的调用者确定的。这时可以把这个节点声明为“抽象节点”
+> 1.9.6 支持
 
-- 1.9.6 支持
+有时, 自定义组件模板中的一些节点，其对应的自定义组件不是由自定义组件本身确定的，而是自定义组件的调用者确定的。这时可以把这个节点声明为**抽象节点**
+
+- 抽象节点 generic 引用的 `generic:xxx="yyy"` 中的值 yyy 只能是静态值, 不能包含数据绑定, 抽象节点特性不适用动态节点绑定的场景
+- componentGenerics 抽象节点配置项
+
+index
+
+```html
+<!-- index.wxml -->
+<!-- 使用抽象节点组件时必须指定使用的具体组件 -->
+<view>
+  <!-- 自定义单选框 -->
+  <generic-node generic:selectable="custom-radio" />
+  <!-- 自定义复选框 -->
+  <generic-node generic:selectable="custom-checkbox" />
+</view>
+```
+
+```json
+/* index.json */
+{
+  "usingComponents": {
+    "generic-node": "/pages/generic-node",
+    "custom-radio": "/pages/custom-radio",
+    "custom-checkbox": "/pages/custom-checkbox"
+  }
+}
+```
+
+generic-node
 
 ```html
 <!-- generic-node.wxml -->
 <view>
-  <generic-node></generic-node>
+  <view>generic-node header</view>
+  <selectable selected="{{selected}}" disabled="{{false}}"></selectable>
+  <view>generic-node footer</view>
 </view>
-
-<!-- 使用 -->
-<!-- 自定义单选框 -->
-<selectable-group generic:generic-node="custom-radio" />
-<!-- 自定义复选框 -->
-<selectable-group generic:generic-node="custom-checkbox" />
 ```
 
 ```json
+/* generic-node.json */
 {
+  "component": true,
+  "usingComponents": {},
   "componentGenerics": {
-    "generic-node": true /* 在 componentGenerics 中声明抽象节点*/
-  },
-  "usingComponents": {
-    "custom-radio": "path/to/custom/radio",
-    "custom-checkbox": "path/to/custom/checkbox"
+    "selectable": true /* 在 componentGenerics 中声明抽象节点*/,
+    "selectable": {
+      "default": "path/to/default/component" /* 为抽象节点指定默认组件 */
+    }
   }
 }
 ```
@@ -667,6 +694,129 @@ Component({
 ```
 
 ### 插件
+
+插件是对一组 js 接口、[自定义组件](#zidingyizujian)或页面的封装, 用于嵌入到小程序中使用. 插件不能独立运行, 必须嵌入到其它小程序中才能使用
+第三方小程序在使用插件时, 无法看到插件的代码, 因此, 插件适合用来封装自己的功能或服务, 提供给第三方小程序进行展示和使用.
+
+插件开发者可以像开发小程序一样编写一个插件并上传代码, 在插件发布之后, 其它小程序方可调用, 小程序平台托管插件代码, 其它小程序调用时上传的插件代码会随小程序一起下载运行
+
+插件拥有更强的独立性, 拥有独立的 API 接口、域名列表等, 但同时会受到一些限制, 如 一些 API 无法调用或功能受限
+
+#### 开发插件
+
+插件跳转链接: `plugin-private://PLUGIN_APPID/PATH/TO/PAGE`
+
+- [requireMiniProgram](https://developers.weixin.qq.com/miniprogram/dev/reference/api/requireMiniProgram.html) 在插件中获取由使用者小程序导出的内容, 基础库 2.11.1 支持
+
+```javascript
+// 使用者小程序
+module.exports = {
+  greeting() {
+    return 'Greetings from Weixin MiniProgram!';
+  },
+};
+
+// 插件
+const miniProgramExports = requireMiniProgram();
+miniProgramExports.greeting(); // "Greetings from Weixin MiniProgram!"
+```
+
+##### 插件目录结构
+
+```javascript
+plugin |
+  -components |
+  (-hello - component.js) |
+  (-hello - component.json) |
+  (-hello - component.wxml) |
+  (-hello - component.wxss) |
+  -pages |
+  (-hello - page.js) |
+  (-hello - page.json) |
+  (-hello - page.wxml) |
+  (-hello - page.wxss) |
+  -index.js |
+  -plugin.json;
+```
+
+##### 插件配置文件
+
+> 向使用者小程序开放的所有自定义组件、页面和 js 接口都必须在插件配置文件 `plugin.json` 中列出
+
+```json
+{
+  "publicComponents": {
+    "hello-component": "components/hello-component"
+  },
+  "pages": {
+    "hello-page": "pages/hello-page"
+  },
+  "main": "index.js"
+}
+```
+
+##### 引用小程序的自定义组件
+
+如果需要在页面或自定义组件中将一部分区域交给使用者小程序渲染, 但在插件中不能直接指定使用者小程序的自定义组件路径, 因此无法直接通过 `usingComponents` 得方式来引用, 需要使用 [抽象节点](#generic-node)
+
+插件自定义组件 plugin-view
+
+```json
+/* plugin/components/plugin-view.json */
+{
+  "componentGenerics": {
+    "mp-view": true
+  }
+}
+```
+
+```html
+<!-- plugin/components/plugin-view.wxml -->
+<view>小程序插件组件</view>
+<mp-view />
+```
+
+小程序中引用 plugin-view
+
+```html
+<!-- miniprogram/page/index.wxml -->
+<plugin-view generic:mp-view="comp-from-miniprogram" />
+```
+
+- 如果是插件页本身就是一个页面顶层组件, 小程序不会引用它, 无法通过 `generic:xxx=""` 的方式来指定抽象节点实现, 因此, 基础库 2.12.2 支持, 小程序可以在插件的配置里为插件页指定抽象节点实现
+
+例如插件页面名为 plugin-index
+
+```json
+/* app.json */
+{
+  /* ... */
+  "plugins": {
+    "plugin-name": {
+      "provider": "wxAPPID",
+      "version": "1.0.0",
+      /* 2.12.2 为插件页指定抽象节点实现 */
+      "genericsImplementation": {
+        "plugin-index": {
+          "mp-view": "components/comp-from-miniprogram"
+        }
+      }
+    }
+  }
+  /* ... */
+}
+```
+
+##### 其它注意事项
+
+- 插件可以预览和上传, 但没有体验版
+- 插件可以同时有多个线上版本, 由使用插件的使用者小程序决定具体使用的版本号
+- 手机预览和提审插件时, 会使用一个特殊的小程序来套用项目中 miniprogram 文件夹下的小程序, 从而预览插件
+
+插件之间互相调用
+
+- 插件不能直接引用其它插件, 必须在使用者小程序的配置中声明引用之后互相调用
+- 对于 js 接口, 可以使用 `requirePlugin`, 但不能直接在文件开头使用, 因为被依赖的插件可能还没有被初始化
 
 ### 基础能力
 
