@@ -736,7 +736,7 @@ plugin
     |- hello-page.wxml
     |- hello-page.wxss
   |- index.js
-  |- plugin.json;
+  |- plugin.json
 ```
 
 ##### 插件配置文件
@@ -817,6 +817,59 @@ plugin
 
 - 插件不能直接引用其它插件, 必须在使用者小程序的配置中声明引用之后互相调用
 - 对于 js 接口, 可以使用 `requirePlugin`, 但不能直接在文件开头使用, 因为被依赖的插件可能还没有被初始化
+
+#### 使用插件
+
+使用插件之前需要先在小程序管理后台添加插件, 如果插件无需申请, 添加后可直接使用, 否则需要申请并等待插件开发者通过后方可使用
+
+- 主包引用插件 
+
+```json
+/* app.json */
+{
+  "plugins": {
+    "plugin-name": {
+      "version": "1.0.0",
+      "provider": "wxAPPID",
+      /* 2.11.1 使用者小程序通过 export 向插件导出内容 */
+      /* 插件内使用 requireMiniProgram 全局函数获取使用者小程序导出的内容 */
+      "export": "index.js",
+    }
+  }
+}
+```
+
+```javascript
+// index.js
+module.exports = { whoami: 'Wechat MiniProgram' };
+
+// plugin.js
+requireMiniProgram().whoami; // 'Wechat MiniProgram'
+```
+
+- 分包引用插件
+  - 默认情况下, 仅能在分包内使用当前分包引用的插件, 除非通过 分包异步化 进行异步的跨分包引用
+  - 同一个插件不能被多个分包同时引用
+  - 如果基础库 < 2.9.0, 不能从分包外的页面直接跳入到分包内的插件页面, 需要先跳入分包内的非插件页面、再跳入同一分包内的插件页面
+  
+```json
+{
+  "subpackages": [{
+      "root": "packageA",
+      "name": "", /* 分包别名, 预下载时可用 */
+      "pages": [
+        "pages/page-a",
+        "pages/page-b",
+      ],
+      "plugins": {
+        "plugin-name": {
+          "version": "1.0.0",
+          "provider": "wxAPPID"
+        }
+      }
+    }]
+}
+```
 
 ### 基础能力
 
