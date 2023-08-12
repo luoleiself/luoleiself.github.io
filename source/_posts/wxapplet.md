@@ -723,20 +723,20 @@ miniProgramExports.greeting(); // "Greetings from Weixin MiniProgram!"
 
 ##### 插件目录结构
 
-```javascript
-plugin |
-  -components |
-  (-hello - component.js) |
-  (-hello - component.json) |
-  (-hello - component.wxml) |
-  (-hello - component.wxss) |
-  -pages |
-  (-hello - page.js) |
-  (-hello - page.json) |
-  (-hello - page.wxml) |
-  (-hello - page.wxss) |
-  -index.js |
-  -plugin.json;
+```conf
+plugin
+  |- components
+    |- hello-component.js
+    |- hello-component.json
+    |- hello-component.wxml
+    |- hello-component.wxss
+  |- pages
+    |- hello-page.js
+    |- hello-page.json
+    |- hello-page.wxml
+    |- hello-page.wxss
+  |- index.js
+  |- plugin.json;
 ```
 
 ##### 插件配置文件
