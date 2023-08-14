@@ -354,7 +354,8 @@ Page({
   - 配置项中使用驼峰写法(propertyName), 在 xml 文件中使用连字符写法(property-name)
 - data
 - methods
-- relations 组件关系定义
+- [relations](#relations) 组件关系定义
+- [observers](#observers) 数据监听器
 - externalClasses
 - options
   - multipleSlots 是否在组件定义时的选项中启用多 slot 支持
@@ -366,7 +367,7 @@ Page({
     - 'page-apply-shared' 此页面禁用 app.wxss, 同时, 页面 wxss 不会影响到其他自定义组件, 但设为 shared 的自定义组件会影响到页面
     - 'page-shared' 此页面禁用 app.wxss, 同时, 页面 wxss 样式会影响到其他设为 apply-shared 或 shared 的自定义组件, 也会受到设为 shared 的自定义组件的影响
   - addGlobalClass: true // 等价于设置 `styleIsolation: apply-shared`
-  - pureDataPattern 指定符合规则的字段为纯数据字段, 仅作为当前组件内部使用不参与页面渲染, 2.10.1 开始可以在 json 文件中配置
+  - [pureDataPattern](#pureDataPattern) 指定符合规则的字段为纯数据字段, 仅作为当前组件内部使用不参与页面渲染, 2.10.1 开始可以在 json 文件中配置
   - virtualHost: true 虚拟化组件节点
 - this.selectComponent() 父组件中获取子组件实例对象
 - triggerEvent 触发事件
@@ -376,7 +377,7 @@ Page({
     - attached 在组件实例进入页面节点树时执行, 大部分初始化工作可以在此方法内执行
     - ready 在组件布局完成后执行
     - moved 在组件实例被移动到节点树另一个位置时执行
-    - detached 在组件实例被从页面节点树移除时执行)
+    - detached 在组件实例被从页面节点树移除时执行
     - error 当组件方法抛出错误时执行, 基础库 2.4.1 支持
   - pageLifetimes 组件所在页面的生命周期
     - show 组件所在的页面被展示时执行
@@ -496,16 +497,16 @@ Page({
     - 多次引用 behavior, 生命周期只会被执行一次
 - 2.15.0 [behaviors 中声明的生命周期钩子会被 Page 和 Component 构造器中声明的同名钩子覆盖执行, 和上面文档中描述的不一样](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
-#### [组件之间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html)
+#### [组件之间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html) <em id="relations"></em> <!-- markdownlint-disable-line -->
 
 - type 目标组件的相对关系
   - parent
   - child
   - ancestor
   - descendant
-- linked 生命周期钩子, 当关系被建立在页面节点树中时触发，触发时机在组件 attached 生命周期之后
-- linkChanged 关系生命周期函数，当关系在页面节点树中发生改变时触发，触发时机在组件 moved 生命周期之后
-- unlinked 关系生命周期函数，当关系脱离页面节点树时触发，触发时机在组件 detached 生命周期之后
+- linked 关系生命周期函数, 当关系被建立在页面节点树中时触发, 触发时机在组件 attached 之后
+- linkChanged 关系生命周期函数, 当关系在页面节点树中发生改变时触发, 触发时机在组件 moved 之后
+- unlinked 关系生命周期函数, 当关系脱离页面节点树时触发, 触发时机在组件 detached 之后
 - target 关联的目标节点所应具有的 behavior，所有拥有这一 behavior 的组件节点都会被关联
 
 ```html
@@ -561,7 +562,7 @@ Component({
 });
 ```
 
-#### [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
+#### [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html) <em id="observers"></em> <!-- markdownlint-disable-line-->
 
 用于监听和响应任何属性和数据字段的变化,作用类似于计算属性
 
@@ -582,13 +583,13 @@ Component({
 });
 ```
 
-#### [纯数据字段](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/pure-data.html)
+#### [纯数据字段](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/pure-data.html) <em id="pureDataPattern"></em> <!-- markdownlint-disable-line -->
 
 - 纯数据字段是一些不用于界面渲染的 data 字段(包括 setData 设置的字段), 既不会展示在界面上,也不会传递给其他组件，可以用于提升页面更新性能
 
 - 属性中的纯数据字段的属性不会触发 observer, 需要使用 observers([数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)) 监听
-
 - 2.8.2 支持
+- 2.10.1 支持在 json 配置文件中配置 pureDataPattern 项
 
 ```javascript
 Component({
@@ -601,8 +602,6 @@ Component({
   },
 });
 ```
-
-- 2.10.1 支持在 json 配置文件中配置 pureDataPattern 项
 
 #### [抽象节点](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/generics.html) <em id="generic-node"></em> <!-- markdownlint-disable-line -->
 
@@ -744,6 +743,7 @@ plugin
 > 向使用者小程序开放的所有自定义组件、页面和 js 接口都必须在插件配置文件 `plugin.json` 中列出
 
 ```json
+/* plugin.json */
 {
   "publicComponents": {
     "hello-component": "components/hello-component"
@@ -822,20 +822,22 @@ plugin
 
 使用插件之前需要先在小程序管理后台添加插件, 如果插件无需申请, 添加后可直接使用, 否则需要申请并等待插件开发者通过后方可使用
 
-- 主包引用插件 
+- 主包引用插件
 
 ```json
 /* app.json */
 {
+  /* ... */
   "plugins": {
     "plugin-name": {
       "version": "1.0.0",
       "provider": "wxAPPID",
       /* 2.11.1 使用者小程序通过 export 向插件导出内容 */
       /* 插件内使用 requireMiniProgram 全局函数获取使用者小程序导出的内容 */
-      "export": "index.js",
+      "export": "index.js"
     }
   }
+  /* ... */
 }
 ```
 
@@ -851,25 +853,135 @@ requireMiniProgram().whoami; // 'Wechat MiniProgram'
   - 默认情况下, 仅能在分包内使用当前分包引用的插件, 除非通过 分包异步化 进行异步的跨分包引用
   - 同一个插件不能被多个分包同时引用
   - 如果基础库 < 2.9.0, 不能从分包外的页面直接跳入到分包内的插件页面, 需要先跳入分包内的非插件页面、再跳入同一分包内的插件页面
-  
+
 ```json
+/* app.json */
 {
-  "subpackages": [{
+  /* ... */
+  "subPackages": [
+    {
       "root": "packageA",
-      "name": "", /* 分包别名, 预下载时可用 */
-      "pages": [
-        "pages/page-a",
-        "pages/page-b",
-      ],
+      "name": "" /* 分包别名, 预下载时可用 */,
+      "pages": ["pages/page-a", "pages/page-b"],
       "plugins": {
         "plugin-name": {
           "version": "1.0.0",
           "provider": "wxAPPID"
         }
       }
-    }]
+    }
+  ]
+  /* ... */
 }
 ```
+
+##### 跳转插件页面
+
+`plugin://PLUGIN_NAME/PLUGIN_PAGE`
+
+```html
+<navigator url="plugin://PLUGIN_NAME/PLUGIN_PAGE">To plugin page!</navigator>
+```
+
+#### 插件使用组件的限制
+
+不能在插件页面中使用
+
+- 开放能力(open-type)为以下之一的 button
+  - contact(打开客服会话)
+  - getPhoneNumber(获取用户手机号)
+  - getUserInfo(获取用户信息)
+- open-data
+- web-view
+
+以下组件在插件中使用需要基础库版本支持
+
+- navigator 需要基础库 2.1.0
+- live-player 和 live-pusher 需要基础库 2.3.0
+
+#### 插件功能页
+
+> 2.1.0 支持, 使用插件功能页之前, 先激活功能页特性, 配置对应的功能页函数, 再使用 `functional-page-navigator` 组件跳转到插件功能页
+
+插件功能页是插件所有者小程序中的一个特殊页面, 使用插件功能页可以完成某些接口或 API 在插件中的调用限制
+
+- 插件所有者小程序配置激活插件功能页
+
+```json
+/* app.json */
+{
+  /* ... */
+  "functionalPages": {
+    /* independent: true 表示插件功能页的代码独立于其它代码,*/
+    /* 这意味着插件功能页可以被独立下载、加载, 具有更好的性能表现 */
+    /* 但同时使插件功能页目录 functional-page/ 不能 require 这个目录以外的文件(反之亦然) */
+    "independent": true
+  },
+  "functionalPages": true /* 旧式写法 */
+  /* ... */
+}
+```
+
+- 跳转到插件功能页
+  - version 跳转到的小程序版本, 线上版本必须是 release
+  - name 要跳转的功能页
+  - args 功能页参数, 格式与具体功能页相关
+  - bind:success 功能页返回且操作成功时触发, detail 格式与具体功能页相关
+  - bind:fail 功能页返回且操作失败时触发, detail 格式与具体功能页相关
+  - bind:cancel 因用户操作从功能页返回时触发
+
+不能使用 wx.navigateTo 进行跳转, 需要使用 `functional-page-navigator` 组件跳转
+
+```html
+<functional-page-navigator
+  name="loginAndGetUserInfo"
+  args=""
+  version=""
+  bind:success=""
+  ><button>登录到插件</button>
+</functional-page-navigator>
+```
+
+##### 用户信息功能页
+
+用于帮助插件获取用户信息, 相当于 wx.login 和 wx.getUserInfo 的功能
+
+##### 支付功能页
+
+支付功能页用于帮助完成支付, 相当于 wx.requestPayment 的功能
+
+插件使用支付功能时, 需要在管理后台进行额外的权限申请, 主体为个人小程序在使用插件时, 无论是否通过申请都无法正常使用插件里的支付功能
+
+- 2.22.1 开始, 插件内可以直接调用 wx.requestPluginPayment 实现跳转支付, 通过 `functional-page-navigator` 跳转将被废弃
+- 满足以下条件时, 调用 wx.requestPluginPayment 或点击 navigator 将直接拉起支付收银台, 跳过支付功能页
+  - 小程序与插件绑定在同一个 open 平台账号上
+  - 小程序与插件均为 open 账号的同主体/关联主体时
+
+```javascript
+// functional-page/request-payment.js
+exports.beforeRequestPayment = function (paymentArgs, callback) {
+  // paymentArgs 通过 functional-page-navigator 的 arg 参数中 paymentArgs 字段传递到此功能页的自定义数据
+  // callback 回调函数, 调用该函数后, 小程序将发起支付, 类似于 wx.requestPayment
+};
+```
+
+###### 配置功能页函数
+
+支付功能页需要在插件中提供一个函数来响应插件中的支付调用, 即在插件中跳转到支付功能页或调用 wx.requestPluginPayment 时, 这个函数就会在合适的时机被调用来帮助完成支付, 如果不提供功能页函数, 功能页将通过 fail 事件返回错误
+
+支付功能页函数应以导出函数的方式提供在插件所有者小程序的根目录下的 functional-page/request-payment.js 文件中名为 beforeRequestPayment
+
+##### 收获地址功能页
+
+- 2.16.1 开始, 插件内可直接使用 wx.chooseAddress 实现对应的功能, 点击 `functional-page-navigator` 将不再进入功能页
+
+##### 发票功能页
+
+- 2.16.1 开始, 插件内可直接使用 wx.chooseInvoice 实现对应的功能, 点击 `functional-page-navigator` 将不再进入功能页
+
+##### 发票抬头功能页
+
+- 2.16.1 开始, 插件内可直接使用 wx.chooseInvoiceTitle 实现对应的功能, 点击 `functional-page-navigator` 将不再进入功能页
 
 ### 基础能力
 
