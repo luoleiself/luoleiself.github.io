@@ -66,7 +66,9 @@ tags:
 
 #### [wx.openSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html)
 
-- 2.3.0 开始, [打开小程序设置页](https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008) 改为用户行为触发, 直接调用此 API 无效
+- 2.3.0 开始, [打开小程序设置页](https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008) 
+
+改为由用户行为触发, 直接调用此 API 无效, 需要在页面中使用 button 组件
 
 ```html
 <!-- 方法一 -->
