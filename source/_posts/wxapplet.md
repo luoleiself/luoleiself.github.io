@@ -66,7 +66,7 @@ tags:
 
 #### [wx.openSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html)
 
-- 2.3.0 开始, [打开小程序设置页](https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008) 
+- 2.3.0 开始, [打开小程序设置页](https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008)
 
 改为由用户行为触发, 直接调用此 API 无效, 需要在页面中使用 button 组件
 
@@ -350,15 +350,15 @@ Page({
 
 #### [构造器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/component.html)
 
-- behaviors
-  - 自定义组件引入的 behaviors 定义的方法在 attached 钩子函数中获取不到，需要在 ready 中调用
-- properties
-  - 配置项中使用驼峰写法(propertyName), 在 xml 文件中使用连字符写法(property-name)
 - data
 - methods
+- externalClasses 组件接收的外部样式类, 一个字符串数组
+- properties
+  - 配置项中使用驼峰写法(propertyName), 在 xml 文件中使用连字符写法(property-name)
+- behaviors
+  - 自定义组件引入的 behaviors 定义的方法在 attached 钩子函数中获取不到，需要在 ready 中调用
 - [relations](#relations) 组件关系定义
 - [observers](#observers) 数据监听器
-- externalClasses
 - options
   - multipleSlots 是否在组件定义时的选项中启用多 slot 支持
   - styleIsolation 组件样式隔离选项, 取值 'isolated', 'apply-shared', 'shared'
