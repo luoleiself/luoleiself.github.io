@@ -127,7 +127,8 @@ if (result && result[0] == `micromessenger`) {
 
 #### [注册页面](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/page.html)
 
-- 2.9.2 支持 `behaviors` 配置项, 使多个页面可以共享相同的数据和方法
+- options 2.10.1, 页面的组件选项, 同 [Component 构造器](#zidingyizujian)中的 options
+- behaviors 2.9.2, 使多个页面可以共享相同的数据和方法
 
 ```javascript
 // my-behavior.js
@@ -371,9 +372,8 @@ Page({
   - addGlobalClass: true // 等价于设置 `styleIsolation: apply-shared`
   - [pureDataPattern](#pureDataPattern) 指定符合规则的字段为纯数据字段, 仅作为当前组件内部使用不参与页面渲染, 2.10.1 开始可以在 json 文件中配置
   - virtualHost: true 虚拟化组件节点
-- this.selectComponent() 父组件中获取子组件实例对象
-- triggerEvent 触发事件
 - 生命周期
+
   - lifetimes 2.2.3 支持, 优先级最高会覆盖外部定义的生命周期钩子
     - created 在组件实例刚刚被创建时执行，注意此时不能调用 setData
     - attached 在组件实例进入页面节点树时执行, 大部分初始化工作可以在此方法内执行
@@ -386,6 +386,11 @@ Page({
     - hide 组件所在的页面被隐藏时执行
     - resize 组件所在的页面尺寸变化时执行
     - routeDone 组件所在页面路由动画完成时执行, 基础库 2.31.2 支持
+
+- [抽象节点](#generic-node)
+
+- this.selectComponent(selector) 父组件中获取子组件实例对象
+- this.triggerEvent(evtName, evtDetail, evtOptions) 组件触发事件
 
 #### [引用](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
 
