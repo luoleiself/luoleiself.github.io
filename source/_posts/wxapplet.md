@@ -78,6 +78,48 @@ tags:
 openSetting(){ wx.openSetting() }
 ```
 
+#### [wx.getSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.getSetting.html)
+
+- 2.10.1 开始, withSubscriptions 参数控制是否同时获取用户订阅消息的订阅状态, 默认 false
+
+```javascript
+wx.getSetting({ withSubscriptions: true })
+  .then((res) => {
+    console.log(res.authSetting); // 用户授权结果
+    console.log(ers.subscriptionsSetting); // 当参数 withSubscriptions 为 true 时返回此结果
+    /*{
+      mainSwitch: true, // 订阅消息总开关
+      // itemSettings 只返回用户勾选过订阅面板中的 "总是保持以上选择, 不再询问" 的订阅消息
+      itemSettings: {
+        // 每一项开关
+        // 每一项已授权键为消息模板的 id, 值为 accept, reject, ban, filter 其中一种
+      } 
+    }*/
+    console.log(res.miniprogramAuthSetting); // 在插件种调用时, 返回宿主小程序的用户授权结果
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+```
+
+#### [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html)
+
+- [SubscriptionsSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/SubscriptionsSetting.html)
+- 一次性模板 id 和永久模板 id 不能同时混用
+- IOS 7.0.6/Android 7.0.7 之后支持多个同类型消息模板
+- 2.8.2 开始, 用户发生点击行为或者发起支付回调后, 才可以调起订阅消息界面
+  - 可以在事件处理函数中使用同步调用方式
+  - 不能在异步回调中调用, 否则报错
+
+```javascript
+wx.getSetting({ withSubscriptions: true }).then((res) => {
+  // requestSubscribeMessage:fail can only be invoked by user TAP gesture.
+  wx.requestSubscribeMessage({ tmplIds: [] /*消息模板 id*/ })
+    .then((res) => {})
+    .catch((err) => {});
+});
+```
+
 #### 组件[behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
 - 自定义组件混入 behaviors, 在 attached 钩子函数中调用混入的方法获取不到, 需要在 ready 中调用
@@ -94,8 +136,6 @@ openSetting(){ wx.openSetting() }
   - 2.1.2 支持
 - [wx.getAccountInfoSync](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html) 获取当前帐号信息, 线上小程序版本号仅支持在正式版小程序中获取, 开发版和体验版中无法获取
   - 2.2.2 支持
-
-<!-- more -->
 
 #### 单页应用添加微信分享打包后分享时好好坏
 
@@ -122,6 +162,8 @@ if (result && result[0] == `micromessenger`) {
   // 非小程序内
 }
 ```
+
+<!-- more -->
 
 ### 逻辑层
 
