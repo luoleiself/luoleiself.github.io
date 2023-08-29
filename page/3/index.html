@@ -448,7 +448,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-29 18:21:21" itemprop="dateModified" datetime="2023-08-29T18:21:21+08:00">2023-08-29</time>
+                <time title="修改时间：2023-08-29 18:25:28" itemprop="dateModified" datetime="2023-08-29T18:25:28+08:00">2023-08-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -549,30 +549,23 @@
 
 <h4 id="wx-requestSubscribeMessage-订阅消息"><a href="#wx-requestSubscribeMessage-订阅消息" class="headerlink" title="wx.requestSubscribeMessage 订阅消息"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html">wx.requestSubscribeMessage</a> 订阅消息</h4><p>调起客户端小程序订阅消息界面, 返回用户订阅消息的操作结果, 如果用户勾选了订阅消息界面的 <strong>总是保持以上选择，不再询问</strong> 选项时, 消息模板会被记录在用户的小程序设置页, 并且在每次调用此 API 时不再弹出订阅消息界面(只返回订阅消息结果), 通过 <code>wx.getSetting</code> API 可以获取用户订阅消息的订阅状态</p>
 <ul>
-<li><p>一次性模板 id 和永久模板 id 不能同时混用</p>
-</li>
-<li><p>IOS 7.0.6/Android 7.0.7 之后支持多个同类型消息模板</p>
-</li>
-<li><p>2.8.2 开始, 用户发生点击行为或者发起支付回调后, 才可以调起订阅消息界面</p>
-<ul>
+<li>一次性模板 id 和永久模板 id 不能同时混用</li>
+<li>IOS 7.0.6/Android 7.0.7 之后支持多个同类型消息模板</li>
+<li>2.8.2 开始, 用户发生点击行为或者发起支付回调后, 才可以调起订阅消息界面<ul>
 <li>可以在事件处理函数中使用同步调用方式</li>
 <li>不能在异步回调中调用, 否则报错(requestSubscribeMessage:fail can only be invoked by user TAP gesture.)</li>
 </ul>
 </li>
-<li><p>2.10.0 开始, 支持订阅语音消息提醒</p>
-</li>
-<li><p><strong>总是保持以上选择，不再询问</strong></p>
-<ul>
+<li>2.10.0 开始, 支持订阅语音消息提醒</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">wx.<span class="title function_">requestSubscribeMessage</span>(&#123; <span class="attr">tmplIds</span>: [] <span class="comment">/*消息模板 id*/</span> &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// API 调用成功之后返回的参数</span></span><br><span class="line">    &#123;</span><br><span class="line">      [<span class="variable constant_">TEMPLATE_ID</span>]: <span class="string">&#x27;accept&#x27;</span>, <span class="comment">// reject, ban, filter</span></span><br><span class="line">      <span class="attr">errMsg</span>: <span class="string">&#x27;requestSubscribeMessage:ok&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// API 调用失败返回的参数(部分状态码)</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">errCode</span>: <span class="number">20004</span>,</span><br><span class="line">      <span class="attr">errMsg</span>: <span class="string">&quot;requestSubscribeMessage:fail:The main switch is switched off&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<h5 id="总是保持以上选择，不再询问"><a href="#总是保持以上选择，不再询问" class="headerlink" title="总是保持以上选择，不再询问"></a><strong>总是保持以上选择，不再询问</strong></h5><ul>
 <li>已勾选, 每次调用此 API 不再弹出订阅消息界面(只返回记录在用户的小程序设置页中的订阅消息结果)</li>
 <li>未勾选, 每次调用此 API 都会弹出订阅消息界面</li>
 </ul>
-</li>
-<li><p>小程序订阅消息的总开关 <strong>关闭</strong> 时, 调用此 API 会报一个小程序错误, 可以使用 App.onError 或者 wx.onError 捕获错误</p>
-</li>
-</ul>
+<h5 id="订阅消息的总开关"><a href="#订阅消息的总开关" class="headerlink" title="订阅消息的总开关"></a>订阅消息的总开关</h5><p>订阅消息的总开关 <strong>关闭</strong> 时, 调用此 API 会报一个小程序错误, 可以使用 App.onError 或者 wx.onError 捕获错误</p>
 <p><img src="/images/wx-2.jpg" alt="wx-2"></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">wx.<span class="title function_">requestSubscribeMessage</span>(&#123; <span class="attr">tmplIds</span>: [] <span class="comment">/*消息模板 id*/</span> &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// API 调用成功之后返回的参数</span></span><br><span class="line">    &#123;</span><br><span class="line">      [<span class="variable constant_">TEMPLATE_ID</span>]: <span class="string">&#x27;accept&#x27;</span>, <span class="comment">// reject, ban, filter</span></span><br><span class="line">      <span class="attr">errMsg</span>: <span class="string">&#x27;requestSubscribeMessage:ok&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// API 调用失败返回的参数(部分状态码)</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">errCode</span>: <span class="number">20004</span>,</span><br><span class="line">      <span class="attr">errMsg</span>: <span class="string">&quot;requestSubscribeMessage:fail:The main switch is switched off&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-
 <h4 id="组件behaviors"><a href="#组件behaviors" class="headerlink" title="组件behaviors"></a>组件<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html">behaviors</a></h4><ul>
 <li>自定义组件混入 behaviors, 在 attached 钩子函数中调用混入的方法获取不到, 需要在 ready 中调用</li>
 </ul>
