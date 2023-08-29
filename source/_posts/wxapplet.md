@@ -60,7 +60,7 @@ tags:
 <!-- getRealtimePhoneNumber 回调函数参数不再包含 encryptedData 和 iv, 仅可通过返回的 code 换取手机号-->
 <button
   open-type="getRealtimePhoneNumber"
-  bindgetrealtimephonenumber="getrealtimephonenumber"
+  bind:getrealtimephonenumber="getrealtimephonenumber"
 ></button>
 ```
 
@@ -72,15 +72,18 @@ tags:
 
 ```html
 <!-- 方法一 -->
-<button open-type="openSetting" bindopensetting="callback">打开设置页</button>
+<button open-type="openSetting" bind:opensetting="callback">打开设置页</button>
 <!-- 方法二 -->
-<button bindtap="openSetting">打开设置页</button>
+<button bind:tap="openSetting">打开设置页</button>
 openSetting(){ wx.openSetting() }
 ```
 
 #### [wx.getSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.getSetting.html)
 
 - 2.10.1 开始, withSubscriptions 参数控制是否同时获取用户订阅消息的订阅状态, 默认 false
+- [SubscriptionsSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/SubscriptionsSetting.html) 订阅消息设置
+  - mainSwitch 布尔值, 标识订阅消息的总开关
+  - itemSettings 一个对象, 包含每一项订阅消息的订阅状态
 
 ```javascript
 wx.getSetting({ withSubscriptions: true })
@@ -102,22 +105,44 @@ wx.getSetting({ withSubscriptions: true })
   });
 ```
 
-#### [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html)
+#### [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html) 订阅消息
 
-- [SubscriptionsSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/SubscriptionsSetting.html)
+调起客户端小程序订阅消息界面, 返回用户订阅消息的操作结果, 如果用户勾选了订阅消息界面的 **总是保持以上选择，不再询问** 选项时, 消息模板会被记录在用户的小程序设置页, 并且在每次调用此 API 时不再弹出订阅消息界面(只返回订阅消息结果), 通过 `wx.getSetting` API 可以获取用户订阅消息的订阅状态
+
 - 一次性模板 id 和永久模板 id 不能同时混用
 - IOS 7.0.6/Android 7.0.7 之后支持多个同类型消息模板
 - 2.8.2 开始, 用户发生点击行为或者发起支付回调后, 才可以调起订阅消息界面
+
   - 可以在事件处理函数中使用同步调用方式
-  - 不能在异步回调中调用, 否则报错
+  - 不能在异步回调中调用, 否则报错(requestSubscribeMessage:fail can only be invoked by user TAP gesture.)
+
+- 2.10.0 开始, 支持订阅语音消息提醒
+
+- **总是保持以上选择，不再询问**
+
+  - 已勾选, 每次调用此 API 不再弹出订阅消息界面(只返回记录在用户小程序设置页中的订阅消息结果)
+  - 未勾选, 每次调用此 API 都会弹出订阅消息界面
+
+- 小程序订阅消息的总开关 **关闭** 时, 调用此 API 会报一个小程序错误, 可以使用 App.onError 或者 wx.onError 捕获错误
+
+![wx-2](/images/wx-2.jpg)
 
 ```javascript
-wx.getSetting({ withSubscriptions: true }).then((res) => {
-  // requestSubscribeMessage:fail can only be invoked by user TAP gesture.
-  wx.requestSubscribeMessage({ tmplIds: [] /*消息模板 id*/ })
-    .then((res) => {})
-    .catch((err) => {});
-});
+wx.requestSubscribeMessage({ tmplIds: [] /*消息模板 id*/ })
+  .then((res) => {
+    // API 调用成功之后返回的参数
+    {
+      [TEMPLATE_ID]: 'accept', // reject, ban, filter
+      errMsg: 'requestSubscribeMessage:ok'
+    }
+  })
+  .catch((err) => {
+    // API 调用失败返回的参数(部分状态码)
+    {
+      errCode: 20004,
+      errMsg: "requestSubscribeMessage:fail:The main switch is switched off"
+    }
+  });
 ```
 
 #### 组件[behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
