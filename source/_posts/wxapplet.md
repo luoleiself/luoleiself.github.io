@@ -112,20 +112,9 @@ wx.getSetting({ withSubscriptions: true })
 - 一次性模板 id 和永久模板 id 不能同时混用
 - IOS 7.0.6/Android 7.0.7 之后支持多个同类型消息模板
 - 2.8.2 开始, 用户发生点击行为或者发起支付回调后, 才可以调起订阅消息界面
-
   - 可以在事件处理函数中使用同步调用方式
   - 不能在异步回调中调用, 否则报错(requestSubscribeMessage:fail can only be invoked by user TAP gesture.)
-
 - 2.10.0 开始, 支持订阅语音消息提醒
-
-- **总是保持以上选择，不再询问**
-
-  - 已勾选, 每次调用此 API 不再弹出订阅消息界面(只返回记录在用户的小程序设置页中的订阅消息结果)
-  - 未勾选, 每次调用此 API 都会弹出订阅消息界面
-
-- 小程序订阅消息的总开关 **关闭** 时, 调用此 API 会报一个小程序错误, 可以使用 App.onError 或者 wx.onError 捕获错误
-
-![wx-2](/images/wx-2.jpg)
 
 ```javascript
 wx.requestSubscribeMessage({ tmplIds: [] /*消息模板 id*/ })
@@ -144,6 +133,17 @@ wx.requestSubscribeMessage({ tmplIds: [] /*消息模板 id*/ })
     }
   });
 ```
+
+##### **总是保持以上选择，不再询问**
+
+- 已勾选, 每次调用此 API 不再弹出订阅消息界面(只返回记录在用户的小程序设置页中的订阅消息结果)
+- 未勾选, 每次调用此 API 都会弹出订阅消息界面
+
+##### 订阅消息的总开关
+
+订阅消息的总开关 **关闭** 时, 调用此 API 会报一个小程序错误, 可以使用 App.onError 或者 wx.onError 捕获错误
+
+![wx-2](/images/wx-2.jpg)
 
 #### 组件[behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
