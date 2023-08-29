@@ -448,7 +448,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-14 17:01:53" itemprop="dateModified" datetime="2023-08-14T17:01:53+08:00">2023-08-14</time>
+                <time title="修改时间：2023-08-29 18:18:38" itemprop="dateModified" datetime="2023-08-29T18:18:38+08:00">2023-08-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -465,13 +465,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>19k</span>
+              <span>20k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>17 分钟</span>
+              <span>19 分钟</span>
             </span>
 
         </div>
@@ -529,12 +529,49 @@
 <li><p>20230826 开始收费, 分为 手机号快速验证组件 和 手机号实时验证组件</p>
 </li>
 </ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- getRealtimePhoneNumber 回调函数参数不再包含 encryptedData 和 iv, 仅可通过返回的 code 换取手机号--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span></span></span><br><span class="line"><span class="tag">  <span class="attr">open-type</span>=<span class="string">&quot;getRealtimePhoneNumber&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">bindgetrealtimephonenumber</span>=<span class="string">&quot;getrealtimephonenumber&quot;</span></span></span><br><span class="line"><span class="tag">&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- getRealtimePhoneNumber 回调函数参数不再包含 encryptedData 和 iv, 仅可通过返回的 code 换取手机号--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span></span></span><br><span class="line"><span class="tag">  <span class="attr">open-type</span>=<span class="string">&quot;getRealtimePhoneNumber&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">bind:getrealtimephonenumber</span>=<span class="string">&quot;getrealtimephonenumber&quot;</span></span></span><br><span class="line"><span class="tag">&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="wx-openSetting"><a href="#wx-openSetting" class="headerlink" title="wx.openSetting"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html">wx.openSetting</a></h4><ul>
-<li>2.3.0 开始, <a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008">打开小程序设置页</a> 改为用户行为触发, 直接调用此 API 无效</li>
+<li>2.3.0 开始, <a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008">打开小程序设置页</a></li>
 </ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 方法一 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">open-type</span>=<span class="string">&quot;openSetting&quot;</span> <span class="attr">bindopensetting</span>=<span class="string">&quot;callback&quot;</span>&gt;</span>打开设置页<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 方法二 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">bindtap</span>=<span class="string">&quot;openSetting&quot;</span>&gt;</span>打开设置页<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">openSetting()&#123; wx.openSetting() &#125;</span><br></pre></td></tr></table></figure>
+<p>改为由用户行为触发, 直接调用此 API 无效, 需要在页面中使用 button 组件</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 方法一 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">open-type</span>=<span class="string">&quot;openSetting&quot;</span> <span class="attr">bind:opensetting</span>=<span class="string">&quot;callback&quot;</span>&gt;</span>打开设置页<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 方法二 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">bind:tap</span>=<span class="string">&quot;openSetting&quot;</span>&gt;</span>打开设置页<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">openSetting()&#123; wx.openSetting() &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-getSetting"><a href="#wx-getSetting" class="headerlink" title="wx.getSetting"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.getSetting.html">wx.getSetting</a></h4><ul>
+<li>2.10.1 开始, withSubscriptions 参数控制是否同时获取用户订阅消息的订阅状态, 默认 false</li>
+<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/SubscriptionsSetting.html">SubscriptionsSetting</a> 订阅消息设置<ul>
+<li>mainSwitch 布尔值, 标识订阅消息的总开关</li>
+<li>itemSettings 一个对象, 包含每一项订阅消息的订阅状态</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">wx.<span class="title function_">getSetting</span>(&#123; <span class="attr">withSubscriptions</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(res.<span class="property">authSetting</span>); <span class="comment">// 用户授权结果</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(ers.<span class="property">subscriptionsSetting</span>); <span class="comment">// 当参数 withSubscriptions 为 true 时返回此结果</span></span><br><span class="line">    <span class="comment">/*&#123;</span></span><br><span class="line"><span class="comment">      mainSwitch: true, // 订阅消息总开关</span></span><br><span class="line"><span class="comment">      // itemSettings 只返回用户勾选过订阅面板中的 &quot;总是保持以上选择, 不再询问&quot; 的订阅消息</span></span><br><span class="line"><span class="comment">      itemSettings: &#123;</span></span><br><span class="line"><span class="comment">        // 每一项开关</span></span><br><span class="line"><span class="comment">        // 每一项已授权键为消息模板的 id, 值为 accept, reject, ban, filter 其中一种</span></span><br><span class="line"><span class="comment">      &#125; </span></span><br><span class="line"><span class="comment">    &#125;*/</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(res.<span class="property">miniprogramAuthSetting</span>); <span class="comment">// 在插件种调用时, 返回宿主小程序的用户授权结果</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(err);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-requestSubscribeMessage-订阅消息"><a href="#wx-requestSubscribeMessage-订阅消息" class="headerlink" title="wx.requestSubscribeMessage 订阅消息"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html">wx.requestSubscribeMessage</a> 订阅消息</h4><p>调起客户端小程序订阅消息界面, 返回用户订阅消息的操作结果, 如果用户勾选了订阅消息界面的 <strong>总是保持以上选择，不再询问</strong> 选项时, 消息模板会被记录在用户的小程序设置页, 并且在每次调用此 API 时不再弹出订阅消息界面(只返回订阅消息结果), 通过 <code>wx.getSetting</code> API 可以获取用户订阅消息的订阅状态</p>
+<ul>
+<li><p>一次性模板 id 和永久模板 id 不能同时混用</p>
+</li>
+<li><p>IOS 7.0.6/Android 7.0.7 之后支持多个同类型消息模板</p>
+</li>
+<li><p>2.8.2 开始, 用户发生点击行为或者发起支付回调后, 才可以调起订阅消息界面</p>
+<ul>
+<li>可以在事件处理函数中使用同步调用方式</li>
+<li>不能在异步回调中调用, 否则报错(requestSubscribeMessage:fail can only be invoked by user TAP gesture.)</li>
+</ul>
+</li>
+<li><p>2.10.0 开始, 支持订阅语音消息提醒</p>
+</li>
+<li><p><strong>总是保持以上选择，不再询问</strong></p>
+<ul>
+<li>已勾选, 每次调用此 API 不再弹出订阅消息界面(只返回记录在用户小程序设置页中的订阅消息结果)</li>
+<li>未勾选, 每次调用此 API 都会弹出订阅消息界面</li>
+</ul>
+</li>
+<li><p>小程序订阅消息的总开关 <strong>关闭</strong> 时, 调用此 API 会报一个小程序错误, 可以使用 App.onError 或者 wx.onError 捕获错误</p>
+</li>
+</ul>
+<p><img src="/images/wx-2.jpg" alt="wx-2"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">wx.<span class="title function_">requestSubscribeMessage</span>(&#123; <span class="attr">tmplIds</span>: [] <span class="comment">/*消息模板 id*/</span> &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// API 调用成功之后返回的参数</span></span><br><span class="line">    &#123;</span><br><span class="line">      [<span class="variable constant_">TEMPLATE_ID</span>]: <span class="string">&#x27;accept&#x27;</span>, <span class="comment">// reject, ban, filter</span></span><br><span class="line">      <span class="attr">errMsg</span>: <span class="string">&#x27;requestSubscribeMessage:ok&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// API 调用失败返回的参数(部分状态码)</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">errCode</span>: <span class="number">20004</span>,</span><br><span class="line">      <span class="attr">errMsg</span>: <span class="string">&quot;requestSubscribeMessage:fail:The main switch is switched off&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
 
 <h4 id="组件behaviors"><a href="#组件behaviors" class="headerlink" title="组件behaviors"></a>组件<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html">behaviors</a></h4><ul>
 <li>自定义组件混入 behaviors, 在 attached 钩子函数中调用混入的方法获取不到, 需要在 ready 中调用</li>
@@ -553,6 +590,12 @@
 </ul>
 </li>
 </ul>
+<h4 id="单页应用添加微信分享打包后分享时好好坏"><a href="#单页应用添加微信分享打包后分享时好好坏" class="headerlink" title="单页应用添加微信分享打包后分享时好好坏"></a>单页应用添加微信分享打包后分享时好好坏</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://developer.work.weixin.qq.com/document/path/90542">企微</a> 微信 JSSDK 签名的 url 和当前显示的 url 不一致导致自定义分享信息失败,在路由钩子函数或者监听路由变化时重新请求接口签名</li>
+<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/000088945c4320dae71d677d15b400?jumpto=reply&parent_commentid=000062cf8fcaf80be71d58bd15b4&commentid=000a68a75ac9188cf81d2be8353c">微信</a> 微信中打开普通 URL 链接分享仍为普通 URL 链接, 卡片形式的链接不受此影响</li>
+</ul>
+<h4 id="小程序内嵌-H5-页区分运行环境"><a href="#小程序内嵌-H5-页区分运行环境" class="headerlink" title="小程序内嵌 H5 页区分运行环境"></a>小程序内嵌 H5 页区分运行环境</h4><p>小程序内嵌 H5 页区分运行环境是小程序还是 H5 执行不同逻辑调用 wx.miniProgram.getEnv 依赖微信 JSSDK 1.4 以上版本, 微信 JSSDK 1.0 报错</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ua = navigator.<span class="property">userAgent</span>.<span class="title function_">toLowerCase</span>();</span><br><span class="line"><span class="keyword">var</span> result = ua.<span class="title function_">match</span>(<span class="regexp">/MicroMessenger/i</span>);</span><br><span class="line"><span class="keyword">if</span> (result &amp;&amp; result[<span class="number">0</span>] == <span class="string">`micromessenger`</span>) &#123;</span><br><span class="line">  <span class="comment">//ios的ua中无miniProgram，但都有MicroMessenger（表示是微信浏览器）</span></span><br><span class="line">  wx.<span class="property">miniProgram</span>.<span class="title function_">getEnv</span>(<span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">miniprogram</span>) &#123;</span><br><span class="line">      <span class="comment">// 小程序内</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 非小程序内</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// 非小程序内</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/12/869c5fdf0d37/#more" rel="contents">
@@ -1531,12 +1574,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">429k</span>
+    <span title="站点总字数">431k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">6:30</span>
+    <span title="站点阅读时长">6:32</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
