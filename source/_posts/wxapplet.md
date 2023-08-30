@@ -95,7 +95,7 @@ wx.getSetting({ withSubscriptions: true })
       // itemSettings 只返回用户勾选过订阅面板中的 "总是保持以上选择, 不再询问" 的订阅消息
       itemSettings: {
         // 每一项开关
-        // 每一项已授权键为消息模板的 id, 值为 accept, reject, ban, filter 其中一种
+        // 每一项键为消息模板 id, 值为 accept, reject, ban, filter
       } 
     }*/
     console.log(res.miniprogramAuthSetting); // 在插件种调用时, 返回宿主小程序的用户授权结果
@@ -127,6 +127,7 @@ wx.requestSubscribeMessage({ tmplIds: [] /*消息模板 id*/ })
   })
   .catch((err) => {
     // API 调用失败返回的参数(部分状态码)
+    // 使用 Promise 方式无法捕获 MiniProgramError
     {
       errCode: 20004,
       errMsg: "requestSubscribeMessage:fail:The main switch is switched off"
