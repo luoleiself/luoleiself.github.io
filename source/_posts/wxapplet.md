@@ -728,9 +728,11 @@ generic-node
   "component": true,
   "usingComponents": {},
   "componentGenerics": {
-    "selectable": true /* 在 componentGenerics 中声明抽象节点*/,
+    /* 在 componentGenerics 中声明抽象节点名为 selectable, 可以命名为任意名字 */
+    "selectable": true,
     "selectable": {
-      "default": "path/to/default/component" /* 为抽象节点指定默认组件 */
+      /* 为抽象节点指定默认组件 */
+      "default": "path/to/default/component"
     }
   }
 }
@@ -752,14 +754,21 @@ generic-node
 
 - 2.12.0 支持
 
-#### [占位组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/placeholder.html)
+#### [占位组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/placeholder.html) <em id="componentplaceholder"></em> <!-- markdownlint-disable-line -->
 
-在使用 [分包异步化](https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/async.html) 或 用时注入 等特性时, 不可用的自定义组件使用 占位组件 临时替代渲染
+在使用 [分包异步化](https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/async.html) 或 用时注入 等特性时, 不可用的自定义组件使用 占位组件 临时替代渲染, 使渲染过程不被阻塞
 
-- 2.17.3 支持
+- 2.11.2 支持
 
 ```json
+/* 组件 comp-a 的占位组件为内置组件 view */
+/* 组件 comp-b 的占位组件为自定义组件 comp-c */
 {
+  "usingComponents": {
+    "comp-a": "../comp/compA",
+    "comp-b": "../comp/compB",
+    "comp-c": "../comp/compC"
+  },
   "componentPlaceholder": {
     "comp-a": "view",
     "comp-b": "comp-c"
