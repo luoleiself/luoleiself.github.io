@@ -344,13 +344,19 @@ customElements.define('my-element', MyElement); // 注册该自定义元素
 document.body.append(new MyElement(/* 初始化 prop */));
 ```
 
-## 组合式 API <em id="combinedapi"></em> <!-- markdownlint-disable-line -->
+## 组合式 API <em id="compositionapi"></em> <!-- markdownlint-disable-line -->
+
+组合式 API(composition API) 是一系列 API 的集合, 能够通过函数而不是声明选项的方式书写 Vue 组件来实现更加简洁高效的逻辑复用(选项式 API 中主要的逻辑复用机制是 mixins), 涵盖以下方面的 API
+
+- 响应式 API: 例如 [ref()](#ref) 和 [reactive()](#reactive), 可以直接创建响应式状态、计算属性和侦听器
+- 生命周期钩子: 例如 [onMounted()](#onMounted) 和 [onUnmounted()](#onUnmounted), 可以在组件各个生命周期阶段添加逻辑
+- 依赖注入: 例如 provide() 和 inject(), 可以在使用响应式 API 时, 利用 Vue 的依赖注入系统
 
 ### setup()
 
 > 对于结合单文件组件使用的组合式 API 推荐使用 `<script setup>` 语法
 
-在组件中使用组合式 API 的入口钩子函数
+`setup()` 是在组件中使用组合式 API 的入口, 通常在两个情况下使用
 
 - 需要在**非单文件组件**中使用组合式 API 时
 - 需要在基于选项式 API 的组件中集成基于组合式 API 的代码时
@@ -2531,7 +2537,7 @@ export default {
 
 ### \<script setup\> <em id="scriptsetup"></em> <!-- markdownlint-disable-line -->
 
-> `<script setup>` 是在单文件组件(SFC) 中使用 [组合式 API](#combinedapi) 的编译时语法糖
+> `<script setup>` 是在单文件组件(SFC) 中使用 [组合式 API](#compositionapi) 的编译时语法糖
 > `<script setup>` 中的代码会在每次组件实例被创建的时候执行
 
 - 更少的样板内容, 更简洁的代码
@@ -2734,8 +2740,8 @@ import { FooBar as FooBarChild } from './components';
 ```html
 <script setup lang="ts">
   const { modelValue, count } = defineModels<{
-    modelVale: string,
-    count: number
+    modelVale: string;
+    count: number;
   }>();
 
   console.log(modelValue.value);
@@ -2747,13 +2753,13 @@ import { FooBar as FooBarChild } from './components';
 
 <script setup lang="ts">
   const { modelValue, count } = defineProps<{
-    modelValue: string,
-    count: number
+    modelValue: string;
+    count: number;
   }>();
 
   const emit = defineEmits<{
-    (evt: 'update:modelValue', value: string): void,
-    (evt: 'update:count', value: number): void
+    (evt: 'update:modelValue', value: string): void;
+    (evt: 'update:count', value: number): void;
   }>();
 
   console.log(modelValue.value);
@@ -2902,7 +2908,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 </style>
 ```
 
-##### 与[组合式 API](#combinedapi)一起使用
+##### 与[组合式 API](#compositionapi)一起使用
 
 - 使用 `useCssModule` API 在 `setup()` 和 `<script setup>` 中访问注入的 class
 - 使用 **自定义注入名称** 的 `<style module>`, `useCssModule` 接收一个匹配的 `module` attribute 值作为第一个参数
@@ -2941,7 +2947,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 </style>
 ```
 
-- [组合式 API](#combinedapi) 使用
+- [组合式 API](#compositionapi) 使用
 
 ```html
 <template>
