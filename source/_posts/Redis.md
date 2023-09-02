@@ -1881,6 +1881,8 @@ Warning: Using a password with '-a' or '-u' option on the command line interface
 
 首先, 领头 sentinel 根据从服务器的信号反馈将从服务器列表中失联的服务器剔除, 按照从服务器的优先级(replica-priority)进行排序并选择优先级最高的从服务器, 如果有多个具有相同最高优先级的从服务器, 那么, 领头 sentinel 将多个具有相同最高优先级的从服务器按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从服务器进行 PSYNC 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从服务器, 如果有多个优先级最高, 复制偏移量最大的从服务器, 那么 领头 sentinel 将按照从服务器的运行 ID 进行排序并选择其中 ID 最小的从服务器
 
+replica-priority > replica-offset > run-ID
+
 ##### 配置方式
 
 - 方式一: 使用命令指定参数 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
