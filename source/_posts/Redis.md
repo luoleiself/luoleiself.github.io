@@ -806,7 +806,7 @@ Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它�
   - key 要操作的键的数量, 在 Lua 脚本中通过 `KEYS[1]`, `KEYS[2]` 获取
   - arg 参数, 在 Lua 脚本中通过 `ARGV[1]`, `ARGV[2]` 获取
 - EVAL_RO script numkeys [key [key ...]] [arg [arg ...]] 只读版本的 EVAL 命令, Redis 7.0 支持
-- EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行脚本
+- EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行脚本(SCRIPT LOAD 命令缓存脚本)
 - EVALSHA_RO sha1 numkeys [key [key ...]] [arg [arg ...]] 只读版本的 EVALSHA 命令, Redis 7.0 支持
 
 ```shell
