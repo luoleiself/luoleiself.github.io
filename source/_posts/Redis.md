@@ -683,22 +683,26 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
   - description 函数描述
 
 ```shell
+# 方式1
 127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nredis.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
-
+# 方式2
 127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nredis.register_function('knockknock', function() return 'Who\\'s there?' end)"
 "mylib"
+# 调用
 127.0.0.1:6379> FCALL knockknock 0
 "Who's there?"
 ```
 
 ```lua
 #!lua name=mylib
+--方式1--
 --[[redis.register_function{
   function_name='knockknock',
   callback=function() return 'Who\'s there?' end,
   flags={ },
   description='Does nothing'
 }]]--
+--方式2--
 --[[redis.register_function(
    'knockknock',
    function() return 'Who\'s there?' end
