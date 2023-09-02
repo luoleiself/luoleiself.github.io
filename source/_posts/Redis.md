@@ -682,6 +682,8 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
     - allow-cross-slot-keys 允许脚本从多个 slot 访问密钥
   - description 函数描述
 
+###### Redis 命令行注册调用
+
 ```shell
 # 方式1
 127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nredis.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
@@ -693,16 +695,18 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 "Who's there?"
 ```
 
+###### Lua 脚本注册调用
+
 ```lua
 #!lua name=mylib
---方式1--
+--方式1
 --[[redis.register_function{
   function_name='knockknock',
   callback=function() return 'Who\'s there?' end,
   flags={ },
   description='Does nothing'
 }]]--
---方式2--
+--方式2
 --[[redis.register_function(
    'knockknock',
    function() return 'Who\'s there?' end
@@ -743,6 +747,7 @@ redis.register_function{
 ```shell
 [root@centos7 workspace]# cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
 "mylib"
+# 调用注册函数
 127.0.0.1:6379> FCALL my_hset 1 hash:zhang name "zhangsan" age 18 addr "beijing"
 (integer) 4
 127.0.0.1:6379> KEYS *
@@ -771,6 +776,7 @@ redis.register_function{
 # FCALL_RO 调用普通函数 my_hgetall
 127.0.0.1:6379> FCALL_RO my_hgetall 1 hash:zhang
 (error) ERR Can not execute a script with write flag using *_ro command.
+# FCALL_RO 调用只读函数 my_hgetall_ro
 127.0.0.1:6379> FCALL_RO my_hgetall_ro 1 hash:zhang
 1) "age"
 2) "18"
