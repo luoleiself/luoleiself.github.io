@@ -222,6 +222,33 @@ Page({
 
 - 2.10.2 支持 callback 和 promise 两种调用方式. 接口参数 Object 对象不包含 success/fail/complete 时默认返回 promise, 否则按回调方式执行,无返回值
 
+#### [Router](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Router.html)
+
+页面路由器对象, 可以通过 `this.pageRouter` 或 `this.router` 获取当前页面或自定义组件的路由器对象
+
+- 2.16.1 支持
+
+同 wx 对象同名的 5 个方法 `switchTab`, `reLaunch`, `redirectTo`, `navigateTo`, `navigateBack` 功能相同, 唯一区别是, 页面路由器中的方法调用时, 相对路径永远相对于 this 指代的页面或自定义组件
+
+```javascript
+// index/index.js
+Page({
+  wxNavAction() {
+    // 如果此时已经跳转到了 pack/index 页面, 才调用到此方法
+    // 跳转的新页面路径为 pack/new-page
+    wx.navigateTo({ url: './new-page' });
+  },
+  routerNavAction() {
+    // 如果此时已经跳转到了 pack/index 页面, 才调用到此方法
+    // 跳转的新页面路径为 index/new-page
+    this.pageRouter.navigateTo({ url: './new-page' });
+  },
+});
+```
+
+- `this.pageRouter` 和 `this.router` 在页面中获得相同的路由器对象
+- 在自定义组件中, `this.pageRouter` 将相对于自定义组件所在的页面进行路由跳转, `this.router` 相对于自定义组件本身的路径
+
 ### 视图层
 
 #### [WXML](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/)
@@ -363,14 +390,29 @@ Page({
 });
 ```
 
-### 运行
+### 小程序运行时
 
 #### [运行机制](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/operating-mechanism.html)
 
 - 前台进入后台 `5秒` 后进入挂起状态, 小程序代码停止运行
 - 挂起状态维持 `30分钟` 后会被销毁, 如果小程序占用系统资源过高,可能会被系统销毁或者微信客户端主动回收
 
-#### 重新启动策略
+##### 小程序启动
+
+- 冷启动: 小程序首次打开或者销毁后再次打开
+- 热启动: 已经打开过小程序, 然后在一段时间内再次打开该小程序, 此时小程序并未被销毁, 只是从后台状态切换到前台状态
+
+##### 前台和后台
+
+包括但不限于以下情况再次进入微信并打开小程序都会重新进入前台状态:
+
+- 点击右上角胶囊按钮离开小程序
+- IOS 从屏幕左侧右滑离开小程序
+- 安卓点击返回键离开小程序
+- 小程序前台运行时直接把微信切后台(手势或 Home 键)
+- 小程序前台运行时直接锁屏
+
+##### 重新启动策略
 
 - 2.8.0 支持如果冷启动时不带`path`参数, 默认进入小程序的首页, 在 `页面.json` 或者 `app.json` 修改小程序冷启动时的默认行为
 
@@ -382,7 +424,7 @@ Page({
 { "restartStrategy": "homePage" }
 ```
 
-#### 退出状态
+##### 退出状态
 
 小程序可能被销毁之前, 页面回调函数 `onSaveExitState` 会被调用, 如果需要保留页面页面中的状态, 可以在这个回调函数中保存一些数据, 下次启动时可以通过 `exitState` 获得已保存得数据, 如果小程序退出时间过久`1天`会丢弃保存的数据
 
@@ -412,6 +454,13 @@ Page({
   },
 });
 ```
+
+#### [更新机制](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/update-mechanism.html)
+
+正常情况下, 在小程序发布新版后 24 小时之后, 新版本可以覆盖 99% 以上的用户
+
+- 小程序每次 冷启动 时都会异步检查是否有更新版本, 如果有更新版本, 将会异步下载新版本的代码包并在下一次冷启动时替换使用
+- 启动时使用 API `wx.getUpdateManager` 进行处理
 
 ### 自定义组件 <em id="zidingyizujian"></em> <!-- markdownlint-disable-line -->
 
