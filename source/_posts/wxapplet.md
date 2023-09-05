@@ -105,7 +105,7 @@ wx.getSetting({ withSubscriptions: true })
   });
 ```
 
-#### [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html) 订阅消息
+#### [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html) 订阅消息 <em id="subscribe"></em> <!--markdownlint-disable-line-->
 
 调起客户端小程序订阅消息界面, 返回用户订阅消息的操作结果, 如果用户勾选了订阅消息界面的 **总是保持以上选择，不再询问** 选项时, 消息模板会被记录在用户的小程序设置页, 并且在每次调用此 API 时不再弹出订阅消息界面(只返回订阅消息结果), 通过 `wx.getSetting` API 可以获取用户订阅消息的订阅状态
 
@@ -1121,3 +1121,190 @@ exports.beforeRequestPayment = function (paymentArgs, callback) {
 ### 连接硬件能力
 
 ### 开放能力
+
+### 移动应用
+
+#### [微信内网页跳转 APP](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/WeChat_H5_Launch_APP.html)
+
+使用 [微信开放标签](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_Open_Tag.html) 完成微信内网页跳转到 APP 的需求
+
+- 微信开放标签只开放给 JS 接口安全域名, 使用前必须保证网页所属的域名已绑定为服务号的 JS 接口安全域名
+- 微信内网页无法跳转任意 APP, 需要在 微信开放平台 登记域名与移动应用(APP)的绑定关系, 网页只能跳转其域名绑定的移动应用(APP)
+
+微信开放平台 -> 管理中心 -> 公众号详情页 -> 接口信息
+
+#### 开放标签
+
+##### 跳转小程序
+
+`<wx-open-launch-weapp>`
+
+已认证的服务号(绑定 `JS接口安全域名` )下的网页可使用此标签跳转 **任意小程序**
+
+页面中点击标签按钮跳转小程序, h5 通过开放标签打开小程序的场景值为 1167
+
+- 属性
+  - appid 必填, 跳转的小程序 appid, 以 `wx` 开头的 id
+  - username 非必填, 跳转的小程序原始 id, 以 `gh_` 开头的 id(跳转时优先使用 appid, 没有则使用 username)
+  - path 非必填, 跳转的小程序页面路径及参数
+  - env-version 非必填, 跳转的小程序版本, release, develop, trial
+  - extra-data 非必填, 以 JSON 格式传递给小程序的数据
+- 插槽
+  - default 必填, 跳转按钮模板及样式
+- 事件
+  - ready 标签初始化完毕, 可进行点击操作
+  - launch 用户点击跳转按钮并对确认弹框进行操作后触发
+  - error 用户点击跳转按钮后出现错误
+
+```html
+<wx-open-launch-weapp appid="" username="" path="pages/index?id=1&num=2">
+  <script type="text/wxtag-template">
+    <style>.btn{padding: 10px 14px;}</style>
+    <button class="btn">打开小程序</button>
+  </script>
+</wx-open-launch-weapp>
+<script>
+  var btn = document.querySelector('button');
+  btn.addEventListener('launch', function (evt) {
+    console.log('success');
+  });
+  btn.addEventListener('error', function (evt) {
+    console.log('fail', evt.detail);
+  });
+</script>
+```
+
+##### 跳转 App
+
+`<wx-open-launch-app>`
+
+已认证的服务号(绑定 `JS接口安全域名` )下的网页可使用此标签跳转绑定关系的 App
+
+- 属性
+  - appid 必填, 跳转的移动应用的 AppID
+  - extinfo 非必填, 跳转所需要的额外信息
+- 插槽
+  - default 必填, 跳转按钮模板及样式
+- 事件
+  - ready 标签初始化完毕, 可进行点击操作
+  - launch 用户点击跳转按钮并对确认弹框进行操作后触发
+  - error 用户点击跳转按钮后出现错误
+
+```html
+<wx-open-launch-app appid="" extinfo="">
+  <script type="text/wxtag-template">
+    <style>.btn{padding: 10px 214px;}</style>
+    <button class="btn">打开App</button>
+  </script>
+</wx-open-launch-app>
+<script>
+  var btn = document.querySelector('button');
+  btn.addEventListener('launch', function (evt) {
+    console.log('success');
+  });
+  btn.addEventListener('error', function (evt) {
+    console.log('fail', evt.detail);
+  });
+</script>
+```
+
+##### 订阅通知
+
+> 部分规则和返回数据结构参考 [wx.requestSubscribeMessage](#subscribe)
+
+`<wx-open-subscribe>`
+
+已认证的服务号(绑定 `JS接口安全域名` )下的网页可使用此标签调起订阅通知界面, 返回订阅通知的操作结果
+
+- 属性
+  - template 必填, 消息模板 id, 多个模板 id 以逗号分隔
+- 插槽
+  - default 必填, 订阅按钮模板及样式
+  - style 非必填, 用于集中定义 default 插槽所需用到的样式
+- 事件
+  - success 订阅按钮操作成功事件
+  - error 订阅按钮操作失败事件
+
+```html
+<wx-open-subscribe template="">
+  <script type="text/wxtag-template" slot="style">
+    <style>
+      .subscribe-btn {
+        color: #fff;
+        background: #0088ff;
+      }
+    </style>
+  </script>
+  <script type="text/wxtag-template">
+    <button class="subscribe-btn">一次性模板消息订阅</button>
+  </script>
+</wx-open-subscribe>
+<script>
+  var btn = document.querySelector('button');
+  btn.addEventListener('success', function (evt) {
+    console.log('success', evt.detail);
+  });
+  btn.addEventListener('error', function (evt) {
+    console.log('fail', evt.detail);
+  });
+</script>
+```
+
+##### 音频播放
+
+`<wx-open-audio>`
+
+已认证的服务号(绑定 `JS接口安全域名` )下的网页可使用此标签进行浮窗音频播放
+
+- 属性
+  - src 必填, 设置音频播放链接
+  - title 非必填, 设置音频名称
+  - episode 非必填, 设置专辑名称
+  - singer 非必填, 设置歌手名称
+  - cover 非必填, 设置专辑封面
+- 插槽
+  - default 非必填, 播放按钮默认视图, 用于音频未在播放状态时显示, 如果没有则显示默认音频播放按钮(40px\*40px)
+  - playing 非必填, 用于音频在播放时显示, 如果没有则显示 default 插槽视图或默认音频按钮
+  - style 非必填, 用于集中定义 default 插槽和 playing 插槽所需要用到的样式
+- 事件
+  - ready 音频初始化完成
+  - w3c 中定义的音频支持的事件
+- 实例方法
+  - load 重新加载音频
+  - play 播放音频
+  - pause 暂停播放音频
+
+```html
+<wx-open-audio src="" title="" episode="" singer="" cover="">
+  <script type="text/wxtag-template">
+    <div class="playBackground"></div>
+  </script>
+  <script type="text/wxtag-template" slot="playing">
+    <div class="pauseBackground"></div>
+  </script>
+  <script type="text/wxtag-template" slot="style">
+    <style>
+      .playBackground{ }
+      .pauseBackground{ }
+    </style>
+  </script>
+</wx-open-audio>
+<script>
+  var audio = document.querySelector('audio');
+  audio.addEventListener('ready', function (evt) {
+    console.log('ready', evt);
+  });
+  audio.addEventListener('loadedmetadata', function (evt) {
+    console.log('loadedmetadata', evt);
+  });
+  audio.addEventListener('play', function (evt) {
+    console.log('play', evt);
+  });
+  audio.addEventListener('pause', function (evt) {
+    console.log('pause', evt);
+  });
+  audio.addEventListener('ended', function (evt) {
+    console.log('ended', evt);
+  });
+</script>
+```
