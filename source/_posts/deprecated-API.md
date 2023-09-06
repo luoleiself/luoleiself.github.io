@@ -26,3 +26,7 @@ tags:
 - [Date.prototype.getYear](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear) 已废弃
 
   > 使用 getFullYear 代替
+
+- [Date.prototype.setYear](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/setYear) 已废弃
+
+  > 使用 setFullYear 代替
