@@ -25,9 +25,14 @@ tags:
 
 ```javascript
 import { createApp } from 'vue';
-const app = createApp({
-  /* root component options */
-});
+const app = createApp(
+  {
+    /* root component options */
+  },
+  {
+    /* root component props */
+  }
+);
 ```
 
 #### createSSRApp()
@@ -40,6 +45,18 @@ const app = createApp({
 
 - 参数可以是一个实际的 DOM 元素或一个 CSS 选择器, 返回根组件实例
 - 如果该组件有 `template` 模板或定义了 `render` 函数, 则替换容器内所有现存的 DOM 节点, 否则使用容器元素的 innerHTML 作为模板
+
+```javascript
+import { createApp } from 'vue';
+import App from './App.vue';
+
+const app = createApp({
+  /* */
+});
+
+// app.mount('#app');
+app.mount(App);
+```
 
 #### app.unmount()
 
@@ -222,6 +239,8 @@ app.config.compilerOptions.isCustomElement = (tag){
 
 #### nextTick() <em id="nextTick"></em> <!-- markdownlint-disable-line -->
 
+> Dom 更新不是同步的, Vue 会在 `next tick` 更新周期中缓冲所有状态的修改, 以确保进行了多次状态修改, 每个组件都只会被更新一次
+
 等待下一次 DOM 更新刷新的工具方法, 可以在状态改变后立即使用以等待 DOM 更新完成
 
 - 传递一个回调函数作为参数
@@ -346,7 +365,9 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 ## 组合式 API <em id="compositionapi"></em> <!-- markdownlint-disable-line -->
 
-组合式 API(composition API) 是一系列 API 的集合, 能够通过函数而不是声明选项的方式书写 Vue 组件来实现更加简洁高效的逻辑复用(选项式 API 中主要的逻辑复用机制是 mixins), 涵盖以下方面的 API
+组合式 API 的核心思想是直接在函数作用域内定义响应式状态变量, 并将从多个函数中得到的状态组合起来处理复杂问题, 这种形式更加自由灵活和高效.
+
+组合式 API(composition API) 是一系列 API 的集合, 能够通过函数而不是声明选项的方式书写 Vue 组件来实现更加简洁高效的逻辑复用([选项式 API](#optionalapi) 中主要的逻辑复用机制是 mixins), 涵盖以下方面的 API
 
 - 响应式 API: 例如 [ref()](#ref) 和 [reactive()](#reactive), 可以直接创建响应式状态、计算属性和侦听器
 - 生命周期钩子: 例如 [onMounted()](#onMounted) 和 [onUnmounted()](#onUnmounted), 可以在组件各个生命周期阶段添加逻辑
@@ -359,7 +380,7 @@ document.body.append(new MyElement(/* 初始化 prop */));
 `setup()` 是在组件中使用组合式 API 的入口, 通常在两个情况下使用
 
 - 需要在**非单文件组件**中使用组合式 API 时
-- 需要在基于选项式 API 的组件中集成基于组合式 API 的代码时
+- 需要在基于[选项式 API](#optionalapi) 的组件中集成基于组合式 API 的代码时
 
 #### 基本使用
 
@@ -504,26 +525,34 @@ const app = createApp({
 
 - 响应式状态默认是深层次的, 即对深层次的响应式状态的更改也能被检测到
 - 只有代理对象是响应式的, 更改原始对象不会触发更新, 使用响应式系统时仅使用声明对象的代理版本
-- 对同一个**原始对象**调用 `reactive()` 总是返回同样的**代理对象**
-- 对一个已存在的**代理对象**调用 `reactive()` 总是返回其本身
 
 #### ref() <em id="ref"></em> <!-- markdownlint-disable-line -->
 
+> 当在模板中使用了一个 ref, 然后改变这个 ref 的值, Vue 会自动检测到这个变化并相应地更新 DOM, 这个过程通过一个基于依赖追踪的响应式系统实现的, 当一个组件首次渲染时, Vue 会追踪在渲染过程中使用的每一个 ref, 当一个 ref 被修改时, 它会触发追踪它的组件的一次重新渲染, 在标准的 javascript 中无法检测普通变量的修改, 可以通过 getter 和 setter 方法来拦截对象属性的 get 和 set 操作.
+> .value 属性给予了 Vue 一个机会来检测 ref 何时被访问或修改, 在其内部, Vue 在它的 getter 中执行追踪, 在它的 setter 中执行触发, 概念上 ref 可以看作是一个这样的对象.
+
 接受一个内部值, 返回一个响应式可更改的 ref 对象, 此对象只有一个指向其内部值的属性 `.value`
 
-- 如果将一个对象赋值给 ref, 那么这个对象将通过 `reactive()` 转为具有深层次响应式的对象, 如果对象中包含了嵌套的 ref, 它们将被深层地解包
+- 将一个对象赋值给 ref, 那么这个对象将通过 `reactive()` 转为具有深层次响应式的对象, 如果对象中包含了嵌套的 ref, 它们将被深层地解包
 
 ```javascript
-const count = ref(0);
-console.log(count.value); // 0
-
-count.value++;
-console.log(count.value); // 1
+import { ref } from 'vue';
+const obj = ref({
+  nested: { count: 0 },
+  arr: ['foo', 'bar'],
+});
+obj.value.nested.count++;
+obj.value.arr.push('baz');
 ```
 
 - 一个包含对象类型值的 ref 可以响应式的替换整个对象
 
 ```javascript
+const count = ref(0);
+console.log(count.value); // 0
+count.value++;
+console.log(count.value); // 1
+
 const objRef = ref({ count: 0 });
 objRef.value = { count: 1 }; // 响应式替换
 ```
@@ -594,29 +623,47 @@ console.log(count.value); // 0
 
 返回一个对象的响应式代理
 
-- 仅对对象类型有效(对象、数组、Map、Set 这样的集合类型), 而对 `string`, `number`, `boolean` 这样的原始类型无效
-- 因为 Vue 的响应式系统是通过属性访问进行追踪的, 因此需要始终保持对响应式对象的**相同引用**, 将响应式对象的属性赋值或解构至本地变量时、或是将该属性传入一个函数时将失去响应性
+- 对同一个**原始对象**调用 `reactive()` 总是返回同样的**代理对象**
+- 对一个已存在的**代理对象**调用 `reactive()` 总是返回其本身
 
-- 将一个 ref 赋值给一个 reactive 属性时, 该 ref 会自动解包
+**局限性** <!--markdownlint-disable-line-->
+
+- 有限的值类型: 只能用于对象类型(对象、数组、Map、Set 这样的集合类型), 不能持有 `string`, `number`, `boolean` 这样的原始类型
+- 不能替换整个对象: 因为 Vue 的响应式系统是通过属性访问进行追踪的, 因此需要始终保持对响应式对象的**相同引用**,
+- 对解构操作不友好: 将响应式对象的属性赋值或解构至本地变量时、或是将该属性传入一个函数时将失去响应性
+
+==建议使用 `ref()` 作为生命响应式状态的主要 API==
+
+- 将一个 ref 作为响应式对象的属性被访问或修改时自动解包
 
 ```javascript
-const count = ref(1);
-const obj = reactive({});
-obj.count = count;
-console.log(obj.count); // 1
+const count = ref(0);
 // ref 会解包
-console.log(obj.count === count.value); // true
-// 自动更新 `obj.value`
+const state = reactive({
+  count,
+});
+console.log(state.count); // 0
+console.log(state.count === count.value); // true
+
+// 自动更新 `state.value`
 count.value++;
-console.log(count.value); // 2
-console.log(obj.count); // 2
+console.log(count.value, state.count); // 1 1
+
 // 自动更新 `count` ref
-obj.count++;
-console.log(obj.count); // 3
-console.log(count.value); // 3
+state.count++;
+console.log(count.value, state.count); // 2 2
 ```
 
-- 当访问到某个响应式 **数组** 或 `Map` 这样的原生集合类型中的 ref 元素时, 不会进行解包
+- 将一个新的 ref 赋值给一个关联了已有 ref 的属性, 那么旧的 ref 会被替换
+
+```javascript
+const otherCount = ref(4);
+state.count = otherCount;
+console.log(count.value, state.count); // 2 4
+```
+
+- 只有当嵌套在一个深层响应式对象内时, 才会发生 ref 解包, 当其作为**浅层响应式对象**的属性被访问时 不会解包
+- 当 ref 作为响应式数组或原生集合类型(如 Map)中的元素被访问时, 不会被解包
 
 ```javascript
 // 原生集合中包含 ref 元素时, ref 不会解包
@@ -1309,6 +1356,8 @@ app.mount('#app');
 
 ## 选项式 API <em id="optionalapi"></em> <!-- markdownlint-disable-line -->
 
+选项式 API 以 `组件实例` 的概念为中心(this), 将响应性相关的细节抽象出来, 并强制按照选项来组织代码, 从而对初学者而言更为友好
+
 ### 状态选项
 
 #### data
@@ -1530,7 +1579,7 @@ export default {
 
 ### 生命周期选项
 
-> 组合式 API 中的 `setup()` 钩子函数会在所有选项式 API 钩子之前调用
+> [组合式 API](#compositionapi) 中的 `setup()` 钩子函数会在所有 [选项式 API](#optionalapi) 钩子之前调用
 
 #### beforeCreate
 
@@ -1691,7 +1740,7 @@ export default {
 
 用于控制是否启用默认的组件 `attribute` 透传行为, 默认为 true
 
-- 使用 [\<script setup\>](#scriptsetup) 的组合式 API 中声明这个选项时, 需要一个额外的 `<script>` 块
+- 使用 [\<script setup\>](#scriptsetup) 的[组合式 API](#compositionapi) 中声明这个选项时, 需要一个额外的 `<script>` 块
 
 ```html
 <!-- 单独 script 块声明 inheritAttrs 选项 -->
@@ -2674,7 +2723,7 @@ import { FooBar as FooBarChild } from './components';
 
 #### defineExpose()
 
-> 使用 `<script setup>` 的组件是 **默认关闭** 暴露任何在 `<script setup>` 中声明的绑定
+使用 `<script setup>` 的组件是 **默认关闭** 的, 不会暴露任何在 `<script setup>` 中声明的绑定. 使用 defineExpose 显式指定组件中要暴露出去的属性
 
 ```html
 <script setup>
@@ -2683,6 +2732,53 @@ import { FooBar as FooBarChild } from './components';
   const a = 1;
   const b = ref(0);
   defineExpose({ a, b });
+</script>
+```
+
+#### defineOptions()
+
+> Vue 3.3 支持
+
+在 `<script setup>` 中使用 [选项式 API](#optionalapi) 的**宏**, 无法访问 `<script setup>` 中不是字面常数的局部变量
+
+```html
+<script setup>
+  import { useSlots } from 'vue';
+
+  defineOptions({
+    name: 'Foo',
+    inheritAttrs: false,
+  });
+
+  const slots = useSlots();
+</script>
+
+<!-- Compiled Code -->
+
+<script>
+  export default {
+    name: 'Foo',
+    inheritAttrs: false,
+  };
+</script>
+<script setup>
+  import { useSlots } from 'vue';
+
+  const slots = useSlots();
+</script>
+```
+
+#### defineSlots()
+
+> Vue 3.3 支持
+
+只接受类型参数, 没有运行时参数. 用于为 IDE 提供插槽名称 和 props 类型检查的类型提示
+
+```javascript
+<script setup lang="ts">
+const slots = defineSlots<{
+  default(props: { msg: string }): any
+}>()
 </script>
 ```
 
@@ -2765,43 +2861,6 @@ import { FooBar as FooBarChild } from './components';
   console.log(modelValue.value);
   emit('update:modelValue', 'newValue');
   emit('update:count', count + 1);
-</script>
-```
-
-#### defineSlots()
-
-> Vue 3.3 支持
-
-#### defineOptions()
-
-> Vue 3.3 支持
-
-在 `<script setup>` 中使用选项式 API 的**宏**
-
-```html
-<script setup>
-  import { useSlots } from 'vue';
-
-  defineOptions({
-    name: 'Foo',
-    inheritAttrs: false,
-  });
-
-  const slots = useSlots();
-</script>
-
-<!-- Compiled Code -->
-
-<script>
-  export default {
-    name: 'Foo',
-    inheritAttrs: false,
-  };
-</script>
-<script setup>
-  import { useSlots } from 'vue';
-
-  const slots = useSlots();
 </script>
 ```
 
