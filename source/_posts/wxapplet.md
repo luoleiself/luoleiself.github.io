@@ -9,6 +9,45 @@ tags:
 
 ### 敲黑板
 
+#### [隐私协议](#https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html)
+
+- 2.32.3 开始支持
+- 2023-09-15 之后, 隐私相关功能默认开始, 对于未声明的处理用户信息的接口或组件直接禁用
+
+- wx.getPrivacySetting 查询微信侧记录的用户是否有待同意的隐私政策信息, 通过返回结果 res 中的 needAuthorization 字段获取, true 表示还没同意过
+- wx.openPrivacyContract 此接口打开 `wx.getPrivacySetting` 获取到的开发者在小程序管理后台配置的 《小程序用户隐私保护指引》名称信息的页面
+- wx.requirePrivacyAuthorize 模拟隐私接口调用, 并触发隐私弹窗逻辑
+- [wx.onNeedPrivacyAuthorization](#https://developers.weixin.qq.com/miniprogram/dev/api/open-api/privacy/wx.onNeedPrivacyAuthorization.html) 监听隐私接口需要用户授权事件, 当需要用户进行隐私授权时会触发. 触发事件时, 开发者需要弹出隐私协议说明,
+  并在用户同意或拒绝授权后调用回调接口 resolve 触发原隐私接口或组件继续执行.
+  - resolve 是一个函数, 主动调用触发原隐私接口或组件继续执行
+  - eventInfo 表示触发本次事件的关联信息
+
+```html
+<!-- 用户触发此组件时, 微信会同步收到同意信息 -->
+<!-- 事件回调表示用户已同意隐私政策后的处理逻辑 -->
+<button open-type="agreePrivacyAuthorization" bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization">同意</button>
+```
+
+##### 耦合使用
+
+- 隐私同意按钮 支持与 [手机号快速验证组件](#getPhoneNumber)、[手机号实时验证组件](#getPhoneNumber) 耦合使用
+
+```html
+<button 
+  open-type="getPhoneNumber|agreePrivacyAuthorization" 
+  bind:getphonenumber="handleGetPhoneNumber" 
+  bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization">同意隐私协议并授权手机号</button>
+
+<button
+  open-type="getUserInfo|agreePrivacyAuthorization" 
+  bind:getuserinfo="handleGetUserInfo" 
+  bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization">同意隐私协议并获取头像昵称信息</button>
+```
+
+##### 清空历史同步状态
+
+物理删除小程序时将清空历史同步状态, 下次访问小程序时, 需要重新同步微信当前用户是否同意隐私信息收集使用规则
+
 #### [头像昵称 API 调整](https://developers.weixin.qq.com/community/develop/doc/00022c683e8a80b29bed2142b56c01)
 
 - 20221026 起, 小程序 wx.getUserProfile 接口将被收回, wx.getUserInfo 接口获取用户头像将统一返回默认灰色头像，昵称将统一返回 “微信用户”
@@ -49,7 +88,7 @@ tags:
 
 - 2.25.0 开始, 新增获取模糊地理位置接口, 接口规则同 [chooseLocation](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html)
 
-#### [getPhoneNumber](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html)
+#### [getPhoneNumber](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html) <em id="getPhoneNumber"></em>
 
 - e.detail.encryptedData
 - e.detail.iv
@@ -57,11 +96,10 @@ tags:
 - 20230826 开始收费, 分为 手机号快速验证组件 和 手机号实时验证组件
 
 ```html
+<button open-type="getPhoneNumber" bind:getphonenumber="getPhoneNumber"></button>
+
 <!-- getRealtimePhoneNumber 回调函数参数不再包含 encryptedData 和 iv, 仅可通过返回的 code 换取手机号-->
-<button
-  open-type="getRealtimePhoneNumber"
-  bind:getrealtimephonenumber="getrealtimephonenumber"
-></button>
+<button open-type="getRealtimePhoneNumber" bind:getrealtimephonenumber="getrealtimephonenumber"></button>
 ```
 
 #### [wx.openSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html)
