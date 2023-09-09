@@ -9,7 +9,7 @@ tags:
 
 ### 敲黑板
 
-#### [隐私协议](#https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html)
+#### [隐私协议](https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html)
 
 - 2.32.3 开始支持
 - 2023-09-15 之后, 隐私相关功能默认开始, 对于未声明的处理用户信息的接口或组件直接禁用
@@ -17,7 +17,7 @@ tags:
 - wx.getPrivacySetting 查询微信侧记录的用户是否有待同意的隐私政策信息, 通过返回结果 res 中的 needAuthorization 字段获取, true 表示还没同意过
 - wx.openPrivacyContract 此接口打开 `wx.getPrivacySetting` 获取到的开发者在小程序管理后台配置的 《小程序用户隐私保护指引》名称信息的页面
 - wx.requirePrivacyAuthorize 模拟隐私接口调用, 并触发隐私弹窗逻辑
-- [wx.onNeedPrivacyAuthorization](#https://developers.weixin.qq.com/miniprogram/dev/api/open-api/privacy/wx.onNeedPrivacyAuthorization.html) 监听隐私接口需要用户授权事件, 当需要用户进行隐私授权时会触发. 触发事件时, 开发者需要弹出隐私协议说明,
+- [wx.onNeedPrivacyAuthorization](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/privacy/wx.onNeedPrivacyAuthorization.html) 监听隐私接口需要用户授权事件, 当需要用户进行隐私授权时会触发. 触发事件时, 开发者需要弹出隐私协议说明,
   并在用户同意或拒绝授权后调用回调接口 resolve 触发原隐私接口或组件继续执行.
   - resolve 是一个函数, 主动调用触发原隐私接口或组件继续执行
   - eventInfo 表示触发本次事件的关联信息
@@ -25,23 +25,34 @@ tags:
 ```html
 <!-- 用户触发此组件时, 微信会同步收到同意信息 -->
 <!-- 事件回调表示用户已同意隐私政策后的处理逻辑 -->
-<button open-type="agreePrivacyAuthorization" bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization">同意</button>
+<button
+  open-type="agreePrivacyAuthorization"
+  bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization"
+>
+  同意
+</button>
 ```
 
 ##### 耦合使用
 
-- 隐私同意按钮 支持与 [手机号快速验证组件](#getPhoneNumber)、[手机号实时验证组件](#getPhoneNumber) 耦合使用
+- 隐私同意按钮 与 [手机号快速验证组件](#getPhoneNumber)、[手机号实时验证组件](#getPhoneNumber) 耦合使用
 
 ```html
-<button 
-  open-type="getPhoneNumber|agreePrivacyAuthorization" 
-  bind:getphonenumber="handleGetPhoneNumber" 
-  bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization">同意隐私协议并授权手机号</button>
+<button
+  open-type="getPhoneNumber|agreePrivacyAuthorization"
+  bind:getphonenumber="handleGetPhoneNumber"
+  bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization"
+>
+  同意隐私协议并授权手机号
+</button>
 
 <button
-  open-type="getUserInfo|agreePrivacyAuthorization" 
-  bind:getuserinfo="handleGetUserInfo" 
-  bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization">同意隐私协议并获取头像昵称信息</button>
+  open-type="getUserInfo|agreePrivacyAuthorization"
+  bind:getuserinfo="handleGetUserInfo"
+  bind:agreeprivacyauthorization="handleAgreePrivacyAuthorization"
+>
+  同意隐私协议并获取头像昵称信息
+</button>
 ```
 
 ##### 清空历史同步状态
@@ -96,10 +107,16 @@ tags:
 - 20230826 开始收费, 分为 手机号快速验证组件 和 手机号实时验证组件
 
 ```html
-<button open-type="getPhoneNumber" bind:getphonenumber="getPhoneNumber"></button>
+<button
+  open-type="getPhoneNumber"
+  bind:getphonenumber="getPhoneNumber"
+></button>
 
 <!-- getRealtimePhoneNumber 回调函数参数不再包含 encryptedData 和 iv, 仅可通过返回的 code 换取手机号-->
-<button open-type="getRealtimePhoneNumber" bind:getrealtimephonenumber="getrealtimephonenumber"></button>
+<button
+  open-type="getRealtimePhoneNumber"
+  bind:getrealtimephonenumber="getrealtimephonenumber"
+></button>
 ```
 
 #### [wx.openSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html)
@@ -634,6 +651,12 @@ Page({
     >这段文本的颜色由组件外的 class 决定</custom-component
   >
   ```
+
+#### [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html)
+
+- WXML 数据绑定: 用于父组件向子组件的指定属性设置数据
+- 事件: 用于子组件向父组件传递数据
+- 父组件中获取子组件实例对象 this.selectComponent(selector), 可以直接访问子组件的任意数据和方法
 
 #### [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
