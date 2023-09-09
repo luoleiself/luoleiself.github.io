@@ -176,7 +176,24 @@ app.use((app, options) => {
 
 #### app.mixin()
 
-应用一个全局的 mixin, 作用于应用中的每个组件实例 (不推荐使用)
+应用一个全局的 mixin, 作用于应用中的每个组件实例 (不推荐使用), 在 Vue 3 中为了向后兼容
+
+#### app.runWithContext()
+
+> Vue 3.3 支持
+
+使用当前应用作为注入上下文执行回调函数, 在回调同步调用期间, 即使没有当前活动的组件实例, inject() 调用也可以从当前应用提供的值中查找注入
+
+```javascript
+import { inject } from 'vue';
+
+app.provide('id', 1);
+
+const injected = app.runWithContext(() => {
+  return inject('id');
+});
+console.log(injected); // 1
+```
 
 #### app.version
 
@@ -212,7 +229,7 @@ app.use((app, options) => {
 
 ##### app.config.globalProperties
 
-用于注册能够被应用实例内所有组件实例访问到的全局属性的对象
+用于注册能够被应用实例内所有组件实例访问到的全局属性的对象, 对 Vue 2 中 `Vue.prototype` 使用方式的一种替代
 
 ##### app.config.optionMergeStrategies
 
@@ -860,6 +877,19 @@ state.foo++;
 console.log(fooRef.value); // 3
 ```
 
+#### toValue()
+
+> Vue 3.3
+
+将值、refs 或 getters 规范化为值, 与 unref() 类似, 不同的是此函数也会规范化 getter 函数, 如果参数是一个 getter, 它将会被调用并且返回它的返回值
+
+```javascript
+import { toValue, ref } from 'vue';
+toValue(1); // 1
+toValue(ref(1)); // 1
+toValue(() => 1); // 1
+```
+
 #### toRefs()
 
 > 方便消费组件可以在不丢失响应性的情况下对返回的对象进行分解/扩散
@@ -1080,7 +1110,7 @@ scope.stop();
 
 > 此方法可以作为可复用的组合式函数中 `onUnmounted` 的替代品, 它并不与组件耦合, 因为每个 Vue 组件的 setup 函数也是在一个 effect 作用域中调用的
 
-在当前活跃的 effect 作用域上注册一个处理回调函数, 当相关的 effect 作用域停止时会调用注册的回调函数
+在当前活跃的 effect 作用域上注册一个处理回调函数, 当相关的 effect 作用域停止时会调用注册的回调函数, 这个方法可以作为可复用的组合式函数中的 onUnmounted 的替代
 
 ```javascript
 import { onScopeDispose } from 'vue';
@@ -1706,13 +1736,13 @@ export default {
 
 > Mixin 钩子的调用顺序与提供它们的选项顺序相同, 且会在组件自身的钩子前调用
 
-一个包含组件选项对象的数组, 这些选项都将被混入到当前组件的实例中
+一个包含组件选项对象的数组, 这些选项都将被混入到当前组件的实例中(不推荐使用)
 
 #### extends
 
-> `extends` 和 `mixin` 实现上几乎相同, 但是表达的目标不同, `mixins` 选项基本用于组合功能, `extends` 一般更关注继承关系
+> `extends` 和 `mixin` 实现上几乎相同, 但是表达的目标不同, `mixins` 选项基本用于组合功能, `extends` 一般更关注继承关系, 为[选项式 API](#optionalapi)设计的
 
-要继承的 **基类** 组件, 同 `mixins` 一样, 所有选项都将使用相关的策略进行合并
+要继承的 **基类** 组件, 同 `mixins` 一样, 所有选项都将使用相关的策略进行合并, 不会处理 setup() 钩子的合并
 
 ### 其他杂项
 
@@ -1741,6 +1771,7 @@ export default {
 用于控制是否启用默认的组件 `attribute` 透传行为, 默认为 true
 
 - 使用 [\<script setup\>](#scriptsetup) 的[组合式 API](#compositionapi) 中声明这个选项时, 需要一个额外的 `<script>` 块
+- Vue 3.3 使用 [defineOptions](#defineOptions) 声明
 
 ```html
 <!-- 单独 script 块声明 inheritAttrs 选项 -->
@@ -1801,6 +1832,8 @@ export default {
 ```
 
 ### 组件实例
+
+除了 $data 下的嵌套属性外, 其它的属性都是只读的
 
 #### $data
 
@@ -1946,6 +1979,11 @@ export default {
 #### v-model <em id="v-model"></em> <!-- markdownlint-disable-line -->
 
 在表单输入元素或组件上创建双向绑定
+
+- \<input\>
+- \<select\>
+- \<textarea\>
+- components
 
 ##### 修饰符
 
@@ -2315,7 +2353,7 @@ app.mount('#app');
 
 ### 内置组件 <em id="builtincomponent"></em> <!-- markdownlint-disable-line -->
 
-> 内置组件无需注册便可以直接在模板中使用，同时也支持 `tree-shaking`; 仅在使用时才会包含在构建中
+> 内置组件无需注册便可以直接在模板中使用，同时也支持 `tree-shake`; 仅在使用时才会包含在构建中
 > 在 [**渲染函数**](#renderingfunc) 中使用内置组件时, 需要显式引入
 
 ```javascript
@@ -2578,13 +2616,17 @@ export default {
 
 #### src 导入
 
+可以将单文件组件拆分成多个文件中, 使用 src 导入外部文件
+
 ```html
 <template src="./template.html"></template>
 <script src="./script.js"></script>
 <style src="./style.css"></style>
 ```
 
-### \<script setup\> <em id="scriptsetup"></em> <!-- markdownlint-disable-line -->
+### \<script setup\>
+
+<em id="scriptsetup"></em> <!--markdownlint-disable-line-->
 
 > `<script setup>` 是在单文件组件(SFC) 中使用 [组合式 API](#compositionapi) 的编译时语法糖
 > `<script setup>` 中的代码会在每次组件实例被创建的时候执行
@@ -2735,7 +2777,7 @@ import { FooBar as FooBarChild } from './components';
 </script>
 ```
 
-#### defineOptions()
+#### defineOptions() <em id="defineOptions"></em> <!--markdownlint-disable-line-->
 
 > Vue 3.3 支持
 
@@ -2881,7 +2923,7 @@ const slots = defineSlots<{
 
 #### 与普通 script 一起用
 
-- 声明无法在 `<script setup>` 中声明的选项, 例如 [inheritAttrs](#inheritAttrs) 或插件的自定义选项
+- 声明无法在 `<script setup>` 中声明的选项, 例如 [inheritAttrs](#inheritAttrs) 或插件的自定义选项(Vue 3.3 使用 [defineOptions](#defineOptions) 替代)
 - 声明模块的具名导出(named exports)
 - 运行只需要在模块作用域执行一次的副作用, 或是创建单例对象
 
