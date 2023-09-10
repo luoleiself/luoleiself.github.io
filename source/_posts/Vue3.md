@@ -296,14 +296,20 @@ const MyComponent = defineComponent({
 const app = createApp(MyComponent).mount('#app');
 ```
 
+- Vue 3.3 支持, 备用签名, 旨在与[组合式 API](#compositionapi)和[渲染函数](#renderingfunc)或JSX 一起使用
 - 参数为 setup 函数, 函数名称作为组件名称使用
 
 ```javascript
-import { createApp, defineComponent, ref } from 'vue';
+import { createApp, defineComponent, ref, h } from 'vue';
 
 const HelloWorld = defineComponent((props, ctx) => {
   const count = ref(0);
-  return { count };
+
+  // 渲染函数或 JSX
+  return () => h('div', count.value);
+}, {
+  /* 其他选项, 例如声明 props 和 emits */
+  props: {}
 });
 const app = createApp(HelloWorld).mount('#app');
 ```
@@ -879,7 +885,7 @@ console.log(fooRef.value); // 3
 
 #### toValue()
 
-> Vue 3.3
+> Vue 3.3 支持
 
 将值、refs 或 getters 规范化为值, 与 unref() 类似, 不同的是此函数也会规范化 getter 函数, 如果参数是一个 getter, 它将会被调用并且返回它的返回值
 
@@ -1771,7 +1777,7 @@ export default {
 用于控制是否启用默认的组件 `attribute` 透传行为, 默认为 true
 
 - 使用 [\<script setup\>](#scriptsetup) 的[组合式 API](#compositionapi) 中声明这个选项时, 需要一个额外的 `<script>` 块
-- Vue 3.3 使用 [defineOptions](#defineOptions) 声明
+- Vue 3.3 支持, 使用 [defineOptions](#defineOptions) 声明
 
 ```html
 <!-- 单独 script 块声明 inheritAttrs 选项 -->
