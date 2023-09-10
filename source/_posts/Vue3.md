@@ -1410,7 +1410,8 @@ app.mount('#app');
 - 使用对象的完整形式, 可以对单个 prop 进行更详细的配置
 
   - type 定义 prop 的类型, 可以为原生构造函数之一
-  - default 为该 prop 指定一个当其没有被传入值或值为 undefined 时的默认值
+  - default 为该 prop 指定一个当其没有被传入值或值为 undefined 时的默认值,
+      对象或数组的默认值必须从一个工厂函数返回, 工厂函数也接收原始 prop 对象作为参数
   - required 定义该 prop 是否必需传入
   - validator 将 prop 值作为唯一参数传入的自定义验证函数
 
@@ -1432,6 +1433,10 @@ export default {
         return value > 0;
       },
     },
+    hobbies: {
+      type: Array,
+      default: (prop) => (['reading'])
+    }
   },
 };
 ```
@@ -2733,17 +2738,22 @@ import { FooBar as FooBarChild } from './components';
 - `defineProps` 和 `defineEmits` 在选项传入后会提供恰当的类型推导
 - 传入 `defineProps` 和 `defineEmits` 的选项会从 setup 中提升到模块的作用域, 因此, 传入的选项不能引用在 setup 作用域中声明的局部变量
 
-##### 默认 props 值
+##### 使用类型声明时的默认 props 值
 
-> `defineProps` 没有可以给 props 提供默认值的方式, 使用 `withDefaults` **编译器宏** 解决
+defineProps 不能给使用类型声明的 props 提供默认值, 使用 `withDefaults` **编译器宏** 解决
 
-```html
-<script setup>
-  const props = withDefaults(defineProps(), {
-    msg: 'hello world',
-    labels: () => ['one', 'two'],
-  });
-</script>
+```javascript
+import { withDefaults } from 'vue';
+
+export interface Props {
+  msg?: string
+  labels?: string[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  msg: 'hello withDefaults',
+  labels: () => ['one', 'two']
+});
 ```
 
 ##### props|emit 类型声明
