@@ -296,21 +296,24 @@ const MyComponent = defineComponent({
 const app = createApp(MyComponent).mount('#app');
 ```
 
-- Vue 3.3 支持, 备用签名, 旨在与[组合式 API](#compositionapi)和[渲染函数](#renderingfunc)或JSX 一起使用
+- Vue 3.3 支持, 备用签名, 旨在与[组合式 API](#compositionapi)和[渲染函数](#renderingfunc)或 JSX 一起使用
 - 参数为 setup 函数, 函数名称作为组件名称使用
 
 ```javascript
 import { createApp, defineComponent, ref, h } from 'vue';
 
-const HelloWorld = defineComponent((props, ctx) => {
-  const count = ref(0);
+const HelloWorld = defineComponent(
+  (props, ctx) => {
+    const count = ref(0);
 
-  // 渲染函数或 JSX
-  return () => h('div', count.value);
-}, {
-  /* 其他选项, 例如声明 props 和 emits */
-  props: {}
-});
+    // 渲染函数或 JSX
+    return () => h('div', count.value);
+  },
+  {
+    /* 其他选项, 例如声明 props 和 emits */
+    props: {},
+  }
+);
 const app = createApp(HelloWorld).mount('#app');
 ```
 
@@ -1411,7 +1414,7 @@ app.mount('#app');
 
   - type 定义 prop 的类型, 可以为原生构造函数之一
   - default 为该 prop 指定一个当其没有被传入值或值为 undefined 时的默认值,
-      对象或数组的默认值必须从一个工厂函数返回, 工厂函数也接收原始 prop 对象作为参数
+    对象或数组的默认值必须从一个工厂函数返回, 工厂函数也接收原始 prop 对象作为参数
   - required 定义该 prop 是否必需传入
   - validator 将 prop 值作为唯一参数传入的自定义验证函数
 
@@ -1435,8 +1438,8 @@ export default {
     },
     hobbies: {
       type: Array,
-      default: (prop) => (['reading'])
-    }
+      default: (prop) => ['reading'],
+    },
   },
 };
 ```
@@ -3675,3 +3678,5 @@ export { render, createApp };
 // 重新导出 Vue 的核心 API
 export * from '@vue/runtime-core';
 ```
+
+## Store
