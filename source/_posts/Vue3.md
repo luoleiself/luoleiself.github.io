@@ -3679,4 +3679,151 @@ export { render, createApp };
 export * from '@vue/runtime-core';
 ```
 
+## Router
+
+- 路由组件传参, 使用 props 将路由和组件解耦
+
+  - 布尔模式: `{path: '/users/:id', component: User, props: true}`
+  - 命名视图: `{path: '/users/:id', components: {default: User, sidebar: SideBar}, props: {default: true, sidebar: true}}`
+  - 对象模式: `{path: '/users/profile', component: User, props: {newsLetterPopup: false}}`
+  - 函数模式: `{path: '/search', component: Search, props: (route) => ({query: route.query})}`
+
+```javascript
+// 组件 User 和 路由强耦合
+const User = { template: '<div>User {{$route.params.id}}</div>' };
+const routes = [{ path: '/users/:id', component: User }];
+
+// 将 props 设置 true 时, route.params 将被设置为组件的 props
+const User = { props: ['id'], template: '<div>User {{id}}</div>' };
+const routes = [{ path: '/users/:id', component: User, props: true }];
+```
+
+- beforeEnter 路由独享的守卫, **只在进入路由时触发**, 不会在 params, query, hash 改变时触发
+
+```javascript
+const routes = [
+  {
+    path: '/users/:id',
+    component: User,
+    beforeEnter: (to, from) => {
+      // 从 /users/2 到 /users/3，/users/2#info 到 /users/2#projects 不会触发
+      // reject navigation
+      return false;
+    },
+  },
+];
+```
+
 ## Store
+
+store 是一个用 [reactive](#reactive) 包装的对象, 不需要使用 .value 访问, 使用解构的方式将会丢失响应性
+
+- defineStore 创建 store, 可使用 Option 对象 或 Setup 函数
+- storeToRefs() 从 store 中提取属性时保持其响应性, 并且跳过所有的 action 或非响应式(不是 ref 或 reactive)的属性
+
+```javascript
+import { createApp, ref } from 'vue';
+import { createPinia, defineStore, storeToRefs } from 'pinia';
+// 创建 pinia 并挂载到 vue 实例
+const pinia = createPinia();
+const app = createApp({});
+app.use(pinia);
+app.mount('#app');
+// 定义 store
+const useCounterStore = defineStore('counter', () => {
+  const count = ref(1);
+  const doubleCount = count.value * 2;
+  const increment = function () {
+    count.value++;
+  };
+  return { count };
+});
+
+const counter = useCounterStore();
+// count, doubleCount 是响应式的 ref
+// 同时通过插件添加的属性也会被提取为 ref
+// 并且会跳过所有的 action 或非响应式(不是 ref 或 reactive) 的属性
+const { count, doubleCount } = storeToRefs(counter);
+// 作为 action 的 increment 可以直接解构
+const { increment } = counter;
+```
+
+- store.$reset() 重置 state 为初始值
+- store.$patch() 批量修改 state, 可接收一个对象或者一个函数, 如果参数为函数, 函数接收一个参数 state 表示当前 store
+- store.$subscribe() 订阅 state, 侦听 state 及其变化在 patch 后只触发一次,
+  默认情况下, state 订阅器被绑定在使用的组件上, 当组件卸载时, 它们将被自动移除, 如果想在组件卸载时仍保留它们, 传入第二个参数 `{ detached: true }`, 将订阅器从组件中分离
+- store.$onAction() 订阅 action, 传递给它的回调函数会在 action 本身之前执行,
+  默认情况下, action 订阅器被绑定在使用的组件上, 当组件卸载时, 它们将被自动移除, 如果想在组件卸载时仍保留它们, 传入第二个参数 true, 将订阅器从组件中分离
+
+```javascript
+import { useCounterStore } from './useCounterStore.js'; // counter
+const counter = useCounterStore();
+const unsubscribe = counter.$onAction(
+  ({ name, store, args, after, onError }) => {
+    /* ... */
+    // after 函数将在 action 成功并完全运行后触发, 等待着任何返回的 promise
+    after((result) => {});
+    // onError 函数将在 action 抛出或返回一个拒绝的 promise 时触发
+    onError((error) => {});
+  },
+  true // 组件卸载时订阅器仍会被保留
+);
+// 取消订阅
+unsubscribe();
+```
+
+- setMapStoreSuffix() 修改 pinia 为每个 store 的 id 后面加上后缀, 默认 'Store', 修改后会影响调用辅助函数 mapStores 后的 store 的访问方式
+- mapStores() 将整个 store 映射为组件的计算属性
+
+```javascript
+import { mapStores } from 'pinia';
+import { useCounterStore } from './useCounterStore.js'; // counter
+import { useUserStore } from './useUserStore.js'; // user
+export default {
+  setup() {},
+  computed: {
+    // 需要使用 id+'Store' 的形式访问每个 store
+    ...mapStores(useCounterStore, useUserStore),
+  },
+  methods: {
+    m1() {
+      console.log(this.counterStore.count);
+      this.counterStore.increment();
+    },
+  },
+};
+```
+
+- mapState() 辅助函数, 将 state 属性映射为只读的计算属性
+- mapWritableState() 辅助函数, 将 state 映射为可修改的属性
+
+```javascript
+import { mapState } from 'pinia';
+import { useCounterStore } from './useCounterStore.js'; // counter
+export default {
+  setup() {},
+  computed: {
+    ...mapState(useCounterStore, ['count']),
+    ...mapState(useCounterStore, {
+      myCount: 'count',
+      double: (store) => store.count * 2,
+    }),
+  },
+};
+```
+
+- mapActions() 辅助函数, 将 action 属性映射为组件的方法
+
+```javascript
+import { mapActions } from 'pinia';
+import { useCounterStore } from './useCounterStore.js'; // counter
+export default {
+  setup() {},
+  methods: {
+    // 将 increment 方法注册为组件的 myIncrement 方法
+    ...mapActions(useCounterStore, {
+      myIncrement: 'increment',
+    }),
+  },
+};
+```
