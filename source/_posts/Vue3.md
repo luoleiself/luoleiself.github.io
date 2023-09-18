@@ -3681,6 +3681,9 @@ export * from '@vue/runtime-core';
 
 ## Router
 
+- useLink
+- useRoute 返回当前的路由地址, 相当于模板中使用 $route
+- useRouter 返回路由器实例, 相当于模板中使用 $router
 - 路由组件传参, 使用 props 将路由和组件解耦
 
   - 布尔模式: `{path: '/users/:id', component: User, props: true}`
