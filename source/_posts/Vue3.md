@@ -1955,6 +1955,27 @@ export default {
 
 - 和原生 DOM 事件不一样, 组件触发的事件**没有冒泡机制**, 只能监听直接子组件触发的事件, 平级组件或嵌套组件间通信, 应使用一个外部事件总线或全局状态管理方案
 
+##### 事件处理器 <em id="handler"></em> <!--markdownlint-disable-line-->
+
+- 内联事件处理器: 事件被触发时执行的内联 javascript 语句(与 onClick 类似)
+- 方法事件处理器: 一个指向组件上定义的方法的属性名或是路径
+
+```html
+<!-- 内联事件处理器  -->
+<button @click="count++">Add</button>
+<p>{{count}}</p>
+
+<!-- 方法事件处理器 -->
+<button @click="greet">Greet</button>
+<!-- 
+const name = ref('Hello Greet');
+
+function greet(){
+  console.log(name.value);
+}
+-->
+```
+
 ##### 事件修饰符
 
 - .stop 调用 `event.stopPropagation()`
@@ -1963,10 +1984,39 @@ export default {
 - .self 只有事件从元素本身发出才触发处理函数
 - .{keyAlias} 只有在某些按键下触发处理函数
 - .once 最多触发一次处理函数
+- .passive 通过 `{passive: true}` 附加一个 DOM 事件
+
+##### 按键修饰符
+
+- .enter
+- .tab
+- .delete 捕获 delete 和 backspace 两个按键
+- .esc
+- .space
+- .up
+- .down
 - .left 只在鼠标左键事件触发处理函数
 - .right 只在鼠标右键事件触发处理函数
 - .middle 只在鼠标中键事件触发处理函数
-- .passive 通过 `{passive: true}` 附加一个 DOM 事件
+
+##### 系统按键修饰符
+
+- .ctrl
+- .alt
+- .shift
+- .meta
+- .exact 允许控制触发一个事件所需的确定组合的系统按键修饰符
+
+```html
+<!-- 当按下 ctrl 时, 即使同时按下 alt 或者 shift 也会触发 -->
+<button @click.ctrl="onClick">click</button>
+
+<!-- 仅当按下 ctrl 且未按任何其它键时才会触发 -->
+<button @click.ctrl.exact="onClick">click</button>
+
+<!-- 仅当没有按下任何系统按键时触发 -->
+<button @click.exact="onClick">click</button>
+```
 
 #### v-bind <em id="v-bind"></em> <!-- markdownlint-disable-line -->
 

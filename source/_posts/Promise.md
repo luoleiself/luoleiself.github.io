@@ -9,7 +9,7 @@ tags:
   - ES6
 ---
 
-#### 概念
+### 概念
 
 > 是异步编程的一种解决方案, 解决 js 异步回调地狱的问题
 
@@ -21,7 +21,7 @@ tags:
 
 - 状态不受外界影响
 
-#### 简单用法
+### 简单用法
 
 ```javascript
 let p = new Promise((resolve, reject) => {
@@ -34,9 +34,9 @@ p.then((res) => {
 
 <!-- more -->
 
-#### 手动实现
+### 手动实现
 
-##### 基础代码
+#### 基础代码
 
 ```javascript
 // 状态常量
@@ -91,8 +91,10 @@ class MyPromise {
   }
 
   then(onFulfilled, onRejected) {
-    const realOnFulfilled = typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
-    const realOnRejected = typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
+    const realOnFulfilled =
+      typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
+    const realOnRejected =
+      typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
     if (this.status === FULFILLED) {
       realOnFulfilled(this.value);
     }
@@ -107,7 +109,8 @@ class MyPromise {
   }
 
   catch(onRejected) {
-    const realOnRejected = typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
+    const realOnRejected =
+      typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
     if (this.status === REJECTED) {
       realOnRejected(this.reason);
     }
@@ -129,7 +132,7 @@ var p = new MyPromise((resolve, reject) => {
 // 5秒后输出: 'res' gg
 ```
 
-##### 静态方法
+#### 静态方法
 
 ```javascript
 // resolve 静态方法
@@ -153,7 +156,7 @@ static reject (reason) {
 }
 ```
 
-##### 链式调用
+#### 链式调用
 
 ```javascript
 then(onFulfilled, onRejected) {
@@ -224,7 +227,7 @@ function resolvePromise(promise2, x, resolve, reject) {
 }
 ```
 
-##### 完整代码
+#### 完整代码
 
 ```javascript
 // 状态常量
@@ -298,8 +301,10 @@ class MyPromise {
   }
 
   then(onFulfilled, onRejected) {
-    const realOnFulfilled = typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
-    const realOnRejected = typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
+    const realOnFulfilled =
+      typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
+    const realOnRejected =
+      typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
 
     // 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去
     const promise2 = new MyPromise((resolve, reject) => {
@@ -348,7 +353,8 @@ class MyPromise {
   }
 
   catch(onRejected) {
-    const realOnRejected = typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
+    const realOnRejected =
+      typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
     if (this.status === REJECTED) {
       realOnRejected(this.reason);
     }
@@ -362,7 +368,9 @@ class MyPromise {
 function resolvePromise(promise2, x, resolve, reject) {
   // 如果相等了，说明return的是自己，抛出类型错误并返回
   if (promise2 === x) {
-    return reject(new TypeError('Chaining cycle detected for promise #<Promise>'));
+    return reject(
+      new TypeError('Chaining cycle detected for promise #<Promise>')
+    );
   }
   // 判断x是不是 MyPromise 实例对象
   if (x instanceof MyPromise) {
@@ -376,3 +384,15 @@ function resolvePromise(promise2, x, resolve, reject) {
   }
 }
 ```
+
+### 官方 API
+
+- Promise.resolve() 将给定的值转换为一个 Promise
+  - 如果该值本身是一个 Promise, 将该 Promise 返回
+  - 如果该值是一个 thenable 对象, 将调用其 then() 方法及其两个回调函数
+  - 否则, 返回的 Promise 将以该值兑现
+- Promise.reject() 返回一个已拒绝的 Promise 对象, 拒绝原因为给定的参数
+- Promise.all() 在**所有**传入的 Promise 都被兑现时兑现, 在**任意一个** Promise 被拒绝时拒绝
+- Promise.allSettled() 在**所有**的 Promise 都被敲定时兑现
+- Promise.any() 在**任意一个** Promise 被兑现时兑现, 仅在**所有**的 Promise 都被拒绝时才会拒绝
+- Promise.race() 在**任意一个** Promise 敲定时敲定, 即在**任意一个** Promise 被兑现时兑现, 在**任意一个** Promise 被拒绝时拒绝
