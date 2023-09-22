@@ -1958,7 +1958,17 @@ export default {
 ##### 事件处理器 <em id="handler"></em> <!--markdownlint-disable-line-->
 
 - 内联事件处理器: 事件被触发时执行的内联 javascript 语句(与 onClick 类似)
+
+  - 需要处理原生 DOM 事件时, 手动传入一个特殊的 $event 变量, 或者使用内联箭头函数
+
+    ```html
+    <button @click="log('click event', $event)">click</button>
+
+    <button @click="(event) => log('click event', event)">click</button>
+    ```
+
 - 方法事件处理器: 一个指向组件上定义的方法的属性名或是路径
+  - 自动接收原生 DOM 事件并立即触发执行
 
 ```html
 <!-- 内联事件处理器  -->
@@ -1970,7 +1980,7 @@ export default {
 <!-- 
 const name = ref('Hello Greet');
 
-function greet(){
+function greet(evt){
   console.log(name.value);
 }
 -->
