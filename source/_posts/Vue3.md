@@ -3778,6 +3778,29 @@ const routes = [
 ];
 ```
 
+### 编程式导航
+
+- 当同时提供了 path, params 参数时, params 会被忽略
+
+```javascript
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+// params 不能和 path 同时使用
+router.push({ path: '/user', params: { username: 'zhangsan' } });
+
+// 可以使用 name 和 params 组合
+router.push({ name: 'user', params: { username: 'zhangsan' } });
+```
+
+- 替换当前位置
+
+```javascript
+router.push({ path: '/home', replace: true });
+// 等价于
+router.replace({ path: '/home' });
+```
+
 ## Store
 
 store 是一个用 [reactive](#reactive) 包装的对象, 不需要使用 .value 访问, 使用解构的方式将会丢失响应性
