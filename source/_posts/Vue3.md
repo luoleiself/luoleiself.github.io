@@ -3835,7 +3835,9 @@ const { count, doubleCount } = storeToRefs(counter);
 const { increment } = counter;
 ```
 
+- store.$dispose() 停止 store 的相关作用域, 并从 store 注册表中删除它. 插件可以覆盖此方法来清理已添加的任何副作用函数
 - store.$reset() 重置 state 为初始值
+  - 使用 选项式 API 创建的 store 调用此方法, 使用 setup 创建的 store 调用此方法报错 `Error: ... is built using the setup syntax and does not implement $reset()`
 - store.$patch() 批量修改 state, 可接收一个对象或者一个函数, 如果参数为函数, 函数接收一个参数 state 表示当前 store
 - store.$subscribe() 订阅 state, 侦听 state 及其变化在 patch 后只触发一次,
   默认情况下, state 订阅器被绑定在使用的组件上, 当组件卸载时, 它们将被自动移除, 如果想在组件卸载时仍保留它们, 传入第二个参数 `{ detached: true }`, 将订阅器从组件中分离
