@@ -1804,6 +1804,9 @@ export default {
 
   // 暴露外部可访问的公共属性
   defineExpose({ msg });
+
+  // vue 3.3 使用宏函数定义其它杂项
+  defineOptions({ name: 'Comp-A', inheritAttrs: false });
 </script>
 ```
 
