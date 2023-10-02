@@ -872,6 +872,8 @@ watch(id, async (newValue, oldValue, onCleanup) => {
 
 #### toRef()
 
+- Vue 3.3 支持将值、refs 或 getters 规范化为 refs
+
 基于响应式对象上的一个属性, 新创建一个对应的 ref, 此 ref 与其源属性保持同步, 改变源属性的值将更新 ref 的值, 反之亦然
 
 ```javascript
