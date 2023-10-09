@@ -25,7 +25,7 @@ docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对
 
 <!-- more -->
 
-```shell
+```bash
 [root@localhost ~]# docker run -tid --name centos01 centos /bin/bash
 [root@localhost ~]# docker run -tid --name centos02 centos /bin/bash
 [root@localhost ~]# ip addr
@@ -65,7 +65,7 @@ veth-pair 就是一对的虚拟设备接口，和 tap/tun 设备不同的是，�
 
 ### [网络模式](https://docs.docker.com/network/)
 
-```shell
+```bash
 [root@localhost ~]# docker network ls
 NETWORK ID     NAME      DRIVER    SCOPE
 2cad59b7f47d   bridge    bridge    local
@@ -98,7 +98,7 @@ Docker 容器默认使用的网络模式, Docker 为每个容器创建一个虚�
 
 容器不会获得一个独立的 Network Namespace, 而是和宿主机共享 IP 地址和端口
 
-```shell
+```bash
 docker run ... --network host ...
 ```
 
@@ -106,7 +106,7 @@ docker run ... --network host ...
 
 禁用网络功能, 不会为 docker 容器配置任何网络配置, 容器无法访问外部网络, 也无法被外部网络访问
 
-```shell
+```bash
 docker run ... --network none ...
 ```
 
@@ -116,7 +116,7 @@ docker run ... --network none ...
 
 - \-\-network 指定容器运行的网络模式, 默认为 docker0
 
-```shell
+```bash
 docker run ... centos02 --network centos01 ...
 ```
 
@@ -132,7 +132,7 @@ docker run ... centos02 --network centos01 ...
 - 此方式需要查看容器的 ip 信息
 - docker0 **不支持** 容器名 **别名** 连接访问
 
-```shell
+```bash
 # 查看 centos01 的 ip 信息
 [root@localhost ~]# docker exec -it centos01 ip addr
 ... 172.17.0.2
@@ -158,7 +158,7 @@ rtt min/avg/max/mdev = 0.041/0.048/0.065/0.012 ms
 
 在未知对方容器 ip 信息的情况下不能通信
 
-```shell
+```bash
 # 创建 centos02 连接到 centos01
 [root@localhost ~]# docker run -tid --name centos02 --link centos01 centos /bin/bash
 # centos02 ping centos01
@@ -212,7 +212,7 @@ ping: centos02: Name or service not known
 
 1. 创建自定义网络
 
-```shell
+```bash
 [root@localhost ~]# docker network create --subnet 192.168.0.0/16 --gateway 192.168.0.1 my-docker-net
 [root@localhost ~]# docker network ls
 NETWORK ID     NAME            DRIVER    SCOPE
@@ -224,7 +224,7 @@ b2f23805b5e5   none            null      local
 
 2. 查看宿主机 ip 相关信息 <!-- markdownlint-disable-line -->
 
-```shell
+```bash
 [root@localhost ~]# ip addr
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -246,14 +246,14 @@ b2f23805b5e5   none            null      local
 
 3. 基于自定义网络模式创建容器 <!-- markdownlint-disable-line -->
 
-```shell
+```bash
 [root@localhost ~]# docker run -tid --name my-docker-net01 --network my-docker-net centos /bin/bash
 [root@localhost ~]# docker run -tid --name my-docker-net02 --network my-docker-net centos /bin/bash
 ```
 
 4. 查看自定义网络信息 <!-- markdownlint-disable-line -->
 
-```shell
+```bash
 [root@localhost ~]# docker network inspect my-docker-net
 [{
   "Name": "my-docker-net",
@@ -294,7 +294,7 @@ b2f23805b5e5   none            null      local
 
 5. 自定义网络模式容器通信 <!-- markdownlint-disable-line -->
 
-```shell
+```bash
 [root@localhost ~]# docker exec -it my-docker-net01 ping my-docker-net02
 PING my-docker-net02 (192.168.0.3) 56(84) bytes of data.
 64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=1 ttl=64 time=0.110 ms
@@ -329,7 +329,7 @@ rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 
 1. 查看自定义网络模式信息
 
-```shell
+```bash
 [root@localhost ~]# docker network inspect my-docker-net
 ...
 "Containers": {
@@ -361,11 +361,11 @@ ad9cdd7a0edf   centos    "/bin/bash"   22 hours ago    Up 6 hours              m
 
 2. connect 命令连接容器到自定义网络 <!-- markdownlint-disable-line -->
 
-```shell
+```bash
 docker network connect [OPTIONS] NETWORK CONTAINER
 ```
 
-```shell
+```bash
 # 使用命令将不同网络模式中的容器加入到当前网络模式中
 # 连接 centos01 到 自定义网络 my-docker-net
 [root@localhost ~]# docker network connect my-docker-net centos01
@@ -415,7 +415,7 @@ docker network connect [OPTIONS] NETWORK CONTAINER
 
 3. 与自定义网络模式中的容器通信 <!-- markdownlint-disable-line -->
 
-```shell
+```bash
 # 默认网络模式中容器 ping 自定义网络模式中容器
 [root@localhost ~]# docker exec -it centos01 ping my-docker-net01
 PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
@@ -457,7 +457,7 @@ rtt min/avg/max/mdev = 0.000/0.031/0.048/0.021 ms
 
 4. 断开容器到另一个网络的连接 <!-- markdownlint-disable-line -->
 
-```shell
+```bash
 # 断开自定义网络和 centos01 的连接
 [root@localhost ~]# docker network disconnect my-docker-net centos01
 [root@localhost ~]# docker exec -it centos01 ping my-docker-net01
@@ -477,7 +477,7 @@ ping: my-docker-net01: Name or service not known
 
 ### 部署 nginx
 
-```shell
+```bash
 [root@localhost workspace]#
 # 创建宿主机挂载目录 nginx/conf.d nginx/log html
 
@@ -501,7 +501,7 @@ server {
 
 ### 部署 mysql
 
-```shell
+```bash
 [root@localhost workspace]
 # 创建宿主机挂载目录 mysql/db mysql/log mysql/conf
 
@@ -531,7 +531,7 @@ skip-name-resolve
 show variables like '%char%'; # 查看字符集
 ```
 
-```shell
+```bash
 [root@localhost workspace]# docker ps -a
 CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS             PORTS                                                  NAMES
 6b6d19282ca8   nginx       "/docker-entrypoint.…"   27 minutes ago   Up 27 minutes      0.0.0.0:80->80/tcp, :::80->80/tcp                      c_nginx
@@ -549,7 +549,7 @@ Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行�
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
-```shell
+```bash
 # 启动指定服务, 不加参数则默认启动所有服务
 docker-compose -f -p -c --env-file up [service_name]
 
@@ -609,7 +609,7 @@ docker-compose -f -p -c --env-file up [service_name]
   - \-\-no-deps 不启动关联的服务
   - \-\-scale 调整服务实例数量, 覆盖配置文件中的 scale 配置
 
-```shell
+```bash
 [root@localhost ~]# docker-compose up service_id # 启动指定服务
 
 # 调整指定服务实例数量, 先去掉 docker-compose.yml 配置文件 service 指定的端口, 在单机中会出现端口占用问题
@@ -781,7 +781,7 @@ Swarm 的配置和状态信息保存在一套位于所有管理节点上的分�
 
 ### 令牌格式
 
-```shell
+```bash
 PREFIX - VERSION - SWARM ID - TOKEN
 
 SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh
@@ -808,7 +808,7 @@ SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg
 - 7946/tcp 与 7946/udp: 用于控制面 gossip 分发
 - 4789/udp: 用于基于 VXLAN 的覆盖网络
 
-```shell
+```bash
 [root@localhost ~]# docker swarm init --advertise-addr 192.168.1.2 --listen-addr 192.168.1.2
 Swarm initialized: current node (5r1q8c5jaawi9w1wd8yr7w3u2) is now a manager.
 
@@ -825,7 +825,7 @@ To add a manager to this swarm, run 'docker swarm join-token manager' and follow
 
 #### 生成管理节点令牌
 
-```shell
+```bash
 [root@localhost ~]# docker swarm join-token manager
 To add a manager to this swarm, run the following command:
 
@@ -834,7 +834,7 @@ To add a manager to this swarm, run the following command:
 
 #### 生成工作节点令牌
 
-```shell
+```bash
 [root@localhost ~]# docker swarm join-token worker
 To add a worker to this swarm, run the following command:
 
@@ -847,13 +847,13 @@ To add a worker to this swarm, run the following command:
 
 #### 更新管理节点令牌
 
-```shell
+```bash
 [root@localhost ~]# docker swarm join-token --rotate manager
 ```
 
 #### 更新工作节点令牌
 
-```shell
+```bash
 [root@localhost ~]# docker swarm join-token --rotate worker
 ```
 
@@ -861,24 +861,24 @@ To add a worker to this swarm, run the following command:
 
 - \-\-token
 
-```shell
+```bash
 [root@localhost ~]# docker swarm join --token TOKEN HOST:PORT
 ```
 
 #### 添加管理节点
 
-```shell
+```bash
 [root@localhost ~]# docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-58yur8457jq0ghy45qnvislbi 192.168.1.2:2377
 ```
 
 #### 添加工作节点
 
-```shell
+```bash
 [root@localhost ~]# docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh 192.168.1.2:2377
 ```
 
 ### 移除节点
 
-```shell
+```bash
 [root@localhost ~]# docker swarm leave
 ```

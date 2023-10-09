@@ -29,7 +29,7 @@ String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic 
   - PXAT 过期时间戳, 单位毫秒
   - KEEPTTL 保留 key 关联的生存时间
 
-```shell
+```bash
 127.0.0.1:6379> SET age 18
 OK
 127.0.0.1:6379> EXPIRE age 100
@@ -56,7 +56,7 @@ OK
 
 - SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *
 1) "xiaoming"
 2) "name"
@@ -72,7 +72,7 @@ OK
 
 - APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 `SET` 并返回追加内容的长度
 
-```shell
+```bash
 127.0.0.1:6379> APPEND age 1
 (integer) 3
 127.0.0.1:6379> GET age
@@ -95,7 +95,7 @@ OK
 - SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok
 - PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok
 
-```shell
+```bash
 127.0.0.1:6379> SETEX addr 20 beijing
 OK
 127.0.0.1:6379> PSETEX addr 20000 beijing
@@ -107,7 +107,7 @@ OK
 - MSET key value [key value ...] 批量设置 key 的值
 - MSETNX key value [key value ...] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *
 1) "age"
 2) "name"
@@ -121,7 +121,7 @@ OK
 
   覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建
 
-```shell
+```bash
 127.0.0.1:6379> SETRANG name 1 xyz
 (integer) 8
 127.0.0.1:6379> GET name
@@ -135,7 +135,7 @@ OK
 - GET key 获取一个 key 的值, 不存在返回 \<nil\>
 - GETSET key value 设置指定 key 的值并返回原来的值, key 不存在返回 \<nil\>
 
-```shell
+```bash
 127.0.0.1:6379> GETSET age 18
 (nil)
 127.0.0.1:6379> KEYS *
@@ -149,7 +149,7 @@ OK
 
   - PERSIST 移除 key 关联的生存时间
 
-```shell
+```bash
 127.0.0.1:6379> GETEX addr EX 50
 "beijing"
 127.0.0.1:6379> TTL addr
@@ -164,7 +164,7 @@ OK
 
 - GETDEL key 获取指定 key 的值并删除, key 不存在返回 \<nil\>
 
-```shell
+```bash
 127.0.0.1:6379> GETDEL age
 "18"
 127.0.0.1:6379> KEYS *
@@ -180,7 +180,7 @@ OK
 - GETRANGE key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 `""`
   - start, end 只支持整数, 其他类型会报错
 
-```shell
+```bash
 127.0.0.1:6379> GETRANGE name -inf +inf
 (error) ERR value is not an integer or out of range
 127.0.0.1:6379> GETRANGE name - +
@@ -196,7 +196,7 @@ OK
 - SUBSTR key start end 返回指定 key 的指定范围的子串部分, key 不存在返回 `""`
   - start, end 只支持整数, 其他类型会报错
 
-```shell
+```bash
 127.0.0.1:6379> SUBSTR name -inf +inf
 (error) ERR value is not an integer or out of range
 127.0.0.1:6379> SUBSTR name (1 (4
@@ -248,7 +248,7 @@ hash-max-listpack-value 64
 - HSET key field value [field value ...] 同时将多个键值对存入到哈希表中并返回新添加的数量, 如果 field 已存在则修改 field 的值
 - HMSET key field value [field value ...] 批量向哈希表中存入多个键值对, 如果 field 存在则修改 field 的值, 执行成功返回 ok
 
-```shell
+```bash
 # 成功添加一个 field 并修改已存在的 field
 127.0.0.1:6379> HSET runoob name "new-redis" age 19 addr "beijing" sex "男"
 (integer) 3
@@ -261,7 +261,7 @@ OK
 - HMGET key field [field ...] 批量获取哈希表中指定 field 的值, 哈希表或者指定字段不存在返回 \<nil\>
 - HGETALL key 获取哈希表中所有的字段和值, 未找到或者哈希表不存在返回 (empty array)
 
-```shell
+```bash
 127.0.0.1:6379> HGET xiaoming name
 "xiaoming"
 127.0.0.1:6379> HMGET xiaoming name age addr
@@ -288,7 +288,7 @@ OK
 - HLEN key 获取哈希表中字段的数量, 0 表示哈希表为空或者不存在
 - HSTRLEN key field 返回哈希表中指定 field 的值的字符串长度, 哈希表或者指定字段不存在返回 0
 
-```shell
+```bash
 127.0.0.1:6379> HLEN xiaoming
 (integer) 3
 127.0.0.1:6379> HSTRLEN xiaoming name
@@ -298,7 +298,7 @@ OK
 - HKEYS key 获取哈希表中所有的字段, 哈希表为空或者不存在返回 (empty array)
 - HVALS key 获取哈希表中所有的值, 哈希表为空或者不存在返回 (empty array)
 
-```shell
+```bash
 127.0.0.1:6379> HKEYS xiaoming
 1) "name"
 2) "age"
@@ -321,7 +321,7 @@ OK
   - pattern 匹配的模式
   - count 指定从数据集里返回多少元素, 默认为 10
 
-```shell
+```bash
 127.0.0.1:6379> HSCAN runoob 0 MATCH *name COUNT 100
 1) "0"
 2) 1) "name"
@@ -336,7 +336,7 @@ OK
   - count 指定返回随机的字段的数量, 默认为 1
   - WITHVALUES 指定返回随机的字段和值
 
-```shell
+```bash
 127.0.0.1:6379> HRANDFIELD runoob
 "age"
 127.0.0.1:6379> HRANDFIELD runoob 3

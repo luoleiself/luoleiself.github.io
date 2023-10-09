@@ -202,7 +202,7 @@ fi
 
 #### if
 
-```shell
+```bash
 # 当 then 单独另写一行时, 分号不能省略
 if [-e /root/workspace/test.txt ]; then
   printf "hello world %s %s\n" $(/bin/date +"%Y-%m-%d %H:%M:%S")
@@ -214,9 +214,40 @@ else
 fi
 ```
 
+```bash
+#!/usr/bin/env bash
+echo `date +"%Y-%m-%d %H:%M:%S"`;
+
+# 区分系统信息
+echo $(systeminfo);
+
+# if [ -f './node-v18.18.0-linux-x64/bin/npm' ]; then
+#   ./node-v18.18.0-linux-x64/bin/npm -v;
+# fi
+
+
+# if [ -f "./node-v18.18.0-win-x86/npm" ]; then
+#   ./node-v18.18.0-win-x64/node -v;
+#   ./node-v18.18.0-win-x64/npm -v;
+#   ./node-v18.18.0-win-x86/npm install;
+#   if [[ $? != 0 ]]; then
+#     echo -e "\e[1;32mnpm install failure\e[0m";
+#     exit;
+#   fi
+#   ./node-v18.18.0-win-x86/npm run build;
+#   if [[ $? == 0 ]]; then
+#     echo -e "\e[1;32mbuild success\e[0m";
+#   else
+#     echo -e "\e[1;31mbuild failure\e[0m";
+#   fi
+# else
+#   echo 'npm command not found...';
+# fi
+```
+
 #### case
 
-```shell
+```bash
 a=20
 case $a in
   10)
@@ -233,7 +264,7 @@ esac
 
 #### for
 
-```shell
+```bash
 # 当 do 单独另写一行时, 分号不能省略
 for i in {1..10}; do
   # 依次输出 for do 1 到 10
@@ -243,7 +274,7 @@ done
 
 #### while
 
-```shell
+```bash
 j=1
 # 当 do 单独另写一行时, 分号不能省略
 while [ $j -lt 10 ]; do
@@ -255,7 +286,7 @@ done
 
 #### until
 
-```shell
+```bash
 k=1
 # 当 do 单独另写一行时, 分号不能省略
 until [ $k -gt 10 ]; do
@@ -279,7 +310,7 @@ done
 - 初始化时不需要定义数组的大小, 定义时用小括号将用空格分隔的元素包含起来
 - 数组元素的下标由 0 开始
 
-```shell
+```bash
 arr=(1 2 3 'a')
 echo "arr[0]=" ${arr[0]}
 echo "arr[1]=" ${arr[1]}
@@ -300,7 +331,7 @@ echo "str 的长度为 " ${#str}  # str 的长度为 10
 
 - 关联数组, 使用 `declare -A` 声明
 
-```shell
+```bash
 declare -A site=(['google']='www.google.com' ['baidu']='www.baidu.com' ['taobao']='www.taobao.com')
 echo "site['google']=" ${site['google']}
 # site['google']= www.google.com
@@ -325,7 +356,7 @@ echo "site的长度为 " ${#site[*]}
 - statements 函数体中的执行语句
 - return value 函数的返回值, 一般表示函数的返回状态, 0 表示成功, 其他值表示失败, 只能是 0 - 255 之间的数字
 
-```shell
+```bash
 # 标准语法
 [function] function_name [()] {
   statements
@@ -340,7 +371,7 @@ echo "site的长度为 " ${#site[*]}
   - 一种是借助全局变量, 将得到的结果赋值给全局变量
   - 一种是在函数内使用 `echo`, `printf` 命令将结果输出, 在函数外部使用 `$( )` 或者 `\`\`` 捕获结果
 
-```shell
+```bash
 #!/bin/bash
 function dateFormat() {
   echo $(/bin/date +"hello crontab %Y-%m-%d %H:%M:%S")

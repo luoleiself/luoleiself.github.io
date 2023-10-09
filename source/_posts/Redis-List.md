@@ -31,7 +31,7 @@ LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部
 - LPUSH key element [element ...] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建
 - LPUSHX key element [element ...] 批量添加多个元素到**已存在**的列表头部并返回列表的长度, 列表为空或者不存在返回 0
 
-```shell
+```bash
 127.0.0.1:6379> LPUSH list:zhang name1 name2 name3
 (integer) 3
 127.0.0.1:6379> LPUSHX list:zhang name1 name4 name5 name6
@@ -70,7 +70,7 @@ RPUSH 和 RPUSHX 命令将多个元素**顺序**追加到列表尾部
 - RPUSH key element [element ...] 批量追加多个元素到列表尾部并返回列表的长度, 列表为空或者不存在新建
 - RPUSHX key element [element ...] 批量追加多个元素到**已存在**的列表尾部并返回列表的长度, 列表为空或者不存在返回 0
 
-```shell
+```bash
 127.0.0.1:6379> RPUSH list:zhang name1 name2 name3
 (integer) 3
 127.0.0.1:6379> RPUSHX list:zhang name1 name4 name5 name6
@@ -111,7 +111,7 @@ RPUSH 和 RPUSHX 命令将多个元素**顺序**追加到列表尾部
   - pivot 查找的基准元素
   - element 插入的元素
 
-```shell
+```bash
 # 向 list 中第 1 次出现 a 的前面添加 hello
 127.0.0.1:6379> LINSERT list BEFORE a hello
 (integer) 5
@@ -130,7 +130,7 @@ RPUSH 和 RPUSHX 命令将多个元素**顺序**追加到列表尾部
 - LTRIM key start stop 对列表不包含在 start 到 stop 区间的元素进行删除, 执行成功返回 ok
   - start, end 只支持整数, 其他类型会报错
 
-```shell
+```bash
 127.0.0.1:6379> LPUSH mylist hello world gg yy hehe haha
 (integer) 6
 127.0.0.1:6379> LTRIM mylist - +
@@ -157,7 +157,7 @@ OK
   - count < 0 从列表尾部开始向头部搜索, 移除与 element 相等的元素, 数量为 count 的绝对值
   - count = 0 移除列表中与 element 相等的所有的元素
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *  # 获取当前数据库的 key
 1) "sex"
 2) "addr"
@@ -187,7 +187,7 @@ OK
 - RPOP key [count] 移除并返回列表尾部指定数量的元素, count 默认为 1, 列表为空或者不存在返回 \<nil\>
 - BRPOP key [key ...] timeout 阻塞版的 `RPOP`, 从多个列表中第 1 个非空列表中的尾部移除并返回 1 个元素, 返回值 `BLPOP`
 
-```shell
+```bash
 # 向 list 尾部添加元素
 127.0.0.1:6379> RPUSH list c d e
 (integer) 3
@@ -216,7 +216,7 @@ OK
   - COUNT count 移除元素的数量, 默认为 1
 - BLMPOP timeout numkeys key [key ...] LEFT|RIGHT [COUNT count] 阻塞版的 `LMPOP`, 列表为空时会阻塞直到等待超时或发现可弹出元素为止, Redis 7.0.0 支持
 
-```shell
+```bash
 127.0.0.1:6379> RPUSH list a b c d e f  # 创建列表 list
 (integer) 6
 127.0.0.1:6379> RPUSH newlist 1 2 3 4 5 6 # 创建列表 newlist
@@ -245,7 +245,7 @@ OK
 
 > BRPOPLPUSH source destination timeout 移除列表的最后一个元素添加到另一个列表的头部并返回操作的元素, 如果列表为空会阻塞列表直到等待超时或发现可弹出元素为止, 6.2 开始废弃
 
-```shell
+```bash
 # 向 list 尾部添加元素
 127.0.0.1:6379> RPUSH list a b c
 (integer) 3
@@ -279,7 +279,7 @@ OK
 
 > RPOPLPUSH source destination 移除列表的最后一个元素添加到另一个列表的头部并返回操作的元素, 源列表为空或者不存在返回 \<nil\> 6.2 开始废弃
 
-```shell
+```bash
 # 向 list 尾部添加元素
 127.0.0.1:6379> RPUSH list a b c d e f g
 (integer) 7
@@ -318,7 +318,7 @@ OK
 - LRANGE key start stop 遍历列表指定区间的元素, 列表为空或者不存在返回 (empty array)
   - start, end 支持整数, 其他类型会报错
 
-```shell
+```bash
 127.0.0.1:6379> LPUSH mylist hello world gg yy hehe haha
 (integer) 6
 127.0.0.1:6379> LRANGE mylist - +
@@ -342,7 +342,7 @@ OK
 
 - LINDEX key index 获取列表中指定索引的元素, 如果列表或者索引不存在返回 \<nil\>
 
-```shell
+```bash
 127.0.0.1:6379> LRANGE list:zhang 0 11
  1) "li10"
  2) "li9"
@@ -370,7 +370,7 @@ OK
   - COUNT 指定匹配项的下标的个数, 默认为 1
   - MAXLEN 指定命令对列表项进行比较的次数
 
-```shell
+```bash
 # 创建列表 list
 127.0.0.1:6379> RPUSH list a b c a b c b d c a b a c d b c a d
 (integer) 18

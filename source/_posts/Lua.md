@@ -976,7 +976,7 @@ LuaRocks 是一个 Lua 包管理器，基于 Lua 语言开发，提供一个命�
 
 #### 安装
 
-```shell
+```bash
 [root@centos7 workspace]# wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz
 [root@centos7 workspace]# tar zxpf luarocks-3.9.2.tar.gz
 [root@centos7 workspace]# cd luarocks-3.9.2

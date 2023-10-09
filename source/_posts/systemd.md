@@ -59,7 +59,7 @@ cgroup 是 linux 内核提供的一种机制, 这种机制可以根据需求把�
 
 - status 查看当前主机的设置
 
-```shell
+```bash
 [root@centos7 workspace]# hostnamectl status
   Static hostname: centos7.localdomain
         Icon name: computer-vm
@@ -85,7 +85,7 @@ Operating System: CentOS Linux 7 (Core)
 
 - status 查看本地化配置项
 
-```shell
+```bash
 [root@centos7 workspace]# localectl status
 System Locale: LANG=zh_CN.utf8
     VC Keymap: us
@@ -95,7 +95,7 @@ System Locale: LANG=zh_CN.utf8
 - list-locales 查看系统中的本地化配置
 - set-locale LOCALE 设置系统的本地化
 
-```shell
+```bash
 [root@centos7 workspace]# localectl set-locale LANG=zh_CN.utf8
 [root@centos7 workspace]# source /etc/locale.conf # 重新加载本地化配置文件
 # 或者使用 newgrp - # 如果有 - 标志表示重新初始化用户环境同重新登陆, 没有 - 表示当前的环境和工作目录不做改变
@@ -127,7 +127,7 @@ NTP(network time protocol)网络时间协议, 用来同步化计算机时间的�
 
 - status 显示日期时间设置
 
-```shell
+```bash
 [root@centos7 workspace]# timedatectl status
       Local time: Thu 2023-05-18 14:49:36 CST
   Universal time: Thu 2023-05-18 06:49:36 UTC
@@ -150,7 +150,7 @@ Warning: The system is configured to read the RTC time in the local time zone.
 - set-timezone ZONE 设置系统时区
 - list-timezones 显示系统支持的时区
 
-```shell
+```bash
 [root@centos7 workspace]# timedatectl set-timezone Asia/Shanghai # 设置时区
 
 [root@centos7 workspace]# timedatectl list-timezones
@@ -166,7 +166,7 @@ Asia/Shanghai
 - set-local-rtc BOOL 设置本地时间
 - set-ntp BOOL 开启 NTP 同步
 
-```shell
+```bash
 [root@centos7 workspace]# timedatectl set-local-rtc 1 # 设置本地时间
 [root@centos7 workspace]# timedatectl set-local-rtc 0 # 设置 UTC 时间
 
@@ -181,7 +181,7 @@ Asia/Shanghai
 
 - list-sessions 显示会话列表
 
-```shell
+```bash
 [root@centos7 workspace]# loginctl list-sessions
 SESSION        UID USER             SEAT
       8       1000 vagrant
@@ -192,7 +192,7 @@ SESSION        UID USER             SEAT
 
 - session-show [ID...] 显示会话的状态
 
-```shell
+```bash
 [root@centos7 workspace]# loginctl session-status 9
 9 - vagrant (1000)
            Since: Thu 2023-05-18 10:13:35 CST; 4h 53min ago
@@ -217,7 +217,7 @@ May 18 10:13:43 centos7.localdomain su[3531]: pam_unix(su-l:session): session op
 
 - show-session [ID...] 显示会话的属性
 
-```shell
+```bash
 [root@centos7 workspace]# loginctl show-session 9
 Id=9
 User=1000
@@ -253,7 +253,7 @@ LockedHint=no
 
 - list-users 显示所有用户
 
-```shell
+```bash
 [root@centos7 workspace]# loginctl list-users
   UID USER
 1000 vagrant
@@ -263,7 +263,7 @@ LockedHint=no
 
 - user-status [USER...] 显示用户状态
 
-```shell
+```bash
 [root@centos7 workspace]# loginctl user-status vagrant
 vagrant (1000)
            Since: Thu 2023-05-18 10:13:33 CST; 5h 4min ago
@@ -299,7 +299,7 @@ May 18 15:14:08 centos7.localdomain su[5236]: pam_unix(su-l:session): session op
 
 - show-user [USER...] 显示用户的属性
 
-```shell
+```bash
 [root@centos7 workspace]# loginctl show-user vagrant
 UID=1000
 GID=1000
@@ -326,7 +326,7 @@ Linger=no
 
 - list-seats 列出本机上的所有可用席位
 
-```shell
+```bash
 [root@centos7 ~]# loginctl list-seats
 SEAT
 seat0
@@ -336,7 +336,7 @@ seat0
 
 - seat-status [NAME...] 显示可用席位的状态
 
-```shell
+```bash
 [root@centos7 ~]# loginctl seat-status seat0
 seat0
   Devices:
@@ -362,7 +362,7 @@ seat0
 
 - show-seat [NAME...] 显示席位的属性
 
-```shell
+```bash
 [root@centos7 ~]# loginctl show-seat seat0
 Id=seat0
 CanMultiSession=yes
@@ -387,7 +387,7 @@ IdleSinceHintMonotonic=0
 - \-b,\-\-boot[=ID] 显示指定 boot 的日志
 - \-\-list-boots 显示所有的 boot
 
-```shell
+```bash
 [root@centos7 ~]# journalctl --list-boots
 0 312745f18eaa4b3eb809d0f361ad43bc 四 2023-05-18 09:19:48 CST—四 2023-05-18 16:01:01 CST
 ```
@@ -395,7 +395,7 @@ IdleSinceHintMonotonic=0
 - \-k,\-\-dmesg 显示本次启动时的日志
 - \-u,\-\-unit=UNIT 显示指定 Unit 的日志
 
-```shell
+```bash
 [root@centos7 ~]# journalctl --since "2 hours ago" -u redis.service
 -- Logs begin at 四 2023-05-18 16:09:37 CST, end at 四 2023-05-18 16:22:59 CST. --
 5月 18 16:20:54 centos7 systemd[1]: Stopping redis-server...
@@ -422,7 +422,7 @@ IdleSinceHintMonotonic=0
 - \-\-verify 校验日志的一致性
 - \-\-header 显示 journal 的头部信息
 
-```shell
+```bash
 [root@centos7 ~]# journalctl --header
 File Path: /run/log/journal/afcca427b44c4f139ef788ed3b33b7e1/system.journal
 File ID: 498fe2e44a684bf7a8353f3e9d09b4f4
@@ -459,14 +459,14 @@ Disk usage: 8.0M
 
 - time 有无此命令都可以
 
-```shell
+```bash
 [root@centos7 workspace]# systemd-analyze time
 Startup finished in 492ms (kernel) + 3.958s (initrd) + 38.325s (userspace) = 42.776s
 ```
 
 - blame 查看每个服务的启动耗时
 
-```shell
+```bash
 [root@localhost ~]# systemd-analyze blame
     ...    
     3.804s docker.service
@@ -501,7 +501,7 @@ Startup finished in 492ms (kernel) + 3.958s (initrd) + 38.325s (userspace) = 42.
 
 递归显示 cgroup 内容
 
-```shell
+```bash
 [root@centos7 ~]# systemd-cgls
 ├─1 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
 ├─user.slice
@@ -540,7 +540,7 @@ Startup finished in 492ms (kernel) + 3.958s (initrd) + 38.325s (userspace) = 42.
 
 显示 cgroup 的资源使用情况, 类似与 top 命令
 
-```shell
+```bash
 Path                                                                             Tasks   %CPU   Memory  Input/s Output/s
 /                                                                                   77    2.3   437.4M        -        -
 /user.slice                                                                         11    1.8    35.1M        -        -

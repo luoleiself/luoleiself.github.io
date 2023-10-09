@@ -27,7 +27,7 @@ tags:
 
 - `.ssh/authorized_keys` 或 `.vagrant/machines/default/virtualbox/private_key` 有变化(内容改动/文件存在)
 
-```shell
+```bash
 ...
 ==> default: Forwarding ports...
     default: 22 (guest) => 2222 (host) (adapter 1)

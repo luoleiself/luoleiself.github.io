@@ -17,7 +17,7 @@ HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量
 
 - PFCOUNT key [key ...] 根据 key 计算基数并返回, 0 表示 key 不存在
 
-```shell
+```bash
 127.0.0.1:6379> PFADD hll foo bar zap
 (integer) 1
 127.0.0.1:6379> PFADD hll zap zap zap
@@ -38,7 +38,7 @@ HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量
 - PFSELFTEST 内部命令, 一般用于开发和测试 Redis
 - PFMERGE destkey sourcekey [sourcekey ...] 将多个 HyperLogLog 值合并为 1 个唯一值, 该值将近似于源 HyperLogLog 结构的观察集的并集的基数, 如果 destkey 不存在则新建, 如果 destkey 已存在则将期作为源集之一, 其基数将包含在计算的 HyperLogLog 的基数中
 
-```shell
+```bash
 127.0.0.1:6379> PFADD hll foo bar zap a
 (integer) 1
 127.0.0.1:6379> PFADD other-hll a b c foo
@@ -88,7 +88,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
   - XX 仅更新已经存在的成员, 不再添加新成员
   - CH 将 `GEOADD` 返回值统计新成员的添加数量修改为更改的成员总数, 包含更新已存在的数量和新添加的数量
 
-```shell
+```bash
 127.0.0.1:6379> GEOADD citys 116.405285 39.904989 beijing 121.472644 31.231706 shanghai
 (integer) 2
 127.0.0.1:6379> GEOADD citys 113.280637 23.125178 guangzhou 114.05571 22.52245 shenzhen
@@ -148,7 +148,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 - GEOPOS key member [member ...] 返回指定成员的经纬度信息, 如果集合为空或者不存在或者指定成员不存在则返回 \<nil\>
 
-```shell
+```bash
 127.0.0.1:6379> GEOPOS city1 beijing shanghai
 1) (nil)
 2) (nil)
@@ -167,7 +167,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 
 - GEOHASH key member [member ...] 返回指定成员的经纬度信息的 hash 编码后的字符串表示, 如果集合为空或者不存在或者指定成员不存在则返回 \<nil\>
 
-```shell
+```bash
 127.0.0.1:6379> GEOHASH citys hello world
 1) (nil)
 2) (nil)
@@ -185,7 +185,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
   - FT 英里
   - MI 英尺
 
-```shell
+```bash
 127.0.0.1:6379> GEODIST citys1 beijing shanghai KM
 (nil)
 127.0.0.1:6379> GEODIST citys beijing hello KM
@@ -224,7 +224,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
 > GEORADIUSBYMEMBER 6.2.0 开始废弃, 使用 `GEOSEARCH FROMMEMBER member BYRADIUS radius` 代替
 > GEORADIUSBYMEMBER_RO 6.2.0 开始废弃, 使用 `GEOSEARCH FROMMEMBER member BYRADIUS radius` 代替
 
-```shell
+```bash
 # 集合为空或者不存在返回 empty array
 127.0.0.1:6379> GEOSEARCH citys1 FROMMEMBER zhengzhou BYRADIUS 500 KM
 (empty array)
@@ -285,7 +285,7 @@ EPSG:900913 / EPSG:3785 / OSGEO:41001 标准规定
   - 部分参数同 `GEOSEARCH`
   - STOREDIST 返回匹配项距离中心点的距离
 
-```shell
+```bash
 # 存储匹配项的 GEOHASH 的无符号整数到指定排序集合中, 返回指定集合的数量
 127.0.0.1:6379> GEOSEARCHSTORE destst citys FROMLONLAT 114.298572 30.584355 BYBOX 1500 1500 KM
 (integer) 4
@@ -341,7 +341,7 @@ Redis Bitmaps 是字符串数据类型的一种扩展, 可以将字符串视为�
   - offset 下标
   - value 值
 
-```shell
+```bash
 # 当指定偏移量的值从 1 修改为 0 则返回 1, 其他情况返回 0
 127.0.0.1:6379> SETBIT user 0 0
 (integer) 0
@@ -355,7 +355,7 @@ Redis Bitmaps 是字符串数据类型的一种扩展, 可以将字符串视为�
 
 - GETBIT key offset 获取指定便宜连的值, 如果 key 不存在或者偏移量不存在返回 0
 
-```shell
+```bash
 # 获取指定偏移量的值
 127.0.0.1:6379> GETBIT user 6
 (integer) 0
@@ -371,7 +371,7 @@ Redis Bitmaps 是字符串数据类型的一种扩展, 可以将字符串视为�
   - BYTE 以字节(8bit)为单位, 默认
   - BIT 以 bit 为单位
 
-```shell
+```bash
 # 统计状态为 1 的下标数量
 127.0.0.1:6379> BITCOUNT user 0 0
 (integer) 5
@@ -386,7 +386,7 @@ Redis Bitmaps 是字符串数据类型的一种扩展, 可以将字符串视为�
   - 当 bit 为 1, 如果 key 不存在或者全为 0 值则返回 -1
   - 当 bit 为 0, 如果 key 不存在或者全为 0 值则返回 0
 
-```shell
+```bash
 127.0.0.1:6379> BITPOS user1 1
 (integer) -1
 127.0.0.1:6379> BITPOS user1 0
@@ -415,7 +415,7 @@ Redis Bitmaps 是字符串数据类型的一种扩展, 可以将字符串视为�
 
   - destst 结果集存储的名称
 
-```shell
+```bash
 BITOP AND destst key1 key2 ....keyN
 127.0.0.1:6379> SETBIT key1 0 1
 (integer) 0
@@ -465,7 +465,7 @@ BITOP AND destst key1 key2 ....keyN
 
 > SETBIT login_stat {uid} 1|0
 
-```shell
+```bash
 # 使用 SETBIT 以每个 id 作为偏移量记录一个状态
 127.0.0.1:6379> SETBIT login_stat 101 1
 (integer) 0
@@ -504,7 +504,7 @@ offset 的格式: {dd}
 
 > SETBIT sign:{uid}:{yyyyMM} {dd} 1|0
 
-```shell
+```bash
 # 记录指定用户每天的签到情况
 127.0.0.1:6379> SETBIT sign:101:202211 1 1
 (integer) 0
@@ -536,7 +536,7 @@ offset 的格式: {uid}
 
 > SETBIT bitmap:{dd} {uid} 1|0
 
-```shell
+```bash
 # 记录每天每个用户的签到情况
 127.0.0.1:6379> SETBIT bitmap:01 101 1
 (integer) 0
@@ -570,7 +570,7 @@ Redis Bitfields 是一种可以自定义设置、递增和获取任意位长度�
 
 - BITFIELD key \<GET encoding offset | [OVERFLOW \<WRAP | SAT | FAIL\>] \<SET encoding offset value | INCRBY encoding offset increment\> [GET encoding offset | [OVERFLOW \<WRAP | SAT | FAIL\>] \<SET encoding offset value | INCRBY encoding offset increment\> ...]\> 自定义存储位数
 
-```shell
+```bash
 127.0.0.1:6379> BITFIELD mykey incrby u2 100 1 OVERFLOW SAT incrby u2 102 1
 1) (integer) 1
 2) (integer) 1

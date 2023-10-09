@@ -39,7 +39,7 @@ tags:
 |    7     | 反色     |
 |    8     | 不可见   |
 
-```shell
+```bash
 # 输出字体为绿色的 你好hello world
 [root@localhost ~]# printf '\033[1;32m你好hello world\033[0m\n'
 # 输出字体为绿色并带有下划线的 你好hello world
@@ -56,7 +56,7 @@ tags:
 - ssh-copy-id 将本地的公钥文件复制到远程主机对应账户下的 authorized_keys 文件中
 - ssh-keygen 生成非对称密钥对
 
-```shell
+```bash
 [vagrant@centos8s ~]# ssh-keygen -t <密钥类型> -f <input_keyfile> -C <comment>
 ```
 
@@ -71,7 +71,7 @@ tags:
   - \-x 锁定 agent(代理)
   - \-X 解锁 agent(代理)
 
-```shell
+```bash
 # 使用 ssh -T 测试连通性
 [vagrant@centos8s ~]$ ssh -T git@github.com
 git@github.com: Permission denied (publickey).
@@ -110,7 +110,7 @@ The agent has no identities.
 
 awk 是一种可以对文本和数据进行处理的编程语言, 默认情况下, awk 文件的每一行都被视为一条记录, 然后 awk 记录进一步分解成一系列的字段
 
-```shell
+```bash
 [root@localhost ~]# awk '{ sum += $1 }; END { print sum }' file
 [root@localhost ~]# awk -F : '{ print $1 }' /etc/passwd
 ```
@@ -162,7 +162,7 @@ awk 是一种可以对文本和数据进行处理的编程语言, 默认情况�
   - substr(r, p) 返回字符串 s 中从 p 开始的后缀部分
   - substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分
 
-```shell
+```bash
 [root@localhost ~]# git branch -r | awk 'BEGIN {print "hello awk, I am coming\n"}END{print "hello awk, good bye\n"}{printf "NF--%s NR--%s FNR--%s $0--%s\n",NF,NR,FNR,$0;}'
 ```
 
@@ -170,7 +170,7 @@ awk 是一种可以对文本和数据进行处理的编程语言, 默认情况�
 
 将参数列表转换成小块分段传递给其他命令, 以避免参数列表过长的问题, 可单独使用, 也可以使用管道符、重定位符等其他命令配合使用
 
-```shell
+```bash
 xargs [OPTION]... COMMAND INITIAL-ARGS...
 ```
 
@@ -182,7 +182,7 @@ xargs [OPTION]... COMMAND INITIAL-ARGS...
 - -s size 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
 - -t 执行命令之前先打印执行命令
 
-```shell
+```bash
 # -I 指定参数自变量
 [root@localhost ~]# echo "file1 file2 file3" | xargs -t -I % sh -c 'touch %;ls -l %'
 
@@ -191,7 +191,7 @@ xargs [OPTION]... COMMAND INITIAL-ARGS...
 
 - -d 设置自定义分隔符
 
-```shell
+```bash
 [root@localhost ~]# echo -n file1#file2#file3#file4 | xargs -d \# -t touch
 
 [root@localhost ~]# touch file{1..4}
@@ -202,7 +202,7 @@ xargs [OPTION]... COMMAND INITIAL-ARGS...
 > BRE 定义了 4 组元字符 `[ ]` `.` `^` `$`
 > ERE 增加了 3 组元字符 `{ }` `()` `|`
 
-```shell
+```bash
 grep [OPTION]... PATTERN [FILE]...
 ```
 
@@ -211,14 +211,14 @@ grep [OPTION]... PATTERN [FILE]...
 - -i,\-\-ignore-case 忽略大小写
 - -e,\-\-regexp=PATTERN 使用正则表达式匹配
 
-  ```shell
+  ```bash
   # 使用 -e 参数 需要将正则中的部分字符转义才能使用
   [root@localhost ~]# grep -i -e "foo\|bar"
   ```
 
 - -E,\-\-extended-regexp 使用扩展正则表达式匹配(ERE)
 
-  ```shell
+  ```bash
   [root@localhost ~]# grep -i -E "foo|bar" # 此处不需要进行字符转义
   ```
 
@@ -242,7 +242,7 @@ grep [OPTION]... PATTERN [FILE]...
 
 - 不带远程名称的过滤
 
-```shell
+```bash
 # 格式化输出所有本地关联的分支名
 $ git branch -r | \
   grep -i 'origin/feature*' | \
@@ -281,7 +281,7 @@ $ git branch -r | \
 
 - 包含主机名的过滤
 
-```shell
+```bash
 # IGNORECASE=1 开启忽略大小写
 # $0~/origin\/feature/ 判断分支名是否包含 origin/feature
 # 使用内置函数 gsub 全局替换 remotes 为空
@@ -297,7 +297,7 @@ $ git branch -a | \
 
 ### scp 主机之间复制文件
 
-```shell
+```bash
 scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 ```
 
@@ -311,7 +311,7 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 
 #### 本地复制到远程
 
-```shell
+```bash
 # 拷贝文件, 可以使用原文件名也可以重新命名文件
 [root@localhost ~]# scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/
 
@@ -321,7 +321,7 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 
 #### 远程复制到本地
 
-```shell
+```bash
 # 拷贝文件, 可以使用原文件名也可以重新命名文件
 [root@localhost ~]# scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/
 # 拷贝目录
@@ -333,7 +333,7 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 - \-\-permanent # 永久修改
 - \-\-reload # 重新加载防火墙配置
 
-```shell
+```bash
 [root@centos7 ~]firewall-cmd --list-all # 显示所有信息
 [root@centos7 ~]firewall-cmd --list-ports # 显示端口信息
 [root@centos7 ~]firewall-cmd --remove-ports=<port>/<protocol> # 显示端口信息
@@ -343,7 +343,7 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 
 ### tar 归档
 
-```shell
+```bash
 tar [OPTION...] [FILE]...
 ```
 
@@ -372,14 +372,14 @@ tar [OPTION...] [FILE]...
 
 #### 归档压缩
 
-```shell
+```bash
 # 使用 gzip 压缩归档 workspace 目录
 [root@centos7 ~]tar -czvf workspace.tar.gz ./workspace
 ```
 
 #### 解压缩
 
-```shell
+```bash
 # 使用 gzip 解压缩到当前目录下的 redis-stable 目录
 [root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable
 ```
@@ -393,7 +393,7 @@ tar [OPTION...] [FILE]...
 
 #### 每分钟向指定文件追加写入一条数据
 
-```shell
+```bash
 #!/bin/bash
 
 # /root/workspace/crontab-out-format.sh

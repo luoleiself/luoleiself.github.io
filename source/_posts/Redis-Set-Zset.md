@@ -36,7 +36,7 @@ set-max-intset-entries 512
 - SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在
 - SMISMEMBER key member [member ...] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, Redis 6.2.0 支持
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *  # 查看当前数据库中的 key
 (empty array)
 # 空集合判断是否包含成员
@@ -59,7 +59,7 @@ set-max-intset-entries 512
 
 - SREM key member [member ...] 批量移除集合中的成员并返回移除成功的数量, 集合为空或者不存在或者不包含移除成员返回 0
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *  # 查看当前数据库所有的 key
 (empty array)
 # 向集合添加成员
@@ -98,7 +98,7 @@ set-max-intset-entries 512
     - 1 表示源集合指定成员移除成功(目标集合中可能包含该成员也可能不包含)
     - 0 表示源集合为空或者源集合不包含指定成员
 
-```shell
+```bash
 127.0.0.1:6379> FLUSHALL    # 清空所有数据库
 OK
 # myset 为空集, 返回 0
@@ -153,7 +153,7 @@ OK
     - count = 0 时, 任何集合都返回 (empty array)
     - count < 0 时, 返回错误, count must be positive
 
-```shell
+```bash
 127.0.0.1:6379> FLUSHALL    # 清空所有数据库
 OK
 
@@ -194,7 +194,7 @@ OK
     - count = 0 时, 任意集合都返回 (empty array)
     - count < 0 时, 空集合返回 (empty array), 非空集合返回 count 的绝对值数量
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *    # 查看当前数据库中的 key
 1) "myset"
 127.0.0.1:6379> SMEMBERS myset  # 查看 myset 成员
@@ -243,7 +243,7 @@ OK
   - pattern 匹配的模式
   - count 控制从数据集返回的成员数量, 默认为 10
 
-```shell
+```bash
 127.0.0.1:6379> FLUSHALL  # 清空所有数据库
 OK
 # 迭代空集合
@@ -279,7 +279,7 @@ OK
 
 - SDIFF key [key ...] 比较第一个集合和其他集合之间的差异并返回差异的结果, 第一个集合为空或者第一个集合的所有成员在出现在其他集合中返回(empty array)
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *  # 查看当前数据库中的 key
 1) "myset"
 127.0.0.1:6379> SMEMBERS myset  # 查看集合 myset 的成员
@@ -321,7 +321,7 @@ OK
 
 - SDIFFSTORE destination key [key ...] 比较第一个集合和其他集合之间的差异把差异结果存储到指定集合并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合存在则覆盖指定集合, 0 表示未找到结果
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *  # 查看当前数据库中的 key
 (empty array)
 # 向 myset 中添加 hello, world
@@ -349,7 +349,7 @@ OK
 
 - SINTER key [key ...] 返回所有给定集合之间的交集, key 不存在被当作空集合, 当给定集合中有一个空集合时返回结果也为空集合(empty array)
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *  # 查看当前数据库中的 key
 (empty array)
 # 向 myset 中添加成员 hello, world
@@ -376,7 +376,7 @@ OK
 
 - SINTERSTORE destination key [key ...] 将所有给定集合之间的交集存储到指定的集合中并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合已存在则覆盖指定集合, 0 表示未找到结果
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *    # 查看当前数据库中的 key
 (empty array)
 # 向 myset 中添加成员 hello, world
@@ -399,7 +399,7 @@ OK
   - numkeys 指定集合的数量, 值和 key 的数量不一致时返回语法错误 syntax error
   - limit 指定返回结果的偏移量, 默认为 0, limit < 0 时, 报错不能为负数
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *    # 查看当前数据库中的 key
 (empty array)
 # 语法错误
@@ -436,7 +436,7 @@ OK
 
 - SUNION key [key ...] 返回所有给定集合的并集并移除相同的成员只保留一个, 不存在的 key 被当作空集合, 集合都为空返回 (empty array)
 
-```shell
+```bash
 127.0.0.1:6379> FLUSHALL    # 清空所有数据库
 OK
 # 返回空集合的并集
@@ -461,7 +461,7 @@ OK
 
 - SUNIONSTORE destination key [key ...] 将所有给定集合之间的并集存储到指定的集合中并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合已存在则覆盖指定集合, 0 表示未找到结果
 
-```shell
+```bash
 127.0.0.1:6379> FLUSHALL  # 清空所有数据库
 OK
 # myset, newset 都为空集合, 返回 0
@@ -536,7 +536,7 @@ zset-max-listpack-value 64
   - CH 将 `ZADD` 返回值统计新成员的添加数量修改为更改的成员总数, 包含更新已存在的数量和新添加的数量
   - INCR 此选项作用类似 `ZINCRBY`, 只能指定一个成员分值对加上指定的增量(可以为负数), 如果成员不存在从 0 开始计算, 并返回当前成员的最终分值, 多个成员分值对会报错
 
-```shell
+```bash
 127.0.0.1:6379> ZADD myz 1 zhangsan 2 lisi  # 添加成员
 (integer) 2
 127.0.0.1:6379> ZCARD myz
@@ -665,7 +665,7 @@ zset-max-listpack-value 64
 
 - ZINCRBY key increment member 对指定成员的分值加上增量并返回修改后的分值, 如果指定成员不存在则添加新成员, 等同于 `ZADD key increment member`
 
-```shell
+```bash
 # 修改 zhangsan 的分值 + 2
 127.0.0.1:6379> ZINCRBY myz 2 zhangsan
 "3.5"
@@ -706,7 +706,7 @@ zset-max-listpack-value 64
 
 - BZPOPMIN key [key ...] timeout 阻塞版 `ZPOPMIN`, 从多个集合中第 1 个非空集合中移除并返回 1 个最低分值成员, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, 否则, 返回 1 个含有 3 个元素的列表, 第 1 个为被移除成员所属的集合, 第 2 个为被移除的成员, 第 3 个为移除成员的分值, Redis 5.0.0 支持
 
-```shell
+```bash
 127.0.0.1:6379> ZPOPMAX myz -1
 (error) ERR value is out of range, must be positive
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 3 d 2 e 1 f
@@ -756,7 +756,7 @@ zset-max-listpack-value 64
 
 - ZREMRANGEBYLEX key min max 移除指定字典区间的所有成员并返回成功移除的数量, min 和 max 需要使用 `(` 或 `[` 前导符, 0 表示集合为空或者未找到结果
 
-```shell
+```bash
 127.0.0.1:6379> ZREMRANGEBYLEX myz a f
 (error) ERR min or max not valid string range item
 127.0.0.1:6379> ZADD myz 0 a 0 b 0 c 0 d 0 e 0 alpha 0 zip
@@ -778,7 +778,7 @@ zset-max-listpack-value 64
 
 - ZREMRANGEBYSCORE key min max 移除指定分值区间的所有成员并返回成功移除的数量, 0 表示集合为空或者未找到结果
 
-```shell
+```bash
 127.0.0.1:6379> ZREMRANGEBYSCORE myz1 100 500
 (integer) 0
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d 5 e 6 f 2 beta 3 cipher 4 delete
@@ -803,7 +803,7 @@ zset-max-listpack-value 64
 
 - ZREMRANGEBYRANK key start stop 移除指定排名区间的所有成员并返回成功移除的数量, 0 表示集合为空或者未找到结果
 
-```shell
+```bash
 127.0.0.1:6379> ZREMRANGEBYRANK myz1 1 4
 (integer) 0
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d 5 e 6 f 2 beta 3 cipher 4 delete
@@ -832,7 +832,7 @@ zset-max-listpack-value 64
 
 - ZREM key member [member ...] 批量移除指定的成员并返回成功移除的数量, 如果指定成员不存在则被忽略, 0 表示集合为空或者成员不存在
 
-```shell
+```bash
 127.0.0.1:6379> ZADD myz 1 hello 2 world 3 gg 2 yy 1 hehe 4 haha
 (integer) 6
 127.0.0.1:6379> ZREM myz YY GG
@@ -847,7 +847,7 @@ zset-max-listpack-value 64
   - COUNT count 移除成员的数量, 默认为 1
 - BZMPOP timeout numkeys key [key ...] MIN|MAX [COUNT count] 阻塞版 `ZMPOP`, 如果集合为空会阻塞集合直到等待超时或发现可移除成员为止, 如果集合为空或者超时返回 \<nil\>, Redis 7.0.0 支持
 
-```shell
+```bash
 # 如果集合都为空, 阻塞指定时间后返回 nil
 127.0.0.1:6379> BZMPOP 5 2 myzz myz MAX COUNt 2
 (nil)
@@ -897,7 +897,7 @@ zset-max-listpack-value 64
 
 - ZCOUNT key min max 统计指定分值区间的成员数量, 0 表示未找到结果
 
-```shell
+```bash
 127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
 1) "zhaoliu"
 2) "3.5"
@@ -922,7 +922,7 @@ zset-max-listpack-value 64
 
 - ZLEXCOUNT key min max 计算指定字典区间内成员数量, 0 表示未找到结果
 
-```shell
+```bash
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d 5 e 6 f
 (integer) 6
 127.0.0.1:6379> ZLEXCOUNT myz - +
@@ -948,7 +948,7 @@ zset-max-listpack-value 64
     - count < 0 时, 空集合返回 (empty array), 非空集合返回 count 的绝对值数量
   - WITHSCORES 返回结果的分值
 
-```shell
+```bash
 127.0.0.1:6379> ZRANDMEMBER myz1
 (nil)
 127.0.0.1:6379> ZRANDMEMBER myz1 -1
@@ -970,7 +970,7 @@ zset-max-listpack-value 64
 
 #### 获取指定成员排名
 
-```shell
+```bash
 127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
  1) "hello"
  2) "1"
@@ -988,7 +988,7 @@ zset-max-listpack-value 64
 
 - ZRANK key member 返回指定成员的按递增顺序的排名, 从 0 开始计算, 如果指定成员不属于指定集合则返回 \<nil\>
 
-```shell
+```bash
 127.0.0.1:6379> ZRANK myz yy
 (integer) 2
 127.0.0.1:6379> ZRANK myz world
@@ -999,7 +999,7 @@ zset-max-listpack-value 64
 
 - ZREVRANK key member 返回指定成员的按递减顺序的排名, 从 0 开始计算, 如果指定成员不属于指定集合则返回 \<nil\>
 
-```shell
+```bash
 127.0.0.1:6379> ZREVRANK myz yy
 (integer) 3
 127.0.0.1:6379> ZREVRANK myz HAHA
@@ -1010,7 +1010,7 @@ zset-max-listpack-value 64
 
 #### 获取指定成员分值
 
-```shell
+```bash
 127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
  1) "hello"
  2) "1"
@@ -1028,7 +1028,7 @@ zset-max-listpack-value 64
 
 - ZSCORE key member 获取指定成员的分值, 如果集合为空或者指定成员不属于集合返回 \<nil\>
 
-```shell
+```bash
 127.0.0.1:6379> ZSCORE myz1 hehe
 (nil)
 127.0.0.1:6379> ZSCORE myz HAHA
@@ -1039,7 +1039,7 @@ zset-max-listpack-value 64
 
 - ZMSCORE key member [member ...] 批量获取指定成员的分值, 如果集合为空或者指定成员不属于集合返回 \<nil\>, Redis 6.2.0 支持
 
-```shell
+```bash
 127.0.0.1:6379> ZMSCORE myz HAHA hehe
 1) (nil)
 2) "4"
@@ -1070,7 +1070,7 @@ zset-max-listpack-value 64
 > ZREVRANGEBYSCORE 6.2.0 开始废弃, 使用 `ZRANGE BYSCORE REV` 代替
 > ZREVRANGEBYLEX 6.2.0 开始废弃, 使用 `ZRANGE BYLEX REV` 代替
 
-```shell
+```bash
 127.0.0.1:6379> ZADD myz 10 a 9 b 13 c 7 d 11 e 6 f
 (integer) 6
 # 匹配范围  8 < score < 13
@@ -1115,7 +1115,7 @@ zset-max-listpack-value 64
   - pattern 匹配的模式
   - count 控制从数据集返回的成员数量, 默认为 10
 
-```shell
+```bash
 127.0.0.1:6379> ZSCAN myz1 0
 1) "0"
 2) (empty array)
@@ -1129,7 +1129,7 @@ zset-max-listpack-value 64
 
 #### 获取有序集合差异
 
-```shell
+```bash
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d
 (integer) 4
 127.0.0.1:6379> ZADD myzz 5 e 6 b 7 c 8 f
@@ -1143,7 +1143,7 @@ zset-max-listpack-value 64
 - ZDIFFSTORE destination numkeys key [key ...] 比较第一个集合和其他集合之间的差异把差异结果存储到指定的集合中并返回指定集合的数量, 如果指定集合不存在则新建, 如果指定集合存在则覆盖指定集合, 0 表示未找到结果, Redis 6.2.0 支持
   - numkeys 指定集合的数量, 值和 key 的数量不一致时返回语法错误 syntax error
 
-```shell
+```bash
 127.0.0.1:6379> ZDIFF 2 myz myzz WITHSCORES
 1) "a"
 2) "1"
@@ -1162,7 +1162,7 @@ zset-max-listpack-value 64
 
 #### 获取有序集合交集
 
-```shell
+```bash
 127.0.0.1:6379> ZADD myz  1 a 2 b 3 c
 (integer) 3
 127.0.0.1:6379> ZADD myzz 4 b 5 c 6 d
@@ -1173,7 +1173,7 @@ zset-max-listpack-value 64
 
   - 部分参数同 `ZINTERSTORE`
 
-```shell
+```bash
 # 获取交集相同成员分值乘以权重后的求和
 127.0.0.1:6379> ZINTER 2 myz myzz WEIGHTS 2 3 WITHSCORES
 1) "b"
@@ -1199,7 +1199,7 @@ zset-max-listpack-value 64
     - MIN 结果集中保留最小分值
     - MAX 结果集中保留最大分值
 
-```shell
+```bash
 # 如果存在权重, 权重数量必须和 numkeys 保持一致
 127.0.0.1:6379> ZINTERSTORE destst 2 myz myzz WEIGHTS 1
 (error) ERR syntax error
@@ -1258,7 +1258,7 @@ zset-max-listpack-value 64
 
 #### 获取有序集合并集
 
-```shell
+```bash
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d
 (integer) 4
 127.0.0.1:6379> ZADD myz1 5 e 6 b 7 c 8 f
@@ -1269,7 +1269,7 @@ zset-max-listpack-value 64
 
   - 部分参数同 `ZUNIONSTORE`
 
-```shell
+```bash
 # 获取并集其他成员分值乘以权重和相同成员分值乘以权重后的求和
 127.0.0.1:6379> ZUNION 2 myz myz1 WEIGHTS 2 3 WITHSCORES
  1) "a"
@@ -1289,7 +1289,7 @@ zset-max-listpack-value 64
 - ZUNIONSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] 计算多个有序集合的并集将结果存储到指定集合并返回保存到指定集合的成员数量, 如果指定集合不存在则新建, 如果指定集合已存在则覆盖指定集合, 0 表示未找到结果
   - 参数同 `ZINTERSTORE`
 
-```shell
+```bash
 # 获取并集其他成员分值乘以权重和相同成员分值乘以权重后的最小值保存
 127.0.0.1:6379> ZUNIONSTORE destst 2 myz myz1 WEIGHTS 3 4 AGGREGATE MIN
 (integer) 6

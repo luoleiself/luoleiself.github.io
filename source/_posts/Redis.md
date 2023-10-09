@@ -40,7 +40,7 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
   - \-I Idle 模式, 仅打开 N 个 idle 连接并等待
   - \-x 从 STDIN 读取最后一个参数
 
-```shell
+```bash
 127.0.0.1:6379>redis-benchmark -h localhost -p 6379 -c 100 -n 100000 -d 10 -t set,get,hset,hget,lpush,rpush,sadd
 ```
 
@@ -56,7 +56,7 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
   - \-\-eval \<file\> 使用 EVAL 命令解析 lua 脚本
   - \-\-function-rdb \<filename\> 从现有服务器中提取函数(不包含 key)
 
-```shell
+```bash
 # 加载 lua 脚本注册的 redis 函数
 # 第一种方式
 [root@centos7 workspace]# redis-cli -x FUNCTION LOAD < ./mylib.lua
@@ -106,7 +106,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - server 返回 redis 服务的通用信息
   - clients 返回客户端链接的信息
 
-    ```shell
+    ```bash
     # Clients
     connected_clients:1
     cluster_connections:0
@@ -123,7 +123,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - stats 返回统计信息
   - replication 返回副本的信息
 
-    ```shell
+    ```bash
     # Replication
     role:master
     connected_slaves:0
@@ -145,7 +145,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - modules 返回模块信息
   - keyspace 返回数据库相关统计信息
 
-    ```shell
+    ```bash
     # Keyspace
     db0:keys=3,expires=0,avg_ttl=0
     ```
@@ -197,7 +197,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - COUNT 控制匹配结果的数量, 默认为 10
   - TYPE 过滤匹配结果中的类型, 可取值 string, list, set 等 redis 支持的数据类型
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *
 1) "age"
 2) "name"
@@ -255,7 +255,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - \-2 key 不存在
   - \-1 key 存在但没有设置剩余生存时间
 
-```shell
+```bash
 127.0.0.1:6379> TTL age
 (integer) -1
 127.0.0.1:6379> EXPIRE age 30
@@ -341,7 +341,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 - save 3600 1 300 100 60 10000 # 快照执行机制, 3600 秒后如果超过 1 次更改, 300 秒后超过 100 次更改, 60 秒后超过 10000 次更改
 
-```shell
+```bash
 save <seconds> <changes> [<seconds> <changes> ...]
 ```
 
@@ -374,7 +374,7 @@ Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消
 - SUBSCRIBE channel [channel ...] 订阅指定频道立即进入阻塞状态等待接收消息
 - UNSUBSCRIBE [channel [channel ...]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅
 
-```shell
+```bash
 # 1
 127.0.0.1:6379> SUBSCRIBE first second
 Reading messages... (press Ctrl-C to quit)
@@ -442,7 +442,7 @@ Reading messages... (press Ctrl-C to quit)
   - pattern 可以使用正则表达式匹配多个频道
 - PUNSUBSCRIBE [pattern [pattern ...]] 根据给定模式取消客户端订阅, 如果未指定则取消所有模式订阅
 
-```shell
+```bash
 # 1
 127.0.0.1:6379> PSUBSCRIBE __key*__:*
 Reading messages... (press Ctrl-C to quit)
@@ -503,7 +503,7 @@ Reading messages... (press Ctrl-C to quit)
 
 #### 统计订阅信息
 
-```shell
+```bash
 127.0.0.1:6379> PUBSUB HELP
  1) PUBSUB <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
  2) CHANNELS [<pattern>]
@@ -525,7 +525,7 @@ Reading messages... (press Ctrl-C to quit)
 - PUBSUB NUMSUB [channel [channel ...]] 返回订阅者的数量(不包含使用模式订阅的频道)
   - 如果不指定 channel 将返回 (empty array)
 
-```shell
+```bash
 127.0.0.1:6379> PUBSUB CHANNELS
 1) "conn"
 
@@ -538,7 +538,7 @@ Reading messages... (press Ctrl-C to quit)
 
 - PUBSUB NUMPAT 返回订阅者通过模式订阅的频道的数量
 
-```shell
+```bash
 127.0.0.1:6379> PUBSUB NUMPAT
 (integer) 0
 127.0.0.1:6379> PUBSUB NUMPAT
@@ -548,7 +548,7 @@ Reading messages... (press Ctrl-C to quit)
 - PUBSUB SHARDCHANNELS [pattern] 返回当前活动的碎片频道, 未找到返回 empty array, 7.0.0 支持
 - PUBSUB SHARDNUMSUB [shardchannel [shardchannel ...]] 返回指定的碎片频道的订阅者数量, 未找到返回 empty arryay, 7.0.0 支持
 
-```shell
+```bash
 127.0.0.1:6379> PUBSUB SHARDNUMSUB conn
 1) "conn"
 2) (integer) 0
@@ -560,7 +560,7 @@ Reading messages... (press Ctrl-C to quit)
 
 Redis 流水线是一种通过一次发出多个命令而无需等待每个命令的响应来提高性能的技术, 大多数 Redis 客户端都支持流水线.
 
-```shell
+```bash
 # 使用 netcat 命令测试
 [root@centos7 workspace]# (printf "PING\r\nPING\r\nPING\r\n"; sleep 1) | nc localhost 6379
 +PONG
@@ -594,7 +594,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 
 - FUNCTION help 显示 FUNCTION 的帮助信息
 
-```shell
+```bash
 127.0.0.1:6379> FUNCTION help
  1) FUNCTION <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
  2) LOAD [REPLACE] <FUNCTION CODE>
@@ -641,7 +641,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 - FUNCTION DELETE 删除指定的库
 - FUNCTION LIST 查看所有库和函数
 
-```shell
+```bash
 127.0.0.1:6379> FUNCTION LIST
 1) 1) "library_name"
    2) "mylib"
@@ -663,7 +663,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 
 每个 Redis 函数都属于一个加载到 Redis 的库, 使用命令 `FUNCTION LOAD` 将库加载到数据库, 库必须以 shebang 语句开头 `#!<engine name> name=<library name>`
 
-```shell
+```bash
 # 加载一个空库
 127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\n"
 (error) ERR No functions registered
@@ -684,7 +684,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 
 ###### Redis 命令行注册调用
 
-```shell
+```bash
 # 方式1
 127.0.0.1:6379> FUNCTION LOAD "#!lua name=mylib\nredis.register_function{function_name='noop', callback=function() end, flags={ 'no-writes' }, description='Does nothing'}"
 # 方式2
@@ -744,7 +744,7 @@ redis.register_function{
 }
 ```
 
-```shell
+```bash
 [root@centos7 workspace]# cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
 "mylib"
 # 调用注册函数
@@ -809,7 +809,7 @@ Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它�
 - EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行脚本(SCRIPT LOAD 命令缓存脚本)
 - EVALSHA_RO sha1 numkeys [key [key ...]] [arg [arg ...]] 只读版本的 EVALSHA 命令, Redis 7.0 支持
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return 10" 0
 (integer) 10
 127.0.0.1:6379> EVAL "return ARGV[1]" 0 100
@@ -836,7 +836,7 @@ Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它�
 - redis.call(command [, arg...]) 执行 redis 命令并返回结果, 如果遇到错误时直接返回给客户端
 - redis.pcall(command [, arg...]) 执行 redis 命令并返回结果, 如果遇到错误时将返回给脚本的执行上下文
 
-```shell
+```bash
 127.0.0.1:6379> GET name
 "hello world"
 127.0.0.1:6379> EVAL "return redis.call('SET', KEYS[1], ARGV[1])" 1 name "hello redis"
@@ -849,7 +849,7 @@ OK
 
 存储在服务器的脚本专用缓存中, 缓存内容由脚本的 SHA1 摘要作为缓存中的唯一标识
 
-```shell
+```bash
 127.0.0.1:6379> SCRIPT help # 脚本帮助命令
  1) SCRIPT <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
  2) DEBUG (YES|SYNC|NO)
@@ -875,7 +875,7 @@ OK
 - SCRIPT DEBUG 设置脚本内执行时的模式
 - SCRIPT LOAD \<script\> 将脚本加载到服务器缓存中, 并不立即执行
 
-```shell
+```bash
 # 添加 Lua 缓存脚本
 127.0.0.1:6379> SCRIPT LOAD "return redis.call('GET', KEYS[1])"
 "d3c21d0c2b9ca22f82737626a27bcaf5d288f99f"
@@ -886,7 +886,7 @@ OK
 
 - SCRIPT EXISTS \<script\> [script ...] 查看缓存中是否存在 sha 对应的脚本, 1 表示存在, 0 表示不存在
 
-```shell
+```bash
 127.0.0.1:6379> SCRIPT EXISTS d3c21d0c2b9ca22f82737626a27bcaf5d288f99f
 1) (integer) 1
 127.0.0.1:6379> SCRIPT EXISTS d3c21d0c2b9ca22f82737626a27bcaf5d288f99g
@@ -923,7 +923,7 @@ OK
 - redis.error_reply(x) 辅助函数, 返回一个错误信息
 - redis.status_reply(x) 辅助函数, 可以修改 Redis 命令的默认返回值 OK
 
-```shell
+```bash
 # 返回错误信息
 127.0.0.1:6379> EVAL "return redis.error_reply('ERR This is a special error')" 0
 (error) ERR This is a special error
@@ -942,7 +942,7 @@ OK
   - redis.LOG_NOTICE 日志级别
   - redis.LOG_WARNING 日志级别
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return redis.sha1hex('')" 0
 "da39a3ee5e6b40d3255bfef95601890afd80709"
 127.0.0.1:6379> EVAL "return redis.log(redis.LOG_WARNING, 'Something is terribly wrong')" 0
@@ -956,7 +956,7 @@ OK
 - redis.REDIS_VERSION 以字符串形式返回当前 Redis 服务器版本, 格式 MM.mm.PP. Redis 7.0 支持
 - redis.REDIS_VERSION_NUM 以数字形式返回当前 Redis 服务器版本, 格式为十进制值. Redis 7.0 支持
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return redis.REDIS_VERSION" 0
 "7.0.5"
 127.0.0.1:6379> EVAL "return redis.REDIS_VERSION_NUM" 0
@@ -983,7 +983,7 @@ OK
   - Lua false 布尔类型 -> RESP2 空批量
   - Lua true 布尔类型 -> RESP2 整数 1
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return {1, 2, {3, 'hello world'}, 'bar'}" 0
 1) (integer) 1
 2) (integer) 2
@@ -1024,7 +1024,7 @@ OK
 
 - struct.pack(x) 返回一个结构编码的字符串, 接收一个结构格式字符串作为第一个参数, 后面是要编码的值
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return struct.pack('bb', 1, 2)" 0
 "\x01\x02"
 127.0.0.1:6379> EVAL "return struct.pack('BB', 1, 2)" 0
@@ -1051,7 +1051,7 @@ OK
 
 - struct.unpack(x) 返回结构的解码值, 接收一个结构格式字符串作为第一个参数, 然后是编码结构的字符串
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return {struct.unpack('BxxH', ARGV[1])}" 0 "\x01\x00\x00\x02\x00"
 1) (integer) 1
 2) (integer) 2
@@ -1064,7 +1064,7 @@ OK
 
 - struct.size(x) 返回结构的大小(以字节为单位), 接收结构格式字符串作为唯一参数
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return struct.size('b')" 0
 (integer) 1
 127.0.0.1:6379> EVAL "return struct.size('B')" 0
@@ -1103,7 +1103,7 @@ cjson 库提供了来自 Lua 的快速 JSON 编码和解码
 - cjson.encode(x) 返回作为其参数提供的 Lua 数据类型的 JSON 编码字符串
 - cjson.decode(x) 从作为其参数提供的 JSON 编码字符串返回 Lua 数据类型
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return cjson.encode({ 1, 2, 'foo', 'bar' })" 0
 "[1,2,\"foo\",\"bar\"]"
 127.0.0.1:6379> EVAL "return cjson.encode({ 1, 2, 3.33, 'foo', 'bar' })" 0
@@ -1126,7 +1126,7 @@ cmsgpack 库提供了来自 Lua 的快速 MessagePack 编码和解码
 - cmsgpack.pack(x) 返回作为参数给出的 Lua 数据类型的压缩字符串编码
 - cmsgpack.unpack(x) 返回解码其输入字符串参数的解压缩值
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return cmsgpack.pack({'foo', 'bar', 'baz', 'hello'})" 0
 "\x94\xa3foo\xa3bar\xa3baz\xa5hello"
 127.0.0.1:6379> EVAL "return cmsgpack.unpack(ARGV[1])" 0 "\x94\xa3foo\xa3bar\xa3baz\xa5hello"
@@ -1143,7 +1143,7 @@ bit 提供对数字的按位运算
 - bit.tobit(x)` 将数字格式化为位运算的数值范围并返回
 - bit.tohex(x [, n]) 将第一个参数转换为十六进制并返回, 第二个参数的绝对值控制返回值的数量
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return bit.tobit(1)" 0
 (integer) 1
 
@@ -1156,7 +1156,7 @@ bit 提供对数字的按位运算
 - bit.band(x1 [, x2...]) 返回其所有参数的按位与运算
 - bit.bxor(x1 [, x2...]) 返回其所有参数的按位异或运算
 
-```shell
+```bash
 # 0000 1100 12
 #         !
 # 1111 0011 -13
@@ -1190,7 +1190,7 @@ bit 提供对数字的按位运算
 - bit.rshift(x, n) 返回第一个参数按位右移 n 位的结果
 - bit.arshift(x, n) 返回第一个参数按位**算术右移** n 位的结果, 不改变符号位的移位操作
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return bit.lshift(1, 3)" 0
 (integer) 8
 127.0.0.1:6379> EVAL "return bit.lshift(2, 1)" 0
@@ -1217,7 +1217,7 @@ bit 提供对数字的按位运算
 - bit.rol(x, n) 按第二个参数给定的位数返回其第一个参数的按位左旋转
 - bit.ror(x, n) 按第二个参数给定的位数返回其第一个参数的按位右旋转
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return bit.rol(12, 1)" 0
 (integer) 24
 127.0.0.1:6379> EVAL "return bit.rol(12, 2)" 0
@@ -1235,7 +1235,7 @@ bit 提供对数字的按位运算
 
 - bit.bswap(x) 交换其参数的字节并返回它, 可用于将小端 32 位数字转换位大端 32 位数字, 反之亦然
 
-```shell
+```bash
 127.0.0.1:6379> EVAL "return bit.bswap(1)" 0
 (integer) 16777216
 127.0.0.1:6379> EVAL "return bit.bswap(2)" 0
@@ -1250,7 +1250,7 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 
 - ACL HELP 显示 ACL 的帮助信息
 
-```shell
+```bash
 127.0.0.1:6379> ACL HELP
  1) ACL <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
  2) CAT [<category>]
@@ -1318,7 +1318,7 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 
 - ACL CAT 显示 Redis 的所有分类
 
-```shell
+```bash
 127.0.0.1:6379> ACL CAT
  1) "keyspace"
  2) "read"
@@ -1346,7 +1346,7 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 - ACL USERS 列出所有已配置用户名
 - ACL WHOAMI 返回当前连接服务器的用户名, 默认 default
 
-```shell
+```bash
 127.0.0.1:6379> ACL WHOAMI
 "default"
 ```
@@ -1357,7 +1357,7 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 - ACL SETUSER 设置用户访问权限
 - ACL GETUSER username 获取指定用户的权限
 
-```shell
+```bash
 # 添加 lisi 账号, 明文密码 123456, 添加所有分类的命令
 127.0.0.1:6379> ACL SETUSER lisi >123456 off +@all
 OK
@@ -1399,7 +1399,7 @@ OK
 
 - ACL LIST 显示 Redis 服务器当前活动的 ACL 规则
 
-```shell
+```bash
 127.0.0.1:6379> ACL LIST
 1) "user default on nopass ~* &* +@all"
 2) "user zhangsan off ~zhang:* resetchannels &zhang:* -@all +@list +@string +@hash +@set"
@@ -1407,7 +1407,7 @@ OK
 
 - ACL DRYRUN username command [arg [arg ...]] 模拟指定用户对给定命令的执行, 此命令可以用来测试用户的权限而无需启用用户, 7.0.0 支持
 
-```shell
+```bash
 127.0.0.1:6379> ACL DRYRUN zhangsan ZADD zs 1 hello 2 world 3 zs
 "This user has no permissions to run the 'zadd' command"
 127.0.0.1:6379> ACL DRYRUN zhangsan SADD s1 hello world gg s1
@@ -1456,7 +1456,7 @@ Redis 事务执行的三个重要保证:
 
 - UNWATCH 取消所有观察的 key, 通常返回 ok, 如果调用了 `EXEC` 或 `DISCARD` 命令, 通常不再需要调用此命令
 
-```shell
+```bash
 127.0.0.1:6379> GET money
 "250"
 127.0.0.1:6379> WATCH money # 观察 money
@@ -1479,7 +1479,7 @@ QUEUED
 
 #### 编译时错误
 
-```shell
+```bash
 127.0.0.1:6379> SET key1 hello
 OK
 127.0.0.1:6379> MULTI # 开启事务
@@ -1499,7 +1499,7 @@ QUEUED
 
 #### 运行时错误
 
-```shell
+```bash
 127.0.0.1:6379> MULTI # 开启事务
 OK
 127.0.0.1:6379(TX)> SET key1 hello  # 命令入队列
@@ -1537,7 +1537,7 @@ Redis 在持久化的过程中, 会先将数据写入到一个临时的文件中
 
 - 通过配置文件定期触发持久化操作
 
-```shell
+```bash
 # redis 7.0 写法
 # 3600秒至少有 1 次修改, 300秒至少有 100 次修改, 60秒至少有 10000 次修改
 save 3600 1 300 100 60 10000
@@ -1622,7 +1622,7 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 ===每台 Redis 服务器都是主节点===
 一个主节点可以有 0 个或者多个从节点, 但每个从节点只能有一个主节点
 
-```shell
+```bash
 127.0.0.1:6379> INFO replication # 当前副本的信息
 # Replication
 role:master
@@ -1667,7 +1667,7 @@ repl_backlog_histlen:0
 - 方式一: **启动** Redis 服务器时使用指定参数 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
 - 方式二: **连接** Redis 服务器使用内置命令 `REPLICAOF host port`
 
-```shell
+```bash
 # 设置关联主服务器
 127.0.0.1:6380> REPLICAOF 127.0.0.1 6379
 OK
@@ -1691,7 +1691,7 @@ repl_backlog_first_byte_offset:133525
 repl_backlog_histlen:20165
 ```
 
-```shell
+```bash
 # 主节点写入数据
 127.0.0.1:6379> SET name helloworld
 OK
@@ -1837,7 +1837,7 @@ dir "" # 持久化文件存放目录
 
 - requirepass 认证
 
-```shell
+```bash
 # 第一种方式: 连接 redis 后使用内置命令 AUTH 命令认证
 [root@centos7 workspace]# redis-cli
 127.0.0.1:6379> KEYS *
@@ -2006,7 +2006,7 @@ replicaof 127.0.0.1 6379
 
 - 根据配置文件启动所有服务
 
-```shell
+```bash
 [root@centos7 ~]# redis-server .config/redis6379.conf # 启动 redis 服务器
 [root@centos7 ~]# redis-server .config/redis6380.conf # 启动 redis 服务器
 [root@centos7 ~]# redis-server .config/redis6381.conf # 启动 redis 服务器
@@ -2071,7 +2071,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
   - \-\-cluster-only-masters 所有主节点
   - \-\-cluster-only-replicas 所有副本节点
 
-  ```shell
+  ```bash
   # 在所有主节点上执行加载的命令
   [root@centos7 workspace]# redis-cli --cluster --cluster-only-masters call host:port FUNCTION LOAD ...
   ```
@@ -2144,7 +2144,7 @@ cluster-require-full-coverage no
 
 启动所有的 redis 服务器, 使用 `ps -ef | grep redis` 命令查看 redis 服务器进程
 
-```shell
+```bash
 [root@centos7 redis-cluster]# redis-server redis6379.conf
 [root@centos7 redis-cluster]# redis-server redis6380.conf
 [root@centos7 redis-cluster]# redis-server redis6381.conf
@@ -2165,7 +2165,7 @@ root      3761     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6384 [clu
 使用 `redis-cli --cluster create --cluster-replicas arg hostN:portN` 命令创建集群节点, arg 参数表示集群主从节点的数量比例, 1 表示 1:1
 创建过程中提示输入 `yes` 表示接受当前配置信息并写入指定文件中, 最后输出 `[OK] All 16384 slots covered.` 表示集群创建完成
 
-```shell
+```bash
 [root@centos7 redis-cluster]# redis-cli --cluster create --cluster-replicas 1 \
 > 127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 \
 > 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384
@@ -2227,7 +2227,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 
 - -c 以集群模式接入
 
-```shell
+```bash
 [root@centos7 redis-cluster]# redis-cli -c -p 6379
 ```
 
@@ -2235,7 +2235,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 
 - CLUSTER HELP 在 Redis 命令行中查看所有集群操作命令
 
-```shell
+```bash
 127.0.0.1:6380> CLUSTER HELP
 ```
 
@@ -2243,7 +2243,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 
 - 方式一: 命令行中使用 `redis-cli --cluster info host:port` 命令查看指定节点的信息
 
-```shell
+```bash
 [root@centos7 redis-cluster]# redis-cli --cluster info 127.0.0.1:6380
 127.0.0.1:6380 (a7708924...) -> 3 keys | 5462 slots | 1 slaves.
 127.0.0.1:6382 (6c982390...) -> 0 keys | 5461 slots | 0 slaves.
@@ -2254,7 +2254,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 
 - 方式二: 在 Redis 命令行中使用 `CLUSTER INFO` 查看节点信息
 
-```shell
+```bash
 # 查看当前节点信息
 127.0.0.1:6380> CLUSTER INFO
 cluster_state:ok
@@ -2325,7 +2325,7 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 
 设置键时, 根据键散列后的值所在的插槽位置自动切换到插槽所在的节点上
 
-```shell
+```bash
 127.0.0.1:6379> KEYS *
 (empty array)
 127.0.0.1:6379> SET name zhangsan
@@ -2354,7 +2354,7 @@ OK
 
 使用 `kill` 命令停止端口号为 6381 的 redis 进程时, 集群切换 6381 的状态为失联, 同时将从节点 6384 升级为主节点, 等到 6381 恢复后变为 6384 的从节点
 
-```shell
+```bash
 127.0.0.1:6379> CLUSTER NODES
 2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 myself,slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529208000 7 connected
 eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384@16384 slave 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 0 1669529208000 3 connected
@@ -2375,7 +2375,7 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 
 ##### 查看节点配置文件
 
-```shell
+```bash
 [root@centos7 redis-cluster]# cat nodes-6381.conf
 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381@16381 myself,slave eaf9833aa105e36b22f6330585a972239bab9f50 0 1669529243521 8 connected
 2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529243524 7 connected
@@ -2393,7 +2393,7 @@ vars currentEpoch 8 lastVoteEpoch 7
 
 - 使用命令 `redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379` 将 6385 添加为 6379 的从节点
 
-```shell
+```bash
 # 向 6379 节点添加新的从节点
 [root@centos7 redis-cluster]# redis-cli --cluster add-node --cluster-slave \
 > 127.0.0.1:6385 127.0.0.1:6379
@@ -2431,7 +2431,7 @@ Waiting for the cluster to join
 
 - 查看节点 6379 的信息, 显示 2 个从节点
 
-```shell
+```bash
 # 查看节点信息
 [root@centos7 redis-cluster]# redis-cli --cluster info 127.0.0.1:6379
 127.0.0.1:6379 (8e20e97a...) -> 0 keys | 5461 slots | 2 slaves.
