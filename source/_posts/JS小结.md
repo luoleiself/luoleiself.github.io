@@ -187,3 +187,15 @@ view.getUint8(0); // 获取指定偏移量的值
 view.setInt32(1, 2147483647);
 view.getInt32(1);
 ```
+
+### [JSON.stringify](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+
+- 转换值如果有 toJSON 方法则直接使用该方法的返回值
+- 非数组对象的属性不能保证以特定的顺序出现在序列化后的字符串中
+- 布尔值、数字、字符串的包装对象在序列化过程中自动转换成对应的原始值
+- undefined、任意的函数、symbol 值在序列化过程中会被忽略(出现在非数组对象的属性值中时, 出现在数组中时会被转换为 null), undefined、函数单独转换时被转换为 undefined
+- 对包含循环引用的对象(对象之间相互引用)会抛出错误
+- 所有以 symbol 为属性键的属性都会被完全忽略掉, 即使 replacer 参数中指定包含了它们
+- Date 日期调用了 toJSON 方法将其转换为 string 字符串
+- NaN 和 Infinity 格式的数值及 null 都会被当作 null
+- 其它类型的对象, 包括 Map/WeakMap/Set/WeakSet, 仅会序列化可枚举的属性
