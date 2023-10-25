@@ -199,3 +199,47 @@ view.getInt32(1);
 - Date 日期调用了 toJSON 方法将其转换为 string 字符串
 - NaN 和 Infinity 格式的数值及 null 都会被当作 null
 - 其它类型的对象, 包括 Map/WeakMap/Set/WeakSet, 仅会序列化可枚举的属性
+
+### [document.activeElement](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement)
+
+> 只读属性
+
+用来返回当前在 DOM 或 shadow DOM 树中处于焦点状态 Element, 如 HTMLInputElement 或 HTMLTextAreaElement 元素中有文字被选中时, activeElement 属性就会返回该元素, 其它情况如 select 元素或者 input, textarea 元素
+
+#### [Element.scrollIntoViewIfNeeded](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoViewIfNeeded)
+
+> 非标准化
+
+用来将不在浏览器窗口的可见区域内的元素滚动到浏览器窗口的可见区域内, 如果该元素已经处在浏览器窗口的可见区域内, 则不会发生滚动, 此方法是 Element.scrollIntoView 方法的专有变体
+
+- true, 默认值, 元素将在其所在滚动区的可视区域中居中对齐
+- false, 元素将在其所在可视区域最近的边缘对齐(根据元素距离顶部边缘或者底部边缘的最小值对齐)
+
+```javascript
+var el = document.getElementById('child');
+el.scrollIntoViewIfNeeded(true);
+```
+
+#### [Element.scrollIntoView](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoView)
+
+滚动元素的父容器, 使被调用 scrollIntoView 的元素对用户可见, 取决于其它元素的布局情况, 此元素可能不会完全滚动到顶端或底端
+
+- alignToTop, 对齐方式, 可选
+  - true, 元素的顶端将和其所在滚动区的可视区域的顶端对齐, 相应参数 `scrollIntoViewOptions: {block: "start", inline: "nearest"}`
+  - false, 元素的底端将和其所在滚动区的可视区域的底端对齐, 相应参数 `scrollIntoViewOptions: {block: "end", inline: "nearest"}`
+- scrollIntoViewOptions 配置项, 可选
+  - behavior, 定义滚动是立即的还是平滑的动画
+    - smooth, 滚动应该是平滑的动画
+    - instant, 滚动应该通过一次跳跃立刻发生
+    - auto, 滚动行为由 scroll-behavior 的计算值决定
+  - block, 定义垂直方向的对齐方式, start, center, end, nearest, 默认为 start
+  - inline, 定义水平方向的对齐, start, center, end, nearest, 默认为 nearest
+
+```javascript
+var el = document.getElementById('box');
+
+el.scrollIntoView();
+el.scrollIntoView(false);
+el.scrollIntoView({ block: 'end' });
+el.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+```
