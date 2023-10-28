@@ -2019,9 +2019,9 @@ replicaof 127.0.0.1 6379
 
 > Redis 3.0 支持
 
-Redis Cluster 是一种服务器 Sharding(分片) 技术, Sharding 采用 slot 的概念, 一共分成 16384 个 slot, 对于每个进入 Redis 的键值对, 对 key 执行 CRC16 算法然后再对 16384 取模, 得到的结果就是对应的 slot.
+Redis Cluster 是一种服务器 Sharding(分片) 技术, Sharding 采用 slot 的概念, 一共分成 16384 个 slot, 对于每个进入 Redis 的键值对, 对 key 执行 CRC16(key) mod 16384 操作, 得到的结果就是对应的 slot.
 
-Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, 当动态添加或减少 node 时, 需要将 16384 个 slot 再分配, slot 中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个 node 发生故障, 则此 node 负责的 slot 也就失效, 整个集群将不能工作
+Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, 当动态增减 node 时, 需要将 16384 个 slot 再分配, slot 中的键值对也要迁移, 这一过程目前还处于半自动状态仍需要人工介入, 如果某个 node 发生故障, 则此 node 负责的 slot 也就失效, 整个集群将不能工作
 
 官方推荐的方案是将 node 配置成主从结构, 即 1:n, 如果主节点失效, Redis Cluster 根据选举算法从 slave 节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则作为新的主节点的从节点
 
