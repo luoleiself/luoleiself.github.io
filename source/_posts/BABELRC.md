@@ -122,24 +122,27 @@ npx babel src -d dist # 编译 src 目录下文件输出到 dist 下
 ### 集成
 
 - @babel/cli babel 命令行工具
-- @babel/polyfill 7.4.0 开始被废弃
-- @babel/plugin-transform-runtime 包含 babel 重建模块化运行时助手的插件
+- @babel/polyfill 7.4.0 开始被废弃, JS 标准新增的原生对象和 API 的 shim, 实现上仅仅是 core-js 和 regenerator-runtime 两个包的封装
+- @babel/preset-xxx transform 阶段使用到的一系列的 plugin
+- @babel/plugin-xxx babel 转译过程中使用到的插件
 
-  - 为所有辅助函数创建 `@babel/runtime` 模块的引用, 避免编译输出中的重复引用
-  - 为代码创建一个沙盒环境, 避免直接的引入垫片而引起的全局环境污染
+  - @babel/plugin-transform-runtime 包含 babel 重建模块化运行时助手的插件
+    - 为所有辅助函数创建 `@babel/runtime` 模块的引用, 避免编译输出中的重复引用
+    - 为代码创建一个沙盒环境, 避免直接的引入垫片而引起的全局环境污染
 
-- @babel/register 通过 require 钩子方式使用 babel
+- @babel/register 通过 require 钩子方式使用 babel 自动转译引用的 js 代码文件
 - @babel/standalone 提供一个 js 编译环境,不建议在生产环境中使用此工具
 
 ### 工具
 
 - @babel/parser babel 的 js 解析函数
-- @babel/core 包含整个 babel 工作的核心模块
-- @babel/generator AST 转换
-- @babel/code-frame
-- @babel/runtime 包含 babel 模块化运行时助手的库
+- @babel/core 包含整个 babel 工作的核心模块, 提供了 babel 的转译 API
+- @babel/generator 根据 AST 生成代码
+- @babel/code-frame 用于生成错误信息, 打印出错误点源代码帧以及指出出错位置
+- @babel/runtime 包含 babel 模块化运行时助手的库, 功能类似 babel-polyfill
   - 为每个 js 文件添加运行时辅助函数
   - 可能会在输出文件中注入一些跨文件相同的可能被重复使用的代码
-- @babel/template
-- @babel/traverse
+- @babel/template 辅助函数, 用于从字符串形式的代码来构建 AST 树节点
+- @babel/traverse 用于对 AST 的遍历, 只要提供功能给 plugins 使用
 - @babel/types 此模块包含手动构建 AST 和检查 AST 节点类型的方法
+- @babel/helpers 一系列预制的 babel-template 函数, 用于提供给一些 plugins 使用
