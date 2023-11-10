@@ -54,8 +54,8 @@ tags:
 ```yaml
 # 日志配置
 log_format main '$remote_addr - $remote_user [$time_local] \
-  "$request" $status $body_bytes_sent "$http_referer" \
-  "$http_user_agent" "$http_x_forwarded_for" "$gzip_ratio"';
+"$request" $status $body_bytes_sent "$http_referer" \
+"$http_user_agent" "$http_x_forwarded_for" "$gzip_ratio"';
 
 access_log /var/log/nginx/access.log main;
 ```
@@ -158,6 +158,14 @@ location / {
   add_header "Access-Control-Allow-Headers" *;
   # 允许发送按段获取资源的请求
   add_header "Access-Control-Expose-Headers" "Content-Length,Content-Range";
+
+  if ($request_method = 'OPTIONS') {
+    add_header 'Access-Control-Max-Age' 1728000;
+    add_header 'Content-Type' 'text/plain; charset=utf-8';
+    add_header 'Content-Length' 0;
+    # 对于Options方式的请求返回204，表示接受跨域请求
+    return 204;
+  }
 }
 ```
 
