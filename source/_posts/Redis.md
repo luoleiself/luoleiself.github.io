@@ -2090,10 +2090,10 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 ##### 编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line -->
 
 创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式
-创建 `redis6379.conf`, `redis6380.conf`, `redis6381.conf`, `redis6382.conf`, `redis6383.conf`, `redis6384.conf` 6 个文件
+创建 `cluster6379.conf`, `cluster6380.conf`, `cluster6381.conf`, `cluster6382.conf`, `cluster6383.conf`, `cluster6384.conf` 6 个文件
 修改其中的 bind, port, pidfile, cluster-enabled, cluster-config-file
 
-redis.conf 集群配置, [基础配置](#redisbaseconfigure) <em id="redisclusterconfigure"></em> <!-- markdownlint-disable-line -->
+集群配置, [基础配置](#redisbaseconfigure) <em id="redisclusterconfigure"></em> <!-- markdownlint-disable-line -->
 
 ```yaml
 # # 引入 redis 默认配置文件
@@ -2147,14 +2147,15 @@ cluster-require-full-coverage no
 ##### 启动 Redis 服务器
 
 启动所有的 redis 服务器, 使用 `ps -ef | grep redis` 命令查看 redis 服务器进程
+redis 进程后中括号中的 cluster 表示 redis 工作在集群模式下, 需要进一步配置 redis 的集群关系 
 
 ```bash
-[root@centos7 redis-cluster]# redis-server redis6379.conf
-[root@centos7 redis-cluster]# redis-server redis6380.conf
-[root@centos7 redis-cluster]# redis-server redis6381.conf
-[root@centos7 redis-cluster]# redis-server redis6382.conf
-[root@centos7 redis-cluster]# redis-server redis6383.conf
-[root@centos7 redis-cluster]# redis-server redis6384.conf
+[root@centos7 redis-cluster]# redis-server cluster6379.conf
+[root@centos7 redis-cluster]# redis-server cluster6380.conf
+[root@centos7 redis-cluster]# redis-server cluster6381.conf
+[root@centos7 redis-cluster]# redis-server cluster6382.conf
+[root@centos7 redis-cluster]# redis-server cluster6383.conf
+[root@centos7 redis-cluster]# redis-server cluster6384.conf
 [root@centos7 redis-cluster]# ps -ef | grep redis
 root      3731     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6379 [cluster]
 root      3737     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6380 [cluster]
@@ -2256,7 +2257,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 0.00 keys per slot on average.
 ```
 
-- 方式二: 在 Redis 命令行中使用 `CLUSTER INFO` 查看节点信息
+- 方式二: 在 Redis 命令行中使用 `CLUSTER INFO\\SLOTS\\NODES` 查看节点信息
 
 ```bash
 # 查看当前节点信息
@@ -2392,8 +2393,8 @@ vars currentEpoch 8 lastVoteEpoch 7
 
 ##### 添加新节点
 
-按照 [编辑配置文件](#bjpzwj) 创建并修改 `redis6385.conf` 文件
-启动服务器 `redis-server redis6385.conf`, 同时查看服务器是否正常启动
+按照 [编辑配置文件](#bjpzwj) 创建并修改 `cluster6385.conf` 文件
+启动服务器 `redis-server cluster6385.conf`, 同时查看服务器是否正常启动
 
 - 使用命令 `redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379` 将 6385 添加为 6379 的从节点
 
@@ -2401,36 +2402,6 @@ vars currentEpoch 8 lastVoteEpoch 7
 # 向 6379 节点添加新的从节点
 [root@centos7 redis-cluster]# redis-cli --cluster add-node --cluster-slave \
 > 127.0.0.1:6385 127.0.0.1:6379
->>> Adding node 127.0.0.1:6385 to cluster 127.0.0.1:6379
->>> Performing Cluster Check (using node 127.0.0.1:6379)
-M: 8e20e97a99e1abed4eb568079d63538439d39382 127.0.0.1:6379
-   slots:[0-5460] (5461 slots) master
-   1 additional replica(s)
-M: fba8c2aefddd1cb4b694f7f29ade77b9309f0359 127.0.0.1:6381
-   slots:[10923-16383] (5461 slots) master
-   1 additional replica(s)
-S: c1a6f2b05266dd2c99a21e8ec715b5760828bd05 127.0.0.1:6384
-   slots: (0 slots) slave
-   replicates fba8c2aefddd1cb4b694f7f29ade77b9309f0359
-S: 6750e7cf044954b21381c074d0a3a89f8d9e211b 127.0.0.1:6383
-   slots: (0 slots) slave
-   replicates 57c53adcc0a7d8ddcc79487a7386837b364044fb
-M: 57c53adcc0a7d8ddcc79487a7386837b364044fb 127.0.0.1:6380
-   slots:[5461-10922] (5462 slots) master
-   1 additional replica(s)
-S: ae1e820f675956a281404de626a7e2194bede899 127.0.0.1:6382
-   slots: (0 slots) slave
-   replicates 8e20e97a99e1abed4eb568079d63538439d39382
-[OK] All nodes agree about slots configuration.
->>> Check for open slots...
->>> Check slots coverage...
-[OK] All 16384 slots covered.
-Automatically selected master 127.0.0.1:6379
->>> Send CLUSTER MEET to node 127.0.0.1:6385 to make it join the cluster.
-Waiting for the cluster to join
-
->>> Configure node as replica of 127.0.0.1:6379.
-[OK] New node added correctly.
 ```
 
 - 查看节点 6379 的信息, 显示 2 个从节点
