@@ -2122,7 +2122,7 @@ cluster-node-timeout 15000
 
 # 默认当某一插槽不可用时, 整个集群都挂掉
 # no 表示仅该插槽不可用, 默认 yes
-cluster-require-full-coverage no
+# cluster-require-full-coverage yes
 
 # 允许集群失效的情况下依然可以从节点中读取数据, 保证了高可用性
 # 默认 no, 不允许
