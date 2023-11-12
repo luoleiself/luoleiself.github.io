@@ -2244,6 +2244,11 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 127.0.0.1:6380> CLUSTER HELP
 ```
 
+- CLUSTER INFO
+- CLUSTER SLOTS
+- CLUSTER NODES
+- CLUSTER KEYSLOT
+
 ##### 查看节点信息
 
 - 方式一: 命令行中使用 `redis-cli --cluster info host:port` 命令查看指定节点的信息
@@ -2342,16 +2347,16 @@ OK
 # 集群不支持设置多个键, 需要使用分组的方式
 127.0.0.1:6380> MSET age 18 addr beijing
 (error) CROSSSLOT Keys in request don't hash to the same slot
-127.0.0.1:6380> MSET age{user} 18 addr{user} beijing
+127.0.0.1:6380> MSET age{y} 18 addr{y} beijing
 OK
 127.0.0.1:6380> KEYS *
-1) "age{user}"
-2) "addr{user}"
+1) "age{y}"
+2) "addr{y}"
 3) "name"
-127.0.0.1:6379> GET age{user}
+127.0.0.1:6379> GET age{y}
 -> Redirected to slot [5474] located at 127.0.0.1:6380
 "18"
-127.0.0.1:6380> GET addr{user}
+127.0.0.1:6380> GET addr{y}
 "beijing"
 ```
 
