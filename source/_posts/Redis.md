@@ -1863,7 +1863,7 @@ Warning: Using a password with '-a' or '-u' option on the command line interface
 3) "name"
 ```
 
-#### 哨兵模式
+### 哨兵模式
 
 哨兵模式是一种特殊的模式, Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程运行
 
@@ -1874,20 +1874,20 @@ Warning: Using a password with '-a' or '-u' option on the command line interface
 - 不能水平扩容, 不能动态的增、删节点
 - 高可用特性会受到主节点的内存的限制
 
-##### 执行任务
+#### 执行任务
 
 - 监控: 定期检查主节点和从节点的健康状态, 包括发送 `PING` 命令、检查返回结果和检测通信故障
 - 自动故障转移: 当一个主节点不能正常工作时, Sentinel 会开始一次自动故障迁移操作, 它会将失效主节点的其中一个从节点升级为新的主节点, 并让失败的主节点的其他从节点改为复制新的主节点. 当客户端试图连接失效的主节点时, 集群也会向客户端返回新的主节点的地址, 使得集群可以使用新主节点代替失效节点
 - 高可用性切换: 选举新的主节点后, 哨兵节点会自动将从节点切换为新的主节点, 并通知其它从节点更新复制目标
 - 配置提供者: 当客户端连接到哨兵节点时, 哨兵节点可以根据 Redis 集群的配置信息, 将其重定向到正确的主节点
 
-##### 选举算法
+#### 选举算法
 
 首先, 领头 sentinel 根据从节点的信号反馈将从节点列表中失联的节点剔除, 按照从节点的优先级(replica-priority)进行排序并选择优先级最高的从节点, 如果有多个具有相同最高优先级的从节点, 那么, 领头 sentinel 将多个具有相同最高优先级的从节点按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从节点进行 `PSYNC` 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从节点, 如果有多个优先级最高, 复制偏移量最大的从节点, 那么 领头 sentinel 将按照从节点的运行 ID 进行排序并选择其中 ID 最小的从节点
 
 replica-priority > replica-offset > run-ID
 
-##### 配置方式
+#### 配置方式
 
 - 方式一: 使用命令指定参数 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
 - 方式二: 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
@@ -1946,7 +1946,7 @@ sentinel deny-scripts-reconfig yes
 ![redis-2](/images/redis-2.png)
 ![redis-3](/images/redis-3.png)
 
-##### 一主三从哨兵配置
+#### 一主三从哨兵配置
 
 - 3 个哨兵配置
 
@@ -2019,7 +2019,7 @@ replicaof 127.0.0.1 6379
 [root@centos7 ~]# redis-sentinel .config/sentinel46379.conf # 启动哨兵
 ```
 
-### 集群
+### 集群模式
 
 > Redis 3.0 支持
 
