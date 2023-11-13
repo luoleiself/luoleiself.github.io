@@ -28,7 +28,7 @@
 <meta property="og:description" content="浏览器引擎   浏览器 渲染引擎 js 引擎    IE Trident JScript(IE3.0-IE8.0) &#x2F; Chakra(IE9~)   Chrome webkit &#x2F; Blink V8   Safari webkit Nitro(SquirrelFish)   Firefox Gecko ~Monkey 系列(SpiderMonkey &#x2F; TraceMonkey &#x2F; JaegerMo">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-05T02:35:34.000Z">
-<meta property="article:modified_time" content="2023-10-25T12:15:19.207Z">
+<meta property="article:modified_time" content="2023-11-10T09:05:53.110Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="ES6">
 <meta property="article:tag" content="js">
@@ -239,7 +239,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-10-25 20:15:19" itemprop="dateModified" datetime="2023-10-25T20:15:19+08:00">2023-10-25</time>
+                <time title="修改时间：2023-11-10 17:05:53" itemprop="dateModified" datetime="2023-11-10T17:05:53+08:00">2023-11-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,13 +256,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>5.8k</span>
+              <span>6.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>5 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -358,7 +358,6 @@
 <h3 id="beforescriptexecute-afterscriptexecute"><a href="#beforescriptexecute-afterscriptexecute" class="headerlink" title="beforescriptexecute|afterscriptexecute "></a>beforescriptexecute|afterscriptexecute <!-- markdownlint-disable-line --></h3><p>当 HTML 文档中的 script 标签内的代码执行<code>前|后</code>触发该事件, 如果这个 script 标签是用 <code>appendChild</code> 等方法动态插入的, 则不会触发该类事件</p>
 <h3 id="IE-10-开始不再支持条件注释引入资源"><a href="#IE-10-开始不再支持条件注释引入资源" class="headerlink" title="IE 10 开始不再支持条件注释引入资源"></a><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/hh801214(v=vs.85)?redirectedfrom=MSDN">IE 10 开始不再支持条件注释引入资源</a></h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--[if lt IE 9]&gt;</span></span><br><span class="line"><span class="comment">  &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./main.css&quot; /&gt;</span></span><br><span class="line"><span class="comment">  &lt;script type=&quot;text/javascript&quot; src=&quot;./main.js&quot;&gt;&lt;/script&gt;</span></span><br><span class="line"><span class="comment">&lt;![endif]--&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="eval"><a href="#eval" class="headerlink" title="eval"></a>eval</h3><p>避免使用 eval, 可以使用 <code>Function(&#39;&quot;use strict&quot;; console.log(&quot;hello world&quot;)&#39;)()</code> 代替, <code>Function</code> 直接调用此构造函数可以动态创建函数</p>
 <h3 id="ArrayBuffer"><a href="#ArrayBuffer" class="headerlink" title="ArrayBuffer"></a>ArrayBuffer</h3><p>ArrayBuffer 对象用来表示通用的、固定长度的原始二进制数据缓冲区, 可以理解为一个字节数组. 不能直接操作 ArrayBuffer, 需要通过 <code>类型化数组对象(TypedArray)</code>或 <code>DataView</code> 操作<br>ArrayBuffer 构造函数创建一个以字节为单位的固定长度的新 ArrayBuffer, 或者从现有的数据中获取数组缓冲区(例如: Base64 字符串或者 Blob 类文件对象 )</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> buffer = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(<span class="number">10</span>); <span class="comment">// 创建一个 10 字节的缓冲区</span></span><br><span class="line"><span class="keyword">var</span> i8a = <span class="keyword">new</span> <span class="title class_">Int32Array</span>(buffer); <span class="comment">// 并使用 Int32Array 视图引用它</span></span><br></pre></td></tr></table></figure>
 
@@ -381,17 +380,6 @@
 <h4 id="DataView"><a href="#DataView" class="headerlink" title="DataView"></a>DataView</h4><p>DataView 是一个可以从二进制 <code>ArrayBuffer</code> 对象中读写多种数值类型的底层接口, 使用它时, 不需要考虑不同平台的字节序问题<br>DataView 构造函数可以传入一个已经存在的 <code>ArrayBuffer</code> 或 <code>SharedArrayBuffer</code> 作为数据源, 第二个参数可以指定 buffer 中的字节偏移, 第三个参数可以指定 DataView 对象的字节长度, 返回表示指定数据缓冲区的新 DataView 对象</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> buffer = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(<span class="number">16</span>);</span><br><span class="line"><span class="keyword">var</span> view = <span class="keyword">new</span> <span class="title class_">DataView</span>(buffer);</span><br><span class="line"></span><br><span class="line">view.<span class="title function_">setUint8</span>(<span class="number">0</span>, <span class="number">42</span>); <span class="comment">// 设置指定偏移量的值</span></span><br><span class="line">view.<span class="title function_">getUint8</span>(<span class="number">0</span>); <span class="comment">// 获取指定偏移量的值</span></span><br><span class="line"></span><br><span class="line">view.<span class="title function_">setInt32</span>(<span class="number">1</span>, <span class="number">2147483647</span>);</span><br><span class="line">view.<span class="title function_">getInt32</span>(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
 
-<h3 id="JSON-stringify"><a href="#JSON-stringify" class="headerlink" title="JSON.stringify"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify">JSON.stringify</a></h3><ul>
-<li>转换值如果有 toJSON 方法则直接使用该方法的返回值</li>
-<li>非数组对象的属性不能保证以特定的顺序出现在序列化后的字符串中</li>
-<li>布尔值、数字、字符串的包装对象在序列化过程中自动转换成对应的原始值</li>
-<li>undefined、任意的函数、symbol 值在序列化过程中会被忽略(出现在非数组对象的属性值中时, 出现在数组中时会被转换为 null), undefined、函数单独转换时被转换为 undefined</li>
-<li>对包含循环引用的对象(对象之间相互引用)会抛出错误</li>
-<li>所有以 symbol 为属性键的属性都会被完全忽略掉, 即使 replacer 参数中指定包含了它们</li>
-<li>Date 日期调用了 toJSON 方法将其转换为 string 字符串</li>
-<li>NaN 和 Infinity 格式的数值及 null 都会被当作 null</li>
-<li>其它类型的对象, 包括 Map/WeakMap/Set/WeakSet, 仅会序列化可枚举的属性</li>
-</ul>
 <h3 id="document-activeElement"><a href="#document-activeElement" class="headerlink" title="document.activeElement"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement">document.activeElement</a></h3><blockquote>
 <p>只读属性</p>
 </blockquote>
@@ -426,6 +414,28 @@
 </li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> el = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;box&#x27;</span>);</span><br><span class="line"></span><br><span class="line">el.<span class="title function_">scrollIntoView</span>();</span><br><span class="line">el.<span class="title function_">scrollIntoView</span>(<span class="literal">false</span>);</span><br><span class="line">el.<span class="title function_">scrollIntoView</span>(&#123; <span class="attr">block</span>: <span class="string">&#x27;end&#x27;</span> &#125;);</span><br><span class="line">el.<span class="title function_">scrollIntoView</span>(&#123; <span class="attr">behavior</span>: <span class="string">&#x27;smooth&#x27;</span>, <span class="attr">block</span>: <span class="string">&#x27;end&#x27;</span>, <span class="attr">inline</span>: <span class="string">&#x27;nearest&#x27;</span> &#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="eval"><a href="#eval" class="headerlink" title="eval"></a>eval</h3><p>避免使用 eval, 可以使用 <code>Function(&#39;&quot;use strict&quot;; console.log(&quot;hello world&quot;)&#39;)()</code> 代替, <code>Function</code> 直接调用此构造函数可以动态创建函数</p>
+<h3 id="JSON-stringify"><a href="#JSON-stringify" class="headerlink" title="JSON.stringify"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify">JSON.stringify</a></h3><ul>
+<li>转换值如果有 toJSON 方法则直接使用该方法的返回值</li>
+<li>非数组对象的属性不能保证以特定的顺序出现在序列化后的字符串中</li>
+<li>布尔值、数字、字符串的包装对象在序列化过程中自动转换成对应的原始值</li>
+<li>undefined、任意的函数、symbol 值在序列化过程中会被忽略(出现在非数组对象的属性值中时, 出现在数组中时会被转换为 null), undefined、函数单独转换时被转换为 undefined</li>
+<li>对包含循环引用的对象(对象之间相互引用)会抛出错误</li>
+<li>所有以 symbol 为属性键的属性都会被完全忽略掉, 即使 replacer 参数中指定包含了它们</li>
+<li>Date 日期调用了 toJSON 方法将其转换为 string 字符串</li>
+<li>NaN 和 Infinity 格式的数值及 null 都会被当作 null</li>
+<li>其它类型的对象, 包括 Map/WeakMap/Set/WeakSet, 仅会序列化可枚举的属性</li>
+</ul>
+<h3 id="export-default-import"><a href="#export-default-import" class="headerlink" title="export default import"></a>export default import</h3><ul>
+<li>export default 向外暴露的成员，可以使用任意变量来接收</li>
+<li>在一个模块中, export default 只允许向外暴露一次</li>
+<li>在一个模块中, 可以同时使用 export default 和 export 向外暴露成员</li>
+<li>使用 export 向外暴露的成员, 只能使用 <code>&#123; &#125;</code> 的形式来接收, 这种形式称为 按需导出</li>
+<li>export 可以向外暴露多个成员, 同时, 如果某些成员在 import 导入时不需要, 可以不在 <code>&#123; &#125;</code> 中定义</li>
+<li>使用 export 导出的成员, 必须严格按照导出时候的名称来使用 <code>&#123; &#125;</code> 按需接收</li>
+<li>如果想更改变量名称可以使用 as 定义别名</li>
+</ul>
 
     </div>
 
@@ -547,7 +557,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BC%95%E6%93%8E"><span class="nav-number">1.</span> <span class="nav-text">浏览器引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E5%8F%98%E5%8E%9F%E6%95%B0%E7%BB%84%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">改变原数组的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E5%8D%95-accept-%E5%B1%9E%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">表单 accept 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#beforescriptexecute-afterscriptexecute"><span class="nav-number">4.</span> <span class="nav-text">beforescriptexecute|afterscriptexecute </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IE-10-%E5%BC%80%E5%A7%8B%E4%B8%8D%E5%86%8D%E6%94%AF%E6%8C%81%E6%9D%A1%E4%BB%B6%E6%B3%A8%E9%87%8A%E5%BC%95%E5%85%A5%E8%B5%84%E6%BA%90"><span class="nav-number">5.</span> <span class="nav-text">IE 10 开始不再支持条件注释引入资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eval"><span class="nav-number">6.</span> <span class="nav-text">eval</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayBuffer"><span class="nav-number">7.</span> <span class="nav-text">ArrayBuffer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TypedArray"><span class="nav-number">7.1.</span> <span class="nav-text">TypedArray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DataView"><span class="nav-number">7.2.</span> <span class="nav-text">DataView</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-stringify"><span class="nav-number">8.</span> <span class="nav-text">JSON.stringify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#document-activeElement"><span class="nav-number">9.</span> <span class="nav-text">document.activeElement</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Element-scrollIntoViewIfNeeded"><span class="nav-number">9.1.</span> <span class="nav-text">Element.scrollIntoViewIfNeeded</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Element-scrollIntoView"><span class="nav-number">9.2.</span> <span class="nav-text">Element.scrollIntoView</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BC%95%E6%93%8E"><span class="nav-number">1.</span> <span class="nav-text">浏览器引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E5%8F%98%E5%8E%9F%E6%95%B0%E7%BB%84%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">改变原数组的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E5%8D%95-accept-%E5%B1%9E%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">表单 accept 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#beforescriptexecute-afterscriptexecute"><span class="nav-number">4.</span> <span class="nav-text">beforescriptexecute|afterscriptexecute </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IE-10-%E5%BC%80%E5%A7%8B%E4%B8%8D%E5%86%8D%E6%94%AF%E6%8C%81%E6%9D%A1%E4%BB%B6%E6%B3%A8%E9%87%8A%E5%BC%95%E5%85%A5%E8%B5%84%E6%BA%90"><span class="nav-number">5.</span> <span class="nav-text">IE 10 开始不再支持条件注释引入资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayBuffer"><span class="nav-number">6.</span> <span class="nav-text">ArrayBuffer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TypedArray"><span class="nav-number">6.1.</span> <span class="nav-text">TypedArray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DataView"><span class="nav-number">6.2.</span> <span class="nav-text">DataView</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#document-activeElement"><span class="nav-number">7.</span> <span class="nav-text">document.activeElement</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Element-scrollIntoViewIfNeeded"><span class="nav-number">7.1.</span> <span class="nav-text">Element.scrollIntoViewIfNeeded</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Element-scrollIntoView"><span class="nav-number">7.2.</span> <span class="nav-text">Element.scrollIntoView</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eval"><span class="nav-number">8.</span> <span class="nav-text">eval</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-stringify"><span class="nav-number">9.</span> <span class="nav-text">JSON.stringify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#export-default-import"><span class="nav-number">10.</span> <span class="nav-text">export default import</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
