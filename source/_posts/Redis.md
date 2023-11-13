@@ -2267,7 +2267,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 0.00 keys per slot on average.
 ```
 
-- 方式二: 在 Redis 命令行中使用 `CLUSTER INFO\\SLOTS\\NODES` 查看节点信息
+- 方式二: 在 Redis 命令行中使用 `CLUSTER INFO|SLOTS|NODES` 查看节点信息
 
 ```bash
 # 查看当前节点信息
