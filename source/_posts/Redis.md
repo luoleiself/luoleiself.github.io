@@ -2147,7 +2147,7 @@ cluster-node-timeout 15000
 ##### 启动 Redis 服务器
 
 启动所有的 redis 服务器, 使用 `ps -ef | grep redis` 命令查看 redis 服务器进程
-redis 进程后中括号中的 cluster 表示 redis 工作在集群模式下, 需要进一步配置 redis 的集群关系 
+redis 进程后中括号中的 cluster 表示 redis 工作在集群模式下, 需要进一步配置 redis 的集群关系
 
 ```bash
 [root@centos7 redis-cluster]# redis-server cluster6379.conf
@@ -2245,9 +2245,14 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 ```
 
 - CLUSTER INFO
-- CLUSTER SLOTS
+- CLUSTER SLOTS 返回集群中 hash 槽的详细信息, redis 7.0 开始使用 CLUSTER SHARDS 命令代替
+- CLUSTER REPLICAS \<node-id\> 列出指定节点的所有副本节点的信息, 功能和 CLUSTER NODES 类似
 - CLUSTER NODES
-- CLUSTER KEYSLOT
+- CLUSTER REPLICATE \<node-id\> 配置当前节点为指定主节点的从节点
+- CLUSTER KEYSLOT \<somekey\> 计算指定 key 所在的 hash 槽
+- CLUSTER COUNTKEYSINSLOT \<slot\> 统计集群中 hash 槽中存储的 key 的数量
+- CLUSTER FAILOVER 手动启动集群故障转移操作, 此命令只能发送给集群从节点
+- CLUSTER FLUSHSLOTS 清空当前节点的所有插槽
 
 ##### 查看节点信息
 
