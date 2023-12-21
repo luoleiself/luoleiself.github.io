@@ -8,6 +8,8 @@ tags:
   - js
 ---
 
+> --no-sandbox --disable-web-security --user-data-dir=C:\chromedata
+
 ### 浏览器引擎
 
 | 浏览器  |    渲染引擎    |                               js 引擎                                |

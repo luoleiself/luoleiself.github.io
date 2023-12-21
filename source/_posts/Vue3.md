@@ -2901,7 +2901,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 只接受类型参数, 没有运行时参数. 用于为 IDE 提供插槽名称 和 props 类型检查的类型提示
 
-```javascript
+```html
 <script setup lang="ts">
 const slots = defineSlots<{
   default(props: { msg: string }): any
