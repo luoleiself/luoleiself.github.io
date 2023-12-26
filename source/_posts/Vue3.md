@@ -1787,7 +1787,7 @@ export default {
 
 用于控制是否启用默认的组件 `attribute` 透传行为, 默认为 true
 
-- 使用 [\<script setup\>](#scriptsetup) 的[组合式 API](#compositionapi) 中声明这个选项时, 需要一个额外的 `<script>` 块
+- 使用 [\<script setup\>](#script-setup) 的[组合式 API](#compositionapi) 中声明这个选项时, 需要一个额外的 `<script>` 块
 - Vue 3.3 支持, 使用 [defineOptions](#defineOptions) 声明
 
 ```html
@@ -2706,7 +2706,7 @@ export default {
 
 ### \<script setup\>
 
-<em id="scriptsetup"></em> <!--markdownlint-disable-line-->
+<em id="script-setup"></em> <!--markdownlint-disable-line-->
 
 > `<script setup>` 是在单文件组件(SFC) 中使用 [组合式 API](#compositionapi) 的编译时语法糖
 > `<script setup>` 中的代码会在每次组件实例被创建的时候执行
@@ -2903,9 +2903,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 ```html
 <script setup lang="ts">
-const slots = defineSlots<{
-  default(props: { msg: string }): any
-}>()
+  const slots = defineSlots<{
+    default(props: { msg: string }): any;
+  }>();
 </script>
 ```
 
