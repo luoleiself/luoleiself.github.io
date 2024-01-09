@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://luoleiself.github.io/images/vue3-directives-hooks-2.jpg">
 <meta property="og:image" content="https://luoleiself.github.io/images/vue3-directives-hooks-3.jpg">
 <meta property="article:published_time" content="2021-06-19T07:19:26.000Z">
-<meta property="article:modified_time" content="2023-10-02T03:52:48.130Z">
+<meta property="article:modified_time" content="2023-12-26T02:42:52.003Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="js">
 <meta property="article:tag" content="VueJs">
@@ -244,7 +244,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-10-02 11:52:48" itemprop="dateModified" datetime="2023-10-02T11:52:48+08:00">2023-10-02</time>
+                <time title="修改时间：2023-12-26 10:42:52" itemprop="dateModified" datetime="2023-12-26T10:42:52+08:00">2023-12-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -977,7 +977,7 @@
 </blockquote>
 <p>用于控制是否启用默认的组件 <code>attribute</code> 透传行为, 默认为 true</p>
 <ul>
-<li>使用 <a href="#scriptsetup">&lt;script setup&gt;</a> 的<a href="#compositionapi">组合式 API</a> 中声明这个选项时, 需要一个额外的 <code>&lt;script&gt;</code> 块</li>
+<li>使用 <a href="#script-setup">&lt;script setup&gt;</a> 的<a href="#compositionapi">组合式 API</a> 中声明这个选项时, 需要一个额外的 <code>&lt;script&gt;</code> 块</li>
 <li>Vue 3.3 支持, 使用 <a href="#defineOptions">defineOptions</a> 声明</li>
 </ul>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 单独 script 块声明 inheritAttrs 选项 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">inheritAttrs</span>: <span class="literal">false</span>,</span></span><br><span class="line"><span class="language-javascript">  &#125;;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- SFC 组合式 API --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> msg = <span class="string">&#x27;hello world&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> props = <span class="title function_">defineProps</span>([<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;age&#x27;</span>]);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> emit = <span class="title function_">defineEmits</span>([<span class="string">&#x27;input&#x27;</span>]);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 暴露外部可访问的公共属性</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">defineExpose</span>(&#123; msg &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// vue 3.3 使用宏函数定义其它杂项</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">defineOptions</span>(&#123; <span class="attr">name</span>: <span class="string">&#x27;Comp-A&#x27;</span>, <span class="attr">inheritAttrs</span>: <span class="literal">false</span> &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -1295,7 +1295,7 @@
 <h4 id="src-导入"><a href="#src-导入" class="headerlink" title="src 导入"></a>src 导入</h4><p>可以将单文件组件拆分成多个文件中, 使用 src 导入外部文件</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span> <span class="attr">src</span>=<span class="string">&quot;./template.html&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./script.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">src</span>=<span class="string">&quot;./style.css&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="lt-script-setup-gt"><a href="#lt-script-setup-gt" class="headerlink" title="&lt;script setup&gt;"></a>&lt;script setup&gt;</h3><p><em id="scriptsetup"></em> <!--markdownlint-disable-line--></p>
+<h3 id="lt-script-setup-gt"><a href="#lt-script-setup-gt" class="headerlink" title="&lt;script setup&gt;"></a>&lt;script setup&gt;</h3><p><em id="script-setup"></em> <!--markdownlint-disable-line--></p>
 <blockquote>
 <p><code>&lt;script setup&gt;</code> 是在单文件组件(SFC) 中使用 <a href="#compositionapi">组合式 API</a> 的编译时语法糖<br><code>&lt;script setup&gt;</code> 中的代码会在每次组件实例被创建的时候执行</p>
 </blockquote>
@@ -1347,7 +1347,7 @@
 <p>Vue 3.3 支持</p>
 </blockquote>
 <p>只接受类型参数, 没有运行时参数. 用于为 IDE 提供插槽名称 和 props 类型检查的类型提示</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;script setup lang=<span class="string">&quot;ts&quot;</span>&gt;</span><br><span class="line"><span class="keyword">const</span> slots = defineSlots&lt;&#123;</span><br><span class="line">  <span class="title function_">default</span>(<span class="attr">props</span>: &#123; <span class="attr">msg</span>: string &#125;): any</span><br><span class="line">&#125;&gt;()</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">setup</span> <span class="attr">lang</span>=<span class="string">&quot;ts&quot;</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> slots = defineSlots&lt;&#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">default</span>(<span class="attr">props</span>: &#123; <span class="attr">msg</span>: string &#125;): any;</span></span><br><span class="line"><span class="language-javascript">  &#125;&gt;();</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="definePropsRefs"><a href="#definePropsRefs" class="headerlink" title="definePropsRefs()"></a>definePropsRefs()</h4><blockquote>
 <p>Vue 3.3 支持</p>
@@ -1630,10 +1630,10 @@
       <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
+      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
+      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
@@ -1813,7 +1813,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
