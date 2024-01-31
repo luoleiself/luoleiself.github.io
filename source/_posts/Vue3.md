@@ -584,7 +584,7 @@ const objRef = ref({ count: 0 });
 objRef.value = { count: 1 }; // 响应式替换
 ```
 
-- ref 被传递给函数或是从一般对象上被解构时, 不会丢失响应性
+- ref 被传递给函数或是从**一般对象**上被解构时, 不会丢失响应性
 
 ```javascript
 const obj = {
@@ -689,10 +689,15 @@ state.count = otherCount;
 console.log(count.value, state.count); // 2 4
 ```
 
-- 只有当嵌套在一个深层响应式对象内时, 才会发生 ref 解包, 当其作为**浅层响应式对象**的属性被访问时 不会解包
+- 只有当嵌套在一个深层响应式对象内时, 才会发生 ref 解包, 当其作为 [**浅层响应式对象**](#shallowReactive) 的属性被访问时不会解包
 - 当 ref 作为响应式数组或原生集合类型(如 Map)中的元素被访问时, 不会被解包
 
 ```javascript
+// 浅层响应式对象, ref 作为其属性被访问时不会被解包
+const sr = shallowReactive({
+  arr: ref([1, 2, 3]),
+});
+
 // 原生集合中包含 ref 元素时, ref 不会解包
 const books = reactive([ref('Vue 3.0')]);
 console.log(books[0].value); // 需要使用 .value
@@ -1022,7 +1027,7 @@ triggerRef(shallow);
 </script>
 ```
 
-#### shallowReactive()
+#### shallowReactive() <em id="shallowReactive"></em> <!-- markdownlint-disable-line -->
 
 [reactive()](#reactive) 的浅层作用形式
 
