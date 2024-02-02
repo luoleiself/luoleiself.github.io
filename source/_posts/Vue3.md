@@ -817,6 +817,7 @@ watchEffect(() => {}, {
   - deep 如果源是对象, 强制深度遍历, 以便在深层级变更时触发回调
   - flush 调整回调函数的刷新时机, 见 [watchEffect()](#watchEffect)
   - onTrack/onTrigger 调试侦听器的依赖, 见 [watchEffect()](#watchEffect)
+  - once 回调函数只会执行一次, 侦听器将在回调函数首次运行后自动停止, 3.4 支持
 
 ```javascript
 import { reactive, ref, watch } from 'vue';
@@ -832,6 +833,7 @@ watch(
   // 当前侦听一个响应式对象, 默认自动开启深层级模式
   {
     deep: true,
+    once: true, // 侦听器只会执行一次后自动停止
   }
 );
 
@@ -2047,8 +2049,8 @@ function greet(evt){
 ##### 绑定修饰符
 
 - .camel 将 `kebab-case` 命名的属性转变为 `camelCase` 命名
-- .prop 强制绑定为 DOM property
-- .attr 强制绑定为 DOM attribute
+- .prop 强制绑定为 DOM property, 3.2 支持
+- .attr 强制绑定为 DOM attribute, 3.2 支持
 
 ```html
 <svg :view-box.camel="viewBox"></svg>
@@ -2059,6 +2061,15 @@ function greet(evt){
 <div :someProperty.prop="someObject"></div>
 <!-- 等价于 -->
 <div .someProperty="someObject"></div>
+```
+
+##### 同名缩写
+
+> Vue 3.4 支持
+
+```html
+<!-- 缩写形式的动态 attribute, 扩展为 :src="src" -->
+<img :src />
 ```
 
 #### v-model <em id="v-model"></em> <!-- markdownlint-disable-line -->
@@ -2414,6 +2425,8 @@ app.mount('#app');
 仅渲染元素和组件一次, 并跳过之后的更新
 
 #### v-memo
+
+> Vue 3.2 支持
 
 缓存一个模板的子树, 根据传入的依赖值数组的比较结果控制子树的更新
 
@@ -2959,40 +2972,50 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 ```
 
-#### defineModels()
+#### defineModel()
 
-> Vue 3.3 支持
-
-- 只支持泛型类型参数, 不支持运行时参数
+> Vue 3.4 支持
 
 ```html
-<script setup lang="ts">
-  const { modelValue, count } = defineModels<{
-    modelVale: string;
-    count: number;
-  }>();
+<script setup>
+  // 声明 modelValue prop, 由父组件通过 v-model 使用
+  const model = defineModel();
+  // 或者声明带选项的 modelValue prop
+  const model = defineModal({ type: String });
+  // 在被修改时, 触发 update:modelValue 事件
+  model.value = 'hello world';
 
-  console.log(modelValue.value);
-  modelValue.value = 'newValue';
-  count++;
+  // 声明 count prop, 由父组件通过 v-model:count 使用
+  const count = defineModel('count');
+  // 或者声明带选项的 count prop
+  const count = defineModel('count', { type: Number, default: 0 });
+  // 在被修改时, 触发 update:count 事件
+  count.value++;
 </script>
+```
 
-<!-- Compiled Code -->
+##### 修饰符和转换器
 
-<script setup lang="ts">
-  const { modelValue, count } = defineProps<{
-    modelValue: string;
-    count: number;
-  }>();
+```html
+<script setup>
+  const [modelValue, modelModifiers] = defineModel();
+  // 对应 v-model.trim
+  if (modelModifiers.trim) {
+    // ...
+  }
 
-  const emit = defineEmits<{
-    (evt: 'update:modelValue', value: string): void;
-    (evt: 'update:count', value: number): void;
-  }>();
-
-  console.log(modelValue.value);
-  emit('update:modelValue', 'newValue');
-  emit('update:count', count + 1);
+  // 通过修饰符使用 set 和 get 转换器对其值进行转换
+  const [modelValue, modelModifiers] = defineModel({
+    // get() 省略了，因为这里不需要它
+    set(value) {
+      // 如果使用了 .trim 修饰符，则返回裁剪过后的值
+      if (modelModifiers.trim) {
+        return value.trim();
+      }
+      // 否则，原样返回
+      return value;
+    },
+  });
 </script>
 ```
 
