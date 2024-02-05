@@ -693,10 +693,12 @@ console.log(count.value, state.count); // 2 4
 - 当 ref 作为响应式数组或原生集合类型(如 Map)中的元素被访问时, 不会被解包
 
 ```javascript
+import { shallowReactive, reactive, ref } from 'vue';
 // 浅层响应式对象, ref 作为其属性被访问时不会被解包
 const sr = shallowReactive({
   arr: ref([1, 2, 3]),
 });
+console.log(sr.arr.value[0]);
 
 // 原生集合中包含 ref 元素时, ref 不会解包
 const books = reactive([ref('Vue 3.0')]);
