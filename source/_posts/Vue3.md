@@ -296,7 +296,7 @@ const MyComponent = defineComponent({
 const app = createApp(MyComponent).mount('#app');
 ```
 
-- Vue 3.3 支持, 备用签名, 旨在与[组合式 API](#compositionapi)和[渲染函数](#renderingfunc)或 JSX 一起使用
+- Vue 3.3 支持, 备用签名, 旨在与[组合式 API](#composition-api)和[渲染函数](#rendering-func)或 JSX 一起使用
 - 参数为 setup 函数, 函数名称作为组件名称使用
 
 ```javascript
@@ -389,11 +389,11 @@ customElements.define('my-element', MyElement); // 注册该自定义元素
 document.body.append(new MyElement(/* 初始化 prop */));
 ```
 
-## 组合式 API <em id="compositionapi"></em> <!-- markdownlint-disable-line -->
+## 组合式 API <em id="composition-api"></em> <!-- markdownlint-disable-line -->
 
 组合式 API 的核心思想是直接在函数作用域内定义响应式状态变量, 并将从多个函数中得到的状态组合起来处理复杂问题, 这种形式更加自由灵活和高效.
 
-组合式 API(composition API) 是一系列 API 的集合, 能够通过函数而不是声明选项的方式书写 Vue 组件来实现更加简洁高效的逻辑复用([选项式 API](#optionalapi) 中主要的逻辑复用机制是 mixins), 涵盖以下方面的 API
+组合式 API(composition API) 是一系列 API 的集合, 能够通过函数而不是声明选项的方式书写 Vue 组件来实现更加简洁高效的逻辑复用([选项式 API](#optional-api) 中主要的逻辑复用机制是 mixins), 涵盖以下方面的 API
 
 - 响应式 API: 例如 [ref()](#ref) 和 [reactive()](#reactive), 可以直接创建响应式状态、计算属性和侦听器
 - 生命周期钩子: 例如 [onMounted()](#onMounted) 和 [onUnmounted()](#onUnmounted), 可以在组件各个生命周期阶段添加逻辑
@@ -403,10 +403,10 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 > 对于结合单文件组件使用的组合式 API 推荐使用 `<script setup>` 语法
 
-`setup()` 是在组件中使用组合式 API 的入口, 通常在两个情况下使用
+`setup()` 钩子是在组件中使用组合式 API 的入口, 通常在两个情况下使用
 
-- 需要在**非单文件组件**中使用组合式 API 时
-- 需要在基于[选项式 API](#optionalapi) 的组件中集成基于组合式 API 的代码时
+- 需要在**非单文件组件**中使用 [组合式 API](#composition-api) 时
+- 需要在基于 [选项式 API](#optional-api) 的组件中集成基于 [组合式 API](#composition-api) 的代码时
 
 #### 基本使用
 
@@ -527,11 +527,11 @@ app.component('hello-world', HelloWorld);
 app.mount('#app');
 ```
 
-#### 返回[渲染函数](#renderingfunc)
+#### 返回[渲染函数](#rendering-func)
 
-> 返回[**渲染函数**](#renderingfunc)将会阻止返回其他东西, 对于父组件通过模板引用组件暴露的属性使用 `expose()` 方法解决
+> 返回[**渲染函数**](#rendering-func)将会阻止返回其他东西, 对于父组件通过模板引用组件暴露的属性使用 `expose()` 方法解决
 
-- 返回一个 [**渲染函数**](#renderingfunc), 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
+- 返回一个 [**渲染函数**](#rendering-func), 此时在渲染函数中可以直接使用在同一作用域下声明的响应式状态
 
 ```javascript
 import { h, ref, reactive } from 'vue';
@@ -1405,7 +1405,7 @@ app.mount('#app');
 </script>
 ```
 
-## 选项式 API <em id="optionalapi"></em> <!-- markdownlint-disable-line -->
+## 选项式 API <em id="optional-api"></em> <!-- markdownlint-disable-line -->
 
 选项式 API 以 `组件实例` 的概念为中心(this), 将响应性相关的细节抽象出来, 并强制按照选项来组织代码, 从而对初学者而言更为友好
 
@@ -1635,7 +1635,7 @@ export default {
 
 ### 生命周期选项
 
-> [组合式 API](#compositionapi) 中的 `setup()` 钩子函数会在所有 [选项式 API](#optionalapi) 钩子之前调用
+> [组合式 API](#composition-api) 中的 `setup()` 钩子函数会在所有 [选项式 API](#optional-api) 钩子之前调用
 
 #### beforeCreate
 
@@ -1766,7 +1766,7 @@ export default {
 
 #### extends
 
-> `extends` 和 `mixin` 实现上几乎相同, 但是表达的目标不同, `mixins` 选项基本用于组合功能, `extends` 一般更关注继承关系, 为[选项式 API](#optionalapi)设计的
+> `extends` 和 `mixin` 实现上几乎相同, 但是表达的目标不同, `mixins` 选项基本用于组合功能, `extends` 一般更关注继承关系, 为[选项式 API](#optional-api)设计的
 
 要继承的 **基类** 组件, 同 `mixins` 一样, 所有选项都将使用相关的策略进行合并, 不会处理 setup() 钩子的合并
 
@@ -1796,7 +1796,7 @@ export default {
 
 用于控制是否启用默认的组件 `attribute` 透传行为, 默认为 true
 
-- 使用 [\<script setup\>](#script-setup) 的[组合式 API](#compositionapi) 中声明这个选项时, 需要一个额外的 `<script>` 块
+- 使用 [\<script setup\>](#script-setup) 的[组合式 API](#composition-api) 中声明这个选项时, 需要一个额外的 `<script>` 块
 - Vue 3.3 支持, 使用 [defineOptions](#defineOptions) 声明
 
 ```html
@@ -2451,10 +2451,10 @@ app.mount('#app');
 
 用于隐藏尚未完成编译的 DOM 模板
 
-### 内置组件 <em id="builtincomponent"></em> <!-- markdownlint-disable-line -->
+### 内置组件 <em id="built-in-component"></em> <!-- markdownlint-disable-line -->
 
 > 内置组件无需注册便可以直接在模板中使用，同时也支持 `tree-shake`; 仅在使用时才会包含在构建中
-> 在 [**渲染函数**](#renderingfunc) 中使用内置组件时, 需要显式引入
+> 在 [**渲染函数**](#rendering-func) 中使用内置组件时, 需要显式引入
 
 ```javascript
 import { h, KeepAlive, Transition } from 'vue';
@@ -2709,7 +2709,7 @@ export default {
 
 ### SFC 语法定义
 
-- `<template>` 每个 `*.vue` 文件最多可以包含一个顶层 `<template>` 块, 包含的内容将被提取传递给 `@vue/compiler-dom` 编译生成为 [**渲染函数**](#renderingfunc)
+- `<template>` 每个 `*.vue` 文件最多可以包含一个顶层 `<template>` 块, 包含的内容将被提取传递给 `@vue/compiler-dom` 编译生成为 [**渲染函数**](#rendering-func)
 - `<script>` 每个 `*.vue` 文件最多可以包含一个 `<script>` 块(使用 `<script setup>` 除外), 默认导出是 Vue 的组件选项对象
 - `<script setup>` 每个 `*.vue` 文件最多可以包含一个 `<script setup>` 块, 此脚本块将被预处理为组件的 `setup()` 函数
 - `<style>` 每个 `*.vue` 文件可以包含多个 `<style>` 块
@@ -2728,7 +2728,7 @@ export default {
 
 <em id="script-setup"></em> <!--markdownlint-disable-line-->
 
-> `<script setup>` 是在单文件组件(SFC) 中使用 [组合式 API](#compositionapi) 的编译时语法糖
+> `<script setup>` 是在单文件组件(SFC) 中使用 [组合式 API](#composition-api) 的编译时语法糖
 > `<script setup>` 中的代码会在每次组件实例被创建的时候执行
 
 - 更少的样板内容, 更简洁的代码
@@ -2886,7 +2886,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 > Vue 3.3 支持
 
-在 `<script setup>` 中使用 [选项式 API](#optionalapi) 的**宏**, 无法访问 `<script setup>` 中不是字面常数的局部变量
+在 `<script setup>` 中使用 [选项式 API](#optional-api) 的**宏**, 无法访问 `<script setup>` 中不是字面常数的局部变量
 
 ```html
 <script setup>
@@ -3044,7 +3044,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 #### 顶层 await
 
-> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()` > `async setup()` 必须与 [\<Suspense\>](#suspense) [**内置组件**](#builtincomponent)组合使用
+> `<script setup>` 中可以使用顶层 await, 结果代码会被编译成 `async setup()` > `async setup()` 必须与 [\<Suspense\>](#suspense) [**内置组件**](#built-in-component)组合使用
 
 ```html
 <script setup>
@@ -3124,7 +3124,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 </style>
 ```
 
-##### 与[组合式 API](#compositionapi)一起使用
+##### 与[组合式 API](#composition-api)一起使用
 
 - 使用 `useCssModule` API 在 `setup()` 和 `<script setup>` 中访问注入的 class
 - 使用 **自定义注入名称** 的 `<style module>`, `useCssModule` 接收一个匹配的 `module` attribute 值作为第一个参数
@@ -3143,7 +3143,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 
 单文件组件的 `<style>` 标签支持使用 `v-bind` CSS 函数将 CSS 的值链接到动态的组件状态
 
-- [选项式 API](#optionalapi)使用
+- [选项式 API](#optional-api)使用
 
 ```html
 <template>
@@ -3163,7 +3163,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 </style>
 ```
 
-- [组合式 API](#compositionapi) 使用
+- [组合式 API](#composition-api) 使用
 
 ```html
 <template>
@@ -3183,7 +3183,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 
 ## 进阶 API
 
-### 渲染函数 <em id="renderingfunc"></em> <!-- markdownlint-disable-line-->
+### 渲染函数 <em id="rendering-func"></em> <!-- markdownlint-disable-line-->
 
 - 如果组件定义了 setup 并且返回值是一个函数, 则其返回值作为该组件的渲染函数
 - 如果组件定义了 render, 则将其作为渲染函数
@@ -3295,7 +3295,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 
 #### resolveComponent()
 
-> `resolveComponent()` 只能在 [**渲染函数**](#renderingfunc) 或 `setup()` 中使用
+> `resolveComponent()` 只能在 [**渲染函数**](#rendering-func) 或 `setup()` 中使用
 > 如果可以直接引入组件就不需要使用此方法
 
 按名称手动解析已注册的组件, 未找到则抛出一个运行时警告并返回组件名字符串
@@ -3311,7 +3311,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 
 #### [resolveDirective()](#directive)
 
-> `resolveDirective()` 只能在 [**渲染函数**](#renderingfunc) 或 `setup()` 中使用
+> `resolveDirective()` 只能在 [**渲染函数**](#rendering-func) 或 `setup()` 中使用
 > 如果可以直接引入组件就不需要使用此方法
 
 按名称手动解析已注册的指令, 未找到则抛出一个运行时警告并返回 undefined
