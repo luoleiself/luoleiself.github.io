@@ -5,13 +5,22 @@ categories:
   - WebAPI
 tags:
   - API
+  - web-component
 ---
+
+## Web Component
+
+Web Component 是一套不同的技术, 允许创建可重用的定制元素(它们的功能封装在代码之外)并且在 web 应用中使用它们
+
+- Custom element(自定义元素): 一组 JavaScript API, 允许自定义元素及其行为, 然后在用户界面中按照需要使用它们
+- Shadow DOM(影子 DOM): 一组 JavaScript API, 用于将封装的 "影子"DOM 树附加到指定元素(与页面 DOM 分开呈现)并控制其关联的功能. 通过这种方式, 可以保持自定义元素的功能私有, 这样它们就可以被脚本化和样式化,而不用担心与文档的其他部分发生冲突
+- HTML template(HTML 模板): `<template>` 和 `<slot>` 元素可以编写不在呈现页面中显示的标记模板. 然后它们可以作为自定义元素结构的基础被多次重用
 
 ## 自定义元素
 
 ==封装== ==重用==
 
-创建自定义元素, 扩展浏览器中可用的元素集,
+创建自定义元素, 扩展浏览器中可用的元素集
 
 ### 类型
 
@@ -38,7 +47,6 @@ class PopupInfo extends HTMLElement {
     // 必须首先调用 super 方法
     super();
   }
-
   connectedCallback() {
     // 创建影子根
     const shadow = this.attachShadow({ mode: 'open' });
@@ -226,18 +234,150 @@ window.customElements.define('popup-info', PopupInfo);
 使用页面中指定的 DOM 元素作为影子宿主, 调用宿主的 `attachShadow()` 方法创建影子 DOM
 
 - Element.shadowRoot 通过影子宿主的 shadowRoot 属性访问影子 DOM 的内部
-- Element.attachShadow()
+- Element.attachShadow() 创建影子 DOM
   - mode, 指定影子 DOM 树的封装模式
     - open, 允许从外部访问影子 DOM 根节点, Element.shadowRoot 返回一个 ShadowRoot 对象
-    - closed, 拒绝从外部访问关闭的 影子 DOM 根节点, 返回 null
+    - closed, 拒绝从外部访问关闭的 影子 DOM 根节点, Element.shadowRoot 返回 null
   - delegatesFocus, 焦点委托, 当设置为 true 时, 指定减轻自定义元素的聚焦性能问题行为
 
+```html
+<div id="host"></div>
+
+<script>
+  const host = document.querySelector('#host');
+  const shadow = host.attachShadow({ mode: 'open' });
+  const span = document.createElement('span');
+  span.textContent = "I'm in the shadow DOM";
+  shadow.appendChild(span);
+</script>
+```
+
+### CSS 封装
+
+#### 编程式
+
+> 创建单一样式表并将其与多个 DOM 树共享
+
+通过构建一个 `CSSStyleSheet` 对象并将其附加到影子根
+
+- replace() 和 replaceSync() 只能用在通过 CSSStyleSheet 构造函数创建的 styleSheet 对象上
+- replace() 方法异步的设置其内容, 返回一个 Promise
+- replaceSync() 方法同步的设置其内容
+
 ```javascript
+// 创建一个空的 CSSStyleSheet 对象
+const sheet = new CSSStyleSheet();
+// 使用 replace 或 replaceSync 方法设置其内容
+sheet.replaceSync('span { color: red; border: 2px dotted black;}');
+
 const host = document.querySelector('#host');
+// 创建影子 DOM
 const shadow = host.attachShadow({ mode: 'open' });
+// 将 styleSheet 添加到影子根的 adoptedStyleSheets 属性中
+shadow.adoptedStyleSheets = [sheet];
+
 const span = document.createElement('span');
 span.textContent = "I'm in the shadow DOM";
 shadow.appendChild(span);
 ```
 
-### CSS 封装
+#### 声明式
+
+> 不需要在不同组件之间共享样式表
+
+通过在 `template` 元素的声明中添加一个 `<style>` 元素
+
+```html
+<template id="my-custom-element">
+  <style>
+    span {
+      color: red;
+      border: 2px solid blue;
+    }
+  </style>
+  <span>shadow DOM</span>
+</template>
+
+<div id="host"></div>
+
+<script>
+  const host = document.querySelector('#host');
+  const shadow = host.attachShadow({ mode: 'open' });
+  const template = document.getElementById('my-custom-element');
+
+  shadow.appendChild(template.content);
+</script>
+```
+
+## template 和 slots
+
+### template
+
+`template` 元素中的内容不会在 DOM 中呈现, 但仍可用 javascript 去引用它
+
+```html
+<template id="my-paragraph">
+  <style>
+    p {
+      color: red;
+      font-size: 18px;
+    }
+  </style>
+  <p>This is my paragraph</p>
+</template>
+
+<script>
+  window.customElements.define(
+    'my-paragraph',
+    class extends HTMLElement {
+      constructor() {
+        super();
+        let template = document.getElementById('my-paragraph').content;
+
+        const shadowRoot = this.attachShadow({ mode: 'open' });
+        // Node.cloneNode() 返回调用该方法的节点的一个副本
+        shadowRoot.appendChild(template.cloneNode(true));
+      }
+    }
+  );
+</script>
+```
+
+### slots
+
+> 使用 slots 增加 template 元素的灵活性
+
+- 标记中包含未定义相关的插槽内容或者浏览器不支持 slot 属性时显示默认内容
+
+```html
+<template id="my-paragraph">
+  <style>
+    p {
+      color: red;
+      font-size: 18px;
+    }
+  </style>
+  <p>
+    <slot name="my-text">default text</slot>
+  </p>
+</template>
+
+<my-paragraph>
+  <span slot="my-text">from slot</span>
+</my-paragraph>
+
+<script>
+  window.customElements.define(
+    'my-paragraph',
+    class extends HTMLElement {
+      constructor() {
+        super();
+        const template = document.getElementById('my-paragraph').content;
+        const shadowRoot = this.attachShadow({ mode: 'open' }).appendChild(
+          template.cloneNode(true)
+        );
+      }
+    }
+  );
+</script>
+```
