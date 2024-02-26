@@ -181,6 +181,8 @@
 </li>
 <li>element 要插入的元素</li>
 </ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- beforebegin --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- afterbegin --&gt;</span></span><br><span class="line">  foo</span><br><span class="line">  <span class="comment">&lt;!-- beforeend --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- afterend --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 只有当节点处于 DOM 树中且有一个父节点时 beforebegin 和 afterend 才会生效</span></span></span><br><span class="line"><span class="language-javascript">  beforeBtn.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">const</span> tempDiv = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">    tempDiv.<span class="property">style</span>.<span class="property">backgroundColor</span> = <span class="title function_">randomColor</span>();</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">if</span> (activeElem) &#123;</span></span><br><span class="line"><span class="language-javascript">      activeElem.<span class="title function_">insertAdjacentElement</span>(<span class="string">&#x27;beforebegin&#x27;</span>, tempDiv);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">setListener</span>(tempDiv);</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  afterBtn.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">const</span> tempDiv = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">    tempDiv.<span class="property">style</span>.<span class="property">backgroundColor</span> = <span class="title function_">randomColor</span>();</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">if</span> (activeElem) &#123;</span></span><br><span class="line"><span class="language-javascript">      activeElem.<span class="title function_">insertAdjacentElement</span>(<span class="string">&#x27;afterend&#x27;</span>, tempDiv);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">setListener</span>(tempDiv);</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="Element-insertAdjacentHTML-position-text"><a href="#Element-insertAdjacentHTML-position-text" class="headerlink" title="Element.insertAdjacentHTML(position, text)"></a>Element.insertAdjacentHTML(position, text)</h3><p>将指定的文本解析为 Element 元素, 并将结果插入到 DOM 树中的指定位置. 它不会重新解析它正在使用的元素, 因此不会破坏元素内的现有元素, 这避免了额外的序列化步骤, 使其比直接使用 innerHTML 操作更快</p>
 <ul>
 <li>position 表示插入内容相对于元素的位置<ul>
@@ -192,6 +194,8 @@
 </li>
 <li>text 被解析为 HTML 或 XML 元素并插入到 DOM 树中的 DOMString</li>
 </ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-handlebars"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">  // 只有当节点处于 DOM 树中且有一个父节点时 beforebegin 和 afterend 才会生效</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">  // 原为 <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;one&quot;</span>&gt;</span>one<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">  var d1 = document.getElementById(&#x27;one&#x27;);</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">  d1.insertAdjacentHTML(&#x27;afterend&#x27;, &#x27;<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;two&quot;</span>&gt;</span>two<span class="tag">&lt;/<span class="name">div</span>&gt;</span>&#x27;);</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">  // 此时，新结构变成：</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">  // <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;one&quot;</span>&gt;</span>one<span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;two&quot;</span>&gt;</span>two<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"></span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="Element-insertAdjacentText-position-element"><a href="#Element-insertAdjacentText-position-element" class="headerlink" title="Element.insertAdjacentText(position, element)"></a>Element.insertAdjacentText(position, element)</h3><p>将一个给定的文本节点插入到相对于被调用元素的给定的一个位置</p>
 <ul>
 <li>position 表示相对于该元素的位置<ul>
@@ -203,12 +207,180 @@
 </li>
 <li>element 被插入的文本节点的 DOMString</li>
 </ul>
-<span id="more"></span>]]></content>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 只有当节点处于 DOM 树中且有一个父节点时 beforebegin 和 afterend 才会生效</span></span></span><br><span class="line"><span class="language-javascript">  beforeBtn.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">    para.<span class="title function_">insertAdjacentText</span>(<span class="string">&#x27;afterbegin&#x27;</span>, textInput.<span class="property">value</span>);</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  afterBtn.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">    para.<span class="title function_">insertAdjacentText</span>(<span class="string">&#x27;beforeend&#x27;</span>, textInput.<span class="property">value</span>);</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h3 id="Element-replaceChildren"><a href="#Element-replaceChildren" class="headerlink" title="Element.replaceChildren()"></a>Element.replaceChildren()</h3><p>将多个 Node 对象替换为该节点的后代集合</p>
+<h3 id="Element-replaceWith"><a href="#Element-replaceWith" class="headerlink" title="Element.replaceWith()"></a>Element.replaceWith()</h3><p>将多个 Node 对象或字符串对象替换该节点父节点下的子节点</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> p = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;p&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">  div.<span class="title function_">appendChild</span>(p);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> span = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;span&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  p.<span class="title function_">replaceWith</span>(span);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">outerHTML</span>);</span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// &quot;&lt;div&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&quot;</span></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+]]></content>
       <categories>
         <category>WebAPI</category>
       </categories>
       <tags>
         <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>EventSource</title>
+    <url>/2024/02/9e4187fea759/</url>
+    <content><![CDATA[<h2 id="EventSource"><a href="#EventSource" class="headerlink" title="EventSource"></a>EventSource</h2><blockquote>
+<p>当不使用 HTTP/2 时, 服务器发送事件(SSE)受到打开连接数(6)的限制, 这个限制是针对浏览器的. 每个浏览器的所有标签页中对相同域名的连接数最多支持 6 个</p>
+</blockquote>
+<blockquote>
+<p>当使用 HTTP/2 时, 最大并发 HTTP 流的数量是由服务器和客户端协商的(默认为 100)</p>
+</blockquote>
+<p>Web 内容与服务器发送事件通信的接口, 通信方向是单向的, 数据消息只能从服务器发送到客户端. 如果接收消息中有一个 event 字段, 触发的事件与 event 字段的值相同, 如果不存在 event 字段, 则将触发通用的 message 事件</p>
+<ul>
+<li>url, 表示远程资源的位置</li>
+<li>configuration, 可选, 一个对象<ul>
+<li>withCredentials, 标识 CORS 是否包含凭据, 默认为 false</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sse = <span class="keyword">new</span> <span class="title class_">EventSource</span>(url, configuration);</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 没有 event 字段时触发</span></span><br><span class="line"><span class="comment"> * event: message</span></span><br><span class="line"><span class="comment"> * data: user data</span></span><br><span class="line"><span class="comment"> * id: someid</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="property">onmessage</span> = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(e);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 触发 notice 事件回调</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * event: notice</span></span><br><span class="line"><span class="comment"> * data: useful data</span></span><br><span class="line"><span class="comment"> * id: someid</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="title function_">addEventListener</span>(<span class="string">&#x27;notice&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(evt);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="实例属性"><a href="#实例属性" class="headerlink" title="实例属性"></a>实例属性</h3><ul>
+<li>readyState, 标识连接状态的数字<ul>
+<li>CONNECTING（0）</li>
+<li>OPEN（1）</li>
+<li>CLOSED（2）</li>
+</ul>
+</li>
+<li>url, 表示远程资源的位置的字符串</li>
+<li>withCredentials, 标识是否使用跨域资源共享(CORS)凭据来实例化</li>
+</ul>
+<h3 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h3><ul>
+<li>close(), 关闭链接, 并将 readyState 属性设置为 CLOSED</li>
+</ul>
+<h3 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h3><ul>
+<li>error, 连接失败时触发</li>
+<li>message, 接收到数据时触发</li>
+<li>open, 连接打开时触发</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sse = <span class="keyword">new</span> <span class="title class_">EventSource</span>(<span class="string">&#x27;/api/v1/sse&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 这将仅监听类似下面的事件</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * event: notice</span></span><br><span class="line"><span class="comment"> * data: useful data</span></span><br><span class="line"><span class="comment"> * id: someid</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="title function_">addEventListener</span>(<span class="string">&#x27;notice&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(e.<span class="property">data</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 同理，以下代码将监听具有字段 `event: update` 的事件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="title function_">addEventListener</span>(<span class="string">&#x27;update&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(e.<span class="property">data</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * “message”事件是一个特例，因为它可以捕获没有 event 字段的事件，</span></span><br><span class="line"><span class="comment"> * 以及具有特定类型 `event：message` 的事件。</span></span><br><span class="line"><span class="comment"> * 它不会触发任何其他类型的事件。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="title function_">addEventListener</span>(<span class="string">&#x27;message&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(e.<span class="property">data</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>FileSystemAccessAPI</title>
+    <url>/2023/04/12766d614e53/</url>
+    <content><![CDATA[<blockquote>
+<p>目前仅在 chrome 86 (edge 86, opera 72)及以上版本支持, safari 和 firefox 暂时不支持</p>
+</blockquote>
+<p>允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a> 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用该 API 时, 会提示用户授权应用程序访问文件系统</p>
+<ul>
+<li>将文件从本地文件系统上传到 Web 应用程序</li>
+<li>将 Web 应用程中的数据写入到本地文件系统中</li>
+<li>在用户的本地文件系统中创建、重命名和删除文件</li>
+<li>读取本地文件系统上的文件内容</li>
+</ul>
+<h3 id="FileSystemHandle接口"><a href="#FileSystemHandle接口" class="headerlink" title="FileSystemHandle接口"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle">FileSystemHandle</a>接口</h3><p>是 File System Access API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 <code>FileSystemFileHandle</code> 和 <code>FileSystemDirectoryHandle</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承</span></span><br><span class="line"><span class="comment"> * FileSystemHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemFileHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemDirectoryHandle</span></span><br><span class="line"><span class="comment"> * FileSystemSyncAccessHandle</span></span><br><span class="line"><span class="comment"> * WritableStream</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemWritableFileStream</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h4 id="FSH-实例属性"><a href="#FSH-实例属性" class="headerlink" title="FSH 实例属性"></a>FSH 实例属性</h4><ul>
+<li>kind 返回条目的类型, <code>file</code> 表示文件, <code>directory</code> 表示目录</li>
+<li>name 返回关联条目的名称</li>
+</ul>
+<h4 id="FSH-实例方法"><a href="#FSH-实例方法" class="headerlink" title="FSH 实例方法"></a>FSH 实例方法</h4><ul>
+<li>isSameEntry() 比较两者 handle 以查看相关条目(文件或目录)是否匹配</li>
+<li>queryPermission() 查询当前句柄的当前权限状态</li>
+<li>remove() 请求从底层文件系统中删除由句柄表示的条目</li>
+<li>requestPermission() 请求文件句柄的读取或读写权限</li>
+</ul>
+<h3 id="showOpenFilePicker"><a href="#showOpenFilePicker" class="headerlink" title="showOpenFilePicker"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showOpenFilePicker">showOpenFilePicker</a></h3><p>显示一个文件选择器, 允许用户选择一个或多个文件并返回这些文件的句柄, 返回一个 Promise 对象, 并兑现一个包含 <code>FileSystemFileHandle</code> 对象的 Array 数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的包含 `FileSystemFileHandle` 对象的 Array 数组</span></span><br><span class="line">  <span class="keyword">const</span> fileHandles = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showOpenFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个文件对象</span></span><br><span class="line">  <span class="keyword">const</span> file = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">getFile</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于同步读取和写入文件的对象,</span></span><br><span class="line">  <span class="comment">// 但只能用在专用的 web workers 中</span></span><br><span class="line">  <span class="keyword">const</span> syncAccessFile = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createSyncAccessHandle</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于写入文件的新创建的对象</span></span><br><span class="line">  <span class="comment">// WritableStream &lt;- FileSystemWritableFileStream</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="comment">// 在流关闭之前, 通常将对流做的任何修改写入临时文件来实现,</span></span><br><span class="line">  <span class="comment">// 并且仅在可写文件流关闭时才将文件句柄表示的文件替换为临时文件</span></span><br><span class="line">  <span class="keyword">const</span> writer = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createWritable</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SOFP-实例方法"><a href="#SOFP-实例方法" class="headerlink" title="SOFP 实例方法  "></a>SOFP 实例方法 <em id="showopenfilePickerfn"></em> <!-- markdownlint-disable-line--></h4><h5 id="getFile"><a href="#getFile" class="headerlink" title="getFile()"></a>getFile()</h5><p>返回一个已兑现的由句柄表示的条目在磁盘上的状态的对象</p>
+<h5 id="createSyncAccessHandle"><a href="#createSyncAccessHandle" class="headerlink" title="createSyncAccessHandle()"></a>createSyncAccessHandle()</h5><p>返回一个已兑现的可用于同步读取和写入文件的 <code>FileSystemSyncAccessHandle</code> 对象</p>
+<h5 id="createWritable"><a href="#createWritable" class="headerlink" title="createWritable()"></a>createWritable()</h5><p>返回一个已兑现的可用于写入文件的新创建的 <code>FileSystemWritableFileStream</code> 对象</p>
+<h3 id="showSaveFilePicker"><a href="#showSaveFilePicker" class="headerlink" title="showSaveFilePicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker">showSaveFilePicker</a></h3><p>显示一个允许用户保存文件的文件选择器, 通过选择现有文件或者输入新文件的名称, 返回一个已兑现的 <code>FileSystemFileHandle</code> 对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemFileHandle` 对象</span></span><br><span class="line">  <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showSaveFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建一个可写流</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="keyword">const</span> writable = <span class="keyword">await</span> fileHandle.<span class="title function_">createWritable</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 写入数据</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">write</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 关闭流</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">close</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SSFP-实例方法"><a href="#SSFP-实例方法" class="headerlink" title="SSFP 实例方法"></a>SSFP 实例方法</h4><p>实例方法同 <a href="#showopenfilePickerfn"><code>showOpenFilePicker</code></a> 方法返回的实例的方法</p>
+<h3 id="showDirectoryPicker"><a href="#showDirectoryPicker" class="headerlink" title="showDirectoryPicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">showDirectoryPicker</a></h3><p>显示一个目录选择器, 允许用户选择一个目录, 返回一个已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个目录选择器筛选目录的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemDirectoryHandle` 对象</span></span><br><span class="line">  <span class="comment">// FileSystemHandle &lt;- FileSystemDirectoryHandle</span></span><br><span class="line">  <span class="keyword">const</span> dirHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showDirectoryPicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 遍历目录</span></span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">await</span> (<span class="keyword">const</span> [name, handle] <span class="keyword">of</span> dirHandle.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (handle.<span class="property">key</span> == <span class="string">&#x27;file&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> dirHandle.<span class="title function_">getFileHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(fileHandle);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> dh = dirHandle.<span class="title function_">getDirectoryHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(dh);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h4 id="SDP-实例方法"><a href="#SDP-实例方法" class="headerlink" title="SDP 实例方法"></a>SDP 实例方法</h4><h5 id="entries"><a href="#entries" class="headerlink" title="entries()"></a>entries()</h5><p>返回给定对象自己的可枚举属性对的新**异步迭代[key, value]**器</p>
+<h5 id="getFileHandle"><a href="#getFileHandle" class="headerlink" title="getFileHandle()"></a>getFileHandle()</h5><p>返回指定名称的文件的已兑现的 <code>FileSystemFileHandle</code> 对象</p>
+<h5 id="getDirectoryHandle"><a href="#getDirectoryHandle" class="headerlink" title="getDirectoryHandle()"></a>getDirectoryHandle()</h5><p>返回指定名称的目录的已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
+<h5 id="resolve"><a href="#resolve" class="headerlink" title="resolve()"></a>resolve()</h5><p>返回一个从父句柄到指定子项的目录名称的 Promise, 子项的名称作为最后一个数组项</p>
+<h5 id="removeEntry"><a href="#removeEntry" class="headerlink" title="removeEntry()"></a>removeEntry()</h5><p>尝试异步删除指定名称的文件或目录</p>
+<h5 id="keys"><a href="#keys" class="headerlink" title="keys()"></a>keys()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含每个项目的键 <code>FileSystemDirectoryHandle</code></p>
+<h5 id="values"><a href="#values" class="headerlink" title="values()"></a>values()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含对象中每个索引的值 <code>FileSystemDirectoryHandle</code></p>
+]]></content>
+      <categories>
+        <category>WebAPI</category>
+      </categories>
+      <tags>
+        <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令其他篇</title>
+    <url>/2021/04/946abb7dbe1d/</url>
+    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
+<li><p>递归查看嵌套仓库的状态</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+<li><p>查看嵌套仓库的提交记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
+<li><p>list: 显示支持的归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
+<li><p>format: 指定归档文件格式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>prefix: 指定归档文件前缀</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
+<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
+<li>f|force: 强制删除</li>
+<li>i|interactive: 交互式操作</li>
+<li>e: 使用正则表达式匹配</li>
+</ul>
+<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+]]></content>
+      <categories>
+        <category>tools</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -544,118 +716,85 @@
       </tags>
   </entry>
   <entry>
-    <title>FileSystemAccessAPI</title>
-    <url>/2023/04/12766d614e53/</url>
-    <content><![CDATA[<blockquote>
-<p>目前仅在 chrome 86 (edge 86, opera 72)及以上版本支持, safari 和 firefox 暂时不支持</p>
-</blockquote>
-<p>允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验</p>
-<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a> 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用该 API 时, 会提示用户授权应用程序访问文件系统</p>
-<ul>
-<li>将文件从本地文件系统上传到 Web 应用程序</li>
-<li>将 Web 应用程中的数据写入到本地文件系统中</li>
-<li>在用户的本地文件系统中创建、重命名和删除文件</li>
-<li>读取本地文件系统上的文件内容</li>
+    <title>HTTP</title>
+    <url>/2021/07/1ddfb1010b19/</url>
+    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
+<li><p>100 Continue 请求继续</p>
+</li>
+<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
+</li>
+<li><p>102 Processing 继续执行</p>
+</li>
+<li><p>200 OK 请求成功</p>
+</li>
+<li><p>204 No Content 没有响应实体</p>
+</li>
+<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
+</li>
+<li><p>301 Moved Permanently 资源永久移动</p>
+</li>
+<li><p>302 Move Temporarily 资源临时移动</p>
+</li>
+<li><p>303 See Other 参见其他</p>
+</li>
+<li><p>304 Not Modified 资源没有改动</p>
+</li>
+<li><p>305 Use Proxy 使用代理</p>
+</li>
+<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
+</li>
+<li><p>400 Bad Request 错误的请求</p>
+</li>
+<li><p>401 Unauthorized 需要验证</p>
+</li>
+<li><p>403 Forbidden 服务器拒绝执行</p>
+</li>
+<li><p>404 Not Found 资源未找到</p>
+</li>
+<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
+</li>
+<li><p>408 Request Timeout 请求超时</p>
+</li>
+<li><p>413 Request Entity Too Large 请求体超长</p>
+</li>
+<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
+</li>
+<li><p>500 Internal Server Error 服务器错误</p>
+</li>
+<li><p>502 Bad Gateway 网关错误</p>
+</li>
+<li><p>504 Gateway Timeout 网关超时</p>
+</li>
+<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
+</li>
 </ul>
-<h3 id="FileSystemHandle接口"><a href="#FileSystemHandle接口" class="headerlink" title="FileSystemHandle接口"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle">FileSystemHandle</a>接口</h3><p>是 File System Access API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 <code>FileSystemFileHandle</code> 和 <code>FileSystemDirectoryHandle</code></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承</span></span><br><span class="line"><span class="comment"> * FileSystemHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemFileHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemDirectoryHandle</span></span><br><span class="line"><span class="comment"> * FileSystemSyncAccessHandle</span></span><br><span class="line"><span class="comment"> * WritableStream</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemWritableFileStream</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h4 id="FSH-实例属性"><a href="#FSH-实例属性" class="headerlink" title="FSH 实例属性"></a>FSH 实例属性</h4><ul>
-<li>kind 返回条目的类型, <code>file</code> 表示文件, <code>directory</code> 表示目录</li>
-<li>name 返回关联条目的名称</li>
+<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
+<li>%21 !</li>
+<li>%22 “</li>
+<li>%23 #</li>
+<li>%24 $</li>
+<li>%25 %</li>
+<li>%26 &amp;</li>
+<li>%27 ‘</li>
+<li>%28 (</li>
+<li>%29 )</li>
+<li>%2F /</li>
+<li>%30-9 0..9</li>
+<li>%3A :</li>
+<li>%3B ;</li>
+<li>%3C &lt;</li>
+<li>%3D =</li>
+<li>%3E &gt;</li>
+<li>%3F ?</li>
+<li>%40 @</li>
+<li>%41 A</li>
 </ul>
-<h4 id="FSH-实例方法"><a href="#FSH-实例方法" class="headerlink" title="FSH 实例方法"></a>FSH 实例方法</h4><ul>
-<li>isSameEntry() 比较两者 handle 以查看相关条目(文件或目录)是否匹配</li>
-<li>queryPermission() 查询当前句柄的当前权限状态</li>
-<li>remove() 请求从底层文件系统中删除由句柄表示的条目</li>
-<li>requestPermission() 请求文件句柄的读取或读写权限</li>
-</ul>
-<h3 id="showOpenFilePicker"><a href="#showOpenFilePicker" class="headerlink" title="showOpenFilePicker"></a><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showOpenFilePicker">showOpenFilePicker</a></h3><p>显示一个文件选择器, 允许用户选择一个或多个文件并返回这些文件的句柄, 返回一个 Promise 对象, 并兑现一个包含 <code>FileSystemFileHandle</code> 对象的 Array 数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的包含 `FileSystemFileHandle` 对象的 Array 数组</span></span><br><span class="line">  <span class="keyword">const</span> fileHandles = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showOpenFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个文件对象</span></span><br><span class="line">  <span class="keyword">const</span> file = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">getFile</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于同步读取和写入文件的对象,</span></span><br><span class="line">  <span class="comment">// 但只能用在专用的 web workers 中</span></span><br><span class="line">  <span class="keyword">const</span> syncAccessFile = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createSyncAccessHandle</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取返回结果中第一个可用于写入文件的新创建的对象</span></span><br><span class="line">  <span class="comment">// WritableStream &lt;- FileSystemWritableFileStream</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="comment">// 在流关闭之前, 通常将对流做的任何修改写入临时文件来实现,</span></span><br><span class="line">  <span class="comment">// 并且仅在可写文件流关闭时才将文件句柄表示的文件替换为临时文件</span></span><br><span class="line">  <span class="keyword">const</span> writer = <span class="keyword">await</span> fileHandles[<span class="number">0</span>].<span class="title function_">createWritable</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h4 id="SOFP-实例方法"><a href="#SOFP-实例方法" class="headerlink" title="SOFP 实例方法  "></a>SOFP 实例方法 <em id="showopenfilePickerfn"></em> <!-- markdownlint-disable-line--></h4><h5 id="getFile"><a href="#getFile" class="headerlink" title="getFile()"></a>getFile()</h5><p>返回一个已兑现的由句柄表示的条目在磁盘上的状态的对象</p>
-<h5 id="createSyncAccessHandle"><a href="#createSyncAccessHandle" class="headerlink" title="createSyncAccessHandle()"></a>createSyncAccessHandle()</h5><p>返回一个已兑现的可用于同步读取和写入文件的 <code>FileSystemSyncAccessHandle</code> 对象</p>
-<h5 id="createWritable"><a href="#createWritable" class="headerlink" title="createWritable()"></a>createWritable()</h5><p>返回一个已兑现的可用于写入文件的新创建的 <code>FileSystemWritableFileStream</code> 对象</p>
-<h3 id="showSaveFilePicker"><a href="#showSaveFilePicker" class="headerlink" title="showSaveFilePicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker">showSaveFilePicker</a></h3><p>显示一个允许用户保存文件的文件选择器, 通过选择现有文件或者输入新文件的名称, 返回一个已兑现的 <code>FileSystemFileHandle</code> 对象</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个文件选择器筛选文件的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemFileHandle` 对象</span></span><br><span class="line">  <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showSaveFilePicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建一个可写流</span></span><br><span class="line">  <span class="comment">// 继承 writableStream 接口的 `FileSystemWritableFileStream` 实例</span></span><br><span class="line">  <span class="keyword">const</span> writable = <span class="keyword">await</span> fileHandle.<span class="title function_">createWritable</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 写入数据</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">write</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 关闭流</span></span><br><span class="line">  <span class="keyword">await</span> writable.<span class="title function_">close</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h4 id="SSFP-实例方法"><a href="#SSFP-实例方法" class="headerlink" title="SSFP 实例方法"></a>SSFP 实例方法</h4><p>实例方法同 <a href="#showopenfilePickerfn"><code>showOpenFilePicker</code></a> 方法返回的实例的方法</p>
-<h3 id="showDirectoryPicker"><a href="#showDirectoryPicker" class="headerlink" title="showDirectoryPicker"></a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">showDirectoryPicker</a></h3><p>显示一个目录选择器, 允许用户选择一个目录, 返回一个已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 可选参数, 传入一个目录选择器筛选目录的选项对象</span></span><br><span class="line">  <span class="comment">// 返回一个已兑现的 `FileSystemDirectoryHandle` 对象</span></span><br><span class="line">  <span class="comment">// FileSystemHandle &lt;- FileSystemDirectoryHandle</span></span><br><span class="line">  <span class="keyword">const</span> dirHandle = <span class="keyword">await</span> <span class="variable language_">window</span>.<span class="title function_">showDirectoryPicker</span>(&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 遍历目录</span></span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">await</span> (<span class="keyword">const</span> [name, handle] <span class="keyword">of</span> dirHandle.<span class="title function_">entries</span>()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (handle.<span class="property">key</span> == <span class="string">&#x27;file&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> fileHandle = <span class="keyword">await</span> dirHandle.<span class="title function_">getFileHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(fileHandle);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> dh = dirHandle.<span class="title function_">getDirectoryHandle</span>(name);</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(dh);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h4 id="SDP-实例方法"><a href="#SDP-实例方法" class="headerlink" title="SDP 实例方法"></a>SDP 实例方法</h4><h5 id="entries"><a href="#entries" class="headerlink" title="entries()"></a>entries()</h5><p>返回给定对象自己的可枚举属性对的新**异步迭代[key, value]**器</p>
-<h5 id="getFileHandle"><a href="#getFileHandle" class="headerlink" title="getFileHandle()"></a>getFileHandle()</h5><p>返回指定名称的文件的已兑现的 <code>FileSystemFileHandle</code> 对象</p>
-<h5 id="getDirectoryHandle"><a href="#getDirectoryHandle" class="headerlink" title="getDirectoryHandle()"></a>getDirectoryHandle()</h5><p>返回指定名称的目录的已兑现的 <code>FileSystemDirectoryHandle</code> 对象</p>
-<h5 id="resolve"><a href="#resolve" class="headerlink" title="resolve()"></a>resolve()</h5><p>返回一个从父句柄到指定子项的目录名称的 Promise, 子项的名称作为最后一个数组项</p>
-<h5 id="removeEntry"><a href="#removeEntry" class="headerlink" title="removeEntry()"></a>removeEntry()</h5><p>尝试异步删除指定名称的文件或目录</p>
-<h5 id="keys"><a href="#keys" class="headerlink" title="keys()"></a>keys()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含每个项目的键 <code>FileSystemDirectoryHandle</code></p>
-<h5 id="values"><a href="#values" class="headerlink" title="values()"></a>values()</h5><p>返回一个新的<strong>异步迭代</strong>器, 其中包含对象中每个索引的值 <code>FileSystemDirectoryHandle</code></p>
 ]]></content>
       <categories>
-        <category>WebAPI</category>
+        <category>network</category>
       </categories>
       <tags>
-        <tag>API</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令其他篇</title>
-    <url>/2021/04/946abb7dbe1d/</url>
-    <content><![CDATA[<h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h5 id="submodule-set-branch-设置分支"><a href="#submodule-set-branch-设置分支" class="headerlink" title="submodule set-branch 设置分支"></a>submodule set-branch 设置分支</h5><p>设置嵌套仓库的默认远程关联分支</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-branch (-b) &lt;branch&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-set-url-设置地址"><a href="#submodule-set-url-设置地址" class="headerlink" title="submodule set-url 设置地址"></a>submodule set-url 设置地址</h5><p>设置嵌套仓库新的地址,会自动同步新的地址配置项</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule set-url &lt;path&gt; &lt;newurl&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-add-添加"><a href="#submodule-add-添加" class="headerlink" title="submodule add 添加"></a>submodule add 添加</h5><p>在当前指定目录下添加仓库</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule add &lt;repository&gt; [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="status-summary-查看"><a href="#status-summary-查看" class="headerlink" title="status|summary 查看"></a>status|summary 查看</h5><ul>
-<li><p>递归查看嵌套仓库的状态</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule status [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-<li><p>查看嵌套仓库的提交记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule summary [&lt;path&gt;]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h5 id="submodule-update-更新"><a href="#submodule-update-更新" class="headerlink" title="submodule update 更新"></a>submodule update 更新</h5><p>递归更新嵌套仓库信息</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git submodule update [--recursive] [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h4 id="archive-归档"><a href="#archive-归档" class="headerlink" title="archive 归档"></a>archive 归档</h4><ul>
-<li><p>list: 显示支持的归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-l]</span><br></pre></td></tr></table></figure></li>
-<li><p>format: 指定归档文件格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --format=&lt;<span class="built_in">fmt</span>&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>prefix: 指定归档文件前缀</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --prefix=&lt;prefix&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>output|o: 将归档文件写入到指定文件非输出流</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive [-o &lt;file&gt;] [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-<li><p>add-file: 添加未被追踪的文件到归档文件中</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git archive --add-file &lt;file&gt; [&lt;path&gt;...]</span><br></pre></td></tr></table></figure></li>
-</ul>
-<hr>
-<h4 id="clean-清除"><a href="#clean-清除" class="headerlink" title="clean 清除"></a>clean 清除</h4><ul>
-<li>n|dry-run: 不移除任何东西,只显示会做什么</li>
-<li>f|force: 强制删除</li>
-<li>i|interactive: 交互式操作</li>
-<li>e: 使用正则表达式匹配</li>
-</ul>
-<h5 id="从工作区移除未被追踪的文件"><a href="#从工作区移除未被追踪的文件" class="headerlink" title="从工作区移除未被追踪的文件"></a>从工作区移除未被追踪的文件</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git clean [-n] [-f] [-i] [-e &lt;pattern&gt;] &lt;path&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-]]></content>
-      <categories>
-        <category>tools</category>
-      </categories>
-      <tags>
-        <tag>git</tag>
+        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -796,142 +935,6 @@
       </tags>
   </entry>
   <entry>
-    <title>HTTP</title>
-    <url>/2021/07/1ddfb1010b19/</url>
-    <content><![CDATA[<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
-<li><p>100 Continue 请求继续</p>
-</li>
-<li><p>101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议</p>
-</li>
-<li><p>102 Processing 继续执行</p>
-</li>
-<li><p>200 OK 请求成功</p>
-</li>
-<li><p>204 No Content 没有响应实体</p>
-</li>
-<li><p>206 Partial Content 服务器处理部分 GET 请求</p>
-</li>
-<li><p>301 Moved Permanently 资源永久移动</p>
-</li>
-<li><p>302 Move Temporarily 资源临时移动</p>
-</li>
-<li><p>303 See Other 参见其他</p>
-</li>
-<li><p>304 Not Modified 资源没有改动</p>
-</li>
-<li><p>305 Use Proxy 使用代理</p>
-</li>
-<li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
-</li>
-<li><p>400 Bad Request 错误的请求</p>
-</li>
-<li><p>401 Unauthorized 需要验证</p>
-</li>
-<li><p>403 Forbidden 服务器拒绝执行</p>
-</li>
-<li><p>404 Not Found 资源未找到</p>
-</li>
-<li><p>405 Method Not Allowed 请求方法不能用于相应资源</p>
-</li>
-<li><p>408 Request Timeout 请求超时</p>
-</li>
-<li><p>413 Request Entity Too Large 请求体超长</p>
-</li>
-<li><p>415 Unsupported Media Type 不支持的媒体类型</p>
-</li>
-<li><p>500 Internal Server Error 服务器错误</p>
-</li>
-<li><p>502 Bad Gateway 网关错误</p>
-</li>
-<li><p>504 Gateway Timeout 网关超时</p>
-</li>
-<li><p>505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本</p>
-</li>
-</ul>
-<h3 id="URL-编码常用"><a href="#URL-编码常用" class="headerlink" title="URL 编码常用"></a>URL 编码常用</h3><ul>
-<li>%21 !</li>
-<li>%22 “</li>
-<li>%23 #</li>
-<li>%24 $</li>
-<li>%25 %</li>
-<li>%26 &amp;</li>
-<li>%27 ‘</li>
-<li>%28 (</li>
-<li>%29 )</li>
-<li>%2F /</li>
-<li>%30-9 0..9</li>
-<li>%3A :</li>
-<li>%3B ;</li>
-<li>%3C &lt;</li>
-<li>%3D =</li>
-<li>%3E &gt;</li>
-<li>%3F ?</li>
-<li>%40 @</li>
-<li>%41 A</li>
-</ul>
-]]></content>
-      <categories>
-        <category>network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JSSDK</title>
-    <url>/2022/05/2261dfd57ebf/</url>
-    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
-<li>转发</li>
-<li>转发给客户</li>
-<li>群发到客户群</li>
-<li>发表到客户的朋友圈</li>
-<li>分享到同事吧</li>
-<li>分享到微信</li>
-<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
-</ul>
-<span id="more"></span>
-
-<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
-<li><p>jweixin-1.4.0.js</p>
-</li>
-<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
-<li>jweixin-1.4.0.js</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>shareAppMessage 自定义转发到会话</li>
-<li>shareWechatMessage 自定义转发到微信</li>
-<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
-<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>wx</category>
-      </categories>
-      <tags>
-        <tag>wx</tag>
-        <tag>jweixin</tag>
-        <tag>JSSDK</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>IntersectionObserver</title>
     <url>/2023/04/ec2526e79bc5/</url>
     <content><![CDATA[<h2 id="IntersectionObserver"><a href="#IntersectionObserver" class="headerlink" title="IntersectionObserver"></a>IntersectionObserver</h2><blockquote>
@@ -1006,6 +1009,60 @@
       </categories>
       <tags>
         <tag>API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JSSDK</title>
+    <url>/2022/05/2261dfd57ebf/</url>
+    <content><![CDATA[<h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
+<li>转发</li>
+<li>转发给客户</li>
+<li>群发到客户群</li>
+<li>发表到客户的朋友圈</li>
+<li>分享到同事吧</li>
+<li>分享到微信</li>
+<li>分享到微信朋友圈使用此 onMenuShareTimeline, 但无法设置分享信息</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="updateAppMessageShareData"><a href="#updateAppMessageShareData" class="headerlink" title="updateAppMessageShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateAppMessageShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateAppMessageShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateAppMessageShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="updateTimelineShareData"><a href="#updateTimelineShareData" class="headerlink" title="updateTimelineShareData"></a><a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">updateTimelineShareData</a></h4><ul>
+<li><p>jweixin-1.4.0.js</p>
+</li>
+<li><p>企微(4.0.6) 使用此 API 报错: Uncaught TypeError: wx.updateTimelineShareData is not a function</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">updateTimelineShareData</span>(&#123;</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">  <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">  <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">  <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  <span class="attr">success</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="wx-invoke"><a href="#wx-invoke" class="headerlink" title="wx.invoke"></a><a href="https://developer.work.weixin.qq.com/document/path/90490">wx.invoke</a></h4><ul>
+<li>jweixin-1.4.0.js</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wx.<span class="title function_">invoke</span>(</span><br><span class="line">  <span class="string">&#x27;shareAppMessage&#x27;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的标题</span></span><br><span class="line">    <span class="attr">desc</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的描述</span></span><br><span class="line">    <span class="attr">link</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的链接</span></span><br><span class="line">    <span class="attr">imgUrl</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">//分享信息的图片</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (res.<span class="property">err_msg</span> == <span class="string">&#x27;shareAppMessage:ok&#x27;</span>) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>shareAppMessage 自定义转发到会话</li>
+<li>shareWechatMessage 自定义转发到微信</li>
+<li>企业微信 2.4.5 及以后版本支持,微信客户端不支持(微信开发者工具也不支持)</li>
+<li>使用此 API 时, 在 <code>企微(4.0.6.6516)</code> 桌面版上打开页面时会自动弹出 转发到会话 弹框, 注释此方法后则没有自动弹框, 企微手机端不受此影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>wx</category>
+      </categories>
+      <tags>
+        <tag>wx</tag>
+        <tag>jweixin</tag>
+        <tag>JSSDK</tag>
       </tags>
   </entry>
   <entry>
