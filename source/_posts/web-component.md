@@ -34,6 +34,8 @@ Web Component 是一套不同的技术, 允许创建可重用的定制元素(它
 - 在构造函数中设置初始化状态和默认值, 注册事件监听器, 创建一个影子根(shadowRoot)
 - 在构造函数中不能检查元素的属性或子元素, 不能添加新的属性或子元素
 
+<!-- more -->
+
 ```javascript
 class WordCount extends HTMLParagraphElement {
   constructor() {

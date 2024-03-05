@@ -43,6 +43,8 @@ sse.addEventListener('notice', (e) => {
 });
 ```
 
+<!-- more -->
+
 ### 实例属性
 
 - readyState, 标识连接状态的数字

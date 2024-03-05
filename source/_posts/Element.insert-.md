@@ -49,6 +49,8 @@ tags:
 </script>
 ```
 
+<!-- more -->
+
 ### Element.insertAdjacentHTML(position, text)
 
 将指定的文本解析为 Element 元素, 并将结果插入到 DOM 树中的指定位置. 它不会重新解析它正在使用的元素, 因此不会破坏元素内的现有元素, 这避免了额外的序列化步骤, 使其比直接使用 innerHTML 操作更快
@@ -95,8 +97,6 @@ tags:
   });
 </script>
 ```
-
-<!-- more -->
 
 ### Element.replaceChildren()
 
