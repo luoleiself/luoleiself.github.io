@@ -391,6 +391,8 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 ## 组合式 API <em id="composition-api"></em> <!-- markdownlint-disable-line -->
 
+> 组合式函数(Composables) 是一个利用 Vue 的组合式 API 来封装和复用有 **状态逻辑** 的函数
+
 组合式 API 的核心思想是直接在函数作用域内定义响应式状态变量, 并将从多个函数中得到的状态组合起来处理复杂问题, 这种形式更加自由灵活和高效.
 
 组合式 API(composition API) 是一系列 API 的集合, 能够通过函数而不是声明选项的方式书写 Vue 组件来实现更加简洁高效的逻辑复用([选项式 API](#optional-api) 中主要的逻辑复用机制是 mixins), 涵盖以下方面的 API
@@ -403,7 +405,7 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 > 对于结合单文件组件使用的组合式 API 推荐使用 `<script setup>` 语法
 
-`setup()` 钩子是在组件中使用组合式 API 的入口, 通常在两个情况下使用
+`setup()` 钩子是在组件中使用 [组合式 API](#composition-api) 的入口, 通常在两个情况下使用
 
 - 需要在**非单文件组件**中使用 [组合式 API](#composition-api) 时
 - 需要在基于 [选项式 API](#optional-api) 的组件中集成基于 [组合式 API](#composition-api) 的代码时
@@ -689,7 +691,7 @@ state.count = otherCount;
 console.log(count.value, state.count); // 2 4
 ```
 
-- 只有当嵌套在一个深层响应式对象内时, 才会发生 ref 解包, 当其作为 [**浅层响应式对象**](#shallowReactive) 的属性被访问时不会解包
+- 只有当嵌套在一个深层响应式对象内时, 才会发生 ref 解包, 当其作为 [**浅层响应式对象**](#shallowReactive) 的属性被访问时不会被解包
 - 当 ref 作为响应式数组或原生集合类型(如 Map)中的元素被访问时, 不会被解包
 
 ```javascript
@@ -881,7 +883,7 @@ watch(id, async (newValue, oldValue, onCleanup) => {
 
 #### toRef()
 
-- Vue 3.3 支持将值、refs 或 getters 规范化为 refs
+将值、refs 或 getters 规范化为 refs(Vue 3.3 支持)
 
 基于响应式对象上的一个属性, 新创建一个对应的 ref, 此 ref 与其源属性保持同步, 改变源属性的值将更新 ref 的值, 反之亦然
 
