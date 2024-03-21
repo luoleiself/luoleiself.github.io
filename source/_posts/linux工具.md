@@ -114,9 +114,7 @@ awk 是一种可以对文本和输入数据进行处理的编程语言, 默认�
 - \-v var=value 赋值一个用户定义变量, 将外部变量传递给 awk
 
 ```bash
-[root@localhost ~]# awk '{ sum += $1 }; END { print sum }' file
-[root@localhost ~]# awk -F : '{ print $1 }' /etc/passwd
-[root@localhost ~]# awk -v name="hello world" -F : '{ print $1 }' /etc/passwd
+[root@localhost ~]# awk -v name="hello world" -F : '{print $1}' /etc/passwd
 ```
 
 #### 内建变量
@@ -134,16 +132,21 @@ awk 是一种可以对文本和输入数据进行处理的编程语言, 默认�
 [root@localhost ~]# git branch -r | awk 'BEGIN {print "hello awk, I am coming\n"}END{print "hello awk, good bye\n"}{printf "NF--%s NR--%s FNR--%s $0--%s\n",NF,NR,FNR,$0;}'
 ```
 
-##### 记录分隔符
-
-- RS 输入记录的分隔符, 默认为换行符
-- ORS 输出的记录分隔符, 默认为换行符
-
 ##### 字段分隔符
 
 - \-F 字段分隔符
 - FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置
 - OFS 输出的字段分隔符, 默认为空格
+
+```bash
+[root@localhost ~]# awk '{FS=":";print $1}' /etc/passwd
+[root@localhost ~]# awk -F : '{print $1}' /etc/passwd
+```
+
+##### 记录分隔符
+
+- RS 输入记录的分隔符, 默认为换行符
+- ORS 输出的记录分隔符, 默认为换行符
 
 ##### 记录统计
 
@@ -152,6 +155,22 @@ awk 是一种可以对文本和输入数据进行处理的编程语言, 默认�
 - NF 当前记录中的字段个数
 - NR 已经读出的记录数(默认从 1 开始)
 - FNR 当前处理的记录号
+
+```bash
+[root@localhost ~]# echo 2 | awk -v sum=2 '{printf "FS = %s\nOFS = %s\nRS = %s\nORS = %s\nNF = %d\nNR = %d\nFNR = %d\n$0 = %s\n$1 = %s\n$2 = %s", FS, OFS, RS, ORS, NF, NR, FNR, $0, $1, $2}'
+FS =
+OFS =
+RS =
+
+ORS =
+
+NF = 1
+NR = 1
+FNR = 1
+$0 = 2
+$1 = 2
+$2 =
+```
 
 ##### 参数
 
@@ -164,6 +183,20 @@ awk 是一种可以对文本和输入数据进行处理的编程语言, 默认�
 - BEGIN { 这里面是行处理语句执行前的语句 }
 - END { 这里面是行处理语句执行完成后的语句 }
 - { 这里面是处理每一行时要执行的语句 }
+
+```bash
+[root@localhost ~]# awk '{ sum += $1 }END{ print sum }' file
+[root@localhost ~]# echo 2 | awk -v sum=2 'BEGIN{print "hello awk"}END{print "good bye awk"}{printf "sum = %.2f\n", sum += $1}'
+hello awk
+sum = 4.00
+good bye awk
+
+
+[root@localhost ~]# echo 1.1 | awk -v sum=2 'BEGIN{print "hello awk"}END{print "good bye awk"}{printf "sum = %.2f\n", sum += $1}'
+hello awk
+sum = 3.10
+good bye awk
+```
 
 ##### 内置函数
 
