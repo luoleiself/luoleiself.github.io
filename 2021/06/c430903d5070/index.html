@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://luoleiself.github.io/images/vue3-directives-hooks-2.jpg">
 <meta property="og:image" content="https://luoleiself.github.io/images/vue3-directives-hooks-3.jpg">
 <meta property="article:published_time" content="2021-06-19T07:19:26.000Z">
-<meta property="article:modified_time" content="2024-02-05T04:21:24.921Z">
+<meta property="article:modified_time" content="2024-03-15T02:59:16.005Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="js">
 <meta property="article:tag" content="VueJs">
@@ -244,7 +244,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-05 12:21:24" itemprop="dateModified" datetime="2024-02-05T12:21:24+08:00">2024-02-05</time>
+                <time title="修改时间：2024-03-15 10:59:16" itemprop="dateModified" datetime="2024-03-15T10:59:16+08:00">2024-03-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -423,7 +423,10 @@
 <h4 id="defineCustomElement"><a href="#defineCustomElement" class="headerlink" title="defineCustomElement()"></a><a href="#defineComponent">defineCustomElement()</a></h4><p>和 <code>defineComponent()</code> 接收的参数相同, 不同的是返回一个原生 <strong>自定义元素</strong> 类的构造器</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineCustomElement &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="comment">// &lt;my-element&gt;&lt;/my-element&gt;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyElement</span> = <span class="title function_">defineCustomElement</span>(&#123;&#125;);</span><br><span class="line">customElements.<span class="title function_">define</span>(<span class="string">&#x27;my-element&#x27;</span>, <span class="title class_">MyElement</span>); <span class="comment">// 注册该自定义元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">append</span>(<span class="keyword">new</span> <span class="title class_">MyElement</span>(<span class="comment">/* 初始化 prop */</span>));</span><br></pre></td></tr></table></figure>
 
-<h2 id="组合式-API"><a href="#组合式-API" class="headerlink" title="组合式 API  "></a>组合式 API <em id="composition-api"></em> <!-- markdownlint-disable-line --></h2><p>组合式 API 的核心思想是直接在函数作用域内定义响应式状态变量, 并将从多个函数中得到的状态组合起来处理复杂问题, 这种形式更加自由灵活和高效.</p>
+<h2 id="组合式-API"><a href="#组合式-API" class="headerlink" title="组合式 API  "></a>组合式 API <em id="composition-api"></em> <!-- markdownlint-disable-line --></h2><blockquote>
+<p>组合式函数(Composables) 是一个利用 Vue 的组合式 API 来封装和复用有 <strong>状态逻辑</strong> 的函数</p>
+</blockquote>
+<p>组合式 API 的核心思想是直接在函数作用域内定义响应式状态变量, 并将从多个函数中得到的状态组合起来处理复杂问题, 这种形式更加自由灵活和高效.</p>
 <p>组合式 API(composition API) 是一系列 API 的集合, 能够通过函数而不是声明选项的方式书写 Vue 组件来实现更加简洁高效的逻辑复用(<a href="#optional-api">选项式 API</a> 中主要的逻辑复用机制是 mixins), 涵盖以下方面的 API</p>
 <ul>
 <li>响应式 API: 例如 <a href="#ref">ref()</a> 和 <a href="#reactive">reactive()</a>, 可以直接创建响应式状态、计算属性和侦听器</li>
@@ -433,7 +436,7 @@
 <h3 id="setup"><a href="#setup" class="headerlink" title="setup()"></a>setup()</h3><blockquote>
 <p>对于结合单文件组件使用的组合式 API 推荐使用 <code>&lt;script setup&gt;</code> 语法</p>
 </blockquote>
-<p><code>setup()</code> 钩子是在组件中使用组合式 API 的入口, 通常在两个情况下使用</p>
+<p><code>setup()</code> 钩子是在组件中使用 <a href="#composition-api">组合式 API</a> 的入口, 通常在两个情况下使用</p>
 <ul>
 <li>需要在<strong>非单文件组件</strong>中使用 <a href="#composition-api">组合式 API</a> 时</li>
 <li>需要在基于 <a href="#optional-api">选项式 API</a> 的组件中集成基于 <a href="#composition-api">组合式 API</a> 的代码时</li>
@@ -538,7 +541,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> otherCount = <span class="title function_">ref</span>(<span class="number">4</span>);</span><br><span class="line">state.<span class="property">count</span> = otherCount;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(count.<span class="property">value</span>, state.<span class="property">count</span>); <span class="comment">// 2 4</span></span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>只有当嵌套在一个深层响应式对象内时, 才会发生 ref 解包, 当其作为 <a href="#shallowReactive"><strong>浅层响应式对象</strong></a> 的属性被访问时不会解包</li>
+<li>只有当嵌套在一个深层响应式对象内时, 才会发生 ref 解包, 当其作为 <a href="#shallowReactive"><strong>浅层响应式对象</strong></a> 的属性被访问时不会被解包</li>
 <li>当 ref 作为响应式数组或原生集合类型(如 Map)中的元素被访问时, 不会被解包</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; shallowReactive, reactive, ref &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="comment">// 浅层响应式对象, ref 作为其属性被访问时不会被解包</span></span><br><span class="line"><span class="keyword">const</span> sr = <span class="title function_">shallowReactive</span>(&#123;</span><br><span class="line">  <span class="attr">arr</span>: <span class="title function_">ref</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]),</span><br><span class="line">&#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(sr.<span class="property">arr</span>.<span class="property">value</span>[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 原生集合中包含 ref 元素时, ref 不会解包</span></span><br><span class="line"><span class="keyword">const</span> books = <span class="title function_">reactive</span>([<span class="title function_">ref</span>(<span class="string">&#x27;Vue 3.0&#x27;</span>)]);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(books[<span class="number">0</span>].<span class="property">value</span>); <span class="comment">// 需要使用 .value</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> map = <span class="title function_">reactive</span>(<span class="keyword">new</span> <span class="title class_">Map</span>([[<span class="string">&#x27;count&#x27;</span>, <span class="title function_">ref</span>(<span class="number">0</span>)]]));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(map.<span class="title function_">get</span>(<span class="string">&#x27;count&#x27;</span>).<span class="property">value</span>); <span class="comment">// 需要使用 .value</span></span><br></pre></td></tr></table></figure>
@@ -629,9 +632,7 @@
 </ul>
 <h3 id="响应式-工具"><a href="#响应式-工具" class="headerlink" title="响应式: 工具"></a>响应式: 工具</h3><h4 id="isRef"><a href="#isRef" class="headerlink" title="isRef()"></a>isRef()</h4><p>检查某个值是否是 ref</p>
 <h4 id="unref"><a href="#unref" class="headerlink" title="unref()"></a>unref()</h4><p>如果参数是 ref, 则返回 ref 指向的内部值, 否则返回参数本身. 是 <code>isRef(val) ? val.value : val</code> 的一个语法糖</p>
-<h4 id="toRef"><a href="#toRef" class="headerlink" title="toRef()"></a>toRef()</h4><ul>
-<li>Vue 3.3 支持将值、refs 或 getters 规范化为 refs</li>
-</ul>
+<h4 id="toRef"><a href="#toRef" class="headerlink" title="toRef()"></a>toRef()</h4><p>将值、refs 或 getters 规范化为 refs(Vue 3.3 支持)</p>
 <p>基于响应式对象上的一个属性, 新创建一个对应的 ref, 此 ref 与其源属性保持同步, 改变源属性的值将更新 ref 的值, 反之亦然</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; reactive, toRef &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> state = <span class="title function_">reactive</span>(&#123; <span class="attr">foo</span>: <span class="number">1</span>, <span class="attr">bar</span>: <span class="number">2</span> &#125;);</span><br><span class="line"><span class="keyword">const</span> fooRef = <span class="title function_">toRef</span>(state, <span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line"><span class="comment">// 更改 ref 会更新源属性</span></span><br><span class="line">fooRef.<span class="property">value</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(state.<span class="property">foo</span>); <span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 更改源属性会更新 ref</span></span><br><span class="line">state.<span class="property">foo</span>++;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(fooRef.<span class="property">value</span>); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
 
@@ -1638,10 +1639,10 @@
       <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
+      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
+      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
