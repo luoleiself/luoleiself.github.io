@@ -2658,7 +2658,7 @@ export default {
 ```html
 <template>
   <div ref="root">This is a root element</div>
-  <div v-for="item in list" :ref="itemRefs">{{ item }}</div>
+  <div v-for="item in list" ref="itemRefs">{{ item }}</div>
 </template>
 <script setup>
   import { ref, onBeforeUpdate, onUpdated, onMounted } from 'vue';
