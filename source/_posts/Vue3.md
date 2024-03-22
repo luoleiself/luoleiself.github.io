@@ -821,7 +821,7 @@ watchEffect(() => {}, {
   - deep 如果源是对象, 强制深度遍历, 以便在深层级变更时触发回调
   - flush 调整回调函数的刷新时机, 见 [watchEffect()](#watchEffect)
   - onTrack/onTrigger 调试侦听器的依赖, 见 [watchEffect()](#watchEffect)
-  - once 回调函数只会执行一次, 侦听器将在回调函数首次运行后自动停止, 3.4 支持
+  - once 回调函数只会执行一次, 侦听器将在回调函数首次运行后自动停止, Vue 3.4 支持
 
 ```javascript
 import { reactive, ref, watch } from 'vue';
@@ -1406,6 +1406,12 @@ app.mount('#app');
   const fn = inject('fn', () => {}, true);
 </script>
 ```
+
+#### hasInjectionContext()
+
+> Vue 3.3 支持
+
+如果 `inject()` 可以在错误的地方被调用而不触发警告, 则返回 true. 适用于希望在内部使用 `inject()` 而不向用户发出警告的库.
 
 ## 选项式 API <em id="optional-api"></em> <!-- markdownlint-disable-line -->
 
@@ -2980,6 +2986,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 > Vue 3.4 支持
 
+如果第一个参数为字符串字面量, 则被用作 prop 名称, 否则 prop 名称默认为 `modelValue`
+
 ```html
 <script setup>
   // 声明 modelValue prop, 由父组件通过 v-model 使用
@@ -2996,6 +3004,24 @@ const props = withDefaults(defineProps<Props>(), {
   // 在被修改时, 触发 update:count 事件
   count.value++;
 </script>
+```
+
+底层编译器将其展开为以下内容
+
+- 一个名为 `modelValue` 的 prop, 本地的 ref 的值与其同步
+- 一个名为 `update:modelValue` 的事件, 当本地 ref 的值发生变更时触发
+
+```html
+<script setup>
+  const props = defineProps(['modelValue']);
+  const emit = defineEmits(['update:modelValue']);
+</script>
+<template>
+  <input
+    :value="props.modelValue"
+    @input="emit('update:modelValue', $event.target.value)"
+  />
+</template>
 ```
 
 ##### 修饰符和转换器
@@ -3020,7 +3046,21 @@ const props = withDefaults(defineProps<Props>(), {
       return value;
     },
   });
+
+  // 指定名称的修饰符
+  const [firstName, firstNameModifiers] = defineModel('firstName');
+  console.log(firstNameModifiers.uppercase); // true
+  // Vue 3.4 之前
+  const props = defineProps({
+    firstName: String,
+    firstNameModifiers: { default: () => ({}) },
+  });
+  const emit = defineEmits(['update:firstName']);
+  console.log(props.firstNameModifiers.uppercase); // true
 </script>
+<template>
+  <MyComponent v-model:first-name.uppercase="firstName" />
+</template>
 ```
 
 #### useSlots()|useAttrs()
