@@ -1973,30 +1973,41 @@ export default {
 
 #### v-on
 
-给元素绑定事件监听器, 缩写 `@`
+> 和原生 DOM 事件不一样, 组件触发的事件**没有冒泡机制**, 只能监听直接子组件触发的事件, 平级组件或嵌套组件间通信, 应使用一个外部事件总线或全局状态管理方案
 
-- 和原生 DOM 事件不一样, 组件触发的事件**没有冒泡机制**, 只能监听直接子组件触发的事件, 平级组件或嵌套组件间通信, 应使用一个外部事件总线或全局状态管理方案
-
-##### 事件处理器 <em id="handler"></em> <!--markdownlint-disable-line-->
-
-- 内联事件处理器: 事件被触发时执行的内联 javascript 语句(与 onClick 类似)
-
-  - 需要处理原生 DOM 事件时, 手动传入一个特殊的 $event 变量, 或者使用内联箭头函数
-
-    ```html
-    <button @click="log('click event', $event)">click</button>
-
-    <button @click="(event) => log('click event', event)">click</button>
-    ```
-
-- 方法事件处理器: 一个指向组件上定义的方法的属性名或是路径
-  - 自动接收原生 DOM 事件并立即触发执行
+给元素绑定事件监听器, 缩写 `@`, 事件名称可以使用 `camelCase` 或 `kebab-case` 形式会被自动格式转换
 
 ```html
-<!-- 内联事件处理器  -->
-<button @click="count++">Add</button>
-<p>{{count}}</p>
+<button @click="$emit('increaseBy', 1)"></button>
 
+<template>
+  <MyComponent @increase-by="(n) => count += n" />
+</template>
+```
+
+##### 内联事件处理器
+
+事件被触发时执行的内联 javascript 语句(与 onClick 类似)
+
+- 需要处理原生 DOM 事件时, 手动传入一个特殊的 $event 变量, 或者使用内联箭头函数
+
+  ```html
+  <!-- 内联事件处理器  -->
+  <button @click="count++">Add</button>
+  <p>{{count}}</p>
+
+  <button @click="log('click event', $event)">click</button>
+
+  <button @click="(event) => log('click event', event)">click</button>
+  ```
+
+##### 方法事件处理器
+
+一个指向组件上定义的方法的属性名或是路径
+
+- 自动接收原生 DOM 事件并立即触发执行
+
+```html
 <!-- 方法事件处理器 -->
 <button @click="greet">Greet</button>
 <!-- 
