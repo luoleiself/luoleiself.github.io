@@ -10,6 +10,8 @@ tags:
 
 > --no-sandbox --disable-web-security --user-data-dir=C:\chromedata
 
+> fetch() 表单上传时, 不能设置 `Content-Type` 头, 否则会丢失文件边界
+
 ### 浏览器引擎
 
 | 浏览器  |    渲染引擎    |                               js 引擎                                |
