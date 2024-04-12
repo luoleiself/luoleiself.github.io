@@ -1973,7 +1973,7 @@ export default {
 
 #### v-on
 
-> 和原生 DOM 事件不一样, 组件触发的事件**没有冒泡机制**, 只能监听直接子组件触发的事件, 平级组件或嵌套组件间通信, 应使用一个外部事件总线或全局状态管理方案
+> 和原生 DOM 事件不一样, 组件触发的事件**没有冒泡机制**, 只能监听直接子组件触发的事件, 平级组件或嵌套组件间通信, 应使用一个外部事件总线或[全局状态管理](#store)方案
 
 给元素绑定事件监听器, 缩写 `@`, 事件名称可以使用 `camelCase` 或 `kebab-case` 形式会被自动格式转换
 
@@ -3868,6 +3868,30 @@ const routes = [
 ];
 ```
 
+- onBeforeRouteUpdate 组合式 API 中使用组件 update 守卫
+- onBeforeRouteLeave 组合式 API 中使用组件 leave 守卫
+
+```html
+<script>
+  import { ref } from 'vue';
+  import { onBeforeRouteUpdate, onBeforeRouteLeave } from 'vue-router';
+
+  const userData = ref();
+
+  onBeforeRouteLeave((to, from) => {
+    const answer = window.confirm('leave?');
+    // 取消导航并停留在同一页面上
+    if (!answer) return false;
+  });
+
+  onBeforeRouteUpdate(async (to, from) => {
+    if (to.params.id != from.params.id) {
+      userData.value = await fetchUser(to.params.id);
+    }
+  });
+</script>
+```
+
 ### 编程式导航
 
 - 当同时提供了 path, params 参数时, params 会被忽略
@@ -3891,7 +3915,7 @@ router.push({ path: '/home', replace: true });
 router.replace({ path: '/home' });
 ```
 
-## Store
+## Pinia <em id="store"></em> <!-- markdownlint-disable-line -->
 
 store 是一个用 [reactive](#reactive) 包装的对象, 不需要使用 .value 访问, 使用解构的方式将会丢失响应性
 
