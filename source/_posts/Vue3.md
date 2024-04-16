@@ -431,8 +431,9 @@ document.body.append(new MyElement(/* 初始化 prop */));
 
 `setup()` 的第二个参数为一个**上下文**对象, 暴露了其他一些在 `setup()` 中可能会用到的值, 该上下文对象是非响应式的, 可以安全地解构, attrs 和 slots 都是非响应式的, 如果需要根据 attrs 或 slots 的改变执行副作用, 需要在 onBeforeUpdate 钩子中执行相关逻辑
 
-- attrs 透传 Attributes, 等价于 $attrs, 未被声明为 `props` 或 `emits` 的属性或者 `v-on` 事件监听器都将作为 `attrs` 的一部分
-  - 当一个组件以单个元素为根作渲染时, 透传的 attribute 会自动被添加到根元素上, 如果有多个根节点时没有自动 attribute 透传行为
+- attrs 透传 Attributes, 等价于 $attrs, 除了组件声明的 `props` 和 `emits` 之外的其他 attribute
+  - 当一个组件以单个元素为根作渲染时, 透传的 attribute 会自动被添加到根元素上, 如果有多个根节点时没有自动 attribute 透传行为, 如果 $attrs 没有被显式绑定将会抛出一个运行时警告
+  - 深层组件继承时, 透传的 attribute 不会包含子组件上声明过的 props 或者针对 emits 声明事件的 v-on 侦听函数
 - slots [插槽](#v-slot), 等价于 $slots
 - emit 触发事件, 等价于 $emit
 - expose 用于显示的限制该组件暴露出的属性, 父组件将仅能访问 expose 函数暴露出的内容
