@@ -198,6 +198,38 @@ sum = 3.10
 good bye awk
 ```
 
+- if 语句
+
+```bash
+[root@localhost ~]# echo -e "1 a\n2 b\n3 c" | awk '{if ($1 > 1) print $0}'
+2 b
+3 c
+```
+
+- while 和 do...while
+
+```bash
+[root@localhost ~]# echo 3 | awk '{i=$1; while (i <= 5) {print i; i++}}'
+3
+4
+5
+```
+
+- for 语句
+
+```bash
+[root@localhost ~]# echo 3 | awk '{for(i=1; i <= 2;i++) {print i}}'
+1
+2
+```
+
+- switch 语句
+
+```bash
+[root@localhost ~]# echo 3 | awk '{switch ($1) {case 1: print "一";break; case 2: print "二";break; case 3: print "三";break; default: print "其它";}}'
+三
+```
+
 ##### 内置函数
 
 - gsub(r, s) 在整个 $0 中用 s 替换 r
