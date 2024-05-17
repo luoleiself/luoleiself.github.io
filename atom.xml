@@ -6,7 +6,7 @@
   <link href="https://luoleiself.github.io/atom.xml" rel="self"/>
   
   <link href="https://luoleiself.github.io/"/>
-  <updated>2024-03-14T05:33:07.235Z</updated>
+  <updated>2024-05-17T11:38:45.364Z</updated>
   <id>https://luoleiself.github.io/</id>
   
   <author>
@@ -17,11 +17,36 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Grid</title>
+    <link href="https://luoleiself.github.io/2024/05/7356f3e0fe44/"/>
+    <id>https://luoleiself.github.io/2024/05/7356f3e0fe44/</id>
+    <published>2024-05-17T08:00:55.000Z</published>
+    <updated>2024-05-17T11:38:45.364Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;Grid&quot;&gt;&lt;a href=&quot;#Grid&quot; class=&quot;headerlink&quot; title=&quot;Grid&quot;&gt;&lt;/a&gt;Grid&lt;/h2&gt;&lt;p&gt;CSS Grid 是一个用于 web 的二维布局系统, 网格是由一系列水平及垂直的线构成的一种布局模式, 根据网格, 可以将内容按照行和列的格式进行排版.&lt;br&gt;CSS Grid 布局 和 Flexible 布局的主要区别在于 CSS Flexible 是为了一维布局服务的(沿横向或纵向), 而 CSS Grid 是为二维布局服务的(同时沿着横向和纵向)&lt;/p&gt;
+&lt;h3 id=&quot;辅助属性&quot;&gt;&lt;a href=&quot;#辅助属性&quot; class=&quot;headerlink&quot; title=&quot;辅助属性&quot;&gt;&lt;/a&gt;辅助属性&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;网格轨道, 网格布局中使用 grid-template-rows 和 grid-template-columns 属性定义的网格上的行和列, 网格轨道是网格上任意两条相邻线之间的空间.&lt;/li&gt;
+&lt;li&gt;fr 单位, 新的长度单位, 表示网格容器中占用的轨道&lt;/li&gt;
+&lt;li&gt;minmax(min, max), 函数为一个行/列的尺寸设置了取值范围, 例如 minmax(100px, auto) 表示尺寸至少为 100px, 如果内容尺寸大于 100px 则会根据内容自动调整&lt;/li&gt;
+&lt;li&gt;repeat(count, value), 表示轨道列表的重复片段, 允许以更紧凑的形式写入大量显示重复模式的列或行&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="WebAPI" scheme="https://luoleiself.github.io/categories/WebAPI/"/>
+    
+    
+    <category term="Grid" scheme="https://luoleiself.github.io/tags/Grid/"/>
+    
+  </entry>
+  
+  <entry>
     <title>BroadcastChannel</title>
     <link href="https://luoleiself.github.io/2024/03/3689deed511f/"/>
     <id>https://luoleiself.github.io/2024/03/3689deed511f/</id>
     <published>2024-03-05T07:20:07.000Z</published>
-    <updated>2024-03-14T05:33:07.235Z</updated>
+    <updated>2024-05-17T08:02:35.990Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;BroadcastChannel&quot;&gt;&lt;a href=&quot;#BroadcastChannel&quot; class=&quot;headerlink&quot; title=&quot;BroadcastChannel&quot;&gt;&lt;/a&gt;BroadcastChannel&lt;/h2&gt;&lt;p&gt;该接口代理了一个命名频道, 可以让同源下的任意浏览上下文订阅它, 它允许同源的不同浏览器窗口(非 chrome 和 qq 浏览器这种方式), tab 页, frame 或者 iframe 下的不同文档之间相互通信,&lt;br&gt;通过触发一个 message 事件, 消息可以广播到所有监听了该频道的 BroadCastChannel 对象.&lt;/p&gt;
@@ -339,75 +364,6 @@
   </entry>
   
   <entry>
-    <title>Redis-String-Hash</title>
-    <link href="https://luoleiself.github.io/2022/11/80b3dfc88923/"/>
-    <id>https://luoleiself.github.io/2022/11/80b3dfc88923/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2023-10-09T12:17:38.827Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;Strings-命令&quot;&gt;&lt;a href=&quot;#Strings-命令&quot; class=&quot;headerlink&quot; title=&quot;Strings 命令&quot;&gt;&lt;/a&gt;Strings 命令&lt;/h3&gt;&lt;p&gt;字符串是基础的 key-value 类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 &lt;strong&gt;512MB&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic String)&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;因为 C 语言的字符串并不记录自身长度, 所以获取长度的复杂度为 O(n), SDS 结构里用 len 属性记录字符串长度, 所有复杂度为 O(1)&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h4 id=&quot;设置值&quot;&gt;&lt;a href=&quot;#设置值&quot; class=&quot;headerlink&quot; title=&quot;设置值&quot;&gt;&lt;/a&gt;设置值&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]&lt;/p&gt;
-&lt;p&gt;为 key 设置字符串的值, 执行成功返回 ok, 每次更新 key 的值时会自动清除过期时间&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;NX 仅当 key 不存在时设置&lt;/li&gt;
-&lt;li&gt;XX 仅当 key 存在时设置&lt;/li&gt;
-&lt;li&gt;EX 过期时间, 单位秒&lt;/li&gt;
-&lt;li&gt;PX 过期时间, 单位毫秒&lt;/li&gt;
-&lt;li&gt;EXAT 过期时间戳, 单位秒&lt;/li&gt;
-&lt;li&gt;PXAT 过期时间戳, 单位毫秒&lt;/li&gt;
-&lt;li&gt;KEEPTTL 保留 key 关联的生存时间&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SET age 18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; EXPIRE age 100&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; TTL age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 98&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SET age 20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; TTL age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) -1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 使用 KEEPTTL 保留 key 关联的生存时间&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SET age 18 EX 100&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; TTL age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 98&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SET age 20 KEEPTTL&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; GET age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;20&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; TTL age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 79&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-&lt;li&gt;SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETNX age 18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETNX age 18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-&lt;li&gt;APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 &lt;code&gt;SET&lt;/code&gt; 并返回追加内容的长度&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND age 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; GET age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;181&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND addr beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;addr&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND a hello&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND b gg&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;过期时间&quot;&gt;&lt;a href=&quot;#过期时间&quot; class=&quot;headerlink&quot; title=&quot;过期时间&quot;&gt;&lt;/a&gt;过期时间&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok&lt;/li&gt;
-&lt;li&gt;PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETEX addr 20 beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PSETEX addr 20000 beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;批量设置值&quot;&gt;&lt;a href=&quot;#批量设置值&quot; class=&quot;headerlink&quot; title=&quot;批量设置值&quot;&gt;&lt;/a&gt;批量设置值&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;MSET key value [key value …] 批量设置 key 的值&lt;/li&gt;
-&lt;li&gt;MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;hash:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 当且仅当所有 key 都不存在时设置成功返回 1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; MSETNX name zhangsan age 18 addr beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;SETRANGE key offset value&lt;/p&gt;
-&lt;p&gt;覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETRANG name 1 xyz&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; GET name&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;axyz1234&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Redis-Other-Structs</title>
     <link href="https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/"/>
     <id>https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/</id>
@@ -468,6 +424,75 @@
 &lt;li&gt;SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, Redis 6.2.0 支持&lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *  &lt;span class=&quot;comment&quot;&gt;# 查看当前数据库中的 key&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(empty array)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 空集合判断是否包含成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello hehe&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 向 myset 添加成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SADD myset hello world hehe haha gg&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 判断 myset 是否包含成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello yy hehe&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis-String-Hash</title>
+    <link href="https://luoleiself.github.io/2022/11/80b3dfc88923/"/>
+    <id>https://luoleiself.github.io/2022/11/80b3dfc88923/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2023-10-09T12:17:38.827Z</updated>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Strings-命令&quot;&gt;&lt;a href=&quot;#Strings-命令&quot; class=&quot;headerlink&quot; title=&quot;Strings 命令&quot;&gt;&lt;/a&gt;Strings 命令&lt;/h3&gt;&lt;p&gt;字符串是基础的 key-value 类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 &lt;strong&gt;512MB&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic String)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;因为 C 语言的字符串并不记录自身长度, 所以获取长度的复杂度为 O(n), SDS 结构里用 len 属性记录字符串长度, 所有复杂度为 O(1)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;设置值&quot;&gt;&lt;a href=&quot;#设置值&quot; class=&quot;headerlink&quot; title=&quot;设置值&quot;&gt;&lt;/a&gt;设置值&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]&lt;/p&gt;
+&lt;p&gt;为 key 设置字符串的值, 执行成功返回 ok, 每次更新 key 的值时会自动清除过期时间&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;NX 仅当 key 不存在时设置&lt;/li&gt;
+&lt;li&gt;XX 仅当 key 存在时设置&lt;/li&gt;
+&lt;li&gt;EX 过期时间, 单位秒&lt;/li&gt;
+&lt;li&gt;PX 过期时间, 单位毫秒&lt;/li&gt;
+&lt;li&gt;EXAT 过期时间戳, 单位秒&lt;/li&gt;
+&lt;li&gt;PXAT 过期时间戳, 单位毫秒&lt;/li&gt;
+&lt;li&gt;KEEPTTL 保留 key 关联的生存时间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SET age 18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; EXPIRE age 100&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; TTL age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 98&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SET age 20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; TTL age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) -1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 使用 KEEPTTL 保留 key 关联的生存时间&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SET age 18 EX 100&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; TTL age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 98&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SET age 20 KEEPTTL&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; GET age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;20&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; TTL age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 79&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETNX age 18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETNX age 18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 &lt;code&gt;SET&lt;/code&gt; 并返回追加内容的长度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND age 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; GET age&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;181&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND addr beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;xiaoming&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;addr&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND a hello&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; APPEND b gg&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;过期时间&quot;&gt;&lt;a href=&quot;#过期时间&quot; class=&quot;headerlink&quot; title=&quot;过期时间&quot;&gt;&lt;/a&gt;过期时间&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok&lt;/li&gt;
+&lt;li&gt;PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETEX addr 20 beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PSETEX addr 20000 beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OK&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;批量设置值&quot;&gt;&lt;a href=&quot;#批量设置值&quot; class=&quot;headerlink&quot; title=&quot;批量设置值&quot;&gt;&lt;/a&gt;批量设置值&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;MSET key value [key value …] 批量设置 key 的值&lt;/li&gt;
+&lt;li&gt;MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;hash:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 当且仅当所有 key 都不存在时设置成功返回 1&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; MSETNX name zhangsan age 18 addr beijing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;SETRANGE key offset value&lt;/p&gt;
+&lt;p&gt;覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETRANG name 1 xyz&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; GET name&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;axyz1234&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
     
     
     
@@ -768,44 +793,6 @@
     
     
     <category term="vagrant" scheme="https://luoleiself.github.io/tags/vagrant/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>shell语法</title>
-    <link href="https://luoleiself.github.io/2022/04/616714173ca1/"/>
-    <id>https://luoleiself.github.io/2022/04/616714173ca1/</id>
-    <published>2022-04-28T11:55:46.000Z</published>
-    <updated>2023-10-09T12:18:14.194Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;shell-重置密码&quot;&gt;&lt;a href=&quot;#shell-重置密码&quot; class=&quot;headerlink&quot; title=&quot;shell 重置密码&quot;&gt;&lt;/a&gt;shell 重置密码&lt;/h3&gt;&lt;ol&gt;
-&lt;li&gt;开机按 &lt;code&gt;e&lt;/code&gt; 键进入内核编辑&lt;/li&gt;
-&lt;li&gt;光标移动到倒数第二段 &lt;code&gt;Linux16&lt;/code&gt; 末尾添加 &lt;code&gt;init=/bin/sh&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ctrl + x&lt;/code&gt; 进行引导启动, 成功进入命令提示界面&lt;/li&gt;
-&lt;li&gt;输入 &lt;code&gt;mount -o remount, rw /&lt;/code&gt; 挂载根目录&lt;/li&gt;
-&lt;li&gt;使用 &lt;code&gt;passwd&lt;/code&gt; 命令修改指定用户密码&lt;/li&gt;
-&lt;li&gt;直到提示 &lt;code&gt;passwd: all authentication tokens updated successfully.&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;输入 &lt;code&gt;touch /.autorelabel&lt;/code&gt; 回车&lt;/li&gt;
-&lt;li&gt;输入 &lt;code&gt;exec /sbin/init&lt;/code&gt; 回车重启系统&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id=&quot;命令&quot;&gt;&lt;a href=&quot;#命令&quot; class=&quot;headerlink&quot; title=&quot;命令&quot;&gt;&lt;/a&gt;命令&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;export 导出全局变量&lt;/li&gt;
-&lt;li&gt;declare 声明变量&lt;/li&gt;
-&lt;li&gt;unset 删除变量&lt;/li&gt;
-&lt;li&gt;local 声明局部变量,一般用于函数内部&lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="linux" scheme="https://luoleiself.github.io/categories/linux/"/>
-    
-    <category term="shell" scheme="https://luoleiself.github.io/categories/linux/shell/"/>
-    
-    
-    <category term="linux" scheme="https://luoleiself.github.io/tags/linux/"/>
-    
-    <category term="shell" scheme="https://luoleiself.github.io/tags/shell/"/>
     
   </entry>
   
