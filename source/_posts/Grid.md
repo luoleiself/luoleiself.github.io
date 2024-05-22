@@ -37,16 +37,21 @@ CSS Grid 布局 和 Flexible 布局的主要区别在于 CSS Flexible 是为了�
 grid-template-rows: auto;
 /*定义 4 行并且指定每行的行高, 第 2 行高度自适应*/
 grid-template-rows: 40px auto 40px 50px;
-/*定义 3 行, 第 1 行分配 1fr 可用空间, 第 2 行分配 2fr 可用空间, 第 3 行分配 3fr 可用空间*/
+/*定义 3 行, 
+第 1 行分配 1fr 可用空间,
+第 2 行分配 2fr 可用空间, 
+第 3 行分配 3fr 可用空间*/
 grid-template-rows: 1fr 2fr 3fr;
 /*定义 3 行, 每行分配 33.33% 可用空间*/
 grid-template-rows: repeat(3, 33.33%);
 ```
 
-- 网格线, 使用**方框号**指定每根网格线的名字
+- 网格线, 使用**方框号**指定每根网格线的名字, 默认从 1 开始
 
 ```css
-/*定义 3 行并且指定每行的行高, 第 2 行高度自适应, 指定每根网格线的名字 r1 开始*/
+/*定义 3 行并且指定每行的行高, 
+第 2 行高度自适应, 
+指定每根网格线的名字 r1 开始*/
 grid-template-rows: [r1] 100px [r2] auto [r3] 100px [r4];
 ```
 
@@ -63,11 +68,13 @@ grid-template-columns: 40px auto 50px;
 grid-template-columns: 40px 40px 2fr;
 /*定义 2 列, 第 1 列分配 1fr 可用空间, 第 2 列分配 2fr 可用空间*/
 grid-template-columns: 1fr 2fr;
-/*定义 3 列, 第 1 列和第 3 列分配 1fr 可用空间, 第 2 列分配 2fr 可用空间*/
+/*定义 3 列, 
+第 1 列和第 3 列分配 1fr 可用空间, 
+第 2 列分配 2fr 可用空间*/
 grid-template-columns: repeat(1, 1fr 2fr 1fr);
 ```
 
-- 网格线, 使用**方框号**指定每根网格线的名字
+- 网格线, 使用**方框号**指定每根网格线的名字, 默认从 1 开始
 
 ```css
 /*定义 3 列并且指定每列的列宽, 第 2 列宽度自适应，指定每根网格线的名字 c1 开始*/
@@ -78,7 +85,7 @@ grid-template-columns: [c1] 100px [c2] auto [c3] 100px [c4];
 
 定义网格区域的别名, 网格区域和网格项没有关联, 但是可以和[网格定位](#grid-area)属性关联, 例如 `grid-row-start`, `grid-column-start`, `grid-row-end`, `grid-column-end`
 
-- 如果某些区域不需要, 则使用 . 表示
+- 如果某些区域不需要, 则使用 `.` 表示
 - 区域别名会影响到网格线, 每个区域的起始网格线自动命名为 `区域名-start`, 终止网格线自动命名为 `区域名-end`
 
 ```css
@@ -113,13 +120,14 @@ grid-template-areas:
 
 - row 指定自动布局算法按照通过逐行填充来排列元素, 在必要时增加新行
 - column 指定自动布局算法按照通过逐列填充来排列元素, 在必要时增加新列
-- dense 指定自动布局算法使用一种`稠密`堆积算法, 省略时使用 `稀疏` 算法, 此参数配合 row 或 column 使用
+- dense 指定自动布局算法使用一种`稠密`堆积算法, 省略时使用 `稀疏` 算法, 配合 row 或 column 使用
   - `稠密`算法, 如果后面出现稍小的元素, 则会试图去填充网格中前面留下的空白, 这样会填上稍大元素留下的空白, 但同时也可能导致原来出现的次序被打乱
   - `稀疏`算法, 布局算法只会向前移动, 永远不会填充空白, 这样保证了所有自动布局元素按照次序出现, 即使可能会留下被后面元素填充的空白
 
 ```css
 grid-auto-flow: row;
 grid-auto-flow: column;
+
 grid-auto-flow: row dense;
 grid-auto-flow: column dense;
 ```
@@ -177,6 +185,7 @@ column-gap: 10px;
 #### grid-area <em id="grid-area"></em> <!-- markdownlint-disable-line -->
 
 `grid-area: <row-start> / <column-start> / <row-end> / <column-end>;` 合并简写形式
+
 指定项目放在哪个区域, 是一种对 `grid-row-start`, `grid-column-start`, `grid-row-end`, `grid-column-end`的简写, 通过基线、 跨度(span)或没有(自动)的网格线放置在指定一个网格项的大小和位置, 继而确定区域的边界
 
 - 如果指定 4 个 `<grid-line>` 的值时, 第 1 个值为 `grid-row-start`, 第 2 个值为 `grid-column-start`, 第 3 个值为`grid-row-end`, 第 4 个值为 `grid-column-end`
@@ -189,18 +198,12 @@ column-gap: 10px;
 grid-area: auto;
 grid-area: 2 / 2 / auto / span 3;
 
-.wrapper {
-  grid-template-areas:
-    'a b c'
-    'd e f'
-    'g h i';
-}
 .item-1 {
-  /* 放在 3 行 3 列的中心位置 */
-  /* 网格线名 */
-  grid-area: r2 / c2 / r3 / c3;
+  /* 放在 3 行 3 列的中心网格位置 */
   /* 网格线编号, 规则见上 */
   grid-area: 2 / 2;
+  /* 网格线名 */
+  grid-area: r2 / c2 / r3 / c3;
   /* 区域别名 */
   grid-area: e;
   /* 区域别名网格线起始名和终止名 */
