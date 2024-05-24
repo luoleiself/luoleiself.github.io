@@ -262,9 +262,11 @@ window.customElements.define('popup-info', PopupInfo);
 
 通过构建一个 `CSSStyleSheet` 对象并将其附加到影子根
 
-- replace() 和 replaceSync() 只能用在通过 CSSStyleSheet 构造函数创建的 styleSheet 对象上
-- replace() 方法异步的设置其内容, 返回一个 Promise
-- replaceSync() 方法同步的设置其内容
+- replace() 和 replaceSync() 替换当前样式表的内容, 只能用在通过 CSSStyleSheet 构造函数创建的 styleSheet 对象上
+  - replace() 方法异步的设置其内容, 返回一个 Promise
+  - replaceSync() 方法同步的设置其内容
+- insertRule(rule [, index]) 向当前样式表指定位置插入样式规则, index 默认为 0, 返回值为新插入的规则在样式表中的索引
+- deleteRule(index) 从样式表中删除指定的样式规则, index 为样式规则的索引
 
 ```javascript
 // 创建一个空的 CSSStyleSheet 对象
