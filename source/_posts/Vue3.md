@@ -379,14 +379,22 @@ createApp({
 
 #### [defineCustomElement()](#defineComponent)
 
-和 `defineComponent()` 接收的参数相同, 不同的是返回一个原生 **自定义元素** 类的构造器
+和 `defineComponent()` 接收的参数相同, 返回值是一个可以通过 `customElements.define()` 注册的**自定义元素**构造器(继承自 `HTMLElement`)
 
 ```javascript
 import { defineCustomElement } from 'vue';
-// <my-element></my-element>
-const MyElement = defineCustomElement({});
-customElements.define('my-element', MyElement); // 注册该自定义元素
-document.body.append(new MyElement(/* 初始化 prop */));
+
+const MyVueElement = defineCustomElement({
+  /* 和 defineComponent() 接收的参数相同 */
+  props: {},
+  emits: {},
+  template: `...`,
+
+  /* defineCustomElement 特有的: 注入进入 shadow root 的 css */
+  styles: [`/* inlined css */`],
+});
+
+customElements.define('my-vue-element', MyVueElement);
 ```
 
 ## 组合式 API <em id="composition-api"></em> <!-- markdownlint-disable-line -->
@@ -2706,20 +2714,32 @@ export default {
 - 用于动态绑定组件
 
 ```html
-<script setup>
-  import Foo from './Foo.vue';
-  import Bar from './Bar.vue';
-</script>
 <template>
   <component :is="Foo" />
   <!-- 三目运算中的组件使用 -->
   <component :is="someCondition ? Foo : Bar" />
 </template>
+<script setup>
+  import Foo from './Foo.vue';
+  import Bar from './Bar.vue';
+</script>
 ```
 
-- 用于原生元素时, 将被作为 `Customized built-in element`, 如果需要用 Vue 组件替换原生元素, 需要加上 `vue:` 前缀
+元素位置限制
+
+由于 HTML 元素对于放在其中的元素类型的限制, 例如 ul, ol, table, select 等元素仅放置 li, tr, option 时才会显示, 将导致在使用带有此类限制元素的组件时出现问题.
+
+- 用于原生元素时, 将被作为 `Customized built-in element`, 如果需要用 Vue 组件替换原生元素, 需要加上 `vue:` 前缀.
 
 ```html
+<!-- 自定义组件 my-row-component 将作为无效内容被忽略 -->
+<template>
+  <table>
+    <my-row-component></my-row-component>
+  </table>
+</template>
+
+<!-- 使用 vue: 前缀才能被解析为一个 vue 组件 -->
 <template>
   <table>
     <tr is="vue:my-row-component"></tr>
