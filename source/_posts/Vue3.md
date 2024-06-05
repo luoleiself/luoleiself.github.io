@@ -297,7 +297,7 @@ const app = createApp(MyComponent).mount('#app');
 ```
 
 - Vue 3.3 支持, 备用签名, 旨在与[组合式 API](#composition-api)和[渲染函数](#rendering-func)或 JSX 一起使用
-- 参数为 setup 函数, 函数名称作为组件名称使用
+- 参数为 setup 函数, 函数名称作为组件名称使用, 第二个可选参数为其它选项
 
 ```javascript
 import { createApp, defineComponent, ref, h } from 'vue';
@@ -311,7 +311,16 @@ const HelloWorld = defineComponent(
   },
   {
     /* 其他选项, 例如声明 props 和 emits */
-    props: {},
+    props: {
+      foo: {
+        type: String,
+        default: 'Hello Foo',
+      },
+      visible: {
+        type: Boolean,
+        default: false,
+      },
+    },
   }
 );
 const app = createApp(HelloWorld).mount('#app');
@@ -466,16 +475,24 @@ const app = createApp({
 ```javascript
 import { createApp, defineComponent, h } from 'vue';
 
-const HelloWorld = defineComponent((props, { slots }) => {
-  // 使用 `?.` 可选链运算符判断插槽函数不存在则使用默认值渲染
-  return () => [
-    h(
-      'p',
-      slots?.default?.() || 'rendered content from self by default slot...'
-    ),
-    h('p', slots?.header?.() || 'rendered content from self by header slot...'),
-  ];
-});
+const HelloWorld = defineComponent(
+  (props, { slots }) => {
+    // 使用 `?.` 可选链运算符判断插槽函数不存在则使用默认值渲染
+    return () => [
+      h(
+        'p',
+        slots?.default?.() || 'rendered content from self by default slot...'
+      ),
+      h(
+        'p',
+        slots?.header?.() || 'rendered content from self by header slot...'
+      ),
+    ];
+  },
+  {
+    /* 其它选项 */
+  }
+);
 
 const app = createApp({
   setup(props, { slots }) {
@@ -512,15 +529,20 @@ app.mount('#app');
 ```javascript
 import { createApp, defineComponent, h } from 'vue';
 
-const HelloWorld = defineComponent((props, { attrs, slots }) => {
-  const message = 'from hello world component';
-  const age = attrs.age > 0 ? attrs.age : 18;
-  console.log(props); // {}
-  console.log(slots); // {default: renderFnWithContext()}
-  console.log(attrs); // {name: 'from createApp', age: -1}
+const HelloWorld = defineComponent(
+  (props, { attrs, slots }) => {
+    const message = 'from hello world component';
+    const age = attrs.age > 0 ? attrs.age : 18;
+    console.log(props); // {}
+    console.log(slots); // {default: renderFnWithContext()}
+    console.log(attrs); // {name: 'from createApp', age: -1}
 
-  return () => h('p', slots.default({ message: message, age: age }));
-});
+    return () => h('p', slots.default({ message: message, age: age }));
+  },
+  {
+    /* 其它选项 */
+  }
+);
 
 const app = createApp({
   setup(props, ctx) {
@@ -1178,9 +1200,14 @@ VNode 生命周期事件前缀从 `hook:` 更改为 `vue:`, 这些事件也可�
 ```javascript
 import { h, createApp, defineComponent } from 'vue';
 
-const HelloWorld = defineComponent((props, ctx) => {
-  return () => h('p', 'hello world component');
-});
+const HelloWorld = defineComponent(
+  (props, ctx) => {
+    return () => h('p', 'hello world component');
+  },
+  {
+    /* 其它选项 */
+  }
+);
 const app = createApp({
   data() {
     return {};
