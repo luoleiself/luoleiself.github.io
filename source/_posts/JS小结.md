@@ -131,6 +131,13 @@ tags:
 
 当 HTML 文档中的 script 标签内的代码执行`前|后`触发该事件, 如果这个 script 标签是用 `appendChild` 等方法动态插入的, 则不会触发该类事件
 
+### IOS v-model 短信验证码自动填充两次
+
+原因是ios系统bug，复制验证码会触发 UITextFieldTextDidChangeNotification 监听事件，导致验证码出现两次
+
+- 如果 type 是 text 或者 password 时, 可以给 input 添加 maxlength 属性限制最大长度.
+- 如果 type 是 number 时, 可以监听 @input 事件进行截字.
+
 ### [IE 10 开始不再支持条件注释引入资源](<https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/hh801214(v=vs.85)?redirectedfrom=MSDN>)
 
 ```html
