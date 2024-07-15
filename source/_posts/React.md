@@ -32,6 +32,8 @@ tags:
 
 ## Hooks
 
+> 以 use 开头的函数被称为 Hook, Hook 比普通函数更为严格, 只能在组件的**顶层**调用 Hook.
+
 ### 状态值
 
 - useState
