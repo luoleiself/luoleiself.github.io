@@ -418,49 +418,6 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 [root@centos7 ~]firewall-cmd --add-port=<port>/<protocol> --permanent # 永久修改防火墙配置
 ```
 
-### tar 归档
-
-```bash
-tar [OPTION...] [FILE]...
-```
-
-- \-c,\-\-create 创建新的 tar 文件
-- \-x,\-\-extract 解开 tar 文件
-- \-r,\-\-append 添加文件到已经压缩的文件
-- \-t,\-\-list 列出压缩文件中的信息
-- \-u,\-\-update 用已打包的文件的较新版本更新 tar 文件
-- \-d,\-\-diff,\-\-compare 将文件系统里的文件和 tar 文件里的文件进行比较
-- \-\-delete 删除 tar 文件里面的文件, 不能用于已保存在磁带上的 tar 文件
-- \-v,\-\-verbose 列出每一步处理涉及的文件的信息
-- \-k,\-\-keep-old-files 不覆盖文件系统上已有的文件
-- \-f,\-\-file 指定要处理的文件名
-- \-w 每一步都要求确认
-
-- \-\-atime-preserve 不改变转储文件的存取时间
-- \-m,\-\-modification-time 当从一个档案中恢复文件时, 不使用新的时间标签
-- \-C,\-\-directory DIR 转到指定的目录
-
-#### 压缩工具
-
-- \-j,\-\-bzip2 调用 bzip2 执行压缩或解压缩
-- \-J,\-\-xz,\-\-lzma 调用 XZ Utils 执行压缩或解压缩
-- \-z,\-\-gzip,\-\-gunzip,\-\-ungzip 调用 gzip 执行压缩或解压缩
-- \-Z,\-\-compress,\-\-uncompress 调用 compress 执行压缩或解压缩
-
-#### 归档压缩
-
-```bash
-# 使用 gzip 压缩归档 workspace 目录
-[root@centos7 ~]tar -czvf workspace.tar.gz ./workspace
-```
-
-#### 解压缩
-
-```bash
-# 使用 gzip 解压缩到当前目录下的 redis-stable 目录
-[root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable
-```
-
 ### crontab 定时任务
 
 - -u 指定用户
@@ -491,3 +448,136 @@ fi
 [root@centos7 workspace]# crontab -l  # 列出当前用户的所有任务
 * * * * * /bin/bash /root/workspace/crontab-out-format.sh # 定时任务
 ```
+
+### tar 归档
+
+```bash
+tar [OPTION...] [FILE]...
+```
+
+- \-t,\-\-list 列出压缩文件中的信息
+- \-u,\-\-update 用已打包的文件的较新版本更新 tar 文件
+- \-d,\-\-diff,\-\-compare 将文件系统里的文件和 tar 文件里的文件进行比较
+- \-\-delete 删除 tar 文件里面的文件, 不能用于已保存在磁带上的 tar 文件
+- \-v,\-\-verbose 列出每一步处理涉及的文件的信息
+- \-k,\-\-keep-old-files 不覆盖文件系统上已有的文件
+- \-f,\-\-file 指定要处理的文件名
+- \-w 每一步都要求确认
+
+- \-\-atime-preserve 不改变转储文件的存取时间
+- \-m,\-\-modification-time 当从一个档案中恢复文件时, 不使用新的时间标签
+- \-C,\-\-directory DIR 转到指定的目录
+
+#### 压缩工具
+
+- \-j,\-\-bzip2 调用 bzip2 执行压缩或解压缩
+- \-J,\-\-xz,\-\-lzma 调用 XZ Utils 执行压缩或解压缩
+- \-z,\-\-gzip,\-\-gunzip,\-\-ungzip 调用 gzip 执行压缩或解压缩
+- \-Z,\-\-compress,\-\-uncompress 调用 compress 执行压缩或解压缩
+
+#### 归档压缩
+
+- \-c,\-\-create 创建新的 tar 文件
+
+```bash
+# 使用 gzip 压缩归档 workspace 目录
+[root@centos7 ~]tar -czvf workspace.tar.gz ./workspace
+```
+
+#### 解压缩
+
+- \-x,\-\-extract 解开 tar 文件
+
+```bash
+# 使用 gzip 解压缩到当前目录下的 redis-stable 目录
+[root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable
+```
+
+#### 向压缩包添加文件
+
+- \-r,\-\-append 向压缩包中添加文件, 如果压缩包不存在则新建压缩包
+
+```bash
+# 向 archive.tar 压缩包中添加文件 file1.txt file2.txt
+[root@centos7 ~]tar -rf archive.tar file1.txt file2.txt
+```
+
+### curl
+
+- \-\-help [all] For all options use the manual
+- \-v,\-\-verbose Make the operation more talkative
+- \-#,\-\-progress-bar Display transfer progress as a bar
+- \-L,\-\-location Follow redirects
+- \-X,\-\-request \<method\> Specify request method to use
+- \-H,\-\-header \<header\/@file\> Pass custom headers to server
+
+```bash
+curl --help all
+
+curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+--header 'Access-Token: clt.01*********3d3d' \
+--header 'Content-Type: application/json' \
+--data '{
+  "name": "zhangsan",
+  "age": 18
+}'
+```
+
+- \-b,\-\-cookie \<data|filename\> Send cookies from string/load from file
+
+```bash
+curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+--cookie 'name=zhangsan;age=18' \
+-v
+
+curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+--header 'Cookie: name=zhangsan;age=18' \
+-v
+```
+
+- \-d
+  - \-\-data \<data\> HTTP POST data
+  - \-\-data-ascii \<data\> HTTP POST ASCII data
+  - \-\-data-binary \<data\> HTTP POST binary data
+  - \-\-data-raw \<data\> HTTP POST data, '@' allowed
+  - \-\-data-urlencode \<data\> HTTP POST data URL encoded
+
+```bash
+curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+--header 'Access-Token: clt.01*********3d3d' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client-key=tt10abc********' \
+--data-urlencode 'client_secret=7820************' \
+--data-urlencode 'code=ffab5ec*********' \
+--data-urlencode 'grant_type=authorization_code'
+
+curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+--header 'Access-Token: clt.01*********3d3d' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "app_id": "tt*******",
+  "app_name": "douyin",
+  "path":"xxxx",
+  “query”: "{xxx:xxxx}"，
+  “expire_time”: 16444464021,
+}'
+```
+
+- \-F
+
+  - \-\-form \<name-content\> Specify multipart MIME data
+  - \-\-form-escape Escape form fields using backslash
+  - \-\-form-string \<name=string\> Specify multipart MIME data
+
+```bash
+curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+--header 'Access-Token: clt.01*********3d3d' \
+--header 'Content-Type: multipart/form-data' \
+--header 'Accept: */*' \
+--form 'appid=tt1yyyy' \
+--form 'material_type="1000"' \
+--form 'material_file=@"/Users/xxx.jpg"'
+```
+
+- \-o,\-\-output \<file\> Write to file instead of stdout
+- \-\-output-dir \<dir\> Directory to save files in
