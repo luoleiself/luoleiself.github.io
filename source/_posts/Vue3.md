@@ -2922,8 +2922,7 @@ const props = withDefaults(defineProps<Props>(), {
 <script setup>
   const props = defineProps({ title: string, age: number });
   const emit = defineEmits({
-    // 没有验证函数
-    click: null,
+    click: null, // 没有验证函数
     // 有验证函数
     submit: (payload) => {
       if (payload.email && payload.password) {
