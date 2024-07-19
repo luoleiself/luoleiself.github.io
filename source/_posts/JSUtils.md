@@ -815,6 +815,40 @@ function setElAttrs(el, props) {
 }
 ```
 
+#### JS 批量样式
+
+```javascript
+// Dom 添加边框
+[].forEach.call($$('*'), (dom) => {
+  dom.style.outline =
+    '1px solid #' + (~~(Math.random() * (1 << 24))).toString(16);
+});
+
+// 随机生成颜色
+() =>
+  '#' +
+  Math.floor(Math.random() * 0xffffff)
+    .toString(16)
+    .padEnd(6, '0')
+    .toUpperCase();
+```
+
+#### 修改 history
+
+```javascript
+// 修改历史记录阻止后退功能
+$(document).ready(function () {
+  if (window.history && window.history.pushState) {
+    $(window).on('popstate', function () {
+      window.history.pushState('forward', null, '');
+      window.history.forward(1);
+    });
+  }
+  window.history.pushState('forward', null, ''); //在IE中必须得有这两行
+  window.history.forward(1);
+});
+```
+
 #### 存储单位转换
 
 ```javascript
