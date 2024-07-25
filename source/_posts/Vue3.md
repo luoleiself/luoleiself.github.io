@@ -764,17 +764,35 @@ copy.count++;
 
 立即执行一个函数, 同时响应式地追踪其依赖, 并在依赖更新时重新执行函数
 
-- 第一个参数是要运行的副作用函数
+- 第一个参数是要运行的副作用函数, 该函数接收一个函数用来注册清理回调, 清理回调会在该副作用函数下一次执行之前被调用
 - 第二个参数是可选项, 用来调整副作用的刷新时机或调试副作用的依赖
 - 返回值是一个用来停止该副作用的函数
 
 ```javascript
 const count = ref(0);
-watchEffect(() => {
-  console.log(count.value); // 输出 0
-});
+const stop = watchEffect(
+  (onCleanup) => {
+    console.log(count.value); // 输出 0
+  },
+  {
+    flush: 'pre',
+    onTrick(e) {},
+    onTrigger(e) {},
+  }
+);
 count.value++; // 输出 1
+
+// 不再需要此侦听器时
+stop();
 ```
+
+- 副作用刷新时机, 会在组件更新之前执行副作用
+
+  - 如果需要在组件更新后重新运行侦听器副作用
+  - flush
+    - pre: '默认值', 指定的回调应该在渲染前被调用
+    - post: 将回调推迟到渲染之后调用, 注意：这也将推迟副作用的初始运行，直到组件的首次渲染完成。
+    - sync: '始终同步触发', 低效
 
 - 副作用清除 onCleanup
 
@@ -791,42 +809,9 @@ watchEffect(async (onCleanup) => {
 });
 ```
 
-- 停止侦听器
-
-```javascript
-const stop = watchEffect(() => {});
-// 不再需要此侦听器时
-stop();
-```
-
-- 副作用刷新时机, 会在组件更新之前执行副作用
-
-  - 如果需要在组件更新后重新运行侦听器副作用
-  - flush
-    - pre: '默认值', 指定的回调应该在渲染前被调用
-    - post: 将回调推迟到渲染之后调用
-    - sync: '始终同步触发', 低效
-
-```javascript
-// 在组件更新后触发，这样你就可以访问更新的 DOM。
-// 注意：这也将推迟副作用的初始运行，直到组件的首次渲染完成。
-watchEffect(() => {}, {
-  flush: 'post',
-});
-```
-
 - 侦听器调试, 只能用于开发模式下
-
   - onTrack 响应式 property 和 ref 作为依赖项被追踪时被调用
   - onTrigger 依赖项变更导致副作用被触发时被调用
-
-```javascript
-watchEffect(() => {}, {
-  flush: 'post',
-  onTrack(e) {},
-  onTrigger(e) {},
-});
-```
 
 #### [watchPostEffect()](#watchEffect)
 
