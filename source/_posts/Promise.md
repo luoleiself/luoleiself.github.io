@@ -94,7 +94,7 @@ class MyPromise {
     const realOnFulfilled =
       typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
     const realOnRejected =
-      typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
+      typeof onRejected === 'function' ? onRejected : (reason) => throw Error(reason);
     if (this.status === FULFILLED) {
       realOnFulfilled(this.value);
     }
@@ -110,7 +110,7 @@ class MyPromise {
 
   catch(onRejected) {
     const realOnRejected =
-      typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
+      typeof onRejected === 'function' ? onRejected : (reason) => throw Error(reason);
     if (this.status === REJECTED) {
       realOnRejected(this.reason);
     }
@@ -142,13 +142,19 @@ static resolve (parameter) {
     return parameter;
   }
 
+  // TODO 如果是一个 thenable 对象, 则通过传入一对解决函数作为参数调用该 thenable 对象的 then 方法后
+  // 得到的状态作为返回的 Promise 对象的状态
+  if(Object.prototype.toString.call(parameter) === '[object Object]' && typeof parameter.then === 'function') {
+    return new MyPromise(parameter.then);
+  }
+
   // 转成常规方式
   return new MyPromise(resolve => {
     resolve(parameter);
   });
 }
 
-// reject 静态方法
+// reject 静态方法, 不管是否是 Promise 都将返回新的 Promise
 static reject (reason) {
   return new MyPromise((resolve, reject) => {
     reject(reason);
@@ -161,7 +167,7 @@ static reject (reason) {
 ```javascript
 then(onFulfilled, onRejected) {
   const realOnFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
-  const realOnRejected = typeof onRejected === 'function' ? onRejected : reason => throw reason;
+  const realOnRejected = typeof onRejected === 'function' ? onRejected : reason => throw Error(reason);
 
   // 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去
   const promise2 = new MyPromise((resolve, reject) => {
@@ -304,7 +310,7 @@ class MyPromise {
     const realOnFulfilled =
       typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
     const realOnRejected =
-      typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
+      typeof onRejected === 'function' ? onRejected : (reason) => throw Error(reason);
 
     // 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去
     const promise2 = new MyPromise((resolve, reject) => {
@@ -354,7 +360,7 @@ class MyPromise {
 
   catch(onRejected) {
     const realOnRejected =
-      typeof onRejected === 'function' ? onRejected : (reason) => throw reason;
+      typeof onRejected === 'function' ? onRejected : (reason) => throw Error(reason);
     if (this.status === REJECTED) {
       realOnRejected(this.reason);
     }
