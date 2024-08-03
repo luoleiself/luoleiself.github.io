@@ -101,7 +101,7 @@ tags:
 
 - 2.25.0 开始, 新增获取模糊地理位置接口, 接口规则同 [chooseLocation](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html)
 
-#### [getPhoneNumber](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html) <em id="getPhoneNumber"></em>
+#### [getPhoneNumber](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html) <em id="getPhoneNumber"></em> <!--markdownlint-disable-line-->
 
 - e.detail.encryptedData
 - e.detail.iv
