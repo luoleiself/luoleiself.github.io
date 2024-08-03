@@ -33,6 +33,8 @@ tags:
 </button>
 ```
 
+<!-- more -->
+
 ##### 耦合使用
 
 - 隐私同意按钮 与 [手机号快速验证组件](#getPhoneNumber)、[手机号实时验证组件](#getPhoneNumber) 耦合使用
@@ -243,8 +245,6 @@ if (result && result[0] == `micromessenger`) {
   // 非小程序内
 }
 ```
-
-<!-- more -->
 
 ### 逻辑层
 
