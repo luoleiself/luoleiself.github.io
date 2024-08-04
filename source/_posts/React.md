@@ -885,9 +885,7 @@ function TodoList({todos, tab}){
 
 ```jsx
 const refContainer = useRef(initialValue);
-```
 
-```jsx
 const refDemo = useRef(0);
 console.log(refDemo.current); // 0
 ```
@@ -915,11 +913,18 @@ function TextInputWithFocusButton() {
   - 或者手动返回一个回调函数, 在回调函数内管理 map
 
 ```jsx
-import {useRef} from 'react';
-
+import {useRef, useState} from 'react';
+function setupCatList() {
+  const catList = [];
+  for (let i = 0; i < 10; i++) {
+    catList.push("https://loremflickr.com/320/240/cat?lock=" + i);
+  }
+  return catList;
+}
 // 批量 ref, 使用 ref 回调
 function App(){
   const itemsRef = useRef(null);
+  const [catList, setCatList] = useState(setupCatList);
 
   function getMap(){
     if(!itemsRef.current){
@@ -927,28 +932,44 @@ function App(){
     }
     return itemsRef.current;
   }
+  function scrollToCat(cat){
+    const map = getMap();
+    const node = map.get(cat); // 获取 map 中存储的 DOM 节点
+
+    node.scrollToView({
+      behivor: 'smooth',
+      block: 'nearest',
+      inline: 'center'
+    });
+  }
 
   return (
-    <ul>
-      {catList.map(cat => (
-        <li 
-          key={cat} 
-          ref={ node => {
-            const map = getMap();
-            if(node){
-              map.set(cat, node);
-            } else {
-              // 方式1: 清除 DOM
-              map.delete(cat);
-            }
-            // 方式2: 清除 DOM
-            return () => {
-              map.delete(cat);
-            }
-          }}
-        ></li>
-      ))}
-    </ul>
+    <>
+      <button onClick={() => scrollToCat(catList[0])}>first</button>
+      <button onClick={() => scrollToCat(catList[1])}>second</button>
+      <button onClick={() => scrollToCat(catList[2])}>third</button>
+      <ul>
+        {catList.map(cat => (
+          <li 
+            key={cat} 
+            ref={ node => {
+              const map = getMap();
+              if(node){
+                map.set(cat, node);
+              } else {
+                // 方式1: 清除 DOM
+                map.delete(cat);
+              }
+              // 方式2: 清除 DOM
+              return () => {
+                map.delete(cat);
+              }
+            }}
+          ></li>
+          <img src={cat} />
+        ))}
+      </ul>
+    </>
   )
 }
 ```
@@ -1455,7 +1476,7 @@ import {cache} from 'react';
 const cachedFn = cache(fn);
 ```
 
-### createContext <!-- markdonwlint-disable-line -->
+### createContext
 
 创建一个 Context 提供给子组件, 通常和 [useContext](#useContext) 配合使用
 
@@ -2230,3 +2251,693 @@ app.use('/', (request, response) => {
   response.send(html);
 });
 ```
+
+## React Router
+
+### 路由器
+
+#### 不支持 data APIs
+
+- `<BrowserRouter>`
+- `<MemoryRouter>`
+- `<HashRouter>`
+- `<NativeRouter>` 用于 React Native
+- `<StaticRouter>`
+
+#### 支持 data APIs
+
+使用此方式创建路由, 同时启用用于数据获取的 loader, actions, fetchers 等 API
+
+- createBrowserRouter
+- createMemoryRouter
+- createHashRouter
+- createStaticRouter
+
+##### createBrowserRouter <em id="createBrowserRouter"></em> <!--markdownlint-disable-line-->
+
+- basename 基础路径
+- future 用于启用新版本语法的标记
+- hydrationData 当使用服务器端渲染时允许从服务器端获取数据
+- unstable_dataStrategy 低水平 API, 将会覆盖 React Router 内部的 loader, action 的执行
+- unstable_patchRoutesOnMis
+- window 用于区分环境, 对开发者工具或者测试来说非常有用
+
+```jsx
+const router = createBrowserRouter(routes, {
+  basename: '/app',
+  hydrationData: {
+    loaderData: {
+      // ...
+    }
+  },
+});
+```
+
+##### createStaticHandler
+
+通常用于服务器端渲染的 数据获取和提交, 配合 `staticRouterProvider` 使用
+
+- query 执行当前请求的 action, loader 并返回 context 包含了渲染页面的所有数据
+- dataRoutes 路由信息
+
+##### createStaticRouter
+
+##### StaticRouterProvider
+
+接收来自 `createStaticHandler` 的 context 和  `createStaticRouter` 的 router, 用于服务器端渲染
+
+- context 接收来自 createStaticHandler.query 的结果作为数据
+- router 通过 createStaticRouter 创建的路由
+- hydrate 是否禁用客户端自动数据连接
+- nonce 标识使用严格 CSP(安全内容策略) 时允许资源的加密随机数
+
+```jsx
+import {StrictMode} from 'react';
+import {createStaticHandler, createStaticRouter, StaticRouterProvider} from 'react-router-dom';
+import {renderToString} from 'react-dom/server';
+
+const routes = [];
+export async function renderHtml(req){
+  const {req, dataRoutes} = createStaticHandler(routes);
+  const fetchRequest = createFetchRequest(req);
+  const context = await query(fetchRequest);
+
+  if(context instanceof Response){
+    throw context;
+  }
+
+  const router = createStaticRouter(dataRoutes, context);
+  return renderToString(
+    <StrictMode>
+      <StaticRouterProvider router={router} context={context} />
+    </StrictMode>
+  )
+}
+```
+
+##### RouterProvider
+
+路由根组件, 所有的路由对象或者 Data APIS 都通过此组件注入 React 应用程序
+
+- router
+- fallbackElement 后备内容
+- future
+
+```jsx
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import {createBrowserRouer, createRoutesFromElements, RouterProvider, Route} from 'react-router-dom';
+
+// 使用 JSX 元素创建路由
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route 
+      path="/"
+      element={<Root/>}
+      errorElement={<ErrorPage/>}
+      loader={rootLoader}
+      action={rootAction}
+    >
+      <Route index element={<Dashboard/>}/>
+      {/* ... */}
+    </Route>
+  )
+);
+// 使用对象形式创建路由
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root/>,
+    loader: rootLoader,
+    action: rootAction,
+    errorElement: <ErrorPage/>,
+    children: [
+      {index: true, element: <Dashboard/>}
+    ]
+  }
+])
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <RouterProvider router={router} fallbackElement={<SpinnerOfDom/>}/>
+  </StrictMode>
+)
+```
+
+### Route
+
+React Router 创建路由的 [内置组件](#internal-component), data APIs 由类似 [createBrowserRouter](#createBrowserRouter) 创建的路由才有效
+
+- caseSensitive  path 是否区分大小写
+- hydrateFallbackElement 初始化服务器端渲染的内容没有被 hyrate 的组件, 如果未使用类似 [createBrowserRouter](#createBrowserRouter) 创建的路由则无效, 通常 SSR 的应用不会使用此项
+- handle 当前路由的任意数据, 作用同 [useMatches](#useMatches)
+- lazy 路由懒加载
+
+- 使用对象方式创建
+
+```jsx
+const router = [
+  {
+    path: '/',
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    loader: async ({request, params}) => {
+      return fetch();
+    },
+    action: async ({request}) => {
+      return update(await request.formData());
+    },
+    children: []
+  }
+]
+```
+
+- 使用 JSX 元素创建
+
+```jsx
+import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
+
+const router = createBrowserRouter(createRoutesFromElements(
+  <Route
+    path="/"
+    element={<Root/>}
+    errorElement={<ErrorPage/>}
+    lazy={() => import('./a')}
+    loader={async ({request, params}) => {
+      return fetch();
+    }}
+    action={async ({request}) => {
+      return update(await request.formData());
+    }}
+  >
+    <Route index path="" element={<DashBoard/>}/>
+  </Route>
+))
+```
+
+#### action
+
+每当应用程序向路由发送 non-get 请求的时候都会被调用
+
+- request  request 请求实例
+- params 动态路由参数
+
+```jsx
+import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      path="/projects/:id/delete"
+      action={async ({request, params}) => {
+        console.log(params.id);
+        const formData = request.formData();
+        return deleteProjectById(params.id);
+      }}
+    >
+      {/* .... */}
+    </Route>
+  )
+)
+```
+
+#### loader
+
+组件渲染之前调用定义的 loader 函数
+
+- params 动态路由参数
+- request request 请求实例
+- hydrate 服务器端渲染时处理 hydrate 数据
+
+```jsx
+import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      path="/projects/:id"
+      loader={async ({request, params}) => {
+        const res = await fetch();
+        if(res.status == 404) {
+          throw new Response('Not Found', {status: 404});
+        }
+        return res.json();
+      }}
+    >
+      {/* ... */}
+    </Route>
+  )
+)
+```
+
+#### shouldRevalidate
+
+如果定义了此函数, 将在路由的 loader 调用之前执行此函数验证新数据, 如果返回 false 则不在调用 loader 并且保持当前页面数据不变
+
+#### errorElement
+
+当组件的 loader, action 或者在渲染过程中抛出错误时代替 element 显示
+
+```jsx
+import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      errorElement={<ErrorElement/>}
+      loader={async ({request, params}) => {
+        const res = await fetch();
+        if(res.status == 404){
+          throw new Response('Not Found', {status: 404});
+        }
+        const json = res.json();
+        return {json}
+      }}
+    >
+      {/* ... */}
+    </Route>
+  )
+)
+```
+
+### React Router 内置组件 <em id="internal-component"></em> <!--markdownlint-disable-line-->
+
+#### Await <em id="Await"></em> <!--markdownlint-disable-line-->
+
+用于呈现具有自动错误处理功能的延迟值
+
+- children React 元素或者一个函数
+- resolve 返回一个 Promise 当延迟值被 resolve 后渲染
+- errorElement 当 resolve 被 reject 后渲染
+
+```jsx
+import {Await, useLoaderData, defer, Route} from 'react-router-dom';
+<Route
+  loader={async () => {
+    let book = await getBook();
+    let reviews = getviews();
+
+    return defer({book, reviews});
+  }}
+  element={<Book/>}
+>
+  {/* ... */}
+</Route>
+
+function Book(){
+  const {book, reviews} = useLoaderData();
+  return (
+    <div>
+      <h1>title</h1>
+      <Await resolve={reviews}>
+        <Review/>
+      </Await>
+    </div>
+  )
+}
+```
+
+#### Form
+
+围绕普通 HTML 表单的包装器, 模拟浏览器进行客户端路由和数据突变
+
+- action
+- method
+- navigate 标识表单默认提交行为提交之后的动作是否跳转
+- fetchKey
+- replace 标识表单提交行为替换当前历史记录栈
+- relative 标识表单提交的后的跳转路径
+- reloadDocument 标识跳过 React Router 的表单提交行为并使用浏览器内置的表单默认行为
+- state
+- preventScrollReset 标识表单提交行为是否滚动页面位置
+
+#### Link
+
+路由导航
+
+- relative 相对路径, 默认为 Route 的相对层级
+- preventScrollRest 标识是否滚动到页面顶部
+- replace 标识是否替换当前历史记录栈
+- state
+- reloadDocument
+
+#### NavLink
+
+特殊的 Link, 可以标识当前活动状态的导航
+
+- className 通过函数自定义样式
+- style 通过函数自定义样式
+- children
+- end 改变路由匹配逻辑, 当前路由是否以 to 结尾
+- caseSensitive 是否区分大小写
+- aria-current
+- reloadDocument
+
+```jsx
+import {NavLink} from 'react-router-dom';
+<NavLink
+  to="/message"
+  className={({isActive, isPending, isTransitioning}) => {
+    return isPending ? 'pending' : isActive ? 'active' : ''
+  }}
+  style={({isActive, isPending, isTransitioning}) => {
+    return {
+      fontWeight: isActive ? 'bold' : '',
+      color: isPending ? 'red' : 'black',
+      viewTransitionName: isTransitioning ? 'slide' : ''
+    }
+  }}
+/>
+```
+
+#### Navigate
+
+跳转到当前的路由, 通常用在 class 组件中, 建议使用 [useNavigate](#usenavigate) Hook
+
+#### Outlet
+
+渲染嵌套子路由
+
+```jsx
+function DashBoard(){
+  return (
+    <div>
+      <h1>DashBoard</h1>
+      {/* ... */}
+      <Outlet/>
+    </div>
+  )
+}
+
+function App(){
+  return (
+    <Routes>
+      <Route path="/" element={<DashBoard/>}>
+        <Route
+          path="message"
+          element={<DashBoardMessage/>}
+        />
+        <Route path="tasks" element={<DashBoardTasks/>}/>
+      </Route>
+    </Routes>
+  )
+}
+```
+
+#### Routes
+
+匹配组件内的 Route, 通常用于不使用 [createBrowserRouter](#createBrowserRouter) 创建的 Route
+
+#### ScrollRestoration
+
+在渲染完成之后模拟浏览器在位置更改时的滚动恢复, 以确保滚动位置恢复到正确的位置
+
+### React Router 内置 Hook
+
+#### useActionData
+
+获取上一个导航操作结果的返回值, 如果没有提交操作则返回 undefined
+
+#### useAsyncError
+
+获取最近的 [Await](#Await) 组件被 reject 的结果
+
+#### useAsyncValue
+
+获取最近的 [Await](#Await) 组件被 resolve 的结果
+
+#### useBeforeUnload
+
+当用户离开页面时 (window.onbeforeunload) 保存重要的数据
+
+#### useBlocker
+
+阻止用户离开当前页面, 并呈现自定义 UI 提示用户允许确认导航
+
+- state 当前 blocker 的状态
+  - unblocked 空闲没有阻止状态
+  - blocked 阻止状态
+  - proceeding 正在从阻断器中前进
+- proceed() 允许跳转
+- reset() 重置 blocker 状态并留在当前位置
+
+```jsx
+const blocker = useBlocker();
+```
+
+#### useFetcher
+
+在导航之外调用 loader, action 或者获取数据重新验证
+
+#### useFetchers
+
+获取除了 load, submit, Form 属性的获取器数组
+
+#### useFormAction
+
+#### useHref
+
+#### useInRouterContext
+
+返回组件是否在 Router 的上下文环境中渲染的
+
+#### useLinkClickHandler
+
+获取 Link 的 click 事件句柄
+
+#### useLoaderData
+
+获取路由 loader 返回的数据, 当路由 loader 被调用之后, 数据将自动重新验证并从 loader 中返回最新结果
+
+useLoaderData 不会启动获取, 只读取 React Router 内部管理的结果
+
+```jsx
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import {useLoaderData, createBrowserRouter, createRoutesFromElements, RouterProvider} from 'react-router-dom';
+
+function Albums(){
+  const albums = useLoaderData();
+  // ...
+  return <div>Albums</div>;
+}
+const router = createBrowserRouter(createRoutesFromElements(
+  <Route
+    path="/"
+    element={<Albums />}
+    loader={async ({request, params}) => {
+      return fakeFecth();
+    }}
+  />
+));
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <RouterProvider router={router}/>
+  </StrictMode>
+)
+```
+
+#### useLocation
+
+获取当前 location 的对象
+
+#### useMatches <em id="useMatches"></em> <!--markdownlint-disable-line-->
+
+获取当前页面匹配到的路由信息
+
+#### useNavigate
+
+返回一个函数, 能够以编程式导航
+
+#### useNavigation
+
+获取当前页面的所有导航信息
+
+#### useParams
+
+返回当前 url 中被 Route 匹配到的动态路由参数对象
+
+```jsx
+function Books(){
+  const [id] = useParams();
+}
+<Route
+  path="/books/:id"
+  element={<Books/>}
+/>
+```
+
+#### useResolvedPath
+
+返回给定 to 相对于当前位置的 pathname
+
+#### useRevalidator
+
+返回一个验证器对象, 允许重新验证数据
+
+#### useRouteError <em id="useRouteError"></em> <!--markdownlint-disable-line-->
+
+用在 errorElement 内部, 捕获由 action, loader, 或者渲染期间抛出的错误
+
+```jsx
+import {useRouteError, isRouteErrorResponse, Route, json} from 'react-router-dom';
+
+function ErrorBoundary(){
+  const error = useRouteError();
+
+  if(isRouteErrorResponse(error)){
+    return (
+      <div>
+        <h1>Oops!</h1>
+        <h2>{error.status}</h2>
+        <p>{error.statusText}</p>
+        {error.data?.message && <p>{error.data.message}</p>}
+      </div>
+    )
+  } else {
+    return <div>Oops</div>;
+  }
+}
+
+<Route
+  errorElement={<ErrorBoundary/>}
+  action={async () => {
+    throw json(
+      {message: 'email is required' },
+      {status: 400}
+    )
+  }}
+/>
+```
+
+#### useRouteLoaderData
+
+路由树上任何位置的当前渲染路线上的数据都可用, 对于树深层需要来自更高层路由的数据的组件以及需要树深层的子路由的数据的父路由非常有用
+
+```jsx
+import {useRouteLoaderData} from 'react-router-dom';
+
+function SomeComp(){
+  const user = useRouteLoaderData('root');
+  // ...
+}
+createBrowserRouter([
+  {
+    path: '/',
+    loader: () => fetchUser(),
+    element: <Root />
+    id: 'root',
+    children: [
+      {
+        path: 'jobs/:jobId',
+        loader: loaderJob,
+        element: <JobListing />
+      }
+    ]
+  }
+])
+```
+
+#### useRoutes
+
+相当于 Routes [内置组件](#internal-component) 的函数版本
+
+#### useSearchParams
+
+读取或修改当前 URL 的参数部分
+
+#### useSubmit
+
+Form 表单提交的命令版本
+
+```jsx
+import {useSubmit, Form} from 'react-router-dom';
+function SearchFiled(){
+  let submit = useSubmit();
+
+  // 每次表单改动时提交 
+  return (
+    <Form onChange={(e) => {
+      submit(e.currentTarget);
+    }}>
+      <input type="text" name="search"/>
+      <button type="submit">Search</button>
+    </Form>
+  )
+}
+```
+
+### React Router API
+
+#### json
+
+格式化数据
+
+```jsx
+import {json} from 'react-router-dom';
+
+const loader = async () => {
+  const data = fetchData();
+  return json(data);
+}
+```
+
+#### redirect
+
+路由重定向
+
+```jsx
+import {redirect} from 'react-router-dom';
+
+const loader = async () => {
+  const res = await fetch();
+  if(res.status == 401){
+    return redirect('/login')
+  }
+  return null
+}
+```
+
+#### redirectDocument
+
+触发一个文档级别的重定向, 而不是基于客户端导航, 通常用于从一个应用跳转到另一个应用
+
+#### replace
+
+导航跳转替换当前的历史记录栈
+
+#### createRoutesFromElements
+
+使用 JSX 元素创建路由, 简写形式是 `createRoutesFromChildren`
+
+#### createSearchParams
+
+`new URLSearchParams(init)` 的包装写法
+
+#### defer
+
+延迟 loader 的返回值
+
+```jsx
+import {defer} from 'react-router-dom';
+
+const loader = async () => {
+  let res = await fetch();
+
+  return defer({name: 'zhangsan', age: 18});
+}
+```
+
+#### generatePath
+
+根据动态路由参数生成 url
+
+```jsx
+import {generatePath} from 'react-router-dom';
+
+generatePath('/users/:id/:name', {id: 42, name: 'zhangsan'}); // /users/42/zhangsan
+```
+
+#### isRouteErrorResponse
+
+判断是否是由 [useRouteError](#useRouteError) 捕获的路由错误
+
+#### resolvePath
+
+根据给定的 to 解析为具有绝对路径的真实 path 对象
