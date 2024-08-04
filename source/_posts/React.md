@@ -113,7 +113,7 @@ function Counter({ person }) {
 }
 ```
 
-## React.Component
+## React.Component(deprected)
 
 ### 组件的生命周期
 
