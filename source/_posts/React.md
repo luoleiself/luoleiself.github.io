@@ -2938,6 +2938,18 @@ generatePath('/users/:id/:name', {id: 42, name: 'zhangsan'}); // /users/42/zhang
 
 判断是否是由 [useRouteError](#useRouteError) 捕获的路由错误
 
+#### matchPath
+
+将路由路径模式与 URL 路径进行匹配并返回有关的匹配信息, 否则返回 null
+
+#### matchRoutes
+
+执行一个路由匹配算法从给定的 routes 集合中找到匹配的路由并返回
+
+#### renderMatches
+
+渲染 matchRoutes 匹配结果中的 React 元素
+
 #### resolvePath
 
 根据给定的 to 解析为具有绝对路径的真实 path 对象
