@@ -2396,7 +2396,8 @@ React Router 创建路由的 [内置组件](#internal-component), data APIs 由�
 - 使用对象方式创建
 
 ```jsx
-const router = [
+import {createBrowserRouter} from 'react-router-dom';
+const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
@@ -2409,7 +2410,7 @@ const router = [
     },
     children: []
   }
-]
+]);
 ```
 
 - 使用 JSX 元素创建
