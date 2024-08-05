@@ -2286,7 +2286,7 @@ app.use('/', (request, response) => {
 const router = createBrowserRouter(routes, {
   basename: '/app',
   hydrationData: {
-    loaderData: {
+    root: {
       // ...
     }
   },
@@ -2383,14 +2383,15 @@ createRoot(document.getElementById('root')).render(
 )
 ```
 
-### Route
+### Route <em id="Route"></em> <!--markdownlint-disable-line-->
 
 React Router 创建路由的 [内置组件](#internal-component), data APIs 由类似 [createBrowserRouter](#createBrowserRouter) 创建的路由才有效
 
+- index 标识当路由未匹配到时默认匹配
+- path 路由
 - caseSensitive  path 是否区分大小写
-- hydrateFallbackElement 初始化服务器端渲染的内容没有被 hyrate 的组件, 如果未使用类似 [createBrowserRouter](#createBrowserRouter) 创建的路由则无效, 通常 SSR 的应用不会使用此项
+- element/Component 当路由匹配时渲染
 - handle 当前路由的任意数据, 作用同 [useMatches](#useMatches)
-- lazy 路由懒加载
 
 - 使用对象方式创建
 
@@ -2434,9 +2435,13 @@ const router = createBrowserRouter(createRoutesFromElements(
 ))
 ```
 
-#### action
+#### Route.action <em id="Route.action"></em> <!--markdownlint-disable-line-->
 
-每当应用程序向路由发送 non-get 请求的时候都会被调用
+当 React Router 抽象了异步 UI 和重新验证的复杂性时, 为应用程序提供了一种使用简单的 HTML 和 HTTP 语句执行数据更改的方法
+
+每当应用程序向路由发送 non-get(POST, PUT, PATCH, DELETE) 请求的时候都会被调用
+
+动态路由参数分别传递给 [loader](#Route.loader), [useMatch](#useParams), [useParams](#useParams)
 
 - request  request 请求实例
 - params 动态路由参数
@@ -2459,21 +2464,25 @@ const router = createBrowserRouter(
 )
 ```
 
-#### loader
+#### Route.loader <em id="Route.loader"></em> <!--markdownlint-disable-line-->
 
-组件渲染之前调用定义的 loader 函数
+组件渲染之前调用定义的 loader 函数并将返回的数据传入 React 元素
+
+动态路由参数分别传递给 [action](#Route.action), [useMatch](#useMatch), [useParams](#useParams)
 
 - params 动态路由参数
 - request request 请求实例
 - hydrate 服务器端渲染时处理 hydrate 数据
 
 ```jsx
-import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
+import {createBrowserRouter, createRoutesFromElements, Route, useLoaderData} from 'react-router-dom';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
       path="/projects/:id"
+      element={<Projects/>}
       loader={async ({request, params}) => {
+        console.log(params.id);
         const res = await fetch();
         if(res.status == 404) {
           throw new Response('Not Found', {status: 404});
@@ -2485,13 +2494,39 @@ const router = createBrowserRouter(
     </Route>
   )
 )
+function Projects(){
+  const projects = useLoaderData();
+
+  return (
+    projects
+  )
+}
 ```
 
-#### shouldRevalidate
+#### Route.lazy
+
+路由懒加载
+
+```jsx
+import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      path="/"
+      element={<Layout/>}
+    >
+      <Route path="a" lazy={() => import('./a')} />
+      <Route path="b" lazy={() => import('./b')} />
+    </Route>
+  )
+)
+```
+
+#### Route.shouldRevalidate
 
 如果定义了此函数, 将在路由的 loader 调用之前执行此函数验证新数据, 如果返回 false 则不在调用 loader 并且保持当前页面数据不变
 
-#### errorElement
+#### Route.errorElement/errorBoundary
 
 当组件的 loader, action 或者在渲染过程中抛出错误时代替 element 显示
 
@@ -2514,6 +2549,41 @@ const router = createBrowserRouter(
     </Route>
   )
 )
+```
+
+#### Route.hydrateFallbackElement/hydrateFallback
+
+初始化服务器端渲染的内容没有被 hyrate 的组件, 如果未使用类似 [createBrowserRouter](#createBrowserRouter) 创建的路由则无效, 通常 SSR 的应用不会使用此项
+
+```jsx
+import {createBrowserRouter} from 'react-router-dom';
+const router = createBrowserRouter([
+  {
+    id: 'root',
+    path: '/',
+    loader: rootLoader,
+    Component: Root,
+    children:[
+      {
+        id: 'invoice',
+        path: 'invoice/:id',
+        loader: invoiceLoader,
+        Component: Invoice,
+        hydrateFallback: InvoiceFallback
+      }
+    ]
+  }
+],
+{
+  future:{
+    v7_partialHydration: true,
+  },
+  hydrationData:{
+    root:{
+      // ...
+    }
+  }
+})
 ```
 
 ### React Router 内置组件 <em id="internal-component"></em> <!--markdownlint-disable-line-->
@@ -2555,7 +2625,7 @@ function Book(){
 
 #### Form
 
-围绕普通 HTML 表单的包装器, 模拟浏览器进行客户端路由和数据突变
+围绕普通 HTML 表单的包装器, 模拟浏览器进行客户端路由和数据更改
 
 - action
 - method
@@ -2567,14 +2637,14 @@ function Book(){
 - state
 - preventScrollReset 标识表单提交行为是否滚动页面位置
 
-#### Link
+#### Link <em id="Link"></em> <!--markdownlint-disable-line-->
 
 路由导航
 
 - relative 相对路径, 默认为 Route 的相对层级
 - preventScrollRest 标识是否滚动到页面顶部
 - replace 标识是否替换当前历史记录栈
-- state
+- state 任何状态
 - reloadDocument
 
 #### NavLink
@@ -2608,7 +2678,12 @@ import {NavLink} from 'react-router-dom';
 
 #### Navigate
 
-跳转到当前的路由, 通常用在 class 组件中, 建议使用 [useNavigate](#usenavigate) Hook
+当组件渲染后改变当前的路由, 通常用在 class 组件中, 建议使用 [useNavigate](#useNavigate) Hook
+
+- to 跳转的目标路由
+- replace 是否使用替换模式
+- state 任何状态
+- relative
 
 #### Outlet
 
@@ -2640,6 +2715,10 @@ function App(){
 }
 ```
 
+#### [Route](#Route)
+
+React Router [内置组件](#internal-component)
+
 #### Routes
 
 匹配组件内的 Route, 通常用于不使用 [createBrowserRouter](#createBrowserRouter) 创建的 Route
@@ -2656,11 +2735,11 @@ function App(){
 
 #### useAsyncError
 
-获取最近的 [Await](#Await) 组件被 reject 的结果
+获取最近的 [Await](#Await) 组件被 rejection 的结果
 
 #### useAsyncValue
 
-获取最近的 [Await](#Await) 组件被 resolve 的结果
+获取最近的 [Await](#Await) 组件被 resolved 的结果
 
 #### useBeforeUnload
 
@@ -2683,13 +2762,88 @@ const blocker = useBlocker();
 
 #### useFetcher
 
-在导航之外调用 loader, action 或者获取数据重新验证
+不想在更改 URL 的情况下调用 [loader](#Route.loader), [action](#Route.action)获取页面的数据并重新验证, 或者需要同时进行多个更新
+
+与服务器的许多交互不是导航事件, useFetcher 允许将 UI 插入到操作或 [loader](#Route.loader) 中而不引起导航
+
+- key 默认为 内置组件 生成唯一的 key
+
+- fetcher.Form 像 Form [内置组件](#internal-component) 一样, 只是不会引起导航
+
+- fetcher.state 标识当前 Fetcher 的状态
+  - idle 空闲
+  - submiting 由 fetcher 使用 post, put, patch, delete 提交正在调用路由操作
+  - loading fetcher 正在调用 fetcher.load 或者在单独提交或调用用 `useRevalidator` 之后重新验证
+- fetcher.data 获取从 [loader](#Route.loader) 或 [action](#Route.action) 加载的数据
+- fetcher.formData 当使用 fetcher.Form 和 `fetcher.submit()` 时, formData 可用
+- fetcher.json 当使用 `fetcher.submit(data, {formEnctype: 'application/json'})` 提交时可用
+- fetcher.text 当使用 `fetcher.submit(data, {formEnctype: 'text/plain'})` 提交时可用
+- fetcher.formAction 提交时的 form 的 url
+- fetcher.formMethod 提交时的方法 get, post, put, patch, delete
+
+- fetcher.load(href, options) 从 [loader](#Route.loader) 中获取数据
+- fetcher.submit(data, options?) 包含了 [useSubmit](#useSubmit) 调用的实例, 接收和 [useSubmit](#useSubmit) 相同的参数
+
+```jsx
+import {useEffect} from 'react';
+import {useFetcher} from 'react-router-dom';
+function SomeCompoent(){
+  const fetcher = useFetcher({key: 'new-key'});
+
+  useEffect(() => {
+    fetcher.submit(data, options);
+    fetcher.load(href);
+  },[fetcher]);
+
+  // 渲染的表单不会引起导航 
+  return （
+    <fetcher.Form action="/fetcher-action" method='post'>
+      <button type="submit" onclick={(e) => {
+        if(fetcher.state === 'idle' && !fetcher.data){
+          fetcher.submit(fetcher.formData?.get('username'), {formEnctype: 'application/json'});
+        }
+      }}>Submit</button>
+      <p>fetcher.formAction {fetcher.formAction}</p>
+      <p>fetcher.formMethod {fetcher.formMethod}</p>
+      {fetcher.json ? (<p>{fetcher.json}</p>) : (<p>json: null</p>)}
+      {fetcher.data ? (<div>{fetcher.data}</div>) : (<div>loading data...</div>)}
+    </fetcher.Form>
+  ）  
+}
+```
 
 #### useFetchers
 
-获取除了 load, submit, Form 属性的获取器数组
+获取除了 load, submit, Form 属性的 fetcher 数组
 
 #### useFormAction
+
+用在 Form [内置组件](#internal-component) 内部自动解析当前路由的默认和相关操作
+
+- 可以直接计算当前的 formAction
+- 也可以用在 [useSubmit](#useSubmit) 或者 `fetcher.submit` 中
+
+```jsx
+import {useFormAction} from 'react-router-dom';
+
+function DeleteButton(){
+  const formAction = useFormAction('destroy');
+  return (
+    <button
+      formAction={formAction}
+      formMethod="post"
+    >
+      Delete
+    </button>
+  )
+}
+```
+
+```jsx
+const submit = useSubmit();
+const formAction = useFormAction('delete');
+submit(formData, {formAction});
+```
 
 #### useHref
 
@@ -2703,7 +2857,7 @@ const blocker = useBlocker();
 
 #### useLoaderData
 
-获取路由 loader 返回的数据, 当路由 loader 被调用之后, 数据将自动重新验证并从 loader 中返回最新结果
+获取路由 [loader](#Route.loader) 返回的数据, 当路由 loader 被调用之后, 数据将自动重新验证并从 loader 中返回最新结果
 
 useLoaderData 不会启动获取, 只读取 React Router 内部管理的结果
 
@@ -2737,25 +2891,93 @@ createRoot(document.getElementById('root')).render(
 
 获取当前 location 的对象
 
+- location.hash
+- location.key
+- location.pathname
+- location.search
+- location.state 通过 [\<Link state/\>](#Link) 或者 [navigate](#useNavigate) 创建的
+
+#### useMatch <em id="useMatch"></em> <!--markdownlint-disable-line-->
+
+返回给定路径相对于当前位置上匹配的数据
+
+动态路由参数分别传递给 [loader](#Route.loader), [action](#Route.action), [useParams](#useParams)
+
+```jsx
+import {useMatch, useParams} from 'react-router-dom';
+
+function Random(){
+  const match = useMatch('/projects/:projectId/tasks/:taskId');
+  const params = useParams();
+
+  console.log(match.params.projectId);
+  console.log(match.params.taskId);
+
+  console.log(params.projectId);
+  console.log(params.taskId);
+}
+```
+
 #### useMatches <em id="useMatches"></em> <!--markdownlint-disable-line-->
 
 获取当前页面匹配到的路由信息
 
-#### useNavigate
+#### useNavigate <em id="useNavigate"></em> <!--markdownlint-disable-line-->
 
-返回一个函数, 能够以编程式导航
+返回一个 navigate 函数, 能够以编程式导航, 该函数接收两个参数
+
+- to 跳转的目标路由
+- options
+  - replace
+  - state
+  - preventScrollReset
+  - relative
+
+```jsx
+import {useNavigate} from 'react-router-dom';
+
+function useLogoutTimer(){
+  const userIsInactive = useFakeInactive();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if(userIsInactive){
+      fake.logout();
+      naviagte('/session-time-out', {state: {token: 'token'}});
+    }
+  },[userIsInactive]);
+}
+```
 
 #### useNavigation
 
 获取当前页面的所有导航信息
 
-#### useParams
+- navigation.state
+- navigation.location
+- navigation.formData
+- navigation.json
+- navigation.text
+- navigation.formAction
+- navigation.formMethod
+- navigation.formEnctype
+
+#### useNavigationType
+
+返回当前页的导航类型
+
+```jsx
+type NavigationType = 'POP' | 'PUSH' | 'REPLACE';
+```
+
+#### useParams <em id="useParams"></em> <!--markdownlint-disable-line-->
 
 返回当前 url 中被 Route 匹配到的动态路由参数对象
 
+动态路由参数分别传递给 [loader](#Route.loader), [action](#Route.action), [useMatch](#useMatch)
+
 ```jsx
 function Books(){
-  const [id] = useParams();
+  const {id} = useParams();
 }
 <Route
   path="/books/:id"
@@ -2771,9 +2993,12 @@ function Books(){
 
 返回一个验证器对象, 允许重新验证数据
 
+- revalidator.state
+- revalidator.revalidate()
+
 #### useRouteError <em id="useRouteError"></em> <!--markdownlint-disable-line-->
 
-用在 errorElement 内部, 捕获由 action, loader, 或者渲染期间抛出的错误
+用在 errorElement 内部, 捕获由 [action](#Route.action), [loader](#Route.loader), 或者渲染期间抛出的错误
 
 ```jsx
 import {useRouteError, isRouteErrorResponse, Route, json} from 'react-router-dom';
@@ -2842,9 +3067,34 @@ createBrowserRouter([
 
 读取或修改当前 URL 的参数部分
 
-#### useSubmit
+```jsx
+import {useSearchParams} from 'react-router-dom';
+
+function App(){
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  function handleSumbit(e){
+    e.preventDefault();
+    // 序列化字段
+    const params = serializeFormQuery(e.target);
+    setSearchParams(params);
+  }
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="username"/>
+      </form>
+    </div>
+  )
+}
+```
+
+#### useSubmit <em id="useSubmit"></em> <!--markdownlint-disable-line-->
 
 Form 表单提交的命令版本
+
+- submit(data, options?) 手动提交方法
+  - options 支持 form 表单的大多数属性
 
 ```jsx
 import {useSubmit, Form} from 'react-router-dom';
@@ -2854,7 +3104,7 @@ function SearchFiled(){
   // 每次表单改动时提交 
   return (
     <Form onChange={(e) => {
-      submit(e.currentTarget);
+      submit(null, {method: 'post', action: '/change'});
     }}>
       <input type="text" name="search"/>
       <button type="submit">Search</button>
@@ -2912,7 +3162,7 @@ const loader = async () => {
 
 #### defer
 
-延迟 loader 的返回值
+延迟 [loader](#Route.loader) 的返回值
 
 ```jsx
 import {defer} from 'react-router-dom';
