@@ -3227,7 +3227,7 @@ generatePath('/users/:id/:name', {id: 42, name: 'zhangsan'}); // /users/42/zhang
 - reducer
   - 如果是一个函数, configureStore 直接使用其作为根 reducer
   - 如果是一个 slice reducers 的对象, configureStore 将使用 combineReducers 合并此对象并自动创建根 reducer
-- middleware 函数, 接收 getDefaultMiddleware 函数作为参数, 并返回一个中间件数组, 如果未提供, configureStore 将调用 getDefaultMiddleware 设置中间件数组
+- middleware 函数, 接收 `getDefaultMiddleware` 函数作为参数, 并返回一个中间件数组, 如果未提供, configureStore 将调用 `getDefaultMiddleware` 设置中间件数组
 - devTools 是否设置 Redux Devtools, 默认 true
 - preloadedState 初始化状态
 - enhancers 增强器函数, 和 middleware 参数作用类似
@@ -3312,7 +3312,9 @@ function someFn(action: Action){
   - addDefaultCase() 添加默认的 reducer
     - reducer
 
-- 返回一个具有 `getInitialState` 函数的 reducer 函数, 调用 `getInitialState` 函数返回初始状态, 通常用于测试或者配合 React [useReducer](#useReducer) Hook
+返回值
+
+- 具有 `getInitialState` 函数的 reducer 函数, 调用 `getInitialState` 返回初始状态, 通常用于测试或者配合 React [useReducer](#useReducer) Hook
 
 ```jsx
 import {createReducer} from '@reduxjs/toolkit';
@@ -3332,7 +3334,7 @@ function coutenReducer(state = initialState, action){
 }
 
 // createReducer
-const counterReducer = createReducer(initialState, (builer) => {
+const counterReducer = createReducer(initialState, builder => {
   builder.addCase('ADD', (state, action) => {
     state.value++; // immer 创建的 state 副本, 直接修改
   }).addCase('DELETE', (state, action) => {
@@ -3353,11 +3355,17 @@ const counterReducer = createReducer(initialState, (builer) => {
 
 - name  标识 state, 将作为生成的 [actionCreator](#createAction) 的前缀
 - initialState 初始化状态
-- reducers 包含了 case Reducer 的对象, 如果自定义 case Reducer, 每个 reducer 将是一个具有 prepare 函数 和 reducer 函数的对象
+- reducers reducer 配置
+  - 如果需要自定义 case Reducer, 每个 reducer 将是一个具有 prepare 函数 和 reducer 函数的对象
+    - prepare()
+    - reducer
   - 如果是一个函数, 将接收一个 create 对象, 具有三个方法
     - create.reducer 标准的 reducer
     - create.prepareReducer 自定义 actionCreator 的 payload
     - create.asyncThunk 创建异步的函数代替 actionCreator
+      - pending
+      - fulfilled
+      - rejected
 - extraReducers 函数, 处理自己创建的 actionCreator 之外的情况, 同 [builderCallback](#builderCallback)
 - reducerPath 标识 slice 的位置, 默认 name
 - selectors 接收状态作为第一个参数 和剩余的所有参数并返回指定的结果
@@ -3436,6 +3444,7 @@ const counterSlice = createSlice({
 })
 ```
 
+- selectSlice
 - selectors
 
 ```jsx
@@ -3453,6 +3462,18 @@ console.log(counterSlice.selectSlice({ counter: { value: 2 } })) // { value: 2 }
 
 const { selectValue } = counterSlice.selectors
 console.log(selectValue({ counter: { value: 2 } })) // 2
+```
+
+- getSelectors()
+
+```jsx
+const { selectValue } = counterSlice.getSelectors(
+  (rootState: RootState) => rootState.aCounter,
+)
+console.log(selectValue({ aCounter: { value: 2 } })) // 2
+
+const {selectValue} = counterSlice.getSelector();
+console.log(selectValue({value: 2})) //  2
 ```
 
 #### combineSlices
@@ -3514,6 +3535,10 @@ console.log(
   - serializeError(error: unknown) => any 替换内部的 `miniSerializeError` 方法
   - getPendingMeta({arg, requestId}, {getState, extra}): any 创建对象和 `pendingAction.meta` 合并
 
+返回值
+
+- thunk 函数, 有 3 个状态 pending, fulfilled, rejected
+
 ```jsx
 import {createAsyncThunk} from '@reduxjs/toolkit';
 
@@ -3553,8 +3578,9 @@ dispatch(fetchUserById(123));
 - removeAll 移除所有 items
 - updateOne/updateMany 通过提供部分值更新现有 items
 - upsertOne/upsertMany 添加新 items 或更新现有 items
+
 - getInitialState() 如果传入对象参数, 将被合并到 initialState 中并返回
-- getSelectors 获取 selectors
+- getSelectors() 生成一组标准的 selector 函数
 
 ```jsx
 import {createSlice, createAsyncThunk, createEntityAdapter} from '@reduxjs/toolkit';
@@ -3649,19 +3675,29 @@ function TodoListItem(props){
 #### useDispatch
 
 ```jsx
+import {useCallback, memo} from 'react';
 import {useDispatch} from 'react-redux';
+
 function CounterComponent(){
   const dispatch = useDispatch();
+  const incrementCounter = useCallbac(() => {
+    dispatch({type:'increment-counter'});
+  },[dispatch]);
   return (
     <div>
       <span>CounterComponent</span>
-      <button onClick={() => dispatch({type: 'increment-counter'})}></button>
+      <MyIncrement onIncrement={incrementCounter}/>
     </div>
   )
 }
+const MyIncrement = memo(({onIncrement}) => {
+  return (<button onClick={onIncrement}>increment counter</button>)
+})
 ```
 
 #### useStore
+
+大多数情况使用 `useSelector`
 
 ```jsx
 import {useStore} from 'react-redux';
