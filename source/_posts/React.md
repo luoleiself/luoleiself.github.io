@@ -353,7 +353,7 @@ const [count, setCount] = useState(() => {
 });
 ```
 
-#### useReducer
+#### useReducer <em id="useReducer"></em> <!--markdownlint-disable-line-->
 
 整合组件的状态更新逻辑
 
@@ -3204,3 +3204,471 @@ generatePath('/users/:id/:name', {id: 42, name: 'zhangsan'}); // /users/42/zhang
 #### resolvePath
 
 根据给定的 to 解析为具有绝对路径的真实 path 对象
+
+## Redux
+
+- dispatch 只能处理同步的 action
+
+- createStore  创建一个 Redux 存储实例
+- combineReducers 将多个 reducer 函数合并成为一个更大的 reducer
+- applyMiddleware 将多个中间件组合成一个 store 增强器
+- compose 将多个 store 增强器合并成一个单一的 store 增强器
+
+### @reduxjs/toolkit(RTK)
+
+消除手写 Redux 逻辑中的样板代码, 防止常见错误, 并提供简化标准的 Redux 任务的 API
+
+- [@reduxjs/toolkit/query](#RTK-Query) 独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据
+
+#### configureStore
+
+通过单个函数调用设置一个完善的 Redux Store, 包括合并 reducer, 添加 thunk 中间件以及设置 Redux Devtools 集成, 与 createStore 相比更容易配置
+
+- reducer
+  - 如果是一个函数, configureStore 直接使用其作为根 reducer
+  - 如果是一个 slice reducers 的对象, configureStore 将使用 combineReducers 合并此对象并自动创建根 reducer
+- middleware 函数, 接收 getDefaultMiddleware 函数作为参数, 并返回一个中间件数组, 如果未提供, configureStore 将调用 getDefaultMiddleware 设置中间件数组
+- devTools 是否设置 Redux Devtools, 默认 true
+- preloadedState 初始化状态
+- enhancers 增强器函数, 和 middleware 参数作用类似
+
+```jsx
+import {configureStore} from '@reduxjs/toolkit';
+
+const store = configureStore({
+  reducer: {
+    // ...
+  }
+});
+```
+
+##### 特点
+
+- slice reducers 自动传递给 combineReducers
+- 自动添加了 `redux-thunk` 中间件
+- 添加了 Devtools 中间件来捕获更多意外的变更
+- 自动设置了 Redux Devtools Extension
+- 中间件和 Devtools 增强器被组合在一起添加到了 store 中
+
+#### createAction <em id="createAction"></em> <!--markdownlint-disable-line-->
+
+用于创建 action 的辅助函数
+
+- type 字符串, 标识 action
+- prepareAction() 可选, 函数, 接收任意个参数作为 action 的 payload 的值
+
+- actionCreator.match 函数可以区分 action 是否是同一类型, TypeScript 中可以识别 action 中 payload 的类型
+
+```tsx
+import {createAction} from '@reduxjs/toolkit';
+
+const actionCreator = createAction(type, prepareAction?);
+
+// action 类型常量
+function increment(amount: number){
+  return {
+    type: 'INCREMENT',
+    payload: amount
+  }
+}
+const action = increment(3);
+// {type: 'INCREMENT', payload: 3}
+
+// action 创建函数
+const increment = createAction('INCREMENT', (text: string, age: number) => {
+  return {
+    type: "INCREMENT",
+    payload: {
+      text: text,
+      age: age,
+      id: nanoid(),
+      createAt: new Date()
+    }
+  }
+});
+const action = increment('hello createAction', 18);
+// {type: "INCREMENT", payload: {text: "hello createAction", age: 18, id, createAt}}
+
+const increment = createAction<number>('INCREMENT');
+function someFn(action: Action){
+  if(increment.match(action)){
+    // action.payload can be used as `number` here
+  }
+}
+```
+
+#### createReducer <em id="createReducer"></em> <!--markdownlint-disable-line-->
+
+一个简化创建 reducer 函数的工具, 内部使用 Immer 通过在 reducer 中编写可变代码, 大大简化了不可变的更新逻辑, 并支持将特定的操作类型直接映射到 case reducer 函数
+
+- initialState 初始化状态, 可以是一个返回 state 的函数
+- builderCallback 回调函数接收一个 `builder` 对象通过 addCase 方法添加 reducer <em id="builderCallback"></em> <!--markdownlint-disable-line-->
+  - addCase() 接收两个参数, 调用必须在 `addMatcher` 和 `addDefaultCase` 之前
+    - actionCreatorOrType 指定 action.type
+    - reducer
+  - addMatcher() 匹配传入的 action, 调用必须在 `addCase` 之后和 `addDefaultCase` 之前
+    - matcher() 匹配函数, 匹配传入的所有可能的 action.type, 并按定义的顺序调用
+    - reducer
+  - addDefaultCase() 添加默认的 reducer
+    - reducer
+
+- 返回一个具有 `getInitialState` 函数的 reducer 函数, 调用 `getInitialState` 函数返回初始状态, 通常用于测试或者配合 React [useReducer](#useReducer) Hook
+
+```jsx
+import {createReducer} from '@reduxjs/toolkit';
+
+const reducer = createReducer(initialState, builderCallback);
+
+// 普通 reducer
+function coutenReducer(state = initialState, action){
+  switch(aciton.type){
+    case 'ADD':
+      return {...state, value: action.payload}
+    case 'DELETE':
+      return {...state, value: action.payload}
+    default:
+      return {...state}
+  }
+}
+
+// createReducer
+const counterReducer = createReducer(initialState, (builer) => {
+  builder.addCase('ADD', (state, action) => {
+    state.value++; // immer 创建的 state 副本, 直接修改
+  }).addCase('DELETE', (state, action) => {
+    state.value--;
+  }).addCase('ADD_BY_AMOUNT', (state, action) => {
+    state.value += action.payload;
+  }).addMatcher((action) => isMatchedAction(action.type), (state, action) => {
+    // ...
+  }).addDefaultCase((state, action) => {
+    // ...
+  });
+})
+```
+
+#### createSlice <em id="createSlice"></em> <!--markdownlint-disable-line-->
+
+支持使用 Immer 库编写 reducer, 接受一个初始状态, 对象或者 reducer 函数, 并自动创建一个与 reducer 和 状态对应的 [actionCreator](#createAction), 在内部调用 `createAction` 和 `createReducer`
+
+- name  标识 state, 将作为生成的 [actionCreator](#createAction) 的前缀
+- initialState 初始化状态
+- reducers 包含了 case Reducer 的对象, 如果自定义 case Reducer, 每个 reducer 将是一个具有 prepare 函数 和 reducer 函数的对象
+  - 如果是一个函数, 将接收一个 create 对象, 具有三个方法
+    - create.reducer 标准的 reducer
+    - create.prepareReducer 自定义 actionCreator 的 payload
+    - create.asyncThunk 创建异步的函数代替 actionCreator
+- extraReducers 函数, 处理自己创建的 actionCreator 之外的情况, 同 [builderCallback](#builderCallback)
+- reducerPath 标识 slice 的位置, 默认 name
+- selectors 接收状态作为第一个参数 和剩余的所有参数并返回指定的结果
+
+返回值, 包含上面的部分属性
+
+- reducer
+- actions
+- caseReducers
+- getInitialState()
+- selectSlice
+- getSelectors()
+- injectInfo()
+
+```jsx
+import {createSlice} from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: {value: 0},
+  // reducers 为一个对象
+  reducers: {
+    increment(state, action) {
+      state.value++;
+    },
+    decrement(state, action){
+      state.value--;
+    },
+    // case reducer, prepareAction
+    incrementByAmout: {
+      reducer(state, action){
+        state.value += action.payload.value;
+      },
+      prepare(text: string){
+        return {text: text, value: 100}
+      }
+    }
+  },
+  // reducers 为一个函数, 接收一个 create 对象 
+  // reducer, prepareReducer, asyncThunk
+  reducers(create){
+    return {
+      increment: create.reducer(state, action) => {
+        state.value++;
+      },
+      decrement: create.reducer(state, action) => {
+        state.value--;
+      },
+      incrementByAmount: create.prepareReducer((text: string) => {
+        return {text: text, value: 100}
+      }, (state, action) => {
+        state.value += action.payload.value;
+      }),
+      fetchTodo: create.asyncThunk(async (id: string, thunkApi) => {
+        const res = await fetch(thunkApi);
+        return (await res.json()) as Item
+      },{
+        pending: state => {
+          state.loading = true;
+        },
+        rejected: state =>{
+          state.loading = false;
+        },
+        fulfilled: (state, action) => {
+          state.loading = false;
+          state.todos.push(action.payload);
+        }
+      })
+    }
+  },
+  extraReducers(builder){
+    builder.addCase('INCREMENT', (state, action) => {
+      state.value++;
+    })
+  }
+})
+```
+
+- selectors
+
+```jsx
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 } satisfies CounterState as CounterState,
+  reducers: {
+    // ...
+  },
+  selectors: {
+    selectValue: (sliceState) => sliceState.value,
+  },
+});
+console.log(counterSlice.selectSlice({ counter: { value: 2 } })) // { value: 2 }
+
+const { selectValue } = counterSlice.selectors
+console.log(selectValue({ counter: { value: 2 } })) // 2
+```
+
+#### combineSlices
+
+合并多个 slice 为一个 reducer, 并允许初始化后更多的 reducer 注入
+
+返回值
+
+- withLazyLoadedSlices() 向 state 添加声明的 slice
+- inject(slice, options) 添加 slice
+  - options.overrideExisting 布尔值, 标识是否替换已存在的 slice
+- selector() 将 reducer 包装在代理中以确保在当前状态未定义的情况下都能恢复到其初始状态
+
+```jsx
+import {combineSlices} from '@reduxjs/toolkit';
+
+const lazeSlice = createSlice({
+  name: 'counter',
+  initialState: {value: 0}
+});
+
+const rootReducer = combineSlices(staticSlice, userSlice);
+const injectReducer = rootReducer.inject(lazySlice);
+// OR
+const injectSlice = lazySlice.injectInfo(rootReducer);
+
+const selectCounterValue = (rootState) => rootState.counter?.value // number | undefined
+const wrappedSelectCounterValue = injectReducer.selector((rootState) => rooState.counter.value);
+console.log(
+  selectCounterValue({}), // undefined
+  selectCounterValue({counter: {value: 2}}), // 2
+  wrappedSelectCounterValue({}), // 0
+  wrappedSelectCounterValue({counter: {value: 2}}), // 2
+)
+```
+
+#### createAsyncThunk
+
+接收一个 [actionCreator](#createAction)和一个回调函数并返回一个 Promise, 不会生成 reducer
+
+- type actionCreator, 如 `users/requestStatus` 将被创建为
+  - pending: `users/requestStatus/pending`
+  - fulfilled: `users/requestStatus/fulfilled`
+  - rejected: `users/requestStatus/rejected`
+- payloadCreator 函数, 将返回一个 promise, 接收两个参数
+  - arg 包含了 thunk actionCreator 被 dispatch 时传入的参数, `dispatch(fetchUsers({status: 'active'}))`
+  - thunkApi 包含了 thunk 函数的所有参数
+    - dispatch()  Redux 的 dispatch 方法
+    - getState()  Redux 的 getState 方法
+    - extra 传递给 thunk 中间件的参数
+    - requestId 自动生成的标识当前请求的唯一 id
+    - signal 信号, AbortController.signal
+    - rejectWithValue(value, [meta]) 修改当前 promise 的状态为 rejected
+    - fulfilledWithValue(value, [meta])  修改当前 promise 的状态为 fulfilled
+- options
+  - condition(arg,{getState, extra}): boolean | Promise\<boolean\> 用来跳过执行 payloadCreator 和 所有的 dispatch
+  - dispatchConditionRejection 布尔值, 如果 condition() 返回 false 所有的 action 都不会 dispatch, 如果想要当 thunk 结束 action 的状态标记为 rejected, 则设置为 true
+  - idGenerator(arg): string 默认的 requestId 由 nanoid() 生成, 自定义生成 id 逻辑
+  - serializeError(error: unknown) => any 替换内部的 `miniSerializeError` 方法
+  - getPendingMeta({arg, requestId}, {getState, extra}): any 创建对象和 `pendingAction.meta` 合并
+
+```jsx
+import {createAsyncThunk} from '@reduxjs/toolkit';
+
+const promise = createAsyncThunk(type, payloadCreator, options?);
+
+const fetchUserById = createAsyncThunk('users/fetchById', async(userId: number, {requestId, getState, rejectWithValue}) => {
+  try{
+    const response = await fetchById(id);
+    return response.data;
+  }catch(err){
+    return rejectWithValue(err.response.data);
+  }
+},{
+  condition(userId, {getState, extra}){
+    const {users} = getState();
+    const fetchStatus = users.requests[userId];
+    if(fetchStatus === 'fulfilled' || fetchStatus === 'loading'){
+      // Already fetched or in progress, don't need to re-fetch
+      return false;
+    }
+  }
+});
+dispatch(fetchUserById(123));
+```
+
+#### createEntityAdapter
+
+生成一组预构建的 reducer 和 seletors, 用于对包含特定类型数据对象实例的规范化状态结构执行 CRUD 操作, 这些 reducer 函数可以作为 case reducer 传递给 [createReducer](#createReducer) 和 [createSlice](#createSlice), 也可以作为 `createReducer` 和 `createSlice` 的辅助函数
+
+- selectId 可选, 函数, 接收一个 entity 实例并返回一个唯一 id, 如果未提供则默认为 entity => entity.id
+- sortComparer 可选, 函数, 接收两个 entity 实例, 返回一个标准的 `Array.sort()` 排序之后的结果 (1, 0, -1) 以指示它们的排序相对排序, 如果未提供将不会排序, 也不会保证排序
+
+- addOne/addMany 向 state 添加 items
+- setOne/setMany 添加新 items 或替换现有 items
+- setAll 替换所有 items
+- removeOne/removeMany 根据 ID 删除 items
+- removeAll 移除所有 items
+- updateOne/updateMany 通过提供部分值更新现有 items
+- upsertOne/upsertMany 添加新 items 或更新现有 items
+- getInitialState() 如果传入对象参数, 将被合并到 initialState 中并返回
+- getSelectors 获取 selectors
+
+```jsx
+import {createSlice, createAsyncThunk, createEntityAdapter} from '@reduxjs/toolkit';
+
+const todosAdapter = createEntityAdapter();
+const initialState = todosAdapter.getInitialState({loading: 'idle'});
+
+// Thunk 函数
+const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
+  const response = await client.get("/fakeApi/todos");
+  return response.todos;
+});
+const saveNewTodo = createAsyncThunk("todos/saveNewTodo",
+  async (text) => {
+    const initialTodo = { text };
+    const response = await client.post("/fakeApi/todos", { todo: initialTodo });
+    return response.todo;
+  }
+);
+
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState,
+  reducers: {
+    todoDeleted: todosAdapter.removeOne, // 根据 id 删除 todo
+    completeTodosCleard(state, action) {
+      const completeIds = Object.values(state.entities)
+        .filter(todo => todo.complete)
+        .map(todo => todo.id);
+      // 删除所有已完成的 todo
+      todosAdapter.removeMany(state, completedIds);
+    }
+  },
+  extraReducers(builder){
+    builder.addCase(fetchTodos.pending, (state, action) => {
+      state.status = 'loading';
+    }).addCase(fetchTodos.fulfilled, (state, action) => {
+      state.status = 'idle';
+    }).addCase(saveNewTodo.fulfilled, todosAdapter.addOne)
+  }
+})
+```
+
+#### createSelector
+
+#### @reduxjs/toolkit/query <em id="RTK-Query"></em> <!--markdownlint-disable-line-->
+
+独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据
+
+### react-redux
+
+#### Provider
+
+- store
+- serverState
+- context
+- stabilityCheck
+- children
+
+```jsx
+import {Provider} from 'react-redux';
+import {createRoot} from 'react-dom/client';
+createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
+    {/*  */}
+  </Provider>
+)
+```
+
+#### shallowEqual
+
+#### useSelector
+
+使用 selector 函数从 Redux store 中提取数据用于当前组件
+
+- selector
+- equalityFn
+
+```jsx
+import {useSelector, shallowEqual} from 'react-redux';
+
+const selectedData = useSelector(selectorReturningObject, shallowEqual);
+// OR
+const selectedData = useSelector(selectorReturningObject, {equalityFn: shallowEqual});
+
+function TodoListItem(props){
+  const todo = useSelector(state => state.todos[props.id]);
+  return <div>{todo.text}</div>
+}
+```
+
+#### useDispatch
+
+```jsx
+import {useDispatch} from 'react-redux';
+function CounterComponent(){
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <span>CounterComponent</span>
+      <button onClick={() => dispatch({type: 'increment-counter'})}></button>
+    </div>
+  )
+}
+```
+
+#### useStore
+
+```jsx
+import {useStore} from 'react-redux';
+
+function MyComponent(){
+  const store = useStore();
+
+  return <div>{store.getState().todos.length}</div>;
+}
+```
