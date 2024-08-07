@@ -3366,9 +3366,9 @@ const counterReducer = createReducer(initialState, builder => {
       - pending
       - fulfilled
       - rejected
-- extraReducers 函数, 处理自己创建的 actionCreator 之外的情况, 同 [builderCallback](#builderCallback)
+- extraReducers 函数, 处理自己创建的 [actionCreator](#createAction) 之外的情况, 如处理异步请求的状态, 同 [builderCallback](#builderCallback)
 - reducerPath 标识 slice 的位置, 默认 name
-- selectors 接收状态作为第一个参数 和剩余的所有参数并返回指定的结果
+- selectors 接收 state 作为第一个参数和剩余的参数并返回指定结果
 
 返回值, 包含上面的部分属性
 
@@ -3376,9 +3376,9 @@ const counterReducer = createReducer(initialState, builder => {
 - actions
 - caseReducers
 - getInitialState()
-- selectSlice
+- selectSlice 关联自动创建的一个 selector
 - getSelectors()
-- injectInfo()
+- injectInfo() 注入 slice
 
 ```jsx
 import {createSlice} from '@reduxjs/toolkit';
@@ -3444,7 +3444,8 @@ const counterSlice = createSlice({
 })
 ```
 
-- selectSlice
+两种获取 selector 的方式
+
 - selectors
 
 ```jsx
@@ -3472,7 +3473,7 @@ const { selectValue } = counterSlice.getSelectors(
 )
 console.log(selectValue({ aCounter: { value: 2 } })) // 2
 
-const {selectValue} = counterSlice.getSelector();
+const {selectValue} = counterSlice.getSelectors();
 console.log(selectValue({value: 2})) //  2
 ```
 
@@ -3537,16 +3538,19 @@ console.log(
 
 返回值
 
-- thunk 函数, 有 3 个状态 pending, fulfilled, rejected
+- thunk 函数, 带有 3 个状态
+  - pending
+  - fulfilled
+  - rejected
 
 ```jsx
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 
 const promise = createAsyncThunk(type, payloadCreator, options?);
 
-const fetchUserById = createAsyncThunk('users/fetchById', async(userId: number, {requestId, getState, rejectWithValue}) => {
+const fetchUserById = createAsyncThunk('users/fetchUserById', async(userId: number, {requestId, getState, rejectWithValue}) => {
   try{
-    const response = await fetchById(id);
+    const response = await fetch(userId);
     return response.data;
   }catch(err){
     return rejectWithValue(err.response.data);
@@ -3561,6 +3565,22 @@ const fetchUserById = createAsyncThunk('users/fetchById', async(userId: number, 
     }
   }
 });
+const usersSlice = createSlice({
+  name: 'users',
+  initialState: { },
+  reducers:{},
+  extraReducers(builder){
+    builder.addCase(fetchUserById.pending, (state, action) => {
+      state.status = 'loading';
+    }).addCase(fetchUserById.fulfilled, (state, action) => {
+      state.status = 'fulfilled';
+      state.user = action.payload;
+    }).addCase(fetchUserById.rejected, (state, action) => {
+      state.status = 'rejected';
+    });
+  }
+});
+
 dispatch(fetchUserById(123));
 ```
 
@@ -3585,7 +3605,10 @@ dispatch(fetchUserById(123));
 ```jsx
 import {createSlice, createAsyncThunk, createEntityAdapter} from '@reduxjs/toolkit';
 
-const todosAdapter = createEntityAdapter();
+const todosAdapter = createEntityAdapter({
+  selectId: todo => todo.id,
+  sortComparer: (a, b) => a.id < b.id
+});
 const initialState = todosAdapter.getInitialState({loading: 'idle'});
 
 // Thunk 函数
@@ -3624,7 +3647,39 @@ const todosSlice = createSlice({
 })
 ```
 
-#### createSelector
+#### createSelector <em id="createSelector"></em> <!--markdownlint-disable-line-->
+
+函数组件每次重新渲染都会重新执行 selector, createSelector 用于创建带有**记忆化**的 selector, 当给定的 inputSelector 没有发生变化时返回已缓存的 selector
+
+- inputSelectors 创建记忆化 selector 的依赖, 可以是一个函数, 也可以是多个函数组成的数组, 返回值依次作为 resultFn 的参数传入
+  - selectorFn 接收 state 作为第一个参数和剩余的参数并返回指定结果
+- resultFn 在 inputSelectors 之后调用并依次接收来自 inputSelectors 函数的返回值作为参数并返回结果
+
+返回值, 带有记忆化的函数
+
+```jsx
+import {createSelector} from 'reselect';
+import {useSelector} from 'react-redux';
+
+const selectTodos = state => state.todos;
+const selectTodosStatus = (state, completed) => completed;
+const memoizedSelectTodoCount = createSelector([selectTodos, selectTodosStatus], (todos, completed) => {
+  return todos.filter(todo => todo.completed === completed).length;
+});
+
+function CompletedTodosCount({completed}){
+  const matchingCount = useSelector((state) => memoizedSelectTodoCount(state, complete));
+  return <div>{matchingCount}</div>
+}
+function App(){
+  return (
+    <>
+      <span>Number of done todos</span>
+      <CompletedTodosCount completed={true}/>
+    </>
+  )
+}
+```
 
 #### @reduxjs/toolkit/query <em id="RTK-Query"></em> <!--markdownlint-disable-line-->
 
@@ -3655,6 +3710,8 @@ createRoot(document.getElementById('root')).render(
 #### useSelector
 
 使用 selector 函数从 Redux store 中提取数据用于当前组件
+
+使用 [createSelector](#createSelector) 创建记忆化的 selector
 
 - selector
 - equalityFn
