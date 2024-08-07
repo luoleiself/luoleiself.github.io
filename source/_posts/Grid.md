@@ -20,6 +20,24 @@ CSS Grid 布局 和 Flexible 布局的主要区别在于 CSS Flexible 是为了�
 - minmax(min, max), 函数为一个行/列的尺寸设置了取值范围, 例如 minmax(100px, auto) 表示尺寸至少为 100px, 如果内容尺寸大于 100px 则会根据内容自动调整
 - repeat(count, value), 表示轨道列表的重复片段, 允许以更紧凑的形式写入大量显示重复模式的列或行
 
+### 属性列表
+
+- grid-template-rows
+- grid-template-columns
+- grid-template-areas
+- grid-auto-flow
+
+- grid-auto-rows
+- grid-auto-columns
+
+- grid-gap/gap
+  - grid-column-gap
+  - grid-row-gap
+
+- grid-area
+  - grid-row
+  - grid-column
+  
 <!-- more -->
 
 ### 容器属性
@@ -73,6 +91,7 @@ grid-template-columns: 1fr 2fr;
 第 1 列和第 3 列分配 1fr 可用空间, 
 第 2 列分配 2fr 可用空间*/
 grid-template-columns: repeat(1, 1fr 2fr 1fr);
+grid-template-rows: [c1] 100px [c2] auto [c3] 100px [c4];
 ```
 
 - 网格线, 使用**方框号**指定每根网格线的名字, 默认从 1 开始
@@ -173,13 +192,13 @@ row-gap: 20px;
 column-gap: 10px;
 ```
 
-##### grid-row-gap
-
-指定**网格行**之间的间隙大小, 此属性作为 `row-gap` 兼容低版本的别名
-
 ##### grid-column-gap
 
 指定**网格列**之间的间隙大小
+
+##### grid-row-gap
+
+指定**网格行**之间的间隙大小, 此属性作为 `row-gap` 兼容低版本的别名
 
 ### 项目属性
 
