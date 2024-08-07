@@ -498,24 +498,18 @@ $popDom.on('mousedown', function (evt) {
     var _paused = false; // 是否暂停
     var _canceled = false; // 是否取消
     var _resumed = false; // 是否恢复
-    var _keep = false; // 是否跟随上一次暂停时间继续计算
+    var _keep = true; // 是否跟随上一次暂停时间继续计算
     var obj = { days: '00', hours: '00', minutes: '00', seconds: '00' };
     var evt = new Event('leftDown', { bubbles: true, cancelable: true });
+    var evtPause = new Event('leftDown:pause', { bubbles: true, cancelable: true });
+    var evtResume = new Event('leftDown:resume', { bubbles: true, cancelable: true });
+    var evtCancel = new Event('leftDown:cancel', { bubbles: true, cancelable: true });
     evt.leftDown = obj;
 
     var getDiff = function () {
-      if (_keep) {
-        _referrerTime += 1000;
-      } else {
-        _referrerTime = Date.now();
-      }
+      _referrerTime = _keep ? _referrerTime + 1000 : Date.now();
       return this.getTime() - _referrerTime;
     }.bind(this);
-
-    if (getDiff() <= 0) {
-      window && window.dispatchEvent(evt);
-      return typeof callback === 'function' && callback(obj);
-    }
 
     var calcLeftTimeFn = function () {
       var leftTime = getDiff();
@@ -523,7 +517,9 @@ $popDom.on('mousedown', function (evt) {
         clearInterval(_timer);
         _timer = null;
         _canceled = true;
-        _paused = _resumed = _keep = false;
+        evtCancel.leftDown = evt.leftDown = obj;
+        window && window.dispatchEvent(evt);
+        window && window.dispatchEvent(evtCancel);
         return typeof callback === 'function' && callback(obj);
       }
       var d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
@@ -540,115 +536,112 @@ $popDom.on('mousedown', function (evt) {
       typeof callback === 'function' && callback(obj);
     };
 
+    if (getDiff() <= 0) {
+      _canceled = true;
+      evtCancel.leftDown = evt.leftDown = obj;
+      window && window.dispatchEvent(evt);
+      window && window.dispatchEvent(evtCancel);
+      return typeof callback === 'function' && callback(obj);
+    }
+
     _timer = setInterval(calcLeftTimeFn.bind(this), 1000);
 
     Object.defineProperties(this, {
       paused: {
-        get() {
-          return _paused;
-        },
+        get() { return _paused },
         set(newVal) {
           console.log('paused is the read-only property');
           return 'paused is the read-only property';
         },
       },
       resumed: {
-        get() {
-          return _resumed;
-        },
+        get() { return _resumed },
         set(newVal) {
           console.log('resumed is the read-only property');
           return 'resumed is the read-only property';
         },
       },
       canceled: {
-        get() {
-          return _canceled;
-        },
+        get() { return _canceled },
         set(newVal) {
           console.log('canceled is the read-only property');
           return 'canceled is the read-only property';
         },
       },
       kept: {
-        get() {
-          return _keep;
-        },
+        get() { return _keep },
         set(newVal) {
           console.log('kept is the read-only property');
           return 'kept is the read-only property';
         },
       },
       left: {
-        get() {
-          return obj;
-        },
+        get() { return obj },
         set() {
           console.log('left is the read-only property');
           return 'left is the read-only property';
         },
       },
     });
-    /**
-     * @method cancel 取消倒计时
-     * @returns undefined
-     */
+    // 取消倒计时
     var cancel = function () {
-      _referrerTime = this.getTime();
+      if(_canceled) return;
       _canceled = true;
-      _paused = _resumed = _keep = false;
       if (_timer) {
         clearInterval(_timer);
         _timer = null;
       }
+      evtCancel.leftDown = obj;
+      window && window.dispatchEvent(evtCancel);
+      typeof callback === 'function' && callback(obj);
     }.bind(this);
-    /**
-     * @method pause 暂停倒计时
-     * @returns undefined
-     */
+    // 暂停倒计时
     var pause = function () {
-      _paused = _keep = true;
-      _canceled = _resumed = false;
+      if(_canceled || _paused) return;
+      _paused = true;
+      _resumed = !_paused;
       if (_timer) {
         clearInterval(_timer);
         _timer = null;
       }
+      evtPause.leftDown = obj;
+      window && window.dispatchEvent(evtPause);
+      typeof callback === 'function' && callback(obj);
     }.bind(this);
-    /**
-     * @method resume 恢复倒计时
-     * @param {boolean} keep 跟随上一次暂停时间继续计算, 默认 true, 如果为 false, 则按照当前恢复时间重新计算
-     * @returns undefined
-     */
+    // 是否跟随上一次暂停时间继续计算, 默认为 true, 传入 false 则按照当前时间重新计算
     var resume = function (keep = true) {
-      if (this.getTime() <= _referrerTime) {
-        return;
+      if(_canceled || _resumed) return;
+      if(_timer){
+        clearInterval(_timer);
+        _timer = null;
       }
-      if (_timer == null) {
-        _keep = keep == true ? true : false;
-        _resumed = true;
-        _canceled = _paused = false;
-        calcLeftTimeFn();
-        _timer = setInterval(calcLeftTimeFn.bind(this), 1000);
-      }
+      _resumed = true;
+      _paused = !_resumed;
+      _keep = keep === false ? false : true;
+      calcLeftTimeFn();
+      _timer = setInterval(calcLeftTimeFn.bind(this), 1000);
+      evtResume.leftDown = obj;
+      window && window.dispatchEvent(evtResume);
+      typeof callback === 'function' && callback(obj);
     }.bind(this);
 
     return { cancel: cancel, pause: pause, resume: resume };
   };
-
-  // 演示用效果方法
-  window.randRGBA = function (a) {
-    let r = Math.floor(Math.random() * 256);
-    let g = Math.floor(Math.random() * 256);
-    let b = Math.floor(Math.random() * 256);
-    a =
-      a >= 1
-        ? 1
-        : Math.random()
-            .toString()
-            .match(/\d\.\d{1}/)[0];
-    return `rgba(${r},${g},${b},${a})`;
-  };
 })();
+
+// 演示用效果方法
+window.randRGBA = function (a) {
+  let r = Math.floor(Math.random() * 256);
+  let g = Math.floor(Math.random() * 256);
+  let b = Math.floor(Math.random() * 256);
+  a =
+    a >= 1
+      ? 1
+      : Math.random()
+          .toString()
+          .match(/\d\.\d{1}/)[0];
+  return `rgba(${r},${g},${b},${a})`;
+};
 
 var date = new Date(Date.now() + 1000000);
 // 方式一：回调函数的参数
@@ -656,9 +649,17 @@ var { pause, resume, cancel } = date.leftDown(function (obj) {
   console.log(obj);
   document.body.style.color = randRGBA(1);
 });
-
 // // 方式二：事件监听回调函数参数的 leftDown 字段获取
 // window.addEventListener('leftDown', function (evt) {
+//   console.log(evt)
+// });
+// window.addEventListener('leftDown:pause', function (evt) {
+//   console.log(evt)
+// });
+// window.addEventListener('leftDown:resume', function (evt) {
+//   console.log(evt)
+// });
+// window.addEventListener('leftDown:cancel', function (evt) {
 //   console.log(evt)
 // });
 ```
