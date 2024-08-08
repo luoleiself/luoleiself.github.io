@@ -1991,6 +1991,8 @@ preloadModule(href, options);
   - onRecoverableError 当 React 自动从错误中恢复时调用
   - identifierPrefix 一个字符串, React 使用此字符串作为 [useId](#useId) 生成的 id 的前缀, 当在一个页面中使用多个根节点时可以避免冲突
 
+返回值
+
 - root.render(reactNode) 将一段 JSX 片段渲染为 React 组件并显示, 首次调用时 React 将清空根节点所有已经存在的 HTML
 - root.unmount() 销毁 React 根节点中的一个已经渲染的树
 
@@ -2017,6 +2019,8 @@ root.render(reactNode);
 - domNode 一个在服务器端渲染时呈现为根元素的 DOM 元素
 - reactNode 用于渲染已存在 HTML 的 React 节点, 通常是 JSX 片段, 并且使用像 `renderToPipeableStream(<App/>)` 的方法渲染
 - options 参数同 [createRoot](#createRoot) 的 options
+
+返回值
 
 - root.render(reactNode) 更新一个 hydrate 根组件中的 React 组件来渲染浏览器端 DOM 元素
 - root.unmount() 销毁 React 根节点内的渲染树
@@ -2120,7 +2124,7 @@ const stream = renderToNodeStream(reactNode, options?);
   - onError 函数, 出现异常错误时触发
   - progressiveChunkSize 一个块中的字节数
 
-- 返回一个包含了 pipe 和 abort 方法的对象
+- 返回值: 包含 pipe() 和 abort() 方法的对象
 
 ```jsx
 const {pipe, abort} = renderToPipeableStream(reactNode, options?);
@@ -2258,11 +2262,11 @@ app.use('/', (request, response) => {
 
 #### 不支持 data APIs
 
-- `<BrowserRouter>`
-- `<MemoryRouter>`
-- `<HashRouter>`
-- `<NativeRouter>` 用于 React Native
-- `<StaticRouter>`
+- \<BrowserRouter\>
+- \<MemoryRouter\>
+- \<HashRouter\>
+- \<NativeRouter\> 用于 React Native
+- \<StaticRouter\>
 
 #### 支持 data APIs
 
@@ -2276,11 +2280,15 @@ app.use('/', (request, response) => {
 ##### createBrowserRouter <em id="createBrowserRouter"></em> <!--markdownlint-disable-line-->
 
 - basename 基础路径
-- future 用于启用新版本语法的标记
+- future 用于启用新版本语法的配置对象
 - hydrationData 当使用服务器端渲染时允许从服务器端获取数据
 - unstable_dataStrategy 低水平 API, 将会覆盖 React Router 内部的 loader, action 的执行
 - unstable_patchRoutesOnMis
 - window 用于区分环境, 对开发者工具或者测试来说非常有用
+
+返回值
+
+- router 路由信息
 
 ```jsx
 const router = createBrowserRouter(routes, {
@@ -2298,37 +2306,41 @@ const router = createBrowserRouter(routes, {
 通常用于服务器端渲染的 数据获取和提交, 配合 `createStaticRouter` 使用
 
 - routes 路由信息
-- options
+- opts
   - basename
-  - future
+  - future 用于启用新版本语法的配置对象
   - mapRouteProperties
 
 返回值
 
-- query() 执行当前请求的 action, loader 并返回 context 包含了渲染页面的所有数据
-  - request
+- staticHandler.dataRoutes 路由信息
+- staticHandler.query() 执行当前请求的 action, loader 并返回 context 包含了渲染页面的所有数据
+  - request 请求
   - opts
     - routeId 如果需要调用不同的路由的 action 或 loader, 传入指定的 routeId
     - requestContext 将请求上下文信息传入 action 或 loader
-- dataRoutes 路由信息
+
+staticHandler.query() 返回值
+
+- context 包含渲染页面信息的请求上下文
 
 ##### createStaticRouter
 
 - routes 路由信息
 - context 请求的上下文信息
-- ops
-  - future
+- opts
+  - future 用于启用新版本语法的配置对象
 
 返回值
 
-- router
+- router 路由信息
 
 ##### StaticRouterProvider
 
 接收来自 `createStaticHandler` 的 context 和  `createStaticRouter` 的 router, 用于服务器端渲染
 
 - router 通过 createStaticRouter 创建的路由
-- context 接收来自 staticHandler.query 的结果作为数据
+- context 接收来自 staticHandler.query() 返回的结果作为数据
 - hydrate 是否禁用客户端自动数据连接
 - nonce 标识使用严格 CSP(安全内容策略) 时允许资源的加密随机数
 
@@ -2360,9 +2372,9 @@ export async function renderHtml(req){
 
 路由根组件, 所有的路由对象或者 Data APIS 都通过此组件注入 React 应用程序
 
-- router
+- router 路由信息
 - fallbackElement 后备内容
-- future
+- future 用于启用新版本语法的配置对象
 
 ```jsx
 import {StrictMode} from 'react';
