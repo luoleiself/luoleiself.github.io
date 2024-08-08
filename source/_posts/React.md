@@ -2297,6 +2297,8 @@ const router = createBrowserRouter(routes, {
 
 通常用于服务器端渲染的 数据获取和提交, 配合 `staticRouterProvider` 使用
 
+返回值
+
 - query 执行当前请求的 action, loader 并返回 context 包含了渲染页面的所有数据
 - dataRoutes 路由信息
 
@@ -2318,7 +2320,7 @@ import {renderToString} from 'react-dom/server';
 
 const routes = [];
 export async function renderHtml(req){
-  const {req, dataRoutes} = createStaticHandler(routes);
+  const {query, dataRoutes} = createStaticHandler(routes);
   const fetchRequest = createFetchRequest(req);
   const context = await query(fetchRequest);
 
@@ -3381,7 +3383,7 @@ const counterReducer = createReducer(initialState, builder => {
 - injectInfo() 注入 slice
 
 ```jsx
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, configureStore} from '@reduxjs/toolkit';
 
 const counterSlice = createSlice({
   name: 'counter',
@@ -3400,7 +3402,7 @@ const counterSlice = createSlice({
         state.value += action.payload.value;
       },
       prepare(text: string){
-        return {text: text, value: 100}
+        return {payload: {text: text, value: 100}}
       }
     }
   },
@@ -3415,7 +3417,7 @@ const counterSlice = createSlice({
         state.value--;
       },
       incrementByAmount: create.prepareReducer((text: string) => {
-        return {text: text, value: 100}
+        return { payload: {text: text, value: 100}}
       }, (state, action) => {
         state.value += action.payload.value;
       }),
@@ -3441,7 +3443,18 @@ const counterSlice = createSlice({
       state.value++;
     })
   }
+});
+const store = configureStore({
+  reducer: {
+    counter: counterSlice.reducer
+  }
 })
+store.dispatch(counterSlice.actions.increment());
+sotre.dispatch(counterSlice.actions.decrement());
+store.dispatch(counterSlice.actions.incrementByAmount({value: 10}));
+
+store.dispatch({type: 'counter/increment'})
+store.dispatch({type: 'counter/decrement'})
 ```
 
 两种获取 selector 的方式
@@ -3475,6 +3488,31 @@ console.log(selectValue({ aCounter: { value: 2 } })) // 2
 
 const {selectValue} = counterSlice.getSelectors();
 console.log(selectValue({value: 2})) //  2
+```
+
+dispatch 提交
+
+- dispatch 提交 action 时, 如果参数是一个 action 对象形式, 则会忽略 case reducer 中配置的 prepare 方法
+
+```jsx
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: {
+    count: 0,
+  },
+  reducers: {
+    incrementByAmount:{
+      reducer(state, action){
+        state.count += action.payload;
+      },
+      prepare(val){
+        return {payload: val + 2};
+      }
+    }
+  }
+});
+// action 对象方式提交会忽略 case redcuer 的 prepare 方法
+dipatch({type: 'counter/incrementByAmount', payload: 1});
 ```
 
 #### combineSlices
@@ -3513,7 +3551,7 @@ console.log(
 
 #### createAsyncThunk
 
-接收一个 [actionCreator](#createAction)和一个回调函数并返回一个 Promise, 不会生成 reducer
+接收一个 [actionCreator](#createAction)和一个回调函数并返回一个 Promise, 同时会创建三个 actionCreator 分别对应 pending, fulfilled, rejected 的状态, 不会生成 reducer
 
 - type actionCreator, 如 `users/requestStatus` 将被创建为
   - pending: `users/requestStatus/pending`
