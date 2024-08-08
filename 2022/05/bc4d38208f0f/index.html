@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="命令行输出内容变身格式: \033[显示方式;前景色;背景色 m …… \033[0m  \033[ 固定格式 \033[0m 非必需, 如果省略表示后面输出内容的样式都会应用当前设置的样式  属性集   前景色 背景色 色值    30 40 黑色   31 41 红色   32 42 绿色   33 43 黄色   34 44 蓝色   35 45 紫红色   36 46 青蓝色   37 4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux工具">
+<meta property="og:url" content="https://luoleiself.github.io/2022/05/bc4d38208f0f/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="命令行输出内容变身格式: \033[显示方式;前景色;背景色 m …… \033[0m  \033[ 固定格式 \033[0m 非必需, 如果省略表示后面输出内容的样式都会应用当前设置的样式  属性集   前景色 背景色 色值    30 40 黑色   31 41 红色   32 42 绿色   33 43 黄色   34 44 蓝色   35 45 紫红色   36 46 青蓝色   37 4">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-31T06:40:43.000Z">
+<meta property="article:modified_time" content="2024-08-03T11:17:30.550Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/05/bc4d38208f0f/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>linux工具 | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/05/bc4d38208f0f/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux工具
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-31 14:40:43" itemprop="dateCreated datePublished" datetime="2022-05-31T14:40:43+08:00">2022-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-03 19:17:30" itemprop="dateModified" datetime="2024-08-03T19:17:30+08:00">2024-08-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="命令行输出内容变身"><a href="#命令行输出内容变身" class="headerlink" title="命令行输出内容变身"></a>命令行输出内容变身</h3><p>格式: \033[显示方式;前景色;背景色 m …… \033[0m</p>
+<ul>
+<li>\033[ 固定格式</li>
+<li>\033[0m 非必需, 如果省略表示后面输出内容的样式都会应用当前设置的样式</li>
+</ul>
+<h4 id="属性集"><a href="#属性集" class="headerlink" title="属性集"></a>属性集</h4><table>
+<thead>
+<tr>
+<th>前景色</th>
+<th>背景色</th>
+<th>色值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>30</td>
+<td>40</td>
+<td>黑色</td>
+</tr>
+<tr>
+<td>31</td>
+<td>41</td>
+<td>红色</td>
+</tr>
+<tr>
+<td>32</td>
+<td>42</td>
+<td>绿色</td>
+</tr>
+<tr>
+<td>33</td>
+<td>43</td>
+<td>黄色</td>
+</tr>
+<tr>
+<td>34</td>
+<td>44</td>
+<td>蓝色</td>
+</tr>
+<tr>
+<td>35</td>
+<td>45</td>
+<td>紫红色</td>
+</tr>
+<tr>
+<td>36</td>
+<td>46</td>
+<td>青蓝色</td>
+</tr>
+<tr>
+<td>37</td>
+<td>47</td>
+<td>白色</td>
+</tr>
+</tbody></table>
+<h4 id="显示方式"><a href="#显示方式" class="headerlink" title="显示方式"></a>显示方式</h4><table>
+<thead>
+<tr>
+<th align="center">显示方式</th>
+<th>表现行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td>默认</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td>高亮</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td>下划线</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td>闪烁</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td>反色</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td>不可见</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出字体为绿色的 你好hello world</span></span><br><span class="line">[root@localhost ~]<span class="comment"># printf &#x27;\033[1;32m你好hello world\033[0m\n&#x27;</span></span><br><span class="line"><span class="comment"># 输出字体为绿色并带有下划线的 你好hello world</span></span><br><span class="line">[root@localhost ~]<span class="comment"># printf &#x27;\033[4;32m你好hello world\033[0m\n&#x27;</span></span><br><span class="line"><span class="comment"># 输出背景色为绿色的 你好hello world</span></span><br><span class="line">[root@localhost ~]<span class="comment"># printf &#x27;\033[7;32m你好hello world\033[0m\n&#x27;</span></span><br><span class="line"><span class="comment"># 输出内容不可见</span></span><br><span class="line">[root@localhost ~]<span class="comment"># printf &#x27;\033[8;32m你好hello world\033[0m\n&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="ssh-操作"><a href="#ssh-操作" class="headerlink" title="ssh 操作"></a>ssh 操作</h3><ul>
+<li>ssh-keyscan 收集公钥中的主机地址</li>
+<li>ssh-copy-id 将本地的公钥文件复制到远程主机对应账户下的 authorized_keys 文件中</li>
+<li>ssh-keygen 生成非对称密钥对</li>
+</ul>
+<span id="more"></span>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[vagrant@centos8s ~]<span class="comment"># ssh-keygen -t &lt;密钥类型&gt; -f &lt;input_keyfile&gt; -C &lt;comment&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ssh-agent ssh 认证代理, 通常和 ssh-add 配合使用管理本地密钥<ul>
+<li>-s 在标准输出上初始化 bourne shell</li>
+<li>-k 关闭当前的 agent(代理), 通过环境变量 SSH_AGNENT_PID</li>
+</ul>
+</li>
+<li>ssh-add 管理本地密钥<ul>
+<li>-l 列出所有的密钥摘要信息</li>
+<li>-L 列出所有的公钥信息</li>
+<li>-d &lt;input_keyfile&gt; 移除指定的密钥</li>
+<li>-D 移除所有的密钥</li>
+<li>-x 锁定 agent(代理)</li>
+<li>-X 解锁 agent(代理)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 ssh -T 测试连通性</span></span><br><span class="line">[vagrant@centos8s ~]$ ssh -T git@github.com</span><br><span class="line">git@github.com: Permission denied (publickey).</span><br><span class="line"><span class="comment"># 或者使用 -i 每次都指定密钥</span></span><br><span class="line">[vagrant@centos8s ~]$ ssh -i ~/.ssh/github_25519 -T git@github.com</span><br><span class="line">Hi ......! You\<span class="string">&#x27;ve successfully authenticated, but GitHub does not provide shell access.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 如果出现提示</span></span><br><span class="line"><span class="string"># Could not open a connection to your authentication agent.</span></span><br><span class="line"><span class="string"># 初始化一个 bash</span></span><br><span class="line"><span class="string">[vagrant@centos8s ~]$ eval `ssh-agent -s`</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 使用 ssh-add 将密钥添加到 ssh 认证代理</span></span><br><span class="line"><span class="string">[vagrant@centos8s ~]$ ssh-add ~/.ssh/github_25519</span></span><br><span class="line"><span class="string">Identity added: /home/vagrant/.ssh/github_25519 (......@163.com)</span></span><br><span class="line"><span class="string">[vagrant@centos8s ~]$ ssh-add -l</span></span><br><span class="line"><span class="string">256 SHA256:CfRvLFZMgJ/p7r5ywt8BSQ2T1qEYtjCGDvVDVeYOtmY ......@163.com (ED25519)</span></span><br><span class="line"><span class="string"># 不需要使用 -i 指定密钥</span></span><br><span class="line"><span class="string">[vagrant@centos8s ~]$ ssh -T git@github.com</span></span><br><span class="line"><span class="string">Hi ......! You\&#x27;</span>ve successfully authenticated, but GitHub does not provide shell access.</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移除指定的密钥</span></span><br><span class="line">[vagrant@centos8s ~]$ ssh-add -d ~/.ssh/github_25519</span><br><span class="line">Identity removed: /home/vagrant/.ssh/github_25519 (......@163.com)</span><br><span class="line"><span class="comment"># 移除所有的密钥</span></span><br><span class="line">[vagrant@centos8s ~]$ ssh-add -D</span><br><span class="line">All identities removed.</span><br><span class="line"><span class="comment"># 列出所有的密钥摘要信息</span></span><br><span class="line">[vagrant@centos8s ~]$ ssh-add -l</span><br><span class="line">The agent has no identities.</span><br></pre></td></tr></table></figure>
+
+<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><p>awk 是一种可以对文本和输入数据进行处理的编程语言, 默认情况下, awk 对文件的每一行都视为一条记录, 然后每一条记录被进一步分解成一系列的字段</p>
+<ul>
+<li>-f scriptFile 从脚本文件中读取 awk 命令</li>
+<li>-v var=value 赋值一个用户定义变量, 将外部变量传递给 awk</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># awk -v name=&quot;hello world&quot; -F : &#x27;&#123;print $1&#125;&#x27; /etc/passwd</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h4><ul>
+<li>OFMT 输出数字格式(默认%.6g)</li>
+<li>CONVFMT 数字转换格式(默认值为%.6g)ENVIRON 环境变量关联数组</li>
+<li>ENVIRON 数组, 存储当前系统的环境变量, ENVIRON[‘PATH’]</li>
+<li>ERRNO 最后一个系统错误的描述</li>
+<li>FILENAME 当前正在处理的文件名</li>
+<li>FIELDWIDTHS 以空格分隔的字段宽度</li>
+<li>PROCINFO 数组, 存储当前系统运行时信息, PROCINFO[‘uid’]</li>
+<li>IGNORECASE 如果为真, 则进行忽略大小写的匹配</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># git branch -r | awk &#x27;BEGIN &#123;print &quot;hello awk, I am coming\n&quot;&#125;END&#123;print &quot;hello awk, good bye\n&quot;&#125;&#123;printf &quot;NF--%s NR--%s FNR--%s $0--%s\n&quot;,NF,NR,FNR,$0;&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="字段分隔符"><a href="#字段分隔符" class="headerlink" title="字段分隔符"></a>字段分隔符</h5><ul>
+<li>-F 字段分隔符</li>
+<li>FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置</li>
+<li>OFS 输出的字段分隔符, 默认为空格</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># awk &#x27;&#123;FS=&quot;:&quot;;print $1&#125;&#x27; /etc/passwd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># awk -F : &#x27;&#123;print $1&#125;&#x27; /etc/passwd</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="记录分隔符"><a href="#记录分隔符" class="headerlink" title="记录分隔符"></a>记录分隔符</h5><ul>
+<li>RS 输入记录的分隔符, 默认为换行符</li>
+<li>ORS 输出的记录分隔符, 默认为换行符</li>
+</ul>
+<h5 id="记录统计"><a href="#记录统计" class="headerlink" title="记录统计"></a>记录统计</h5><ul>
+<li>$0 完整的输入记录</li>
+<li>$1-$n 表示当前行第几个字段, $(NF - n) 动态计算第几个字段</li>
+<li>NF 当前记录中的字段个数</li>
+<li>NR 已经读出的记录数(默认从 1 开始)</li>
+<li>FNR 当前处理的记录号</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># echo 2 | awk -v sum=2 &#x27;&#123;printf &quot;FS = %s\nOFS = %s\nRS = %s\nORS = %s\nNF = %d\nNR = %d\nFNR = %d\n$0 = %s\n$1 = %s\n$2 = %s&quot;, FS, OFS, RS, ORS, NF, NR, FNR, $0, $1, $2&#125;&#x27;</span></span><br><span class="line">FS =</span><br><span class="line">OFS =</span><br><span class="line">RS =</span><br><span class="line"></span><br><span class="line">ORS =</span><br><span class="line"></span><br><span class="line">NF = 1</span><br><span class="line">NR = 1</span><br><span class="line">FNR = 1</span><br><span class="line"><span class="variable">$0</span> = 2</span><br><span class="line"><span class="variable">$1</span> = 2</span><br><span class="line"><span class="variable">$2</span> =</span><br></pre></td></tr></table></figure>
+
+<h5 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h5><ul>
+<li>ARGC 命令行参数个数(不包括 awk 的选项和 awk 的程序内容)</li>
+<li>ARGV 命令行参数序列数组,下标从 0 开始</li>
+<li>ARGIND 命令行中当前文件的位置(从 0 开始算)</li>
+</ul>
+<h5 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h5><ul>
+<li>BEGIN { 这里面是行处理语句执行前的语句 }</li>
+<li>END { 这里面是行处理语句执行完成后的语句 }</li>
+<li>{ 这里面是处理每一行时要执行的语句 }</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># awk &#x27;&#123; sum += $1 &#125;END&#123; print sum &#125;&#x27; file</span></span><br><span class="line">[root@localhost ~]<span class="comment"># echo 2 | awk -v sum=2 &#x27;BEGIN&#123;print &quot;hello awk&quot;&#125;END&#123;print &quot;good bye awk&quot;&#125;&#123;printf &quot;sum = %.2f\n&quot;, sum += $1&#125;&#x27;</span></span><br><span class="line">hello awk</span><br><span class="line"><span class="built_in">sum</span> = 4.00</span><br><span class="line">good <span class="built_in">bye</span> awk</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># echo 1.1 | awk -v sum=2 &#x27;BEGIN&#123;print &quot;hello awk&quot;&#125;END&#123;print &quot;good bye awk&quot;&#125;&#123;printf &quot;sum = %.2f\n&quot;, sum += $1&#125;&#x27;</span></span><br><span class="line">hello awk</span><br><span class="line"><span class="built_in">sum</span> = 3.10</span><br><span class="line">good <span class="built_in">bye</span> awk</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>if 语句</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># echo -e &quot;1 a\n2 b\n3 c&quot; | awk &#x27;&#123;if ($1 &gt; 1) print $0&#125;&#x27;</span></span><br><span class="line">2 b</span><br><span class="line">3 c</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>while 和 do…while</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># echo 3 | awk &#x27;&#123;i=$1; while (i &lt;= 5) &#123;print i; i++&#125;&#125;&#x27;</span></span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>for 语句</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># echo 3 | awk &#x27;&#123;for(i=1; i &lt;= 2;i++) &#123;print i&#125;&#125;&#x27;</span></span><br><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>switch 语句</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># echo 3 | awk &#x27;&#123;switch ($1) &#123;case 1: print &quot;一&quot;;break; case 2: print &quot;二&quot;;break; case 3: print &quot;三&quot;;break; default: print &quot;其它&quot;;&#125;&#125;&#x27;</span></span><br><span class="line">三</span><br></pre></td></tr></table></figure>
+
+<h5 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h5><ul>
+<li>gsub(r, s) 在整个 $0 中用 s 替换 r</li>
+<li>gsub(r, s, t) 在整个 t 中用 s 替换 r</li>
+<li>index(s, t) 返回 s 中字符串 t 的第一位置</li>
+<li>length(s) 返回 s 的长度</li>
+<li>match(s, r) 测试 s 是否包含匹配 r 的字符串</li>
+<li>split(s, a, fs) 在 fs 上将 s 分成序列 a</li>
+<li>sprint(fmt, exp) 返回经 fmt 格式化后的 exp</li>
+<li>sub(r, s) 用 $0 中最左边最长的子串代替 s</li>
+<li>substr(r, p) 返回字符串 s 中从 p 开始的后缀部分</li>
+<li>substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分</li>
+</ul>
+<h3 id="xargs"><a href="#xargs" class="headerlink" title="xargs"></a>xargs</h3><p>将参数列表转换成小块分段传递给其他命令, 以避免参数列表过长的问题, 可单独使用, 也可以使用管道符、重定位符等其他命令配合使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xargs [OPTION]... COMMAND INITIAL-ARGS...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-E EOFString 指定逻辑 EOF 字符串以替换缺省的下划线(_), xargs 命令读取标准输入直到达到 EOF 或指定的字符串</li>
+<li>-I replaceString 插入标准输入的每一行作为 command 参数的自变量, 把它插入每个发生的 replaceString 的 Argument 中</li>
+<li>-n number 指定传递给执行命令的参数个数, 默认是所有</li>
+<li>-p 每执行一个 argument 时询问一次用户</li>
+<li>-a file 从文件中读入作为 stdin</li>
+<li>-s size 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数</li>
+<li>-t 执行命令之前先打印执行命令</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -I 指定参数自变量</span></span><br><span class="line">[root@localhost ~]<span class="comment"># echo &quot;file1 file2 file3&quot; | xargs -t -I % sh -c &#x27;touch %;ls -l %&#x27;</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># sh -c &quot;touch file&#123;1..3&#125;&quot;;ls -l</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-d 设置自定义分隔符</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># echo -n file1#file2#file3#file4 | xargs -d \# -t touch</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># touch file&#123;1..4&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h3><blockquote>
+<p>BRE 定义了 4 组元字符 <code>[ ]</code> <code>.</code> <code>^</code> <code>$</code><br>ERE 增加了 3 组元字符 <code>&#123; &#125;</code> <code>()</code> <code>|</code></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep [OPTION]... PATTERN [FILE]...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>-V,--version 显示版本信息</p>
+</li>
+<li><p>-c,--count 统计符合字符串条件的行数</p>
+</li>
+<li><p>-i,--ignore-case 忽略大小写</p>
+</li>
+<li><p>-e,--regexp=PATTERN 使用正则表达式匹配</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 -e 参数 需要将正则中的部分字符转义才能使用</span></span><br><span class="line">[root@localhost ~]<span class="comment"># grep -i -e &quot;foo\|bar&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>-E,--extended-regexp 使用扩展正则表达式匹配(ERE)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># grep -i -E &quot;foo|bar&quot; # 此处不需要进行字符转义</span></span><br></pre></td></tr></table></figure></li>
+<li><p>-G,--basic-regexp 使用基础正则表达式(BRE)</p>
+</li>
+<li><p>-A{NUM},--after-context=NUM 查找某些字符的内容, 并向下延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-B{NUM},--before-context=NUM 查找某些字符的内容, 并向上延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-C{NUM},--context=NUM 查找某些字符的内容, 并向上和向下各延伸 <code>NUM</code> 行</p>
+</li>
+<li><p>-f File,--file=File 从文件中提取模板</p>
+</li>
+<li><p>-h,--no-filename 当搜索多个文件时, 不显示匹配文件名前缀</p>
+</li>
+<li><p>-o,--only-matching 只显示正则表达式匹配的部分</p>
+</li>
+<li><p>-q,--quiet 取消显示,只返回退出状态, <code>0</code> 表示找到了匹配的行</p>
+</li>
+<li><p>-l,--files-with-matches 打印匹配模板的文件清单</p>
+</li>
+<li><p>-L,--files-without-match 打印不匹配模板的文件清单</p>
+</li>
+<li><p>-n,--line-number 在匹配的行前面打印行号</p>
+</li>
+<li><p>-v,--invert-match 显示不包括文本的所有信息</p>
+</li>
+<li><p>-R,-r,--recursive 递归的读取目录下的所有文件,包括子目录</p>
+</li>
+</ul>
+<h3 id="批量删除本地关联的-git-远程分支"><a href="#批量删除本地关联的-git-远程分支" class="headerlink" title="批量删除本地关联的 git 远程分支"></a>批量删除本地关联的 git 远程分支</h3><ul>
+<li><p>awk 和 xargs 命令结合使用</p>
+</li>
+<li><p>不带远程名称的过滤</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 格式化输出所有本地关联的分支名</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  grep -i <span class="string">&#x27;origin/feature*&#x27;</span> | \</span><br><span class="line">  awk <span class="string">&#x27;&#123;FS=&quot;/&quot;; \</span></span><br><span class="line"><span class="string">    printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125; \</span></span><br><span class="line"><span class="string">    /origin\/feature/&#123; \</span></span><br><span class="line"><span class="string">      FS=&quot;/&quot;; \</span></span><br><span class="line"><span class="string">      printf &quot;FS %4s OFS %4s NF %4s NR %4s $0 %4s $1 %4s\n&quot;,FS,OFS,NF,NR,$0,$1; \</span></span><br><span class="line"><span class="string">    &#125;&#x27;</span></span><br><span class="line">FS    / OFS      NF    1 NR    1 <span class="variable">$0</span>   origin/feature-BUSINESS-11269 <span class="variable">$1</span> origin/feature-BUSINESS-11269</span><br><span class="line">FS    / OFS      NF    2 NR    2 <span class="variable">$0</span>   origin/feature-BUSINESS-11374 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    3 <span class="variable">$0</span>   origin/feature-mall-20220406 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    4 <span class="variable">$0</span>   origin/feature-mall-entry <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    5 <span class="variable">$0</span>   origin/feature-privacy-20220329 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    6 <span class="variable">$0</span>   origin/feature-service_tpl-20220418 <span class="variable">$1</span>   origin</span><br><span class="line">FS    / OFS      NF    2 NR    7 <span class="variable">$0</span>   origin/feature_BUSINESS-0707 <span class="variable">$1</span>   origin</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行删除分支操作</span></span><br><span class="line"><span class="comment"># BEGIN&#123;printf &quot;\nawk begin filtering\n\n&quot;;&#125;END&#123;printf &quot;\ndelete successfully\n&quot;;&#125;</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  grep -i <span class="string">&#x27;origin/revert*&#x27;</span> | \</span><br><span class="line">  awk <span class="string">&#x27;&#123;printf &quot;%4s\n&quot;,$0;&#125;&#x27;</span> | \  <span class="comment"># awk &#x27;&#123;printf $0 &quot;\n&quot;;&#125;&#x27;</span></span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br><span class="line">Deleted remote-tracking branch origin/revert-0946083d (was 795de8b941).</span><br><span class="line">Deleted remote-tracking branch origin/revert-4835d8ea (was eac88d3e28).</span><br><span class="line"><span class="comment">## 或</span></span><br><span class="line">$ git branch -r | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;/origin\/revert/&#123;printf &quot;%4s\n&quot;,$0&#125;&#x27;</span> | \</span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>包含主机名的过滤</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># IGNORECASE=1 开启忽略大小写</span></span><br><span class="line"><span class="comment"># $0~/origin\/feature/ 判断分支名是否包含 origin/feature</span></span><br><span class="line"><span class="comment"># 使用内置函数 gsub 全局替换 remotes 为空</span></span><br><span class="line">$ git branch -a | \</span><br><span class="line">  awk <span class="string">&#x27;BEGIN&#123;IGNORECASE=1&#125;&#123; \</span></span><br><span class="line"><span class="string">    if($0~/origin\/feature/)&#123; \</span></span><br><span class="line"><span class="string">      gsub(/remotes\//, &quot; &quot;, $0); \</span></span><br><span class="line"><span class="string">      printf &quot;%4s\n&quot;,$0; \</span></span><br><span class="line"><span class="string">    &#125; \</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span> | \</span><br><span class="line">  xargs -t -I &#123;&#125; git branch -dr &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="scp-主机之间复制文件"><a href="#scp-主机之间复制文件" class="headerlink" title="scp 主机之间复制文件"></a>scp 主机之间复制文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-C 传输过程中允许压缩文件</li>
+<li>-p 保留源文件的修改时间, 访问时间, 访问权限</li>
+<li>-q 不显示传输进度条</li>
+<li>-r 递归复制整个目录</li>
+<li>-v 详细方式显示输出</li>
+<li>-P 指定数据传输的端口号</li>
+<li>-l 限制传输带宽 KB/s</li>
+</ul>
+<h4 id="本地复制到远程"><a href="#本地复制到远程" class="headerlink" title="本地复制到远程"></a>本地复制到远程</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拷贝文件, 可以使用原文件名也可以重新命名文件</span></span><br><span class="line">[root@localhost ~]<span class="comment"># scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝目录</span></span><br><span class="line">[root@localhost ~]<span class="comment"># scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="远程复制到本地"><a href="#远程复制到本地" class="headerlink" title="远程复制到本地"></a>远程复制到本地</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拷贝文件, 可以使用原文件名也可以重新命名文件</span></span><br><span class="line">[root@localhost ~]<span class="comment"># scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/</span></span><br><span class="line"><span class="comment"># 拷贝目录</span></span><br><span class="line">[root@localhost ~]<span class="comment"># scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="firewall-cmd-防火墙"><a href="#firewall-cmd-防火墙" class="headerlink" title="firewall-cmd 防火墙"></a>firewall-cmd 防火墙</h3><ul>
+<li>--permanent # 永久修改</li>
+<li>--reload # 重新加载防火墙配置</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]firewall-cmd --list-all <span class="comment"># 显示所有信息</span></span><br><span class="line">[root@centos7 ~]firewall-cmd --list-ports <span class="comment"># 显示端口信息</span></span><br><span class="line">[root@centos7 ~]firewall-cmd --remove-ports=&lt;port&gt;/&lt;protocol&gt; <span class="comment"># 显示端口信息</span></span><br><span class="line"></span><br><span class="line">[root@centos7 ~]firewall-cmd --add-port=&lt;port&gt;/&lt;protocol&gt; --permanent <span class="comment"># 永久修改防火墙配置</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="crontab-定时任务"><a href="#crontab-定时任务" class="headerlink" title="crontab 定时任务"></a>crontab 定时任务</h3><ul>
+<li>-u 指定用户</li>
+<li>-e 使用编辑器设置时程表</li>
+<li>-r 删除时程表</li>
+<li>-l 列出目前的时程表</li>
+</ul>
+<h4 id="每分钟向指定文件追加写入一条数据"><a href="#每分钟向指定文件追加写入一条数据" class="headerlink" title="每分钟向指定文件追加写入一条数据"></a>每分钟向指定文件追加写入一条数据</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># /root/workspace/crontab-out-format.sh</span></span><br><span class="line"></span><br><span class="line">file=/root/workspace/crontab-out-format.txt</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">dateFormat</span></span>() &#123;</span><br><span class="line">  <span class="built_in">echo</span> $(/bin/date +<span class="string">&quot;hello crontab %Y-%m-%d %H:%M:%S&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -e <span class="variable">$file</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> $(dateFormat) &gt;&gt; <span class="variable">$file</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">touch</span> <span class="variable">$file</span></span><br><span class="line">  <span class="built_in">echo</span> $(dateFormat) &gt;&gt; <span class="variable">$file</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">[root@centos7 workspace]<span class="comment"># crontab -l  # 列出当前用户的所有任务</span></span><br><span class="line">* * * * * /bin/bash /root/workspace/crontab-out-format.sh <span class="comment"># 定时任务</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="tar-归档"><a href="#tar-归档" class="headerlink" title="tar 归档"></a>tar 归档</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar [OPTION...] [FILE]...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>-t,--list 列出压缩文件中的信息</p>
+</li>
+<li><p>-u,--update 用已打包的文件的较新版本更新 tar 文件</p>
+</li>
+<li><p>-d,--diff,--compare 将文件系统里的文件和 tar 文件里的文件进行比较</p>
+</li>
+<li><p>--delete 删除 tar 文件里面的文件, 不能用于已保存在磁带上的 tar 文件</p>
+</li>
+<li><p>-v,--verbose 列出每一步处理涉及的文件的信息</p>
+</li>
+<li><p>-k,--keep-old-files 不覆盖文件系统上已有的文件</p>
+</li>
+<li><p>-f,--file 指定要处理的文件名</p>
+</li>
+<li><p>-w 每一步都要求确认</p>
+</li>
+<li><p>--atime-preserve 不改变转储文件的存取时间</p>
+</li>
+<li><p>-m,--modification-time 当从一个档案中恢复文件时, 不使用新的时间标签</p>
+</li>
+<li><p>-C,--directory DIR 转到指定的目录</p>
+</li>
+</ul>
+<h4 id="压缩工具"><a href="#压缩工具" class="headerlink" title="压缩工具"></a>压缩工具</h4><ul>
+<li>-j,--bzip2 调用 bzip2 执行压缩或解压缩</li>
+<li>-J,--xz,--lzma 调用 XZ Utils 执行压缩或解压缩</li>
+<li>-z,--gzip,--gunzip,--ungzip 调用 gzip 执行压缩或解压缩</li>
+<li>-Z,--compress,--uncompress 调用 compress 执行压缩或解压缩</li>
+</ul>
+<h4 id="归档压缩"><a href="#归档压缩" class="headerlink" title="归档压缩"></a>归档压缩</h4><ul>
+<li>-c,--create 创建新的 tar 文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 gzip 压缩归档 workspace 目录</span></span><br><span class="line">[root@centos7 ~]tar -czvf workspace.tar.gz ./workspace</span><br></pre></td></tr></table></figure>
+
+<h4 id="解压缩"><a href="#解压缩" class="headerlink" title="解压缩"></a>解压缩</h4><ul>
+<li>-x,--extract 解开 tar 文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 gzip 解压缩到当前目录下的 redis-stable 目录</span></span><br><span class="line">[root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable</span><br></pre></td></tr></table></figure>
+
+<h4 id="向压缩包添加文件"><a href="#向压缩包添加文件" class="headerlink" title="向压缩包添加文件"></a>向压缩包添加文件</h4><ul>
+<li>-r,--append 向压缩包中添加文件, 如果压缩包不存在则新建压缩包</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 向 archive.tar 压缩包中添加文件 file1.txt file2.txt</span></span><br><span class="line">[root@centos7 ~]tar -rf archive.tar file1.txt file2.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h3><ul>
+<li>--help [all] For all options use the manual</li>
+<li>-v,--verbose Make the operation more talkative</li>
+<li>-#,--progress-bar Display transfer progress as a bar</li>
+<li>-L,--location Follow redirects</li>
+<li>-X,--request &lt;method&gt; Specify request method to use</li>
+<li>-H,--header &lt;header/@file&gt; Pass custom headers to server</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">curl --<span class="built_in">help</span> all</span><br><span class="line"></span><br><span class="line">curl --location --request POST <span class="string">&#x27;https://developer.toutiao.com/api/apps/v2/jscode2session&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Access-Token: clt.01*********3d3d&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Content-Type: application/json&#x27;</span> \</span><br><span class="line">--data <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">  &quot;name&quot;: &quot;zhangsan&quot;,</span></span><br><span class="line"><span class="string">  &quot;age&quot;: 18</span></span><br><span class="line"><span class="string">&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-b,--cookie &lt;data|filename&gt; Send cookies from string/load from file</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl --location --request POST <span class="string">&#x27;https://developer.toutiao.com/api/apps/v2/jscode2session&#x27;</span> \</span><br><span class="line">--cookie <span class="string">&#x27;name=zhangsan;age=18&#x27;</span> \</span><br><span class="line">-v</span><br><span class="line"></span><br><span class="line">curl --location --request POST <span class="string">&#x27;https://developer.toutiao.com/api/apps/v2/jscode2session&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Cookie: name=zhangsan;age=18&#x27;</span> \</span><br><span class="line">-v</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-d<ul>
+<li>--data &lt;data&gt; HTTP POST data</li>
+<li>--data-ascii &lt;data&gt; HTTP POST ASCII data</li>
+<li>--data-binary &lt;data&gt; HTTP POST binary data</li>
+<li>--data-raw &lt;data&gt; HTTP POST data, ‘@’ allowed</li>
+<li>--data-urlencode &lt;data&gt; HTTP POST data URL encoded</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">curl --location --request POST <span class="string">&#x27;https://developer.toutiao.com/api/apps/v2/jscode2session&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Access-Token: clt.01*********3d3d&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Content-Type: application/x-www-form-urlencoded&#x27;</span> \</span><br><span class="line">--data-urlencode <span class="string">&#x27;client-key=tt10abc********&#x27;</span> \</span><br><span class="line">--data-urlencode <span class="string">&#x27;client_secret=7820************&#x27;</span> \</span><br><span class="line">--data-urlencode <span class="string">&#x27;code=ffab5ec*********&#x27;</span> \</span><br><span class="line">--data-urlencode <span class="string">&#x27;grant_type=authorization_code&#x27;</span></span><br><span class="line"></span><br><span class="line">curl --location --request POST <span class="string">&#x27;https://developer.toutiao.com/api/apps/v2/jscode2session&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Access-Token: clt.01*********3d3d&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Content-Type: application/json&#x27;</span> \</span><br><span class="line">--data-raw <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">  &quot;app_id&quot;: &quot;tt*******&quot;,</span></span><br><span class="line"><span class="string">  &quot;app_name&quot;: &quot;douyin&quot;,</span></span><br><span class="line"><span class="string">  &quot;path&quot;:&quot;xxxx&quot;,</span></span><br><span class="line"><span class="string">  “query”: &quot;&#123;xxx:xxxx&#125;&quot;，</span></span><br><span class="line"><span class="string">  “expire_time”: 16444464021,</span></span><br><span class="line"><span class="string">&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>-F</p>
+<ul>
+<li>--form &lt;name-content&gt; Specify multipart MIME data</li>
+<li>--form-escape Escape form fields using backslash</li>
+<li>--form-string &lt;name=string&gt; Specify multipart MIME data</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl --location --request POST <span class="string">&#x27;https://developer.toutiao.com/api/apps/v2/jscode2session&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Access-Token: clt.01*********3d3d&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Content-Type: multipart/form-data&#x27;</span> \</span><br><span class="line">--header <span class="string">&#x27;Accept: */*&#x27;</span> \</span><br><span class="line">--form <span class="string">&#x27;appid=tt1yyyy&#x27;</span> \</span><br><span class="line">--form <span class="string">&#x27;material_type=&quot;1000&quot;&#x27;</span> \</span><br><span class="line">--form <span class="string">&#x27;material_file=@&quot;/Users/xxx.jpg&quot;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-o,--output &lt;file&gt; Write to file instead of stdout</li>
+<li>--output-dir &lt;dir&gt; Directory to save files in</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\04\616714173ca1\" rel="bookmark">shell语法</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\05\0d965ffa3e9b\" rel="bookmark">systemd</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/05/bc4d38208f0f/" title="linux工具">https://luoleiself.github.io/2022/05/bc4d38208f0f/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/0d965ffa3e9b/" rel="prev" title="systemd">
+      <i class="fa fa-chevron-left"></i> systemd
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/819f95816ecc/" rel="next" title="Redis">
+      Redis <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BE%93%E5%87%BA%E5%86%85%E5%AE%B9%E5%8F%98%E8%BA%AB"><span class="nav-number">1.</span> <span class="nav-text">命令行输出内容变身</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E9%9B%86"><span class="nav-number">1.1.</span> <span class="nav-text">属性集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">显示方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh-%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">ssh 操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk"><span class="nav-number">3.</span> <span class="nav-text">awk</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%BB%BA%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">内建变量</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%88%86%E9%9A%94%E7%AC%A6"><span class="nav-number">3.1.1.</span> <span class="nav-text">字段分隔符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%B0%E5%BD%95%E5%88%86%E9%9A%94%E7%AC%A6"><span class="nav-number">3.1.2.</span> <span class="nav-text">记录分隔符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%B0%E5%BD%95%E7%BB%9F%E8%AE%A1"><span class="nav-number">3.1.3.</span> <span class="nav-text">记录统计</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">3.1.4.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="nav-number">3.1.5.</span> <span class="nav-text">流程控制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.6.</span> <span class="nav-text">内置函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xargs"><span class="nav-number">4.</span> <span class="nav-text">xargs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#grep"><span class="nav-number">5.</span> <span class="nav-text">grep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E5%88%A0%E9%99%A4%E6%9C%AC%E5%9C%B0%E5%85%B3%E8%81%94%E7%9A%84-git-%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF"><span class="nav-number">6.</span> <span class="nav-text">批量删除本地关联的 git 远程分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scp-%E4%B8%BB%E6%9C%BA%E4%B9%8B%E9%97%B4%E5%A4%8D%E5%88%B6%E6%96%87%E4%BB%B6"><span class="nav-number">7.</span> <span class="nav-text">scp 主机之间复制文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%A4%8D%E5%88%B6%E5%88%B0%E8%BF%9C%E7%A8%8B"><span class="nav-number">7.1.</span> <span class="nav-text">本地复制到远程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E5%A4%8D%E5%88%B6%E5%88%B0%E6%9C%AC%E5%9C%B0"><span class="nav-number">7.2.</span> <span class="nav-text">远程复制到本地</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#firewall-cmd-%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">8.</span> <span class="nav-text">firewall-cmd 防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab-%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">9.</span> <span class="nav-text">crontab 定时任务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%8F%E5%88%86%E9%92%9F%E5%90%91%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6%E8%BF%BD%E5%8A%A0%E5%86%99%E5%85%A5%E4%B8%80%E6%9D%A1%E6%95%B0%E6%8D%AE"><span class="nav-number">9.1.</span> <span class="nav-text">每分钟向指定文件追加写入一条数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tar-%E5%BD%92%E6%A1%A3"><span class="nav-number">10.</span> <span class="nav-text">tar 归档</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%8B%E7%BC%A9%E5%B7%A5%E5%85%B7"><span class="nav-number">10.1.</span> <span class="nav-text">压缩工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BD%92%E6%A1%A3%E5%8E%8B%E7%BC%A9"><span class="nav-number">10.2.</span> <span class="nav-text">归档压缩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E7%BC%A9"><span class="nav-number">10.3.</span> <span class="nav-text">解压缩</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%91%E5%8E%8B%E7%BC%A9%E5%8C%85%E6%B7%BB%E5%8A%A0%E6%96%87%E4%BB%B6"><span class="nav-number">10.4.</span> <span class="nav-text">向压缩包添加文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#curl"><span class="nav-number">11.</span> <span class="nav-text">curl</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">557k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

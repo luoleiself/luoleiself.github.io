@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="全局 API全局 API 应用实例 Vue.config -&gt; app.config Vue.config.productionTip -&gt; 移除 Vue.config.ignoreElements -&gt; app.config.compilerOptions.isCustomElement Vue.component -&gt; app.component Vue.directi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue3-migration">
+<meta property="og:url" content="https://luoleiself.github.io/2021/08/9fc9b29dd769/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="全局 API全局 API 应用实例 Vue.config -&gt; app.config Vue.config.productionTip -&gt; 移除 Vue.config.ignoreElements -&gt; app.config.compilerOptions.isCustomElement Vue.component -&gt; app.component Vue.directi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-17T10:06:52.000Z">
+<meta property="article:modified_time" content="2024-07-26T14:00:47.968Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="VueJs">
+<meta property="article:tag" content="Vue3">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2021/08/9fc9b29dd769/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Vue3-migration | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/08/9fc9b29dd769/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vue3-migration
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-17 18:06:52" itemprop="dateCreated datePublished" datetime="2021-08-17T18:06:52+08:00">2021-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/VueJs/" itemprop="url" rel="index"><span itemprop="name">VueJs</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>8.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="全局-API"><a href="#全局-API" class="headerlink" title="全局 API"></a>全局 API</h3><h4 id="全局-API-应用实例"><a href="#全局-API-应用实例" class="headerlink" title="全局 API 应用实例"></a>全局 API 应用实例</h4><ul>
+<li>Vue.config -&gt; app.config</li>
+<li>Vue.config.productionTip -&gt; <strong>移除</strong></li>
+<li>Vue.config.ignoreElements -&gt; app.config.compilerOptions.isCustomElement</li>
+<li>Vue.component -&gt; app.component</li>
+<li>Vue.directive -&gt; app.directive</li>
+<li>Vue.mixin -&gt; app.mixin</li>
+<li>Vue.use -&gt; app.use</li>
+<li>Vue.prototype -&gt; app.config.globalProperties</li>
+<li>Vue.extend -&gt; <strong>移除</strong></li>
+</ul>
+<h4 id="全局-API-Treeshaking"><a href="#全局-API-Treeshaking" class="headerlink" title="全局 API Treeshaking"></a>全局 API Treeshaking</h4><ul>
+<li>Vue.nextTick() -&gt; nextTick()</li>
+<li>Vue.observable -&gt; reactive()</li>
+<li>Vue.version -&gt; version</li>
+<li>Vue.compile(仅完整构建版本)</li>
+<li>Vue.set(仅兼容构建版本)</li>
+<li>Vue.delete(仅兼容构建版本)</li>
+</ul>
+<h3 id="模板指令"><a href="#模板指令" class="headerlink" title="模板指令"></a>模板指令</h3><h4 id="v-model"><a href="#v-model" class="headerlink" title="v-model"></a>v-model</h4><p>参见 vue3.md 的 v-model 指令部分</p>
+<h4 id="key-使用改变"><a href="#key-使用改变" class="headerlink" title="key 使用改变"></a>key 使用改变</h4><p>对于 <code>v-if</code>, <code>v-else-if</code>, <code>v-else</code> 的各分支项 <code>key</code> 将不再是必须的, Vue 会自动生成唯一的 <code>key</code></p>
+<h4 id="v-if-和-v-for-优先级"><a href="#v-if-和-v-for-优先级" class="headerlink" title="v-if 和 v-for 优先级"></a>v-if 和 v-for 优先级</h4><blockquote>
+<p>两者作用于同一个元素上时，v-if 会拥有比 v-for 更高的优先级</p>
+</blockquote>
+<h4 id="v-bind-合并行为"><a href="#v-bind-合并行为" class="headerlink" title="v-bind 合并行为"></a>v-bind 合并行为</h4><p><code>v-bind</code> 的绑定顺序会影响渲染结果</p>
+<ul>
+<li>vue 2.x 独立绑定的 attribute 会覆盖 v-bind 中的 attribute</li>
+<li>vue 3.x 根据声明顺序决定如何被合并</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 模板 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;red&quot;</span> <span class="attr">v-bind</span>=<span class="string">&quot;&#123; id: &#x27;blue&#x27; &#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 结果 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;red&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 模板 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-bind</span>=<span class="string">&quot;&#123; id: &#x27;blue&#x27; &#125;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;red&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 结果 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;red&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h4 id="v-on-native-移除"><a href="#v-on-native-移除" class="headerlink" title="v-on.native 移除"></a>v-on.native 移除</h4><p><code>v-on</code> 的 <code>.native</code> 修饰符被<strong>移除</strong></p>
+<ul>
+<li>确保所有组件都是用新增的 <code>emits</code> 选项记录其事件</li>
+</ul>
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><h4 id="函数式组件"><a href="#函数式组件" class="headerlink" title="函数式组件"></a>函数式组件</h4><p>函数组件将接收两个参数: <code>props</code> 和 <code>context</code>, context 是一个包含 <code>attrs</code>, <code>slots</code>, <code>emit</code> 属性的上下文对象</p>
+<ul>
+<li><code>&lt;template&gt;</code> 中的 <code>functional</code> 属性被<strong>移除</strong></li>
+<li><code>&#123;functional: true&#125;</code> 选项从通过函数创建的组件中<strong>移除</strong></li>
+<li><code>listeners</code> 作为 <code>$attrs</code> 的一部分传递</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">DynamicHeading</span> = (<span class="params">props, &#123; attrs, slots, emit, expose &#125;</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">h</span>(<span class="string">`h<span class="subst">$&#123;props.level&#125;</span>`</span>, attrs, slots);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="title class_">DynamicHeading</span>.<span class="property">props</span> = [<span class="string">&#x27;level&#x27;</span>];</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">DynamicHeading</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="异步组件"><a href="#异步组件" class="headerlink" title="异步组件"></a>异步组件</h4><ul>
+<li>新增 <code>defineAsyncComponent</code> 助手方法, 用于显式地定义异步组件</li>
+<li><code>component</code> 选项重命名为 <code>loader</code></li>
+<li><code>Loader</code> 函数本身不再接收 <code>resolve</code> 和 <code>reject</code> 参数，且必须返回一个 Promise</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">asyncPage</span> = (<span class="params"></span>) =&gt; <span class="title function_">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> asyncPage = &#123;</span><br><span class="line">  <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>),</span><br><span class="line">  <span class="attr">delay</span>: <span class="number">200</span>,</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">3000</span>,</span><br><span class="line">  <span class="attr">error</span>: <span class="title class_">ErrorComponent</span>,</span><br><span class="line">  <span class="attr">loading</span>: <span class="title class_">LoadingComponent</span>,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="comment">// 不带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPage = <span class="title function_">defineAsyncComponent</span>(<span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>));</span><br><span class="line"><span class="comment">// 带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPageWithOptions = <span class="title function_">defineAsyncComponent</span>(&#123;</span><br><span class="line">  <span class="attr">loader</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>),</span><br><span class="line">  <span class="attr">delay</span>: <span class="number">200</span>,</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">3000</span>,</span><br><span class="line">  <span class="attr">errorComponent</span>: <span class="title class_">ErrorComponent</span>,</span><br><span class="line">  <span class="attr">loadingComponent</span>: <span class="title class_">LoadingComponent</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="emits-选项"><a href="#emits-选项" class="headerlink" title="emits 选项"></a>emits 选项</h4><p><code>新增</code>项用来定义组件可以向其父组件触发的事件</p>
+<h3 id="渲染函数"><a href="#渲染函数" class="headerlink" title="渲染函数"></a>渲染函数</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><ul>
+<li><code>h</code> 函数现在为全局引入，不再作为 <code>render</code> 函数的参数隐式提供</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">h</span>(<span class="string">&#x27;div&#x27;</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>更改渲染函数参数, 使其在有状态组件和函数组件的表现更加一致</li>
+<li>VNode Prop 格式化</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 2.x</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">staticClass</span>: <span class="string">&#x27;button&#x27;</span>,</span><br><span class="line">  <span class="attr">class</span>: &#123; <span class="string">&#x27;is-outlined&#x27;</span>: isOutlined &#125;,</span><br><span class="line">  <span class="attr">staticStyle</span>: &#123; <span class="attr">color</span>: <span class="string">&#x27;#34495E&#x27;</span> &#125;,</span><br><span class="line">  <span class="attr">style</span>: &#123; <span class="attr">backgroundColor</span>: buttonColor &#125;,</span><br><span class="line">  <span class="attr">attrs</span>: &#123; <span class="attr">id</span>: <span class="string">&#x27;submit&#x27;</span> &#125;,</span><br><span class="line">  <span class="attr">domProps</span>: &#123; <span class="attr">innerHTML</span>: <span class="string">&#x27;&#x27;</span> &#125;,</span><br><span class="line">  <span class="attr">on</span>: &#123; <span class="attr">click</span>: submitForm &#125;,</span><br><span class="line">  <span class="attr">key</span>: <span class="string">&#x27;submit-button&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 3.x 语法</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">class</span>: [<span class="string">&#x27;button&#x27;</span>, &#123; <span class="string">&#x27;is-outlined&#x27;</span>: isOutlined &#125;],</span><br><span class="line">  <span class="attr">style</span>: [&#123; <span class="attr">color</span>: <span class="string">&#x27;#34495E&#x27;</span> &#125;, &#123; <span class="attr">backgroundColor</span>: buttonColor &#125;],</span><br><span class="line">  <span class="attr">id</span>: <span class="string">&#x27;submit&#x27;</span>,</span><br><span class="line">  <span class="attr">innerHTML</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">  <span class="attr">onClick</span>: submitForm,</span><br><span class="line">  <span class="attr">key</span>: <span class="string">&#x27;submit-button&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>注册组件</p>
+<ul>
+<li>Vue3.x <code>setup()</code> 中 VNode 是上下文无关的, 无法使用字符串 ID 隐式查找已注册的组件, 需要借助 <code>resolveComponent</code> 方法</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line"><span class="title class_">Vue</span>.<span class="title function_">component</span>(<span class="string">&#x27;my-component&#x27;</span>, &#123;</span><br><span class="line">  <span class="title function_">data</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">count</span>: <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`&lt;button @click=&quot;count++&quot;&gt;</span></span><br><span class="line"><span class="string">    Clicked &#123;&#123; count &#125;&#125; times.</span></span><br><span class="line"><span class="string">  &lt;/button&gt;`</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="title function_">render</span>(<span class="params">h</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">h</span>(<span class="string">&#x27;my-component&#x27;</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="keyword">import</span> &#123; h, resolveComponent &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="comment">// resolveComponent,resolveDynamicComponent,resolveDirective,withDirectives</span></span><br><span class="line"><span class="comment">// 全局API只能在 render 或 setup 函数中使用</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="title function_">setup</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">MyComponent</span> = <span class="title function_">resolveComponent</span>(<span class="string">&#x27;my-component&#x27;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="title function_">h</span>(<span class="title class_">MyComponent</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="插槽统一"><a href="#插槽统一" class="headerlink" title="插槽统一"></a>插槽统一</h4><ul>
+<li><code>this.$slots</code> 插槽作为函数公开</li>
+<li><code>this.$scopedSlots</code> <strong>移除</strong></li>
+</ul>
+<h4 id="listeners-移除"><a href="#listeners-移除" class="headerlink" title="$listeners 移除"></a>$listeners <strong>移除</strong></h4><blockquote>
+<p><code>$listeners</code> 对象在 Vue3 中被移除, 事件监听器现在是 <code>$attrs</code> 的一部分</p>
+</blockquote>
+<h4 id="attrs-包含-class-和-style"><a href="#attrs-包含-class-和-style" class="headerlink" title="$attrs 包含 class 和 style"></a>$attrs 包含 class 和 style</h4><p><code>$attrs</code> 现在包含了所有传递给组件的 attribute, 包含 <code>class</code> 和 <code>style</code></p>
+<ul>
+<li>Vue 2.x 当 <code>inheritAttrs: false</code> 时, <code>class</code> 和 <code>style</code> 不是 <code>$attrs</code> 的一部分, 仍然会被应用到组件的根元素中</li>
+</ul>
+<h3 id="自定义元素"><a href="#自定义元素" class="headerlink" title="自定义元素"></a>自定义元素</h3><h4 id="与自定义元素的互操作性"><a href="#与自定义元素的互操作性" class="headerlink" title="与自定义元素的互操作性"></a>与自定义元素的互操作性</h4><blockquote>
+<p>特殊的 <code>is</code> 属性的使用被严格限制在保留的 <code>&lt;component&gt;</code> 标签中<br>使用 <code>vue:</code> 前缀解决 DOM 内模板解析问题</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Vue 2.x --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">table</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">tr</span> <span class="attr">is</span>=<span class="string">&quot;blog-post-row&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Vue 3.x --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">table</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">tr</span> <span class="attr">is</span>=<span class="string">&quot;vue:blog-post-row&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="移除的-APIs"><a href="#移除的-APIs" class="headerlink" title="移除的 APIs"></a>移除的 APIs</h3><h4 id="按键修饰符"><a href="#按键修饰符" class="headerlink" title="按键修饰符"></a>按键修饰符</h4><ul>
+<li>不再支持使用数字(按键)作为 <code>v-on</code> 修饰符</li>
+<li>不再支持 <code>config.keyCodes</code></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Vue 2.x --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 键码 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-on:keyup.13</span>=<span class="string">&quot;submit&quot;</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 别名 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-on:keyup.enter</span>=<span class="string">&quot;submit&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Vue 3.x --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-pn:keyup.page-down</span>=<span class="string">&quot;nextPage&quot;</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 同时匹配 q 和 Q --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-on:keypress.q</span>=<span class="string">&quot;quit&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="事件-API"><a href="#事件-API" class="headerlink" title="事件 API"></a>事件 API</h4><p><code>$on</code>, <code>$off</code>, <code>$once</code> 实例方法已被 <strong>移除</strong>, 组件实例不再实现事件触发接口</p>
+<h4 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h4><p><code>$filter</code> 过滤被<strong>移除</strong></p>
+<h4 id="内联模板-Attribute"><a href="#内联模板-Attribute" class="headerlink" title="内联模板 Attribute"></a>内联模板 Attribute</h4><p>对 <strong>内联模板特性</strong> 的支持被<strong>移除</strong></p>
+<ul>
+<li>Vue 2.x 使用 <code>inline-template</code> 属性将其内容作为模板使用, 而不是作为分发内容</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">my-component</span> <span class="attr">inline-template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>它们被编译为组件自己的模板<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>不是父级所包含的内容。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">my-component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="children"><a href="#children" class="headerlink" title="$children"></a>$children</h4><p><code>$children</code> 实例属性已被 <strong>移除</strong></p>
+<h4 id="propsData"><a href="#propsData" class="headerlink" title="propsData"></a>propsData</h4><ul>
+<li>Vue 2.x <code>propsData</code> 选项用于在创建 Vue 实例的过程中传入的 prop, 现在已被 <strong>移除</strong></li>
+<li>Vue 3.x 使用 <code>createApp</code> 的第二个参数传入 prop</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Comp</span> = <span class="title class_">Vue</span>.<span class="title function_">extend</span>(&#123;</span><br><span class="line">  <span class="attr">props</span>: [<span class="string">&#x27;name&#x27;</span>],</span><br><span class="line">  <span class="attr">template</span>: <span class="string">&#x27;&lt;div&gt;&#123;&#123;name&#125;&#125;&lt;/div&gt;&#x27;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Comp</span>(&#123;</span><br><span class="line">  <span class="attr">propsData</span>: &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;hello world&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">props</span>: [<span class="string">&#x27;name&#x27;</span>],</span><br><span class="line">    <span class="attr">template</span>: <span class="string">&#x27;&lt;div&gt;&#123;&#123;name&#125;&#125;&lt;/div&gt;&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123; <span class="attr">name</span>: <span class="string">&#x27;hello world&#x27;</span> &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="其他变化"><a href="#其他变化" class="headerlink" title="其他变化"></a>其他变化</h3><h4 id="片段"><a href="#片段" class="headerlink" title="片段"></a>片段</h4><ul>
+<li>组件可以包含多个根节点, 需要显示定义 attribute 的位置</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">header</span>&gt;</span>...<span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">main</span> <span class="attr">v-bind</span>=<span class="string">&quot;$attrs&quot;</span>&gt;</span>...<span class="tag">&lt;/<span class="name">main</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">footer</span>&gt;</span>...<span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="attribute-强制行为"><a href="#attribute-强制行为" class="headerlink" title="attribute 强制行为"></a>attribute 强制行为</h4><blockquote>
+<p>底层的内部 API 更改, 绝大多数开发人员不会受到影响</p>
+</blockquote>
+<h4 id="自定义指令"><a href="#自定义指令" class="headerlink" title="自定义指令"></a>自定义指令</h4><ul>
+<li>指令的钩子函数已经被重命名, 以更好地与组件的生命周期保持一致</li>
+<li><code>expression</code> 字符串不再作为 <code>binding</code> 对象的一部分被传入</li>
+</ul>
+<h5 id="钩子函数"><a href="#钩子函数" class="headerlink" title="钩子函数"></a>钩子函数</h5><table>
+<thead>
+<tr>
+<th align="center">Vue 2.x</th>
+<th align="center">Vue 3.x</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"></td>
+<td align="center">created</td>
+</tr>
+<tr>
+<td align="center">bind</td>
+<td align="center">beforeMount</td>
+</tr>
+<tr>
+<td align="center">inserted</td>
+<td align="center">mounted</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">beforeUpdate</td>
+</tr>
+<tr>
+<td align="center">update</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">componentUpdated</td>
+<td align="center">updated</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">beforeUnmount</td>
+</tr>
+<tr>
+<td align="center">unbind</td>
+<td align="center">unmounted</td>
+</tr>
+</tbody></table>
+<h4 id="Data-选项"><a href="#Data-选项" class="headerlink" title="Data 选项"></a>Data 选项</h4><ul>
+<li>组件选项 <code>data</code> 的声明不再接收纯 JavaScript <code>Object</code>, 而是接收一个 <code>function</code></li>
+<li>当合并来自 <code>mixin</code> 或 <code>extend</code> 的多个 <code>data</code> 返回值时, 合并操作现在是浅层次的而非深层次的(只合并根级属性)</li>
+</ul>
+<h4 id="mount-API"><a href="#mount-API" class="headerlink" title="mount API"></a>mount API</h4><blockquote>
+<p>挂载元素时, 被渲染的应用作为子元素插入, 不再替换要挂载的目标元素</p>
+</blockquote>
+<ul>
+<li>Vue 2.x 当挂载一个具有 <code>template</code> 的应用时, 被渲染的内容会替换要挂载的目标元素</li>
+<li>Vue 3.x 被挂载的应用会作为子元素插入, 从而替换目标元素的 <code>innerHTML</code></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Vue 2.x 替换目标元素 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;rendered&quot;</span>&gt;</span>hello world!<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> app = <span class="keyword">new</span> <span class="title class_">Vue</span>(&#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">data</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">message</span>: <span class="string">&#x27;hello world!&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">      &#125;;</span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">template</span>: <span class="string">&#x27;&lt;div id=&quot;rendered&quot;&gt;&#123;&#123;message&#125;&#125;&lt;/div&gt;&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript">  app.$mount(<span class="string">&#x27;#app&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Vue 3.x 作为子元素插入到目标元素 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;rendered&quot;</span>&gt;</span>hello world!<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">data</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">return</span> &#123; <span class="attr">message</span>: <span class="string">&#x27;hello world!&#x27;</span> &#125;;</span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">template</span>: <span class="string">&#x27;&lt;div id=&quot;rendered&quot;&gt;&#123;&#123;message&#125;&#125;&lt;/div&gt;&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript">  app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="在-prop-的默认函数中不能再访问-this"><a href="#在-prop-的默认函数中不能再访问-this" class="headerlink" title="在 prop 的默认函数中不能再访问 this"></a>在 prop 的默认函数中不能再访问 this</h4><ul>
+<li>组件接收到的原始 prop 作为参数传递给默认函数</li>
+<li><code>inject</code> API 在默认函数中使用</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; inject &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">props</span>: &#123;</span><br><span class="line">    <span class="attr">theme</span>: &#123;</span><br><span class="line">      <span class="title function_">default</span>(<span class="params">props</span>) &#123;</span><br><span class="line">        <span class="comment">// `props` 是传递给组件的原始值。</span></span><br><span class="line">        <span class="comment">// 在任何类型/默认强制转换之前</span></span><br><span class="line">        <span class="comment">// 也可以使用 `inject` 来访问注入的 property</span></span><br><span class="line">        <span class="keyword">return</span> <span class="title function_">inject</span>(<span class="string">&#x27;theme&#x27;</span>, <span class="string">&#x27;default-theme&#x27;</span>);</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Transition-class"><a href="#Transition-class" class="headerlink" title="Transition class"></a>Transition class</h4><p>过渡类名 <code>v-enter</code> 修改为 <code>v-enter-from</code>, 过渡类名 <code>v-leave</code> 修改为 <code>v-leave-from</code></p>
+<ul>
+<li>v-enter-from</li>
+<li>v-enter-active</li>
+<li>v-enter-to</li>
+<li>v-leave-from</li>
+<li>v-leave-active</li>
+<li>v-leave-to</li>
+</ul>
+<h4 id="Transition-作为根节点"><a href="#Transition-作为根节点" class="headerlink" title="Transition 作为根节点"></a>Transition 作为根节点</h4><p>当使用 <code>&lt;Transition&gt;</code> 作为根节点的组件从外部被切换时将不再触发过渡效果</p>
+<h4 id="TransitionGroup-根元素"><a href="#TransitionGroup-根元素" class="headerlink" title="TransitionGroup 根元素"></a>TransitionGroup 根元素</h4><p><code>&lt;TransitionGroup&gt;</code> 不再默认渲染根元素, 但仍然可以用 <code>tag</code> 属性创建根元素</p>
+<h4 id="VNode-生命周期事件"><a href="#VNode-生命周期事件" class="headerlink" title="VNode 生命周期事件"></a>VNode 生命周期事件</h4><ul>
+<li>Vue 2.x 监听组件生命周期的事件名以 <code>hook:</code> 前缀开头, 并跟随相应的生命周期钩子的名字</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">hook:updated</span>=<span class="string">&quot;onUpdated&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Vue 3.x 前缀改为 <code>vue:</code> 开头, 这些事件也可用于 HTML 元素, 和在组件上的用法一样<ul>
+<li>绝大多数情况下只需要修改前缀. 生命周期钩子 <code>beforeDestroy</code> 和 <code>destroyed</code> 已经分别被重命名为 <code>beforeUnmount</code> 和 <code>unmounted</code>, 所以相应的事件名也需要更新</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:mounted</span>=<span class="string">&quot;onMounted&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:before-update</span>=<span class="string">&quot;onBeforeUpdate&quot;</span> /&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 等同于 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">child-component</span> @<span class="attr">vue:beforeUpdate</span>=<span class="string">&quot;onBeforeUpdate&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="侦听数组"><a href="#侦听数组" class="headerlink" title="侦听数组"></a>侦听数组</h4><p>当侦听一个数组时, 只有当数组被替换时才会触发回调, 如果需要在数组被改变时触发回调, 必须指定 <code>deep</code> 选项</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2021\06\c430903d5070\" rel="bookmark">Vue3</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2021/08/9fc9b29dd769/" title="Vue3-migration">https://luoleiself.github.io/2021/08/9fc9b29dd769/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/VueJs/" rel="tag"># VueJs</a>
+              <a href="/tags/Vue3/" rel="tag"># Vue3</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/1ddfb1010b19/" rel="prev" title="HTTP">
+      <i class="fa fa-chevron-left"></i> HTTP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/2f42f14b8489/" rel="next" title="BABELRC">
+      BABELRC <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80-API"><span class="nav-number">1.</span> <span class="nav-text">全局 API</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E5%B1%80-API-%E5%BA%94%E7%94%A8%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.1.</span> <span class="nav-text">全局 API 应用实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E5%B1%80-API-Treeshaking"><span class="nav-number">1.2.</span> <span class="nav-text">全局 API Treeshaking</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E6%8C%87%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">模板指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#v-model"><span class="nav-number">2.1.</span> <span class="nav-text">v-model</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#key-%E4%BD%BF%E7%94%A8%E6%94%B9%E5%8F%98"><span class="nav-number">2.2.</span> <span class="nav-text">key 使用改变</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#v-if-%E5%92%8C-v-for-%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">2.3.</span> <span class="nav-text">v-if 和 v-for 优先级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#v-bind-%E5%90%88%E5%B9%B6%E8%A1%8C%E4%B8%BA"><span class="nav-number">2.4.</span> <span class="nav-text">v-bind 合并行为</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#v-on-native-%E7%A7%BB%E9%99%A4"><span class="nav-number">2.5.</span> <span class="nav-text">v-on.native 移除</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BB%84%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">函数式组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E7%BB%84%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">异步组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#emits-%E9%80%89%E9%A1%B9"><span class="nav-number">3.3.</span> <span class="nav-text">emits 选项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">渲染函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A6%82%E8%A7%88"><span class="nav-number">4.1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%92%E6%A7%BD%E7%BB%9F%E4%B8%80"><span class="nav-number">4.2.</span> <span class="nav-text">插槽统一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#listeners-%E7%A7%BB%E9%99%A4"><span class="nav-number">4.3.</span> <span class="nav-text">$listeners 移除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attrs-%E5%8C%85%E5%90%AB-class-%E5%92%8C-style"><span class="nav-number">4.4.</span> <span class="nav-text">$attrs 包含 class 和 style</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%85%83%E7%B4%A0"><span class="nav-number">5.</span> <span class="nav-text">自定义元素</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8E%E8%87%AA%E5%AE%9A%E4%B9%89%E5%85%83%E7%B4%A0%E7%9A%84%E4%BA%92%E6%93%8D%E4%BD%9C%E6%80%A7"><span class="nav-number">5.1.</span> <span class="nav-text">与自定义元素的互操作性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E9%99%A4%E7%9A%84-APIs"><span class="nav-number">6.</span> <span class="nav-text">移除的 APIs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%89%E9%94%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6"><span class="nav-number">6.1.</span> <span class="nav-text">按键修饰符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6-API"><span class="nav-number">6.2.</span> <span class="nav-text">事件 API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">6.3.</span> <span class="nav-text">过滤器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E8%81%94%E6%A8%A1%E6%9D%BF-Attribute"><span class="nav-number">6.4.</span> <span class="nav-text">内联模板 Attribute</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#children"><span class="nav-number">6.5.</span> <span class="nav-text">$children</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#propsData"><span class="nav-number">6.6.</span> <span class="nav-text">propsData</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%8F%98%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">其他变化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%87%E6%AE%B5"><span class="nav-number">7.1.</span> <span class="nav-text">片段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attribute-%E5%BC%BA%E5%88%B6%E8%A1%8C%E4%B8%BA"><span class="nav-number">7.2.</span> <span class="nav-text">attribute 强制行为</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%87%E4%BB%A4"><span class="nav-number">7.3.</span> <span class="nav-text">自定义指令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0"><span class="nav-number">7.3.1.</span> <span class="nav-text">钩子函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Data-%E9%80%89%E9%A1%B9"><span class="nav-number">7.4.</span> <span class="nav-text">Data 选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mount-API"><span class="nav-number">7.5.</span> <span class="nav-text">mount API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8-prop-%E7%9A%84%E9%BB%98%E8%AE%A4%E5%87%BD%E6%95%B0%E4%B8%AD%E4%B8%8D%E8%83%BD%E5%86%8D%E8%AE%BF%E9%97%AE-this"><span class="nav-number">7.6.</span> <span class="nav-text">在 prop 的默认函数中不能再访问 this</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Transition-class"><span class="nav-number">7.7.</span> <span class="nav-text">Transition class</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Transition-%E4%BD%9C%E4%B8%BA%E6%A0%B9%E8%8A%82%E7%82%B9"><span class="nav-number">7.8.</span> <span class="nav-text">Transition 作为根节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TransitionGroup-%E6%A0%B9%E5%85%83%E7%B4%A0"><span class="nav-number">7.9.</span> <span class="nav-text">TransitionGroup 根元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VNode-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%BA%8B%E4%BB%B6"><span class="nav-number">7.10.</span> <span class="nav-text">VNode 生命周期事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%A6%E5%90%AC%E6%95%B0%E7%BB%84"><span class="nav-number">7.11.</span> <span class="nav-text">侦听数组</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">557k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

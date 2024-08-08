@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="敲黑板启动 nginx 失败命令行提示错误 98: address already in use 查找系统进程中已存在的 nginx 进程号, 使用 kill -9 $PID 关闭进程后重启 nginx 服务 内置变量 $nginx_version nginx 版本  $connection_requests TCP 链接当前的请求数量  $proxy_protocol_addr 获取代理访问服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx">
+<meta property="og:url" content="https://luoleiself.github.io/2022/04/1e58889c42cf/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="敲黑板启动 nginx 失败命令行提示错误 98: address already in use 查找系统进程中已存在的 nginx 进程号, 使用 kill -9 $PID 关闭进程后重启 nginx 服务 内置变量 $nginx_version nginx 版本  $connection_requests TCP 链接当前的请求数量  $proxy_protocol_addr 获取代理访问服务">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-15T03:15:45.000Z">
+<meta property="article:modified_time" content="2024-07-26T14:00:47.972Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/04/1e58889c42cf/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>nginx | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/04/1e58889c42cf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          nginx
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-15 11:15:45" itemprop="dateCreated datePublished" datetime="2022-04-15T11:15:45+08:00">2022-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>4.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
+<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
+<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
+<li><p>$nginx_version nginx 版本</p>
+</li>
+<li><p>$connection_requests TCP 链接当前的请求数量</p>
+</li>
+<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
+<span id="more"></span></li>
+</ul>
+<h3 id="request"><a href="#request" class="headerlink" title="$request"></a>$request</h3><ul>
+<li><p>$content_length 请求头字段 <code>Content-Length</code></p>
+</li>
+<li><p>$content_type 请求头字段 <code>Content-Type</code></p>
+</li>
+<li><p>$document_uri 同 $uri</p>
+</li>
+<li><p>$document_root 当前请求的文档根目录或别名</p>
+</li>
+<li><p>$realpath_root 当前请求的文档根目录或别名的真实路径，会将所有符号连接转换为真实路径</p>
+</li>
+<li><p>$remote_addr 客户端的 IP 地址</p>
+</li>
+<li><p>$binary_remote_addr 客户端的 IP 地址(二进制)</p>
+</li>
+<li><p>$remote_port 客户端的端口号</p>
+</li>
+<li><p>$remote_user 用于 HTTP 基础认证服务的用户名</p>
+</li>
+<li><p>$host 请求信息中的 <code>Host</code>, 如果请求中没有 Host 行，则等于设置的服务器名;</p>
+</li>
+<li><p>$hostname 主机名</p>
+</li>
+<li><p>$http_user_agent 客户端 agent 信息</p>
+</li>
+<li><p>$http_cookie 客户端所有的 cookie 信息</p>
+</li>
+<li><p>$cookie_NAME 获取指定 cookie, 后面的 <code>NAME</code> 为 cookie 的 key</p>
+</li>
+<li><p>$http_via 最后一个访问服务器的 Ip 地址</p>
+</li>
+<li><p>$http_x_forwarded_for 相当于网络访问路径</p>
+</li>
+<li><p>$http_referer 引用地址</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 日志配置</span></span><br><span class="line"><span class="string">log_format</span> <span class="string">main</span> <span class="string">&#x27;$remote_addr - $remote_user [$time_local] \</span></span><br><span class="line"><span class="string">&quot;$request&quot; $status $body_bytes_sent &quot;$http_referer&quot; \</span></span><br><span class="line"><span class="string">&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot; &quot;$gzip_ratio&quot;&#x27;</span><span class="string">;</span></span><br><span class="line"></span><br><span class="line"><span class="string">access_log</span> <span class="string">/var/log/nginx/access.log</span> <span class="string">main;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="request-uri"><a href="#request-uri" class="headerlink" title="$request_uri"></a>$request_uri</h4><ul>
+<li><p>$request 代表客户端的请求地址</p>
+</li>
+<li><p>$request_uri 包含请求参数的原始 URI, 不包含主机名</p>
+</li>
+<li><p>$request_method HTTP 请求方法，一般为 <code>GET</code> 或 <code>POST</code></p>
+</li>
+<li><p>$request_body 客户端的请求主体</p>
+</li>
+<li><p>$request_body_file 将客户端请求主体保存在临时文件中. 文件处理结束后, 此文件需删除</p>
+</li>
+<li><p>$request_filename 当前连接请求的文件路径, 由 root 或 alias 指令与 URI 请求生成</p>
+</li>
+<li><p>$request_length 请求的长度 (包括请求的地址, http 请求头和请求主体)</p>
+</li>
+<li><p>$request_time 处理客户端请求使用的时间; 从读取客户端的第一个字节开始计时</p>
+</li>
+<li><p>$uri 当前请求的 URI</p>
+</li>
+<li><p>$arg_name 请求中的的参数名, 即”?”后面的 arg_name=arg_value 形式的 arg_name</p>
+</li>
+<li><p>$args 请求中的参数值</p>
+</li>
+<li><p>$is_args 如果请求中有参数, 值为 “?”, 否则为空字符串</p>
+</li>
+<li><p>$query_string 同$args</p>
+</li>
+<li><p>$request_completion 如果请求结束, 设置为 OK, 否则为空</p>
+</li>
+</ul>
+<h3 id="server"><a href="#server" class="headerlink" title="$server"></a>$server</h3><ul>
+<li><p>$time_local 服务器时间(LOG Format 格式)</p>
+</li>
+<li><p>$sent_http_NAME 可以设置任意 http 响应头字段, 变量名中的后半部分 NAME 能够替换成任意响应头字段, 连字符用下划线代替</p>
+<ul>
+<li>$sent_http_content_type ‘text/html’</li>
+<li>$sent_http_content_length 1024</li>
+</ul>
+</li>
+</ul>
+<h4 id="server-uri"><a href="#server-uri" class="headerlink" title="$server_uri"></a>$server_uri</h4><ul>
+<li><p>$scheme HTTP 方法(如 http, https)</p>
+</li>
+<li><p>$server_protocol 请求使用的协议, 通常是 HTTP/1.0 或 HTTP/1.1</p>
+</li>
+<li><p>$server_addr 服务器地址</p>
+</li>
+<li><p>$server_name 服务器名称</p>
+</li>
+<li><p>$server_port 服务器端口号</p>
+</li>
+<li><p>$status HTTP 响应代码</p>
+</li>
+<li><p>$body_bytes_sent 响应时发送的背景 body 字节数</p>
+</li>
+<li><p>$limit_rate 限制连接速率</p>
+</li>
+</ul>
+<h3 id="invalid-referer"><a href="#invalid-referer" class="headerlink" title="$invalid_referer"></a>$invalid_referer</h3><p>如果 <code>valid_referers</code> 验证 <code>Referer</code> 请求字段有效则为空字符串, 否则为 1</p>
+<h2 id="内置指令"><a href="#内置指令" class="headerlink" title="内置指令"></a>内置指令</h2><h3 id="valid-referers-验证请求头"><a href="#valid-referers-验证请求头" class="headerlink" title="valid_referers 验证请求头"></a>valid_referers 验证请求头</h3><ul>
+<li>none 允许 Referer 头域中不存在的情况</li>
+<li>blocked 允许 Referer 头域的值被防火墙或代理服务器删除或伪装的情况下, 并且值不以 http:// 或 https:// 开头的情况</li>
+<li>server_names 设置一个或多个 URL</li>
+<li>arbitrary string 任意字符串</li>
+<li>regular expression 第一个字符为 ~ 开头的正则表达式</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> server_names</span><br><span class="line">               <span class="regexp">*.example.com</span> <span class="regexp">example.*</span> www.example.org/galleries/</span><br><span class="line">               ~\.google\.;</span><br><span class="line"><span class="comment"># 防盗链</span></span><br><span class="line"><span class="section">location</span> <span class="regexp">~* \.(gif|jpg|png|jpeg)$</span> &#123;</span><br><span class="line">  <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">  <span class="attribute">valid_referers</span> <span class="literal">none</span> <span class="literal">blocked</span> <span class="regexp">*.test.com</span>;</span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$invalid_referer</span>) &#123;</span><br><span class="line">    <span class="comment">#rewrite ^/ http://static.test.cn/images/403.jpg;</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">403</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="add-header-添加响应头字段"><a href="#add-header-添加响应头字段" class="headerlink" title="add_header 添加响应头字段"></a>add_header 添加响应头字段</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">add_header</span> name value [always]; <span class="comment"># 基础语法</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="作用场景"><a href="#作用场景" class="headerlink" title="作用场景"></a>作用场景</h4><ul>
+<li>http</li>
+<li>server</li>
+<li>location</li>
+<li>if in location</li>
+</ul>
+<h5 id="解决跨域"><a href="#解决跨域" class="headerlink" title="解决跨域"></a>解决跨域</h5><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="comment"># 允许跨域主机名</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Origin&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许携带 cookie 信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Credentials&quot;</span> <span class="string">&quot;true&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求的方法</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Methods&quot;</span> <span class="string">&quot;OPTIONS,GET,POST,PUT,DELETE,HEAD&quot;</span>;</span><br><span class="line">  <span class="comment"># 允许跨域请求时携带的头部信息</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Allow-Headers&quot;</span> *;</span><br><span class="line">  <span class="comment"># 允许发送按段获取资源的请求</span></span><br><span class="line">  <span class="attribute">add_header</span> <span class="string">&quot;Access-Control-Expose-Headers&quot;</span> <span class="string">&quot;Content-Length,Content-Range&quot;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">if</span> (<span class="variable">$request_method</span> = <span class="string">&#x27;OPTIONS&#x27;</span>) &#123;</span><br><span class="line">    <span class="attribute">add_header</span> <span class="string">&#x27;Access-Control-Max-Age&#x27;</span> <span class="number">1728000</span>;</span><br><span class="line">    <span class="attribute">add_header</span> <span class="string">&#x27;Content-Type&#x27;</span> <span class="string">&#x27;text/plain; charset=utf-8&#x27;</span>;</span><br><span class="line">    <span class="attribute">add_header</span> <span class="string">&#x27;Content-Length&#x27;</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment"># 对于Options方式的请求返回204，表示接受跨域请求</span></span><br><span class="line">    <span class="attribute">return</span> <span class="number">204</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="如果当前层添加了-add-header-则不能从上层继承"><a href="#如果当前层添加了-add-header-则不能从上层继承" class="headerlink" title="如果当前层添加了 add_header, 则不能从上层继承"></a>如果当前层添加了 <code>add_header</code>, 则不能从上层继承</h4><h4 id="仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效"><a href="#仅当状态码为-ngx-http-headers-module-模块列出时-add-header-添加的标头字段有效" class="headerlink" title="仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效"></a>仅当状态码为 <code>ngx_http_headers_module</code> 模块列出时, <code>add_header</code> 添加的标头字段有效</h4><p>200、201 (1.3.10)、204、206、301、302、303、304、307 (1.1.16、1.0.13) 或 308</p>
+<h4 id="如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段"><a href="#如果设置一个非有效状态码-则会忽略-add-header-添加的标头字段" class="headerlink" title="如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段"></a>如果设置一个非有效状态码, 则会忽略 <code>add_header</code> 添加的标头字段</h4><h4 id="always-忽略状态码强制添加标头字段"><a href="#always-忽略状态码强制添加标头字段" class="headerlink" title="always 忽略状态码强制添加标头字段"></a>always 忽略状态码强制添加标头字段</h4><h3 id="rewrite-重写请求中的-URI"><a href="#rewrite-重写请求中的-URI" class="headerlink" title="rewrite 重写请求中的 URI"></a>rewrite 重写请求中的 URI</h3><p>至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)</p>
+<ul>
+<li>last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置</li>
+<li>break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^(/download/.*)/media/(\w+)\.?.*$</span> <span class="variable">$1</span>/mp3/<span class="variable">$2</span>.mp3 <span class="literal">last</span>;</span><br><span class="line"><span class="attribute">rewrite</span><span class="regexp"> ^/users/(.*)$</span> /show?user=<span class="variable">$1</span> <span class="literal">break</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="proxy-set-header"><a href="#proxy-set-header" class="headerlink" title="proxy_set_header"></a>proxy_set_header</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">upstream</span> nginx_boot &#123;</span><br><span class="line">  <span class="comment"># ip_hash;</span></span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8080</span> weight=<span class="number">100</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8081</span> weight=<span class="number">200</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">192.168.1.2:8082</span> weight=<span class="number">300</span> max_fails=<span class="number">2</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">root</span> html;</span><br><span class="line">    <span class="attribute">index</span> index.html index.htm;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Reap-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://nginx_boot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="try-files-尝试检查文件"><a href="#try-files-尝试检查文件" class="headerlink" title="try_files 尝试检查文件"></a>try_files 尝试检查文件</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif</span></span><br><span class="line"><span class="section">location</span> /images/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /www/data;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> /images/default.gif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在则返回404</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">$uri</span>.html =<span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果文件或者目录不存在, 则请求重定向到指定位置然后传递给代理服务器</span></span><br><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">  <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ <span class="variable">@backend</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">location</span> <span class="variable">@backend</span> &#123;</span><br><span class="line">  <span class="attribute">proxy_pass</span> http://backend.example.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="location-路径匹配"><a href="#location-路径匹配" class="headerlink" title="location 路径匹配"></a><a target="_blank" rel="noopener" href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location">location 路径匹配</a></h3><h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><table>
+<thead>
+<tr>
+<th align="center">符号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">~</td>
+<td>正则匹配，区分大小写</td>
+</tr>
+<tr>
+<td align="center">~*</td>
+<td>正则匹配，不区分大小写</td>
+</tr>
+<tr>
+<td align="center">^~</td>
+<td>普通字符匹配，如果该选项匹配，则，只匹配改选项，不再向下匹配其他选项</td>
+</tr>
+<tr>
+<td align="center">=</td>
+<td>普通字符匹配，精确匹配</td>
+</tr>
+<tr>
+<td align="center">@</td>
+<td>定义一个命名的 location，用于内部定向，例如 error_page，try_files</td>
+</tr>
+</tbody></table>
+<h4 id="匹配优先级-跟-location-的书写顺序关系不大"><a href="#匹配优先级-跟-location-的书写顺序关系不大" class="headerlink" title="匹配优先级( 跟 location 的书写顺序关系不大 )"></a>匹配优先级( 跟 location 的书写顺序关系不大 )</h4><ol>
+<li><p>精确匹配：</p>
+<p>= 前缀的指令严格匹配这个查询。</p>
+<p>如果找到，停止搜索。</p>
+</li>
+<li><p>普通字符匹配：</p>
+<p>所有剩下的常规字符串，最长的匹配。</p>
+<p>如果这个匹配使用^〜前缀，搜索停止。</p>
+</li>
+<li><p>正则匹配：</p>
+<p>正则表达式，在配置文件中定义的顺序，匹配到一个结果，搜索停止；</p>
+</li>
+<li><p>默认匹配：</p>
+<p>如果第 3 条规则产生匹配的话，结果被使用。</p>
+<p>否则，如同从第 2 条规则被使用。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/04/1e58889c42cf/" title="nginx">https://luoleiself.github.io/2022/04/1e58889c42cf/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/27a05caca8fb/" rel="prev" title="Docker-上">
+      <i class="fa fa-chevron-left"></i> Docker-上
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/616714173ca1/" rel="next" title="shell语法">
+      shell语法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B2%E9%BB%91%E6%9D%BF"><span class="nav-number">1.</span> <span class="nav-text">敲黑板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-nginx-%E5%A4%B1%E8%B4%A5"><span class="nav-number">1.1.</span> <span class="nav-text">启动 nginx 失败</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">内置变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#request"><span class="nav-number">2.1.</span> <span class="nav-text">$request</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#request-uri"><span class="nav-number">2.1.1.</span> <span class="nav-text">$request_uri</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#server"><span class="nav-number">2.2.</span> <span class="nav-text">$server</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#server-uri"><span class="nav-number">2.2.1.</span> <span class="nav-text">$server_uri</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#invalid-referer"><span class="nav-number">2.3.</span> <span class="nav-text">$invalid_referer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">内置指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#valid-referers-%E9%AA%8C%E8%AF%81%E8%AF%B7%E6%B1%82%E5%A4%B4"><span class="nav-number">3.1.</span> <span class="nav-text">valid_referers 验证请求头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add-header-%E6%B7%BB%E5%8A%A0%E5%93%8D%E5%BA%94%E5%A4%B4%E5%AD%97%E6%AE%B5"><span class="nav-number">3.2.</span> <span class="nav-text">add_header 添加响应头字段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.2.1.</span> <span class="nav-text">作用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">解决跨域</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E5%BD%93%E5%89%8D%E5%B1%82%E6%B7%BB%E5%8A%A0%E4%BA%86-add-header-%E5%88%99%E4%B8%8D%E8%83%BD%E4%BB%8E%E4%B8%8A%E5%B1%82%E7%BB%A7%E6%89%BF"><span class="nav-number">3.2.2.</span> <span class="nav-text">如果当前层添加了 add_header, 则不能从上层继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%85%E5%BD%93%E7%8A%B6%E6%80%81%E7%A0%81%E4%B8%BA-ngx-http-headers-module-%E6%A8%A1%E5%9D%97%E5%88%97%E5%87%BA%E6%97%B6-add-header-%E6%B7%BB%E5%8A%A0%E7%9A%84%E6%A0%87%E5%A4%B4%E5%AD%97%E6%AE%B5%E6%9C%89%E6%95%88"><span class="nav-number">3.2.3.</span> <span class="nav-text">仅当状态码为 ngx_http_headers_module 模块列出时, add_header 添加的标头字段有效</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E8%AE%BE%E7%BD%AE%E4%B8%80%E4%B8%AA%E9%9D%9E%E6%9C%89%E6%95%88%E7%8A%B6%E6%80%81%E7%A0%81-%E5%88%99%E4%BC%9A%E5%BF%BD%E7%95%A5-add-header-%E6%B7%BB%E5%8A%A0%E7%9A%84%E6%A0%87%E5%A4%B4%E5%AD%97%E6%AE%B5"><span class="nav-number">3.2.4.</span> <span class="nav-text">如果设置一个非有效状态码, 则会忽略 add_header 添加的标头字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#always-%E5%BF%BD%E7%95%A5%E7%8A%B6%E6%80%81%E7%A0%81%E5%BC%BA%E5%88%B6%E6%B7%BB%E5%8A%A0%E6%A0%87%E5%A4%B4%E5%AD%97%E6%AE%B5"><span class="nav-number">3.2.5.</span> <span class="nav-text">always 忽略状态码强制添加标头字段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rewrite-%E9%87%8D%E5%86%99%E8%AF%B7%E6%B1%82%E4%B8%AD%E7%9A%84-URI"><span class="nav-number">3.3.</span> <span class="nav-text">rewrite 重写请求中的 URI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proxy-set-header"><span class="nav-number">3.4.</span> <span class="nav-text">proxy_set_header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#try-files-%E5%B0%9D%E8%AF%95%E6%A3%80%E6%9F%A5%E6%96%87%E4%BB%B6"><span class="nav-number">3.5.</span> <span class="nav-text">try_files 尝试检查文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#location-%E8%B7%AF%E5%BE%84%E5%8C%B9%E9%85%8D"><span class="nav-number">3.6.</span> <span class="nav-text">location 路径匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99"><span class="nav-number">3.6.1.</span> <span class="nav-text">匹配规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E4%BC%98%E5%85%88%E7%BA%A7-%E8%B7%9F-location-%E7%9A%84%E4%B9%A6%E5%86%99%E9%A1%BA%E5%BA%8F%E5%85%B3%E7%B3%BB%E4%B8%8D%E5%A4%A7"><span class="nav-number">3.6.2.</span> <span class="nav-text">匹配优先级( 跟 location 的书写顺序关系不大 )</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">557k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

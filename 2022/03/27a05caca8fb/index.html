@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="敲黑板 Package docker-ce is not available, but is referred to by another package. 如果提示未发现可用的 docker-ce 包时,检查系统镜像源是否正确(如果不能翻墙时, 使用国内的镜像源修改 &#x2F;etc&#x2F;apt&#x2F;source.list)  Got permission denied while trying to conn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker-上">
+<meta property="og:url" content="https://luoleiself.github.io/2022/03/27a05caca8fb/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="敲黑板 Package docker-ce is not available, but is referred to by another package. 如果提示未发现可用的 docker-ce 包时,检查系统镜像源是否正确(如果不能翻墙时, 使用国内的镜像源修改 &#x2F;etc&#x2F;apt&#x2F;source.list)  Got permission denied while trying to conn">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://luoleiself.github.io/images/docker-8.webp">
+<meta property="og:image" content="https://luoleiself.github.io/images/docker-1.jpg">
+<meta property="og:image" content="https://luoleiself.github.io/images/docker-3.png">
+<meta property="og:image" content="https://luoleiself.github.io/images/docker-5.jpg">
+<meta property="article:published_time" content="2022-03-22T10:37:24.000Z">
+<meta property="article:modified_time" content="2024-07-26T14:00:47.944Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://luoleiself.github.io/images/docker-8.webp">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/03/27a05caca8fb/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Docker-上 | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/03/27a05caca8fb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker-上
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-22 18:37:24" itemprop="dateCreated datePublished" datetime="2022-03-22T18:37:24+08:00">2022-03-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index"><span itemprop="name">tools</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>20k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>18 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><ul>
+<li><p>Package docker-ce is not available, but is referred to by another package.</p>
+<p>如果提示未发现可用的 docker-ce 包时,检查系统镜像源是否正确(如果不能翻墙时, 使用国内的镜像源修改 /etc/apt/source.list)</p>
+</li>
+<li><p>Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get <a href="http://%2Fvar%2Frun%2Fdocker.sock/v1.24/images/json">http://%2Fvar%2Frun%2Fdocker.sock/v1.24/images/json</a>: dial unix /var/run/docker.sock: connect: permission denied</p>
+<p>执行 docker 相关命令时提示, 表示 docker 权限不足</p>
+<ul>
+<li><p>使用 sudo 命令运行 docker 命令</p>
+</li>
+<li><p>将当前用户加入到 docker 组中</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># cat /etc/group | grep docker</span></span><br><span class="line">docker:x:994:vagrant</span><br><span class="line">[root@localhost ~]<span class="comment"># cat /etc/gshadow | grep docker</span></span><br><span class="line">docker:!::vagrant</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">groupadd docker <span class="comment"># 添加 docker 用户组</span></span><br><span class="line">gpasswd -a <span class="variable">$USER</span> docker <span class="comment"># 添加登陆用户到 docker 用户组中</span></span><br><span class="line">newgrp docker <span class="comment"># 更新用户组</span></span><br><span class="line">或者</span><br><span class="line">usermod -aG docker <span class="variable">$USER</span> <span class="comment"># 给用户添加一个新的附属组</span></span><br><span class="line">newgrp docker <span class="comment"># 重新登陆组</span></span><br><span class="line"></span><br><span class="line">systemctl restart docker <span class="comment"># 重启 docker 服务</span></span><br><span class="line"></span><br><span class="line">systemctl <span class="built_in">enable</span> docker <span class="comment"># 设置 docker 守护进程开机启动</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p><img data-src="/images/docker-8.webp" alt="docker-8"></p>
+<h4 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h4><p><img data-src="/images/docker-1.jpg" alt="docker-1"></p>
+<h2 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h2><p>是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）</p>
+<p>镜像由多个层组成, 每层叠加之后, 从外部看来就如一个独立的对象</p>
+<h3 id="UnionFS-联合文件系统"><a href="#UnionFS-联合文件系统" class="headerlink" title="UnionFS 联合文件系统"></a>UnionFS 联合文件系统</h3><h3 id="镜像加速"><a href="#镜像加速" class="headerlink" title="镜像加速"></a>镜像加速</h3><p><code>/etc/docker/daemon.json</code> 配置文件修改默认镜像源</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="镜像操作"><a href="#镜像操作" class="headerlink" title="镜像操作"></a>镜像操作</h3><p>镜像的操作命令可直接用在 <code>docker</code> 或 <code>docker image</code> 命令后面</p>
+<ul>
+<li>images 查看本地镜像列表, 作用同 <code>image ls</code></li>
+<li>rmi 删除本地镜像, 作用同 <code>image rm</code></li>
+<li>tag 给镜像文件创建标签</li>
+<li>build 从 Dockerfile 构建镜像</li>
+<li>load|import 导入镜像归档文件</li>
+<li>save 保存镜像到归档文件</li>
+<li>history 查看镜像的历史信息</li>
+<li>pull [OPTIONS] NAME[:TAG|@DIGEST] 从远程仓库拉取镜像</li>
+</ul>
+<h3 id="镜像导入和导出"><a href="#镜像导入和导出" class="headerlink" title="镜像导入和导出"></a>镜像导入和导出</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker [image] save -o  # 归档一个或多个镜像文件</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker [image] load -i  # 从归档文件加载镜像文件</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="批量删除多个镜像"><a href="#批量删除多个镜像" class="headerlink" title="批量删除多个镜像"></a>批量删除多个镜像</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker rmi -f $(docker images -aq)</span><br><span class="line">docker image <span class="built_in">rm</span> -f $(docker image <span class="built_in">ls</span> -aq) <span class="comment"># 功能同上</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="从容器构建镜像"><a href="#从容器构建镜像" class="headerlink" title="从容器构建镜像"></a>从容器构建镜像</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]] <span class="comment"># 从容器构建镜像, 提交到本地仓库</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-a, --author 提交作者</li>
+<li>-m, --message 提交信息</li>
+<li>-p, --pause 提交过程中是否中断容器运行, 默认为 true</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker images  # 显示所有镜像</span></span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED        SIZE</span><br><span class="line">nginx        latest    12766a6745ee   2 days ago     142MB</span><br><span class="line">centos       latest    5d0da3dc9764   6 months ago   231MB</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -p 6666:80 nginx # 后台运行nginx并配置端口映射</span></span><br><span class="line">[root@localhost ~]<span class="comment"># curl -I localhost:6666 # 测试服务</span></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.21.6</span><br><span class="line">Date: Fri, 01 Apr 2022 08:44:03 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 615</span><br><span class="line">Last-Modified: Tue, 25 Jan 2022 15:03:52 GMT</span><br><span class="line">Connection: keep-alive</span><br><span class="line">ETag: <span class="string">&quot;61f01158-267&quot;</span></span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                   NAMES</span><br><span class="line">91b34829d2d8   nginx     <span class="string">&quot;/docker-entrypoint.…&quot;</span>   38 seconds ago   Up 36 seconds   0.0.0.0:6666-&gt;80/tcp, :::6666-&gt;80/tcp   laughing_kowalevski</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>              2 days ago       Up 2 hours                                              vigorous_turing</span><br><span class="line"><span class="comment"># 提交指定容器的镜像并添加作者,提交信息,版本号等</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker commit -a &#x27;l.l&#x27; -m &#x27;nginx 01&#x27; 91b34829d2d8 nginx01:1.0</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker images # 查看所有镜像</span></span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED         SIZE</span><br><span class="line">nginx01      1.0       9e81333043cc   2 seconds ago   142MB</span><br><span class="line">nginx        latest    12766a6745ee   2 days ago      142MB</span><br><span class="line">centos       latest    5d0da3dc9764   6 months ago    231MB</span><br></pre></td></tr></table></figure>
+
+<h3 id="从-Dockerfile-构建镜像"><a href="#从-Dockerfile-构建镜像" class="headerlink" title="从 Dockerfile 构建镜像"></a>从 Dockerfile 构建镜像</h3><p><code>.</code> 上下文路径</p>
+<ul>
+<li>-f 指定配置文件, 默认 <code>$&#123;PWD&#125;/Dockerfile</code></li>
+<li>-t 指定新创建的镜像名称和标签</li>
+<li>--no-cache 构建镜像时不使用缓存</li>
+<li>--compress 使用 gzip 压缩构建上下文环境</li>
+<li>--label 设置镜像元数据</li>
+<li>--network 设置构建过程中 <code>RUN</code> 指令的网络模式</li>
+<li>--build-arg 通过命令行设置构建镜像过程中的参数, 可以覆盖 <code>ARG</code> 设置的参数</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -f /path/to/Dockerfile -t name:tag .</span><br></pre></td></tr></table></figure>
+
+<h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><p>容器独立运行的一个或一组应用，是镜像运行时的实体, 它可以被启动、开始、停止、删除. 每个容器之间都是相互隔离的, 保证安全的平台</p>
+<ul>
+<li>应用容器化 将应用整合到容器中并且运行起来的这个过程</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                   PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   28 hours ago   Exited (0) 3 hours ago             vigorous_turing</span><br></pre></td></tr></table></figure>
+
+<h3 id="容器操作"><a href="#容器操作" class="headerlink" title="容器操作"></a>容器操作</h3><p>容器的操作命令可直接用在 <code>docker</code> 或 <code>docker container</code> 命令后面</p>
+<ul>
+<li><p>create 创建新容器</p>
+</li>
+<li><p>run 创建并启动一个容器</p>
+</li>
+<li><p>start|stop|kill 启动|停止容器</p>
+</li>
+<li><p>pause 暂停容器</p>
+</li>
+<li><p>restart 重启容器</p>
+</li>
+<li><p>rename 重命名容器</p>
+</li>
+<li><p>events 获取 docker 服务器的实时事件</p>
+</li>
+<li><p>diff 显示容器文件系统的前后变化</p>
+</li>
+<li><p>ps 查看容器列表, 作用同 <code>container ls</code></p>
+</li>
+<li><p>inspect 查看容器详细信息, 作用同 <code>container inspect</code></p>
+</li>
+<li><p>logs 输出容器运行日志</p>
+<ul>
+<li>-f, --follow 实时输出容器运行日志</li>
+<li>-n, --tail 查看指定行数</li>
+<li>-t, --timestamps 输出日志添加时间戳</li>
+</ul>
+</li>
+<li><p>rm 删除容器</p>
+</li>
+<li><p>port 查看容器映射端口</p>
+</li>
+<li><p>export 导出容器为归档文件</p>
+</li>
+<li><p>wait 阻塞一个或多个容器直到停止运行, 并打印容器的退出码</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker wait centos01 # 阻塞一个或多个容器直到停止运行, 并打印容器的退出码</span></span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p>如果本地不存在镜像时则先从远程拉取镜像(docker pull 镜像名)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name <span class="string">&#x27;helloWorld&#x27;</span> -it 镜像名 在启动的容器里执行的命令</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>--name 容器名称</p>
+</li>
+<li><p>-d 后台方式运行</p>
+</li>
+<li><p>-i,--interactive 即使没有附加也保持 STDIN 打开, 如果需要执行命令则需要开启这个选项</p>
+</li>
+<li><p>-t,--tty 分配一个伪终端进行执行, 一个连接用户的终端与容器 stdin 和 stdout 的桥梁</p>
+</li>
+<li><p>-P 将容器内部使用的网络端口映射到宿主机随机端口上</p>
+</li>
+<li><p>-p 指定容器的端口</p>
+<ul>
+<li>-p 主机 IP:主机端口:容器端口/协议</li>
+<li>-p 主机端口:容器端口/协议</li>
+<li>-p 容器端口/协议</li>
+</ul>
+</li>
+<li><p>-e 设置容器运行的环境变量</p>
+</li>
+<li><p>-w 设置容器内部的工作目录</p>
+</li>
+<li><p>-h, --hostname 设置容器的主机名</p>
+</li>
+<li><p>-v, --volume 设置容器数据卷映射</p>
+</li>
+<li><p>--mount 挂载文件系统</p>
+</li>
+<li><p>--temps 挂载临时文件系统</p>
+</li>
+<li><p>--volumes-from 指定继承的数据卷容器</p>
+</li>
+<li><p>--label 设置容器的元数据</p>
+</li>
+<li><p>--ip 设置容器 IP 地址</p>
+</li>
+<li><p>--link 连接到另一个容器</p>
+</li>
+<li><p>--network 连接到指定的网络, 默认为 docker0</p>
+</li>
+<li><p>--privileged 授予此容器扩展权限</p>
+</li>
+<li><p>--entrypoint 覆盖镜像文件中默认的 ENTRYPOINT</p>
+</li>
+<li><p>--restart string 当容器退出后的重启策略</p>
+</li>
+<li><p>--read-only 只读模式挂在容器文件系统</p>
+</li>
+<li><p>--add-host list 添加主机 ip 映射</p>
+</li>
+<li><p>--dns list 设置 dns 服务</p>
+</li>
+<li><p>--rm 测试时临时运行容器关闭后自动删除容器</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --<span class="built_in">rm</span> -p 6666:80 --name nginx01 nginx</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker images # 查看本地所有镜像</span></span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED        SIZE</span><br><span class="line">nginx        latest    12766a6745ee   44 hours ago   142MB</span><br><span class="line">centos       latest    5d0da3dc9764   6 months ago   231MB</span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a  # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   29 hours ago   Up 27 minutes             vigorous_turing</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --rm -p 6666:80 nginx # 后台运行容器同时配置端口映射</span></span><br><span class="line">[root@localhost ~]<span class="comment"># curl -I localhost:6666 # 测试 nginx 服务</span></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.21.6</span><br><span class="line">Date: Thu, 31 Mar 2022 11:52:34 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 615</span><br><span class="line">Last-Modified: Tue, 25 Jan 2022 15:03:52 GMT</span><br><span class="line">Connection: keep-alive</span><br><span class="line">ETag: <span class="string">&quot;61f01158-267&quot;</span></span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a  # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                   NAMES</span><br><span class="line">2ccf4c0204ab   nginx     <span class="string">&quot;/docker-entrypoint.…&quot;</span>   11 seconds ago   Up 10 seconds   0.0.0.0:6666-&gt;80/tcp, :::6666-&gt;80/tcp   thirsty_ishizaka</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>              29 hours ago     Up 28 minutes                                           vigorous_turing</span><br><span class="line">[root@localhost ~]<span class="comment"># docker stop 2ccf4c0204ab  # 停止指定容器</span></span><br><span class="line">2ccf4c0204ab</span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a  # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   29 hours ago   Up 28 minutes             vigorous_turing</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>示例：最简单的 nginx 服务集群</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker images # 查看所有镜像</span></span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED        SIZE</span><br><span class="line">nginx        latest    12766a6745ee   3 days ago     142MB</span><br><span class="line">centos       latest    5d0da3dc9764   6 months ago   231MB</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --name &#x27;nginx01&#x27; -p 6666:80 nginx # 后台启动 nginx 服务配置端口映射</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --name &#x27;nginx02&#x27; -p 7777:80 nginx # 后台启动 nginx 服务配置端口映射</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a  # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS                    PORTS                                   NAMES</span><br><span class="line">335120e70611   nginx     <span class="string">&quot;/docker-entrypoint.…&quot;</span>   6 seconds ago    Up 5 seconds              0.0.0.0:7777-&gt;80/tcp, :::7777-&gt;80/tcp   nginx02</span><br><span class="line">771fd45df0ef   nginx     <span class="string">&quot;/docker-entrypoint.…&quot;</span>   47 seconds ago   Up 46 seconds             0.0.0.0:6666-&gt;80/tcp, :::6666-&gt;80/tcp   nginx01</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>              3 days ago       Exited (0) 22 hours ago                                           vigorous_turing</span><br><span class="line">[root@localhost ~]<span class="comment"># curl -I localhost:6666  # 测试 nginx 服务</span></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.21.6</span><br><span class="line">Date: Sat, 02 Apr 2022 10:42:29 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 615</span><br><span class="line">Last-Modified: Tue, 25 Jan 2022 15:03:52 GMT</span><br><span class="line">Connection: keep-alive</span><br><span class="line">ETag: <span class="string">&quot;61f01158-267&quot;</span></span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># curl -I localhost:7777  # 测试 nginx 服务</span></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Server: nginx/1.21.6</span><br><span class="line">Date: Sat, 02 Apr 2022 10:42:37 GMT</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Content-Length: 615</span><br><span class="line">Last-Modified: Tue, 25 Jan 2022 15:03:52 GMT</span><br><span class="line">Connection: keep-alive</span><br><span class="line">ETag: <span class="string">&quot;61f01158-267&quot;</span></span><br><span class="line">Accept-Ranges: bytes</span><br></pre></td></tr></table></figure>
+
+<h3 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h3><h4 id="exec-和-attach"><a href="#exec-和-attach" class="headerlink" title="exec 和 attach"></a>exec 和 attach</h4><ul>
+<li>exec<ul>
+<li>进入容器打开一个新的终端</li>
+<li>退出容器, 容器正常运行</li>
+</ul>
+</li>
+<li>attach<ul>
+<li>进入容器打开正在运行的终端</li>
+<li>退出容器, 容器自动停止</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   25 hours ago   Up 31 minutes             vigorous_turing</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it a441e0564165 /bin/bash # 交互方式进入容器</span></span><br><span class="line">[root@a441e0564165 /]<span class="comment"># exit # 退出</span></span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS          PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   25 hours ago   Up 32 minutes             vigorous_turing</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker attach a441e0564165 # 进入容器</span></span><br><span class="line">[root@a441e0564165 /]<span class="comment"># exit # 退出</span></span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a # 查看所有容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                     PORTS     NAMES</span><br><span class="line">a441e0564165   centos    <span class="string">&quot;/bin/bash&quot;</span>   25 hours ago   Exited (0) 2 seconds ago             vigorous_turing</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件拷贝-cp"><a href="#文件拷贝-cp" class="headerlink" title="文件拷贝 cp  "></a>文件拷贝 cp <em id="dockercp"></em> <!--markdownlint-disable-line--></h3><ul>
+<li>-a, --archive 复制文档的所有信息</li>
+</ul>
+<h4 id="拷贝宿主机到容器内"><a href="#拷贝宿主机到容器内" class="headerlink" title="拷贝宿主机到容器内"></a>拷贝宿主机到容器内</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">cp</span> [宿主机路径] [容器标识]:[容器内路径]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拷贝宿主机文件到 a441e0564165 /user/local 下</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker cp -a .nvm/versions/node/v12.22.1/ a441e0564165:/usr/local/v12.22.1/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it a441e0564165 ls /usr/local</span></span><br><span class="line">bin  etc  games  include  lib  lib64  libexec  sbin  share  src  v12.22.1</span><br></pre></td></tr></table></figure>
+
+<h4 id="拷贝容器内到宿主机"><a href="#拷贝容器内到宿主机" class="headerlink" title="拷贝容器内到宿主机"></a>拷贝容器内到宿主机</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">cp</span> [容器标识]:[容器内路径] [宿主机路径]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># ls /home/</span></span><br><span class="line">ubuntu  vagrant</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it a441e0564165 /bin/bash # 进入 a441e0564165</span></span><br><span class="line">[root@a441e0564165 /]<span class="comment"># ls -al /home</span></span><br><span class="line">total 8</span><br><span class="line">drwxr-xr-x 2 root root 4096 Nov  3  2020 .</span><br><span class="line">drwxr-xr-x 1 root root 4096 Apr 10 08:06 ..</span><br><span class="line">[root@a441e0564165 /]<span class="comment"># touch hello docker &gt; /home/hello.txt # 创建文件</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker cp -a a441e0564165:/home/hello.txt /home/vagrant</span></span><br><span class="line">[root@localhost ~]<span class="comment"># ls</span></span><br><span class="line">centos01  description-pak  hello.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="容器环境变量和工作目录"><a href="#容器环境变量和工作目录" class="headerlink" title="容器环境变量和工作目录"></a>容器环境变量和工作目录</h3><ul>
+<li>-e 运行容器时指定环境变量</li>
+<li>-w 容器工作目录</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker exec -it -e PATH=/usr/local/v12.22.1/bin:$PATH centos01 node -v</span></span><br><span class="line">v12.22.1</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it -w /usr/local centos01  pwd</span></span><br><span class="line">/usr/local</span><br></pre></td></tr></table></figure>
+
+<h3 id="容器导入和导出"><a href="#容器导入和导出" class="headerlink" title="容器导入和导出"></a>容器导入和导出</h3><ul>
+<li><p>export 从容器中导出为归档文件</p>
+</li>
+<li><p>import 从归档文件中导入为镜像文件</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker [container] export -o centos01.tar.gz centos01 # 归档容器</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入归档文件为镜像</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker [image] import centos01.tar.gz [REPOSITORY[:TAG]]</span></span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/images/docker-3.png" alt="docker-3"></p>
+<h3 id="删除所有容器"><a href="#删除所有容器" class="headerlink" title="删除所有容器"></a>删除所有容器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">rm</span> -f $(docker ps -aq)</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看容器资源使用情况统计"><a href="#查看容器资源使用情况统计" class="headerlink" title="查看容器资源使用情况统计"></a>查看容器资源使用情况统计</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker stats</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># docker stats</span></span><br><span class="line">CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I/O      BLOCK I/O     PIDS</span><br><span class="line">a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB / 0B   6.79MB / 0B   1</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据卷"><a href="#数据卷" class="headerlink" title="数据卷"></a>数据卷</h2><p>卷就是目录或者文件,存在于一个或多个容器中,由 docker 挂载到容器中,卷的设计目的就是数据的持久化,完全独立于容器的生存周期, 因此 Docker 不会在容器删除时删除其挂载的数据</p>
+<ul>
+<li>create 创建数据卷</li>
+<li>inspect 显示数据卷的详细信息</li>
+<li>ls 显示所有数据卷</li>
+<li>rm 删除数据据按</li>
+<li>prune 移除所有未使用的本地数据卷</li>
+</ul>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>卷中的更改可以直接生效</li>
+<li>数据卷可在容器之间共享数据</li>
+<li>数据卷中的更改不会包含在镜像的更新中</li>
+<li>数据卷的生命周期一直持续到没有容器使用它为止</li>
+</ul>
+<h3 id="数据卷类型"><a href="#数据卷类型" class="headerlink" title="数据卷类型"></a>数据卷类型</h3><p>默认挂载数据卷的权限为 <code>RW</code></p>
+<p>可以在挂载数据卷时指定数据卷的权限 <code>-v [source/path]:[destination/path]:[rw]</code></p>
+<ul>
+<li>--mount 不指定 type 选项默认为 volume</li>
+<li>-v 不能建立 tmpfs mounts</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">对比项</th>
+<th align="center">–volume 或 -v</th>
+<th align="center">–mount type=bind</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">若是主机路径不存在</td>
+<td align="center">自动建立</td>
+<td align="center">命令报错</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">对比项</th>
+<th align="center">bind mount</th>
+<th align="center">volume</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Source 位置</td>
+<td align="center">用户指定</td>
+<td align="center">/var/lib/docker/volumes/</td>
+</tr>
+<tr>
+<td align="center">Source 为空</td>
+<td align="center">覆盖 dest 为空</td>
+<td align="center">保留 dest 内容</td>
+</tr>
+<tr>
+<td align="center">Source 非空</td>
+<td align="center">覆盖 dest 内容</td>
+<td align="center">覆盖 dest 内容</td>
+</tr>
+<tr>
+<td align="center">Source 种类</td>
+<td align="center">文件或目录</td>
+<td align="center">只能是目录</td>
+</tr>
+<tr>
+<td align="center">可移植性</td>
+<td align="center">一般（自行维护）</td>
+<td align="center">强（docker 托管）</td>
+</tr>
+<tr>
+<td align="center">宿主直接访问</td>
+<td align="center">容易（仅需 chown）</td>
+<td align="center">受限（需登陆 root 用户）*</td>
+</tr>
+</tbody></table>
+<h4 id="volume-mounts"><a href="#volume-mounts" class="headerlink" title="volume mounts"></a>volume mounts</h4><p>指定 docker 挂载区域, Docker 管理宿主机文件系统的一部分(/var/lib/docker/volumes)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker volume create [OPTIONS] [VOLUME] <span class="comment"># 创建数据卷</span></span><br><span class="line">docker run --mount <span class="built_in">type</span>=volume,<span class="built_in">source</span>=<span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$&#123;CONTAINER_NAME&#125;</span>/app,destination=/app centos01 /bin/bash</span><br><span class="line">docker run -v <span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$&#123;CONTAINER_NAME&#125;</span>/app:/app <span class="comment"># 作用同上一行</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="bind-mounts"><a href="#bind-mounts" class="headerlink" title="bind mounts"></a>bind mounts</h4><p>是宿主机任意文件系统, 可以存储在宿主机系统的任意位置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run --mount <span class="built_in">type</span>=<span class="built_in">bind</span>,<span class="built_in">source</span>=<span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$&#123;CONTAINER_NAME&#125;</span>/app,destination=/app centos01 /bin/bash</span><br><span class="line"><span class="comment"># 如果挂载到容器中的非空目录, 则会隐藏容器中非空目录中的文件</span></span><br><span class="line">docker run -v <span class="variable">$&#123;PWD&#125;</span>/<span class="variable">$&#123;CONTAINER_NAME&#125;</span>/app:/app <span class="comment"># 作用同上一行</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="tmpfs-mounts"><a href="#tmpfs-mounts" class="headerlink" title="tmpfs mounts"></a>tmpfs mounts</h4><p>临时挂载到宿主机系统的内存中, 不会写入宿主机的文件系统</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --mount <span class="built_in">type</span>=tmpfs,tmpfs-size=512M,destination=/path/in/container</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="/images/docker-5.jpg" alt="docker-5"></p>
+<h3 id="挂载数据卷"><a href="#挂载数据卷" class="headerlink" title="挂载数据卷  "></a>挂载数据卷 <em id="guazaishujujuan"></em> <!--markdownlint-disable-line--></h3><h4 id="v-挂载方式"><a href="#v-挂载方式" class="headerlink" title="-v 挂载方式"></a>-v 挂载方式</h4><h5 id="v-容器内路径-匿名挂载"><a href="#v-容器内路径-匿名挂载" class="headerlink" title="-v 容器内路径 匿名挂载  "></a>-v 容器内路径 匿名挂载 <em id="nimingguazai"></em> <!--markdownlint-disable-line--></h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos01 -v /centosVolume centos /bin/bash</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker container inspect centos01</span></span><br><span class="line"><span class="string">&quot;Mounts&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;volume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Name&quot;</span>: <span class="string">&quot;2d25068e7e073ed051b075c3d454de4cd8db89871e6e19b38aa2c44b34cee647&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Source&quot;</span>: <span class="string">&quot;/var/lib/docker/volumes/2d25068e7e073ed051b075c3d454de4cd8db89871e6e19b38aa2c44b34cee647/_data&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Destination&quot;</span>: <span class="string">&quot;/centosVolume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Driver&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Mode&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RW&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;Propagation&quot;</span>: <span class="string">&quot;&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="v-卷名-容器内路径-具名挂载"><a href="#v-卷名-容器内路径-具名挂载" class="headerlink" title="-v 卷名:容器内路径 具名挂载"></a>-v 卷名:容器内路径 具名挂载</h5><ul>
+<li>如果 <code>不需要</code> 对容器内的数据卷挂载点进行 <code>写操作</code> 时, 使用具名挂载方式备份容器内数据到宿主机中</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos02 -v summary:/myVolume centos /bin/bash</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker container inspect centos02</span></span><br><span class="line"><span class="string">&quot;Mounts&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;volume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Name&quot;</span>: <span class="string">&quot;summary&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Source&quot;</span>: <span class="string">&quot;/var/lib/docker/volumes/summary/_data&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Destination&quot;</span>: <span class="string">&quot;/myVolume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Driver&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Mode&quot;</span>: <span class="string">&quot;z&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RW&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;Propagation&quot;</span>: <span class="string">&quot;&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="v-宿主机路径-容器内路径-指定路径挂载"><a href="#v-宿主机路径-容器内路径-指定路径挂载" class="headerlink" title="-v /宿主机路径:容器内路径 指定路径挂载"></a>-v /宿主机路径:容器内路径 指定路径挂载</h5><ul>
+<li>如果 <code>需要</code> 对容器内的数据卷挂载点进行 <code>写操作</code> 时, 使用指定路径挂载方式, 此方式会将宿主机中的数据卷挂载点数据覆盖容器内指定路径</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos03 -v $&#123;PWD&#125;/react-app/:/containerVolume centos /bin/bash</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker container inspect centos03</span></span><br><span class="line"><span class="string">&quot;Mounts&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;bind&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Source&quot;</span>: <span class="string">&quot;/home/workspace/react-app&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Destination&quot;</span>: <span class="string">&quot;/containerVolume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Mode&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RW&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;Propagation&quot;</span>: <span class="string">&quot;rprivate&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h4 id="mount-挂载方式"><a href="#mount-挂载方式" class="headerlink" title="--mount 挂载方式"></a>--mount 挂载方式</h4><h5 id="mount-具名挂载"><a href="#mount-具名挂载" class="headerlink" title="--mount 具名挂载"></a>--mount 具名挂载</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos04 --mount type=volume,source=applet_ui,destination=/appletVolume centos /bin/bash</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker container inspect centos04</span></span><br><span class="line"><span class="string">&quot;Mounts&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;volume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Name&quot;</span>: <span class="string">&quot;applet_ui&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Source&quot;</span>: <span class="string">&quot;/var/lib/docker/volumes/applet_ui/_data&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Destination&quot;</span>: <span class="string">&quot;/appletVolume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Driver&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Mode&quot;</span>: <span class="string">&quot;z&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RW&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;Propagation&quot;</span>: <span class="string">&quot;&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="mount-指定路径挂载"><a href="#mount-指定路径挂载" class="headerlink" title="--mount 指定路径挂载"></a>--mount 指定路径挂载</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos05 --mount type=bind,source=$&#123;PWD&#125;/applet_uni,destination=/uniVolume centos /bin/bash</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker container inspect centos05</span></span><br><span class="line"><span class="string">&quot;Mounts&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;bind&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Source&quot;</span>: <span class="string">&quot;/home/workspace/applet_uni&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Destination&quot;</span>: <span class="string">&quot;/uniVolume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Mode&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RW&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;Propagation&quot;</span>: <span class="string">&quot;rprivate&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="共享数据卷"><a href="#共享数据卷" class="headerlink" title="共享数据卷"></a>共享数据卷</h3><ul>
+<li>--volumes-from 创建数据卷容器共享数据</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建容器并挂载数据卷</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos01 -v /home/vagrant/centos01:/home/vagrant/centos01 centos /bin/bash</span></span><br><span class="line"><span class="comment"># 容器数据卷共享数据</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -tid --name centos02 --volumes-from centos01 centos /bin/bash</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a  # 查看容器信息</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS          PORTS     NAMES</span><br><span class="line">7e2097a1476d   centos    <span class="string">&quot;/bin/bash&quot;</span>   4 seconds ago    Up 2 seconds              centos02</span><br><span class="line">ac564d66b6d4   centos    <span class="string">&quot;/bin/bash&quot;</span>   16 minutes ago   Up 16 minutes             centos01</span><br><span class="line"><span class="comment"># 宿主机中创建文件</span></span><br><span class="line">[root@localhost ~]<span class="comment"># touch /home/vagrant/centos01/hello.txt</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it centos02 ls /home/vagrant/centos01 # 查看 centos02 文件状态</span></span><br><span class="line">hello.txt</span><br><span class="line">[root@localhost ~]<span class="comment"># docker rm -f centos01 # 删除 centos01</span></span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps -a</span></span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED              STATUS              PORTS     NAMES</span><br><span class="line">7e2097a1476d   centos    <span class="string">&quot;/bin/bash&quot;</span>   About a minute ago   Up About a minute             centos02</span><br><span class="line">[root@localhost ~]<span class="comment"># ls /home/vagrant/centos01/ # 查看宿主机文件状态</span></span><br><span class="line">hello.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><ul>
+<li>.dockerignore 构建上下文忽略文件</li>
+</ul>
+<p>Dockerfile 是用来构建 Docker 镜像的一个指令脚本, 脚本中的每条指令执行一次都会在镜像上新建一层</p>
+<h3 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h3><ul>
+<li><p>FROM 构建镜像时的基础镜像层</p>
+</li>
+<li><p>MAINTAINER(deprecated) 维护者信息, 使用 <code>LABEL</code> 指令代替</p>
+</li>
+<li><p>EXPOSE 对外暴露端口</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">EXPOSE</span> <span class="number">80</span><span class="string">/tcp</span></span><br><span class="line"><span class="string">EXPOSE</span> <span class="number">80</span><span class="string">/udp</span></span><br></pre></td></tr></table></figure></li>
+<li><p>ADD 复制指令, 增强版的 <code>COPY</code> 指令, 支持文件解压和远程 URL 资源</p>
+</li>
+<li><p>COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># [--chown=&lt;user&gt;:&lt;group&gt;] 可选参数，用户改变复制到容器内文件的拥有者和属组</span></span><br><span class="line"><span class="string">COPY</span> [<span class="string">&quot;src&quot;</span>, <span class="string">&quot;dest&quot;</span>]</span><br></pre></td></tr></table></figure></li>
+<li><p>RUN 构建镜像时执行的命令 可以存在多条指令</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">RUN</span> <span class="string">yum</span> <span class="string">-y</span> <span class="string">install</span> <span class="string">vim</span></span><br><span class="line"><span class="comment"># 合并多个相同作用的指令以减少新建镜像层数</span></span><br><span class="line"><span class="string">RUN</span> <span class="string">yum</span> <span class="string">-y</span> <span class="string">install</span> <span class="string">wget</span> <span class="string">\</span></span><br><span class="line">  <span class="string">&amp;&amp;</span> <span class="string">wget</span> <span class="string">-O</span> <span class="string">redis.tar.gz</span> <span class="string">&quot;http://download.redis.io/releases/redis-5.0.3.tar.gz&quot;</span> <span class="string">\</span></span><br><span class="line">  <span class="string">&amp;&amp;</span> <span class="string">tar</span> <span class="string">-xvf</span> <span class="string">redis.tar.gz</span></span><br></pre></td></tr></table></figure></li>
+<li><p>CMD 容器运行时执行的命令, 如果存在多个 <code>CMD</code> 指令, 仅最后一个生效</p>
+</li>
+<li><p>ENTRYPOINT 容器运行时执行的命令, 参数不会被 <code>docker run</code> 的命令行参数覆盖, 如果存在多个 <code>ENTRYPOINT</code> 指令，仅最后一个生效</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ENTRYPOINT</span> <span class="string">&#x27;&lt;exec_cmd&gt;&#x27;</span> <span class="string">&#x27;&lt;param1&gt;&#x27;</span></span><br><span class="line"><span class="string">ENTRYPOINT</span> [<span class="string">&quot;&lt;executeable&gt;&quot;</span>,<span class="string">&quot;&lt;param1&gt;&quot;</span>,<span class="string">&quot;&lt;param2&gt;&quot;</span>,<span class="string">...</span>]</span><br><span class="line"></span><br><span class="line"><span class="string">CMD</span> <span class="string">&#x27;&lt;exec_cmd&gt;&#x27;</span> <span class="string">&#x27;&lt;param1&gt;&#x27;</span></span><br><span class="line"><span class="string">CMD</span> [<span class="string">&quot;&lt;可执行文件或命令&gt;&quot;</span>,<span class="string">&quot;&lt;param1&gt;&quot;</span>,<span class="string">&quot;&lt;param2&gt;&quot;</span>,<span class="string">...</span>]</span><br></pre></td></tr></table></figure></li>
+<li><p>ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 <code>Dockerfile</code> 内有效</p>
+</li>
+<li><p>ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 <code>ARG</code> 指令</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ARG</span> <span class="string">VERSION1</span> <span class="number">1</span></span><br><span class="line"><span class="string">ARG</span> <span class="string">VERSION=1</span></span><br><span class="line"></span><br><span class="line"><span class="string">ENV</span> <span class="string">NAME1</span> <span class="string">hello</span></span><br><span class="line"><span class="string">ENV</span> <span class="string">NAME2=hello</span></span><br></pre></td></tr></table></figure></li>
+<li><p>VOLUME 定义匿名数据卷, 在启动容器时会自动挂载到 /var/lib/docker/volumes/</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 出于可移植和分享的考虑, 不支持 具名挂载 和 指定路径挂载 在 Dockerfile 中配置</span></span><br><span class="line"><span class="comment"># 只能使用 匿名挂载 配置方式</span></span><br><span class="line"><span class="comment"># 因为宿主机目录是依赖于特定宿主机的, 并不能够保证在所有的宿主机上都存在这样的目录</span></span><br><span class="line"><span class="string">VOLUME</span> [<span class="string">&quot;&lt;路径1&gt;&quot;</span>, <span class="string">&quot;&lt;路径2&gt;&quot;</span><span class="string">...</span>]</span><br><span class="line"><span class="string">VOLUME</span> <span class="string">&lt;路径&gt;</span> <span class="string">&lt;路径&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>WORKDIR 为<code>RUN</code>, <code>CMD</code>, <code>ENTRYPOINT</code>, <code>COPY</code>, <code>ADD</code> 指定工作目录</p>
+</li>
+<li><p>USER 指定执行后续命令的用户和用户组, 用户名和用户组必须提前存在</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local</span></span><br><span class="line"></span><br><span class="line"><span class="string">USER</span> <span class="string">&lt;用户名&gt;[:&lt;用户组&gt;]</span></span><br></pre></td></tr></table></figure></li>
+<li><p>LABEL 给镜像添加元数据</p>
+</li>
+<li><p>SHELL 允许重写默认的 shell</p>
+</li>
+<li><p>STOPSIGNAL 设置当容器退出时系统调用的指令</p>
+</li>
+<li><p>ONBUILD 当前镜像作为其他镜像的基础镜像构建时触发</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ONBUILD</span> <span class="string">ADD</span> <span class="string">.</span> <span class="string">/app/src</span></span><br></pre></td></tr></table></figure></li>
+<li><p>HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式</p>
+</li>
+</ul>
+<h4 id="ADD-和-COPY"><a href="#ADD-和-COPY" class="headerlink" title="ADD 和 COPY"></a>ADD 和 COPY</h4><ul>
+<li>ADD 复制指令, 增强版的 <code>COPY</code> 指令, 支持文件解压和远程 URL 资源</li>
+<li>COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径</li>
+</ul>
+<h4 id="ARG-和-ENV"><a href="#ARG-和-ENV" class="headerlink" title="ARG 和 ENV"></a>ARG 和 ENV</h4><ul>
+<li>ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 <code>ARG</code> 指令</li>
+<li>ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 <code>Dockerfile</code> 内有效</li>
+</ul>
+<h4 id="VOLUME"><a href="#VOLUME" class="headerlink" title="VOLUME"></a>VOLUME</h4><ul>
+<li>不支持 具名挂载 和 指定路径挂载, 只能使用 <a href="#nimingguazai">匿名挂载</a> 方式</li>
+<li>docker-compose.yml 配置项支持任意挂载方式 <a href="#guazaishujujuan">挂载数据卷</a></li>
+</ul>
+<h4 id="CMD-和-ENTRYPOINT"><a href="#CMD-和-ENTRYPOINT" class="headerlink" title="CMD 和 ENTRYPOINT"></a>CMD 和 ENTRYPOINT</h4><h5 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h5><ul>
+<li>CMD 情况下, run 后面的参数将作为整体替换 <code>CMD</code> 配置项中的命令</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">ubuntu</span></span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"><span class="string">CMD</span> [<span class="string">&#x27;/bin/bash&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>, <span class="string">&#x27;/etc/hosts&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /bin/bash ls -al 命令会整体替换 Dockerfile 中的 CMD 指令</span></span><br><span class="line">docker run -it ubuntu /bin/bash <span class="built_in">ls</span> -al</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实际命令</span></span><br><span class="line">/bin/bash <span class="built_in">ls</span> -al</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ENTRYPOINT 情况下, <code>docker run</code> 后面的参数将作为 ENTRYPOINT 配置项指令的一部分</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">ubuntu</span></span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"><span class="string">ENTRYPOINT</span> [<span class="string">&#x27;/bin/bash&#x27;</span>, <span class="string">&#x27;ls&#x27;</span>, <span class="string">&#x27;-l&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># run 后面的参数作为 ENTRYPOINT 配置项命令参数的一部分</span></span><br><span class="line">docker run -it ubuntu -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实际命令</span></span><br><span class="line">/bin/bash <span class="built_in">ls</span> -al</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>CMD 和 ENTRYPOINT 同时存在时, CMD 作为 ENTRYPOINT 配置项命令的一部分, 与书写位置没有关系</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">ubuntu</span></span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"><span class="string">ENTRYPOINT</span> [<span class="string">&#x27;nginx&#x27;</span>, <span class="string">&#x27;-c&#x27;</span>]</span><br><span class="line"><span class="string">CMD</span> [<span class="string">&#x27;/etc/nginx/nginx.conf&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="center">是否传参</th>
+<th>Dockerfile 配置项指令</th>
+<th>传参运行</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Docker 命令</td>
+<td>docker run nginx</td>
+<td>docker run nginx /etc/nginx/new.conf</td>
+</tr>
+<tr>
+<td align="center">衍生出的实际命令</td>
+<td>nginx -c /etc/nginx/nginx.conf</td>
+<td>nginx -c /etc/new.conf</td>
+</tr>
+</tbody></table>
+<h5 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h5><ul>
+<li>Dockerfile 应至少指定一个 CMD 或 ENTRYPOINT 指令</li>
+<li>ENTRYPOINT 应在将容器作为可执行文件时定义</li>
+<li>CMD 应该用作为 ENTRYPOINT 命令定义默认参数或在容器中执行临时命令的一种方式</li>
+<li>CMD 使用替代参数运行容器时将被覆盖</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>No ENTRYPOINT</th>
+<th>ENTRYPOINT entry p1_entry</th>
+<th>ENTRYPOINT [‘entry’,’p1_entry’]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No CMD</td>
+<td>error, not allowed</td>
+<td>/bin/sh -c entry p1_entry</td>
+<td>entry p1_entry</td>
+</tr>
+<tr>
+<td>CMD [‘cmd’,’p1_cmd’]</td>
+<td>cmd p1_cmd</td>
+<td>/bin/sh -c entry p1_entry</td>
+<td>entry p1_entry cmd p1_cmd</td>
+</tr>
+<tr>
+<td>CMD [‘p1_cmd’,’p2_cmd’]</td>
+<td>p1_cmd p2_cmd</td>
+<td>/bin/sh -c entry p1_entry</td>
+<td>entry p1_entry p1_cmd p2_cmd</td>
+</tr>
+<tr>
+<td>CMD cmd p1_cmd</td>
+<td>/bin/sh -c cmd p1_cmd</td>
+<td>/bin/sh -c entry p1_entry</td>
+<td>entry p1_entry /bin/sh -c cmd p1_cmd</td>
+</tr>
+</tbody></table>
+<h3 id="镜像优化"><a href="#镜像优化" class="headerlink" title="镜像优化"></a>镜像优化</h3><ul>
+<li>合并多个相同作用的指令以减少新建镜像层数</li>
+<li>使用较小的基础镜像</li>
+<li>使用 .dockerignore 文件, 从构建上下文中忽略指定的文件</li>
+<li>在 RUN 之后放置 COPY 指令, 有助于 docker 能够更好的使用缓存功能</li>
+<li>在安装后删除软件包</li>
+<li>使用 Docker 镜像缩容工具</li>
+</ul>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><ul>
+<li>Dockerfile 配置文件</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Dockerfile</span></span><br><span class="line"><span class="string">FROM</span> <span class="string">centos:7</span> <span class="comment"># 基础镜像</span></span><br><span class="line"></span><br><span class="line"><span class="string">LABEL</span> <span class="string">authors=luoleiself&lt;luoleiself@163.com&gt;</span> <span class="comment"># 镜像元数据</span></span><br><span class="line"></span><br><span class="line"><span class="string">WORKDIR</span> <span class="string">/usr/local/</span>   <span class="comment"># 设置工作目录</span></span><br><span class="line"><span class="string">COPY</span> <span class="string">hello.txt</span> <span class="string">$PWD</span>   <span class="comment"># 复制文件</span></span><br><span class="line"></span><br><span class="line"><span class="string">VOLUME</span> [<span class="string">&quot;/var/log&quot;</span>] <span class="comment"># 挂载匿名数据卷</span></span><br><span class="line"></span><br><span class="line"><span class="string">CMD</span> [<span class="string">&quot;cat&quot;</span>, <span class="string">&quot;/usr/local/hello.txt&quot;</span>]   <span class="comment"># 容器运行时执行的命令</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构建镜像并指定镜像名称和版本号, 最后的 . 很重要,表示在当前目录下进行构建, 可以使用</span></span><br><span class="line">[root@localhost workspace]<span class="comment"># docker build -t hello:v1.0 .</span></span><br><span class="line">Sending build context to Docker daemon  3.072kB</span><br><span class="line">Step 1/6 : FROM centos:7</span><br><span class="line"> ---&gt; eeb6ee3f44bd</span><br><span class="line">Step 2/6 : LABEL maintainer=luoleiself&lt;luoleiself@163.com&gt;</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 42aee4c83238</span><br><span class="line">Removing intermediate container 42aee4c83238</span><br><span class="line"> ---&gt; c0a8427ea1ca</span><br><span class="line">Step 3/6 : WORKDIR /usr/local/</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 0b1c0da5bfdb                   <span class="comment"># 启动临时容器</span></span><br><span class="line">Removing intermediate container 0b1c0da5bfdb    <span class="comment"># 修改元数据内部使用 `docker commit` 提交镜像后, 立即删除临时容器</span></span><br><span class="line"> ---&gt; 63cd399d1589</span><br><span class="line">Step 4/6 : COPY hello.txt <span class="variable">$PWD</span></span><br><span class="line"> ---&gt; 2e6fe81c553d</span><br><span class="line">Step 5/6 : VOLUME [<span class="string">&quot;/var/log&quot;</span>]                  <span class="comment"># 挂载匿名数据卷</span></span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 35e67913cfb2</span><br><span class="line">Removing intermediate container 35e67913cfb2</span><br><span class="line"> ---&gt; 60419e54ac19</span><br><span class="line">Step 6/6 : CMD [<span class="string">&quot;cat&quot;</span>, <span class="string">&quot;/usr/local/hello.txt&quot;</span>]</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> 1785744ac7aa</span><br><span class="line">Removing intermediate container 1785744ac7aa</span><br><span class="line"> ---&gt; 4cd89659cce0</span><br><span class="line">Successfully built 4cd89659cce0</span><br><span class="line">Successfully tagged hello:v1.0</span><br><span class="line"></span><br><span class="line">[root@localhost workspace]<span class="comment"># docker run --name hello-v1 hello:v1.0 # 基于镜像创建容器</span></span><br><span class="line">hello docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看镜像信息"><a href="#查看镜像信息" class="headerlink" title="查看镜像信息"></a>查看镜像信息</h4><h5 id="镜像配置信息"><a href="#镜像配置信息" class="headerlink" title="镜像配置信息"></a>镜像配置信息</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost workspace]<span class="comment"># docker image inspect hello:v1.0</span></span><br><span class="line">...</span><br><span class="line"><span class="string">&quot;Config&quot;</span>: &#123;</span><br><span class="line">  <span class="string">&quot;Env&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">&quot;Cmd&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;cat&quot;</span>,</span><br><span class="line">    <span class="string">&quot;/usr/local/hello.txt&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">&quot;Image&quot;</span>: <span class="string">&quot;sha256:60419e54ac191ef9170c15d90ab3e0a040ae75ab0c15b320918977336710f17e&quot;</span>,</span><br><span class="line">  <span class="string">&quot;Volumes&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;/var/log&quot;</span>: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;WorkingDir&quot;</span>: <span class="string">&quot;/usr/local/&quot;</span>,</span><br><span class="line">  <span class="string">&quot;Entrypoint&quot;</span>: null,</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h5 id="镜像历史信息"><a href="#镜像历史信息" class="headerlink" title="镜像历史信息"></a>镜像历史信息</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost workspace]<span class="comment"># docker image history hello:v1.0</span></span><br><span class="line">IMAGE          CREATED          CREATED BY                                      SIZE      COMMENT</span><br><span class="line">4cd89659cce0   25 minutes ago   /bin/sh -c <span class="comment">#(nop)  CMD [&quot;cat&quot; &quot;/usr/local/he…   0B</span></span><br><span class="line">60419e54ac19   25 minutes ago   /bin/sh -c <span class="comment">#(nop)  VOLUME [/var/log]            0B</span></span><br><span class="line">2e6fe81c553d   25 minutes ago   /bin/sh -c <span class="comment">#(nop) COPY file:f5a7cb03621adea9…   13B</span></span><br><span class="line">63cd399d1589   25 minutes ago   /bin/sh -c <span class="comment">#(nop) WORKDIR /usr/local/           0B</span></span><br><span class="line">c0a8427ea1ca   25 minutes ago   /bin/sh -c <span class="comment">#(nop)  LABEL maintainer=luoleise…   0B</span></span><br><span class="line">eeb6ee3f44bd   7 months ago     /bin/sh -c <span class="comment">#(nop)  CMD [&quot;/bin/bash&quot;]            0B</span></span><br><span class="line">&lt;missing&gt;      7 months ago     /bin/sh -c <span class="comment">#(nop)  LABEL org.label-schema.sc…   0B</span></span><br><span class="line">&lt;missing&gt;      7 months ago     /bin/sh -c <span class="comment">#(nop) ADD file:b3ebbe8bd304723d4…   204MB</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="查看容器状态"><a href="#查看容器状态" class="headerlink" title="查看容器状态"></a>查看容器状态</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost workspace]<span class="comment"># docker container inspect hello-v1</span></span><br><span class="line">...</span><br><span class="line"><span class="string">&quot;Mounts&quot;</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;Type&quot;</span>: <span class="string">&quot;volume&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Name&quot;</span>: <span class="string">&quot;08785005cb382a42f41b8f7230564cf468d38be82ce74c94fb3a277ef5a64f66&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Source&quot;</span>: <span class="string">&quot;/var/lib/docker/volumes/08785005cb382a42f41b8f7230564cf468d38be82ce74c94fb3a277ef5a64f66/_data&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Destination&quot;</span>: <span class="string">&quot;/var/log&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Driver&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Mode&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;RW&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">&quot;Propagation&quot;</span>: <span class="string">&quot;&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\04\2c0c514706b8\" rel="bookmark">Docker-下</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/03/27a05caca8fb/" title="Docker-上">https://luoleiself.github.io/2022/03/27a05caca8fb/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/28e7482b798b/" rel="prev" title="JS小结">
+      <i class="fa fa-chevron-left"></i> JS小结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/1e58889c42cf/" rel="next" title="nginx">
+      nginx <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B2%E9%BB%91%E6%9D%BF"><span class="nav-number">1.</span> <span class="nav-text">敲黑板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">1.1.2.</span> <span class="nav-text">命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F"><span class="nav-number">2.</span> <span class="nav-text">镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UnionFS-%E8%81%94%E5%90%88%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.</span> <span class="nav-text">UnionFS 联合文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F"><span class="nav-number">2.2.</span> <span class="nav-text">镜像加速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text">镜像操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E5%AF%BC%E5%85%A5%E5%92%8C%E5%AF%BC%E5%87%BA"><span class="nav-number">2.4.</span> <span class="nav-text">镜像导入和导出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E5%88%A0%E9%99%A4%E5%A4%9A%E4%B8%AA%E9%95%9C%E5%83%8F"><span class="nav-number">2.5.</span> <span class="nav-text">批量删除多个镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E5%AE%B9%E5%99%A8%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="nav-number">2.6.</span> <span class="nav-text">从容器构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E-Dockerfile-%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="nav-number">2.7.</span> <span class="nav-text">从 Dockerfile 构建镜像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">3.1.</span> <span class="nav-text">容器操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C"><span class="nav-number">3.2.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E5%AE%B9%E5%99%A8"><span class="nav-number">3.3.</span> <span class="nav-text">进入容器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#exec-%E5%92%8C-attach"><span class="nav-number">3.3.1.</span> <span class="nav-text">exec 和 attach</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%8B%B7%E8%B4%9D-cp"><span class="nav-number">3.4.</span> <span class="nav-text">文件拷贝 cp  </span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E5%AE%BF%E4%B8%BB%E6%9C%BA%E5%88%B0%E5%AE%B9%E5%99%A8%E5%86%85"><span class="nav-number">3.4.1.</span> <span class="nav-text">拷贝宿主机到容器内</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E5%AE%B9%E5%99%A8%E5%86%85%E5%88%B0%E5%AE%BF%E4%B8%BB%E6%9C%BA"><span class="nav-number">3.4.2.</span> <span class="nav-text">拷贝容器内到宿主机</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E5%92%8C%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-number">3.5.</span> <span class="nav-text">容器环境变量和工作目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E5%AF%BC%E5%85%A5%E5%92%8C%E5%AF%BC%E5%87%BA"><span class="nav-number">3.6.</span> <span class="nav-text">容器导入和导出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%89%80%E6%9C%89%E5%AE%B9%E5%99%A8"><span class="nav-number">3.7.</span> <span class="nav-text">删除所有容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5%E7%BB%9F%E8%AE%A1"><span class="nav-number">3.8.</span> <span class="nav-text">查看容器资源使用情况统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">4.</span> <span class="nav-text">数据卷</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">4.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.2.</span> <span class="nav-text">数据卷类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volume-mounts"><span class="nav-number">4.2.1.</span> <span class="nav-text">volume mounts</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bind-mounts"><span class="nav-number">4.2.2.</span> <span class="nav-text">bind mounts</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tmpfs-mounts"><span class="nav-number">4.2.3.</span> <span class="nav-text">tmpfs mounts</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%82%E8%BD%BD%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">4.3.</span> <span class="nav-text">挂载数据卷  </span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#v-%E6%8C%82%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="nav-number">4.3.1.</span> <span class="nav-text">-v 挂载方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#v-%E5%AE%B9%E5%99%A8%E5%86%85%E8%B7%AF%E5%BE%84-%E5%8C%BF%E5%90%8D%E6%8C%82%E8%BD%BD"><span class="nav-number">4.3.1.1.</span> <span class="nav-text">-v 容器内路径 匿名挂载  </span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#v-%E5%8D%B7%E5%90%8D-%E5%AE%B9%E5%99%A8%E5%86%85%E8%B7%AF%E5%BE%84-%E5%85%B7%E5%90%8D%E6%8C%82%E8%BD%BD"><span class="nav-number">4.3.1.2.</span> <span class="nav-text">-v 卷名:容器内路径 具名挂载</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#v-%E5%AE%BF%E4%B8%BB%E6%9C%BA%E8%B7%AF%E5%BE%84-%E5%AE%B9%E5%99%A8%E5%86%85%E8%B7%AF%E5%BE%84-%E6%8C%87%E5%AE%9A%E8%B7%AF%E5%BE%84%E6%8C%82%E8%BD%BD"><span class="nav-number">4.3.1.3.</span> <span class="nav-text">-v &#x2F;宿主机路径:容器内路径 指定路径挂载</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mount-%E6%8C%82%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="nav-number">4.3.2.</span> <span class="nav-text">--mount 挂载方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#mount-%E5%85%B7%E5%90%8D%E6%8C%82%E8%BD%BD"><span class="nav-number">4.3.2.1.</span> <span class="nav-text">--mount 具名挂载</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#mount-%E6%8C%87%E5%AE%9A%E8%B7%AF%E5%BE%84%E6%8C%82%E8%BD%BD"><span class="nav-number">4.3.2.2.</span> <span class="nav-text">--mount 指定路径挂载</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE%E5%8D%B7"><span class="nav-number">4.4.</span> <span class="nav-text">共享数据卷</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4"><span class="nav-number">5.1.</span> <span class="nav-text">指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ADD-%E5%92%8C-COPY"><span class="nav-number">5.1.1.</span> <span class="nav-text">ADD 和 COPY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ARG-%E5%92%8C-ENV"><span class="nav-number">5.1.2.</span> <span class="nav-text">ARG 和 ENV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VOLUME"><span class="nav-number">5.1.3.</span> <span class="nav-text">VOLUME</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CMD-%E5%92%8C-ENTRYPOINT"><span class="nav-number">5.1.4.</span> <span class="nav-text">CMD 和 ENTRYPOINT</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB"><span class="nav-number">5.1.4.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.1.4.2.</span> <span class="nav-text">使用场景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E4%BC%98%E5%8C%96"><span class="nav-number">5.2.</span> <span class="nav-text">镜像优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">5.3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="nav-number">5.3.1.</span> <span class="nav-text">构建镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E9%95%9C%E5%83%8F%E4%BF%A1%E6%81%AF"><span class="nav-number">5.3.2.</span> <span class="nav-text">查看镜像信息</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">5.3.2.1.</span> <span class="nav-text">镜像配置信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E5%8E%86%E5%8F%B2%E4%BF%A1%E6%81%AF"><span class="nav-number">5.3.2.2.</span> <span class="nav-text">镜像历史信息</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E7%8A%B6%E6%80%81"><span class="nav-number">5.3.3.</span> <span class="nav-text">查看容器状态</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">557k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

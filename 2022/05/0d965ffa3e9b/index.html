@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="systemdsystemd(system daemon)是 linux 下的一种 init 软件, 提供更优秀的框架以表示系统服务间的依赖关系, 并依此实现系统初始化时服务的并行启动, 同时达到降低 shell 的系统开销的效果, 最终代替常用的 System V 与 BSD 风格 init 程序  采用 socket 激活式与总线激活式服务, 以提高相互依赖的各服务的并行运行性能 采用 cgr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="systemd">
+<meta property="og:url" content="https://luoleiself.github.io/2022/05/0d965ffa3e9b/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="systemdsystemd(system daemon)是 linux 下的一种 init 软件, 提供更优秀的框架以表示系统服务间的依赖关系, 并依此实现系统初始化时服务的并行启动, 同时达到降低 shell 的系统开销的效果, 最终代替常用的 System V 与 BSD 风格 init 程序  采用 socket 激活式与总线激活式服务, 以提高相互依赖的各服务的并行运行性能 采用 cgr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://luoleiself.github.io/images/systemd-1.webp">
+<meta property="article:published_time" content="2022-05-31T06:40:43.000Z">
+<meta property="article:modified_time" content="2024-07-26T14:00:47.973Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://luoleiself.github.io/images/systemd-1.webp">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/05/0d965ffa3e9b/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>systemd | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/05/0d965ffa3e9b/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          systemd
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-31 14:40:43" itemprop="dateCreated datePublished" datetime="2022-05-31T14:40:43+08:00">2022-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="systemd"><a href="#systemd" class="headerlink" title="systemd"></a>systemd</h2><p>systemd(system daemon)是 linux 下的一种 init 软件, 提供更优秀的框架以表示系统服务间的依赖关系, 并依此实现系统初始化时服务的并行启动, 同时达到降低 shell 的系统开销的效果, 最终代替常用的 System V 与 BSD 风格 init 程序</p>
+<ul>
+<li>采用 socket 激活式与总线激活式服务, 以提高相互依赖的各服务的并行运行性能</li>
+<li>采用 cgroup 代替 PID 来追踪进程, 依此即使是两次 fork 之后生成的守护进程也不会脱离 systemd 的控制</li>
+</ul>
+<h3 id="CGroup"><a href="#CGroup" class="headerlink" title="CGroup"></a>CGroup</h3><blockquote>
+<p>cgroup 是 linux 内核的一个功能, 用来限制、控制与分离一个进程组的资源(如 CPU、内存、磁盘输入输出等)</p>
+</blockquote>
+<p>cgroup 是 linux 内核提供的一种机制, 这种机制可以根据需求把一系列系统任务及其子任务整合(或分隔)到按资源划分等级的不同组内, 从而为系统资源管理提供一个统一的框架. 简单说, cgroup 可以限制、记录任务组所使用的物理资源, 本质上来说, cgroup 是内核附加在程序上的一系列钩子(hook), 通过程序运行时对资源的调度触发相应的钩子以达到资源追踪和限制的目的.</p>
+<h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><ul>
+<li>资源限制: cgroup 可以对任务需要的资源总额进行限制, 例如设定任务运行使用的内存上限, 一旦超出就触发 OOM</li>
+<li>优先级分配: 通过分配的 CPU 时间片数量和磁盘 IO 带宽, 实际上就等于控制了任务运行的优先级</li>
+<li>资源统计: cgroup 可以统计系统的资源使用量, 例如 CPU 使用时长、内存使用量等</li>
+<li>任务控制: cgroup 可以对任务执行挂起、恢复等操作</li>
+</ul>
+<span id="more"></span>
+
+<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><ul>
+<li>Task 表示系统中的进程, cgroup 对 task 对其 cpu, mem 等资源进行限制</li>
+<li>Subsystem 子系统, 表示一个资源调用控制器, cgroup 支持 cpu,mem 等 subsystem<ul>
+<li>blkio 对块设备的 IO 进行限制</li>
+<li>cpu 限制 CPU 时间片的额分配, 和 cpuacct 挂载在同一目录</li>
+<li>cpuacct 生成 cgroup 种的任务占用 CPU 资源的报告, 与 CPU 挂载在同一目录</li>
+<li>cpuset 给 cgroup 中的任务分配独立的 CPU(多处理器系统)和内存节点</li>
+<li>devices 允许或禁止 cgroup 中的任务访问块设备</li>
+<li>freezer 暂停/恢复 cgroup 中的任务</li>
+<li>hugetlb 限制使用的内存页数量</li>
+<li>memory 对 cgroup 中的任务的可用内存进行限制, 并自动生成资源占用报告</li>
+<li>net_cls 使用等级识别符(classid)标记网络数据包, 让 linux 流量控制器(tc 指令)可以识别来自特定 cgroup 任务的数据包, 并进行网络限制</li>
+<li>net_prio 允许基于 cgroup 设置网络流量的优先级</li>
+<li>perf_event 允许使用 perf 工具来监控 cgroup</li>
+<li>pids 限制任务的数量</li>
+</ul>
+</li>
+<li>Controller Group 控制, 对一种或多种资源设置限制, 是 group 进行资源控制的基本单位, task 可以加入到某个控制组种或一个控制组迁移到另一个</li>
+<li>Hierarchy 由一系 Controller Group 组成的树结构</li>
+</ul>
+<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img data-src="/images/systemd-1.webp" alt="systemd-1"></p>
+<h3 id="hostnamectl"><a href="#hostnamectl" class="headerlink" title="hostnamectl"></a>hostnamectl</h3><p>管理当前主机信息</p>
+<ul>
+<li>status 查看当前主机的设置</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># hostnamectl status</span></span><br><span class="line">  Static hostname: centos7.localdomain</span><br><span class="line">        Icon name: computer-vm</span><br><span class="line">          Chassis: vm</span><br><span class="line">      Machine ID: afcca427b44c4f139ef788ed3b33b7e1</span><br><span class="line">          Boot ID: 312745f18eaa4b3eb809d0f361ad43bc</span><br><span class="line">  Virtualization: kvm</span><br><span class="line">Operating System: CentOS Linux 7 (Core)</span><br><span class="line">      CPE OS Name: cpe:/o:centos:centos:7</span><br><span class="line">          Kernel: Linux 3.10.0-1160.90.1.el7.x86_64</span><br><span class="line">    Architecture: x86-64</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>set-hostname NAME 设置系统主机名</li>
+<li>set-icon-name NAME 设置主机的图标名称</li>
+<li>set-chassis NAME 设置主机的基础架构名称</li>
+<li>set-deployment NAME 设置主机的部署环境</li>
+<li>set-location NAME 设置主机的位置</li>
+</ul>
+<h3 id="localectl"><a href="#localectl" class="headerlink" title="localectl"></a>localectl</h3><p>管理本地化设置</p>
+<ul>
+<li>status 查看本地化配置项</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># localectl status</span></span><br><span class="line">System Locale: LANG=zh_CN.utf8</span><br><span class="line">    VC Keymap: us</span><br><span class="line">  X11 Layout: n/a</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>list-locales 查看系统中的本地化配置</li>
+<li>set-locale LOCALE 设置系统的本地化</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># localectl set-locale LANG=zh_CN.utf8</span></span><br><span class="line">[root@centos7 workspace]<span class="comment"># source /etc/locale.conf # 重新加载本地化配置文件</span></span><br><span class="line"><span class="comment"># 或者使用 newgrp - # 如果有 - 标志表示重新初始化用户环境同重新登陆, 没有 - 表示当前的环境和工作目录不做改变</span></span><br><span class="line">[root@centos7 workspace]<span class="comment"># newgrp -</span></span><br><span class="line">[root@centos7 workspace]<span class="comment"># locale  # 显示本地化设置</span></span><br><span class="line">LANG=zh_CN.utf8</span><br><span class="line">LC_CTYPE=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_NUMERIC=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_TIME=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_COLLATE=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_MONETARY=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_MESSAGES=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_PAPER=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_NAME=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_ADDRESS=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_TELEPHONE=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_MEASUREMENT=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_IDENTIFICATION=<span class="string">&quot;zh_CN.utf8&quot;</span></span><br><span class="line">LC_ALL=</span><br></pre></td></tr></table></figure>
+
+<h3 id="timedatectl"><a href="#timedatectl" class="headerlink" title="timedatectl"></a>timedatectl</h3><p>管理系统的日期时间设置</p>
+<p>RTC(real-time clock) 指硬件时间(BIOS 时间), 专用于记录时间, 有电池供电, 不受服务器和操作系统的开启关闭影响</p>
+<p>NTP(network time protocol)网络时间协议, 用来同步化计算机时间的一种协议, 提高精准度的时间校正</p>
+<ul>
+<li>status 显示日期时间设置</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># timedatectl status</span></span><br><span class="line">      Local time: Thu 2023-05-18 14:49:36 CST</span><br><span class="line">  Universal time: Thu 2023-05-18 06:49:36 UTC</span><br><span class="line">        RTC time: Thu 2023-05-18 14:49:36</span><br><span class="line">       Time zone: Asia/Shanghai (CST, +0800)</span><br><span class="line">     NTP enabled: <span class="built_in">yes</span></span><br><span class="line">NTP synchronized: <span class="built_in">yes</span></span><br><span class="line"> RTC <span class="keyword">in</span> <span class="built_in">local</span> TZ: <span class="built_in">yes</span></span><br><span class="line">      DST active: n/a</span><br><span class="line"></span><br><span class="line">Warning: The system is configured to <span class="built_in">read</span> the RTC time <span class="keyword">in</span> the <span class="built_in">local</span> time zone.</span><br><span class="line">         This mode can not be fully supported. It will create various problems</span><br><span class="line">         with time zone changes and daylight saving time adjustments. The RTC</span><br><span class="line">         time is never updated, it relies on external facilities to maintain it.</span><br><span class="line">         If at all possible, use RTC <span class="keyword">in</span> UTC by calling</span><br><span class="line">         <span class="string">&#x27;timedatectl set-local-rtc 0&#x27;</span>.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>set-time TIME 设置系统时间</li>
+<li>set-timezone ZONE 设置系统时区</li>
+<li>list-timezones 显示系统支持的时区</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># timedatectl set-timezone Asia/Shanghai # 设置时区</span></span><br><span class="line"></span><br><span class="line">[root@centos7 workspace]<span class="comment"># timedatectl list-timezones</span></span><br><span class="line">Africa/Abidjan</span><br><span class="line">Africa/Accra</span><br><span class="line">Africa/Addis_Ababa</span><br><span class="line">Africa/Algiers</span><br><span class="line">Africa/Asmara</span><br><span class="line">Africa/Bamako</span><br><span class="line">Asia/Shanghai</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>set-local-rtc BOOL 设置本地时间</li>
+<li>set-ntp BOOL 开启 NTP 同步</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># timedatectl set-local-rtc 1 # 设置本地时间</span></span><br><span class="line">[root@centos7 workspace]<span class="comment"># timedatectl set-local-rtc 0 # 设置 UTC 时间</span></span><br><span class="line"></span><br><span class="line">[root@centos7 workspace]<span class="comment"># timedatectl set-ntp 1 # 开启 NTP 同步</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="loginctl"><a href="#loginctl" class="headerlink" title="loginctl"></a>loginctl</h3><p>常看当前登录的用户</p>
+<h4 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h4><ul>
+<li>list-sessions 显示会话列表</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># loginctl list-sessions</span></span><br><span class="line">SESSION        UID USER             SEAT</span><br><span class="line">      8       1000 vagrant</span><br><span class="line">      9       1000 vagrant</span><br><span class="line"></span><br><span class="line">2 sessions listed.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>session-show [ID…] 显示会话的状态</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># loginctl session-status 9</span></span><br><span class="line">9 - vagrant (1000)</span><br><span class="line">           Since: Thu 2023-05-18 10:13:35 CST; 4h 53min ago</span><br><span class="line">          Leader: 3294 (sshd)</span><br><span class="line">          Remote: 10.0.2.2</span><br><span class="line">         Service: sshd; <span class="built_in">type</span> <span class="built_in">tty</span>; class user</span><br><span class="line">           State: active</span><br><span class="line">            Unit: session-9.scope</span><br><span class="line">                  ├─3294 sshd: vagrant [priv]</span><br><span class="line">                  ├─3297 sshd: vagrant@pts/1</span><br><span class="line">                  ├─3298 -bash</span><br><span class="line">                  ├─3531 su - root</span><br><span class="line">                  ├─3535 -bash</span><br><span class="line">                  ├─4673 loginctl session-status 9</span><br><span class="line">                  └─4674 less</span><br><span class="line"></span><br><span class="line">May 18 10:13:35 centos7.localdomain systemd[1]: Started Session 9 of user vagrant.</span><br><span class="line">May 18 10:13:35 centos7.localdomain sshd[3294]: pam_unix(sshd:session): session opened <span class="keyword">for</span> user vagrant by (uid=0)</span><br><span class="line">May 18 10:13:43 centos7.localdomain su[3531]: (to root) vagrant on pts/1</span><br><span class="line">May 18 10:13:43 centos7.localdomain su[3531]: pam_unix(su-l:session): session opened <span class="keyword">for</span> user root by vagrant(uid=1000)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>show-session [ID…] 显示会话的属性</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># loginctl show-session 9</span></span><br><span class="line">Id=9</span><br><span class="line">User=1000</span><br><span class="line">Name=vagrant</span><br><span class="line">Timestamp=Thu 2023-05-18 10:13:35 CST</span><br><span class="line">TimestampMonotonic=3227303782</span><br><span class="line">VTNr=0</span><br><span class="line">Remote=<span class="built_in">yes</span></span><br><span class="line">RemoteHost=10.0.2.2</span><br><span class="line">Service=sshd</span><br><span class="line">Scope=session-9.scope</span><br><span class="line">Leader=3294</span><br><span class="line">Audit=9</span><br><span class="line">Type=<span class="built_in">tty</span></span><br><span class="line">Class=user</span><br><span class="line">Active=<span class="built_in">yes</span></span><br><span class="line">State=active</span><br><span class="line">IdleHint=no</span><br><span class="line">IdleSinceHint=0</span><br><span class="line">IdleSinceHintMonotonic=0</span><br><span class="line">LockedHint=no</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>activate [ID] 激活会话</li>
+<li>lock-session [ID…] 屏幕锁定一个或多个会话</li>
+<li>unlock-session [ID…] 屏幕解锁一个或多个会话</li>
+<li>lock-sessions 屏幕锁定当前所有的会话</li>
+<li>unlock-sessions 屏幕解锁当前所有的会话</li>
+<li>terminate-session ID… 终止退出多个会话</li>
+<li>kill-session ID… 终止退出多个会话</li>
+</ul>
+<h4 id="User"><a href="#User" class="headerlink" title="User"></a>User</h4><ul>
+<li>list-users 显示所有用户</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># loginctl list-users</span></span><br><span class="line">  UID USER</span><br><span class="line">1000 vagrant</span><br><span class="line"></span><br><span class="line">1 <span class="built_in">users</span> listed.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>user-status [USER…] 显示用户状态</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># loginctl user-status vagrant</span></span><br><span class="line">vagrant (1000)</span><br><span class="line">           Since: Thu 2023-05-18 10:13:33 CST; 5h 4min ago</span><br><span class="line">           State: active</span><br><span class="line">        Sessions: 46 *9</span><br><span class="line">            Unit: user-1000.slice</span><br><span class="line">                  ├─session-46.scope</span><br><span class="line">                  │ ├─4951 sshd: vagrant [priv]</span><br><span class="line">                  │ ├─4954 sshd: vagrant@pts/0</span><br><span class="line">                  │ ├─4955 -bash</span><br><span class="line">                  │ ├─5236 su - root</span><br><span class="line">                  │ └─5240 -bash</span><br><span class="line">                  └─session-9.scope</span><br><span class="line">                    ├─3294 sshd: vagrant [priv]</span><br><span class="line">                    ├─3297 sshd: vagrant@pts/1</span><br><span class="line">                    ├─3298 -bash</span><br><span class="line">                    ├─3531 su - root</span><br><span class="line">                    ├─3535 -bash</span><br><span class="line">                    ├─5452 loginctl user-status vagrant</span><br><span class="line">                    └─5453 less</span><br><span class="line"></span><br><span class="line">May 18 15:11:35 centos7.localdomain su[4995]: pam_unix(su-l:session): session opened <span class="keyword">for</span> user root by vagrant(uid=1000)</span><br><span class="line">May 18 15:12:49 centos7.localdomain su[4995]: pam_unix(su-l:session): session closed <span class="keyword">for</span> user root</span><br><span class="line">May 18 15:12:59 centos7.localdomain sudo[5228]:  vagrant : TTY=pts/0 ; PWD=/home/vagrant ; USER=root ; COMMAND=/bin/logi</span><br><span class="line">May 18 15:12:59 centos7.localdomain sudo[5228]: pam_unix(sudo:session): session opened <span class="keyword">for</span> user root by vagrant(uid=0)</span><br><span class="line">May 18 15:12:59 centos7.localdomain sudo[5228]: pam_unix(sudo:session): session closed <span class="keyword">for</span> user root</span><br><span class="line">May 18 15:13:56 centos7.localdomain su[5232]: pam_unix(su-l:auth): authentication failure; <span class="built_in">logname</span>=vagrant uid=1000 euid</span><br><span class="line">May 18 15:13:56 centos7.localdomain su[5232]: pam_succeed_if(su-l:auth): requirement <span class="string">&quot;uid &gt;= 1000&quot;</span> not met by user <span class="string">&quot;root</span></span><br><span class="line"><span class="string">May 18 15:13:58 centos7.localdomain su[5232]: FAILED SU (to root) vagrant on pts/0</span></span><br><span class="line"><span class="string">May 18 15:14:08 centos7.localdomain su[5236]: (to root) vagrant on pts/0</span></span><br><span class="line"><span class="string">May 18 15:14:08 centos7.localdomain su[5236]: pam_unix(su-l:session): session opened for user root by vagrant(uid=1000)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>show-user [USER…] 显示用户的属性</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># loginctl show-user vagrant</span></span><br><span class="line">UID=1000</span><br><span class="line">GID=1000</span><br><span class="line">Name=vagrant</span><br><span class="line">Timestamp=Thu 2023-05-18 10:13:33 CST</span><br><span class="line">TimestampMonotonic=3225226215</span><br><span class="line">RuntimePath=/run/user/1000</span><br><span class="line">Slice=user-1000.slice</span><br><span class="line">Display=9</span><br><span class="line">State=active</span><br><span class="line">Sessions=46 9</span><br><span class="line">IdleHint=no</span><br><span class="line">IdleSinceHint=0</span><br><span class="line">IdleSinceHintMonotonic=0</span><br><span class="line">Linger=no</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>enable-linger [USER…] 启用一个或多个用户的延迟状态</li>
+<li>disable-linger [USER…] 禁用一个或多个用户的延迟状态</li>
+<li>terminate-user USER… 终止退出一个或多个用户的会话</li>
+<li>kill-user USER… 终止退出用户的会话</li>
+</ul>
+<h4 id="Seat"><a href="#Seat" class="headerlink" title="Seat"></a>Seat</h4><ul>
+<li>list-seats 列出本机上的所有可用席位</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]<span class="comment"># loginctl list-seats</span></span><br><span class="line">SEAT</span><br><span class="line">seat0</span><br><span class="line"></span><br><span class="line">1 seats listed.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>seat-status [NAME…] 显示可用席位的状态</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]<span class="comment"># loginctl seat-status seat0</span></span><br><span class="line">seat0</span><br><span class="line">  Devices:</span><br><span class="line">          ├─/sys/devices/LNXSYSTM:00/LNXPWRBN:00/input/input0</span><br><span class="line">          │ input:input0 <span class="string">&quot;Power Button&quot;</span></span><br><span class="line">          ├─/sys/devices/LNXSYSTM:00/LNXSLPBN:00/input/input1</span><br><span class="line">          │ input:input1 <span class="string">&quot;Sleep Button&quot;</span></span><br><span class="line">          ├─/sys/devices/LNXSYSTM:00/device:00/PNP0A03:00/LNXVIDEO:00/input/input4</span><br><span class="line">          │ input:input4 <span class="string">&quot;Video Bus&quot;</span></span><br><span class="line">          ├─/sys/devices/pci0000:00/0000:00:02.0/drm/card0</span><br><span class="line">          │ drm:card0</span><br><span class="line">          ├─/sys/devices/pci0000:00/0000:00:02.0/graphics/fb0</span><br><span class="line">          │ [MASTER] graphics:fb0 <span class="string">&quot;vboxdrmfb&quot;</span></span><br><span class="line">          ├─/sys/devices/pci0000:00/0000:00:04.0/input/input6</span><br><span class="line">          │ input:input6 <span class="string">&quot;VirtualBox mouse integration&quot;</span></span><br><span class="line">          ├─/sys/devices/platform/i8042/serio0/input/input2</span><br><span class="line">          │ input:input2 <span class="string">&quot;AT Translated Set 2 keyboard&quot;</span></span><br><span class="line">          ├─/sys/devices/platform/i8042/serio1/input/input3</span><br><span class="line">          │ input:input3 <span class="string">&quot;ImExPS/2 Generic Explorer Mouse&quot;</span></span><br><span class="line">          └─/sys/devices/platform/pcspkr/input/input5</span><br><span class="line">            input:input5 <span class="string">&quot;PC Speaker&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>show-seat [NAME…] 显示席位的属性</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]<span class="comment"># loginctl show-seat seat0</span></span><br><span class="line">Id=seat0</span><br><span class="line">CanMultiSession=<span class="built_in">yes</span></span><br><span class="line">CanTTY=<span class="built_in">yes</span></span><br><span class="line">CanGraphical=<span class="built_in">yes</span></span><br><span class="line">Sessions=</span><br><span class="line">IdleHint=<span class="built_in">yes</span></span><br><span class="line">IdleSinceHint=0</span><br><span class="line">IdleSinceHintMonotonic=0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>attach NAME DEVICE… 将指定的设备连接到指定的席位上</li>
+<li>flush-devices 删除所有之前用 attach 命令连接的设备(同时也删除了所有之前用 attach 命令创建的席位)</li>
+<li>terminate-seat NAME… 结束指定席位上的所有会话, 将杀死指定席位上的所有会话进程, 同时释放与之关联的所有资源</li>
+</ul>
+<h3 id="journalctl"><a href="#journalctl" class="headerlink" title="journalctl"></a>journalctl</h3><p>管理系统运行日志</p>
+<ul>
+<li>-S,--since=DATE 显示指定日期开始之后的日志</li>
+<li>-U,--until=DATE 显示指定日期开始之前的日志</li>
+<li>-b,--boot[=ID] 显示指定 boot 的日志</li>
+<li>--list-boots 显示所有的 boot</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]<span class="comment"># journalctl --list-boots</span></span><br><span class="line">0 312745f18eaa4b3eb809d0f361ad43bc 四 2023-05-18 09:19:48 CST—四 2023-05-18 16:01:01 CST</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-k,--dmesg 显示本次启动时的日志</li>
+<li>-u,--unit=UNIT 显示指定 Unit 的日志</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]<span class="comment"># journalctl --since &quot;2 hours ago&quot; -u redis.service</span></span><br><span class="line">-- Logs begin at 四 2023-05-18 16:09:37 CST, end at 四 2023-05-18 16:22:59 CST. --</span><br><span class="line">5月 18 16:20:54 centos7 systemd[1]: Stopping redis-server...</span><br><span class="line">5月 18 16:20:54 centos7 systemd[1]: Stopped redis-server.</span><br><span class="line">5月 18 16:22:59 centos7 systemd[1]: Starting redis-server...</span><br><span class="line">5月 18 16:22:59 centos7 systemd[1]: Started redis-server.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-e,--pager-end 立刻跳到页面结尾</li>
+<li>-f,--follow 阻塞 journalctl 进程监听系统运行日志</li>
+<li>-n,--lines[=INTEGER] 控制显示日志的行数</li>
+<li>-r,--reverse 倒叙输出日志</li>
+<li>-0,--output=STRING 设置输出日志的格式<ul>
+<li>short</li>
+<li>short-iso</li>
+<li>short-precise</li>
+<li>short-monotonic</li>
+<li>verbose</li>
+<li>export</li>
+<li>json</li>
+<li>json-pretty</li>
+<li>json-sse</li>
+<li>cat</li>
+</ul>
+</li>
+<li>--verify 校验日志的一致性</li>
+<li>--header 显示 journal 的头部信息</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]<span class="comment"># journalctl --header</span></span><br><span class="line">File Path: /run/log/journal/afcca427b44c4f139ef788ed3b33b7e1/system.journal</span><br><span class="line">File ID: 498fe2e44a684bf7a8353f3e9d09b4f4</span><br><span class="line">Machine ID: afcca427b44c4f139ef788ed3b33b7e1</span><br><span class="line">Boot ID: 33002b9c227345c98ada60a3f1a386c5</span><br><span class="line">Sequential Number ID: 498fe2e44a684bf7a8353f3e9d09b4f4</span><br><span class="line">State: ONLINE</span><br><span class="line">Compatible Flags:</span><br><span class="line">Incompatible Flags: COMPRESSED-XZ</span><br><span class="line">Header size: 240</span><br><span class="line">Arena size: 8388368</span><br><span class="line">Data Hash Table Size: 20913</span><br><span class="line">Field Hash Table Size: 333</span><br><span class="line">Rotate Suggested: no</span><br><span class="line">Head Sequential Number: 1</span><br><span class="line">Tail Sequential Number: 977</span><br><span class="line">Head Realtime Timestamp: 四 2023-05-18 16:09:37 CST</span><br><span class="line">Tail Realtime Timestamp: 四 2023-05-18 16:30:01 CST</span><br><span class="line">Tail Monotonic Timestamp: 20min 23.207s</span><br><span class="line">Objects: 4090</span><br><span class="line">Entry Objects: 977</span><br><span class="line">Data Objects: 2241</span><br><span class="line">Data Hash Table Fill: 10.7%</span><br><span class="line">Field Objects: 43</span><br><span class="line">Field Hash Table Fill: 12.9%</span><br><span class="line">Tag Objects: 0</span><br><span class="line">Entry Array Objects: 827</span><br><span class="line">Disk usage: 8.0M</span><br></pre></td></tr></table></figure>
+
+<h3 id="systemd-analyze"><a href="#systemd-analyze" class="headerlink" title="systemd-analyze"></a>systemd-analyze</h3><p>查看当前系统的启动耗时</p>
+<ul>
+<li>time 有无此命令都可以</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]<span class="comment"># systemd-analyze time</span></span><br><span class="line">Startup finished <span class="keyword">in</span> 492ms (kernel) + 3.958s (initrd) + 38.325s (userspace) = 42.776s</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>blame 查看每个服务的启动耗时</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemd-analyze blame</span></span><br><span class="line">    ...    </span><br><span class="line">    3.804s docker.service</span><br><span class="line">    3.677s dev-mapper-centos\x2droot.device</span><br><span class="line">    3.581s NetworkManager-wait-online.service</span><br><span class="line">    3.362s lvm2-monitor.service</span><br><span class="line">    2.831s boot.mount</span><br><span class="line">    2.692s containerd.service</span><br><span class="line">    2.666s tuned.service</span><br><span class="line">    1.988s lvm2-pvscan@8:2.service</span><br><span class="line">    1.464s sysroot.mount</span><br><span class="line">    1.413s dracut-initqueue.service</span><br><span class="line">    1.164s firewalld.service</span><br><span class="line">     875ms vboxadd.service</span><br><span class="line">     560ms systemd-journald.service</span><br><span class="line">     548ms initrd-switch-root.service</span><br><span class="line">     490ms kmod-static-nodes.service</span><br><span class="line">     481ms vboxadd-x11.service</span><br><span class="line">     481ms polkit.service</span><br><span class="line">     471ms rhel-domainname.service</span><br><span class="line">     443ms systemd-remount-fs.service</span><br><span class="line">     418ms vboxadd-service.service</span><br><span class="line">     407ms sshd.service</span><br><span class="line">     396ms auditd.service</span><br><span class="line">     392ms systemd-sysctl.service</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>critical-chain 显示瀑布状的启动过程流</li>
+</ul>
+<h3 id="systemd-cgls"><a href="#systemd-cgls" class="headerlink" title="systemd-cgls"></a>systemd-cgls</h3><p>递归显示 cgroup 内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 ~]<span class="comment"># systemd-cgls</span></span><br><span class="line">├─1 /usr/lib/systemd/systemd --switched-root --system --deserialize 22</span><br><span class="line">├─user.slice</span><br><span class="line">│ └─user-1000.slice</span><br><span class="line">│   ├─session-51.scope</span><br><span class="line">│   │ ├─6018 sshd: vagrant [priv]</span><br><span class="line">│   │ ├─6021 sshd: vagrant@pts/1</span><br><span class="line">│   │ ├─6022 -bash</span><br><span class="line">│   │ ├─6255 su - root</span><br><span class="line">│   │ └─6259 -bash</span><br><span class="line">│   └─session-50.scope</span><br><span class="line">│     ├─5989 sshd: vagrant [priv]</span><br><span class="line">│     ├─5992 sshd: vagrant@pts/0</span><br><span class="line">│     ├─5993 -bash</span><br><span class="line">│     ├─6047 su - root</span><br><span class="line">│     ├─6051 -bash</span><br><span class="line">│     ├─6557 systemd-cgls</span><br><span class="line">│     └─6558 less</span><br><span class="line">└─system.slice</span><br><span class="line">  ├─vboxadd-service.service</span><br><span class="line">  │ └─3167 /usr/sbin/VBoxService --pidfile /var/run/vboxadd-service.sh</span><br><span class="line">  ├─docker.service</span><br><span class="line">  │ └─1182 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock</span><br><span class="line">  ├─postfix.service</span><br><span class="line">  │ ├─1123 /usr/libexec/postfix/master -w</span><br><span class="line">  │ ├─1126 qmgr -l -t unix -u</span><br><span class="line">  │ └─4421 pickup -l -t unix -u</span><br><span class="line">  ├─redis.service</span><br><span class="line">  │ └─1057 /usr/local/bin/redis-server 127.0.0.1:6379</span><br><span class="line">  ├─sshd.service</span><br><span class="line">  │ └─1028 /usr/sbin/sshd -D -u0</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="systemd-cgtop"><a href="#systemd-cgtop" class="headerlink" title="systemd-cgtop"></a>systemd-cgtop</h3><p>显示 cgroup 的资源使用情况, 类似与 top 命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Path                                                                             Tasks   %CPU   Memory  Input/s Output/s</span><br><span class="line">/                                                                                   77    2.3   437.4M        -        -</span><br><span class="line">/user.slice                                                                         11    1.8    35.1M        -        -</span><br><span class="line">/system.slice                                                                        -    0.2   373.4M        -        -</span><br><span class="line">/system.slice/redis.service                                                          1    0.2     9.2M        -        -</span><br><span class="line">/system.slice/containerd.service                                                     1    0.0    58.5M        -        -</span><br><span class="line">/system.slice/rsyslog.service                                                        1    0.0     2.5M        -        -</span><br><span class="line">/system.slice/tuned.service                                                          1    0.0    13.2M        -        -</span><br><span class="line">/system.slice/vboxadd-service.service                                                1    0.0     1.4M        -        -</span><br><span class="line">/system.slice/haveged.service                                                        1    0.0     5.8M        -        -</span><br><span class="line">/system.slice/NetworkManager.service                                                 2      -    11.9M        -        -</span><br><span class="line">/system.slice/auditd.service                                                         1      -     2.9M        -        -</span><br><span class="line">/system.slice/chronyd.service                                                        1      -     1.1M        -        -</span><br><span class="line">/system.slice/crond.service                                                          1      -   756.0K        -        -</span><br><span class="line">/system.slice/dbus.service                                                           1      -     1.7M        -        -</span><br><span class="line">/system.slice/docker.service                                                         1      -   123.8M        -        -</span><br><span class="line">/system.slice/firewalld.service                                                      1      -    34.0M        -        -</span><br><span class="line">/system.slice/sshd.service                                                           1      -     5.1M        -        -</span><br><span class="line">/system.slice/sys-kernel-debug.mount                                                 -      -   256.0K        -        -</span><br><span class="line">/system.slice/system-getty.slice                                                     1      -   188.0K        -        -</span><br><span class="line">/system.slice/system-getty.slice/getty@tty1.service                                  1      -        -        -        -</span><br><span class="line">/system.slice/system-lvm2\x2dpvscan.slice                                            -      -     4.0K        -        -</span><br><span class="line">/system.slice/systemd-journald.service                                               1      -     1.2M        -        -</span><br><span class="line">/system.slice/systemd-logind.service                                                 1      -   960.0K        -        -</span><br><span class="line">/system.slice/systemd-udevd.service                                                  1      -    20.1M        -        -</span><br><span class="line">/system.slice/vagrant_data.mount                                                     -      -    16.0K        -        -</span><br><span class="line">/user.slice/user-1000.slice/session-50.scope                                         6      -        -        -        -</span><br><span class="line">/user.slice/user-1000.slice/session-51.scope                                         5      -        -        -        -</span><br></pre></td></tr></table></figure>
+
+<h3 id="systemd-nspawn"><a href="#systemd-nspawn" class="headerlink" title="systemd-nspawn"></a>systemd-nspawn</h3><p>生成一个用于调试、测试和构建的最小命名空间容器</p>
+<h3 id="systemctl"><a href="#systemctl" class="headerlink" title="systemctl"></a>systemctl</h3><p>systemd 系统控制和服务管理工具的主命令, systemd 开启和监督整个系统是基于 Unit 的概念, Unit 是由一个与配置文件名同名的名字和类型组成</p>
+<table>
+<thead>
+<tr>
+<th align="center">Runlevel</th>
+<th>Target Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td>runlevel0.target, poweroff.target</td>
+<td>Shut down and power off the system</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td>runlevel1.target, rescue.target</td>
+<td>Set up a rescue shell</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>runlevel2.target, multi-user.target</td>
+<td>Set up a non-graphical multi-user system</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>runlevel3.target, multi-user.target</td>
+<td>Set up a non-graphical multi-user system</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td>runlevel4.target, multi-user.target</td>
+<td>Set up a non-graphical multi-user system</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td>runlevel5.target, graphical.target</td>
+<td>Set up a graphical multi-user system</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td>runlevel6.target, reboot.target</td>
+<td>Shut down and reboot the system</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>start 启动服务</p>
+</li>
+<li><p>stop 停止服务</p>
+</li>
+<li><p>reload 重新加载配置文件不重启服务</p>
+</li>
+<li><p>restart 重启服务</p>
+</li>
+<li><p>enable 允许开机启动</p>
+</li>
+<li><p>disable 取消开机启动</p>
+</li>
+<li><p>status 查看服务的状态</p>
+</li>
+<li><p>is-active 查看服务是否正在运行</p>
+</li>
+<li><p>is-enabled 查看服务是否开机启动</p>
+</li>
+<li><p>show 查看服务的详细信息</p>
+</li>
+<li><p>default 进入系统默认模式</p>
+</li>
+<li><p>rescue 进入系统救援模式</p>
+</li>
+<li><p>emergency 进入系统应急模式</p>
+</li>
+<li><p>halt 关闭系统</p>
+</li>
+<li><p>poweroff 关闭系统</p>
+</li>
+<li><p>reboot 重启系统</p>
+</li>
+<li><p>daemon-reload 重新加载 systemd 系统管理配置项</p>
+</li>
+<li><p>daemon-reexec 重新执行 systemd 系统管理器</p>
+</li>
+</ul>
+<h4 id="Unit-类型"><a href="#Unit-类型" class="headerlink" title="Unit 类型"></a>Unit 类型</h4><p>每个配置单元都有一个对应的配置文件</p>
+<ul>
+<li>service: .service, 代表一个后台服务进程, 例如 mysqld、nginx</li>
+<li>socket: .socket, 此类配置单元封装系统和互联网中的一个套接字, 每个套接字配置单元都有一个相应的服务配置单元, 相应的服务在第一个连接进入套接字时就会自动启动(例如 nscd.socket 在有新连接后会启动 nscd.service)</li>
+<li>device: .device, 此类配置单元封装一个存在于 linux 设备树中的设备, 每个使用 udev 规则标记的设备都会在 systemd 中作为一个设备配置单元出现</li>
+<li>mount: .mount, 此类配置单元封装文件系统结构层次中的一个挂载点, systemd 将对这个挂载点进行监控和管理, systemd 会将 /etc/fstab 中的条目都转换为挂载点, 并在开机时处理</li>
+<li>automount: .automount, 此类配置单元封装文件系统结构层次中的一个自动挂载点, 每个自动挂载配置单元对应一个挂载配置单元</li>
+<li>swap: .swap, 和挂载配置单元类似, 可以用交换配置单元来定义系统中的交换分区, 让这些交换分区在启动时被激活</li>
+<li>target: .target, 此类配置单元为其它配置单元进行逻辑分组, 它们本身没有任何行为, 只是引用其他配置单元, 这样就可以对配置单元做一个统计的控制</li>
+<li>timer: .timer, 定时器配置单元用来定时触发用户定义的操作, 这类配置单元取代了 atd, crond 等传统的定时服务</li>
+<li>snapshot: .snapshot, 与 target 配置单元类似, 快照是一组配置单元, 保存了系统当前的运行状态</li>
+<li>path: .path, 用于定义文件系统中的文件或目录</li>
+</ul>
+<h4 id="配置文件项"><a href="#配置文件项" class="headerlink" title="配置文件项"></a>配置文件项</h4><h5 id="Unit"><a href="#Unit" class="headerlink" title="Unit"></a>Unit</h5><p>用来定义单元的元数据, 以及配置与其他 Unit 的关系</p>
+<ul>
+<li>Description 当前服务的简单描述</li>
+<li>Documentation 文档地址</li>
+<li>Requires 表示强依赖关系, 即某些服务停止运行或退出, 该服务也必须停止或退出</li>
+<li>Wants 表示弱依赖关系, 即某些服务停止运行或退出不会影响该服务继续运行</li>
+<li>After 表示在什么服务之后启动</li>
+<li>Before 表示在什么服务之前启动</li>
+<li>Conflicts 表示指定的 Unit 不能与当前 Unit 同时运行</li>
+<li>Condition 表示当前 Unit 运行必须满足的条件, 否则不会运行</li>
+<li>Assert 表示当前 Unit 运行必须满足的条件, 否则会报启动失败</li>
+</ul>
+<h5 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h5><p>定义如何安装此配置文件</p>
+<ul>
+<li>Alias 为当前 Unit 定义一个用于启动的别名</li>
+<li>Also 当前 Unit 被激活时, 同时被激活的其他 Unit</li>
+<li>DefaultInstance 实例单元的限制, 这个选项指定如果 Unit 被允许运行时的默认实例</li>
+<li>RequiredBy 当前 Unit 被允许运行需要的一系列依赖 Unit, RequiredBy 列表从 Require 获得依赖信息</li>
+<li>WantedBy 表示该服务所在的 target, target 表示一组服务, 大多的服务都附在 multi-user.target 组, 这个组的所有服务都将开机启动</li>
+</ul>
+<h5 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h5><p>配置 service, 只有 service 类型的 Unit 才有此项</p>
+<ul>
+<li><p>Type 定义启动时的进程行为</p>
+<ul>
+<li>simple 默认值, 执行 ExecStart 指定的命令, 启动主进程</li>
+<li>forking 以 fork 方式从父进程创建子进程, 此时父进程将会退出, 子进程成为主进程</li>
+<li>oneshot 与 simple 类似, 但只执行一次, Systemd 等待此进程执行完后, 才启动其他服务</li>
+<li>dbus 与 simple 类似, 但会等待 D-Bus 信号后启动</li>
+<li>notify 与 simple 类似, 启动结束后会发出通知信号, Systemd 再启动其他服务</li>
+<li>idle 与 simple 类似, 等待其他任务都执行完成, 才会启动该服务</li>
+</ul>
+</li>
+<li><p>ExecStart 定义启动进程时执行的命令或脚本</p>
+</li>
+<li><p>ExecStartPre 定义启动服务之前执行的命令或脚本</p>
+</li>
+<li><p>ExecStartPost 定义启动服务之后执行的命令或脚本</p>
+</li>
+<li><p>ExecStop 定义停止服务时执行的命令或脚本</p>
+</li>
+<li><p>ExecStopPost 定义停止服务之后执行的命令或脚本</p>
+</li>
+<li><p>RestartSec 定义 Systemd 重启服务之前等待的秒数</p>
+</li>
+<li><p>TimeoutSec 定义 Systemd 停止服务之前等待的秒数</p>
+</li>
+<li><p>ExecReload 定义重启服务时执行的命令或脚本</p>
+</li>
+<li><p>KillMode 定义 Systemd 如何停止服务</p>
+<ul>
+<li>control-group 默认值, 当前控制组内的所有子进程都会被杀掉</li>
+<li>process 只杀主进程</li>
+<li>mixed 主进程将受到 SIGTERM 信号, 子进程受到 SIGKILL 信号</li>
+<li>none 不杀掉任何进程, 只执行服务的 stop 命令</li>
+</ul>
+</li>
+<li><p>Restart 定义 Systemd 重启服务的方式</p>
+<ul>
+<li>no 默认值, 退出后不会重启</li>
+<li>on-success 只有正常退出时(退出状态码为 0), 才会重启</li>
+<li>on-failure 非正常退出时(退出状态码非 0), 包括信号被终止和超时才会重启</li>
+<li>on-abnormal 只有被信号终止和超时才会重启</li>
+<li>on-abort 只有在收到没有捕捉到的信号终止时才会重启</li>
+<li>on-watchdog 超时退出才会重启</li>
+<li>always 不管什么原因总是重启</li>
+</ul>
+</li>
+<li><p>TimeoutStartSec 设置该服务允许的最大启动时长, 设置为0 表示永不超时</p>
+</li>
+<li><p>TimeoutStopSec 设置该服务允许的最大停止时长, 设置为0 表示永不超时</p>
+</li>
+<li><p>User 定义服务的用户名</p>
+</li>
+<li><p>Group 运行服务的用户组, 会影响服务对本地文件系统的访问权限</p>
+</li>
+<li><p>PIDFile 定义守护进程的 PID 文件, 必须为绝对路径</p>
+</li>
+<li><p>Nice 定义服务的进程优先级,值越小优先级越高, 默认为0, -20 ~ 19</p>
+</li>
+<li><p>Environment 为服务添加环境变量</p>
+</li>
+<li><p>EnvironmentFile 定义环境变量配置文件</p>
+</li>
+<li><p>PrivateTmp 定义是否分配独立空间</p>
+</li>
+<li><p>RootDirectory 配置服务进程的根目录, 服务将无法访问指定目录以外的任何文件</p>
+</li>
+<li><p>WorkingDirectory 定义服务的安装目录</p>
+</li>
+</ul>
+<h5 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h5><ul>
+<li>OnBootSec 当开机多久后才执行当前 Unit</li>
+<li>OnUnitActiveSec 这个 timer 配置文件所管理的那个 Unit 在最后一次启动后, 相隔多久再执行一次</li>
+<li>OnUnitInactiveSec 这个 timer 配置文件所管理的那个 Unit 在最后一次停止后, 相隔多久再执行一次</li>
+<li>OnCalendar 使用实际时间(非循环时间)的方式来启动服务</li>
+<li>OnActiveSec 当 timers.target 启动多久后才执行当前 Unit</li>
+<li>OnStartupSec 当 Systemd 第一次启动后多久才执行当前 Unit</li>
+</ul>
+<h4 id="配置-service"><a href="#配置-service" class="headerlink" title="配置 service"></a>配置 service</h4><ul>
+<li>Redis.service</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=redis-server</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/local/bin/redis-server /root/workspace/redis6379.conf</span><br><span class="line">PrivateTmp=true</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置-target"><a href="#配置-target" class="headerlink" title="配置 target"></a>配置 target</h4><ul>
+<li>multi-user.target</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#  This file is part of systemd.</span><br><span class="line">#</span><br><span class="line">#  systemd is free software; you can redistribute it and/or modify it</span><br><span class="line">#  under the terms of the GNU Lesser General Public License as published by</span><br><span class="line">#  the Free Software Foundation; either version 2.1 of the License, or</span><br><span class="line">#  (at your option) any later version.</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Multi-User System</span><br><span class="line">Documentation=man:systemd.special(7)</span><br><span class="line">Requires=basic.target</span><br><span class="line">Conflicts=rescue.service rescue.target</span><br><span class="line">After=basic.target rescue.service rescue.target</span><br><span class="line">AllowIsolate=yes</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置-timer"><a href="#配置-timer" class="headerlink" title="配置 timer"></a>配置 timer</h4><ul>
+<li>systemd-tmpfiles-clean.timer</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#  This file is part of systemd.</span><br><span class="line">#</span><br><span class="line">#  systemd is free software; you can redistribute it and/or modify it</span><br><span class="line">#  under the terms of the GNU Lesser General Public License as published by</span><br><span class="line">#  the Free Software Foundation; either version 2.1 of the License, or</span><br><span class="line">#  (at your option) any later version.</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Daily Cleanup of Temporary Directories</span><br><span class="line">Documentation=man:tmpfiles.d(5) man:systemd-tmpfiles(8)</span><br><span class="line"></span><br><span class="line">[Timer]</span><br><span class="line">OnBootSec=15min # 当开机多久后才执行当前 Unit</span><br><span class="line">OnUnitActiveSec=1d  # 这个 timer 配置文件所管理的那个 Unit 在最后一次启动后, 相隔多久再执行一次</span><br><span class="line">#OnUnitInactiveSec # 这个 timer 配置文件所管理的那个 Unit 在最后一次停止后, 相隔多久再执行一次</span><br><span class="line">#OnCalendar # 使用实际时间(非循环时间)的方式来启动服务</span><br><span class="line">#OnActiveSec  # 当 timers.target 启动多久后才执行当前 Unit</span><br><span class="line">#OnStartupSec # 当 Systemd 第一次启动后多久才执行当前 Unit</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置-mount"><a href="#配置-mount" class="headerlink" title="配置 mount"></a>配置 mount</h4><ul>
+<li>tmp.mount</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#  This file is part of systemd.</span><br><span class="line">#</span><br><span class="line">#  systemd is free software; you can redistribute it and/or modify it</span><br><span class="line">#  under the terms of the GNU Lesser General Public License as published by</span><br><span class="line">#  the Free Software Foundation; either version 2.1 of the License, or</span><br><span class="line">#  (at your option) any later version.</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Temporary Directory</span><br><span class="line">Documentation=man:hier(7)</span><br><span class="line">Documentation=http://www.freedesktop.org/wiki/Software/systemd/APIFileSystems</span><br><span class="line">ConditionPathIsSymbolicLink=!/tmp</span><br><span class="line">DefaultDependencies=no</span><br><span class="line">Conflicts=umount.target</span><br><span class="line">Before=local-fs.target umount.target</span><br><span class="line"></span><br><span class="line">[Mount]</span><br><span class="line">What=tmpfs</span><br><span class="line">Where=/tmp</span><br><span class="line">Type=tmpfs</span><br><span class="line">Options=mode=1777,strictatime</span><br><span class="line"></span><br><span class="line"># Make &#x27;systemctl enable tmp.mount&#x27; work:</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=local-fs.target</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\05\bc4d38208f0f\" rel="bookmark">linux工具</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\04\616714173ca1\" rel="bookmark">shell语法</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/05/0d965ffa3e9b/" title="systemd">https://luoleiself.github.io/2022/05/0d965ffa3e9b/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/2261dfd57ebf/" rel="prev" title="JSSDK">
+      <i class="fa fa-chevron-left"></i> JSSDK
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/bc4d38208f0f/" rel="next" title="linux工具">
+      linux工具 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd"><span class="nav-number">1.</span> <span class="nav-text">systemd</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CGroup"><span class="nav-number">1.1.</span> <span class="nav-text">CGroup</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.2.</span> <span class="nav-text">概念</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">1.2.</span> <span class="nav-text">架构图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hostnamectl"><span class="nav-number">1.3.</span> <span class="nav-text">hostnamectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localectl"><span class="nav-number">1.4.</span> <span class="nav-text">localectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#timedatectl"><span class="nav-number">1.5.</span> <span class="nav-text">timedatectl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loginctl"><span class="nav-number">1.6.</span> <span class="nav-text">loginctl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Session"><span class="nav-number">1.6.1.</span> <span class="nav-text">Session</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#User"><span class="nav-number">1.6.2.</span> <span class="nav-text">User</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Seat"><span class="nav-number">1.6.3.</span> <span class="nav-text">Seat</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#journalctl"><span class="nav-number">1.7.</span> <span class="nav-text">journalctl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#systemd-analyze"><span class="nav-number">1.8.</span> <span class="nav-text">systemd-analyze</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#systemd-cgls"><span class="nav-number">1.9.</span> <span class="nav-text">systemd-cgls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#systemd-cgtop"><span class="nav-number">1.10.</span> <span class="nav-text">systemd-cgtop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#systemd-nspawn"><span class="nav-number">1.11.</span> <span class="nav-text">systemd-nspawn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#systemctl"><span class="nav-number">1.12.</span> <span class="nav-text">systemctl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Unit-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.12.1.</span> <span class="nav-text">Unit 类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E9%A1%B9"><span class="nav-number">1.12.2.</span> <span class="nav-text">配置文件项</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Unit"><span class="nav-number">1.12.2.1.</span> <span class="nav-text">Unit</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Install"><span class="nav-number">1.12.2.2.</span> <span class="nav-text">Install</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Service"><span class="nav-number">1.12.2.3.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Timer"><span class="nav-number">1.12.2.4.</span> <span class="nav-text">Timer</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-service"><span class="nav-number">1.12.3.</span> <span class="nav-text">配置 service</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-target"><span class="nav-number">1.12.4.</span> <span class="nav-text">配置 target</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-timer"><span class="nav-number">1.12.5.</span> <span class="nav-text">配置 timer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-mount"><span class="nav-number">1.12.6.</span> <span class="nav-text">配置 mount</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">557k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

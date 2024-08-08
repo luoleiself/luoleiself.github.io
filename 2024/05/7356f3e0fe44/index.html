@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="GridCSS Grid 是一个用于 web 的二维布局系统, 网格是由一系列水平及垂直的线构成的一种布局模式, 根据网格, 可以将内容按照行和列的格式进行排版.CSS Grid 布局 和 Flexible 布局的主要区别在于 CSS Flexible 是为了一维布局服务的(沿横向或纵向), 而 CSS Grid 是为二维布局服务的(同时沿着横向和纵向) 辅助属性 网格轨道, 网格布局中使用 gr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Grid">
+<meta property="og:url" content="https://luoleiself.github.io/2024/05/7356f3e0fe44/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="GridCSS Grid 是一个用于 web 的二维布局系统, 网格是由一系列水平及垂直的线构成的一种布局模式, 根据网格, 可以将内容按照行和列的格式进行排版.CSS Grid 布局 和 Flexible 布局的主要区别在于 CSS Flexible 是为了一维布局服务的(沿横向或纵向), 而 CSS Grid 是为二维布局服务的(同时沿着横向和纵向) 辅助属性 网格轨道, 网格布局中使用 gr">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-17T08:00:55.000Z">
+<meta property="article:modified_time" content="2024-08-07T07:57:00.416Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="Grid">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2024/05/7356f3e0fe44/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Grid | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2024/05/7356f3e0fe44/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Grid
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-05-17 16:00:55" itemprop="dateCreated datePublished" datetime="2024-05-17T16:00:55+08:00">2024-05-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-07 15:57:00" itemprop="dateModified" datetime="2024-08-07T15:57:00+08:00">2024-08-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CSS/" itemprop="url" rel="index"><span itemprop="name">CSS</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>4.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h2><p>CSS Grid 是一个用于 web 的二维布局系统, 网格是由一系列水平及垂直的线构成的一种布局模式, 根据网格, 可以将内容按照行和列的格式进行排版.<br>CSS Grid 布局 和 Flexible 布局的主要区别在于 CSS Flexible 是为了一维布局服务的(沿横向或纵向), 而 CSS Grid 是为二维布局服务的(同时沿着横向和纵向)</p>
+<h3 id="辅助属性"><a href="#辅助属性" class="headerlink" title="辅助属性"></a>辅助属性</h3><ul>
+<li>网格轨道, 网格布局中使用 grid-template-rows 和 grid-template-columns 属性定义的网格上的行和列, 网格轨道是网格上任意两条相邻线之间的空间.</li>
+<li>fr 单位, 新的长度单位, 表示网格容器中占用的轨道</li>
+<li>minmax(min, max), 函数为一个行/列的尺寸设置了取值范围, 例如 minmax(100px, auto) 表示尺寸至少为 100px, 如果内容尺寸大于 100px 则会根据内容自动调整</li>
+<li>repeat(count, value), 表示轨道列表的重复片段, 允许以更紧凑的形式写入大量显示重复模式的列或行</li>
+</ul>
+<h3 id="属性列表"><a href="#属性列表" class="headerlink" title="属性列表"></a>属性列表</h3><ul>
+<li><p>grid-template-rows</p>
+</li>
+<li><p>grid-template-columns</p>
+</li>
+<li><p>grid-template-areas</p>
+</li>
+<li><p>grid-auto-flow</p>
+</li>
+<li><p>grid-auto-rows</p>
+</li>
+<li><p>grid-auto-columns</p>
+</li>
+<li><p>grid-gap/gap</p>
+<ul>
+<li>grid-column-gap</li>
+<li>grid-row-gap</li>
+</ul>
+</li>
+<li><p>grid-area</p>
+<ul>
+<li>grid-row</li>
+<li>grid-column</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="容器属性"><a href="#容器属性" class="headerlink" title="容器属性"></a>容器属性</h3><h4 id="display"><a href="#display" class="headerlink" title="display"></a>display</h4><ul>
+<li>grid 指定容器的行为类似块级元素并且采用网格布局</li>
+<li>inline-grid 指定容器的行为类似行内元素并且采用网格布局</li>
+</ul>
+<h4 id="grid-template-rows"><a href="#grid-template-rows" class="headerlink" title="grid-template-rows"></a>grid-template-rows</h4><p>基于<strong>网格行</strong>的维度定义网格线的名称和网格轨道的尺寸大小</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*自动调整网格轨道大小, 等价于 max-content, min-content*/</span></span><br><span class="line"><span class="attribute">grid-template-rows</span>: auto;</span><br><span class="line"><span class="comment">/*定义 4 行并且指定每行的行高, 第 2 行高度自适应*/</span></span><br><span class="line"><span class="attribute">grid-template-rows</span>: <span class="number">40px</span> auto <span class="number">40px</span> <span class="number">50px</span>;</span><br><span class="line"><span class="comment">/*定义 3 行, </span></span><br><span class="line"><span class="comment">第 1 行分配 1fr 可用空间,</span></span><br><span class="line"><span class="comment">第 2 行分配 2fr 可用空间, </span></span><br><span class="line"><span class="comment">第 3 行分配 3fr 可用空间*/</span></span><br><span class="line"><span class="attribute">grid-template-rows</span>: <span class="number">1</span>fr <span class="number">2</span>fr <span class="number">3</span>fr;</span><br><span class="line"><span class="comment">/*定义 3 行, 每行分配 33.33% 可用空间*/</span></span><br><span class="line"><span class="attribute">grid-template-rows</span>: <span class="built_in">repeat</span>(<span class="number">3</span>, <span class="number">33.33%</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>网格线, 使用<strong>方框号</strong>指定每根网格线的名字, 默认从 1 开始</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*定义 3 行并且指定每行的行高, </span></span><br><span class="line"><span class="comment">第 2 行高度自适应, </span></span><br><span class="line"><span class="comment">指定每根网格线的名字 r1 开始*/</span></span><br><span class="line"><span class="attribute">grid-template-rows</span>: [r1] <span class="number">100px</span> [r2] auto [r3] <span class="number">100px</span> [r4];</span><br></pre></td></tr></table></figure>
+
+<h4 id="grid-template-columns"><a href="#grid-template-columns" class="headerlink" title="grid-template-columns"></a>grid-template-columns</h4><p>基于<strong>网格列</strong>的维度定义网格线的名称和网格轨道的尺寸大小</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*自动调整网格轨道大小, 等价于 max-content, min-content*/</span></span><br><span class="line"><span class="attribute">grid-template-columns</span>: auto;</span><br><span class="line"><span class="comment">/*定义 3 列并指定第 1 列和第 3 列的列宽, 第 2 列宽度自适应*/</span></span><br><span class="line"><span class="attribute">grid-template-columns</span>: <span class="number">40px</span> auto <span class="number">50px</span>;</span><br><span class="line"><span class="comment">/*定义 3 列并且指定每列的列宽, 第 3 列分配 2fr 可用空间*/</span></span><br><span class="line"><span class="attribute">grid-template-columns</span>: <span class="number">40px</span> <span class="number">40px</span> <span class="number">2</span>fr;</span><br><span class="line"><span class="comment">/*定义 2 列, 第 1 列分配 1fr 可用空间, 第 2 列分配 2fr 可用空间*/</span></span><br><span class="line"><span class="attribute">grid-template-columns</span>: <span class="number">1</span>fr <span class="number">2</span>fr;</span><br><span class="line"><span class="comment">/*定义 3 列, </span></span><br><span class="line"><span class="comment">第 1 列和第 3 列分配 1fr 可用空间, </span></span><br><span class="line"><span class="comment">第 2 列分配 2fr 可用空间*/</span></span><br><span class="line"><span class="attribute">grid-template-columns</span>: <span class="built_in">repeat</span>(<span class="number">1</span>, <span class="number">1</span>fr <span class="number">2</span>fr <span class="number">1</span>fr);</span><br><span class="line"><span class="attribute">grid-template-rows</span>: [c1] <span class="number">100px</span> [c2] auto [c3] <span class="number">100px</span> [c4];</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>网格线, 使用<strong>方框号</strong>指定每根网格线的名字, 默认从 1 开始</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*定义 3 列并且指定每列的列宽, 第 2 列宽度自适应，指定每根网格线的名字 c1 开始*/</span></span><br><span class="line"><span class="attribute">grid-template-columns</span>: [c1] <span class="number">100px</span> [c2] auto [c3] <span class="number">100px</span> [c4];</span><br></pre></td></tr></table></figure>
+
+<h4 id="grid-template-areas"><a href="#grid-template-areas" class="headerlink" title="grid-template-areas"></a>grid-template-areas</h4><p>定义网格区域的别名, 网格区域和网格项没有关联, 但是可以和<a href="#grid-area">网格定位</a>属性关联, 例如 <code>grid-row-start</code>, <code>grid-column-start</code>, <code>grid-row-end</code>, <code>grid-column-end</code></p>
+<ul>
+<li>如果某些区域不需要, 则使用 <code>.</code> 表示</li>
+<li>区域别名会影响到网格线, 每个区域的起始网格线自动命名为 <code>区域名-start</code>, 终止网格线自动命名为 <code>区域名-end</code></li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 定义九宫格每个区域别名 */</span></span><br><span class="line"><span class="attribute">grid-template-areas</span>:</span><br><span class="line">  <span class="string">&#x27;a b c&#x27;</span></span><br><span class="line">  <span class="string">&#x27;d e f&#x27;</span></span><br><span class="line">  <span class="string">&#x27;g h i&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*左侧区域 b, 右上角区域 a, 右下角区域 c*/</span></span><br><span class="line"><span class="attribute">grid-template-areas</span>:</span><br><span class="line">  <span class="string">&#x27;b b a&#x27;</span></span><br><span class="line">  <span class="string">&#x27;b b c&#x27;</span></span><br><span class="line">  <span class="string">&#x27;b b c&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*左上角区域 a, 右下角为 b 和 c, 右上角和左下角未指定区域别名*/</span></span><br><span class="line"><span class="attribute">grid-template-areas</span>:</span><br><span class="line">  <span class="string">&#x27;a a .&#x27;</span></span><br><span class="line">  <span class="string">&#x27;a a .&#x27;</span></span><br><span class="line">  <span class="string">&#x27;. b c&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*顶部页眉区域 header, 底部页脚区域 footer, 中间区域 sidebar 和 main*/</span></span><br><span class="line"><span class="attribute">grid-template-areas</span>:</span><br><span class="line">  <span class="string">&#x27;header header header&#x27;</span></span><br><span class="line">  <span class="string">&#x27;sidebar main main&#x27;</span></span><br><span class="line">  <span class="string">&#x27;footer footer footer&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="grid-auto-flow"><a href="#grid-auto-flow" class="headerlink" title="grid-auto-flow"></a>grid-auto-flow</h4><p>精确指定在网格中被自动布局的元素如何排列, 默认值为 row</p>
+<ul>
+<li>row 指定自动布局算法按照通过逐行填充来排列元素, 在必要时增加新行</li>
+<li>column 指定自动布局算法按照通过逐列填充来排列元素, 在必要时增加新列</li>
+<li>dense 指定自动布局算法使用一种<code>稠密</code>堆积算法, 省略时使用 <code>稀疏</code> 算法, 配合 row 或 column 使用<ul>
+<li><code>稠密</code>算法, 如果后面出现稍小的元素, 则会试图去填充网格中前面留下的空白, 这样会填上稍大元素留下的空白, 但同时也可能导致原来出现的次序被打乱</li>
+<li><code>稀疏</code>算法, 布局算法只会向前移动, 永远不会填充空白, 这样保证了所有自动布局元素按照次序出现, 即使可能会留下被后面元素填充的空白</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">grid-auto-flow</span>: row;</span><br><span class="line"><span class="attribute">grid-auto-flow</span>: column;</span><br><span class="line"></span><br><span class="line"><span class="attribute">grid-auto-flow</span>: row dense;</span><br><span class="line"><span class="attribute">grid-auto-flow</span>: column dense;</span><br></pre></td></tr></table></figure>
+
+<h4 id="grid-auto-rows"><a href="#grid-auto-rows" class="headerlink" title="grid-auto-rows"></a>grid-auto-rows</h4><p>指定<strong>隐式</strong>创建的网格横向轨道的高度, 例如某项超出了当前的网格布局区域, 浏览器会自动生成多余的网格以便放置项目</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">grid-auto-rows</span>: <span class="number">20px</span>;</span><br><span class="line"><span class="attribute">grid-auto-rows</span>: <span class="number">3</span>fr;</span><br><span class="line"><span class="attribute">grid-auto-rows</span>: <span class="number">25%</span>;</span><br><span class="line"><span class="attribute">grid-auto-rows</span>: <span class="built_in">minmax</span>(<span class="number">100px</span>, auto);</span><br><span class="line"><span class="attribute">grid-auto-rows</span>: <span class="built_in">minmax</span>(max-content, <span class="number">2</span>fr);</span><br></pre></td></tr></table></figure>
+
+<h4 id="grid-auto-columns"><a href="#grid-auto-columns" class="headerlink" title="grid-auto-columns"></a>grid-auto-columns</h4><p>指定<strong>隐式</strong>创建的网格纵向轨道的宽度, 作用参考 <code>grid-auto-rows</code></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">grid-auto-columns</span>: <span class="number">20px</span>;</span><br><span class="line"><span class="attribute">grid-auto-columns</span>: <span class="number">3</span>fr;</span><br><span class="line"><span class="attribute">grid-auto-columns</span>: <span class="number">25%</span>;</span><br><span class="line"><span class="attribute">grid-auto-columns</span>: <span class="built_in">minmax</span>(<span class="number">100px</span>, auto);</span><br><span class="line"><span class="attribute">grid-auto-columns</span>: <span class="built_in">minmax</span>(max-content, <span class="number">2</span>fr);</span><br></pre></td></tr></table></figure>
+
+<h4 id="grid-gap"><a href="#grid-gap" class="headerlink" title="grid-gap"></a>grid-gap</h4><p><code>grid-gap: &lt;grid-row-gap&gt; &lt;grid-column-gap&gt;;</code> 网格行和列间隙的缩写</p>
+<p>指定网格行和列之间的间隙, 此属性作为 <code>gap</code> 兼容低版本的别名</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">grid-gap</span>: <span class="number">10px</span> <span class="number">20px</span>;</span><br><span class="line"><span class="attribute">grid-row</span>-<span class="attribute">gap</span>: <span class="number">20px</span>;</span><br><span class="line"><span class="attribute">grid-column</span>-<span class="attribute">gap</span>: <span class="number">10px</span>;</span><br><span class="line"></span><br><span class="line"><span class="attribute">gap</span>: <span class="number">10px</span> <span class="number">20px</span>;</span><br><span class="line"><span class="attribute">row-gap</span>: <span class="number">20px</span>;</span><br><span class="line"><span class="attribute">column-gap</span>: <span class="number">10px</span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="grid-column-gap"><a href="#grid-column-gap" class="headerlink" title="grid-column-gap"></a>grid-column-gap</h5><p>指定<strong>网格列</strong>之间的间隙大小</p>
+<h5 id="grid-row-gap"><a href="#grid-row-gap" class="headerlink" title="grid-row-gap"></a>grid-row-gap</h5><p>指定<strong>网格行</strong>之间的间隙大小, 此属性作为 <code>row-gap</code> 兼容低版本的别名</p>
+<h3 id="项目属性"><a href="#项目属性" class="headerlink" title="项目属性"></a>项目属性</h3><h4 id="grid-area"><a href="#grid-area" class="headerlink" title="grid-area  "></a>grid-area <em id="grid-area"></em> <!-- markdownlint-disable-line --></h4><p><code>grid-area: &lt;row-start&gt; / &lt;column-start&gt; / &lt;row-end&gt; / &lt;column-end&gt;;</code> 合并简写形式</p>
+<p>指定项目放在哪个区域, 是一种对 <code>grid-row-start</code>, <code>grid-column-start</code>, <code>grid-row-end</code>, <code>grid-column-end</code>的简写, 通过基线、 跨度(span)或没有(自动)的网格线放置在指定一个网格项的大小和位置, 继而确定区域的边界</p>
+<ul>
+<li>如果指定 4 个 <code>&lt;grid-line&gt;</code> 的值时, 第 1 个值为 <code>grid-row-start</code>, 第 2 个值为 <code>grid-column-start</code>, 第 3 个值为<code>grid-row-end</code>, 第 4 个值为 <code>grid-column-end</code><ul>
+<li>当 <code>grid-column-end</code> 被忽略时, 如果 <code>grid-column-start</code> 为自定义关键字数据类型, <code>grid-column-end</code> 则为该值, 否则为 auto;</li>
+<li>当 <code>grid-row-end</code> 被忽略时, 如果 <code>grid-row-start</code> 为自定义关键字数据类型, <code>grid-row-end</code> 则为该值, 否则为 auto;</li>
+<li>当 <code>grid-column-start</code> 被忽略时, 如果 <code>grid-row-start</code> 为自定义关键字数据类型, 则所有四项普通写法的属性值均为该值, 否则为 auto;</li>
+</ul>
+</li>
+<li>span, 为网格单元定义一个跨度, 使得网格单元的网格区域中的一条边界远离另一条边界 n 条基线. 默认值为 1;</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">grid-area</span>: auto;</span><br><span class="line"><span class="attribute">grid-area</span>: <span class="number">2</span> / <span class="number">2</span> / auto / span <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.item-1</span> &#123;</span><br><span class="line">  <span class="comment">/* 放在 3 行 3 列的中心网格位置 */</span></span><br><span class="line">  <span class="comment">/* 网格线编号, 规则见上 */</span></span><br><span class="line">  <span class="attribute">grid-area</span>: <span class="number">2</span> / <span class="number">2</span>;</span><br><span class="line">  <span class="comment">/* 网格线名 */</span></span><br><span class="line">  <span class="attribute">grid-area</span>: r2 / c2 / r3 / c3;</span><br><span class="line">  <span class="comment">/* 区域别名 */</span></span><br><span class="line">  <span class="attribute">grid-area</span>: e;</span><br><span class="line">  <span class="comment">/* 区域别名网格线起始名和终止名 */</span></span><br><span class="line">  <span class="attribute">grid-area</span>: e-start / e-start / e-end / e-end;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="grid-row"><a href="#grid-row" class="headerlink" title="grid-row"></a>grid-row</h4><p><code>grid-row: &lt;start-line&gt; / &lt;end-line&gt;;</code> 合并简写形式</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.item-1</span> &#123;</span><br><span class="line">  <span class="comment">/* 上边框是第 2 根水平网格线, 下边框是第 4 根水平网格线 */</span></span><br><span class="line">  <span class="attribute">grid-row</span>: <span class="number">2</span> / <span class="number">4</span>;</span><br><span class="line">  <span class="comment">/* 左边框是第 1 根垂直网格线, 有边框是第 3 根垂直网格线 */</span></span><br><span class="line">  <span class="attribute">grid-column</span>: <span class="number">1</span> / <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* 使用网格线名 */</span></span><br><span class="line">  <span class="attribute">grid-row</span>: r2 / r4;</span><br><span class="line">  <span class="attribute">grid-column</span>: c1 / c3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="grid-row-start"><a href="#grid-row-start" class="headerlink" title="grid-row-start"></a>grid-row-start</h5><p>指定上边框所在的水平网格线</p>
+<h5 id="grid-row-end"><a href="#grid-row-end" class="headerlink" title="grid-row-end"></a>grid-row-end</h5><p>指定下边框所在的水平网格线</p>
+<h4 id="grid-column"><a href="#grid-column" class="headerlink" title="grid-column"></a>grid-column</h4><p><code>grid-column: &lt;start-line&gt; / &lt;end-line&gt;;</code> 合并简写形式</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.item-1</span> &#123;</span><br><span class="line">  <span class="comment">/* 上边框是第 2 根水平网格线, 下边框是第 3 根水平网格线 */</span></span><br><span class="line">  <span class="attribute">grid-row</span>: <span class="number">2</span> / <span class="number">3</span>;</span><br><span class="line">  <span class="comment">/* 左边框是第 2 根垂直网格线, 有边框是第 4 根垂直网格线 */</span></span><br><span class="line">  <span class="attribute">grid-column</span>: <span class="number">2</span> / <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* 使用网格线名 */</span></span><br><span class="line">  <span class="attribute">grid-row</span>: r2 / r3;</span><br><span class="line">  <span class="attribute">grid-column</span>: c2 / c4;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="grid-column-start"><a href="#grid-column-start" class="headerlink" title="grid-column-start"></a>grid-column-start</h5><p>指定左边框所在的垂直网格线</p>
+<h5 id="grid-column-end"><a href="#grid-column-end" class="headerlink" title="grid-column-end"></a>grid-column-end</h5><p>指定有边框所在的垂直网格线</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2024\07\d4e0016c7e04\" rel="bookmark">CSS3</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2024/05/7356f3e0fe44/" title="Grid">https://luoleiself.github.io/2024/05/7356f3e0fe44/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CSS/" rel="tag"># CSS</a>
+              <a href="/tags/Grid/" rel="tag"># Grid</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/3689deed511f/" rel="prev" title="BroadcastChannel">
+      <i class="fa fa-chevron-left"></i> BroadcastChannel
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/07/d4e0016c7e04/" rel="next" title="CSS3">
+      CSS3 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Grid"><span class="nav-number">1.</span> <span class="nav-text">Grid</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%85%E5%8A%A9%E5%B1%9E%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">辅助属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8"><span class="nav-number">1.2.</span> <span class="nav-text">属性列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E5%B1%9E%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">容器属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#display"><span class="nav-number">1.3.1.</span> <span class="nav-text">display</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-template-rows"><span class="nav-number">1.3.2.</span> <span class="nav-text">grid-template-rows</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-template-columns"><span class="nav-number">1.3.3.</span> <span class="nav-text">grid-template-columns</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-template-areas"><span class="nav-number">1.3.4.</span> <span class="nav-text">grid-template-areas</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-auto-flow"><span class="nav-number">1.3.5.</span> <span class="nav-text">grid-auto-flow</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-auto-rows"><span class="nav-number">1.3.6.</span> <span class="nav-text">grid-auto-rows</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-auto-columns"><span class="nav-number">1.3.7.</span> <span class="nav-text">grid-auto-columns</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-gap"><span class="nav-number">1.3.8.</span> <span class="nav-text">grid-gap</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#grid-column-gap"><span class="nav-number">1.3.8.1.</span> <span class="nav-text">grid-column-gap</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#grid-row-gap"><span class="nav-number">1.3.8.2.</span> <span class="nav-text">grid-row-gap</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%B1%9E%E6%80%A7"><span class="nav-number">1.4.</span> <span class="nav-text">项目属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-area"><span class="nav-number">1.4.1.</span> <span class="nav-text">grid-area  </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-row"><span class="nav-number">1.4.2.</span> <span class="nav-text">grid-row</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#grid-row-start"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">grid-row-start</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#grid-row-end"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">grid-row-end</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grid-column"><span class="nav-number">1.4.3.</span> <span class="nav-text">grid-column</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#grid-column-start"><span class="nav-number">1.4.3.1.</span> <span class="nav-text">grid-column-start</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#grid-column-end"><span class="nav-number">1.4.3.2.</span> <span class="nav-text">grid-column-end</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">557k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">8:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
