@@ -3290,6 +3290,8 @@ const store = configureStore({
 - type 字符串, 标识 action
 - prepareAction() 可选, 函数, 接收任意个参数作为 action 的 payload 的值
 
+返回值: actionCreator
+
 - actionCreator.match 函数可以区分 action 是否是同一类型, TypeScript 中可以识别 action 中 payload 的类型
 
 ```tsx
@@ -3345,9 +3347,9 @@ function someFn(action: Action){
   - addDefaultCase() 添加默认的 reducer
     - reducer
 
-返回值
+返回值: reducer 函数
 
-- 具有 `getInitialState` 函数的 reducer 函数, 调用 `getInitialState` 返回初始状态, 通常用于测试或者配合 React [useReducer](#useReducer) Hook
+- 包含 `getInitialState` 函数, 调用 `getInitialState` 返回初始状态, 通常用于测试或者配合 React [useReducer](#useReducer) Hook
 
 ```jsx
 import {createReducer} from '@reduxjs/toolkit';
