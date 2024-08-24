@@ -155,6 +155,7 @@ function Counter({ person }) {
 - 自定义的组件必须以大写字母开头
 
 - React 将 boolean, null, undefined 视为空值, 不做任何渲染
+- 直接在 JSX 中渲染对象 React 将报错
 
 ### JSX 中的 Props
 
