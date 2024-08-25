@@ -302,27 +302,24 @@ const app = createApp(MyComponent).mount('#app');
 ```javascript
 import { createApp, defineComponent, ref, h } from 'vue';
 
-const HelloWorld = defineComponent(
-  (props, ctx) => {
-    const count = ref(0);
+const HelloWorld = defineComponent((props, ctx) => {
+  const count = ref(0);
 
-    // 渲染函数或 JSX
-    return () => h('div', count.value);
-  },
-  {
-    /* 其他选项, 例如声明 props 和 emits */
-    props: {
-      foo: {
-        type: String,
-        default: 'Hello Foo',
-      },
-      visible: {
-        type: Boolean,
-        default: false,
-      },
+  // 渲染函数或 JSX
+  return () => h('div', count.value);
+}, {
+  /* 其他选项, 例如声明 props 和 emits */
+  props: {
+    foo: {
+      type: String,
+      default: 'Hello Foo',
     },
-  }
-);
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+  },
+});
 const app = createApp(HelloWorld).mount('#app');
 ```
 
@@ -475,24 +472,21 @@ const app = createApp({
 ```javascript
 import { createApp, defineComponent, h } from 'vue';
 
-const HelloWorld = defineComponent(
-  (props, { slots }) => {
-    // 使用 `?.` 可选链运算符判断插槽函数不存在则使用默认值渲染
-    return () => [
-      h(
-        'p',
-        slots?.default?.() || 'rendered content from self by default slot...'
-      ),
-      h(
-        'p',
-        slots?.header?.() || 'rendered content from self by header slot...'
-      ),
-    ];
-  },
-  {
-    /* 其它选项 */
-  }
-);
+const HelloWorld = defineComponent((props, { slots }) => {
+  // 使用 `?.` 可选链运算符判断插槽函数不存在则使用默认值渲染
+  return () => [
+    h(
+      'p',
+      slots?.default?.() || 'rendered content from self by default slot...'
+    ),
+    h(
+      'p',
+      slots?.header?.() || 'rendered content from self by header slot...'
+    ),
+  ];
+}, {
+  /* 其它选项 */
+});
 
 const app = createApp({
   setup(props, { slots }) {
@@ -529,20 +523,17 @@ app.mount('#app');
 ```javascript
 import { createApp, defineComponent, h } from 'vue';
 
-const HelloWorld = defineComponent(
-  (props, { attrs, slots }) => {
-    const message = 'from hello world component';
-    const age = attrs.age > 0 ? attrs.age : 18;
-    console.log(props); // {}
-    console.log(slots); // {default: renderFnWithContext()}
-    console.log(attrs); // {name: 'from createApp', age: -1}
+const HelloWorld = defineComponent((props, { attrs, slots }) => {
+  const message = 'from hello world component';
+  const age = attrs.age > 0 ? attrs.age : 18;
+  console.log(props); // {}
+  console.log(slots); // {default: renderFnWithContext()}
+  console.log(attrs); // {name: 'from createApp', age: -1}
 
-    return () => h('p', slots.default({ message: message, age: age }));
-  },
-  {
-    /* 其它选项 */
-  }
-);
+  return () => h('p', slots.default({ message: message, age: age }));
+}, {
+  /* 其它选项 */
+});
 
 const app = createApp({
   setup(props, ctx) {
@@ -1350,14 +1341,11 @@ VNode 生命周期事件前缀从 `hook:` 更改为 `vue:`, 这些事件也可�
 ```javascript
 import { h, createApp, defineComponent } from 'vue';
 
-const HelloWorld = defineComponent(
-  (props, ctx) => {
-    return () => h('p', 'hello world component');
-  },
-  {
-    /* 其它选项 */
-  }
-);
+const HelloWorld = defineComponent((props, ctx) => {
+  return () => h('p', 'hello world component');
+}, {
+  /* 其它选项 */
+});
 const app = createApp({
   data() {
     return {};
@@ -2292,57 +2280,55 @@ import { createApp, ref, h, defineComponent } from 'vue';
 
 // v-model 不带参数
 // <with-out-args v-model.capitalize="myText" />
-const WithoutArgs = defineComponent({
+const WithoutArgs = defineComponent((props, { emit }) => {
+  console.log(props);
+  const emitValue = function (e) {
+    let value = e.target.value;
+    if (props.modelModifiers.capitalize) {
+      value = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+    emit('update:modelValue', value);
+  };
+  return () =>
+    h('p', [
+      'without args ',
+      h('input', {
+        type: 'text',
+        placeholder: 'write something...',
+        value: props.modelValue,
+        onInput: emitValue,
+      }),
+    ]);
+}, {
   props: ['modelValue', 'modelModifiers'],
   emits: ['update:modelValue'],
-  setup(props, { emit }) {
-    console.log(props);
-    const emitValue = function (e) {
-      let value = e.target.value;
-      if (props.modelModifiers.capitalize) {
-        value = value.charAt(0).toUpperCase() + value.slice(1);
-      }
-      emit('update:modelValue', value);
-    };
-    return () =>
-      h('p', [
-        'without args ',
-        h('input', {
-          type: 'text',
-          placeholder: 'write something...',
-          value: props.modelValue,
-          onInput: emitValue,
-        }),
-      ]);
-  },
 });
 
 // v-model 带参数
 // <with-args v-model:description.uppercase="myText" />
-const WithArgs = defineComponent({
+const WithArgs = defineComponent((props, { emit }) => {
+  console.log(props);
+  const emitValue = function (e) {
+    let value = e.target.value;
+    if (props.descriptionModifiers.uppercase) {
+      value = value.toUpperCase();
+    }
+    emit('update:description', value);
+  };
+
+  return () =>
+    h('p', [
+      'with args ',
+      h('input', {
+        type: 'text',
+        placeholder: 'write something...',
+        value: props.description,
+        onInput: emitValue,
+      }),
+    ]);
+}, {
   props: ['description', 'descriptionModifiers'],
   emits: ['update:description'],
-  setup(props, { emit }) {
-    console.log(props);
-    const emitValue = function (e) {
-      let value = e.target.value;
-      if (props.descriptionModifiers.uppercase) {
-        value = value.toUpperCase();
-      }
-      emit('update:description', value);
-    };
-
-    return () =>
-      h('p', [
-        'with args ',
-        h('input', {
-          type: 'text',
-          placeholder: 'write something...',
-          value: props.description,
-          onInput: emitValue,
-        }),
-      ]);
-  },
 });
 
 const app = createApp({
@@ -3500,9 +3486,66 @@ import {
   resolveDirective,
   withDirectives,
   withModifiers,
+  useSlots,
 } from 'vue';
 
-const HelloWorld = defineComponent({
+const HelloWorld = defineComponent((props, ctx) => {
+  const slots = useSlots();
+  const message = ref('This from hello world component');
+  const fooV = ref(250);
+  const show = ref(true);
+
+  // 定义点击切换自定义指令值的方法
+  const changeFooDirective = function () {
+    fooV.value = Math.ceil(Math.random() * 100);
+    show.value = fooV.value % 2 === 0 ? true : false;
+  };
+
+  // 解析一个已注册的指令, 未找到则抛出运行时警告并返回 undefined
+  const foo = resolveDirective('foo');
+
+  // Must use `.value` to read or write the value wrapped by `ref()`
+  return () =>
+    h('div', [
+      /* 调用插槽 */
+      h('p', slots?.header?.()),
+      h(
+        'p',
+        slots?.default?.({
+          message: message.value,
+          age: props.age > 0 ? props.age : 18,
+        })
+      ),
+      show.value
+        ? withDirectives(
+          h(
+            'p',
+            /* 添加指令 v-directive:argument.modifiers=value */
+            withDirectives(
+              h('span', [
+                'v-foo:bar1.uppercase=' + fooV.value,
+                h('br'),
+                'v-foo:bar2.uppercase=' + fooV.value
+              ]),
+              [
+                [foo, fooV.value, 'bar1', { uppercase: true }],
+                [foo, fooV.value, 'bar2', { uppercase: true }]
+              ]
+            )
+          ),
+          [[foo, fooV.value, 'bar1', { uppercase: true }]]
+        )
+        : '',
+      h(
+        'p',
+        h(
+          'button',
+          { onClick: changeFooDirective },
+          'Change v-foo value - ' + props.age
+        )
+      ),
+    ]);
+}, {
   props: ['name', 'age'],
   // 定义局部指令
   directives: {
@@ -3516,57 +3559,12 @@ const HelloWorld = defineComponent({
       },
     },
   },
-  setup(props, { slots }) {
-    const message = ref('from hello world component');
-    const fooV = ref(250);
-    const show = ref(true);
-
-    // 定义点击切换自定义指令值的方法
-    const changeFooDirective = function () {
-      fooV.value = Math.ceil(Math.random() * 100);
-      show.value = fooV.value % 4 === 0 ? true : false;
-    };
-
-    // 解析一个已注册的指令, 未找到则抛出运行时警告并返回 undefined
-    const foo = resolveDirective('foo');
-
-    // Must use `.value` to read or write the value wrapped by `ref()`
-    return () =>
-      h('div', [
-        h(
-          'p',
-          slots?.default?.({
-            message: message.value,
-            age: props.age > 0 ? props.age : 18,
-          })
-        ),
-        h('p', slots?.header?.()),
-        show.value
-          ? withDirectives(
-              h(
-                'p',
-                withDirectives(
-                  h('span', ['v-foo:bar2.uppercase=' + fooV.value]),
-                  [[foo, fooV.value, 'bar2', { uppercase: true }]]
-                )
-              ),
-              [[foo, fooV.value, 'bar1', { uppercase: true }]]
-            )
-          : '',
-        h(
-          'p',
-          h(
-            'button',
-            { onClick: changeFooDirective },
-            'Click Me - ' + props.age
-          )
-        ),
-      ]);
-  },
-});
+}
+);
 
 const app = createApp({
-  setup(props, { slots }) {
+  setup(props, ctx) {
+    /* 定义局部指令  */
     const gg = {
       created(el, binding, vnode, prevVnode) {
         console.log('withDirectives gg hooks created trigger... ', binding);
@@ -3586,19 +3584,21 @@ const app = createApp({
           HelloWorld,
           { name: 'from createApp', age: -1 },
           {
-            default: (slotScope) =>
-              slotScope.message +
-              ' - ' +
-              slotScope.age +
-              ' - others from createApp',
-            header: () => 'from createApp by header slot...',
+            /* 传递插槽, 使用作用域插槽 */
+            default: (slotScope) => `${slotScope.message} - ${slotScope.age} , This from createApp content`,
+            header: () => 'This from createApp by header slot...',
           }
         ),
         [[gg, 1000, 'bottom', { animate: true }]]
       ),
+      h('p', null, {
+        header: () => 'createApp use h 传递 header slot',
+        default: () => 'createApp use h 传递 default slot'
+      }),
       h(
         'button',
-        { onClick: withModifiers((e) => console.log(e), ['stop', 'prevent']) },
+        /* 添加事件修饰符 */
+        { onClick: withModifiers((e) => alert('createApp withModifiers'), ['stop', 'prevent']) },
         'Click Me withModifiers'
       ),
     ];
