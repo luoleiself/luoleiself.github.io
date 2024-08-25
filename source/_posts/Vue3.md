@@ -1163,52 +1163,6 @@ onScopeDispose(() => {
 
 > 所有生命周期钩子函数必须在组件的 `setup()` 阶段**同步调用**
 
-#### VNode 生命周期事件
-
-VNode 生命周期事件前缀从 `hook:` 更改为 `vue:`, 这些事件也可用于 HTML 元素, 和在组件上的用法一样
-
-- `vue:` 前缀为固定格式, 生命周期事件名可以使用 `kebab-case` 或者 `camelCase` 格式
-
-```html
-<template>
-  <!-- Vue 2.x -->
-  <child-component @hook:mounted="onMounted"></child-component>
-
-  <!-- Vue 3.x -->
-  <child-component @vue:mounted="onMounted"></child-component>
-  <child-component @vue:before-update="onBeforeUpdate"></child-component>
-  <!-- 等同于 -->
-  <child-component @vue:beforeUpdate="onBeforeUpdate"></child-component>
-</template>
-```
-
-```javascript
-import { h, createApp, defineComponent } from 'vue';
-
-const HelloWorld = defineComponent(
-  (props, ctx) => {
-    return () => h('p', 'hello world component');
-  },
-  {
-    /* 其它选项 */
-  }
-);
-const app = createApp({
-  data() {
-    return {};
-  },
-  template: `<h1>This is template option.</h1>
-    <hello-world @vue:before-mount="helloWorldBeforeMount"></hello-world>`,
-  methods: {
-    helloWorldBeforeMount() {
-      console.log('child component hooks before-mount triggered...');
-    },
-  },
-});
-app.component('hello-world', HelloWorld);
-app.mount('#app');
-```
-
 #### onBeforeMount() <em id="onBeforeMount"></em> <!-- markdownlint-disable-line -->
 
 > 钩子函数在服务器端渲染期间不会被调用
@@ -1372,6 +1326,52 @@ app.mount('#app');
     }
   });
 </script>
+```
+
+#### VNode 生命周期事件
+
+VNode 生命周期事件前缀从 `hook:` 更改为 `vue:`, 这些事件也可用于 HTML 元素, 和在组件上的用法一样
+
+- `vue:` 前缀为固定格式, 生命周期事件名可以使用 `kebab-case` 或者 `camelCase` 格式
+
+```html
+<template>
+  <!-- Vue 2.x -->
+  <child-component @hook:mounted="onMounted"></child-component>
+
+  <!-- Vue 3.x -->
+  <child-component @vue:mounted="onMounted"></child-component>
+  <child-component @vue:before-update="onBeforeUpdate"></child-component>
+  <!-- 等同于 -->
+  <child-component @vue:beforeUpdate="onBeforeUpdate"></child-component>
+</template>
+```
+
+```javascript
+import { h, createApp, defineComponent } from 'vue';
+
+const HelloWorld = defineComponent(
+  (props, ctx) => {
+    return () => h('p', 'hello world component');
+  },
+  {
+    /* 其它选项 */
+  }
+);
+const app = createApp({
+  data() {
+    return {};
+  },
+  template: `<h1>This is template option.</h1>
+    <hello-world @vue:before-mount="helloWorldBeforeMount"></hello-world>`,
+  methods: {
+    helloWorldBeforeMount() {
+      console.log('child component hooks before-mount triggered...');
+    },
+  },
+});
+app.component('hello-world', HelloWorld);
+app.mount('#app');
 ```
 
 ### 依赖注入
