@@ -3488,7 +3488,7 @@ const counterSlice = createSlice({
     }
   },
   // reducers 为一个函数, 接收一个 create 对象 
-  // reducer, prepareReducer, asyncThunk
+  // 包含 3 个函数: reducer, prepareReducer, asyncThunk
   reducers(create){
     return {
       increment: create.reducer(state, action) => {
@@ -3499,7 +3499,9 @@ const counterSlice = createSlice({
       },
       incrementByAmount: create.prepareReducer((text: string) => {
         return { payload: {text: text, value: 100}}
-      }, (state, action) => {
+      }, 
+      // 从 prepare 回调推断 action type
+      (state, action) => {
         state.value += action.payload.value;
       }),
       fetchTodo: create.asyncThunk(async (id: string, thunkApi) => {
