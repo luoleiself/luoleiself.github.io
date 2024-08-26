@@ -2302,6 +2302,65 @@ const router = createBrowserRouter(routes, {
 });
 ```
 
+##### RouterProvider
+
+路由根组件, 所有的路由对象或者 Data APIS 都通过此组件注入 React 应用程序
+
+- router 路由信息
+- fallbackElement 后备内容
+- future 用于启用新版本语法的配置对象
+
+```jsx
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import {createBrowserRouer, createRoutesFromElements, RouterProvider, Route} from 'react-router-dom';
+
+const root = createRoot(document.getElementById('root'))
+root.render(
+  <StrictMode>
+    <RouterProvider router={router} fallbackElement={<SpinnerOfDom/>}/>
+  </StrictMode>
+);
+```
+
+- 使用对象形式创建路由
+
+```jsx
+// 使用对象形式创建路由
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root/>,
+    loader: rootLoader,
+    action: rootAction,
+    errorElement: <ErrorPage/>,
+    children: [
+      {index: true, element: <Dashboard/>}
+    ]
+  }
+])
+```
+
+- 使用 JSX 元素创建路由
+
+```jsx
+// 使用 JSX 元素创建路由
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route 
+      path="/"
+      element={<Root/>}
+      errorElement={<ErrorPage/>}
+      loader={rootLoader}
+      action={rootAction}
+    >
+      <Route index element={<Dashboard/>}/>
+      {/* ... */}
+    </Route>
+  )
+);
+```
+
 ##### createStaticHandler
 
 通常用于服务器端渲染的 数据获取和提交, 配合 `createStaticRouter` 使用
@@ -2346,75 +2405,46 @@ staticHandler.query() 返回值
 - nonce 标识使用严格 CSP(安全内容策略) 时允许资源的加密随机数
 
 ```jsx
+"server.jsx"
 import {StrictMode} from 'react';
-import {createStaticHandler, createStaticRouter, StaticRouterProvider} from 'react-router-dom';
+import {createStaticHandler, createStaticRouter, StaticRouterProvider} from 'react-router-dom/server';
 import {renderToString} from 'react-dom/server';
 
-const routes = [];
-export async function renderHtml(req){
-  const {query, dataRoutes} = createStaticHandler(routes);
-  const fetchRequest = createFetchRequest(req);
-  const context = await query(fetchRequest);
+// routes
 
-  if(context instanceof Response){
-    throw context;
-  }
+let handler = createStaticHandler(routes);
 
-  const router = createStaticRouter(dataRoutes, context);
-  return renderToString(
+app.get('*', async (req, res) => {
+  let fetchRequest = createRequest(req, res);
+  let context = await handler.query(fetchRequest);
+
+  let router = createStaticRouter(handler.dataRoutes, context);
+  let html = renderToString(
     <StrictMode>
       <StaticRouterProvider router={router} context={context} />
     </StrictMode>
-  )
-}
-```
+  );
 
-##### RouterProvider
+  res.send("<!DOCTYPE html>" + html);
+});
+const listener = app.listen(3000, () => {
+  let {port} =  listener.address();
+  console.log(`listening on port ${port}`);
+});
 
-路由根组件, 所有的路由对象或者 Data APIS 都通过此组件注入 React 应用程序
-
-- router 路由信息
-- fallbackElement 后备内容
-- future 用于启用新版本语法的配置对象
-
-```jsx
+"client.jsx"
 import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
-import {createBrowserRouer, createRoutesFromElements, RouterProvider, Route} from 'react-router-dom';
+import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import {hydrateRoot} from 'react-dom/client';
 
-// 使用 JSX 元素创建路由
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route 
-      path="/"
-      element={<Root/>}
-      errorElement={<ErrorPage/>}
-      loader={rootLoader}
-      action={rootAction}
-    >
-      <Route index element={<Dashboard/>}/>
-      {/* ... */}
-    </Route>
-  )
-);
-// 使用对象形式创建路由
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Root/>,
-    loader: rootLoader,
-    action: rootAction,
-    errorElement: <ErrorPage/>,
-    children: [
-      {index: true, element: <Dashboard/>}
-    ]
-  }
-])
-createRoot(document.getElementById('root')).render(
+// routes
+let router = createBrowserRouter(routes);
+const root = hydrateRoot(
+  document.getElementById('root'),
   <StrictMode>
-    <RouterProvider router={router} fallbackElement={<SpinnerOfDom/>}/>
+    <RouterProvider router={router}/>
   </StrictMode>
-)
+);
 ```
 
 ### Route <em id="Route"></em> <!--markdownlint-disable-line-->
@@ -2474,7 +2504,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 
 当 React Router 抽象了异步 UI 和重新验证的复杂性时, 为应用程序提供了一种使用简单的 HTML 和 HTTP 语句执行数据更改的方法
 
-每当应用程序向路由发送 non-get(POST, PUT, PATCH, DELETE) 请求的时候都会被调用
+每当应用程序向路由发送 non-get(POST, PUT, PATCH, DELETE) 提交时, 都将调用此 action
 
 动态路由参数分别传递给 [loader](#Route.loader), [useMatch](#useParams), [useParams](#useParams)
 
@@ -2499,7 +2529,7 @@ const router = createBrowserRouter(
 );
 ```
 
-- 以下几种方式都将触发 Route 的 action
+- 以下几种方式都将调用 Route 的 action
 
 ```jsx
 import {useFetcher, useSubmit} from 'react-router-dom';
@@ -2507,7 +2537,7 @@ import {useFetcher, useSubmit} from 'react-router-dom';
 const fetcher = useFetcher();
 const submit = useSubmit();
 
-// 以下几种方式都将触发 Route 的 action
+// 以下几种方式都将调用 Route 的 action
 <Form method="post" action="/projects"/>;
 <fetcher.Form method="put" action="/projects/123/edit" />;
 submit(data, {method: 'post', action: '/projects'});
