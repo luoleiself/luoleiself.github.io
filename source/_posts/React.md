@@ -2486,17 +2486,32 @@ import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
-      path="/projects/:id/delete"
+      path="/projects/:id/edit"
       action={async ({request, params}) => {
         console.log(params.id);
         const formData = request.formData();
-        return deleteProjectById(params.id);
+        return editProjectById(params.id);
       }}
     >
       {/* .... */}
     </Route>
   )
-)
+);
+```
+
+- 以下几种方式都将触发 Route 的 action
+
+```jsx
+import {useFetcher, useSubmit} from 'react-router-dom';
+
+const fetcher = useFetcher();
+const submit = useSubmit();
+
+// 以下几种方式都将触发 Route 的 action
+<Form method="post" action="/projects"/>;
+<fetcher.Form method="put" action="/projects/123/edit" />;
+submit(data, {method: 'post', action: '/projects'});
+fetcher.submit(data, {method: 'put', action: '/projects/123/edit'})
 ```
 
 #### Route.loader <em id="Route.loader"></em> <!--markdownlint-disable-line-->
@@ -2767,6 +2782,8 @@ React Router [内置组件](#internal-component)
 #### useActionData
 
 获取上一个导航操作结果的返回值, 如果没有提交操作则返回 undefined
+
+通常用于表单验证错误, 如果表单不正确可以返回错误并让用户重试
 
 #### useAsyncError
 
