@@ -3894,3 +3894,162 @@ function MyComponent(){
   return <div>{store.getState().todos.length}</div>;
 }
 ```
+
+## react-transition-group
+
+### Transition
+
+包含 4 个状态
+
+- entering
+- entered
+- exiting
+- exited
+
+props
+
+- nodeRef 执行动画的关联 DOM 节点, 早期的版本使用 findDOMNode(deprected) 查找 DOM 节点, 报错的替换方案
+- in 切换 enter 和 exit 的状态
+- appear 控制组件首次挂载时的默认行为
+- enter 控制进入的动画
+- exit 控制退出的动画
+- timeout 动画的时长
+- addEvenetListener 添加自定义的事件
+- onEnter
+- onEntering
+- onEntered
+- onExit
+- onExiting
+- onExited
+
+```jsx
+import {useState, useRef} from 'react';
+import {Transition} from 'react-transition-group';
+
+function App(){
+  const [isProp, setInProp] = useState(false);
+  const nodeRef = useRef(null);
+
+  return (
+    <>
+      <Transition nodeRef={nodeRef} in={inProp} timeout={500}>
+        <h2>react-transition-group Transition component</h2>
+      </Transition>
+      <button onClick={() => setInProp(true)}>Click to Enter</button>
+    </>
+  )
+}
+```
+
+### CSSTransition
+
+继承 Transition 的所有 props, 使用 CSS 设置动画
+
+- classNames 当组件在 appear, enter, exit 时应用于组件的动画名称前缀
+
+classNames="my-node" 将会应用以下几种样式
+
+- my-node-appear, my-node-appear-active, my-node-appear-done
+- my-node-enter, my-node-enter-active, my-node-enter-done
+- my-node-exit, my-node-exit-active, my-node-exit-done
+
+```jsx
+import {useState, useRef} from 'react';
+import {CSSTransition} from 'react-transition-group';
+
+function App(){
+  const [inProp, setInProp] = useState(false);
+  const nodeRef = useRef(null);
+
+  return (
+    <>
+      <CSSTransition nodeRef={nodeRef} in={inProp} timeout={500} classNames="my-node">
+        <div ref={nodeRef}>
+          react-transition-group CSSTransition component
+        </div>
+      </CSSTransition>
+      <button onClick={() => setInProp(true)}>Click to Enter</button>
+    </>
+  )  
+}
+
+<style>
+  .my-node-enter,
+  .my-node-appear {
+    opacity: 0;
+  }
+  .my-node-enter-active,
+  .my-node-appear-active {
+    opacity: 1;
+    transition: opacity 500ms;
+  }
+  .my-node-exit {
+    opacity: 1;
+  }
+  .my-node-exit-active {
+    opacity: 0;
+    transition: opacity 500ms;
+  }
+</style>
+```
+
+### SwitchTransition
+
+切换两个组件的动画, 需要使用 key 作为 Transition 或 CSSTransition 的 props
+
+- mode 动画的模式 in-out|out-in, 默认 out-in
+
+```jsx
+import {useState, useRef} from 'react';
+import {SwitchTransition, CSSTransition} from 'react-transition-group';
+
+function App(){
+  const [state, setState] = useState(false);
+  const helloRef = useRef(null);
+  const goodByeRef = useRef(null);
+  const nodeRef = state ? goodByeRef : helloRef;
+
+  return (
+    <SwitchTransition>
+      <CSSTransition
+        key={state ? 'goodeBye, world' : 'hello world'}
+        nodeRef={nodeRef}
+        classNames="fade"
+      >
+        <button
+          ref={nodeRef}
+          onClick={() => setState(state => !state)}
+        >
+          {state ? 'goodBye, world' : 'hello world'}
+        </button>
+      </CSSTransition>
+    </SwitchTransition>
+  )
+}
+```
+
+### TransitionGroup
+
+管理多个动画列表
+
+- component 指定渲染的元素, 默认 div
+
+```jsx
+import {useState} from 'react';
+import {TransitionGroup, CSSTransition} from 'raect-transition-group';
+function App(){
+  // ...
+  const [books, setBooks] = useState([]);
+  return (
+    <TransitionGroup component="ul">
+      {books.map({id, name, author, date} => {
+        return (
+          <CSSTransition key={id} timeout={500} classNames="book">
+            <li>{name}-{author}-{date}</li>
+          </CSSTransition>
+        )
+      })}
+    </TransitionGroup>
+  )
+}
+```
