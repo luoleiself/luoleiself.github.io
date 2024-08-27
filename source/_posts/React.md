@@ -3438,7 +3438,8 @@ const counterReducer = createReducer(initialState, builder => {
 
 - name  标识 state, 将作为生成的 [actionCreator](#createAction) 的前缀
 - initialState 初始化状态
-- reducers reducer 配置
+- reducers
+  - 对象方式, 每个 方法名 都是一个 reducer
   - 如果需要自定义 case Reducer, 每个 reducer 将是一个具有 prepare 函数 和 reducer 函数的对象
     - prepare()
     - reducer
@@ -3555,8 +3556,10 @@ const counterSlice = createSlice({
     selectValue: (sliceState) => sliceState.value,
   },
 });
+// createSlice 默认创建一个 selectSlice 方法
 console.log(counterSlice.selectSlice({ counter: { value: 2 } })) // { value: 2 }
 
+// 通过 slice 实例的 selectors 属性获取所有的 selector
 const { selectValue } = counterSlice.selectors
 console.log(selectValue({ counter: { value: 2 } })) // 2
 ```
@@ -3594,8 +3597,9 @@ const counterSlice = createSlice({
     }
   }
 });
+dispatch(incremetnByAmount(3));
 // action 对象方式提交会忽略 case redcuer 的 prepare 方法
-dipatch({type: 'counter/incrementByAmount', payload: 1});
+dispatch({type: 'counter/incrementByAmount', payload: 1});
 ```
 
 #### combineSlices
@@ -3690,6 +3694,7 @@ const usersSlice = createSlice({
   name: 'users',
   initialState: { },
   reducers:{},
+  // 处理 asyncThunk 状态的 reducer
   extraReducers(builder){
     builder.addCase(fetchUserById.pending, (state, action) => {
       state.status = 'loading';
