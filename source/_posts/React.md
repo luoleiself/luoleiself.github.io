@@ -470,6 +470,8 @@ Context 允许父组件向其下层无论多深的任何组件提供信息, 而�
 const someValue = useContext(someContext);
 ```
 
+- 控制主题
+
 ```jsx
 import {createContext, useContext, useState} from 'react';
 
@@ -505,6 +507,38 @@ function ThemeButton({onClick}) {
       useContext button
     </button>
   );
+}
+```
+
+- 嵌套 Context
+
+```jsx
+import {createContext, useContext, useReducer} from 'react';
+
+const TasksContext = createContext(null);
+const TasksDispatchContext = createContext(null);
+
+function App(){
+  // ...
+  return (
+    <TasksProvider>
+      {/* ... */}
+    </TasksProvider>
+  )
+}
+
+function TasksProvider({children}){
+  const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
+  return (
+    <TasksContext value={tasks}>
+      <TasksDispatchContext value={dispatch}>
+        {children}
+      </TasksDispatchContext>
+    </TasksContext>
+  )
+}
+function tasksReducer(state, action){
+  // ...
 }
 ```
 
@@ -576,38 +610,6 @@ function App(){
       </Section>
     </Section>
   )
-}
-```
-
-- 嵌套 Context
-
-```jsx
-import {createContext, useContext, useReducer} from 'react';
-
-const TasksContext = createContext(null);
-const TasksDispatchContext = createContext(null);
-
-function App(){
-  // ...
-  return (
-    <TasksProvider>
-      {/* ... */}
-    </TasksProvider>
-  )
-}
-
-function TasksProvider({children}){
-  const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
-  return (
-    <TasksContext value={tasks}>
-      <TasksDispatchContext value={dispatch}>
-        {children}
-      </TasksDispatchContext>
-    </TasksContext>
-  )
-}
-function tasksReducer(state, action){
-  // ...
 }
 ```
 
@@ -3291,22 +3293,42 @@ generatePath('/users/:id/:name', {id: 42, name: 'zhangsan'}); // /users/42/zhang
 
 ## Redux
 
+官方推荐使用封装了 Redux 核心的 @reduxjs/toolkit(RTK) 包, 包含了构建 Redux 应用所必须的 API 方法和常用依赖, 简化了大部分 Redux 任务, 阻止了常见错误, 并让编写 Redux 应用程序变得更容易
+
+<!-- 
 - dispatch 只能处理同步的 action
 
 - createStore  创建一个 Redux 存储实例
 - combineReducers 将多个 reducer 函数合并成为一个更大的 reducer
 - applyMiddleware 将多个中间件组合成一个 store 增强器
-- compose 将多个 store 增强器合并成一个单一的 store 增强器
+- compose 将多个 store 增强器合并成一个单一的 store 增强器 
+-->
+
+### [@reduxjs/toolkit/query](#RTK-Query)
+
+独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据
 
 ### @reduxjs/toolkit(RTK)
 
-消除手写 Redux 逻辑中的样板代码, 防止常见错误, 并提供简化标准的 Redux 任务的 API
-
-- [@reduxjs/toolkit/query](#RTK-Query) 独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据
+- 通过单一清晰的函数调用简化 store 设置, 同时保留完全配置 store 选项的能力
+- 消除意外的 mutations
+- 消除手写任何 actionCreator 或 actionType 的需求
+- 消除编写容易出错的手动不可变更新逻辑的需求
+- 允许将相关的代码放在一个文件中, 而不是分布在多个独立文件中
+- 提供优秀的 TypeScript 支持, 其 API 被设计成很好的安全性, 同时减少代码中需要定义的类型数量
+- RTK Query 可以消除编写任何 thunk, reducer, actionCreator 或者副作用狗子来管理数据获取和跟踪加载状态的需求
 
 #### configureStore
 
-通过单个函数调用设置一个完善的 Redux Store, 包括合并 reducer, 添加 thunk 中间件以及设置 Redux Devtools 集成, 与 createStore 相比更容易配置
+特点
+
+- slice reducers 自动传递给 combineReducers
+- 自动添加了 `redux-thunk` 中间件
+- 添加了 Devtools 中间件来捕获更多意外的变更
+- 自动设置了 Redux Devtools Extension
+- 中间件和 Devtools 增强器被组合在一起添加到了 store 中
+
+参数
 
 - reducer
   - 如果是一个函数, configureStore 直接使用其作为根 reducer
@@ -3325,14 +3347,6 @@ const store = configureStore({
   }
 });
 ```
-
-##### 特点
-
-- slice reducers 自动传递给 combineReducers
-- 自动添加了 `redux-thunk` 中间件
-- 添加了 Devtools 中间件来捕获更多意外的变更
-- 自动设置了 Redux Devtools Extension
-- 中间件和 Devtools 增强器被组合在一起添加到了 store 中
 
 #### createAction <em id="createAction"></em> <!--markdownlint-disable-line-->
 
@@ -3442,7 +3456,7 @@ const counterReducer = createReducer(initialState, builder => {
 - name  标识 state, 将作为生成的 [actionCreator](#createAction) 的前缀
 - initialState 初始化状态
 - reducers
-  - 对象方式, 每个 方法名 都是一个 reducer
+  - 对象方式, 每个 属性方法名 都是一个 reducer
   - 如果需要自定义 case Reducer, 每个 reducer 将是一个具有 prepare 函数 和 reducer 函数的对象
     - prepare()
     - reducer
@@ -4010,7 +4024,7 @@ function App(){
   const nodeRef = state ? goodByeRef : helloRef;
 
   return (
-    <SwitchTransition>
+    <SwitchTransition mode="out-in">
       <CSSTransition
         key={state ? 'goodeBye, world' : 'hello world'}
         nodeRef={nodeRef}
@@ -4053,3 +4067,34 @@ function App(){
   )
 }
 ```
+
+## CSSInJs
+
+### [标签函数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Template_literals#%E5%B8%A6%E6%A0%87%E7%AD%BE%E7%9A%84%E6%A8%A1%E6%9D%BF)
+
+模板字符串的高级用法
+
+标签函数第一个参数包含一个字符串数组, 其余的参数与表达式相关
+
+```jsx
+const person = "Mike";
+const age = 28;
+
+function myTag(strings, personExp, ageExp) {
+  const str0 = strings[0]; // "That "
+  const str1 = strings[1]; // " is a "
+  const str2 = strings[2]; // "."
+
+  const ageStr = ageExp > 99 ? "centenarian" : "youngster";
+
+  // 我们甚至可以返回使用模板字面量构建的字符串
+  return `${str0}${personExp}${str1}${ageStr}${str2}`;
+}
+
+const output = myTag`That ${person} is a ${age}.`;
+
+console.log(output);
+// That Mike is a youngster.
+```
+
+### styled-components
