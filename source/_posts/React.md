@@ -794,8 +794,11 @@ function Button(){
 - 如果 action 是一个函数, form 的行为由这个函数控制, action 同时会重写 `<button>`、`<input type="submit"/>`、`<input type="image"/>` 的 formAction(表单提交的 url) 属性
 
 - action 作为函数, 当表单被提交时触发
-  - 第一个参数为上一次调用 action 函数的返回值, 第一次调用时传入的是 initialState
-  - 余下的参数为普通表单动作接到的参数
+  - prevState 第一个参数为上一次调用 action 函数的返回值, 第一次调用时传入的是 initialState
+  - formData 余下的参数为普通表单动作接到的参数
+- initialState state 的初始值
+
+返回值, 当前的 state 和一个新的 action 函数用于 form 组件的 action 参数或表单中任意一个 button 组件的 formAction 参数中传递
 
 ```jsx
 const [state, formAction] = useActionState(action, initialState, permalink?);
@@ -1614,7 +1617,7 @@ taintUniqueValue(message, lifetime, value);
 
 ### useFormStatus(experimental)
 
-提供上一次表单提交状态信息, 仅获取父级 form 的状态信息
+获取上一次表单提交状态信息, 仅获取父级 form 的状态信息
 
 - pending 标识父级 form 是否正在等待提交, 如果调用 useFormStatus 的组件未嵌套在 form 中, 总是返回 false
 - data 包含父级 form 正在提交的 formData 数据, 如果没有进行提交为 null
