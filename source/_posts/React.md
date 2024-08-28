@@ -3348,6 +3348,43 @@ const store = configureStore({
 });
 ```
 
+##### middleware
+
+thunk 中间件实现原理
+
+```jsx
+import {configureStore} from '@reduxjs/toolkit';
+const store = configureStore({
+  reducer: {},
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(thunk)
+});
+
+// thunk 中间件实现原理
+function thunk(store){
+  const next = store.dispatch; // 缓存原 dispatch 方法
+  function dispatchFn(action){
+    if(typeof action === 'function'){
+      // 如果 action 是一个函数, 则传入重写的 dispatchFn 方法
+      action(store.dispatch, store.getState);
+    } else {
+      // 否则直接调用原 dispatch 方法派发 action
+      next(action); 
+    }
+  }
+  store.dispatch = dispatchFn;
+}
+```
+
+applyMiddleware 实现原理
+
+```jsx
+export default function applyMiddleware(store, ...fns){
+  fns.forEach(fn => {
+    fn(store)
+  });
+}
+```
+
 #### createAction <em id="createAction"></em> <!--markdownlint-disable-line-->
 
 用于创建 action 的辅助函数
