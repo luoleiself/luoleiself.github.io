@@ -3549,9 +3549,9 @@ const counterReducer = createReducer(initialState, builder => {
     - prepare()
     - reducer
   - 如果是一个函数, 将接收一个 create 对象, 具有三个方法
-    - create.reducer 标准的 reducer
-    - create.prepareReducer 自定义 actionCreator 的 payload
-    - create.asyncThunk 创建异步的函数代替 actionCreator
+    - create.reducer(reducer) 标准的 reducer
+    - create.prepareReducer(prepare, reducer) 自定义 actionCreator 的 payload
+    - create.asyncThunk(thunk, opts) 创建异步的函数代替 actionCreator
       - pending
       - fulfilled
       - rejected
@@ -4006,7 +4006,7 @@ function MyComponent(){
 }
 ```
 
-## react-transition-group
+## [react-transition-group](https://reactcommunity.org/react-transition-group/)
 
 ### Transition
 
@@ -4192,6 +4192,227 @@ const output = myTag`That ${person} is a ${age}.`;
 
 console.log(output);
 // That Mike is a youngster.
+
+// 以下都是等价的写法
+fn`some string here`;
+fn(['some string here']);
+
+const aVar = 'good';
+fn`this is a ${aVar} day`;
+fn(['this is a ', 'day'], aVar);
 ```
 
-### styled-components
+### [styled-components](https://styled-components.com/docs/basics)
+
+```jsx
+import styled from 'styled-components';
+```
+
+- 基本使用, 使用标签函数创建样式化的组件
+
+```jsx
+const Title = styled.h1`
+  font-size: 1.5em;
+  text-align: center;
+  color: #bf4f74;
+`;
+const Wrapper = styled.section`
+  padding: 4em;
+  background: yellowlight;
+`;
+
+function App(){
+  return (
+    <Wrapper>
+      <Title>title</Title>
+    </Wrapper>
+  )
+}
+// 渲染结果
+<section>
+  <h1>title</h1>
+</section>
+```
+
+- 样式扩展
+
+```jsx
+// 创建 Button 组件
+const Button = styled.button`
+  color: #bf4f74;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid #bf4f74;
+  border-radius: 3px;
+`;
+// 基于 Button 组件扩展并覆盖样式
+const TomatoButton = styled(Button)`
+  color: tomato;
+  border-color: tomato;
+`;
+
+function App(){
+  return (
+    <>
+      <Button>Normal Button</Button>
+      <TomatoButton>Tomato Button</TomatoButton>
+    </>
+  )
+}
+// 渲染结果
+<button>Normal Button</button>
+<button>Tomato Button</button>
+```
+
+- 样式化任何组件
+
+```jsx
+// react-router-dom's Link Component
+const Link = ({className, children}) => (
+  <a className={className}>
+    {children}
+  </a>
+);
+const StyledLink = styled(Link)`
+  color: #bf4f74;
+  font-weight: bold;
+`;
+function App(){
+  return (
+    <>
+      <Link>UnStyled Link</Link>
+      <StyledLink>Styled Link</StyledLink>
+    </>
+  )
+}
+```
+
+- 支持伪类, 伪元素, 嵌套样式
+
+#### as 更改渲染结果
+
+as props 更改样式化组件呈现的标签或组件
+
+- as 接收标签
+
+```jsx
+function App(){
+  return (
+    <>
+      <Button>Normal Button</Button>
+      <Button as="a" href="#">Link with Button styles</Button>
+      <TomatoButton as="a" href="#">Link with Tomato Button styles</TomatoButton>
+    </>
+  )
+}
+// 渲染结果
+<button>Normal Button</button>
+<a href="#">Link with Button styles</a>
+<a href="#">Link with Tomato Button styles</a>
+```
+
+- as 接收组件
+
+```jsx
+// 接收 props 并将 props.children 反转
+const ReverseButton = props => <Button { ...props } children={ props.children.split('').reverse() } />
+
+function App(){
+  return (
+    <Button>Normal Button</Button>
+    <Button as={ ReverseButton }>Custom Button with Normal Button styles</Button>
+  )
+}
+// 渲染结果
+<button>Normal Button</button>
+<button>selyts nottuB lamroN htiw nottuB motsuC</button>
+```
+
+#### 获取 props
+
+```tsx
+const Button = styled.button<{ primary?: boolean }>`
+  background: ${props => props.primary ? '#bf4f74' : 'white'};
+  color: ${props => props.primary ? 'white' : '#bf4f74'};
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid #bf4f74;
+  border-radius: 3px;
+`;
+
+function App(){
+  return (
+    <>
+      <Button>Normal</Button>
+      <Button primary>Primary</Button>
+    </>
+  )
+}
+// 渲染结果
+<button>Normal</button>
+<button>Primary</button> // 和 Normal button 样式相反
+```
+
+#### attrs 属性重写
+
+attrs 修改样式化组件的属性
+
+```tsx
+const Input = styled.input.attrs<{ size?: string }>(props => ({
+  type: "text",
+  size: props.size || '1em'
+}))`
+  border: 2px solid #BF4F74;
+
+  /* use the dynamically computed prop */
+  margin: ${props => props.size};
+  padding: ${props => props.size};
+`;
+const PassWordInput = styled(Input).attrs({type: 'password'})`
+  border: 2px solid aqua;
+`;
+
+function App(){
+  return (
+    <>
+      <Input placeholder="A bigger text input" size="2em" />
+      <PassWordInput placeholder="A normal password input" />
+    </>
+  )
+}
+// 渲染结果
+<input type="text" placeholder="A bigger text input"/> // margin 和 padding 都为传入的 2em
+<input type="password" placeholder="A normal password input"/> // margin 和 padding 都为默认的 1em
+```
+
+#### 其他组件和API
+
+- StyleSheetManager 管理样式化组件的辅助组件
+- ThemeProvider
+  - theme
+- ThemeConsumer
+- withTheme 高阶组件, 传递的组件将接收到一个包含 theme prop 的 theme 对象
+
+- createGlobalStyle
+- css
+- keyframes 创建动画的辅助函数
+
+```jsx
+const fadeIn = keyframes`
+  0% {
+    opacity:0
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+const FadeInButton = styled.button`
+  animation: 1s ${fadeIn} ease-out;
+`;
+```
+
+- isStyledComponent 判断是否是样式化组件
+
+- useTheme 获取 ThemeProvider 传递的 theme 的 Hook
