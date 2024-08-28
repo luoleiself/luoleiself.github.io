@@ -3494,7 +3494,10 @@ const counterSlice = createSlice({
     },
     decrement(state, action){
       state.value--;
-    },
+    }
+  },
+  // 自定义 case reducer, prepareAction
+  reducers: {
     // case reducer, prepareAction
     incrementByAmout: {
       reducer(state, action){
@@ -3505,46 +3508,49 @@ const counterSlice = createSlice({
       }
     }
   },
-  // reducers 为一个函数, 接收一个 create 对象 
-  // 包含 3 个函数: reducer, prepareReducer, asyncThunk
-  reducers(create){
-    return {
+  // reducers 为一个函数, 接收一个 create 对象作为参数, 并返回一个包含 reducer 的对象
+  // create 包含 3 个函数: reducer, prepareReducer, asyncThunk
+  reducers: (create) => ({
       increment: create.reducer(state, action) => {
         state.value++;
       },
       decrement: create.reducer(state, action) => {
         state.value--;
       },
-      incrementByAmount: create.prepareReducer((text: string) => {
-        return { payload: {text: text, value: 100}}
-      }, 
-      // 从 prepare 回调推断 action type
-      (state, action) => {
-        state.value += action.payload.value;
-      }),
-      fetchTodo: create.asyncThunk(async (id: string, thunkApi) => {
-        const res = await fetch(thunkApi);
-        return (await res.json()) as Item
-      },{
-        pending: state => {
-          state.loading = true;
-        },
-        rejected: state =>{
-          state.loading = false;
-        },
-        fulfilled: (state, action) => {
-          state.loading = false;
-          state.todos.push(action.payload);
+      incrementByAmount: create.prepareReducer(
+        (text: string) => {
+          return { payload: {text: text, value: 100}}
+        }, (state, action) => {
+          // 从 prepare 回调推断 action type
+          state.value += action.payload.value;
         }
-      })
-    }
-  },
+      ),
+      fetchTodo: create.asyncThunk(
+        async (id: string, thunkApi) => {
+          const res = await fetch(thunkApi);
+          return (await res.json()) as Item
+        }, {
+          pending: state => {
+            state.loading = true;
+          },
+          rejected: state =>{
+            state.loading = false;
+          },
+          fulfilled: (state, action) => {
+            state.loading = false;
+            state.todos.push(action.payload);
+          }
+        }
+      )
+  }),
+  // 处理自己创建的 actionCreator 之外的情况
   extraReducers(builder){
     builder.addCase('INCREMENT', (state, action) => {
       state.value++;
     })
   }
 });
+
 const store = configureStore({
   reducer: {
     counter: counterSlice.reducer
@@ -3690,29 +3696,32 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 
 const promise = createAsyncThunk(type, payloadCreator, options?);
 
-const fetchUserById = createAsyncThunk('users/fetchUserById', async(userId: number, {requestId, getState, rejectWithValue}) => {
-  try{
-    const response = await fetch(userId);
-    return response.data;
-  }catch(err){
-    return rejectWithValue(err.response.data);
-  }
-},{
-  condition(userId, {getState, extra}){
-    const {users} = getState();
-    const fetchStatus = users.requests[userId];
-    if(fetchStatus === 'fulfilled' || fetchStatus === 'loading'){
-      // Already fetched or in progress, don't need to re-fetch
-      return false;
+const fetchUserById = createAsyncThunk(
+  'users/fetchUserById', 
+  async (userId: number, {dispatch, requestId, getState, fulfilledWithValue, rejectWithValue}) => {
+    try{
+      const response = await fetch(userId);
+      return response.data;
+    }catch(err){
+      return rejectWithValue(err.response.data);
+    }
+  }, {
+    condition(userId, {getState, extra}){
+      const {users} = getState();
+      const fetchStatus = users.requests[userId];
+      if(fetchStatus === 'fulfilled' || fetchStatus === 'loading'){
+        // Already fetched or in progress, don't need to re-fetch
+        return false;
+      }
     }
   }
-});
+);
 const usersSlice = createSlice({
   name: 'users',
   initialState: { },
   reducers:{},
   // 处理 asyncThunk 状态的 reducer
-  extraReducers(builder){
+  extraReducers(builder) {
     builder.addCase(fetchUserById.pending, (state, action) => {
       state.status = 'loading';
     }).addCase(fetchUserById.fulfilled, (state, action) => {
