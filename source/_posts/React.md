@@ -2634,7 +2634,7 @@ import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
-      errorElement={<ErrorElement/>}
+      errorElement={<ErrorElement />}
       loader={async ({request, params}) => {
         const res = await fetch();
         if(res.status == 404){
@@ -2740,6 +2740,7 @@ function Book(){
 
 路由导航
 
+- to
 - relative 相对路径, 默认为 Route 的相对层级
 - preventScrollRest 标识是否滚动到页面顶部
 - replace 标识是否替换当前历史记录栈
@@ -2820,7 +2821,29 @@ React Router [内置组件](#internal-component)
 
 #### Routes
 
-匹配组件内的 Route, 通常用于不使用 [createBrowserRouter](#createBrowserRouter) 创建的 Route
+匹配组件内的 Route, 用于不使用 [createBrowserRouter](#createBrowserRouter) 创建 Route 的情况
+
+也可以使用 [useRoutes](#useRoutes) Hook 创建路由
+
+```jsx
+import {Routes, Route} from 'react-router-dom';
+
+function App(){
+  return (
+    <>
+      <header>header</header>
+      <Routes>
+        <Route path="/" element={ <DashBoard/> }>
+          <Route path="message" element={ <DashBoardMessage /> } />
+          <Route path="tasks" element={ <DashBoardTasks /> } />
+        </Route>
+        <Route path="team" element={ <Team /> } />
+      </Routes>
+      <footer>footer</footer>
+    </>
+  )
+}
+```
 
 #### ScrollRestoration
 
@@ -3160,9 +3183,23 @@ createBrowserRouter([
 ])
 ```
 
-#### useRoutes
+#### useRoutes <em id="useRoutes"></em> <!--markdownlint-disable-line-->
 
 相当于 Routes [内置组件](#internal-component) 的函数版本
+
+```jsx
+import {useRoutes} from 'react-router-dom';
+
+function App(){
+  return useRoutes([
+    { path: '/', element: <DashBoard />, children: [
+      { path: 'message', element: <DashBoardMessage /> },
+      { path: 'tasks', element: <DashBoardTasks /> }
+    ]},
+    { path: 'team', element: <Team /> }
+  ])
+}
+```
 
 #### useSearchParams
 
