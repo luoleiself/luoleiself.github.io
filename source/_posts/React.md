@@ -2459,8 +2459,22 @@ React Router 创建路由的 [内置组件](#internal-component), data APIs 由�
 - index 标识当路由未匹配到时默认匹配
 - path 路由
 - caseSensitive  path 是否区分大小写
-- element/Component 当路由匹配时渲染
 - handle 当前路由的任意数据, 作用同 [useMatches](#useMatches)
+- element/component 当路由匹配时渲染, 使用 element 意味着不需要再额外的使用 passProps 风格的方式传递 props
+
+```jsx
+// 需要使用其他方式传递 props
+<Route path=":userId" component={Profile} passProps={{animate: true}} />
+// 或者使用 renderProps 传递 props
+// 或者使用 HOC 传递 props
+<Route path=":userId" render={(routeProps) => (<Profile routeProps={routeProps} animate={true} />)} />
+<Route path=":userId" children={({match}) => (
+  match ? <Profile match={match} animate={true} /> : <NotFound /> 
+)} />
+
+// 使用 element 传递 props
+<Route path=":userId" element={<Profile animate={true} />} />
+```
 
 - 使用对象方式创建
 
