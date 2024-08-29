@@ -147,6 +147,74 @@ function Counter({ person }) {
 
 - componentWillUnmount() 组件卸载及销毁之前直接调用,此方法中不应该使用 setState() 方法,组件不会被重新渲染
 
+### 迁移到函数式组件
+
+- static contextType 绑定 context, 等同于在函数式组件中使用 [useContext](#useContext)
+
+```jsx
+class Button extends Component {
+  // 方式1: 静态属性绑定 context;
+  // 方式2: 类组件外部绑定 Button.contextType = ThemeContext;
+  static contextType = ThemeContext; 
+  render() {
+    // 类组件中读取 context;
+    const theme = this.context;
+    const className = 'button-' + theme;
+    return (
+      <button className={className}>
+        {this.props.children}
+      </button>
+    )
+  }
+}
+// 方式2：类组件外部绑定 Button.contextType = ThemeContext;
+
+// 等同于函数式组件使用 useContext;
+function Button() {
+  const theme = useContext(ThemeContext);
+  const className = 'button-' + theme;
+  return (
+    <button className={className}>
+      {this.props.children}
+    </button>
+  )
+}
+```
+
+- static defaultProps 类组件设置默认 props
+  - 当 props 为 undefined 或者缺少时有效(为 null 无效)
+  - 类似于函数式组件中使用默认值
+
+```jsx
+class Button extends Component {
+  static defaultProps = {
+    color: 'blue'
+  }
+  redner() {
+    return <button className={this.props.color}>button</button>
+  }
+}
+
+// 类似于函数式组件使用默认值
+function Button({color = 'blue'}){
+  return <button className={color}>button</button>
+}
+```
+
+- static propTypes 类组件的 props 的类型约束, 仅在渲染和开发过程中进行检查, 函数式组件使用 TypeScript
+
+```jsx
+import PropTypes from 'prop-types';
+class Greeting extends Component {
+  static propTypes = {
+    name: PropTypes.string
+  }
+  render() {
+    return <h1>Hello, {this.props.name}</h1>
+  }
+}
+```
+
 ## 深入 JSX
 
 - 只能返回一个根元素
@@ -156,6 +224,32 @@ function Counter({ person }) {
 
 - React 将 boolean, null, undefined 视为空值, 不做任何渲染
 - 直接在 JSX 中渲染对象 React 将报错 (not valid React element)
+
+### 使用 TypeScript
+
+- DOM 事件, React.SyntheticEvent 是所有事件的基类型
+- 子元素
+  - 使用 React.ReactNode 类型作为子元素传递的所有可能类型的并集
+  - 使用 React.ReactElement 类型, 它只包含 JSX 元素, 而不包括 JS 原始类型, 例如 string 或 number
+
+```tsx
+interface ModalRendererProps {
+  title: string;
+  children: React.ReactNode;
+}
+interface ModalRendererProps {
+  title: string;
+  children: React.ReactElement
+}
+```
+
+- 样式属性, 使用 React.CSSProperties 来描述传递给 style 属性的对象, 这个类型是所有可能的 css 属性的并集
+
+```tsx
+interface MyComponentProps {
+  style: React.CSSProperties;
+}
+```
 
 ### JSX 中的 Props
 
