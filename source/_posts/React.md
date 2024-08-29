@@ -4204,6 +4204,10 @@ fn(['this is a ', 'day'], aVar);
 
 ### [styled-components](https://styled-components.com/docs/basics)
 
+影响打包性能, 导致 js 文件体积变大
+
+动态生成唯一的 className, 对样式覆写不太友好
+
 ```jsx
 import styled from 'styled-components';
 ```
@@ -4332,9 +4336,9 @@ function App(){
 #### 获取 props
 
 ```tsx
-const Button = styled.button<{ primary?: boolean }>`
-  background: ${props => props.primary ? '#bf4f74' : 'white'};
-  color: ${props => props.primary ? 'white' : '#bf4f74'};
+const Button = styled.button<{ $primary?: boolean }>`
+  background: ${props => props.$primary ? '#bf4f74' : 'white'};
+  color: ${props => props.$primary ? 'white' : '#bf4f74'};
   font-size: 1em;
   margin: 1em;
   padding: 0.25em 1em;
@@ -4345,8 +4349,8 @@ const Button = styled.button<{ primary?: boolean }>`
 function App(){
   return (
     <>
-      <Button>Normal</Button>
-      <Button primary>Primary</Button>
+      <Button>Normal Button</Button>
+      <Button $primary>Primary Button</Button>
     </>
   )
 }
@@ -4357,18 +4361,22 @@ function App(){
 
 #### attrs 属性重写
 
-attrs 修改样式化组件的属性
+attrs 修改样式化组件的属性, 如果想防止样式化组件使用的 props 被传入到底层 React 组件或者 DOM 元素上, 使用 `$` 前缀修饰 props 将其转换为短暂的 props
+
+```jsx
+styled.tagName.attrs({} | Function);
+```
 
 ```tsx
-const Input = styled.input.attrs<{ size?: string }>(props => ({
+const Input = styled.input.attrs<{ $size?: string }>(props => ({
   type: "text",
-  size: props.size || '1em'
+  $size: props.$size || '1em'
 }))`
   border: 2px solid #BF4F74;
 
   /* use the dynamically computed prop */
-  margin: ${props => props.size};
-  padding: ${props => props.size};
+  margin: ${props => props.$size};
+  padding: ${props => props.$size};
 `;
 const PassWordInput = styled(Input).attrs({type: 'password'})`
   border: 2px solid aqua;
@@ -4377,7 +4385,7 @@ const PassWordInput = styled(Input).attrs({type: 'password'})`
 function App(){
   return (
     <>
-      <Input placeholder="A bigger text input" size="2em" />
+      <Input placeholder="A bigger text input" $size="2em" />
       <PassWordInput placeholder="A normal password input" />
     </>
   )
@@ -4395,8 +4403,48 @@ function App(){
 - ThemeConsumer
 - withTheme 高阶组件, 传递的组件将接收到一个包含 theme prop 的 theme 对象
 
-- createGlobalStyle
-- css
+```jsx
+import {withTheme} from 'styled-components';
+
+function App(props){
+  return (
+    <button style={{color: props.theme.color}}>Button</button>
+  )
+}
+export default withTheme(App);
+```
+
+- useTheme 获取 ThemeProvider 传递的 theme 的 Hook
+
+```jsx
+import {ThemeProvider, ThemeConsumer, useTheme} from 'styled-components';
+
+function App(){
+  return (
+    <ThemeProvider theme={{color: 'mediumseagreen'}}>
+      <Button/>
+    </ThemeProvider>
+  )
+}
+function Button(){
+  const theme = useTheme();
+  const style= {color: theme.color};
+
+  return <button style={style} >Button</button>;
+}
+// 等价于
+function Button(){
+  return (
+    <ThemeConsumer>
+      {theme => <button style={{color: theme.coloer}}>Button</button>}
+    </ThemeConsumer>
+  )
+}
+```
+
+- isStyledComponent 判断是否是样式化组件
+- createGlobalStyle 创建全局样式
+- css 创建样式片段
 - keyframes 创建动画的辅助函数
 
 ```jsx
@@ -4413,7 +4461,3 @@ const FadeInButton = styled.button`
   animation: 1s ${fadeIn} ease-out;
 `;
 ```
-
-- isStyledComponent 判断是否是样式化组件
-
-- useTheme 获取 ThemeProvider 传递的 theme 的 Hook
