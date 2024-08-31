@@ -156,86 +156,34 @@ const checkEmail = function (value) {
 };
 ```
 
-#### Cookies
+#### 数字千分位分割
+
+- 使用 Number 包装对象的原型方法 toLocaleString
+  - locales 指定地区语言, 默认使用系统的区域设置
+  - options 对返回结果进行定制
 
 ```javascript
-var docCookies = {
-  getItem: function (sKey) {
-    return (
-      decodeURIComponent(
-        document.cookie.replace(
-          new RegExp(
-            '(?:(?:^|.*;)\\s*' +
-              encodeURIComponent(sKey).replace(/[-.+*]/g, '\\$&') +
-              '\\s*\\=\\s*([^;]*).*$)|^.*$'
-          ),
-          '$1'
-        )
-      ) || null
-    );
-  },
-  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
-    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
-      return false;
-    }
-    var sExpires = '';
-    if (vEnd) {
-      switch (vEnd.constructor) {
-        case Number:
-          sExpires =
-            vEnd === Infinity
-              ? '; expires=Fri, 31 Dec 9999 23:59:59 GMT'
-              : '; max-age=' + vEnd;
-          break;
-        case String:
-          sExpires = '; expires=' + vEnd;
-          break;
-        case Date:
-          sExpires = '; expires=' + vEnd.toUTCString();
-          break;
-      }
-    }
-    document.cookie =
-      encodeURIComponent(sKey) +
-      '=' +
-      encodeURIComponent(sValue) +
-      sExpires +
-      (sDomain ? '; domain=' + sDomain : '') +
-      (sPath ? '; path=' + sPath : '') +
-      (bSecure ? '; secure' : '');
-    return true;
-  },
-  removeItem: function (sKey, sPath, sDomain) {
-    if (!sKey || !this.hasItem(sKey)) {
-      return false;
-    }
-    document.cookie =
-      encodeURIComponent(sKey) +
-      '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' +
-      (sDomain ? '; domain=' + sDomain : '') +
-      (sPath ? '; path=' + sPath : '');
-    return true;
-  },
-  hasItem: function (sKey) {
-    return new RegExp(
-      '(?:^|;\\s*)' +
-        encodeURIComponent(sKey).replace(/[-.+*]/g, '\\$&') +
-        '\\s*\\='
-    ).test(document.cookie);
-  },
-  keys: function () {
-    var aKeys = document.cookie
-      .replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, '')
-      .split(/\s*(?:\=[^;]*)?;\s*/);
-    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) {
-      aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]);
-    }
-    return aKeys;
-  },
-};
+console.log(Number(2000).toLocaleString());
+// 2,000
+
+console.log(Number(123456.789).toLocaleString("zh-Hans-CN-u-nu-hanidec"));
+// 一二三,四五六.七八九
+
+// 定制货币格式
+console.log(Number(123456.789).toLocaleString("de-DE", { style: "currency", currency: "EUR" }));
+// 123.456,79 €
+
+// 限制有效数字位数
+console.log( Number(123456.789).toLocaleString("de-DE", { 
+    style: "currency", 
+    currency: "EUR", 
+    maximumSignificantDigits: 5 
+  })
+);
+// 123.460 €
 ```
 
-#### 数字千分位分割
+- 手动实现位数截取
 
 ```javascript
 /**
@@ -664,6 +612,78 @@ var { pause, resume, cancel } = date.leftDown(function (obj) {
 // });
 ```
 
+#### JS 批量样式
+
+```javascript
+// Dom 添加边框
+[].forEach.call($$('*'), (dom) => {
+  dom.style.outline =
+    '1px solid #' + (~~(Math.random() * (1 << 24))).toString(16);
+});
+
+// 随机生成颜色
+() =>
+  '#' +
+  Math.floor(Math.random() * 0xffffff)
+    .toString(16)
+    .padEnd(6, '0')
+    .toUpperCase();
+```
+
+#### 修改 history
+
+```javascript
+// 修改历史记录阻止后退功能
+$(document).ready(function () {
+  if (window.history && window.history.pushState) {
+    $(window).on('popstate', function () {
+      window.history.pushState('forward', null, '');
+      window.history.forward(1);
+    });
+  }
+  window.history.pushState('forward', null, ''); //在IE中必须得有这两行
+  window.history.forward(1);
+});
+```
+
+#### 存储单位转换
+
+```javascript
+function formatSizeUnits(kb) {
+  let units = ['KB', 'MB', 'GB', 'TB', 'PB'];
+  let unitIndex = 0;
+
+  while (kb >= 1024 && unitIndex < units.length - 1) {
+    kb /= 1024;
+    unitIndex++;
+  }
+
+  return `${kb.toFixed(2)} ${units[unitIndex]}`;
+}
+```
+
+#### requestAnimationFrame 数字累加
+
+```javascript
+function roll(o, s , e){
+  if (!e) {
+    const r = {total: 3e3, start: performance.now() };
+    const l = function (e) {
+      var t, n, i, e = e - r.start, a = (t = e,
+        n = 0,
+        a = 1,
+        i = r.total,
+        -a * ((t = t / i - 1) * t * t * t - 1) + n);
+      
+      s.innerHTML = Math.round(a * o).toLocaleString();
+      e < r.total && window.requestAnimationFrame(l);
+      // console.log("t=", t, "n=", n, "i=", i, "e=", e, "a=", a, "o=", o, "s=", s);
+    };
+    window.requestAnimationFrame(l)
+  }
+}
+```
+
 #### JS 创建 Element
 
 ```javascript
@@ -813,55 +833,5 @@ function setElAttrs(el, props) {
     }
     el.setAttribute(key, props[key]);
   }
-}
-```
-
-#### JS 批量样式
-
-```javascript
-// Dom 添加边框
-[].forEach.call($$('*'), (dom) => {
-  dom.style.outline =
-    '1px solid #' + (~~(Math.random() * (1 << 24))).toString(16);
-});
-
-// 随机生成颜色
-() =>
-  '#' +
-  Math.floor(Math.random() * 0xffffff)
-    .toString(16)
-    .padEnd(6, '0')
-    .toUpperCase();
-```
-
-#### 修改 history
-
-```javascript
-// 修改历史记录阻止后退功能
-$(document).ready(function () {
-  if (window.history && window.history.pushState) {
-    $(window).on('popstate', function () {
-      window.history.pushState('forward', null, '');
-      window.history.forward(1);
-    });
-  }
-  window.history.pushState('forward', null, ''); //在IE中必须得有这两行
-  window.history.forward(1);
-});
-```
-
-#### 存储单位转换
-
-```javascript
-function formatSizeUnits(kb) {
-  let units = ['KB', 'MB', 'GB', 'TB', 'PB'];
-  let unitIndex = 0;
-
-  while (kb >= 1024 && unitIndex < units.length - 1) {
-    kb /= 1024;
-    unitIndex++;
-  }
-
-  return `${kb.toFixed(2)} ${units[unitIndex]}`;
 }
 ```
