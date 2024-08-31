@@ -4429,6 +4429,8 @@ function App(){
 
 #### 获取 props
 
+添加 `$` 前缀将 props 转换为短暂的 props, 防止样式化组件使用的 props 被传入到底层的 React 组件或者 DOM 元素上
+
 ```tsx
 const Button = styled.button<{ $primary?: boolean }>`
   background: ${props => props.$primary ? '#bf4f74' : 'white'};
