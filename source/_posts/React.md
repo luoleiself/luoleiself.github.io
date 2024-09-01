@@ -2360,6 +2360,14 @@ app.use('/', (request, response) => {
 
 ### 路由器
 
+创建路由方式
+
+- 使用 createBrowserRouter 和 RouterProvider
+  - 对象形式
+  - JSX 元素(createRoutesFromElements)
+- 使用 Routes, Route, BrowserRouter|HashRouter 内置组件
+- 使用 useRoutes hook 和 BrowserRouter|HashRouter 内置组件
+
 #### 不支持 data APIs
 
 - \<BrowserRouter\>
@@ -2391,6 +2399,7 @@ app.use('/', (request, response) => {
 - router 路由信息
 
 ```jsx
+const routes = [];
 const router = createBrowserRouter(routes, {
   basename: '/app',
   hydrationData: {
@@ -2413,6 +2422,8 @@ const router = createBrowserRouter(routes, {
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createBrowserRouer, createRoutesFromElements, RouterProvider, Route} from 'react-router-dom';
+
+// const router = createBrowserRouter();
 
 const root = createRoot(document.getElementById('root'))
 root.render(
@@ -2920,19 +2931,21 @@ React Router [内置组件](#internal-component)
 也可以使用 [useRoutes](#useRoutes) Hook 创建路由
 
 ```jsx
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, BrowserRouter} from 'react-router-dom';
 
 function App(){
   return (
     <>
       <header>header</header>
-      <Routes>
-        <Route path="/" element={ <DashBoard/> }>
-          <Route path="message" element={ <DashBoardMessage /> } />
-          <Route path="tasks" element={ <DashBoardTasks /> } />
-        </Route>
-        <Route path="team" element={ <Team /> } />
-      </Routes>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={ <DashBoard/> }>
+            <Route path="message" element={ <DashBoardMessage /> } />
+            <Route path="tasks" element={ <DashBoardTasks /> } />
+          </Route>
+          <Route path="team" element={ <Team /> } />
+        </Routes>
+      </BrowserRouter>
       <footer>footer</footer>
     </>
   )
@@ -3282,16 +3295,25 @@ createBrowserRouter([
 相当于 Routes [内置组件](#internal-component) 的函数版本
 
 ```jsx
-import {useRoutes} from 'react-router-dom';
+import {useRoutes, BrowserRouter} from 'react-router-dom';
 
 function App(){
-  return useRoutes([
+  const element = useRoutes([
     { path: '/', element: <DashBoard />, children: [
       { path: 'message', element: <DashBoardMessage /> },
       { path: 'tasks', element: <DashBoardTasks /> }
     ]},
     { path: 'team', element: <Team /> }
-  ])
+  ]);
+  return (
+    <>
+      <header></header>
+      <BrowserRouter>
+        {element}
+      </BrowserRouter>
+      <footer></footer>
+    </>
+  )
 }
 ```
 
