@@ -126,6 +126,8 @@ class PopupInfo extends HTMLElement {
 
 #### 自定义元素生命周期
 
+`attributeChangedCallback` 生命周期函数 监听所有的属性的变化, 为了提高性能, 使用 静态属性 `observedAttributes` 声明需要监听变化的属性
+
 - connectedCallback() 每当元素添加到文档中时调用, 对自定义元素的操作在此钩子中实现
 - disconnectedCallback() 每当元素从文档中移除时调用
 - adoptedCallback() 每当元素被移动到新文档中时调用
@@ -138,6 +140,10 @@ class PopupInfo extends HTMLElement {
 window.customElements.define(
   'my-custom-element',
   class extends HTMLElement {
+
+    // 静态属性声明需要监听变化的属性
+    static observedAttributes = ['foo', 'bar'];
+    
     constructor() {
       super();
     }
@@ -150,6 +156,7 @@ window.customElements.define(
     adoptedCallback() {
       console.log('自定义元素移动到新页面');
     }
+    // 回调函数将在 observedAttributes 声明的属性发生变化时调用
     attributeChangedCallback(name, oldValue, newValue) {}
   }
 );
@@ -161,7 +168,10 @@ window.customElements.define(
 window.customElements.define(
   'my-custom-element',
   class extends HTMLElement {
-    static observedAttributes = ['size']; // 静态属性
+    
+    // 静态属性声明需要监听变化的属性
+    static observedAttributes = ['size'];
+    
     constructor() {
       super();
     }
