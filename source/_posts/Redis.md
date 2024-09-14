@@ -7,18 +7,18 @@ tags:
   - Redis
 ---
 
-### Redis
+## Redis
 
 Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API, Redis 能读的速度是 11 万次/s，写的速度是 8.1 万次/s
 Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能
 
-### 数据类型
+## 数据类型
 
 ![redis-1](/images/redis-1.jpg)
 
 <!-- more -->
 
-### 工具命令
+## 工具命令
 
 - redis-benchmark 压测工具
   - \-h 主机名
@@ -65,7 +65,7 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 [root@centos7 workspace]# cat mylib.lua | redis-cli -x FUNCTION LOAD REPLACE
 ```
 
-#### 开机启动
+### 开机启动
 
 - `/usr/lib/systemd/system/` 目录中创建 `redis.service` 文件, 使用 `yum install` 安装 Redis 自动创建此文件
 - 使用命令 `ln -s /usr/lib/systemd/system/redis.service /etc/systemd/system/redis.service` 创建到系统服务目录的软链接
@@ -91,7 +91,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - 使用命令 `systemctl start redis.service` 启动 Redis 服务
 - 使用命令 `systemctl enable redis.service` 允许 Redis 服务开机启动
 
-### CONFIG 命令
+## CONFIG 命令
 
 - CONFIG GET parameter [parameter...] 获取指定配置项的值
 - CONFIG HELP 显示 CONFIG 命令的帮助信息
@@ -99,7 +99,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - CONFIG REWRITE 将内存中的配置项重写到配置文件中
 - CONFIG SET parameter value [parameter value ...] 设置配置项
 
-### Keys 命令
+## Keys 命令
 
 - INFO [section [section ...]] 返回服务的相关信息, 没有参数返回所有
 
@@ -172,7 +172,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 - clear 清空屏幕
 
-#### 操作 key
+### 操作 key
 
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
 - EXISTS key [key ...] 检查指定 key 是否存在, 1 存在, 0 不存在
@@ -229,13 +229,13 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 2) 1) "xiaoming"
 ```
 
-#### 副本
+### 副本
 
 - REPLICAOF host port 将当前服务器设置为指定主机端口上服务器的副本, 通常返回 ok, 5.0.0 开始代替 `SLAVEOF`
   - 如果当前服务器已经是某个服务器的副本, 则取消对旧服务器的连接同步, 并开始对新服务器同步, 丢弃旧有数据集
   - NO ONE 如果当前服务器已经是副本, 此参数将当前服务器变为 master, 并停止与主服务器的连接同步
 
-#### 设置 key 的过期时间
+### 设置 key 的过期时间
 
 - EXPIRE key seconds [NX|XX|GT|LT] 为指定 key 设置过期时间(单位秒), 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
 - EXPIREAT key unix-time-seconds [NX|XX|GT|LT] 为指定 key 设置过期使用 unix 时间戳, 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
@@ -248,7 +248,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - GT 以上命令该参数作用相同, 仅当新的过期时间大于当前的过期时间
   - LT 以上命令该参数作用相同, 仅当新的过期时间小于当前的过期时间
 
-#### 获取 key 的过期时间
+### 获取 key 的过期时间
 
 - TTL key 返回指定 key 以**秒**为单位剩余的生存时间
 - PTTL key 返回指定 key 以**毫秒**为单位剩余的生存时间
@@ -268,7 +268,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 - PERSIST key 移除指定 key 的过期时间, key 将永久保持, 1 成功, 0 key 不存在或者未设置过期时间
 
-#### 数据库操作
+### 数据库操作
 
 - RANDOMKEY 从当前数据库随机返回一个 key, 如果当前数据库为空则返回 \<nil\>
 - SWAPDB index1 index2 切换两个数据库
@@ -278,11 +278,11 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - FLUSHALL [ASYNC|SYNC] 清除所有数据库中的 key, 执行成功返回 ok
 - FLUSHDB [ASYNC|SYNC] 清除当前数据库中的 key, 执行成功返回 ok
 
-#### 安全认证
+### 安全认证
 
 - AUTH [username] password 对当前连接的认证, 或者切换用户
 
-### 配置文件配置项
+## 配置文件配置项
 
 - include /path/to/\*.conf # 导入其他 redis 配置文件
 
@@ -291,7 +291,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - timeout 0 # 关闭客户端连接的延迟, 0 表示禁用, 单位秒
 - tcp-keepalive 300 # 保持长连接的时间, 单位秒
 
-#### TLS/SSL
+### TLS/SSL
 
 安全连接配置项, 默认未开启
 
@@ -309,7 +309,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - tls-session-cache-size 5000 # TLS 缓存大小, 默认 20480
 - tls-session-cache-timeout 60 # TLS 缓存有效期, 默认 300 秒
 
-#### 通用设置
+### 通用设置
 
 - loglevel notice # 设置日志级别, 默认 notice
   - debug (a lot of information, useful for development/testing)
@@ -324,7 +324,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - always-show-logo no # 是否总是显示 logo
 - set-proc-title yes # 设置进程标题
 
-#### MEMORY
+### MEMORY
 
 - maxmemory-policy noeviction # 内存管理策略
   - volatile-lru 使用 LRU 算法移除 key, 只对设置了过期时间的 key
@@ -337,7 +337,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - noeviction 不进行移除, 针对写操作, 只是返回错误信息
 - maxmemory-samples 5 # 设置 Redis 移除 key 时的样本数量, 10 接近 LRU 算法但非常消耗内存, 3 最快却不是精确的
 
-#### SNAPSHOTTING
+### SNAPSHOTTING
 
 - save 3600 1 300 100 60 10000 # 快照执行机制, 3600 秒后如果超过 1 次更改, 300 秒后超过 100 次更改, 60 秒后超过 10000 次更改
 
@@ -349,13 +349,13 @@ save <seconds> <changes> [<seconds> <changes> ...]
 - rdbcompression yes # 开启 rdb 文件压缩
 - rdbchecksum yes # 开启 rdb 文件的校验检查
 
-#### SECURITY
+### SECURITY
 
 - acllog-max-len 128 # ACL 日志在内存中时的最大条目数
 - aclfile /etc/redis/users.acl # 默认 ACL 配置文件
 - io-threads 4 # I/O 线程
 
-### 发布订阅
+## 发布订阅
 
 Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息
 它采用事件作为基本的通信机制，提供大规模系统所要求的松散耦合的交互模式: 订阅者(如客户端)以事件订阅的方式表达出它有兴趣接收的一个事件或一类事件;发布者(如服务器)可将订阅者感兴趣的事件随时通知相关订阅者
@@ -364,12 +364,12 @@ Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消
 - 发布者: 无需独占链接, 可以在 publish 发布消息的同时, 使用同一个链接进行其他操作
 - 订阅者: 需要独占链接, 在 subscribe 期间, 以阻塞的方式等待消息
 
-#### 发布消息
+### 发布消息
 
 - PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者
 - SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持
 
-#### 普通订阅
+### 普通订阅
 
 - SUBSCRIBE channel [channel ...] 订阅指定频道立即进入阻塞状态等待接收消息
 - UNSUBSCRIBE [channel [channel ...]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅
@@ -436,7 +436,7 @@ Reading messages... (press Ctrl-C to quit)
 3) "hello third"
 ```
 
-#### 模式订阅
+### 模式订阅
 
 - PSUBSCRIBE pattern [pattern ...] 根据给定模式订阅频道立即进入阻塞状态等待接收消息
   - pattern 可以使用正则表达式匹配多个频道
@@ -496,12 +496,12 @@ Reading messages... (press Ctrl-C to quit)
 4) "hello key at bar"
 ```
 
-#### 碎片频道订阅
+### 碎片频道订阅
 
 - SSUBSCRIBE shardchannel [shardchannel ...] 订阅指定的碎片频道, 7.0.0 支持
 - SUNSUBSCRIBE [shardchannel [shardchannel ...]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持
 
-#### 统计订阅信息
+### 统计订阅信息
 
 ```bash
 127.0.0.1:6379> PUBSUB HELP
@@ -554,7 +554,7 @@ Reading messages... (press Ctrl-C to quit)
 2) (integer) 0
 ```
 
-### Redis Pipelining
+## Redis Pipelining
 
 > 当客户端使用流水线发送命令时, 服务器将被迫使用内存对回复进行排队. 因此, 如果需要使用流水线发送大量命令时最好尽量等分分批发送命令
 
@@ -569,9 +569,9 @@ Redis 流水线是一种通过一次发出多个命令而无需等待每个命�
 ^C
 ```
 
-### Redis 编程
+## Redis 编程
 
-#### Redis 函数
+### Redis 函数
 
 > Redis 7.0 以上支持
 
@@ -590,7 +590,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 - 函数都属于一个库, 任何给定的库都可以包含多个函数
 - 库的内容是不可变的, 并且不允许选择性地更新其函数, 只能将库作为一个整体进行更新
 
-##### 函数命令
+#### 函数命令
 
 - FUNCTION help 显示 FUNCTION 的帮助信息
 
@@ -656,10 +656,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
          6) (empty array)
 ```
 
-- FCALL function numkeys [key [key ...]] [arg [arg ...]] 调用注册的函数
-- FCALL_RO function numkeys [key [key ...]] [arg [arg ...]] 调用注册的只读函数
-
-##### 加载库和函数
+- 加载库和函数
 
 每个 Redis 函数都属于一个加载到 Redis 的库, 使用命令 `FUNCTION LOAD` 将库加载到数据库, 库必须以 shebang 语句开头 `#!<engine name> name=<library name>`
 
@@ -669,9 +666,11 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 (error) ERR No functions registered
 ```
 
-##### 函数注册调用
+#### 注册调用
 
-- redis.register_function(name, callback, flags, description) 注册函数 <em id="redis.register_function"></em> <!-- markdownlint-disable-line -->
+<em id="redis.register_function"></em> <!-- markdownlint-disable-line -->
+
+- redis.register_function(name, callback, flags, description) 注册函数
   - name 注册的函数名
   - callback 注册的函数
   - flags
@@ -682,7 +681,10 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
     - allow-cross-slot-keys 允许脚本从多个 slot 访问密钥
   - description 函数描述
 
-###### Redis 命令行注册调用
+- FCALL function numkeys [key [key ...]] [arg [arg ...]] 调用注册的函数
+- FCALL_RO function numkeys [key [key ...]] [arg [arg ...]] 调用注册的只读函数
+
+##### Redis 命令行注册调用
 
 ```bash
 # 方式1
@@ -695,7 +697,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 "Who's there?"
 ```
 
-###### Lua 脚本注册调用
+##### Lua 脚本注册调用
 
 ```lua
 #!lua name=mylib
@@ -786,7 +788,7 @@ redis.register_function{
 6) "zhangsan"
 ```
 
-#### Lua 脚本
+### Lua 脚本
 
 Redis 允许在服务器上上传和执行 Lua 脚本, 脚本可以采用编程控制结构并在执行时使用大部分命令来访问数据库, 因为脚本在服务器中执行, 所以从脚本中读取和写入数据非常高效.
 
@@ -796,7 +798,7 @@ Lua 允许在 Redis 中运行部分应用程序逻辑, 这样的脚本可以跨�
 
 Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它们, 但 EVAL 脚本被视为客户端应用程序的一部分, 这就是它们没有命名、版本化或持久化的原因. 因此, 如果所有脚本丢失, 应用程序可能需要随时重新加载
 
-##### 脚本命令
+#### 脚本命令
 
 > **脚本参数化** 为了确保在独立部署和集群部署中正确执行脚本, 脚本访问的所有键名都必须作为输入键参数显式提供
 
@@ -831,6 +833,15 @@ Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它�
 
 每次执行脚本都需要重新加载一遍脚本代码, 浪费资源
 
+#### lua 脚本中的 redis 单例
+
+redis 单例实例, 使脚本能够与运行它的 Redis 服务器进行交互
+
+全局变量
+
+- KEYS 获取脚本声明的键参数
+- ARGV 获取脚本声明的键参数剩余的参数
+
 <em id="redis.call"></em> <!-- markdownlint-disable-line-->
 
 - redis.call(command [, arg...]) 执行 redis 命令并返回结果, 如果遇到错误时直接返回给客户端
@@ -845,7 +856,53 @@ OK
 "hello redis"
 ```
 
-##### **脚本缓存**
+- redis.error_reply(x) 辅助函数, 返回一个错误信息
+- redis.status_reply(x) 辅助函数, 可以修改 Redis 命令的默认返回值 OK
+
+```bash
+# 返回错误信息
+127.0.0.1:6379> EVAL "return redis.error_reply('ERR This is a special error')" 0
+(error) ERR This is a special error
+
+# 修改默认返回值
+127.0.0.1:6379> EVAL "return { ok = 'TICK' }" 0
+"TICK"
+127.0.0.1:6379> EVAL "return redis.status_reply('TOCK')" 0
+"TOCK"
+```
+
+- redis.sha1hex(x) 返回单个字符串参数的 SHA1 十六进制摘要信息
+- redis.log(level, message) 写入 Redis 服务器日志
+  - redis.LOG_DEBUG 日志级别
+  - redis.LOG_VERBOSE 日志级别
+  - redis.LOG_NOTICE 日志级别
+  - redis.LOG_WARNING 日志级别
+
+```bash
+127.0.0.1:6379> EVAL "return redis.sha1hex('')" 0
+"da39a3ee5e6b40d3255bfef95601890afd80709"
+127.0.0.1:6379> EVAL "return redis.log(redis.LOG_WARNING, 'Something is terribly wrong')" 0
+```
+
+- redis.setresp(x) 设置执行脚本和服务器之间的请求应答协议, 默认值 2. Redis 6.0 支持
+- redis.set_repl(x)
+- redis.replicate_commands()
+- redis.breakpoint() 在使用 Redis Lua 调试器时触发断点
+- redis.debug(x) 在 Redis Lua 调试器控制台中打印其参数
+- redis.acl_check_cmd(command [,arg...]) 用于检查运行脚本的当前用户是否具有使用给定参数执行给定命令的 ACL 权限, 返回值布尔类型. Redis 7.0 支持
+- [redis.register_function(name, callback, flags, description)](#redis.register_function) Redis 7.0 支持
+
+- redis.REDIS_VERSION 以字符串形式返回当前 Redis 服务器版本, 格式 MM.mm.PP. Redis 7.0 支持
+- redis.REDIS_VERSION_NUM 以数字形式返回当前 Redis 服务器版本, 格式为十进制值. Redis 7.0 支持
+
+```bash
+127.0.0.1:6379> EVAL "return redis.REDIS_VERSION" 0
+"7.0.5"
+127.0.0.1:6379> EVAL "return redis.REDIS_VERSION_NUM" 0
+(integer) 458757
+```
+
+#### **脚本缓存**
 
 存储在服务器的脚本专用缓存中, 缓存内容由脚本的 SHA1 摘要作为缓存中的唯一标识
 
@@ -893,7 +950,7 @@ OK
 1) (integer) 0
 ```
 
-##### 脚本复制
+#### 脚本复制
 
 一般在集群部署环境下, Redis 确保脚本执行的所有写操作也被发送到副本以保持一致性, 脚本复制有两种概念
 
@@ -905,63 +962,10 @@ OK
 
 在这种模式下，在执行 Lua 脚本的同时, Redis 会收集 Lua 脚本引擎执行的所有实际修改数据集的命令, 当脚本执行完成时, 脚本生成的命令序列被包装到一个 **事务** 中并发送到副本和 AOF
 
-##### Lua API
+#### Lua API
 
 - 使用未声明为本地的变量和函数会引起 Redis 的报错
 - 沙盒执行上下文不支持使用导入的 Lua 模块
-
-###### 全局变量
-
-- KEYS 获取脚本声明的键参数
-- ARGV 获取脚本声明的键参数剩余的参数
-- redis 单例实例, 使脚本能够与运行它的 Redis 服务器进行交互
-
-###### Redis 实例 API
-
-- [redis.call(command [, arg...])](#redis.call)
-- [redis.pcall(command [, arg...])](#redis.call)
-- redis.error_reply(x) 辅助函数, 返回一个错误信息
-- redis.status_reply(x) 辅助函数, 可以修改 Redis 命令的默认返回值 OK
-
-```bash
-# 返回错误信息
-127.0.0.1:6379> EVAL "return redis.error_reply('ERR This is a special error')" 0
-(error) ERR This is a special error
-
-# 修改默认返回值
-127.0.0.1:6379> EVAL "return { ok = 'TICK' }" 0
-"TICK"
-127.0.0.1:6379> EVAL "return redis.status_reply('TOCK')" 0
-"TOCK"
-```
-
-- redis.sha1hex(x) 返回单个字符串参数的 SHA1 十六进制摘要信息
-- redis.log(level, message) 写入 Redis 服务器日志
-  - redis.LOG_DEBUG 日志级别
-  - redis.LOG_VERBOSE 日志级别
-  - redis.LOG_NOTICE 日志级别
-  - redis.LOG_WARNING 日志级别
-
-```bash
-127.0.0.1:6379> EVAL "return redis.sha1hex('')" 0
-"da39a3ee5e6b40d3255bfef95601890afd80709"
-127.0.0.1:6379> EVAL "return redis.log(redis.LOG_WARNING, 'Something is terribly wrong')" 0
-```
-
-- redis.setresp(x) 设置执行脚本和服务器之间的请求应答协议, 默认值 2. Redis 6.0 支持
-- redis.breakpoint() 在使用 Redis Lua 调试器时触发断点
-- redis.debug(x) 在 Redis Lua 调试器控制台中打印其参数
-- redis.acl_check_cmd(command [,arg...]) 用于检查运行脚本的当前用户是否具有使用给定参数执行给定命令的 ACL 权限, 返回值布尔类型. Redis 7.0 支持
-- [redis.register_function(name, callback, flags, description)](#redis.register_function) Redis 7.0 支持
-- redis.REDIS_VERSION 以字符串形式返回当前 Redis 服务器版本, 格式 MM.mm.PP. Redis 7.0 支持
-- redis.REDIS_VERSION_NUM 以数字形式返回当前 Redis 服务器版本, 格式为十进制值. Redis 7.0 支持
-
-```bash
-127.0.0.1:6379> EVAL "return redis.REDIS_VERSION" 0
-"7.0.5"
-127.0.0.1:6379> EVAL "return redis.REDIS_VERSION_NUM" 0
-(integer) 458757
-```
 
 #### 数据类型转换
 
@@ -1244,7 +1248,7 @@ bit 提供对数字的按位运算
 (integer) 201326592
 ```
 
-### ACL
+## ACL
 
 ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis 客户端在访问 Redis 服务器时, 能够执行的命令和能够获取的 key, 提高操作安全性, 避免对数据造成损坏
 
@@ -1283,7 +1287,7 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 29)     Prints this help.
 ```
 
-#### 规则分类
+### 规则分类
 
 |         参数         | 说明                                                                                    |
 | :------------------: | --------------------------------------------------------------------------------------- |
@@ -1419,7 +1423,7 @@ OK
 OK
 ```
 
-### 事务
+## 事务
 
 === Redis 单条命令是保证原子性的, 但是 Redis 事务不保证原子性 ===
 === Redis 事务没有隔离级别的概念 ===
@@ -1438,7 +1442,7 @@ Redis 事务执行的三个重要保证:
 - 命令入队: 命令不会被立即执行, 而是被放入一个事务队列
 - 执行事务(exec)或丢弃(discard)
 
-#### 事务命令
+### 事务命令
 
 - MULTI 标记一个事务块的开启, 通常返回 ok
 - EXEC 执行事务, 通常返回 ok
@@ -1477,7 +1481,7 @@ QUEUED
 "300"
 ```
 
-#### 编译时错误
+### 编译时错误
 
 ```bash
 127.0.0.1:6379> SET key1 hello
@@ -1497,7 +1501,7 @@ QUEUED
 (nil)
 ```
 
-#### 运行时错误
+### 运行时错误
 
 ```bash
 127.0.0.1:6379> MULTI # 开启事务
@@ -1520,19 +1524,19 @@ QUEUED
 "key2"
 ```
 
-#### 不支持回滚
+### 不支持回滚
 
 - Redis 命令只会因为错误的语法而失败(并且这些问题不能在入队时发现), 或是命令用在了错误类型的键上: 从实用性的角度来说, 失败的命令是由编程错误造成的, 而这些错误应该在开发环境中被发现, 不应该出现在生产环境中
 - 因为不需要对回滚进行支持, 所有 Redis 的内部可以保持简单且快速
 
-### 持久化
+## 持久化
 
 Redis 是基于内存的数据库, 遇到断电就会丢失数据, 持久化就是将内存中的数据保存到磁盘中便于以后使用, Redis 提供了 RDB 和 AOF 两种持久化方式, 默认使用 RDB 方式持久化数据
 Redis 在持久化的过程中, 会先将数据写入到一个临时的文件中, 待持久化过程结束后, 才会用这个临时文件替换赏赐持久化生成的文件
 
 ![redis-4](/images/redis-4.png)
 
-#### 触发方式
+### 触发方式
 
 - 通过 `FLUSHALL`/`FLUSHDB` 命令主动触发
 - 通过 `SAVE`/`BGSAVE` 命令主动触发
@@ -1547,7 +1551,7 @@ save 3600 1 300 100 60 10000
 # save "" 禁用 RDB, 但仍然可以使用 SAVE 和 BGSAVE 命令生成 RDB 文件
 ```
 
-#### RDB
+### RDB
 
 RDB(Redis Database), 在指定的时间间隔以指定的次数将内存中的数据集以快照的方式写入一个二进制文件中, 然后保存到磁盘中, 也就是 snapshot 快照, 默认生成的文件为 dump.rdb
 Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任何 I/O 操作, 这样就保证了 Redis 极高的性能, 如果需要进行大规模数据的恢复,且对于数据恢复的完整性不是非常敏感, 此方式比 AOF 方式更加的高效
@@ -1557,19 +1561,19 @@ Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任
 
 - `redis-check-rdb` 检查 RDB 文件
 
-##### RDB 优点
+#### RDB 优点
 
 - 每隔一段时间完全备份一次
 - 容灾简单, 可远程传输
 - RDB 最大限度地提高了 Redis 的性能
 - 文件较大时重启和恢复速度要快
 
-##### RDB 缺点
+#### RDB 缺点
 
 - 如果备份时间间隔过长, RDB 会丢失较多的数据, 无法处理实时备份
 - RDB 需要经常 fork() 以便使用子进程在磁盘上持久化, 增加 CPU 的负担
 
-#### AOF
+### AOF
 
 ===如果 appendonly.aof 文件有错误, Redis 服务将会启动失败===
 
@@ -1591,26 +1595,26 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 - 以 appendfilename 为前缀命名的增量文件 `appendfilename.*.incr.aof`, 包含在上一个文件之后应用于数据集的其他命令
 - 以 appendfilename 为前缀命名的清单文件 `appendfilename.aof.manifest`, 用于追踪文件及其创建和应用的顺序
 
-##### 重写机制
+#### 重写机制
 
 - `auto-aof-rewrite-percentage 100` AOF 重写的基准值, 当达到 100% 时重写
 - `auto-aof-rewrite-min-size 64mb` 当文件大小达到 64mb 的 100% 时重写
 
 `BGREWRITEAOF` 命令将会在后台开启 AOF 文件重写进程, 创建一个当前 AOF 文件的更小的优化版本, 如果重写失败不会丢失任何数据, 旧的 AOF 文件也不会受到影响
 
-##### AOF 优点
+#### AOF 优点
 
 - AOF 更耐用, 可以在几秒钟内完成备份
 - 当数据过大时, Redis 可以在后台自动重写 AOF, 节省空间
 - AOF 实时性更好, 丢失数据更少, 并且支持配置写入策略
 
-##### AOF 缺点
+#### AOF 缺点
 
 - 对于相同的数据集合, AOF 文件通常会比 RDB 文件大
 - 在特定的 fsync 策略下, AOF 会比 RDB 略慢
 - AOF 恢复速度比 RDB 慢
 
-#### RDB 和 AOF 组合
+### RDB 和 AOF 组合
 
 - `aof-use-rdb-preamble yes` 是否开始混合模式, 默认 yes
 
@@ -1618,7 +1622,7 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 - AOF 做增量持久化
   如果同时开始 RDB 和 AOF 持久化时, Redis 重启时只会加载 AOF 文件, 不会加载 RDB 文件
 
-### 主从复制
+## 主从复制
 
 将一台 Redis 服务器的数据,复制到其他的 Redis 服务器. 前者称为主节点(Master/Leader),后者称为从节点(Slave/Follower), 数据的复制是单向的！只能由主节点复制到从节点(主节点以写为主、从节点以读为主)—— 读写分离.
 ===每台 Redis 服务器都是主节点===
@@ -1640,14 +1644,14 @@ repl_backlog_first_byte_offset:0
 repl_backlog_histlen:0
 ```
 
-#### 作用
+### 作用
 
 - 数据冗余: 主从复制实现了数据的热备份, 是持久化之外的一种数据冗余的方式
 - 故障恢复: 当主节点故障时, 从节点可以暂时替代主节点提供服务, 是一种服务冗余的方式
 - 负载均衡: 在主从复制的基础上, 配合读写分离, 由主节点进行写操作, 从节点进行读操作, 分担节点的负载; 尤其是在多读少写的场景下, 通过多个从节点分担负载, 提高并发量
 - 高可用(集群)基石: 主从复制还是哨兵和集群能够实施的基础
 
-#### 复制原理
+### 复制原理
 
 > Redis 2.8 以上使用 PSYNC 命令完成同步
 
@@ -1661,7 +1665,7 @@ repl_backlog_histlen:0
 - 全量复制: 从节点接收到数据库文件后, 将其全部加载到内存中
 - 增量复制: 主节点将新的所有收集到的修改命令依次传给从节点, 完成同步
 
-#### 命令模式
+### 命令模式
 
 ===每台 Redis 服务器都是主节点===, 只用配置从服务器即可
 
@@ -1714,7 +1718,7 @@ OK
 
 - `REPLICAOF NO ONE` 将从服务器更改为主服务器
 
-#### 配置文件模式
+### 配置文件模式
 
 **永久有效**, 但是缺少可扩展性, 每次修改主从节点配置都需要重启 Redis 服务
 
@@ -1863,7 +1867,7 @@ Warning: Using a password with '-a' or '-u' option on the command line interface
 3) "name"
 ```
 
-### 哨兵模式
+## 哨兵模式
 
 哨兵模式是一种特殊的模式, Redis 提供了启动哨兵的工具命令, 哨兵是一个独立的进程运行
 
@@ -1874,20 +1878,20 @@ Warning: Using a password with '-a' or '-u' option on the command line interface
 - 不能水平扩容, 不能动态的增、删节点
 - 高可用特性会受到主节点的内存的限制
 
-#### 执行任务
+### 执行任务
 
 - 监控: 定期检查主节点和从节点的健康状态, 包括发送 `PING` 命令、检查返回结果和检测通信故障
 - 自动故障转移: 当一个主节点不能正常工作时, Sentinel 会开始一次自动故障迁移操作, 它会将失效主节点的其中一个从节点升级为新的主节点, 并让失败的主节点的其他从节点改为复制新的主节点. 当客户端试图连接失效的主节点时, 集群也会向客户端返回新的主节点的地址, 使得集群可以使用新主节点代替失效节点
 - 高可用性切换: 选举新的主节点后, 哨兵节点会自动将从节点切换为新的主节点, 并通知其它从节点更新复制目标
 - 配置提供者: 当客户端连接到哨兵节点时, 哨兵节点可以根据 Redis 集群的配置信息, 将其重定向到正确的主节点
 
-#### 选举算法
+### 选举算法
 
 首先, 领头 sentinel 根据从节点的信号反馈将从节点列表中失联的节点剔除, 按照从节点的优先级(replica-priority)进行排序并选择优先级最高的从节点, 如果有多个具有相同最高优先级的从节点, 那么, 领头 sentinel 将多个具有相同最高优先级的从节点按照复制偏移量(复制积压缓冲区中存储的写操作的字节占用累加, 主从节点进行 `PSYNC` 使用)进行排序并选择其中偏移量最大(偏移量最大保存的数据最新)的从节点, 如果有多个优先级最高, 复制偏移量最大的从节点, 那么 领头 sentinel 将按照从节点的运行 ID 进行排序并选择其中 ID 最小的从节点
 
 replica-priority > replica-offset > run-ID
 
-#### 配置方式
+### 配置方式
 
 - 方式一: 使用命令指定参数 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
 - 方式二: 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
@@ -1946,7 +1950,7 @@ sentinel deny-scripts-reconfig yes
 ![redis-2](/images/redis-2.png)
 ![redis-3](/images/redis-3.png)
 
-#### 一主三从哨兵配置
+### 一主三从哨兵配置
 
 - 3 个哨兵配置
 
@@ -2019,7 +2023,7 @@ replicaof 127.0.0.1 6379
 [root@centos7 ~]# redis-sentinel .config/sentinel46379.conf # 启动哨兵
 ```
 
-### 集群模式
+## 集群模式
 
 > Redis 3.0 支持
 
@@ -2029,7 +2033,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 
 官方推荐的方案是将 node 配置成主从结构, 即 1:n, 如果主节点失效, Redis Cluster 根据选举算法从 slave 节点中选择一个升级为主节点继续提供服务, 如果失效的主节点恢复正常后则作为新的主节点的从节点
 
-#### Cluster Slot
+### Cluster Slot
 
 > 从心跳包的大小、网络带宽、心跳并发、压缩率鞥维度考虑, 16384 个插槽更具有优势且能满足业务需求
 
@@ -2037,7 +2041,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 - Redis Cluster 不太可能扩展到超过 1000 个主节点, 太多可能导致网络拥堵
 - 16384 个插槽比较合适, 当集群扩展到 1000 个节点时, 也能确保每个主节点有足够的插槽
 
-#### 集群特点
+### 集群特点
 
 - 数据自动分片: 集群自动将数据分布到不同的节点上, 实现数据的均衡存储和负载均衡
 - 自动故障转移: 当主节点发生故障时, 集群会自动进行故障检测, 并将从节点升级为新的主节点, 以保证系统的可用性
@@ -2047,7 +2051,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 - 扩展性好: 通过使用 Redis 集群, 可以便利地扩展系统的容量和性能, 将数据和请求分布到多个节点上, 提高整体系统的吞吐量和承载能力
 - 高可用性: 通过 Redis 集群, 可以将数据分布到多个节点上, 实现数据的冗余备份和容错能力, 当部分节点不可用时, 集群仍然可以继续提供服务, 保证系统的可用性
 
-#### 命令
+### 命令
 
 - redis-cli \-\-cluster help # 查看集群命令帮助信息
 - redis-cli \-\-cluster create host1:port1 ... hostN:portN # 创建指定 IP 和 Port 的服务器作为集群
@@ -2085,9 +2089,9 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 
 使用 `redis-cli -c -p port` 命令接入集群节点
 
-#### 集群部署
+### 集群部署
 
-##### 编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line -->
+#### 编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line -->
 
 创建 Redis 服务器配置文件, 引入默认配置文件并覆盖配置项, 开启集群模式
 创建 `cluster6379.conf`, `cluster6380.conf`, `cluster6381.conf`, `cluster6382.conf`, `cluster6383.conf`, `cluster6384.conf` 6 个文件
@@ -2144,7 +2148,7 @@ cluster-node-timeout 15000
 # cluster-announce-bus-port 16379
 ```
 
-##### 启动 Redis 服务器
+#### 启动 Redis 服务器
 
 启动所有的 redis 服务器, 使用 `ps -ef | grep redis` 命令查看 redis 服务器进程
 redis 进程后中括号中的 cluster 表示 redis 工作在集群模式下, 需要进一步配置 redis 的集群关系
@@ -2165,7 +2169,7 @@ root      3755     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6383 [clu
 root      3761     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6384 [cluster]
 ```
 
-##### 创建集群节点
+#### 创建集群节点
 
 使用 `redis-cli --cluster create --cluster-replicas arg hostN:portN` 命令创建集群节点, arg 参数表示集群主从节点的数量比例, 1 表示 1:1
 创建过程中提示输入 `yes` 表示接受当前配置信息并写入指定文件中, 最后输出 `[OK] All 16384 slots covered.` 表示集群创建完成
@@ -2226,7 +2230,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 [OK] All 16384 slots covered.
 ```
 
-##### 连接 Redis 服务器
+#### 连接 Redis 服务器
 
 使用 `redis-cli -c -p port` 命令接入集群节点
 
@@ -2236,7 +2240,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 [root@centos7 redis-cluster]# redis-cli -c -p 6379
 ```
 
-##### 集群命令
+#### 集群命令
 
 - CLUSTER HELP 在 Redis 命令行中查看所有集群操作命令
 
@@ -2254,7 +2258,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 - CLUSTER FAILOVER 手动启动集群故障转移操作, 此命令只能发送给集群从节点
 - CLUSTER FLUSHSLOTS 清空当前节点的所有插槽
 
-##### 查看节点信息
+#### 查看节点信息
 
 - 方式一: 命令行中使用 `redis-cli --cluster info host:port` 命令查看指定节点的信息
 
@@ -2336,7 +2340,7 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529165000 2 connected
 ```
 
-##### 数据操作
+#### 数据操作
 
 设置键时, 根据键散列后的值所在的插槽位置自动切换到插槽所在的节点上
 
@@ -2365,7 +2369,7 @@ OK
 "beijing"
 ```
 
-##### 测试节点
+#### 测试节点
 
 使用 `kill` 命令停止端口号为 6381 的 redis 进程时, 集群切换 6381 的状态为失联, 同时将从节点 6384 升级为主节点, 等到 6381 恢复后变为 6384 的从节点
 
@@ -2388,7 +2392,7 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529244000 2 connected
 ```
 
-##### 查看节点配置文件
+#### 查看节点配置文件
 
 ```bash
 [root@centos7 redis-cluster]# cat nodes-6381.conf
@@ -2401,7 +2405,7 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 vars currentEpoch 8 lastVoteEpoch 7
 ```
 
-##### 添加新节点
+#### 添加新节点
 
 按照 [编辑配置文件](#bjpzwj) 创建并修改 `cluster6385.conf` 文件
 启动服务器 `redis-server cluster6385.conf`, 同时查看服务器是否正常启动
@@ -2426,59 +2430,59 @@ vars currentEpoch 8 lastVoteEpoch 7
 0.00 keys per slot on average.
 ```
 
-#### 集群优点
+### 集群优点
 
 - 实现扩容
 - 分担压力
 - 无中心配置相对简单
 
-#### 集群缺点
+### 集群缺点
 
 - 多建操作不支持, 例如 `MSET` 命令设置多个键不支持, 需要使用分组方式 `MSET name{user} zhangsan age{user} 20 addr{user} beijing`
 - 多键的 Redis 事务不支持
 - Lua 脚本不支持
 - 迁移方案需要整体迁移而不是逐步过渡, 复杂度较大
 
-### 缓存穿透、击穿、雪崩
+## 缓存穿透、击穿、雪崩
 
-#### 缓存穿透
+### 缓存穿透
 
 缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃
 
-##### 解决办法 <!-- markdownlint-disable-line -->
+#### 解决办法 <!-- markdownlint-disable-line -->
 
 - 接口层增加校验, 如用户鉴权校验、id 做基础校验、 id <= 0 的直接拦截
 - 从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击
 - 布隆过滤器, 类似于一个 hash set, 用于快速判断某个元素是否存在于集合中, 其典型的应用场景就是快速判断一个 key 是否存在于某容器, 不存在就直接返回. 布隆过滤器的关键就在于 hash 算法和容器大小
 
-#### 缓存击穿
+### 缓存击穿
 
 缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期), 在高并发下对同一 key 的操作. 如果在缓存中没有获取到数据, 又同时在数据库中获取到数据, 引起数据库压力过大.
 
-##### 解决办法 <!-- markdownlint-disable-line -->
+#### 解决办法 <!-- markdownlint-disable-line -->
 
 - 设置热点数据永不过期
 - 接口限流与熔断、降级, 重要的接口一定要做好限流策略, 防止用户恶意刷接口, 同时要降级准备, 当接口中的某些服务不可用时, 进行熔断, 失败快速返回机制
 - 加互斥锁
 
-#### 缓存雪崩
+### 缓存雪崩
 
 缓存雪崩是指缓存中数据大批量到过期时间, 而查询数据量巨大, 引起数据库压力过大甚至崩溃. 和缓存击穿不同的是, 缓存击穿指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查不到从而查询数据库
 
-##### 解决办法 <!-- markdownlint-disable-line -->
+#### 解决办法 <!-- markdownlint-disable-line -->
 
 - 缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生
 - 如果缓存数据库是分布式部署, 将热点数据均匀分布在不同的缓存数据库中
 - 设置热点数据永不过期
 
-### 慢查询
+## 慢查询
 
 Redis 慢查询和 Redis 定义慢查询的 `阈值` 有关
 
 `slowlog-log-slower-than 10000` 单位微秒, 当 Redis 命令的执行时间超过该值时, Redis 将其记录在 Redis 的慢查询日志中
 `slowlog-max-len 128` 记录的条数超过时会只存储最新的 slowlog-max-len 条
 
-#### 使用复杂度过高的命令
+### 使用复杂度过高的命令
 
 复杂的命令一般指 O(N)以上的命令, 如 sort、sunion、zunionstore 聚合类的命令, 或是 O(N)类的命令, 对于 O(N)以上的命令, Redis 在操作内存数据时耗时过高, 会耗费更多的 CPU 资源, 导致查询变慢
 Redis 是单线程处理客户端请求的, 如果遇到处理上面的请求时, 就会导致后面的请求发生排队, 对于客户端来说响应时间就会变长
@@ -2488,7 +2492,7 @@ Redis 是单线程处理客户端请求的, 如果遇到处理上面的请求时
 - 尽量不使用 O(N)以上的命令, 某些数据需要排序或者聚合操作时, 可以放在客户端处理
 - 执行 O(N)命令时, 保证 N 尽量的小(推荐 N <= 300), 每次获取尽量少的数据, 让 Redis 可以及时处理返回
 
-#### 大 Key 问题
+### 大 Key 问题
 
 通常是 key 对应的 value 值过大, 此类问题在 SET/DEL 这类命令中也会出现慢查询
 SET/DEL 的过程
@@ -2506,7 +2510,7 @@ SET/DEL 的过程
 
 `lazyfree-lazy-user-del no` 修改 `DEL` 默认命令的行为使其更接近于 `UNLINK`命令, 默认不开启
 
-#### 集中过期
+### 集中过期
 
 Redis 过期策略
 
