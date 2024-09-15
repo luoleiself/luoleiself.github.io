@@ -167,7 +167,8 @@ class Button extends Component {
     )
   }
 }
-// 方式2：类组件外部绑定 Button.contextType = ThemeContext;
+// 方式2：类组件外部绑定
+// Button.contextType = ThemeContext;
 
 // 等同于函数式组件使用 useContext;
 function Button() {
