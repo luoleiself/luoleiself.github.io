@@ -3948,6 +3948,9 @@ dispatch(fetchUserById(123));
 - selectId 可选, 函数, 接收一个 entity 实例并返回一个唯一 id, 如果未提供则默认为 entity => entity.id
 - sortComparer 可选, 函数, 接收两个 entity 实例, 返回一个标准的 `Array.sort()` 排序之后的结果 (1, 0, -1) 以指示它们的排序相对排序, 如果未提供将不会排序, 也不会保证排序
 
+- getInitialState() 如果传入对象参数, 将被合并到 initialState 中并返回
+- getSelectors() 生成一组标准的 selector 函数
+
 - addOne/addMany 向 state 添加 items
 - setOne/setMany 添加新 items 或替换现有 items
 - setAll 替换所有 items
@@ -3955,9 +3958,6 @@ dispatch(fetchUserById(123));
 - removeAll 移除所有 items
 - updateOne/updateMany 通过提供部分值更新现有 items
 - upsertOne/upsertMany 添加新 items 或更新现有 items
-
-- getInitialState() 如果传入对象参数, 将被合并到 initialState 中并返回
-- getSelectors() 生成一组标准的 selector 函数
 
 ```jsx
 import {createSlice, createAsyncThunk, createEntityAdapter} from '@reduxjs/toolkit';
@@ -3987,7 +3987,7 @@ const todosSlice = createSlice({
   reducers: {
     todoDeleted: todosAdapter.removeOne, // 根据 id 删除 todo
     completeTodosCleard(state, action) {
-      const completeIds = Object.values(state.entities)
+      const completedIds = Object.values(state.entities)
         .filter(todo => todo.complete)
         .map(todo => todo.id);
       // 删除所有已完成的 todo
