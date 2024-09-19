@@ -3504,15 +3504,20 @@ generatePath('/users/:id/:name', {id: 42, name: 'zhangsan'}); // /users/42/zhang
 - middleware 函数, 接收 `getDefaultMiddleware` 函数作为参数, 并返回一个中间件数组, 如果未提供, configureStore 将调用 `getDefaultMiddleware` 设置中间件数组
 - devTools 是否设置 Redux Devtools, 默认 true
 - preloadedState 初始化状态
-- enhancers 增强器函数, 和 middleware 参数作用类似
+- enhancers 增强器函数, 和 middleware 参数作用类似, 使用 `getDefaultEnhancers` 函数获取默认的增强器列表
 
 ```jsx
 import {configureStore} from '@reduxjs/toolkit';
+import {offline} from '@redux-offline/redux-offline';
+import offlineConfig from '@redux-offline/redux-offline/lib/defaults'
 
 const store = configureStore({
   reducer: {
+    counter: counterSlice.reducer
     // ...
-  }
+  },
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(thunk),
+  enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(offline(offlineConfig)))
 });
 ```
 
@@ -3521,12 +3526,6 @@ const store = configureStore({
 thunk 中间件实现原理
 
 ```jsx
-import {configureStore} from '@reduxjs/toolkit';
-const store = configureStore({
-  reducer: {},
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(thunk)
-});
-
 // thunk 中间件实现原理
 function thunk(store){
   const next = store.dispatch; // 缓存原 dispatch 方法
@@ -3622,29 +3621,34 @@ function someFn(action: Action){
 - 包含 `getInitialState` 函数, 调用 `getInitialState` 返回初始状态, 通常用于测试或者配合 React [useReducer](#useReducer) Hook
 
 ```jsx
-import {createReducer} from '@reduxjs/toolkit';
-
+import {createReducer, createAction} from '@reduxjs/toolkit';
 const reducer = createReducer(initialState, builderCallback);
 
 // 普通 reducer
 function coutenReducer(state = initialState, action){
   switch(aciton.type){
-    case 'ADD':
-      return {...state, value: action.payload}
-    case 'DELETE':
-      return {...state, value: action.payload}
+    case 'increment':
+      return {...state, value: state.value++}
+    case 'decrement':
+      return {...state, value: state.value--}
+    case 'incrementByAmount':
+      return {...state, value: state.value + action.payload}
     default:
       return {...state}
   }
 }
 
 // createReducer
+const increment = createAction('counter/increment');
+const decrement = createAction('counter/decrement');
+const incrementByAmount = createAction('counter/incrementByAmount');
+
 const counterReducer = createReducer(initialState, builder => {
-  builder.addCase('ADD', (state, action) => {
+  builder.addCase(increment, (state, action) => {
     state.value++; // immer 创建的 state 副本, 直接修改
-  }).addCase('DELETE', (state, action) => {
+  }).addCase(decrement, (state, action) => {
     state.value--;
-  }).addCase('ADD_BY_AMOUNT', (state, action) => {
+  }).addCase(incrementByAmount, (state, action) => {
     state.value += action.payload;
   }).addMatcher((action) => isMatchedAction(action.type), (state, action) => {
     // ...
@@ -3864,7 +3868,7 @@ console.log(
 )
 ```
 
-#### createAsyncThunk
+#### createAsyncThunk <em id="createAsyncThunk"></em> <!--markdownlint-disable-line-->
 
 接收一个 [actionCreator](#createAction)和一个回调函数并返回一个 Promise, 同时会创建三个 actionCreator 分别对应 pending, fulfilled, rejected 的状态, 不会生成 reducer
 
@@ -4037,6 +4041,24 @@ function App(){
   )
 }
 ```
+
+#### nanoid
+
+生成一个非加密安全的字符串 id, 通常被用作 [createAsyncThunk](#createAsyncThunk) 的 request IDs.
+
+```jsx
+import {nanoid} from '@reduxjs/toolkit';
+console.log(nanoid()); // 'dgPXxUz_6fWIQBD8XmiSy'
+```
+
+#### miniSerializeError
+
+createAsyncThunk 默认的错误序列化函数
+
+#### copyWithStructuralSharing
+
+递归的将两个相似的对象合并在一起, 如果值看起来相同, 则保留现有的引用. 这在内部用于帮助确保重新获取的数据继续使用相同的引用,
+除非新数据实际发生了变化, 以避免不必要的重新呈现. 否则每次重新获取都可能导致整个数据集被替换, 所有消费组件总是重新渲染
 
 #### @reduxjs/toolkit/query <em id="RTK-Query"></em> <!--markdownlint-disable-line-->
 
