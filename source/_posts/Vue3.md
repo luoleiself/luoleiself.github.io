@@ -2850,9 +2850,9 @@ import { FooBar as FooBarChild } from './components';
 ```html
 <script setup>
   const vMyDirective = {
-    mounted(el, binding, vnode prevVnode){},
-    updated(el, binding, vnode prevVnode){},
-    unmounted(el, binding, vnode prevVnode){}
+    mounted(el, binding, vnode, prevVnode){},
+    updated(el, binding, vnode, prevVnode){},
+    unmounted(el, binding, vnode, prevVnode){}
   }
 </script>
 <template>
@@ -3402,7 +3402,7 @@ module 属性可以接受一个值作为自定义注入名称代替 `$style`
 用于给 vnode 增加自定义指令
 
 - 第一个参数为要添加指令的 vnode
-- 第二个参数为自定义指令数组, 每个自定义指令表示为 `[Directive, value, argument, modifiers]` 形式的数组
+- 第二个参数为自定义指令数组, 每个自定义指令表示为 `[directive, value, argument, modifiers]` 形式的数组
   - [directive] 指令本身
   - [directive, value] 上述内容, 指令的值
   - [directive, value, arg] 上述内容, 一个 String 参数,eg: v-on:click 中的 click
