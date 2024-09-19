@@ -87,7 +87,7 @@ set-max-intset-entries 512
 127.0.0.1:6379> SREM set world gg
 (integer) 2
 # 查看集合为空的所有成员
-127.0.0.1:6379> SMEMBERS key
+127.0.0.1:6379> SMEMBERS set
 (empty array)
 ```
 
