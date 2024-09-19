@@ -1595,12 +1595,7 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 - 以 appendfilename 为前缀命名的增量文件 `appendfilename.*.incr.aof`, 包含在上一个文件之后应用于数据集的其他命令
 - 以 appendfilename 为前缀命名的清单文件 `appendfilename.aof.manifest`, 用于追踪文件及其创建和应用的顺序
 
-#### 重写机制
-
-- `auto-aof-rewrite-percentage 100` AOF 重写的基准值, 当达到 100% 时重写
-- `auto-aof-rewrite-min-size 64mb` 当文件大小达到 64mb 的 100% 时重写
-
-- BGREWRITEAOF 命令将会在后台开启 AOF 文件重写进程, 创建一个当前 AOF 文件的更小的优化版本, 如果重写失败不会丢失任何数据, 旧的 AOF 文件也不会受到影响
+如果同时开始 RDB 和 AOF 持久化时, Redis 重启时只会加载 AOF 文件, 不会加载 RDB 文件
 
 #### AOF 优点
 
@@ -1614,13 +1609,22 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 - 在特定的 fsync 策略下, AOF 会比 RDB 略慢
 - AOF 恢复速度比 RDB 慢
 
+#### 重写机制
+
+- `auto-aof-rewrite-percentage 100` AOF 重写的基准值, 当达到 100% 时重写
+- `auto-aof-rewrite-min-size 64mb` 当文件大小达到 64mb 的 100% 时重写
+
+- BGREWRITEAOF 命令将会在后台开启 AOF 文件重写进程, 创建一个当前 AOF 文件的更小的优化版本, 如果重写失败不会丢失任何数据, 旧的 AOF 文件也不会受到影响
+
 ### RDB 和 AOF 组合
+
+fork 出的子进程先将共享的内存副本全量的以 RDB 格式写入 AOF 文件, 然后将 aof_rewrite_buf 重写缓冲区的增量命令以 AOF 格式写入到文件(在 RDB 格式数据的后面追加),
+写入完成后通知主进程更新统计信息, 并将新的含有 RDB 格式和 AOF 格式的 AOF 文件替换旧的 AOF 文件. 新的 AOF 文件前半段是 RDB 格式的全量数据后半段是 AOF 格式的增量数据.
 
 - `aof-use-rdb-preamble yes` 是否开始混合模式, 默认 yes
 
 - RDB 做全量持久化
 - AOF 做增量持久化
-  如果同时开始 RDB 和 AOF 持久化时, Redis 重启时只会加载 AOF 文件, 不会加载 RDB 文件
 
 ## 主从复制
 
