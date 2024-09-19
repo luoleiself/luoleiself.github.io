@@ -1559,7 +1559,7 @@ Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任
 - `dbfilename dump.rdb` 默认文件名
 - `dir ./` 默认存储目录
 
-- `redis-check-rdb` 检查 RDB 文件
+- redis-check-rdb 检查 RDB 文件
 
 #### RDB 优点
 
@@ -1600,7 +1600,7 @@ AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢�
 - `auto-aof-rewrite-percentage 100` AOF 重写的基准值, 当达到 100% 时重写
 - `auto-aof-rewrite-min-size 64mb` 当文件大小达到 64mb 的 100% 时重写
 
-`BGREWRITEAOF` 命令将会在后台开启 AOF 文件重写进程, 创建一个当前 AOF 文件的更小的优化版本, 如果重写失败不会丢失任何数据, 旧的 AOF 文件也不会受到影响
+- BGREWRITEAOF 命令将会在后台开启 AOF 文件重写进程, 创建一个当前 AOF 文件的更小的优化版本, 如果重写失败不会丢失任何数据, 旧的 AOF 文件也不会受到影响
 
 #### AOF 优点
 
