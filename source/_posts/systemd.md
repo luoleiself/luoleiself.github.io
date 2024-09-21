@@ -708,7 +708,7 @@ systemd 系统控制和服务管理工具的主命令, systemd 开启和监督�
 - OnActiveSec 当 timers.target 启动多久后才执行当前 Unit
 - OnStartupSec 当 Systemd 第一次启动后多久才执行当前 Unit
 
-#### 配置 service
+#### 配置 redis.service
 
 - Redis.service
 
@@ -723,6 +723,7 @@ ExecStart=/usr/local/bin/redis-server /root/workspace/redis6379.conf
 PrivateTmp=true
 
 [Install]
+Alias=rs
 WantedBy=multi-user.target
 ```
 
