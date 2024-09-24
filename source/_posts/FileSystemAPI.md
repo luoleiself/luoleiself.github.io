@@ -30,7 +30,14 @@ tags:
  */
 ```
 
-### [FileSystemHandle](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle)接口
+`window.showOpenFilePicker`, `window.showSaveFilePicker`, `window.showDirectoryPicker` API 只能由用户行为触发, 程序主动调用报安全错误
+SecurityError: Failed to execute 'showDirectoryPicker' on 'Window': Must be handling a user gesture to show a file picker.
+
+`createSyncAccessHandle()`, [FileSystemSyncAccessHandle](#FileSystemSyncAccessHandle) 只能在专用的 web worker 中使用
+
+`navigator.storage` 只读属性返回一个单例的 StorageManager 对象, 只能在 HTTPS 中使用
+
+## [FileSystemHandle](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle)接口
 
 是 File System API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 `FileSystemFileHandle` 和 `FileSystemDirectoryHandle`
 
@@ -39,19 +46,19 @@ tags:
 
 <!-- more -->
 
-#### FSH 实例属性
+### FSH 实例属性
 
 - kind 返回条目的类型, `file` 表示文件, `directory` 表示目录
 - name 返回关联条目的名称
 
-#### FSH 实例方法
+### FSH 实例方法
 
 - isSameEntry() 比较两者 handle 以查看相关条目(文件或目录)是否匹配
 - queryPermission() 查询当前句柄的当前权限状态
 - remove() 请求从底层文件系统中删除由句柄表示的条目
 - requestPermission() 请求文件句柄的读取或读写权限
 
-#### FileSystemFileHandle <em id="FileSystemFileHandle"></em> <!--markdownlint-disable-line-->
+### FileSystemFileHandle <em id="FileSystemFileHandle"></em> <!--markdownlint-disable-line-->
 
 表示一个指向文件系统条目的句柄
 
@@ -64,6 +71,8 @@ tags:
     - types 允许选择文件的对象数组
       - description 文件类型的可选描述
       - accept 键为 MIME 类型, 值为文件扩展名的数组
+
+> 只能由用户行为触发, 程序主动调用报安全错误
 
 ```javascript
 (async function () {
@@ -100,6 +109,9 @@ tags:
 - [window.showSaveFilePicker](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/showSaveFilePicker) 显示一个允许用户保存文件的文件选择器, 通过选择现有文件或者输入新文件的名称, 返回一个已兑现的 `FileSystemFileHandle` 对象
 
   - options 参数同 [window.showOpenFilePicker](#showOpenFilePicker)
+    - suggestedName 建议的文件名
+
+> 只能由用户行为触发, 程序主动调用报安全错误
 
 ```javascript
 (async function () {
@@ -121,11 +133,13 @@ tags:
 })();
 ```
 
-##### getFile()
+#### getFile()
 
 返回一个已兑现的由句柄表示的条目在磁盘上的状态的对象
 
-##### createSyncAccessHandle()
+#### createSyncAccessHandle()
+
+> 只能在专用的 web worker 中使用
 
 返回一个已兑现的可用于同步读取和写入文件的 [FileSystemSyncAccessHandle](#FileSystemSyncAccessHandle) 对象
 
@@ -152,7 +166,7 @@ tags:
 })();
 ```
 
-##### createWritable()
+#### createWritable()
 
 返回一个已兑现的可用于写入文件的新创建的 [FileSystemWritableFileStream](#FileSystemWritableFileStream) 对象
 
@@ -168,7 +182,7 @@ tags:
 })();
 ```
 
-#### FileSystemDirectoryHandle <em id="FileSystemDirectoryHandle"></em> <!--markdownlint-disable-line-->
+### FileSystemDirectoryHandle <em id="FileSystemDirectoryHandle"></em> <!--markdownlint-disable-line-->
 
 表示一个指向文件系统目录的句柄
 
@@ -177,6 +191,8 @@ tags:
     - id 指定 id, 浏览器可以为不同的 id 记住不同的目录
     - mode 默认 read, 标识当前的句柄模式, 支持 readwrite
     - startIn 一个 FileSystemHandle 对象或一个已知的(desktop, documents, downloads, music, pictures, videos)目录, 用于指定选择器的起始目录
+
+> 只能由用户行为触发, 程序主动调用报安全错误
 
 ```javascript
 (async function () {
@@ -201,19 +217,20 @@ tags:
 ```
 
 - [navigator.storage.getDirectory()](https://developer.mozilla.org/zh-CN/docs/Web/API/StorageManager/getDirectory) 获取 FileSystemDirectoryHandle 对象的引用, 允许访问存储在 源私有文件系统(OPFS) 中的目录及目录的内容
+  - 只能在 HTTPS 中使用
 - [源私有文件系统 OPFS](https://developer.mozilla.org/zh-CN/docs/Web/API/File_System_API/Origin_private_file_system) 作为 File System API 的一部分提供了一个存储端点, 它是页面所属的源专用的, 并且不像常规文件系统那样对用户可见, 它提供了一种特殊类型文件的访问能力, 这种文件经过高度性能优化, 并提供对其内容的原地写入访问特性
 
 ```javascript
 (async function(){
-  // 获取文件句柄
+  // 获取文件句柄, 只能在 HTTPS 中使用
   const root = await navigator.storage.getDirectory();
   const fileHandle = await root.getFileHandle('temp.txt', {create: true});
-  // 获取同步访问句柄
+  // 获取同步访问句柄, 只能在专用的 web worker 中使用
   const accessHandle = await fileHandle.createSyncAccessHandle();
 })();
 ```
 
-##### getDirectoryHandle()
+#### getDirectoryHandle()
 
 返回一个 Promise, 兑现一个调用此方法的目录句柄内指定名称的子目录的 [FileSystemDirectoryHandle](#FileSystemDirectoryHandle)
 
@@ -228,7 +245,7 @@ tags:
 })();
 ```
 
-##### getFileHandle()
+#### getFileHandle()
 
 返回一个 Promise, 兑现一个调用此方法的目录句柄内指定名称的文件的 [FileSystemFileHandle](#FileSystemFileHandle)
 
@@ -243,7 +260,7 @@ tags:
 })();
 ```
 
-##### removeEntry()
+#### removeEntry()
 
 尝试异步删除指定名称的文件或目录
 
@@ -258,7 +275,7 @@ tags:
 })();
 ```
 
-##### resolve()
+#### resolve()
 
 返回一个 Promise, 兑现一个包含从父目录前往指定子条目中间的目录的名称的数组, 数组的最后一项是子条目的名称
 
@@ -276,7 +293,7 @@ tags:
 })();
 ```
 
-##### entries()
+#### entries()
 
 返回给定对象自己的可枚举属性对的新**异步迭代[key, value]**器
 
@@ -290,31 +307,33 @@ tags:
 })();
 ```
 
-##### keys()
+#### keys()
 
 返回一个新的**异步迭代**器, 其中包含每个项目的键 `FileSystemDirectoryHandle`
 
-##### values()
+#### values()
 
 返回一个新的**异步迭代**器, 其中包含每个项目的值 `FileSystemDirectoryHandle`
 
-#### FileSystemSyncAccessHandle <em id="FileSystemSyncAccessHandle"></em> <!--markdownlint-disable-line-->
+### [FileSystemSyncAccessHandle](#https://developer.mozilla.org/zh-CN/docs/Web/API/FileSystemSyncAccessHandle) <em id="FileSystemSyncAccessHandle"></em> <!--markdownlint-disable-line-->
+
+> 只能在专用的 web worker 中使用
 
 表示一个指向文件系统条目的同步句柄
 
-##### close()
+#### close()
 
 关闭一个打开的同步文件句柄, 禁止之后对其的任何操作并且释放之前加在与文件句柄相关联的文件上的独占锁
 
-##### flush()
+#### flush()
 
 将通过 write 方法对句柄相关联的文件所做的所有更改持久化到磁盘上
 
-##### getSize()
+#### getSize()
 
 返回与句柄相关联文件的字节大小
 
-##### read()
+#### read()
 
 将与句柄相关联文件的内容读取到指定的缓冲区中, 可选择在给定的偏移处开始读取
 
@@ -336,7 +355,7 @@ tags:
 })();
 ```
 
-##### truncate()
+#### truncate()
 
 将与句柄相关联文件的大小调整为指定的字节数
 
@@ -347,7 +366,7 @@ tags:
 accessHandle.truncate(0);
 ```
 
-##### write()
+#### write()
 
 将指定缓冲区中的内容写入到与句柄相关联的文件, 可选择在指定的偏移处开始写入
 
@@ -368,7 +387,7 @@ accessHandle.truncate(0);
 })();
 ```
 
-#### FileSystemWritableFileStream <em id="FileSystemWritableFileStream"></em> <!--markdownlint-disable-line-->
+### FileSystemWritableFileStream <em id="FileSystemWritableFileStream"></em> <!--markdownlint-disable-line-->
 
 表示一个操作磁盘上单个文件的 WritableStream 对象, 通过 FileSystemFileHandle.createWritable() 方法访问
 
