@@ -37,7 +37,7 @@ tags:
 
 2. 在 "证书" 对话框中点击 "安装证书"
    ![charles-2](/images/charles-2.jpg)
-3. 在 "证书导入向导" 对话框中选择 "本地计算机", 点击 "下一步"
+3. 在 "证书导入向导" 对话框中选择 "当前用户" 或者 "本地计算机" 均可, 点击 "下一步"
    ![charles-3](/images/charles-3.jpg)
 4. 在 "证书导入向导" 对话框中选择 "将所有的证书都放入下列存储", 点击 "浏览"
    ![charles-4](/images/charles-4.jpg)
@@ -47,6 +47,7 @@ tags:
    ![charles-10](/images/charles-10.jpg)
 7. 点击 "确定" 完成证书添加
    ![charles-6](/images/charles-6.jpg)
+8. charles 部分版本提示不能抓 HTTPS 的, 在 SSL Proxing Settings 下 Add \*:\* 允许所有 host 和端口
 
 ### 手机添加 charles 证书
 
@@ -60,7 +61,7 @@ tags:
 3. 浏览器地址中输入 chls.pro/ssl 下载手机证书, 如果手机绑定代理后无法联网可以先去掉代理
 4. 安卓手机双击已下载证书, 在弹出的对话框填写以下信息并确定
    1. 输入 "证明名称(可任意起名)", 后期删除证书时可根据此名称查找
-   2. 凭证用途 默认为 "VPN 和应用", 如果改为 WLAN 会导致无效
+   2. 凭证用途 设置为 "VPN 和应用", 改为 WLAN 会导致无效
 5. 苹果手机打开设置 -> 通用 -> 关于本机 -> 证书信任设置 -> 找到已下载的 charles 证书打开信任
 6. 使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试
    ![charles-7](/images/charles-7.jpg)
