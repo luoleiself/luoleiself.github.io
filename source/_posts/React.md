@@ -894,6 +894,7 @@ function Button(){
   - prevState 第一个参数为上一次调用 action 函数的返回值, 第一次调用时传入的是 initialState
   - formData 余下的参数为普通表单动作接到的参数
 - initialState state 的初始值
+- permalink 可选,
 
 返回值, 当前的 state 和一个新的 action 函数用于 form 组件的 action 参数或表单中任意一个 button 组件的 formAction 参数中传递
 
@@ -1196,7 +1197,7 @@ function App(){
   const deferredQuery = useDeferredValue(query);
   const isStale = query !== deferredQuery;
   
-  const sty = {
+  const style = {
     opacity: isStale ? 0.5 : 1,
     transition: isStale ? 'opacity 0.2s 0.2s linear': 'opacity 0.2s 0.2s linear'
   }
@@ -1210,7 +1211,7 @@ function App(){
         <input value={query} onChange={(e) => setQuery(e.target.value)}/>
       </label>
       <Suspense>
-        <div style={sty}>
+        <div id="style-id" style={style}>
           {/* 查询结果列表 */}
           <SearhReasults query={deferredQuery}/>
         </div>
@@ -1224,7 +1225,8 @@ function App(){
 
 订阅外部 store
 
-- subscribe 接收一个单独的 callback 参数并把它订阅到 store 上, 当 store 发生改变时调用被提供的 callback, 引起组件重新渲染
+- subscribe 接收一个单独的 callback 参数并把它订阅到 store 上, 当 store 发生改变时调用提供的 callback, 引起组件重新渲染
+  - 返回值为 cleanup 清除函数
 - getSnapshot 返回组件需要的 store 中的数据快照, store 不变的情况下, 重复调用必须返回同一个值, 否则, React 就会重新渲染组件
 - getServerSnapshot 返回 store 中数据的初始快照, 只会在服务器渲染时, 以及在客户端进行 hydration 时被用到
 
@@ -1262,7 +1264,7 @@ function emitChange(){
   }
 }
 function TodosApp(){
-  const todos = useSyncExternalStore(todosStore.subscribe, todos.getSnapshot);
+  const todos = useSyncExternalStore(todosStore.subscribe, todosStore.getSnapshot);
 
   return (
     <>
@@ -1299,18 +1301,32 @@ function useOnlineStatus(){
 
 #### useOptimistic(experimental)
 
-更乐观的更新用户界面, 这种技术有助于使应用程序在感觉上响应地更加快速
+允许在进行异步操作时显示不同 state, 它接受 state 作为参数, 并返回该 state 的副本, 在异步操作(如网络请求)期间可以不同, 这种技术有助于使应用程序在感觉上响应地更加快速.
 
-- 界面立即更新为预期的结果, 而不是等待服务器的响应来反映更改
-- 允许在进行异步操作时显示不同 state, 接受 state 作为参数, 并返回该 state 的副本, 在异步操作(如网络请求)期间可以不同
+这个状态被称为 乐观 状态是因为通常用于立即向用户呈现执行操作的结果, 即使实际上操作需要一段时间来完成
 
-- optimisticState 结果乐观状态, 除非有操作挂起, 否则它等于 state, 在这种情况下, 它等于 updateFn 返回的值
+- state 初始时和没有挂起操作时要返回的值
+- updateFn 接受当前的 state 和传递给 addOptimistic 的乐观值, 并返回结果乐观状态. 它必须是一个纯函数
+
+返回值
+
+- optimisticState 结果乐观状态. 除非有操作挂起, 否则它等于 state, 在这种情况下, 它等于 updateFn 返回的值
 - addOptimistic 触发乐观更新时调用的 dispatch 函数, 接收一个任意类型的参数 optimisticValue, 并以 state 和 optimisticValue 作为参数调用 updateFn
-- updateFn 接受当前的 state 和传递给 addOptimistic 的乐观值, 并返回结果乐观状态
 
 ```jsx
+import {useOptimistic} from 'react';
+
 cnost [optimisticState, addOptimistic] = useOptimistic(state, updateFn);
+
+function AppContainer(){
+  const [optimisticState, addOptimistic] = useOptimistic(state, (currentState, optimisticValue) => {
+    // 使用乐观值, 合并并返回新 state
+    return [...currentState, optimisticValue];
+  });
+}
 ```
+
+- 乐观的更新表单
 
 ```jsx
 import {useOptimistic, useRef, useState} from 'react';
@@ -1318,8 +1334,7 @@ import {useOptimistic, useRef, useState} from 'react';
 function Thread({messages, sendMessage}){
   const formRef = useRef(null);
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(messages, (state, optimisticValue) => {
-    // 使用乐观值
-    // 合并返回新的 state
+    // 使用乐观值, 合并返回新的 state
     return [...state, {text: optimisticValue, sending: true}];
   });
 
@@ -1352,16 +1367,12 @@ function App(){
 
   async function sendMessage(formData){
     // 模拟异步操作
-    const sentMessage = await deliverMessage(formData.get('message'));
+    await new Promise(resolve => setTimeout(resolve, 3000));
     // 更新状态
-    setMessages(messages => [...messages, {text: sentMessage}]);
+    setMessages(messages => [...messages, {text: formData.get('message')}]);
   }
 
   return <Thread messages={messages} sendMessage={sendMessage}/>
-}
-async function deliverMessage(message){
-  await new Promise(resolve => setTimeout(resolve, 3000));
-  return message;
 }
 ```
 
@@ -1753,7 +1764,7 @@ function App(){
 }
 ```
 
-- 不会返回在同一组件中渲染的 form 的状态信息, 仅获取父级 form 的状态信息
+- 不会返回同一组件或子组件中渲染的 form 的状态信息, 仅获取父级 form 的状态信息
 
 ```jsx
 function Form(){
