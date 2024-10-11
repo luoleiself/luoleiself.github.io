@@ -809,11 +809,19 @@ FROM centos:7 # 基础镜像
 LABEL authors=luoleiself<luoleiself@163.com> # 镜像元数据
 
 WORKDIR /usr/local/   # 设置工作目录
+
+# ADD hello.txt $PWD  # 复制文件, 增强版的 COPY 指令
 COPY hello.txt $PWD   # 复制文件
 
 VOLUME ["/var/log"] # 挂载匿名数据卷
 
+# ARG NAME hello  # 构建参数, 仅在 Dockerfile 内有效
+# ENV NAME world  # 持久化环境变量
+
+# RUN npm install
+
 CMD ["cat", "/usr/local/hello.txt"]   # 容器运行时执行的命令
+# ENTRYPOINT ["cat", "/usr/local/hello.txt"] # 容器运行执行的命令
 ```
 
 #### 构建镜像
