@@ -62,21 +62,16 @@ app.mount(App);
 
 卸载一个已挂载的应用实例, 同时触发该应用组件树内所有组件的卸载生命周期钩子
 
-#### app.provide()
+#### app.onUnmount()
 
-提供一个值, 可以在应用中的所有后代组件中注入使用
+> Vue 3.5 支持
 
-- 参数
-  - key, 注入的 key
-  - value, 注入的 key 对应的值, 返回应用实例本身
+注册一个回调函数, 在应用卸载时调用
 
 ```javascript
-import { createApp } from 'vue';
-const app = createApp({
-  inject: ['name'],
-  template: '<span>{{name}}</span>',
-});
-app.provide('name', 'hello world');
+app.onUnmount(() => {
+  /*...*/
+})
 ```
 
 #### app.component()
@@ -176,7 +171,26 @@ app.use((app, options) => {
 
 #### app.mixin()
 
+> 不推荐使用
+
 应用一个全局的 mixin, 作用于应用中的每个组件实例 (不推荐使用), 在 Vue 3 中为了向后兼容
+
+#### app.provide()
+
+提供一个值, 可以在应用中的所有后代组件中注入使用
+
+- 参数
+  - key, 注入的 key
+  - value, 注入的 key 对应的值, 返回应用实例本身
+
+```javascript
+import { createApp } from 'vue';
+const app = createApp({
+  inject: ['name'],
+  template: '<span>{{name}}</span>',
+});
+app.provide('name', 'hello world');
+```
 
 #### app.runWithContext()
 
@@ -247,6 +261,18 @@ app.config.compilerOptions.isCustomElement = (tag){
   return  tag.startsWith('icon-');
 }
 ```
+
+##### app.config.idPrefix
+
+> Vue 3.5 支持
+
+配置此应用中通过 useId() 生成的所有 ID 的前缀
+
+##### app.config.throwUnhandledErrorInProduction
+
+> Vue 3.5 支持
+
+强制在生产模式下抛出未处理的错误
 
 ### 通用
 
@@ -757,7 +783,9 @@ copy.count++;
 
 - 第一个参数是要运行的副作用函数, 该函数接收一个函数用来注册清理回调, 清理回调会在该副作用函数下一次执行之前被调用
 - 第二个参数是可选项, 用来调整副作用的刷新时机或调试副作用的依赖
-- 返回值是一个用来停止该副作用的函数
+- 返回值
+  - 一个用来停止该副作用的函数
+  - 暂停/恢复侦听器, Vue 3.5 支持
 
 ```javascript
 const count = ref(0);
@@ -774,6 +802,15 @@ const stop = watchEffect(
 count.value++; // 输出 1
 
 // 不再需要此侦听器时
+stop();
+
+// Vue 3.5 支持
+const {stop, pause, resume} = watchEffect(() => { });
+// 暂停侦听器
+pause();
+// 稍后恢复
+resume();
+// 停止
 stop();
 ```
 
@@ -877,6 +914,22 @@ watch(id, async (newValue, oldValue, onCleanup) => {
 - 更具体地说明应触发侦听器重新运行的状态
 - 访问被侦听状态的先前值和当前值
 - 侦听多个源
+
+#### onWatchCleanup()
+
+> Vue 3.5 支持
+
+注册一个清理函数, 在当前侦听器即将重新运行时执行, 只能在 watchEffect 作用函数或 watch 回调函数的同步执行期间调用(不能在异步函数中调用)
+
+```javascript
+import {watch, onWatchCleanup} from 'vue';
+watch(id, (newId) => {
+  const {response, cancel} = doAsyncWork(newId);
+  // 如果 id 有变化, 则调用 cancel
+  // 如果之前的请求未完成, 则取消该请求
+  onWatchCleanup(cancel)
+})
+```
 
 ### 响应式: 工具
 
@@ -1425,6 +1478,44 @@ app.mount('#app');
 ## 选项式 API <em id="optional-api"></em> <!-- markdownlint-disable-line -->
 
 选项式 API 以 `组件实例` 的概念为中心(this), 将响应性相关的细节抽象出来, 并强制按照选项来组织代码, 从而对初学者而言更为友好
+
+### 辅助
+
+#### useAttr()
+
+#### useSlots()
+
+#### useModel()
+
+> Vue 3.4 支持
+
+驱动 defineModel() 的底层辅助函数, 优先使用 defineModel()
+
+#### useTemplateRef()
+
+> Vue 3.5 支持
+
+返回一个浅层 ref, 其值将与模板中的具有匹配 ref 的元素或组件同步
+
+```html
+<template>
+  <input ref="input"/>
+</template>
+<script setup>
+  import {useTemplateRef, onMounted} from 'vue';
+  
+  const imputRef = useTemplateRef('input');
+  onMounted(() => {
+    inputRef.value.focus();
+  });
+</script>
+```
+
+#### useId()
+
+> Vue 3.5 支持
+
+用于为无障碍属性或表单元素生成每个应用内唯一的 ID
 
 ### 状态选项
 
