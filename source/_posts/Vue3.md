@@ -777,6 +777,87 @@ original.count++;
 copy.count++;
 ```
 
+#### watch() <em id="watch"></em> <!-- markdownlint-disable-line -->
+
+- 侦听一个或多个响应式数据源, 并在数据源变化时调用所给的回调函数, 使用方式和 this.$watch 和 watch 选项完全等效
+- 默认是浅层侦听, 仅在侦听的属性被赋新值时才触发回调, 而嵌套属性的变化不会触发, 如果需要侦听嵌套属性, 使用 `deep: true` 选项
+- 默认是懒侦听的, 仅在侦听源发生变化时才触发回调, 如果需要在创建侦听器时立即执行一遍回调, 使用 `immediate: true` 选项
+
+##### 参数
+
+- 第一个参数是侦听器的源, 支持包含返回值的函数、ref、响应式对象、或者以上类型的值组成的数组
+- 第二个参数是侦听源发生变化时调用的函数, 函数接收三个参数: 新值、旧值，及一个用于注册副作用清理的回调函数
+- 第三个参数是一个配置项对象
+
+  - immediate 在侦听器创建时立即触发回调, 第一次调用时旧值为 `undefined`
+  - deep 如果源是对象, 强制深度遍历, 以便在深层级变更时触发回调
+  - flush 调整回调函数的刷新时机, 见 [watchEffect()](#watchEffect)
+  - onTrack/onTrigger 调试侦听器的依赖, 见 [watchEffect()](#watchEffect)
+  - once 回调函数只会执行一次, 侦听器将在回调函数首次运行后自动停止, Vue 3.4 支持
+
+- 暂停/恢复侦听器, Vue 3.5 支持
+
+```javascript
+import { reactive, ref, watch, onWatcherCleanup } from 'vue';
+
+// 侦听一个 getter 函数
+const state = reactive({ count: 0 });
+watch(
+  () => state.count,
+  (newVal, oldValue) => {
+    /* */
+  },
+  // 当侦听 getter 函数, 回调函数只在此函数的返回值变化时才会触发, 监听深层级变更时触发需要设置 {deep: true}
+  // 当前侦听一个响应式对象, 默认自动开启深层级模式
+  {
+    deep: true,
+    once: true, // 侦听器只会执行一次后自动停止
+  }
+);
+
+// 侦听一个 ref
+const count = ref(0);
+watch(count, (count, prevCount) => {
+  /* */
+});
+
+// 侦听多个源
+const stop = watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
+  /* */
+});
+// 停止侦听器
+stop();
+
+// 副作用清理
+watch(id, async (newValue, oldValue, onCleanup) => {
+  const { response, cancel } = doAsyncWork(newValue);
+  // 当 id 变化时, cancel 被调用
+  // 取消之前的未完成的请求
+  onCleanup(cancel);
+  data.value = await response;
+});
+
+// Vue 3.5 支持
+const {stop, pause, resume} = watch(id, async ()=>{
+  const { response, cancel } = doAsyncWork(id.value);
+  // 注册清理函数
+  onWatcherCleanup(cancel);
+});
+// 暂停侦听器
+pause();
+// 稍后恢复
+resume();
+// 停止
+stop();
+```
+
+##### 与 [watchEffect()](#watchEffect) 的区别
+
+- 惰性执行副作用
+- 更具体地说明应触发侦听器重新运行的状态
+- 访问被侦听状态的先前值和当前值
+- 侦听多个源
+
 #### watchEffect() <em id="watchEffect"></em> <!-- markdownlint-disable-line -->
 
 立即执行一个函数, 同时响应式地追踪其依赖, 并在依赖更新时重新执行函数
@@ -849,85 +930,19 @@ watchEffect(async (onCleanup) => {
 
 `watchEffect()` 使用 flush: 'sync' 选项时的别名
 
-#### watch() <em id="watch"></em> <!-- markdownlint-disable-line -->
-
-- 侦听一个或多个响应式数据源, 并在数据源变化时调用所给的回调函数, 使用方式和 this.$watch 和 watch 选项完全等效
-- 默认是浅层侦听, 仅在侦听的属性被赋新值时才触发回调, 而嵌套属性的变化不会触发, 如果需要侦听嵌套属性, 使用 `deep: true` 选项
-- 默认是懒侦听的, 仅在侦听源发生变化时才触发回调, 如果需要在创建侦听器时立即执行一遍回调, 使用 `immediate: true` 选项
-
-##### 参数
-
-- 第一个参数是侦听器的源, 支持包含返回值的函数、ref、响应式对象、或者以上类型的值组成的数组
-- 第二个参数是侦听源发生变化时调用的函数, 函数接收三个参数: 新值、旧值，及一个用于注册副作用清理的回调函数
-- 第三个参数是一个配置项对象
-
-  - immediate 在侦听器创建时立即触发回调, 第一次调用时旧值为 `undefined`
-  - deep 如果源是对象, 强制深度遍历, 以便在深层级变更时触发回调
-  - flush 调整回调函数的刷新时机, 见 [watchEffect()](#watchEffect)
-  - onTrack/onTrigger 调试侦听器的依赖, 见 [watchEffect()](#watchEffect)
-  - once 回调函数只会执行一次, 侦听器将在回调函数首次运行后自动停止, Vue 3.4 支持
-
-```javascript
-import { reactive, ref, watch } from 'vue';
-
-// 侦听一个 getter 函数
-const state = reactive({ count: 0 });
-watch(
-  () => state.count,
-  (newVal, oldValue) => {
-    /* */
-  },
-  // 当侦听 getter 函数, 回调函数只在此函数的返回值变化时才会触发, 监听深层级变更时触发需要设置 {deep: true}
-  // 当前侦听一个响应式对象, 默认自动开启深层级模式
-  {
-    deep: true,
-    once: true, // 侦听器只会执行一次后自动停止
-  }
-);
-
-// 侦听一个 ref
-const count = ref(0);
-watch(count, (count, prevCount) => {
-  /* */
-});
-
-// 侦听多个源
-const stop = watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
-  /* */
-});
-// 停止侦听器
-stop();
-
-// 副作用清理
-watch(id, async (newValue, oldValue, onCleanup) => {
-  const { response, cancel } = doAsyncWork(newValue);
-  // 当 id 变化时, cancel 被调用
-  // 取消之前的未完成的请求
-  onCleanup(cancel);
-  data.value = await response;
-});
-```
-
-##### 与 [watchEffect()](#watchEffect) 的区别
-
-- 惰性执行副作用
-- 更具体地说明应触发侦听器重新运行的状态
-- 访问被侦听状态的先前值和当前值
-- 侦听多个源
-
-#### onWatchCleanup()
+#### onWatcherCleanup()
 
 > Vue 3.5 支持
 
 注册一个清理函数, 在当前侦听器即将重新运行时执行, 只能在 watchEffect 作用函数或 watch 回调函数的同步执行期间调用(不能在异步函数中调用)
 
 ```javascript
-import {watch, onWatchCleanup} from 'vue';
+import {watch, onWatcherCleanup} from 'vue';
 watch(id, (newId) => {
   const {response, cancel} = doAsyncWork(newId);
   // 如果 id 有变化, 则调用 cancel
   // 如果之前的请求未完成, 则取消该请求
-  onWatchCleanup(cancel)
+  onWatcherCleanup(cancel)
 })
 ```
 
