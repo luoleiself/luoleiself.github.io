@@ -708,6 +708,7 @@ tar [OPTION...] [FILE]...
 ### curl
 
 - \-\-help [all] For all options use the manual
+- \-s,\-\-silent Silent mode
 - \-v,\-\-verbose Make the operation more talkative
 - \-#,\-\-progress-bar Display transfer progress as a bar
 - \-L,\-\-location Follow redirects
