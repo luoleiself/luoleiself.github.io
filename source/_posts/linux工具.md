@@ -585,19 +585,6 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 [root@localhost ~]# scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 ```
 
-### firewall-cmd 防火墙
-
-- \-\-permanent # 永久修改
-- \-\-reload # 重新加载防火墙配置
-
-```bash
-[root@centos7 ~]firewall-cmd --list-all # 显示所有信息
-[root@centos7 ~]firewall-cmd --list-ports # 显示端口信息
-[root@centos7 ~]firewall-cmd --remove-ports=<port>/<protocol> # 显示端口信息
-
-[root@centos7 ~]firewall-cmd --add-port=<port>/<protocol> --permanent # 永久修改防火墙配置
-```
-
 ### crontab 定时任务
 
 - -u 指定用户
@@ -785,3 +772,31 @@ curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode
 
 - \-o,\-\-output \<file\> Write to file instead of stdout
 - \-\-output-dir \<dir\> Directory to save files in
+
+### 批量重命名文件
+
+```bash
+#!/usr/bin/env bash
+cd $1
+
+count=1
+for file in *.png; do
+  if [ -e "$file" ]; then
+    new_name="${count}.png"
+    # 遍历重命名文件是否存在
+    while [ -e "$new_name" ]; do
+      ((count++))
+      new_name="${count}.png"
+    done
+    # 重命名文件
+    mv "$file" "$new_name"
+    # 输出重命名信息
+    echo "重命名 '$file' 为 '$new_name'"
+    # 计数器
+    ((count++))
+  fi
+done
+if [ $count -eq 1 ]; then
+  echo "没有找到 png 文件"
+fi
+```
