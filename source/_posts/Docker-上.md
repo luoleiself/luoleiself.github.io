@@ -628,35 +628,57 @@ Dockerfile 是用来构建 Docker 镜像的一个指令脚本, 脚本中的每�
 
 ### 指令
 
-- FROM 构建镜像时的基础镜像层
+- FROM 构建镜像时的基础镜像层, 可以出现多次以创建多个镜像或者将当前构建作为另一个构建的依赖
+  - \-\-platform 指定镜像的平台, 用来处理那些支持多平台的镜像, linux/amd64、linux/arm64、windows/amd64
+  - AS \<name\> 为当前的构建阶段命名
 - MAINTAINER(deprecated) 维护者信息, 使用 `LABEL` 指令代替
 - EXPOSE 对外暴露端口, 仅仅是声明容器使用的端口, 并不会自动在宿主机进行端口映射
   - 端口声明可以帮助镜像使用者理解这个镜像服务的端口使用, 以方便配置映射
   - 使用 -p 参数会忽略此项声明的端口
   - 使用 -P 参数会自动将宿主机上的随机端口映射到此项声明的端口
 
-```yaml
-# Dockerfile
-EXPOSE 80/tcp
-EXPOSE 80/udp
-```
-
 - ADD 复制指令, 增强版的 `COPY` 指令, 支持文件解压和远程 URL 资源
 - COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径
-
-```yaml
-# [--chown=<user>:<group>] 可选参数，用户改变复制到容器内文件的拥有者和属组
-COPY ["src", "dest"]
-```
-
 - RUN 构建镜像时执行的命令 可以存在多条指令
+- WORKDIR 为`RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
+
+- ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
+- ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
 
 ```yaml
-RUN yum -y install vim
-# 合并多个相同作用的指令以减少新建镜像层数
-RUN yum -y install wget \
-  && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
-  && tar -xvf redis.tar.gz
+# Dockerfile
+# ARG BUILDPLATFORM linux/arm64
+# FROM --platform=$BUILDPLATFORM nginx
+FROM golang:alpine AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o main .
+
+# EXPOSE 80/tcp
+# EXPOSE 80/udp
+# EXPOSE [8080, 8081]
+
+# RUN yum -y install vim
+# # 合并多个相同作用的指令以减少新建镜像层数
+# RUN yum -y install wget \
+#   && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+#   && tar -xvf redis.tar.gz
+
+# [--chown=<user>:<group>] 可选参数，用户改变复制到容器内文件的拥有者和属组
+# COPY ["src", "dest"]
+
+ARG VERSION1 1
+ARG VERSION=1
+
+ENV NAME1 hello
+ENV NAME2=hello
+
+FROM alpine:latest
+WORKDIR /root
+COPY --from=builder /app/main .
+CMD ["./main"]
 ```
 
 - CMD 容器运行时执行的命令, 如果存在多个 `CMD` 指令, 仅最后一个生效
@@ -668,17 +690,6 @@ ENTRYPOINT ["<executeable>","<param1>","<param2>",...]
 
 CMD '<exec_cmd>' '<param1>'
 CMD ["<可执行文件或命令>","<param1>","<param2>",...]
-```
-
-- ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
-- ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
-
-```yaml
-ARG VERSION1 1
-ARG VERSION=1
-
-ENV NAME1 hello
-ENV NAME2=hello
 ```
 
 - VOLUME 定义匿名数据卷, 在启动容器时会自动挂载到 /var/lib/docker/volumes/
@@ -693,7 +704,6 @@ VOLUME ["<路径1>", "<路径2>"...]
 VOLUME <路径> <路径>
 ```
 
-- WORKDIR 为`RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
 - USER 指定执行后续命令的用户和用户组, 用户名和用户组必须提前存在
 - LABEL 给镜像添加元数据
 - SHELL 允许重写默认的 shell
@@ -701,8 +711,6 @@ VOLUME <路径> <路径>
 - ONBUILD 当前镜像作为其他镜像的基础镜像构建时触发
 
 ```yaml
-WORKDIR /usr/local
-
 USER <用户名>[:<用户组>]
 
 ONBUILD ADD . /app/src
