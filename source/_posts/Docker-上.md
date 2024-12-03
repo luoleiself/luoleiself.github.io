@@ -209,11 +209,11 @@ docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命�
 - -d 后台方式运行
 - -i,\-\-interactive 即使没有附加也保持 STDIN 打开, 如果需要执行命令则需要开启这个选项
 - -t,\-\-tty 分配一个伪终端进行执行, 一个连接用户的终端与容器 stdin 和 stdout 的桥梁
-- -P 将容器内部使用的网络端口映射到宿主机随机端口上
+- -P 将宿主机的随机端口映射到容器使用的端口上
 - -p 指定容器的端口
 
-  - -p 主机 IP:主机端口:容器端口/协议
-  - -p 主机端口:容器端口/协议
+  - -p 宿主机 IP:宿主机端口:容器端口/协议
+  - -p 宿主机端口:容器端口/协议
   - -p 容器端口/协议
 
 - -e 设置容器运行的环境变量
@@ -630,97 +630,85 @@ Dockerfile 是用来构建 Docker 镜像的一个指令脚本, 脚本中的每�
 
 - FROM 构建镜像时的基础镜像层
 - MAINTAINER(deprecated) 维护者信息, 使用 `LABEL` 指令代替
-- EXPOSE 对外暴露端口
+- EXPOSE 对外暴露端口, 仅仅是声明容器使用的端口, 并不会自动在宿主机进行端口映射
+  - 端口声明可以帮助镜像使用者理解这个镜像服务的端口使用, 以方便配置映射
+  - 使用 -p 参数会忽略此项声明的端口
+  - 使用 -P 参数会自动将宿主机上的随机端口映射到此项声明的端口
 
-  ```yaml
-  EXPOSE 80/tcp
-  EXPOSE 80/udp
-  ```
+```yaml
+# Dockerfile
+EXPOSE 80/tcp
+EXPOSE 80/udp
+```
 
 - ADD 复制指令, 增强版的 `COPY` 指令, 支持文件解压和远程 URL 资源
 - COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径
 
-  ```yaml
-  # [--chown=<user>:<group>] 可选参数，用户改变复制到容器内文件的拥有者和属组
-  COPY ["src", "dest"]
-  ```
+```yaml
+# [--chown=<user>:<group>] 可选参数，用户改变复制到容器内文件的拥有者和属组
+COPY ["src", "dest"]
+```
 
 - RUN 构建镜像时执行的命令 可以存在多条指令
 
-  ```yaml
-  RUN yum -y install vim
-  # 合并多个相同作用的指令以减少新建镜像层数
-  RUN yum -y install wget \
-    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
-    && tar -xvf redis.tar.gz
-  ```
+```yaml
+RUN yum -y install vim
+# 合并多个相同作用的指令以减少新建镜像层数
+RUN yum -y install wget \
+  && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+  && tar -xvf redis.tar.gz
+```
 
 - CMD 容器运行时执行的命令, 如果存在多个 `CMD` 指令, 仅最后一个生效
 - ENTRYPOINT 容器运行时执行的命令, 参数不会被 `docker run` 的命令行参数覆盖, 如果存在多个 `ENTRYPOINT` 指令，仅最后一个生效
 
-  ```yaml
-  ENTRYPOINT '<exec_cmd>' '<param1>'
-  ENTRYPOINT ["<executeable>","<param1>","<param2>",...]
+```yaml
+ENTRYPOINT '<exec_cmd>' '<param1>'
+ENTRYPOINT ["<executeable>","<param1>","<param2>",...]
 
-  CMD '<exec_cmd>' '<param1>'
-  CMD ["<可执行文件或命令>","<param1>","<param2>",...]
-  ```
+CMD '<exec_cmd>' '<param1>'
+CMD ["<可执行文件或命令>","<param1>","<param2>",...]
+```
 
 - ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
 - ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
 
-  ```yaml
-  ARG VERSION1 1
-  ARG VERSION=1
+```yaml
+ARG VERSION1 1
+ARG VERSION=1
 
-  ENV NAME1 hello
-  ENV NAME2=hello
-  ```
+ENV NAME1 hello
+ENV NAME2=hello
+```
 
 - VOLUME 定义匿名数据卷, 在启动容器时会自动挂载到 /var/lib/docker/volumes/
+  - 不支持 具名挂载 和 指定路径挂载, 只能使用 [匿名挂载](#nimingguazai) 方式
+  - docker-compose.yml 配置项支持任意挂载方式 [挂载数据卷](#guazaishujujuan)
 
-  ```yaml
-  # 出于可移植和分享的考虑, 不支持 具名挂载 和 指定路径挂载 在 Dockerfile 中配置
-  # 只能使用 匿名挂载 配置方式
-  # 因为宿主机目录是依赖于特定宿主机的, 并不能够保证在所有的宿主机上都存在这样的目录
-  VOLUME ["<路径1>", "<路径2>"...]
-  VOLUME <路径> <路径>
-  ```
+```yaml
+# 出于可移植和分享的考虑, 不支持 具名挂载 和 指定路径挂载 在 Dockerfile 中配置
+# 只能使用 匿名挂载 配置方式
+# 因为宿主机目录是依赖于特定宿主机的, 并不能够保证在所有的宿主机上都存在这样的目录
+VOLUME ["<路径1>", "<路径2>"...]
+VOLUME <路径> <路径>
+```
 
 - WORKDIR 为`RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
 - USER 指定执行后续命令的用户和用户组, 用户名和用户组必须提前存在
-
-  ```yaml
-  WORKDIR /usr/local
-
-  USER <用户名>[:<用户组>]
-  ```
-
 - LABEL 给镜像添加元数据
 - SHELL 允许重写默认的 shell
 - STOPSIGNAL 设置当容器退出时系统调用的指令
 - ONBUILD 当前镜像作为其他镜像的基础镜像构建时触发
 
-  ```yaml
-  ONBUILD ADD . /app/src
-  ```
+```yaml
+WORKDIR /usr/local
+
+USER <用户名>[:<用户组>]
+
+ONBUILD ADD . /app/src
+```
 
 - HEALTHCHECK 指定监控 docker 容器服务的运行状态的方式
-
-#### ADD 和 COPY
-
-- ADD 复制指令, 增强版的 `COPY` 指令, 支持文件解压和远程 URL 资源
-- COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径
-
-#### ARG 和 ENV
-
-- ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
-- ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
-
-#### VOLUME
-
-- 不支持 具名挂载 和 指定路径挂载, 只能使用 [匿名挂载](#nimingguazai) 方式
-- docker-compose.yml 配置项支持任意挂载方式 [挂载数据卷](#guazaishujujuan)
 
 #### CMD 和 ENTRYPOINT
 
