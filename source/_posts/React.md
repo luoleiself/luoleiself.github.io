@@ -258,21 +258,21 @@ interface MyComponentProps {
 
 - 字符串字面量
 
-  ```jsx
-  // 两个JSX表达式是等价的,
-  <MyComponent message="hello world" />
-  <MyComponent message={'hello world'} />
-  // 字符串字面量赋值给 prop 时，它的值是未转义的
-  <MyComponent message="&lt;3" />
-  <MyComponent message={'<3'} />
-  ```
+```jsx
+// 两个JSX表达式是等价的,
+<MyComponent message="hello world" />
+<MyComponent message={'hello world'} />
+// 字符串字面量赋值给 prop 时，它的值是未转义的
+<MyComponent message="&lt;3" />
+<MyComponent message={'<3'} />
+```
 
 - Props 默认值为 True
 
-  ```jsx
-  <MyTextBox autocomplete />
-  <MyTextBox autocomplete={true} />
-  ```
+```jsx
+<MyTextBox autocomplete />
+<MyTextBox autocomplete={true} />
+```
 
 - 属性展开
 
@@ -880,54 +880,6 @@ function Button(){
 }
 ```
 
-#### useActionState(experimental)
-
-可以根据某个表单动作的结果更新 state 的 Hook
-
-调用 useActionState 时在参数中传入现有的表单动作函数以及一个初始状态, 返回一个新的 action 函数和一个 form state 以供在 form 中使用, 这个新的 form state 也会作为参数传入提供的表单动作函数
-
-- form state 是一个只在表单被提交触发 action 后才会被更新的值
-- 如果 action 是一个 url, form 的行为就是普通表单提交
-- 如果 action 是一个函数, form 的行为由这个函数控制, action 同时会重写 `<button>`、`<input type="submit"/>`、`<input type="image"/>` 的 formAction(表单提交的 url) 属性
-
-- action 作为函数, 当表单被提交时触发
-  - prevState 第一个参数为上一次调用 action 函数的返回值, 第一次调用时传入的是 initialState
-  - formData 余下的参数为普通表单动作接到的参数
-- initialState state 的初始值
-- permalink 可选,
-
-返回值, 当前的 state 和一个新的 action 函数用于 form 组件的 action 参数或表单中任意一个 button 组件的 formAction 参数中传递
-
-```jsx
-const [state, formAction] = useActionState(action, initialState, permalink?);
-```
-
-```jsx
-import {useActionState} from 'react';
-async function increment(prevState, formData){
-  // await fetch();
-  await new Promise((resolve) => {
-    setTimeout(() => resolve(), 2000);
-  });
-  return prevState + 1;
-}
-function StatusForm(){
-  const [state, formAction] = useActionState(increment, 0);
-  return (
-    // action 是 url 则直接提交表单, 如果是函数, 则控制表单的提交行为
-    <form action={formAction}>
-      {state}
-      {/* form 的 action, enctype, method, target 属性可以被 button, type="submit", type="image" */}
-      {/* 的 formaction, formenctype, formmethod, formtarget 属性重写*/}
-      <button formAction={formAction}>+1</button>
-      {/* button 和 input type="submit", input type="image" 是等价的 */}
-      <input type="submit" formAction={formAction}/>
-      <input type="image" formAction={formAction}/>
-    </form>
-  );
-}
-```
-
 #### useCallback
 
 > 允许在多次渲染中缓存函数的 Hook, 通常应用于性能优化
@@ -1143,6 +1095,54 @@ function App(){
       <MyInput ref={inputRef}/>
       <button onClick={handleClick}>input Focus</button>
     </>
+  );
+}
+```
+
+#### useActionState(experimental)
+
+可以根据某个表单动作的结果更新 state 的 Hook
+
+调用 useActionState 时在参数中传入现有的表单动作函数以及一个初始状态, 返回一个新的 action 函数和一个 form state 以供在 form 中使用, 这个新的 form state 也会作为参数传入提供的表单动作函数
+
+- form state 是一个只在表单被提交触发 action 后才会被更新的值
+- 如果 action 是一个 url, form 的行为就是普通表单提交
+- 如果 action 是一个函数, form 的行为由这个函数控制, action 同时会重写 `<button>`、`<input type="submit"/>`、`<input type="image"/>` 的 formAction(表单提交的 url) 属性
+
+- action 作为函数, 当表单被提交时触发
+  - prevState 第一个参数为上一次调用 action 函数的返回值, 第一次调用时传入的是 initialState
+  - formData 余下的参数为普通表单动作接到的参数
+- initialState state 的初始值
+- permalink 可选,
+
+返回值, 当前的 state 和一个新的 action 函数用于 form 组件的 action 参数或表单中任意一个 button 组件的 formAction 参数中传递
+
+```jsx
+const [state, formAction] = useActionState(action, initialState, permalink?);
+```
+
+```jsx
+import {useActionState} from 'react';
+async function increment(prevState, formData){
+  // await fetch();
+  await new Promise((resolve) => {
+    setTimeout(() => resolve(), 2000);
+  });
+  return prevState + 1;
+}
+function StatusForm(){
+  const [state, formAction] = useActionState(increment, 0);
+  return (
+    // action 是 url 则直接提交表单, 如果是函数, 则控制表单的提交行为
+    <form action={formAction}>
+      {state}
+      {/* form 的 action, enctype, method, target 属性可以被 button, type="submit", type="image" */}
+      {/* 的 formaction, formenctype, formmethod, formtarget 属性重写*/}
+      <button formAction={formAction}>+1</button>
+      {/* button 和 input type="submit", input type="image" 是等价的 */}
+      <input type="submit" formAction={formAction}/>
+      <input type="image" formAction={formAction}/>
+    </form>
   );
 }
 ```
@@ -4127,7 +4127,7 @@ import {useDispatch} from 'react-redux';
 
 function CounterComponent(){
   const dispatch = useDispatch();
-  const incrementCounter = useCallbac(() => {
+  const incrementCounter = useCallback(() => {
     dispatch({type:'increment-counter'});
   },[dispatch]);
   return (
@@ -4580,9 +4580,13 @@ function App(){
 }
 function Button(){
   const theme = useTheme();
-  const style= {color: theme.color};
+  const style = {color: theme.color};
 
-  return <button style={style} >Button</button>;
+  return (
+    <button style={style}>
+      Button
+    </button>
+  )
 }
 // 等价于
 function Button(){
