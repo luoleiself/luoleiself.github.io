@@ -247,8 +247,8 @@ b2f23805b5e5   none            null      local
 3. 基于自定义网络模式创建容器 <!-- markdownlint-disable-line -->
 
 ```bash
-[root@localhost ~]# docker run -tid --name my-docker-net01 --network my-docker-net centos /bin/bash
-[root@localhost ~]# docker run -tid --name my-docker-net02 --network my-docker-net centos /bin/bash
+[root@localhost ~]# docker run -tid --name my-docker-net-centos-01 --network my-docker-net centos /bin/bash
+[root@localhost ~]# docker run -tid --name my-docker-net-centos-02 --network my-docker-net centos /bin/bash
 ```
 
 4. 查看自定义网络信息 <!-- markdownlint-disable-line -->
@@ -274,14 +274,14 @@ b2f23805b5e5   none            null      local
   "ConfigOnly": false,
   "Containers": {
     "ad9cdd7a0edf2c76710388fcc71de4df129b8fddd9d5e816795689022a62b141": {
-      "Name": "my-docker-net01",
+      "Name": "my-docker-net-centos-01",
       "EndpointID": "e97619b1e847dc2a1e86fc9820ddfcd06a2e8d1d2685aa74d7f4bf850103bcfa",
       "MacAddress": "02:42:c0:a8:00:02",
       "IPv4Address": "192.168.0.2/16",
       "IPv6Address": ""
     },
     "d0f5bf60fb85ef35e3ca14c357fb2a6c0ab74c4d1c7679311a0afa8c41b3af79": {
-      "Name": "my-docker-net02",
+      "Name": "my-docker-net-centos-02",
       "EndpointID": "1158ee5f27aaaac418cf63ab9e16a92d83d0fadb2af4c7943800628be8cf9ce3",
       "MacAddress": "02:42:c0:a8:00:03",
       "IPv4Address": "192.168.0.3/16",
@@ -295,25 +295,25 @@ b2f23805b5e5   none            null      local
 5. 自定义网络模式容器通信 <!-- markdownlint-disable-line -->
 
 ```bash
-[root@localhost ~]# docker exec -it my-docker-net01 ping my-docker-net02
-PING my-docker-net02 (192.168.0.3) 56(84) bytes of data.
-64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=1 ttl=64 time=0.110 ms
-64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=2 ttl=64 time=0.046 ms
-64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=3 ttl=64 time=0.046 ms
-64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=4 ttl=64 time=0.046 ms
+[root@localhost ~]# docker exec -it my-docker-net-centos-01 ping my-docker-net-centos-02
+PING my-docker-net-centos-02 (192.168.0.3) 56(84) bytes of data.
+64 bytes from my-docker-net-centos-02.my-docker-net (192.168.0.3): icmp_seq=1 ttl=64 time=0.110 ms
+64 bytes from my-docker-net-centos-02.my-docker-net (192.168.0.3): icmp_seq=2 ttl=64 time=0.046 ms
+64 bytes from my-docker-net-centos-02.my-docker-net (192.168.0.3): icmp_seq=3 ttl=64 time=0.046 ms
+64 bytes from my-docker-net-centos-02.my-docker-net (192.168.0.3): icmp_seq=4 ttl=64 time=0.046 ms
 ^C
---- my-docker-net02 ping statistics ---
+--- my-docker-net-centos-02 ping statistics ---
 4 packets transmitted, 4 received, 0% packet loss, time 3043ms
 rtt min/avg/max/mdev = 0.046/0.062/0.110/0.027 ms
 
-[root@localhost ~]# docker exec -it my-docker-net02 ping my-docker-net01
-PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
-64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=1 ttl=64 time=0.045 ms
-64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=2 ttl=64 time=0.095 ms
-64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=3 ttl=64 time=0.109 ms
-64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=4 ttl=64 time=0.047 ms
+[root@localhost ~]# docker exec -it my-docker-net-centos-02 ping my-docker-net-centos-01
+PING my-docker-net-centos-01 (192.168.0.2) 56(84) bytes of data.
+64 bytes from my-docker-net-centos-01.my-docker-net (192.168.0.2): icmp_seq=1 ttl=64 time=0.045 ms
+64 bytes from my-docker-net-centos-01.my-docker-net (192.168.0.2): icmp_seq=2 ttl=64 time=0.095 ms
+64 bytes from my-docker-net-centos-01.my-docker-net (192.168.0.2): icmp_seq=3 ttl=64 time=0.109 ms
+64 bytes from my-docker-net-centos-01.my-docker-net (192.168.0.2): icmp_seq=4 ttl=64 time=0.047 ms
 ^C
---- my-docker-net01 ping statistics ---
+--- my-docker-net-centos-01 ping statistics ---
 4 packets transmitted, 4 received, 0% packet loss, time 3061ms
 rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 ```
@@ -322,66 +322,35 @@ rtt min/avg/max/mdev = 0.045/0.074/0.109/0.028 ms
 
 > 自定义 bridge 和 docker0 结合使用
 
-- my-docker-net01 和 my-docker-net02 运行在 my-docker-net 自定义网络模式下
+- my-docker-net-centos-01 和 my-docker-net-centos-02 运行在 my-docker-net 自定义网络模式下
 - centos01 运行在 docker0 网络模式下
 
 原理: 自定义网络模式分配 ip 信息给连接到此网络的容器
 
-1. 查看自定义网络模式信息
-
-```bash
-[root@localhost ~]# docker network inspect my-docker-net
-...
-"Containers": {
-  "ad9cdd7a0edf2c76710388fcc71de4df129b8fddd9d5e816795689022a62b141": {
-    "Name": "my-docker-net01",
-    "EndpointID": "52c0425c9b4274681f523e8a3ba7748dbc586ff80eafafa39897d577abb1edb6",
-    "MacAddress": "02:42:c0:a8:00:02",
-    "IPv4Address": "192.168.0.2/16",
-    "IPv6Address": ""
-  },
-  "d0f5bf60fb85ef35e3ca14c357fb2a6c0ab74c4d1c7679311a0afa8c41b3af79": {
-    "Name": "my-docker-net02",
-    "EndpointID": "211d41485985263ca5131423b3784fec72a4923d21170212e4e311e569fe2d26",
-    "MacAddress": "02:42:c0:a8:00:03",
-    "IPv4Address": "192.168.0.3/16",
-    "IPv6Address": ""
-  }
-}
-...
-
-# 创建基于 docker0 容器
-[root@localhost ~]# docker run -tid --name centos01 centos
-[root@localhost ~]# docker ps -a
-CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS        PORTS     NAMES
-e2a9d9f19bd3   centos    "/bin/bash"   3 seconds ago   Up 1 second             centos01
-d0f5bf60fb85   centos    "/bin/bash"   22 hours ago    Up 6 hours              my-docker-net02
-ad9cdd7a0edf   centos    "/bin/bash"   22 hours ago    Up 6 hours              my-docker-net01
-```
-
-2. connect 命令连接容器到自定义网络 <!-- markdownlint-disable-line -->
+1. network connect 子命令连接容器到自定义网络 <!-- markdownlint-disable-line -->
 
 ```bash
 docker network connect [OPTIONS] NETWORK CONTAINER
 ```
 
 ```bash
-# 使用命令将不同网络模式中的容器加入到当前网络模式中
+# 使用命令将容器连接到当前网络模式中
 # 连接 centos01 到 自定义网络 my-docker-net
 [root@localhost ~]# docker network connect my-docker-net centos01
+
 # 查看 my-docker-net 自定义网络状态
 [root@localhost ~]# docker network inspect my-docker-net
 ...
 "Containers": {
   "ad9cdd7a0edf2c76710388fcc71de4df129b8fddd9d5e816795689022a62b141": {
-    "Name": "my-docker-net01",
+    "Name": "my-docker-net-centos-01",
     "EndpointID": "52c0425c9b4274681f523e8a3ba7748dbc586ff80eafafa39897d577abb1edb6",
     "MacAddress": "02:42:c0:a8:00:02",
     "IPv4Address": "192.168.0.2/16",
     "IPv6Address": ""
   },
   "d0f5bf60fb85ef35e3ca14c357fb2a6c0ab74c4d1c7679311a0afa8c41b3af79": {
-    "Name": "my-docker-net02",
+    "Name": "my-docker-net-centos-02",
     "EndpointID": "211d41485985263ca5131423b3784fec72a4923d21170212e4e311e569fe2d26",
     "MacAddress": "02:42:c0:a8:00:03",
     "IPv4Address": "192.168.0.3/16",
@@ -413,30 +382,31 @@ docker network connect [OPTIONS] NETWORK CONTAINER
       valid_lft forever preferred_lft forever
 ```
 
-3. 与自定义网络模式中的容器通信 <!-- markdownlint-disable-line -->
+2. 与自定义网络模式中的容器通信 <!-- markdownlint-disable-line -->
 
 ```bash
-# 默认网络模式中容器 ping 自定义网络模式中容器
-[root@localhost ~]# docker exec -it centos01 ping my-docker-net01
-PING my-docker-net01 (192.168.0.2) 56(84) bytes of data.
-64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=1 ttl=64 time=0.060 ms
-64 bytes from my-docker-net01.my-docker-net (192.168.0.2): icmp_seq=2 ttl=64 time=0.056 ms
+# docker0 中容器 ping 自定义网络模式中容器
+[root@localhost ~]# docker exec -it centos01 ping my-docker-net-centos-01
+PING my-docker-net-centos-01 (192.168.0.2) 56(84) bytes of data.
+64 bytes from my-docker-net-centos-01.my-docker-net (192.168.0.2): icmp_seq=1 ttl=64 time=0.060 ms
+64 bytes from my-docker-net-centos-01.my-docker-net (192.168.0.2): icmp_seq=2 ttl=64 time=0.056 ms
 ^C
---- my-docker-net01 ping statistics ---
+--- my-docker-net-centos-01 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1002ms
 rtt min/avg/max/mdev = 0.056/0.058/0.060/0.002 ms
-[root@localhost ~]# docker exec -it centos01 ping my-docker-net02
-PING my-docker-net02 (192.168.0.3) 56(84) bytes of data.
-64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=1 ttl=64 time=0.049 ms
-64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=2 ttl=64 time=0.115 ms
-64 bytes from my-docker-net02.my-docker-net (192.168.0.3): icmp_seq=3 ttl=64 time=0.044 ms
+
+[root@localhost ~]# docker exec -it centos01 ping my-docker-net-centos-02
+PING my-docker-net-centos-02 (192.168.0.3) 56(84) bytes of data.
+64 bytes from my-docker-net-centos-02.my-docker-net (192.168.0.3): icmp_seq=1 ttl=64 time=0.049 ms
+64 bytes from my-docker-net-centos-02.my-docker-net (192.168.0.3): icmp_seq=2 ttl=64 time=0.115 ms
+64 bytes from my-docker-net-centos-02.my-docker-net (192.168.0.3): icmp_seq=3 ttl=64 time=0.044 ms
 ^C
---- my-docker-net02 ping statistics ---
+--- my-docker-net-centos-02 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2026ms
 rtt min/avg/max/mdev = 0.044/0.069/0.115/0.033 ms
 
-# 自定义网络模式中容器 ping 默认网络模式中容器
-[root@localhost ~]# docker exec -it my-docker-net01 ping centos01
+# 自定义网络模式中容器 ping docker0 中容器
+[root@localhost ~]# docker exec -it my-docker-net-centos-01 ping centos01
 PING centos01 (192.168.0.4) 56(84) bytes of data.
 64 bytes from centos01.my-docker-net (192.168.0.4): icmp_seq=1 ttl=64 time=0.066 ms
 64 bytes from centos01.my-docker-net (192.168.0.4): icmp_seq=2 ttl=64 time=0.050 ms
@@ -444,7 +414,8 @@ PING centos01 (192.168.0.4) 56(84) bytes of data.
 --- centos01 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1027ms
 rtt min/avg/max/mdev = 0.050/0.058/0.066/0.008 ms
-[root@localhost ~]# docker exec -it my-docker-net02 ping centos01
+
+[root@localhost ~]# docker exec -it my-docker-net-centos-02 ping centos01
 PING centos01 (192.168.0.4) 56(84) bytes of data.
 64 bytes from centos01.my-docker-net (192.168.0.4): icmp_seq=1 ttl=64 time=0.000 ms
 64 bytes from centos01.my-docker-net (192.168.0.4): icmp_seq=2 ttl=64 time=0.048 ms
@@ -455,13 +426,17 @@ PING centos01 (192.168.0.4) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.000/0.031/0.048/0.021 ms
 ```
 
-4. 断开容器到另一个网络的连接 <!-- markdownlint-disable-line -->
+3. network disconnect 子命令断开容器与其他网络模式的连接 <!-- markdownlint-disable-line -->
+
+```bash
+docker network disconnect [OPTIONS] NETWORK CONTAINER
+```
 
 ```bash
 # 断开自定义网络和 centos01 的连接
 [root@localhost ~]# docker network disconnect my-docker-net centos01
-[root@localhost ~]# docker exec -it centos01 ping my-docker-net01
-ping: my-docker-net01: Name or service not known
+[root@localhost ~]# docker exec -it centos01 ping my-docker-net-centos-01
+ping: my-docker-net-centos-01: Name or service not known
 ```
 
 ### 容器与外网互联
