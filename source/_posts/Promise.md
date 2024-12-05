@@ -412,3 +412,40 @@ function resolvePromise(promise2, x, resolve, reject) {
 - Promise.allSettled() 在**所有**的 Promise 都被敲定时兑现
 - Promise.any() 在**任意一个** Promise 被兑现时兑现, 仅在**所有**的 Promise 都被拒绝时才会拒绝
 - Promise.race() 在**任意一个** Promise 敲定时敲定, 即在**任意一个** Promise 被兑现时兑现, 在**任意一个** Promise 被拒绝时拒绝
+
+- Promise.withResolvers() 返回一个对象, 其包含一个新的 promise 对象和两个函数, 用于兑现或拒绝它, 对应传入给 promise 构造函数执行器的两个参数
+
+```javascript
+// 等价于
+let resolve, reject;
+const promise = new Promise((res, rej) => {
+  resolve = res;
+  reject = rej;
+});
+
+// 将流转换为异步可迭代对象
+async function* readableToAsyncIterable(stream) {
+  let {promise, resolve, reject} = Promise.withResolvers();
+  // 事件监听器只附加的一次
+  stream.on("error", error => reject(error));
+  stream.on('end', () => resolve());
+  stream.on('readable', () => resolve());
+  
+  while(stream.readable) {
+    await promise;
+    let chunk;
+    while((chunk = stream.read())){
+      yield chunk;
+    }
+    // 每次读取当前批次时, 就会为下一批次创建一个新的 promise
+    ({promise, resolve, reject} = Promise.withResolvers());
+  }
+}
+```
+
+- Promise.try() 接收一个任意类型的回调函数(同步函数, 异步函数, 返回结果, 抛出异常), 并将其结果封装成一个 promise
+
+```javascript
+// arg 为传入给 func 的参数
+Promise.try(func, arg1, arg2, /* ... */, argN);
+```
