@@ -712,6 +712,8 @@ function App(){
 
 Effect 允许指定由渲染本身, 而不是特定事件引起的副作用
 
+Effect 是一种 脱围 机制, 可以逃出 React 并使组件和一些外部系统同步, 例如非 React 组件, 网络, 浏览器DOM
+
 - 异步执行，不会阻塞浏览器更新
 - useEffect 每次在调用一个新的 effect 之前对前一个 effect 进行清理，防止内存泄漏或崩溃的问题
 - 尽量避免使用 对象 和 函数 作为 Effect 依赖, 否则会使 Effect 更频繁地重新同步
@@ -723,7 +725,7 @@ Effect 允许指定由渲染本身, 而不是特定事件引起的副作用
 
 不使用 Effect 的情况:
 
-- 不必为了渲染而使用 Effect 来转换数据
+- 不必使用 Effect 来转换渲染所需的数据, 例如想在渲染列表前先做筛选
 - 不必使用 Effect 来处理用户事件
 
 日志出现两次挂载的原因, React 在开发环境中会在初始化挂载组件后, 立即再挂载一次, 帮助查找问题所在
@@ -754,6 +756,45 @@ useEffect(()=>{
 - 在 Effect 中请求数据容易造成网络瀑布, 当请求一些数据再渲染子组件, 然后重复这样的过程来请求子组件的数据
 - 在 Effect 中直接请求数据通常意味着不会预加载或缓存数据
 - 不符合工效学, 在调用 fetch 时, 需要编写大量样板代码, 以避免像竞争条件这样的 bug
+
+替代方法, 如果以下方法都不适合可以继续在 effect 中请求数据
+
+- 使用框架内置的数据获取机制
+- 使用或构建客户端缓存, 流行的开源解决方案包括 react query, useSWR, React Router
+
+```jsx
+import {useState, useEffect} from 'react';
+
+function App(){
+  const [person, setPerson] = useState('Tom');
+  const [bio, setBio] = useState(null);
+  const [serverUrl, setServerUrl] = useState('https://localhost:3000/');
+  
+  useEffect(() => {
+    // ignore 被初始化为 false, 并且在 cleanup 中被设置为 true
+    // 这样可以确保不会受到 竞争条件 的影响
+    let ignore = false;
+    setBio(null);
+    fetchDo(person).then(res => {
+      if(!ignore) {
+        setBio(res);
+      }
+    });
+    return () => {
+      ignore = true;
+    };
+  }, [person])
+
+  useEffect(() => {
+    const conn = createConnect(serverUrl);
+    conn.connect();
+    // 返回一个 cleanup 函数断开链接
+    return () => conn.disconnect();
+  },[serverUrl])
+
+  return (<div></div>)
+}
+```
 
 #### useEffectEvent
 
@@ -1115,15 +1156,20 @@ function App(){
 - initialState state 的初始值
 - permalink 可选,
 
-返回值, 当前的 state 和一个新的 action 函数用于 form 组件的 action 参数或表单中任意一个 button 组件的 formAction 参数中传递
+返回值
+
+- 当前的 state, 第一次渲染时, 该值为传入的 initialState, 在 action 被调用后该值会变成 action 的返回值
+- 一个新的 action 函数用于 form 组件的 action 参数或表单中任意一个 button 组件的 formAction 参数中传递
+- 一个 isPending 标识, 用于表明是否有正在 pending 的 Transition
 
 ```jsx
-const [state, formAction] = useActionState(action, initialState, permalink?);
+const [state, formAction, isPending] = useActionState(action, initialState, permalink?);
 ```
 
 ```jsx
 import {useActionState} from 'react';
 async function increment(prevState, formData){
+  // 异步操作
   // await fetch();
   await new Promise((resolve) => {
     setTimeout(() => resolve(), 2000);
@@ -1131,11 +1177,11 @@ async function increment(prevState, formData){
   return prevState + 1;
 }
 function StatusForm(){
-  const [state, formAction] = useActionState(increment, 0);
+  const [state, formAction, isPending] = useActionState(increment, 0);
   return (
     // action 是 url 则直接提交表单, 如果是函数, 则控制表单的提交行为
     <form action={formAction}>
-      {state}
+      {isPending ? '加载中...' : state}
       {/* form 的 action, enctype, method, target 属性可以被 button, type="submit", type="image" */}
       {/* 的 formaction, formenctype, formmethod, formtarget 属性重写*/}
       <button formAction={formAction}>+1</button>
