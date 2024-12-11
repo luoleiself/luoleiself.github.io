@@ -66,6 +66,18 @@ tags:
 6. 使用手机访问代理, 如果访问失败, 手机重新连接 wifi 重试
    ![charles-7](/images/charles-7.jpg)
 
+7. 安卓手机 chrome 无法打开 chls.pro/ssl 链接下载证书时
+  
+   电脑 charles 工具中 chls.pro/ssl 链接响应头总是提示 `Remote server closed the connection before sending response header`
+
+   将电脑 charles 的证书导出到本地保存为 .cer 文件类型发送到手机上
+
+   手机 设置 -> 安全 -> 更多安全设置 -> 加密和凭据 -> 从存储设备安装 -> CA 证书, 选择安装接收的 cer 文件
+
+   安装后可在 加密和凭据 -> 受信任的凭据 -> 用户, 加密和凭据 -> 用户凭据 查看安装结果
+
+   ![charles-18](/images/charles-18.jpg)
+
 ### 电脑使用 charles 无法访问百度等其他页面
 
 黑名单和白名单设置
