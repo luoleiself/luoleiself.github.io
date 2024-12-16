@@ -405,6 +405,16 @@ function dateFormat() {
 }
 
 echo $(dateFormat) # 获取函数的结果
+
+# 传递参数
+add() {
+  local num1=$1
+  local num2=$2
+  local sum=$((num1+num2))
+  echo "$sum"
+}
+result=$(add 3 5)
+echo "3 + 5 = $result"
 ```
 
 #### 特殊变量
