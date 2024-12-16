@@ -493,7 +493,7 @@ grep [OPTION]... PATTERN [FILE]...
 - -v,\-\-invert-match 显示不包括文本的所有信息
 - -R,-r,\-\-recursive 递归的读取目录下的所有文件,包括子目录
 
-### 批量删除本地关联的 git 远程分支
+#### 批量删除本地关联的 git 远程分支
 
 - awk 和 xargs 命令结合使用
 
@@ -799,4 +799,45 @@ done
 if [ $count -eq 1 ]; then
   echo "没有找到 png 文件"
 fi
+```
+
+### firewall-cmd
+
+- \-\-check-config 检查永久配置是否有错误
+
+- \-\-state 查看防火墙状态
+- \-\-reload 重新加载配置
+- \-\-permanent 配置永久有效
+
+- \-\-get-zones 查看可用的区域
+- \-\-set-default-zone 设置系统的默认区域
+- \-\-get-active-zones 查看所有活动区域以及包含的接口
+- \-\-zone=\<zone\> 指定区域
+- \-\-info-zone=\<zone\> 查看指定区域的详细信息
+
+- \-\-list-all 查看当前活动的防火墙规则
+- \-\-list-service 查看允许的服务
+- \-\-list-ports 查看允许的端口
+
+- \-\-add-interface 添加接口
+- \-\-add-service 添加服务, 允许指定的服务通过防火墙
+- \-\-add-port  添加端口, 允许指定的接口通过防火墙
+- \-\-remove-service 移除服务
+- \-\-remove-port 移除端口
+- \-\-set-log-denied=[all|off] 启用/禁用防火墙的日志记录功能
+
+```bash
+firewall-cmd --check-config # 检查永久配置是否有错误
+
+firewall-cmd --get-zones # 查看可用的区域
+firewall-cmd --zone=public --list-all # 列出指定区域的所有规则
+firewall-cmd --zone-public --list-service # 列出指定区域的服务
+
+firewall-cmd --zone=public --add-service=http --permanent # 允许 http 服务
+firewall-cmd --zone=public --add-service=http --permanent # 允许 https 服务
+firewall-cmd --zone=public --add-port=22 --permanent # 允许 22 端口
+firewall-cmd --reload # 重新加载配置
+
+firewall-cmd --zone=public --remove-port=22 --permanent # 移除 22 端口
+firewall-cmd --zone-public --remove-service=http --permanent # 移除 http 服务
 ```
