@@ -642,6 +642,12 @@ systemd 系统控制和服务管理工具的主命令, systemd 开启和监督�
 - Condition 表示当前 Unit 运行必须满足的条件, 否则不会运行
 - Assert 表示当前 Unit 运行必须满足的条件, 否则会报启动失败
 
+```conf
+[Unit]
+Description=redis-server
+After=network.target
+```
+
 ##### Install
 
 定义如何安装此配置文件
@@ -651,6 +657,12 @@ systemd 系统控制和服务管理工具的主命令, systemd 开启和监督�
 - DefaultInstance 实例单元的限制, 这个选项指定如果 Unit 被允许运行时的默认实例
 - RequiredBy 当前 Unit 被允许运行需要的一系列依赖 Unit, RequiredBy 列表从 Require 获得依赖信息
 - WantedBy 表示该服务所在的 target, target 表示一组服务, 大多的服务都附在 multi-user.target 组, 这个组的所有服务都将开机启动
+
+```conf
+[Install]
+Alias=rs
+WantedBy=multi-user.target
+```
 
 ##### Service
 
@@ -698,6 +710,18 @@ systemd 系统控制和服务管理工具的主命令, systemd 开启和监督�
 
 - RootDirectory 配置服务进程的根目录, 服务将无法访问指定目录以外的任何文件
 - WorkingDirectory 定义服务的安装目录
+
+```conf
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/redis-server /root/workspace/redis6379.conf
+ExecStartPre=/bin/echo "engine start"
+ExecStopPost=/bin/echo "engine stop"
+Restart=on-failure
+User=nobody
+Environment=SOME_VAR=some_val
+PrivateTmp=true
+```
 
 ##### Timer
 

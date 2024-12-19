@@ -1739,7 +1739,7 @@ const value = use(resource);
 import {use} from 'react';
 function MessageComponent({messagePromise}){
   const message = use(messagePromise);
-  const theme - use(ThemeContext);
+  const theme = use(ThemeContext);
   // ...
 }
 ```
