@@ -206,38 +206,45 @@ docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命�
 ```
 
 - \-\-name 容器名称
-- -d 后台方式运行
-- -i,\-\-interactive 即使没有附加也保持 STDIN 打开, 如果需要执行命令则需要开启这个选项
-- -t,\-\-tty 分配一个伪终端进行执行, 一个连接用户的终端与容器 stdin 和 stdout 的桥梁
-- -P 将宿主机的随机端口映射到容器使用的端口上
-- -p 指定容器的端口
+- -d, \-\-detach 后台方式运行
+- -a, \-\-attach 附加到标准输出中
+- -i, \-\-interactive 即使没有附加也保持 STDIN 打开, 如果需要执行命令则需要开启这个选项
+- -t, \-\-tty 分配一个伪终端进行执行, 一个连接用户的终端与容器 stdin 和 stdout 的桥梁
+- -P, \-\-publish-all 将宿主机的随机端口映射到容器使用的端口上
+- -p, \-\-publish 指定容器的端口
 
   - -p 宿主机 IP:宿主机端口:容器端口/协议
   - -p 宿主机端口:容器端口/协议
   - -p 容器端口/协议
 
-- -e 设置容器运行的环境变量
-- -w 设置容器内部的工作目录
+- -e, \-\-env 设置容器运行的环境变量
+- \-\-env-file 设置容器运行的环境变量文件
+- -w, \-\-workdir 设置容器内部的工作目录
 - -h, \-\-hostname 设置容器的主机名
-- -v, \-\-volume 设置容器数据卷映射
+- -v, \-\-volumes 设置容器数据卷映射
 - \-\-mount 挂载文件系统
-- \-\-temps 挂载临时文件系统
+- \-\-tmpfs 挂载临时文件系统
 - \-\-volumes-from 指定继承的数据卷容器
 
-- \-\-label 设置容器的元数据
+- -l, \-\-label 设置容器的元数据
 - \-\-ip 设置容器 IP 地址
+- \-\-ip6 IPv6 地址
 - \-\-link 连接到另一个容器
 - \-\-network 连接到指定的网络, 默认为 docker0
 
 - \-\-privileged 授予此容器扩展权限
-
 - \-\-entrypoint 覆盖镜像文件中默认的 ENTRYPOINT
-
-- \-\-restart string 当容器退出后的重启策略
 - \-\-read-only 只读模式挂在容器文件系统
+- \-\-restart string 当容器退出后的重启策略
+  - no, 默认值
+  - on-failure[:max-retries]
+  - always
+  - unless-stopped
 
 - \-\-add-host list 添加主机 ip 映射
 - \-\-dns list 设置 dns 服务
+- \-\-cpus 指定容器运行时的 cpu 数量
+- -m, \-\-memory 指定容器运行时的内存大小
 
 - \-\-rm 测试时临时运行容器关闭后自动删除容器
 
