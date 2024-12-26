@@ -490,6 +490,8 @@ grep [OPTION]... PATTERN [FILE]...
 - -l,\-\-files-with-matches 打印匹配模板的文件清单
 - -L,\-\-files-without-match 打印不匹配模板的文件清单
 - -n,\-\-line-number 在匹配的行前面打印行号
+- -x,\-\-line-regexp 仅匹配整行
+- -w,\-\-word-regexp 仅匹配整个单词
 - -v,\-\-invert-match 显示不包括文本的所有信息
 - -R,-r,\-\-recursive 递归的读取目录下的所有文件,包括子目录
 
