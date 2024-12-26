@@ -221,6 +221,34 @@ fi
 - `<` 输入重定向
 - `<<` 输入重定向
 
+```bash
+# 在文件末尾追加三行文本
+cat >> file.txt << EOF
+line 1.
+line 2.
+line 3.
+EOF
+
+# 启动一个 bash 新实例, 并执行提供的脚本, 单引号 EOF 确保脚本内容中的变量不会被提前替换
+bash << 'EOF'
+#!/bin/bash
+echo "Hello, World!"
+for i in {1..5}; do
+  echo "Line $i"
+done
+EOF
+
+# 连接 mysql 数据库创建表结构并插入两条记录
+mysql -u username -p database_name << EOF
+CREATE TABLE example (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL
+);
+INSERT INTO example (name) VALUES ('Tom'), ('Jerry');
+SELECT * FROM example;
+EOF
+```
+
 ##### 管道
 
 - `|` 连接两个命令, 第一个命令的输出作为第二个命令的输入
