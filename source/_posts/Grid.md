@@ -240,7 +240,7 @@ column-gap: 10px;
 
 #### grid-area <em id="grid-area"></em> <!-- markdownlint-disable-line -->
 
-`grid-area: <row-start> / <column-start> / <row-end> / <column-end>;` 合并简写形式
+`grid-area: <row-start> / <column-start> / <row-end> / <column-end>;` 合并简写形式, 支持使用网格线编号、网格线名、区域别名、区域别名网格线名形式
 
 指定项目放在哪个区域, 是一种对 `grid-row-start`, `grid-column-start`, `grid-row-end`, `grid-column-end`的简写, 通过基线、 跨度(span)或没有(自动)的网格线放置在指定一个网格项的大小和位置, 继而确定区域的边界
 
