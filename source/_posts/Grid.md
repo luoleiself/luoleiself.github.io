@@ -19,6 +19,9 @@ CSS Grid 布局 和 Flexible 布局的主要区别在于 CSS Flexible 是为了�
 - fr 单位, 新的长度单位, 表示网格容器中占用的轨道
 - minmax(min, max), 函数为一个行/列的尺寸设置了取值范围, 例如 minmax(100px, auto) 表示尺寸至少为 100px, 如果内容尺寸大于 100px 则会根据内容自动调整
 - repeat(count, value), 表示轨道列表的重复片段, 允许以更紧凑的形式写入大量显示重复模式的列或行
+  - repeat(auto-fill/auto-fit, minmax(200px, 1fr)) 根据可用空间动态调整轨道列数, 每列的最小宽度为 200px, 最大为 1fr
+  - auto-fill 创建尽可能多的轨道(即使这些轨道是空的), 并且不会合并多余的轨道
+  - auto-fit 创建尽可能多的轨道, 并且会合并多余的轨道, 使得内容能够填充整个容器
 
 ### 属性列表
 
