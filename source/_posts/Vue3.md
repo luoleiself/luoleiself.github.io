@@ -369,10 +369,10 @@ const AsyncComp = defineAsyncComponent({
   suspensible: false, // 定义组件是否可挂起 | 默认值：true
   /**
    * @param {*} error 错误信息对象
-    * @param {*} retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试
-    * @param {*} fail  一个函数，指示加载程序结束退出
-    * @param {*} attempts 允许的最大重试次数
-    */
+   * @param {*} retry 一个函数，用于指示当 promise 加载器 reject 时，加载器是否应该重试
+   * @param {*} fail  一个函数，指示加载程序结束退出
+   * @param {*} attempts 允许的最大重试次数
+   */
   onError(error, retry, fail, attempts) {
     if (error.message.match(/fetch/) && attempts <= 3) {
       // 请求发生错误时重试，最多可尝试 3 次
@@ -413,6 +413,12 @@ createApp({
 
 和 `defineComponent()` 接收的参数相同, 返回值是一个可以通过 `customElements.define()` 注册的**自定义元素**构造器(继承自 `HTMLElement`)
 
+这些属性也可以作为第二个参数传递
+
+- configureApp 一个函数, 可用于配置自定义元素的 Vue 应用实例. Vue 3.5 支持
+- shadowRoot boolean, 默认为 true, 设置为 false 以在不带 shadow root 的情况下渲染自定义元素, 自定义元素组件中的 \<style\> 将不再被封装隔离. Vue 3.5 支持
+- nonce string, 如果提供, 将在注入到 shadow root 样式标签上设置 nonce attribute. Vue 3.5 支持
+
 ```javascript
 import { defineCustomElement } from 'vue';
 
@@ -426,7 +432,15 @@ const MyVueElement = defineCustomElement({
   styles: [`/* inlined css */`],
 });
 
-customElements.define('my-vue-element', MyVueElement);
+const MyNewElement = defineCustomElement(MyVueElement, {
+  // 选项作为第二个参数传递
+  configureApp(app){
+    app.name = 'MyVueElement'
+  },
+  nonce: 'noncemyvueelement'
+})
+
+customElements.define('my-new-element', MyNewElement);
 ```
 
 ## 组合式 API <em id="composition-api"></em> <!-- markdownlint-disable-line -->
@@ -1496,9 +1510,13 @@ app.mount('#app');
 
 ### 辅助
 
-#### useAttr()
+#### useAttrs()
+
+用于在 SFC 中获取 setup 上下文中的 attrs 对象
 
 #### useSlots()
+
+用于在 SFC 中获取 setup 上下文中的 slots 对象
 
 #### useModel()
 
@@ -1531,6 +1549,32 @@ app.mount('#app');
 > Vue 3.5 支持
 
 用于为无障碍属性或表单元素生成每个应用内唯一的 ID
+
+```html
+<template>
+  <form>
+    <label :for="id">Name</label>
+    <input :id="id" type="text"/>
+  </form>
+</template>
+<script setup>
+  import {useId} from 'vue';
+
+  const id = useId();
+</script>
+```
+
+#### useHost()
+
+> Vue 3.5 支持
+
+一个组合式 API 辅助函数, 返回当前 Vue 自定义元素的宿主元素
+
+#### useShadowRoot()
+
+> Vue 3.5 支持
+
+一个组合式 API 辅助函数, 返回当前 Vue 自定义元素的 shadow root
 
 ### 状态选项
 
@@ -3861,6 +3905,29 @@ renderToSimpleStream(
     // 为上下文对象添加属性
   }
 </script>
+```
+
+#### data-allow-mismatch
+
+> Vue 3.5 支持
+
+**激活不匹配** 预渲染的 HTML 的 DOM 结构不符合客户端应用的期望, 当 Vue 遇到激活不匹配时, 将尝试自动恢复并调整预渲染的 DOM 结构以匹配客户端的状态, 这将导致一些渲染性能的损失.
+
+- 组件模板中存在不符合规范的 HTML 结构, eg: \<p\>\<div\>\</div\>\</p\>
+- 渲染所用的数据中包含随机生成的值, 由于同一个应用会在服务端和客户端执行两次, 每次执行生成的随机数都不能保证相同
+- 服务端和客户端的时区不一致
+
+可以消除激活不匹配警告的特殊的 attribute, 如果没有提供值, 则会允许所有类型的不匹配.
+允许的值
+
+- text
+- children
+- class
+- style
+- attribute
+
+```html
+<div data-allow-mismatch="text">{{ data.toLocaleString() }}</div>
 ```
 
 ### 工具类型
