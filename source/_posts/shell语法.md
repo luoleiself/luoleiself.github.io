@@ -230,7 +230,7 @@ line 3.
 EOF
 
 # 启动一个 bash 新实例, 并执行提供的脚本, 单引号 EOF 确保脚本内容中的变量不会被提前替换
-bash << 'EOF'
+bash << EOF
 #!/bin/bash
 echo "Hello, World!"
 for i in {1..5}; do

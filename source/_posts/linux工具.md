@@ -435,6 +435,7 @@ xargs [OPTION]... COMMAND INITIAL-ARGS...
 - -I replaceString 插入标准输入的每一行作为 command 参数的自变量, 把它插入每个发生的 replaceString 的 Argument 中
 - -n number 指定传递给执行命令的参数个数, 默认是所有
 - -p 每执行一个 argument 时询问一次用户
+- -P 指定并行执行的进程数
 - -a file 从文件中读入作为 stdin
 - -s size 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数
 - -t 执行命令之前先打印执行命令
@@ -494,6 +495,12 @@ grep [OPTION]... PATTERN [FILE]...
 - -w,\-\-word-regexp 仅匹配整个单词
 - -v,\-\-invert-match 显示不包括文本的所有信息
 - -R,-r,\-\-recursive 递归的读取目录下的所有文件,包括子目录
+
+```bash
+grep -A 3 'pattern' file.txt # 向下搜索并显示匹配内容的后 3 行
+grep -B 3 'pattern' file.txt # 向上搜索并显示匹配内容的前 3 行
+grep -C 3 'pattern' file.txt 
+```
 
 #### 批量删除本地关联的 git 远程分支
 
