@@ -27,6 +27,25 @@ tags:
 - local 声明局部变量,一般用于函数内部
 
 单中括号是 POSIX 标准兼容的适用于所有 Unix/Linux 系统, 其他一切双方括号, 双圆括号不是 POSIX 标准兼容的但广泛用于 Bash、Zsh等Shell
+
+#### PowerShell
+
+dir env: | Get-childItem env:  查看所有的环境变量
+
+\$env:[NAME] 查看指定环境变量
+
+设置环境变量
+
+\$env:[NAME=VALUE] 仅在当前会话窗口中有效
+
+[System.Environment]\:\:SetEnvironmentVariable(NAME, VALUE, 'User|Machine') 永久生效, User 表示用户级别, Machine 表示系统级别
+
+删除环境变量
+
+Remove-Item env:[NAME] 仅在当前会话窗口中有效
+
+[System.Environment]\:\:SetEnvironmentVariable(NAME, $null, "User|Machine") 永久生效, 将环境变量的设置为 $null
+
 <!-- more -->
 
 ### 运算符
