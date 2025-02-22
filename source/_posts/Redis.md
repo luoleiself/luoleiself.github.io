@@ -99,8 +99,6 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - CONFIG REWRITE 将内存中的配置项重写到配置文件中
 - CONFIG SET parameter value [parameter value ...] 设置配置项
 
-## Keys 命令
-
 - INFO [section [section ...]] 返回服务的相关信息, 没有参数返回所有
 
   - server 返回 redis 服务的通用信息
@@ -172,6 +170,8 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 - clear 清空屏幕
 
+## Keys 命令
+
 ### 操作 key
 
 - TYPE key 返回指定 key 的类型, none 表示 key 不存在
@@ -229,26 +229,22 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 2) 1) "xiaoming"
 ```
 
-### 副本
+### 过期时间
 
-- REPLICAOF host port 将当前服务器设置为指定主机端口上服务器的副本, 通常返回 ok, 5.0.0 开始代替 `SLAVEOF`
-  - 如果当前服务器已经是某个服务器的副本, 则取消对旧服务器的连接同步, 并开始对新服务器同步, 丢弃旧有数据集
-  - NO ONE 如果当前服务器已经是副本, 此参数将当前服务器变为 master, 并停止与主服务器的连接同步
-
-### 设置 key 的过期时间
+设置过期时间
 
 - EXPIRE key seconds [NX|XX|GT|LT] 为指定 key 设置过期时间(单位秒), 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
 - EXPIREAT key unix-time-seconds [NX|XX|GT|LT] 为指定 key 设置过期使用 unix 时间戳, 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
 - PEXPIRE key milliseconds [NX|XX|GT|LT] 为指定 key 设置过期时间(单位毫秒), 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
 - PEXPIREAT key unix-time-milliseconds [NX|XX|GT|LT] 为指定 key 设置过期时间使用 unix 时间戳, 1 设置成功, 0 指定 key 不存在或者提供的参数跳过了操作
-- EXPIRETIME key 返回指定 key 将过期的绝对 Unix 时间戳(以秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, 7.0.0 支持
-- PEXPIRETIME key 返回指定 key 将过期的绝对 Unix 时间戳(以毫秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, 7.0.0 支持
+- EXPIRETIME key 返回指定 key 将过期的绝对 Unix 时间戳(以秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, Redis 7.0 支持
+- PEXPIRETIME key 返回指定 key 将过期的绝对 Unix 时间戳(以毫秒为单位), -1 表示 key 存在但没有过期时间, -2 表示 key 不存在, Redis 7.0 支持
   - NX 以上命令该参数作用相同, 仅当指定 key 没有过期时间时
   - XX 以上命令该参数作用相同, 仅当指定 key 存在过期时间时
   - GT 以上命令该参数作用相同, 仅当新的过期时间大于当前的过期时间
   - LT 以上命令该参数作用相同, 仅当新的过期时间小于当前的过期时间
 
-### 获取 key 的过期时间
+获取过期时间
 
 - TTL key 返回指定 key 以**秒**为单位剩余的生存时间
 - PTTL key 返回指定 key 以**毫秒**为单位剩余的生存时间
@@ -266,6 +262,8 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 (integer) 23000
 ```
 
+取消过期时间
+
 - PERSIST key 移除指定 key 的过期时间, key 将永久保持, 1 成功, 0 key 不存在或者未设置过期时间
 
 ### 数据库操作
@@ -275,8 +273,16 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - SELECT index 更改当前连接的选定的数据库
 - DBSIZE 返回当前数据库中 key 的数量
 
+清空数据库
+
 - FLUSHALL [ASYNC|SYNC] 清除所有数据库中的 key, 执行成功返回 ok
 - FLUSHDB [ASYNC|SYNC] 清除当前数据库中的 key, 执行成功返回 ok
+
+### 副本
+
+- REPLICAOF host port 将当前服务器设置为指定主机端口上服务器的副本, 通常返回 ok, Redis 5.0 开始代替 `SLAVEOF`
+  - 如果当前服务器已经是某个服务器的副本, 则取消对旧服务器的连接同步, 并开始对新服务器同步, 丢弃旧有数据集
+  - NO ONE 如果当前服务器已经是副本, 此参数将当前服务器变为 master, 并停止与主服务器的连接同步
 
 ### 安全认证
 
@@ -355,205 +361,6 @@ save <seconds> <changes> [<seconds> <changes> ...]
 - aclfile /etc/redis/users.acl # 默认 ACL 配置文件
 - io-threads 4 # I/O 线程
 
-## 发布订阅
-
-Redis 发布/订阅(pub/sub)是一种消息通信模式: 发送者(pub)发送消息, 订阅者(sub)接收消息
-它采用事件作为基本的通信机制，提供大规模系统所要求的松散耦合的交互模式: 订阅者(如客户端)以事件订阅的方式表达出它有兴趣接收的一个事件或一类事件;发布者(如服务器)可将订阅者感兴趣的事件随时通知相关订阅者
-订阅者对一个或多个频道感兴趣,只需接收感兴趣的消息,不需要知道什么样的发布者发布的. 这种发布者和订阅者的解耦合可以带来更大的扩展性和更加动态的网络拓扑
-
-- 发布者: 无需独占链接, 可以在 publish 发布消息的同时, 使用同一个链接进行其他操作
-- 订阅者: 需要独占链接, 在 subscribe 期间, 以阻塞的方式等待消息
-
-### 发布消息
-
-- PUBLISH channel message 给指定的频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者
-- SPUBLISH shardchannel message 给指定的碎片频道发送消息并返回接收到消息的订阅者数量, 0 表示没有订阅者, 7.0.0 支持
-
-### 普通订阅
-
-- SUBSCRIBE channel [channel ...] 订阅指定频道立即进入阻塞状态等待接收消息
-- UNSUBSCRIBE [channel [channel ...]] 根据给定频道取消客户端订阅, 如果未指定则取消所有频道订阅
-
-```bash
-# 1
-127.0.0.1:6379> SUBSCRIBE first second
-Reading messages... (press Ctrl-C to quit)
-1) "subscribe"
-2) "first"
-3) (integer) 1
-1) "subscribe"
-2) "second"
-3) (integer) 2
-# 2
-127.0.0.1:6379> SUBSCRIBE first third
-Reading messages... (press Ctrl-C to quit)
-1) "subscribe"
-2) "first"
-3) (integer) 1
-1) "subscribe"
-2) "third"
-3) (integer) 2
-# 3
-127.0.0.1:6379> PUBSUB CHANNELS
-1) "third"
-2) "first"
-3) "second"
-
-# 3
-127.0.0.1:6379> PUBLISH first 'hello first'
-(integer) 2
-# 1
-127.0.0.1:6379> SUBSCRIBE first second
-...
-1) "message"
-2) "first"
-3) "hello first"
-# 2
-127.0.0.1:6379> SUBSCRIBE first third
-...
-1) "message"
-2) "first"
-3) "hello first"
-
-# 3
-127.0.0.1:6379> PUBLISH second 'hello second'
-(integer) 1
-# 1
-127.0.0.1:6379> SUBSCRIBE first second
-...
-1) "message"
-2) "second"
-3) "hello second"
-
-# 3
-127.0.0.1:6379> PUBLISH third 'hello third'
-(integer) 1
-# 2
-127.0.0.1:6379> SUBSCRIBE first third
-...
-1) "message"
-2) "third"
-3) "hello third"
-```
-
-### 模式订阅
-
-- PSUBSCRIBE pattern [pattern ...] 根据给定模式订阅频道立即进入阻塞状态等待接收消息
-  - pattern 可以使用正则表达式匹配多个频道
-- PUNSUBSCRIBE [pattern [pattern ...]] 根据给定模式取消客户端订阅, 如果未指定则取消所有模式订阅
-
-```bash
-# 1
-127.0.0.1:6379> PSUBSCRIBE __key*__:*
-Reading messages... (press Ctrl-C to quit)
-1) "psubscribe"
-2) "__key*__:*"
-3) (integer) 1
-# 2
-127.0.0.1:6379> PSUBSCRIBE __key*__:*
-Reading messages... (press Ctrl-C to quit)
-1) "psubscribe"
-2) "__key*__:*"
-3) (integer) 1
-# 3
-127.0.0.1:6379> PUBSUB NUMPAT
-(integer) 1
-
-# 3
-127.0.0.1:6379> PUBLISH __key@__:foo 'hello key at foo'
-(integer) 2
-# 1
-127.0.0.1:6379> PSUBSCRIBE __key*__:*
-...
-1) "pmessage"
-2) "__key*__:*"
-3) "__key@__:foo"
-4) "hello key at foo"
-# 2
-127.0.0.1:6379> PSUBSCRIBE __key*__:*
-...
-1) "pmessage"
-2) "__key*__:*"
-3) "__key@__:foo"
-4) "hello key at foo"
-
-# 3
-127.0.0.1:6379> PUBLISH __key@__:bar 'hello key at bar'
-(integer) 2
-# 1
-127.0.0.1:6379> PSUBSCRIBE __key*__:*
-...
-1) "pmessage"
-2) "__key*__:*"
-3) "__key@__:bar"
-4) "hello key at bar"
-# 2
-127.0.0.1:6379> PSUBSCRIBE __key*__:*
-...
-1) "pmessage"
-2) "__key*__:*"
-3) "__key@__:bar"
-4) "hello key at bar"
-```
-
-### 碎片频道订阅
-
-- SSUBSCRIBE shardchannel [shardchannel ...] 订阅指定的碎片频道, 7.0.0 支持
-- SUNSUBSCRIBE [shardchannel [shardchannel ...]] 根据给定碎片频道取消客户端订阅, 如果未指定则取消所有碎片频道订阅, 7.0.0 支持
-
-### 统计订阅信息
-
-```bash
-127.0.0.1:6379> PUBSUB HELP
- 1) PUBSUB <subcommand> [<arg> [value] [opt] ...]. Subcommands are:
- 2) CHANNELS [<pattern>]
- 3)     Return the currently active channels matching a <pattern> (default: '*').
- 4) NUMPAT
- 5)     Return number of subscriptions to patterns.
- 6) NUMSUB [<channel> ...]
- 7)     Return the number of subscribers for the specified channels, excluding
- 8)     pattern subscriptions(default: no channels).
- 9) SHARDCHANNELS [<pattern>]
-10)     Return the currently active shard level channels matching a <pattern> (default: '*').
-11) SHARDNUMSUB [<shardchannel> ...]
-12)     Return the number of subscribers for the specified shard level channel(s)
-13) HELP
-14)     Prints this help.
-```
-
-- PUBSUB CHANNELS [pattern] 返回当前活跃频道列表(不包含使用模式订阅的频道)
-- PUBSUB NUMSUB [channel [channel ...]] 返回订阅者的数量(不包含使用模式订阅的频道)
-  - 如果不指定 channel 将返回 (empty array)
-
-```bash
-127.0.0.1:6379> PUBSUB CHANNELS
-1) "conn"
-
-127.0.0.1:6379> PUBSUB NUMSUB hello conn
-1) "hello"
-2) (integer) 1
-3) "conn"
-4) (integer) 1
-```
-
-- PUBSUB NUMPAT 返回订阅者通过模式订阅的频道的数量
-
-```bash
-127.0.0.1:6379> PUBSUB NUMPAT
-(integer) 0
-127.0.0.1:6379> PUBSUB NUMPAT
-(integer) 1
-```
-
-- PUBSUB SHARDCHANNELS [pattern] 返回当前活动的碎片频道, 未找到返回 empty array, 7.0.0 支持
-- PUBSUB SHARDNUMSUB [shardchannel [shardchannel ...]] 返回指定的碎片频道的订阅者数量, 未找到返回 empty arryay, 7.0.0 支持
-
-```bash
-127.0.0.1:6379> PUBSUB SHARDNUMSUB conn
-1) "conn"
-2) (integer) 0
-```
-
 ## Redis Pipelining
 
 > 当客户端使用流水线发送命令时, 服务器将被迫使用内存对回复进行排队. 因此, 如果需要使用流水线发送大量命令时最好尽量等分分批发送命令
@@ -573,7 +380,7 @@ Redis 流水线是一种通过一次发出多个命令而无需等待每个命�
 
 ### Redis 函数
 
-> Redis 7.0 以上支持
+> Redis 7.0 支持
 
 Redis 函数是临时脚本的进化步骤, 函数提供与脚本相同的核心功能但却是数据库的一流软件工件
 
@@ -670,6 +477,8 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 
 <em id="redis.register_function"></em> <!-- markdownlint-disable-line -->
 
+注册
+
 - redis.register_function(name, callback, flags, description) 注册函数
   - name 注册的函数名
   - callback 注册的函数
@@ -680,6 +489,8 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
     - no-cluster 标识脚本在 Redis 集群模式下返回错误, 防止对集群中的节点执行脚本
     - allow-cross-slot-keys 允许脚本从多个 slot 访问密钥
   - description 函数描述
+
+调用
 
 - FCALL function numkeys [key [key ...]] [arg [arg ...]] 调用注册的函数
 - FCALL_RO function numkeys [key [key ...]] [arg [arg ...]] 调用注册的只读函数
@@ -697,7 +508,7 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 "Who's there?"
 ```
 
-##### Lua 脚本注册调用
+##### Lua 脚本文件注册调用
 
 ```lua
 #!lua name=mylib
@@ -807,8 +618,9 @@ Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它�
   - numkeys 指定后续的参数有几个 key
   - key 要操作的键的数量, 在 Lua 脚本中通过 `KEYS[1]`, `KEYS[2]` 获取
   - arg 参数, 在 Lua 脚本中通过 `ARGV[1]`, `ARGV[2]` 获取
-- EVAL_RO script numkeys [key [key ...]] [arg [arg ...]] 只读版本的 EVAL 命令, Redis 7.0 支持
 - EVALSHA sha1 numkeys key [key ...] arg [arg ...] 使用缓存 Lua 脚本的 sha 执行脚本(SCRIPT LOAD 命令缓存脚本)
+
+- EVAL_RO script numkeys [key [key ...]] [arg [arg ...]] 只读版本的 EVAL 命令, Redis 7.0 支持
 - EVALSHA_RO sha1 numkeys [key [key ...]] [arg [arg ...]] 只读版本的 EVALSHA 命令, Redis 7.0 支持
 
 ```bash
@@ -831,9 +643,9 @@ Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它�
    2) "hello world"
 ```
 
-每次执行脚本都需要重新加载一遍脚本代码, 浪费资源
+每次执行脚本都需要重新加载一遍脚本代码, 浪费资源, 使用 [脚本缓存](#scriptcache)
 
-#### lua 脚本中的 redis 单例
+#### lua 脚本中的 redis 实例
 
 redis 单例实例, 使脚本能够与运行它的 Redis 服务器进行交互
 
@@ -842,7 +654,7 @@ redis 单例实例, 使脚本能够与运行它的 Redis 服务器进行交互
 - KEYS 获取脚本声明的键参数
 - ARGV 获取脚本声明的键参数剩余的参数
 
-<em id="redis.call"></em> <!-- markdownlint-disable-line-->
+<em id="redis.call"></em> <!-- markdownlint-disable-line -->
 
 - redis.call(command [, arg...]) 执行 redis 命令并返回结果, 如果遇到错误时直接返回给客户端
 - redis.pcall(command [, arg...]) 执行 redis 命令并返回结果, 如果遇到错误时将返回给脚本的执行上下文
@@ -902,7 +714,7 @@ OK
 (integer) 458757
 ```
 
-#### **脚本缓存**
+#### **脚本缓存** <em id="scriptcache"></em> <!-- markdownlint-disable-line -->
 
 存储在服务器的脚本专用缓存中, 缓存内容由脚本的 SHA1 摘要作为缓存中的唯一标识
 
@@ -1250,6 +1062,8 @@ bit 提供对数字的按位运算
 
 ## ACL
 
+> Redis 6.0 支持
+
 ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis 客户端在访问 Redis 服务器时, 能够执行的命令和能够获取的 key, 提高操作安全性, 避免对数据造成损坏
 
 - ACL HELP 显示 ACL 的帮助信息
@@ -1303,9 +1117,9 @@ ACL(access control list)访问控制列表的简称, 是为了控制某些 Redis
 |      nocommands      | -@all 的别名                                                                            |
 |                      |                                                                                         |
 |     ~\<pattern\>     | 允许用户可以访问的 key(正则匹配), 例如: ~foo:\* 只允许访问 foo:\* 的 key                |
-|    %R~\<pattern\>    | 添加指定的只读 key(正则匹配), 例如: %R~app:\* 只允许读 app:\* 的 key, 7.0 支持          |
-|    %W~\<pattern\>    | 添加指定的只写 key(正则匹配), 例如: %W~app:\* 只允许写 app:\* 的 key, 7.0 支持          |
-|   %RW~\<pattern\>    | 添加指定的可读可写的 key(正则匹配), 例如: %RW~app:\* 只允许读写 app:\* 的 key, 7.0 支持 |
+|    %R~\<pattern\>    | 添加指定的只读 key(正则匹配), 例如: %R~app:\* 只允许读 app:\* 的 key, Redis 7.0 支持          |
+|    %W~\<pattern\>    | 添加指定的只写 key(正则匹配), 例如: %W~app:\* 只允许写 app:\* 的 key, Redis 7.0 支持          |
+|   %RW~\<pattern\>    | 添加指定的可读可写的 key(正则匹配), 例如: %RW~app:\* 只允许读写 app:\* 的 key, Redis 7.0 支持 |
 |       allkeys        | ~\* 的别名                                                                              |
 |      resetkeys       | 移除所有的 key 匹配模式                                                                 |
 |                      |                                                                                         |
@@ -1409,7 +1223,7 @@ OK
 2) "user zhangsan off ~zhang:* resetchannels &zhang:* -@all +@list +@string +@hash +@set"
 ```
 
-- ACL DRYRUN username command [arg [arg ...]] 模拟指定用户对给定命令的执行, 此命令可以用来测试用户的权限而无需启用用户, 7.0.0 支持
+- ACL DRYRUN username command [arg [arg ...]] 模拟指定用户对给定命令的执行, 此命令可以用来测试用户的权限而无需启用用户, Redis 7.0 支持
 
 ```bash
 127.0.0.1:6379> ACL DRYRUN zhangsan ZADD zs 1 hello 2 world 3 zs
