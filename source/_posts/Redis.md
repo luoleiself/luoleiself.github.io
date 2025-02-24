@@ -292,7 +292,8 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 
 - include /path/to/\*.conf # 导入其他 redis 配置文件
 
-- protected-mode yes # 保护模式, 默认开启
+- protected-mode yes # 保护模式, 默认 yes, 只能允许本机连接
+
 - tcp-backlog 511 # tcp 连接数
 - timeout 0 # 关闭客户端连接的延迟, 0 表示禁用, 单位秒
 - tcp-keepalive 300 # 保持长连接的时间, 单位秒
@@ -1547,10 +1548,10 @@ redis.conf 基础配置，[集群配置](#redisclusterconfigure) <em id="redisba
 include /root/redis-cluster/redis.conf
 # 修改绑定 ip, 此处演示全为本机
 bind 127.0.0.1
+# 保护模式, 默认 yes, 只能允许本机连接
+protected-mode no
 # 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用
 port 6379
-# 关闭保护模式, 默认 yes
-protected-mode no
 # 开启后台运行, 默认 no
 daemonize yes
 # 修改 redis 进程文件名
@@ -1717,7 +1718,7 @@ replica-priority > replica-offset > run-ID
 sentinel.conf 配置文件
 
 ```yaml
-protected-mode no # 保护模式, 默认不开启
+protected-mode no # 保护模式, 默认 yes, 只能允许本机连接
 port 26379 # 服务端口号
 daemonize no # 是否后台运行模式
 pidfile /var/run/redis-sentinel-26379.pid # 进程文件
