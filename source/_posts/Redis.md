@@ -67,20 +67,20 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
 
 ### 开机启动
 
-- `/usr/lib/systemd/system/` 目录中创建 `redis.service` 文件, 使用 `yum install` 安装 Redis 自动创建此文件
-- 使用命令 `ln -s /usr/lib/systemd/system/redis.service /etc/systemd/system/redis.service` 创建到系统服务目录的软链接
+- 创建 `/usr/lib/systemd/system/redis.service` 服务文件, 使用 `yum install` 安装 Redis 自动创建此文件
 - 编辑 `redis.service` 文件
 
 ```conf
 [Unit]   # 控制单元定义
-Description=redis-service # 当前配置文件的描述信息
+Description=Redis In-Memory Data Source # 当前配置文件的描述信息
 After=network.target # 表示当前服务在哪个服务后面启动，一般定义为网络服务启动之后
 
 [Service]   # 服务定义
 Type=forking   # 定义启动类型
 ExecStart=/usr/local/bin/redis-server /root/workspace/redis6379.conf # 定义启动进程时执行的命令
+ExecStop=/usr/local/bin/redis-cli shutdown  # 定义关闭进程时执行的命令
+Restart=always
 #ExecReload=   # 定义重启服务时执行的命令
-#ExecStop=  # 定义关闭进程时执行的命令
 PrivateTmp=true   # 是否分配独立空间
 
 [Install]   # 安装定义
