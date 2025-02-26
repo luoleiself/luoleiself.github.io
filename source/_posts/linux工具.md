@@ -653,7 +653,6 @@ fi
 tar [OPTION...] [FILE]...
 ```
 
-- \-t,\-\-list 列出压缩文件中的信息
 - \-u,\-\-update 用已打包的文件的较新版本更新 tar 文件
 - \-d,\-\-diff,\-\-compare 将文件系统里的文件和 tar 文件里的文件进行比较
 - \-\-delete 删除 tar 文件里面的文件, 不能用于已保存在磁带上的 tar 文件
@@ -664,7 +663,6 @@ tar [OPTION...] [FILE]...
 
 - \-\-atime-preserve 不改变转储文件的存取时间
 - \-m,\-\-modification-time 当从一个档案中恢复文件时, 不使用新的时间标签
-- \-C,\-\-directory DIR 转到指定的目录
 
 #### 压缩工具
 
@@ -691,13 +689,39 @@ tar [OPTION...] [FILE]...
 [root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable
 ```
 
-#### 向压缩包添加文件
+#### 列出文件
+
+- \-t,\-\-list 列出压缩文件中的信息
+
+```bash
+[root@centos7 ~]tar -ztf archive.tar.gz # 输出压缩包的文件列表
+```
+
+#### 添加文件
 
 - \-r,\-\-append 向压缩包中添加文件, 如果压缩包不存在则新建压缩包
 
 ```bash
 # 向 archive.tar 压缩包中添加文件 file1.txt file2.txt
 [root@centos7 ~]tar -rf archive.tar file1.txt file2.txt
+```
+
+#### 提取文件
+
+- \-\-files-from=FILE 提取从 FILE 文件中列出的文件列表
+- \-\-wildcards 使用通配符匹配文件名
+- \-\-strip-components=NUMBER 去掉指定数量的目录层级
+- \-C,\-\-directory DIR 转到指定的目录
+
+```bash
+# 从 redis-stable.tar.gz 包 提取 files.txt 中列出的文件列表 到当前目录下
+[root@centos7 ~]tar -zxf redis-stable.tar.gz --files-from=files.txt -C ./
+
+# 从 redis-stable.tar.gz 包 提取 redis.conf 文件 到当前目录下, 去掉 1 层目录
+[root@centos7 ~]tar -zxf redis-stable.tar.gz --wildcards '*/redis.conf' --strip-components=1 -C ./
+
+# 从 redis-stable.tar.gz 包 提取 sentinel.conf 文件 到当前目录下, 去掉 1 层目录
+[root@centos7 ~]tar -zxf redis-stable.tar.gz --wildcards '*/sentinel.conf' --strip-components=1 -C ./ 
 ```
 
 ### curl
