@@ -671,7 +671,7 @@ tar [OPTION...] [FILE]...
 - \-z,\-\-gzip,\-\-gunzip,\-\-ungzip 调用 gzip 执行压缩或解压缩
 - \-Z,\-\-compress,\-\-uncompress 调用 compress 执行压缩或解压缩
 
-#### 归档压缩
+#### 解压缩
 
 - \-c,\-\-create 创建新的 tar 文件
 
@@ -679,8 +679,6 @@ tar [OPTION...] [FILE]...
 # 使用 gzip 压缩归档 workspace 目录
 [root@centos7 ~]tar -czvf workspace.tar.gz ./workspace
 ```
-
-#### 解压缩
 
 - \-x,\-\-extract 解开 tar 文件
 
