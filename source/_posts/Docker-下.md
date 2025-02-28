@@ -535,11 +535,11 @@ docker compose -f -p -c --env-file up [service_name]
 
 - \-\-all-resources 引入所有的资源, 即使未被服务使用
 - \-\-compatibility 运行 compose 兼容模式
-- -f, \-\-file 指定配置文件
-- -p, \-\-project-name 指定项目名称
-- \-\-project-directory 指定项目工作目录
+- -f, \-\-file stringArray 指定配置文件
+- -p, \-\-project-name string 指定项目名称
+- \-\-project-directory string 指定项目工作目录
 - -c, \-\-context 指定上下文环境名称
-- \-\-env-file 指定环境变量配置文件
+- \-\-env-file stringArray 指定环境变量配置文件
 
 ### 命令
 
