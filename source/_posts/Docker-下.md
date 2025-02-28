@@ -541,29 +541,43 @@ docker-compose -f -p -c --env-file up [service_name]
 
 ### 命令
 
-- version 查看版本信息
+- attach 连接运行服务的标准输入输出
 - build 构建服务
-- config 验证 docker-compose 配置文件
+- commit 从服务容器创建一个新的镜像
+- config 解析验证 docker-compose 配置文件
 - cp 在容器和本地文件系统之间拷贝文件
+- down 停止并移除容器, 网络
 - events 接收一个来自容器的真实的事件
-- exec 在运行的容器中打开命令行
-- down 停止并移除资源
-- kill 关闭容器
-- top 显示运行的进程信息
-- images 查看所有镜像
-- ls 列出正在运行的 compose 项目
-- logs 查看容器日志
-- ps 查看所有容器
-- port 查看公共端口绑定信息
-- pull 拉取服务镜像
-- push 推送服务镜像
+- exec 在运行的容器中执行命令
+- export 导出容器文件系统为归档文件
+- images 列出创建容器的镜像
+
 - start 启动服务
-- stop 停止服务
 - restart 重启服务
-- rm 移除已经停止的容器
-- run 运行命令
+- wait 阻塞直到所有的服务容器停止
+- stop 停止服务
+- kill 强制停止容器
 - pause 暂停服务
 - unpasue 取消暂停服务
+- rm 移除已经停止的容器
+
+- logs 查看容器日志
+- stats 查看容器资源的使用情况
+
+- ls 列出正在运行的 compose 项目
+- port 查看公共端口绑定信息
+- ps 查看所有容器
+- pull 拉取服务镜像
+- push 推送服务镜像
+
+- run 在服务容器上运行命令
+- top 显示运行的进程信息
+
+- scale 调整服务
+
+- version 查看版本信息
+- watch 监听文件系统更新时服务容器重构/重启的构建上下文
+
 - create 创建容器, deprecated, Use the `up` command with `--no-start` instead
 
   - \-\-build 启动容器之前构建镜像
@@ -583,6 +597,9 @@ docker-compose -f -p -c --env-file up [service_name]
   - \-\-no-start 创建服务之后不启动它
   - \-\-no-deps 不启动关联的服务
   - \-\-scale 调整服务实例数量, 覆盖配置文件中的 scale 配置
+  - \-\-no-log-prefix 打印日志时不适用前缀
+  - \-\-no-recreate 如果容器存在则不创建新的容器
+  - -y 非交互式运行命令, 所有的提示都回答 yes
 
 ```bash
 [root@localhost ~]# docker-compose up service_id # 启动指定服务

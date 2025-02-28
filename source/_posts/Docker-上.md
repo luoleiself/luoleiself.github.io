@@ -189,7 +189,7 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
 
 - rm 删除容器
 - port 查看容器映射端口
-- export 导出容器为归档文件
+- export 导出容器文件系统为归档文件
 - wait 阻塞一个或多个容器直到停止运行, 并打印容器的退出码
 
 ```bash
