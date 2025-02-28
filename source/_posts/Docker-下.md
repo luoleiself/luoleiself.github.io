@@ -6,7 +6,7 @@ categories:
   - [linux, Docker]
 tags:
   - Docker
-# description: docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay等. Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 docker-compose yml 文件所在目录中, 以应用目录名_服务名_服务名数量编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
+# description: docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay等. Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 compose.yaml/docker-compose.yaml 文件所在目录中, 以应用目录名_服务名_服务名数量编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
 ---
 
 ## Docker 网络
@@ -520,19 +520,21 @@ c136f18229c3   mysql:5.7   "docker-entrypoint.s…"   15 hours ago     Up About 
 - 默认以 `应用目录名\_数据卷名` 方式作为数据卷名称
 - 默认以 `应用目录名\_网络名` 方式作为网络名称
 
-Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `docker-compose.yml` 文件所在目录中, 以 `应用目录名\_服务名\_数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
+Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `compose.yaml/docker-compose.yaml` 文件所在目录中, 以 `应用目录名\_服务名\_数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
 ```bash
 # 启动指定服务, 不加参数则默认启动所有服务
-docker-compose -f -p -c --env-file up [service_name]
+docker compose -f -p -c --env-file up [service_name]
 
 # 以下的命令不带服务名称则默认对所有服务执行相同操作
 ```
 
 ### 参数
 
+- \-\-all-resources 引入所有的资源, 即使未被服务使用
+- \-\-compatibility 运行 compose 兼容模式
 - -f, \-\-file 指定配置文件
 - -p, \-\-project-name 指定项目名称
 - \-\-project-directory 指定项目工作目录
@@ -544,7 +546,7 @@ docker-compose -f -p -c --env-file up [service_name]
 - attach 连接运行服务的标准输入输出
 - build 构建服务
 - commit 从服务容器创建一个新的镜像
-- config 解析验证 docker-compose 配置文件
+- config 解析验证 docker compose 配置文件
 - cp 在容器和本地文件系统之间拷贝文件
 - down 停止并移除容器, 网络
 - events 接收一个来自容器的真实的事件
@@ -602,22 +604,28 @@ docker-compose -f -p -c --env-file up [service_name]
   - -y 非交互式运行命令, 所有的提示都回答 yes
 
 ```bash
-[root@localhost ~]# docker-compose up service_id # 启动指定服务
+[root@localhost ~]# docker compose up service_id # 启动指定服务
 
-# 调整指定服务实例数量, 先去掉 docker-compose.yml 配置文件 service 指定的端口, 在单机中会出现端口占用问题
+# 调整指定服务实例数量, 先去掉 compose.yaml/docker-compose.yaml 配置文件 service 指定的端口, 在单机中会出现端口占用问题
 [root@localhost ~]# docker compose up --scale web=5 -d
 ```
 
 ### 配置文件
 
 ```yaml
-# docker-compose.yml
-version: 3.9   # 版本
+# compose.yaml/docker-compose.yaml
+version: 3.9   # 版本, obsolete
+name: myapp # 定义默认的项目名称, 将以环境变量 COMPOSE_PROJECT_NAME 的方式公开
 services:
   web:   # 服务名称
+    annotations: # 容器声明, 可以是 arr 或 map
+      com.example.foo: bar
+      # - com.example.foo=bar
+    attach: false # 设置为 false 时不会主动收集服务日志, 默认为 false, v2.20.0 以上支持
     build: .
       context: './web'  # 指定构建 web 服务的镜像的上下文环境目录
       dockerfile: Dockerfile  # 指定构建镜像的配置文件名称
+    command: ['bundle', 'exec', 'thin', '-p', '3000']  # 覆盖镜像配置文件(Dockerfile)中的CMD指令
     ports: # 端口映射
       - '5000:5000'
       - '0.0.0.0:80:80/tcp' # 指定 ip 地址和协议, 或修改 /etc/docker/daemon.json 配置项"ipv6":false
@@ -635,7 +643,6 @@ services:
       RACK_ENV: development
       SHOW: 'true'
       USER_INPUT:
-    command: ['bundle', 'exec', 'thin', '-p', '3000']  # 覆盖镜像配置文件(Dockerfile)中的CMD指令
     entrypoint:   # 覆盖镜像配置文件(Dockerfile)中的 ENTRYPOINT 指令
       - php
       - -d
@@ -654,6 +661,7 @@ services:
         read_only: true
         volume:
           nocopy: true
+          subpath: sub
         tempfs:
           size: 1024
           mode: 755
@@ -669,11 +677,18 @@ services:
       - service_name:ro
       - container:container_name
       - container:container_name:rw
+    network_mode: "host|none|service:[service name]" # 设置服务容器的网络模式
     networks:  # 自定义网络模式
       - my-web-network
+    platform: linux/amd64 # 设置服务容器运行的目标平台
     depends_on:  # 服务启动依赖
-      - db
-      - redis
+      db:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+      # - db
+      # - redis
     deploy:  # 部署
       # 外部客户端连接服务的方式
       # vip(Virtual IP) 为服务分配虚拟 IP, 客户端使用虚拟 IP 连接
@@ -697,6 +712,18 @@ services:
       file: common.yml   # 当前配置中扩展另一个服务
     labels:    # 添加容器元数据
       - 'com.example.description=Accounting webapp'
+    develop: # 定义开发模式容器同步
+      devices:
+      dns:
+      dns_opt:
+      dns_search:
+    healthcheck: # 服务健康检查
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
   redis: # 服务名称
     image: redis
     volumes:   # 挂载数据卷
@@ -725,6 +752,8 @@ volumes:
 networks:
   front-tier:
   back-tier:
+  backend:
+    driver: custom-driver
   my-web-network:   # 声明自定义网络模式, compose 自动创建该网络并会添加项目名前缀
     driver: bridge
     enable_ipv6: true
@@ -738,8 +767,6 @@ secrets: # 针对敏感数据的配置
   token:
     environment: 'OAUTH_TOKEN'
 ```
-
-#### version 支持的 Docker 引擎版本
 
 #### volumes
 
