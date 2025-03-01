@@ -707,7 +707,7 @@ CMD ["<可执行文件或命令>","<param1>","<param2>",...]
 
 - VOLUME 定义匿名数据卷, 在启动容器时会自动挂载到 /var/lib/docker/volumes/
   - 不支持 具名挂载 和 指定路径挂载, 只能使用 [匿名挂载](#nimingguazai) 方式
-  - docker-compose.yml 配置项支持任意挂载方式 [挂载数据卷](#guazaishujujuan)
+  - compose.yaml 配置项支持任意挂载方式 [挂载数据卷](#guazaishujujuan)
 
 ```yaml
 # 出于可移植和分享的考虑, 不支持 具名挂载 和 指定路径挂载 在 Dockerfile 中配置

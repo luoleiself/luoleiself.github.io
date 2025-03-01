@@ -516,11 +516,11 @@ c136f18229c3   mysql:5.7   "docker-entrypoint.s…"   15 hours ago     Up About 
 ## Docker Compose
 
 - Docker Compose 以服务为单位, 将为每一个服务部署一个容器
-- 默认以 `应用名-服务名-数字` 方式作为容器名称
-- 默认以 `应用名_数据卷名` 方式作为数据卷名称
-- 默认以 `应用名_网络名` 方式作为网络名称
+- 默认以 `应用名称-服务名称-数字` 方式作为容器名称
+- 默认以 `应用名称_数据卷名` 方式作为数据卷名称
+- 默认以 `应用名称_网络名` 方式作为网络名称
 
-Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `compose.yaml/docker-compose.yaml` 文件所在目录中, 以 `应用名-服务名-数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
+Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `compose.yaml/docker-compose.yaml` 文件所在目录中, 以 `应用名称-服务名称-数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
@@ -647,7 +647,7 @@ docker compose -f -p -c --env-file up [service_name]
 
 ### 配置文件
 
-- 使用副本不能指定容器名称, Compose 自动使用 应用名称-服务-数字 形式命名容器
+- 使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器
 
 ```yaml
 # compose.yaml/docker-compose.yaml
@@ -659,7 +659,7 @@ services:
       com.example.foo: bar
       # - com.example.foo=bar
     attach: false # 设置为 false 时不会主动收集服务日志, 默认为 false, v2.20.0 以上支持
-    build: .
+    build:
       context: './web'  # 指定构建 web 服务的镜像的上下文环境目录
       dockerfile: Dockerfile  # 指定构建镜像的配置文件名称
     command: ['bundle', 'exec', 'thin', '-p', '3000']  # 覆盖镜像配置文件(Dockerfile)中的CMD指令
@@ -674,7 +674,7 @@ services:
     privileged: true   # 配置容器目录权限
     read_only: true    # 开启容器文件系统只读模式
     restart: always    # 定义容器重启模式 "no" | always | on-failure | unless-stopped
-    container_name: my-web  # 容器名称, 使用副本不能指定容器名称, Compose 自动使用 应用名-服务名-数字 形式命名容器
+    container_name: my-web  # 容器名称, 使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器
     env_file: .env # 环境变量配置文件
     environment:  # 设置容器内环境变量
       RACK_ENV: development
@@ -718,7 +718,9 @@ services:
     networks:  # 自定义网络模式
       - my-web-network
     platform: linux/amd64 # 设置服务容器运行的目标平台
-    depends_on:  # 服务启动依赖
+    # 当前服务启动的依赖优先于当前服务启动
+    # 当前服务关闭优先于当前服务的依赖关闭
+    depends_on:  # 服务启动依赖, 
       db:
         condition: service_healthy
         restart: true
@@ -734,7 +736,7 @@ services:
       labels:
         com.example.description: 'This label will appear on the web server' # 服务元数据
       mode: replicated # 服务运行模式, global | replicaated(default) | replicated-job | global-job
-      replicas: 6 # 副本
+      replicas: 6 # 实例
       restart_policy: # 服务重启策略, 如果缺失, compose 会使用服务 restart 项
         condition: on-failure
         delay: 5s
@@ -828,10 +830,91 @@ secrets: # 针对敏感数据的配置
 
 - 使用卷名方式挂载数据卷, 需要在 `一级配置项` 中声明, compose 会自动创建以项目名为前缀的卷名, 如果不需要卷名前缀, 则使用 `external: true` 指定卷名, 但是需要手动创建该卷名
 
-#### depends_on 服务启动依赖
+### 多实例 Web 应用
 
-- 当前服务启动的依赖优先于当前服务启动
-- 当前服务关闭优先于当前服务的依赖关闭
+```yaml
+# compose.yaml
+name: myapp
+service:
+  nginx:
+    image: nginx:latest
+    port:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # 自定义 nginx 配置文件
+    depends_on:
+      - web
+    network:
+      - webnet
+  web:
+    build:
+      context: web
+      dockerfile: ./my-web-app.Dockerfile
+    deploy:
+      replicas: 3 # 启动 3 个 web 实例
+    environment:
+      - ENV=production
+    network:
+      - webnet
+networks:
+  webnet:
+    driver: bridge
+```
+
+nginx
+
+```conf
+# nginx.conf
+http {
+  upstream web_backend {
+    server web:80;
+    server web:80;
+    server web:80;
+  }
+  server {
+    listen 80;
+    location / {
+      proxy_pass http://web_backend;
+
+      proxy_set_header Host $host;
+      proxy_set_header X-Reap-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+  }
+}
+```
+
+web 应用
+
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)
+```
+
+```Dockerfile
+# my-web-app.Dockerfile
+# 使用官方 Python 镜像作为基础镜像
+FROM python:3.9-slim
+# 设置工作目录
+WORKDIR /app
+
+# 复制依赖文件并安装依赖
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制应用代码
+COPY . .
+EXPOSE 80
+CMD ["python", "app.py"]
+```
 
 ## Docker Swarm
 
