@@ -651,6 +651,8 @@ docker build 时会为每个阶段构建一个临时的中间镜像, 但最终�
 - ADD 复制指令, 增强版的 `COPY` 指令, 支持文件解压和远程 URL 资源
 - COPY 复制指令, 从上下文目录中复制文件或者目录到容器里指定路径
 - RUN 构建镜像时执行的命令 可以存在多条指令
+  - RUN [OPTIONS] \<command\> ...
+  - RUN [OPTIONS] ['\<command\>', ...]
 - WORKDIR 为`RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
 
 - ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效

@@ -516,11 +516,11 @@ c136f18229c3   mysql:5.7   "docker-entrypoint.s…"   15 hours ago     Up About 
 ## Docker Compose
 
 - Docker Compose 以服务为单位, 将为每一个服务部署一个容器
-- 默认以 `应用目录名\_服务名\_数字` 方式作为容器名称
-- 默认以 `应用目录名\_数据卷名` 方式作为数据卷名称
-- 默认以 `应用目录名\_网络名` 方式作为网络名称
+- 默认以 `应用名-服务名-数字` 方式作为容器名称
+- 默认以 `应用名_数据卷名` 方式作为数据卷名称
+- 默认以 `应用名_网络名` 方式作为网络名称
 
-Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `compose.yaml/docker-compose.yaml` 文件所在目录中, 以 `应用目录名\_服务名\_数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
+Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 `compose.yaml/docker-compose.yaml` 文件所在目录中, 以 `应用名-服务名-数字` 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
@@ -546,11 +546,21 @@ docker compose -f -p -c --env-file up [service_name]
 - attach 连接运行服务的标准输入输出
 - build 构建服务
 - commit 从服务容器创建一个新的镜像
-- config 解析验证 docker compose 配置文件
+  - -a, \-\-author 作者
+  - -m, \-\-message string 提交信息
+  - -c, \-\-change list 应用 Dockerfile 指令创建镜像
+  - \-\-index int 指定如果有多个副本的服务的容器
+  - -p, \-\-pause 提交过程中是否中断容器运行, 默认为 true
+- config 解析验证 compose.yaml 配置文件
+  - \-\-environment 打印环境变量的插值
+  - \-\-format string 格式化输出, 值可选 yaml(default) | json
+  - \-\-images 输出镜像名称
+  - -o, \-\-output string 保存到指定文件中, 默认是标准输出流
+  - -q, \-\-quiet 仅验证配置项, 不输出任何信息
+  - \-\-services 输出服务名称
+  - \-\-volumes  输出数据卷名称
 - cp 在容器和本地文件系统之间拷贝文件
-- down 停止并移除容器, 网络
 - events 接收一个来自容器的真实的事件
-- exec 在运行的容器中执行命令
 - export 导出容器文件系统为归档文件
 - images 列出创建容器的镜像
 
@@ -561,32 +571,57 @@ docker compose -f -p -c --env-file up [service_name]
 - kill 强制停止容器
 - pause 暂停服务
 - unpasue 取消暂停服务
-- rm 移除已经停止的容器
+- rm 移除已经停止的容器, 默认情况下附加到容器上的匿名数据卷不会被移除
+  - -f, \-\-force 不询问确认操作直接移除
+  - -s, \-\-stop 在移除之前停止容器
+  - -v, \-\-volumes 移除所有附加到容器上的匿名数据卷
+- down 停止并移除容器, 网络
+  - \-\-rmi string 移除服务使用的镜像
+  - -t, \-\-timeout int 延迟关机的时长秒
+  - -v, \-\-volumes 移除在 compose.yaml 中 volumes 顶层指令中声明的具名和匿名数据卷
 
 - logs 查看容器日志
 - stats 查看容器资源的使用情况
 
 - ls 列出正在运行的 compose 项目
 - port 查看公共端口绑定信息
+  - \-\-index int 指定如果有多个副本的服务的容器
+  - \-\-protocol string  指定协议, tcp(default) | udp
 - ps 查看所有容器
 - pull 拉取服务镜像
 - push 推送服务镜像
 
-- run 在服务容器上运行命令
 - top 显示运行的进程信息
+- exec 在运行的容器中执行命令
+  - -d, \-\-detach
+  - -e, \-\-env stringArray 设置环境变量
+  - -T, \-\-no-TTY  不分配伪 TTY, 默认每次执行命令时都分配 TTY
+  - -w, \-\-workdir string 设置本次命令的工作目录
+- run 在服务上运行一次性命令
+  - -d, \-\-detach
+  - -i, \-\-interactive 交互式运行
+  - -e, \-\-env stringArray 设置环境变量
+  - -l, \-\-label stringArray 添加或覆盖 label
+  - -p, \-\-publish stringArray 发布容器的端口到宿主机
+  - -P, \-\-service-ports 运行命令所有服务的端口都能映射到宿主机
+  - \-\-pull 运行执行拉取镜像
+  - \-\-rm 当容器退出时自动移除
+  - -v, \-\-volume stringArray 挂载数据卷
+  - -w, \-\-workdir string 设置容器内的工作目录
 
 - scale 调整服务
+  - \-\-no-deps 不启动关联的服务
 
 - version 查看版本信息
 - watch 监听文件系统更新时服务容器重构/重启的构建上下文
 
-- create 创建容器, deprecated, Use the `up` command with `--no-start` instead
+- create 创建容器
 
   - \-\-build 启动容器之前构建镜像
   - \-\-no-build 不构建镜像即使镜像不存在
   - \-\-force-recreate 即使配置项或镜像没有改变也要重新创建容器
   - \-\-no-recreate 如果容器存在则不创建新的容器
-  - \-\-scale 调整服务实例数量, 并覆盖配置文件中的 scale 配置
+  - \-\-scale scale 调整服务实例数量, 并覆盖 compose.yaml 配置文件中的 scale 配置
 
 - up 创建服务并启动容器
 
@@ -598,7 +633,7 @@ docker compose -f -p -c --env-file up [service_name]
   - \-\-no-build 不构建镜像即使镜像不存在
   - \-\-no-start 创建服务之后不启动它
   - \-\-no-deps 不启动关联的服务
-  - \-\-scale 调整服务实例数量, 覆盖配置文件中的 scale 配置
+  - \-\-scale scale 调整服务实例数量, 覆盖 compose.yaml 配置文件中的 scale 配置
   - \-\-no-log-prefix 打印日志时不适用前缀
   - \-\-no-recreate 如果容器存在则不创建新的容器
   - -y 非交互式运行命令, 所有的提示都回答 yes
@@ -612,10 +647,12 @@ docker compose -f -p -c --env-file up [service_name]
 
 ### 配置文件
 
+- 使用副本不能指定容器名称, Compose 自动使用 应用名称-服务-数字 形式命名容器
+
 ```yaml
 # compose.yaml/docker-compose.yaml
-version: 3.9   # 版本, obsolete
-name: myapp # 定义默认的项目名称, 将以环境变量 COMPOSE_PROJECT_NAME 的方式公开
+version: 3.9   # 版本, obsolete(已过时)
+name: myapp # 定义默认的项目名称, 将以环境变量 ${COMPOSE_PROJECT_NAME} 的方式公开
 services:
   web:   # 服务名称
     annotations: # 容器声明, 可以是 arr 或 map
@@ -637,7 +674,7 @@ services:
     privileged: true   # 配置容器目录权限
     read_only: true    # 开启容器文件系统只读模式
     restart: always    # 定义容器重启模式 "no" | always | on-failure | unless-stopped
-    container_name: my-web  # 容器名称
+    container_name: my-web  # 容器名称, 使用副本不能指定容器名称, Compose 自动使用 应用名-服务名-数字 形式命名容器
     env_file: .env # 环境变量配置文件
     environment:  # 设置容器内环境变量
       RACK_ENV: development
@@ -694,7 +731,9 @@ services:
       # vip(Virtual IP) 为服务分配虚拟 IP, 客户端使用虚拟 IP 连接
       # dnsrr 平台配置 dns 条目, 使用服务名称查询 IP 地址列表连接
       endpoint_mode: vip
-      mode: replicated # 服务运行模式, global | replicaated(default)
+      labels:
+        com.example.description: 'This label will appear on the web server' # 服务元数据
+      mode: replicated # 服务运行模式, global | replicaated(default) | replicated-job | global-job
       replicas: 6 # 副本
       restart_policy: # 服务重启策略, 如果缺失, compose 会使用服务 restart 项
         condition: on-failure
@@ -724,14 +763,27 @@ services:
       retries: 3
       start_period: 40s
       start_interval: 5s
-  redis: # 服务名称
+
+  redis: # 服务名称 
+    # 当同时使用 image 和 build 指令构建时, 将按照 pull_policy 的定义进行构建, 
+    # 如果未定义 pull_policy 时, Compose 会尝试先拉取镜像, 如果在镜像仓库或缓存中找不到镜像时从源构建
+    pull_policy: always   # Compose 总是从镜像仓库拉取镜像
+                 never    # Compose 不会从镜像仓库拉取镜像而是依赖缓存中的镜像, 如果缓存中不存在则报告错误
+                 missing  # 默认选项, Compose 仅当缓存中镜像不可用时从镜像仓库拉取
+                 build    # Compose 构建镜像如果镜像已经存在则重新构建
     image: redis
+    build:
+      context: redis
+      dockerfile: /redis.Dockerfile
     volumes:   # 挂载数据卷
       - /home/workspace   # 定义匿名数据卷
+      - db-data:/var/lib/redis  # 挂载公共数据卷 db-data
     networks:   # 自定义网络模式
       - my-web-network
     links:    # 定义网络连接另一个服务的容器
       - db:mysql   # 可以直接使用 服务名, 或者使用 服务名:别名 方式
+    scale: 6  # 设置容器数量, 如果 scale 和 deploy.replicas 同时存在则必须保持一致
+
   db:
     image: mysql
     ports:
@@ -742,11 +794,13 @@ services:
       MYSQL_USER: test
       MYSQL_PASSWORD: test123
     volumes:
-      - dbata:/var/lib/mysql   # 定义具名数据卷
+      - db-data:/var/lib/mysql   # 挂载公共数据卷 db-data
     networks:
       - my-web-network
+
+# 跨服务共享数据卷定义到顶层指令 volumes
 volumes:
-  dbData:   # 声明卷名, compose 自动创建该卷名并会添加项目名前缀
+  db-data:   # 声明卷名, compose 自动创建该卷名并会添加项目名前缀
   data:
     name: 'my-app-data'
 networks:
