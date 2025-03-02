@@ -812,8 +812,10 @@ networks:
     driver: custom-driver
   my-web-network:   # 声明自定义网络模式, compose 自动创建该网络并会添加项目名前缀
     driver: bridge
+    name: myapp-network # 定义网络名称, 在 docker network 列表中显示
+    attachable: true  # 允许独立的容器连接到此网络
     enable_ipv6: true
-    external: true
+    external: true  # 指定此网络的生命周期在应用程序的生命周期之外进行维护, Compose 不会尝试创建这些网络, 如果不存在则返回错误
 configs: # 允许服务调整其行为而无须重新构建 docker 镜像
   http_config:
     file: ./httpd.conf
