@@ -694,6 +694,8 @@ FROM alpine:latest
 WORKDIR /root
 # 镜像构建完成之后将自动删除临时生成的镜像
 COPY --from=builder /app/main . # 从某个镜像或构建阶段或命名上下文中复制文件
+# ADD --keep-git-dir=true # 保持 .git 目录, 默认会被排除
+# ADD --checksum=<hash>  # 验证远程资源
 CMD ["./main"]
 ```
 
