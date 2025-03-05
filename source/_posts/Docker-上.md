@@ -679,8 +679,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 #   && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
 #   && tar -xvf redis.tar.gz
 
-# [--chown=<user>:<group>] 可选参数，用户改变复制到容器内文件的拥有者和属组
+# COPY [--chown=<user>:<group>] 可选参数，用户改变复制到容器内文件的拥有者和属组
 # COPY ["src", "dest"]
+# COPY --link
 
 ARG VERSION1 1
 ARG VERSION=1
@@ -690,7 +691,8 @@ ENV NAME2=hello
 
 FROM alpine:latest
 WORKDIR /root
-COPY --from=builder /app/main .
+# 镜像构建完成之后将自动删除临时生成的镜像
+COPY --from=builder /app/main . # 从某个镜像或构建阶段或命名上下文中复制文件
 CMD ["./main"]
 ```
 
