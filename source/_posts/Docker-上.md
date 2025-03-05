@@ -678,6 +678,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 # RUN yum -y install wget \
 #   && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
 #   && tar -xvf redis.tar.gz
+# RUN --mount # 构建阶段挂载文件系统
 
 # COPY [--chown=<user>:<group>] 可选参数，用户改变复制到容器内文件的拥有者和属组
 # COPY ["src", "dest"]
