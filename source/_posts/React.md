@@ -49,6 +49,37 @@ React 18.3.1
 
 <!--more-->
 
+```javascript
+// state
+let count = 0;
+let prevCount = count;
+// events
+window.addEventListener("click", () => { count++ }, false);
+// render
+const render = () => {
+  document.body.innerHTML = count;
+}
+// diff
+const reconcile = () => {
+  if (prevCount !== count) {
+    render();
+    prevCount = count;
+  }
+}
+// scheduler
+const workloop = () => {
+  reconcile()
+  // window.scheduler.postTask(() => { //... })
+  // 为什么 react 官方不使用这个 API
+  // 因为 requestIdleCallback, scheduler.postTack 无法满足优先级调用, 
+  // 有了优先级, 就可以知道当下什么任务最紧急
+  window.requestIdleCallback(() => {
+    workloop();
+  })
+}
+workloop();
+```
+
 ### 构建 state 原则
 
 - 合并关联的 state, 如果总是同时更新两个或更多的 state 变量时, 考虑将它们合并为一个单独的 state
@@ -399,11 +430,11 @@ function useState(initialValue) {
   }
 
   // 第一次渲染时
-  pair = [initialValue, setState];
-  function setState(nextState){
+  let setState = function (nextState) {
     pair[0] = nextState;
     updateDOM(); // 更新DOM
   }
+  pair = [initialValue, setState];
 
   // 存储这个 pair 用于将来的渲染
   // 并且为下一次 hook 的调用做准备
@@ -466,7 +497,7 @@ const [state, dispatch] = useReducer(reducer, initialArg, init);
 ```jsx
 // 实现原理
 import {useState} from 'react';
-function reducer(state, action){
+function reducer(state, action) {
   switch(action.type){
     case 'add':
       return {
@@ -480,10 +511,10 @@ function reducer(state, action){
       throw new Error('Unknow action: ' + action.tye);
   }
 }
-function useReducer(reducer, initialState){
+function useReducer(reducer, initialState) {
   const [state, setState] = useState(initialState);
 
-  function dispatch(action){
+  let dispatch = function (action) {
     const nextState = reducer(state, action);
     setState(nextState);
   }

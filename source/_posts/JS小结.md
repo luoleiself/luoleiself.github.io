@@ -225,3 +225,17 @@ el.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 - export 可以向外暴露多个成员, 同时, 如果某些成员在 import 导入时不需要, 可以不在 `{ }` 中定义
 - 使用 export 导出的成员, 必须严格按照导出时候的名称来使用 `{ }` 按需接收
 - 如果想更改变量名称可以使用 as 定义别名
+
+### [window.requestIdleCallback](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestIdleCallback)
+
+插入一个函数, 这个函数将在浏览器空闲时期被调用. 使开发者能够在主事件循环上执行后台和低优先级工作, 而不会影响延迟关键事件
+
+- callback 一个在事件循环空闲时即将被调用的函数的引用
+- options 可选
+  - timeout 指定回调函数未被调用的超时时间毫秒, 如果指定 timeout 回调函数超时后未被调用将被放入事件循环中排队, 即使有可能对性能产生负面影响
+
+```javascript
+window.requestIdleCallback(() => {
+  console.log('requestIdleCallback')
+}, {timeout: 10})
+```
