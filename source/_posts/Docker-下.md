@@ -588,6 +588,11 @@ docker compose -f -p -c --env-file up [service_name]
   - \-\-index int 指定如果有多个副本的服务的容器
   - \-\-protocol string  指定协议, tcp(default) | udp
 - ps 查看所有容器
+  - -a, \-\-all 列出所有容器
+  - \-\-filter string 过滤服务
+  - \-\-format string 使用自定义模板格式化输出, table(default) | table TEMPLATE | json | TEMPLATE
+  - \-\-services 显示服务名称
+  - \-\-status stringArray 通过状态过滤服务, [paused | restarting | removing | running | dead | created | exited]
 - pull 拉取服务镜像
 - push 推送服务镜像
 
