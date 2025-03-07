@@ -384,7 +384,7 @@ function ListOfTenThings() {
 
 #### useId <em id="useId"></em> <!--markdownlint-disable-line-->
 
-生成传递给无障碍属性的唯一 ID, 不能用来生成数据列表中的 key
+生成传递给无障碍属性的唯一 ID, 不应该被用来生成数据列表中的 key, key 的值在兄弟节点之间必须是唯一的, key 值不能改变
 
 - 能够确保与服务器端渲染一起工作
 
@@ -827,7 +827,7 @@ function App(){
 }
 ```
 
-#### useEffectEvent
+#### useEffectEvent(experimental)
 
 - 只在 Effect 内部调用
 - 永远不要把它们传递给其他的组件或 Hook
@@ -994,10 +994,41 @@ const cachedValue = useMemo(calculateValue, dependencies);
 ```
 
 ```jsx
-import {useMemo} from 'react';
+import {useState, useEffect, useMemo, memo} from 'react';
 function TodoList({todos, tab}){
   const visibleTodos = useMemo(() => filterTodos(todos, tab), [todos, tab]);
   // ...
+}
+
+// memoized component
+const MemoizedChildren = memo(Parent);
+const MyComponent = () => {
+  const children = useMemo(() => {
+    return <div>Hello World!</div>
+  },[])
+  return <MemoizedChildren>{children}</MemoizedChildren>
+}
+
+function App(){
+  const [count, setCount] = useState(0);
+  const children = useMemo(() => {
+    console.log("memo children...");
+    return <div>memo children...</div>
+  }, []);
+
+  const handleClick = () => {
+    setCount(count+1);
+  }
+  useEffect(() => {
+    console.log(count);
+  },[count]);
+
+  return (
+    <div>
+      <button onClick={handleClick}>Click me!</button>
+      {children}
+    </div>
+  )
 }
 ```
 
@@ -1006,14 +1037,19 @@ function TodoList({todos, tab}){
 希望 React 记住某些信息, 但又不想让这些信息触发新的渲染时, 使用 ref
 
 - ref 在重新渲染之间由 React 保留, 更改 ref 不会触发更新
-- 通过 .current 访问该 ref 的值, 不要在渲染期间写入或读取 ref.current, 会破坏这些预期行为
+- 通过 `.current` 访问该 ref 的值, 不要在渲染期间写入或读取 ref.current, 会破坏这些预期行为
 - 引用 DOM 节点, 在 DOM 节点被移除时, React 将重置 ref 的值为 null
 
 ```jsx
+import {useRef} from 'react';
 const refContainer = useRef(initialValue);
 
-const refDemo = useRef(0);
-console.log(refDemo.current); // 0
+function App(){
+  const refDemo = useRef(0);
+  console.log(refDemo.current); // 0
+
+  return <div>Hello World!</div>;
+}
 ```
 
 ```jsx
@@ -1143,6 +1179,9 @@ import {useRef, forwardRef, useImperativeHandle} from 'react';
 
 const MyInput = forwardRef((props, ref) => {
   const realInputRef = useRef(null);
+  const shaking = () => {
+    console.log('input shaking...');
+  }
   // 限制对外层暴露的功能
   useImperativeHandle(ref, () => ({
     // 只暴露 focus 和 scrollIntoView 方法
@@ -1151,6 +1190,9 @@ const MyInput = forwardRef((props, ref) => {
     },
     scrollIntoView(){
       realInputRef.current.scrollIntoView();
+    },
+    shake(){
+      shaking();
     })
   })
 
@@ -1161,6 +1203,7 @@ function App(){
   const inputRef = useRef(null);
   function handleClick(){
     inputRef.current.focus();
+    inputRef.current?.shake();
   }
   return (
     <>
@@ -1172,6 +1215,8 @@ function App(){
 ```
 
 #### useActionState(experimental)
+
+> 19.0.0 支持
 
 可以根据某个表单动作的结果更新 state 的 Hook
 
@@ -1194,7 +1239,7 @@ function App(){
 - 一个 isPending 标识, 用于表明是否有正在 pending 的 Transition
 
 ```jsx
-const [state, formAction, isPending] = useActionState(action, initialState, permalink?);
+const [state, formAction, isPending] = useActionState(fn, initialState, permalink?);
 ```
 
 ```jsx
@@ -1263,6 +1308,9 @@ function App(){
 - useDeferredValue 本身不会引起任何固定的延迟, 一旦 React 完成原始的重新渲染, 它会立即开始使用新的延迟值处理后台重新渲染, 由事件(例如 输入)引起的任何更新都会中断后台重新渲染, 并被优先处理
 - 由 useDeferredValue 引起的后台重新渲染在提交到屏幕之前不会触发 Effect, 如果后台重新渲染被暂停, Effect 将在数据加载后和 UI 更新后运行
 
+  - value 延迟的值
+  - initialValue 可选, 组件初始渲染时使用的值, 如果省略在初始渲染期间不会延迟
+
 ```jsx
 const deferredValue = useDeferredValue(value, initialValue);
 ```
@@ -1295,6 +1343,85 @@ function App(){
       </Suspense>
     </>
   )
+}
+```
+
+#### useOptimistic(experimental)
+
+> 19.0.0 支持
+
+允许在进行异步操作时显示不同 state, 它接受 state 作为参数, 并返回该 state 的副本, 在异步操作(如网络请求)期间可以不同, 这种技术有助于使应用程序在感觉上响应地更加快速.
+
+这个状态被称为 乐观 状态是因为通常用于立即向用户呈现执行操作的结果, 即使实际上操作需要一段时间来完成
+
+- state 初始时和没有挂起操作时要返回的值
+- updateFn 接受当前的 state 和传递给 addOptimistic 的乐观值, 并返回结果乐观状态. 它必须是一个纯函数
+
+返回值
+
+- optimisticState 结果乐观状态. 除非有操作挂起, 否则它等于 state, 在这种情况下, 它等于 updateFn 返回的值
+- addOptimistic 触发乐观更新时调用的 dispatch 函数, 接收一个任意类型的参数 optimisticValue, 并以 state 和 optimisticValue 作为参数调用 updateFn
+
+```jsx
+import {useOptimistic} from 'react';
+
+cnost [optimisticState, addOptimistic] = useOptimistic(state, updateFn);
+
+function AppContainer(){
+  const [optimisticState, addOptimistic] = useOptimistic(state, (currentState, optimisticValue) => {
+    // 使用乐观值, 合并并返回新 state
+    return [...currentState, optimisticValue];
+  });
+}
+```
+
+- 乐观的更新表单
+
+```jsx
+import {useOptimistic, useRef, useState} from 'react';
+
+function Thread({messages, sendMessage}){
+  const formRef = useRef(null);
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic(messages, (state, optimisticValue) => {
+    // 使用乐观值, 合并返回新的 state
+    return [...state, {text: optimisticValue, sending: true}];
+  });
+
+  async function formAction(formData){
+    addOptimisticMessage(formData.get('message'));
+    formRef.current.reset();
+    // 异步操作
+    await sendMessage(formData); 
+  }
+
+  return (
+    <>
+      {optimisticMessages.map((message, index) => (
+        <div key={index}>
+          {message.text}
+          {message.sending && <small>发送中...</small>}
+        </div>
+      ))}
+      <form action={formAction} ref={formRef}>
+        <input type="text" name="message" placeholder="hello..."/>
+        <button>发送</button>
+      </form>
+    </>
+  )
+}
+function App(){
+  const [messages, setMessages] = useState([
+    {text: '你好, 在这!', sending: false, key: 1}
+  ]);
+
+  async function sendMessage(formData){
+    // 模拟异步操作
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    // 更新状态
+    setMessages(messages => [...messages, {text: formData.get('message')}]);
+  }
+
+  return <Thread messages={messages} sendMessage={sendMessage}/>
 }
 ```
 
@@ -1376,93 +1503,58 @@ function useOnlineStatus(){
 }
 ```
 
-#### useOptimistic(experimental)
-
-允许在进行异步操作时显示不同 state, 它接受 state 作为参数, 并返回该 state 的副本, 在异步操作(如网络请求)期间可以不同, 这种技术有助于使应用程序在感觉上响应地更加快速.
-
-这个状态被称为 乐观 状态是因为通常用于立即向用户呈现执行操作的结果, 即使实际上操作需要一段时间来完成
-
-- state 初始时和没有挂起操作时要返回的值
-- updateFn 接受当前的 state 和传递给 addOptimistic 的乐观值, 并返回结果乐观状态. 它必须是一个纯函数
-
-返回值
-
-- optimisticState 结果乐观状态. 除非有操作挂起, 否则它等于 state, 在这种情况下, 它等于 updateFn 返回的值
-- addOptimistic 触发乐观更新时调用的 dispatch 函数, 接收一个任意类型的参数 optimisticValue, 并以 state 和 optimisticValue 作为参数调用 updateFn
-
-```jsx
-import {useOptimistic} from 'react';
-
-cnost [optimisticState, addOptimistic] = useOptimistic(state, updateFn);
-
-function AppContainer(){
-  const [optimisticState, addOptimistic] = useOptimistic(state, (currentState, optimisticValue) => {
-    // 使用乐观值, 合并并返回新 state
-    return [...currentState, optimisticValue];
-  });
-}
-```
-
-- 乐观的更新表单
-
-```jsx
-import {useOptimistic, useRef, useState} from 'react';
-
-function Thread({messages, sendMessage}){
-  const formRef = useRef(null);
-  const [optimisticMessages, addOptimisticMessage] = useOptimistic(messages, (state, optimisticValue) => {
-    // 使用乐观值, 合并返回新的 state
-    return [...state, {text: optimisticValue, sending: true}];
-  });
-
-  async function formAction(formData){
-    addOptimisticMessage(formData.get('message'));
-    formRef.current.reset();
-    // 异步操作
-    await sendMessage(formData); 
-  }
-
-  return (
-    <>
-      {optimisticMessages.map((message, index) => (
-        <div key={index}>
-          {message.text}
-          {message.sending && <small>发送中...</small>}
-        </div>
-      ))}
-      <form action={formAction} ref={formRef}>
-        <input type="text" name="message" placeholder="hello..."/>
-        <button>发送</button>
-      </form>
-    </>
-  )
-}
-function App(){
-  const [messages, setMessages] = useState([
-    {text: '你好, 在这!', sending: false, key: 1}
-  ]);
-
-  async function sendMessage(formData){
-    // 模拟异步操作
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    // 更新状态
-    setMessages(messages => [...messages, {text: formData.get('message')}]);
-  }
-
-  return <Thread messages={messages} sendMessage={sendMessage}/>
-}
-```
-
 #### useTransition
 
-在不阻塞 UI 的情况下更新状态, 将某些状态更新标记为 transition
+在不阻塞 UI 的情况下更新状态, 将某些状态更新标记为 transition, transition 更新不能用于控制文本输入
 
-- transition 更新不能用于控制文本输入
 - isPending 是否存在待处理的 transition
 - startTransition 调用此函数将状态更新标记为 transition, 传递给此函数的函数必须是同步的, React 会立即执行此函数, 并将在其执行期间发生的所有状态更新标记为 transition, 如果在其执行期间, 尝试稍后执行状态更新, 这些状态更新不会被标记为 transition
 
 ```jsx
 const [isPending, startTransition] = useTransition();
+```
+
+```jsx
+import {useTransition, useState} from 'react';
+
+// 切换标签页
+function TabContainer(){
+  const [isPending, startTransition] = useTransition();
+  const [tab, setTab] = useState('about');
+
+  function selectTab(nextTab){
+    startTransition(() => {
+      setTab(nextTab);
+    })
+  }
+  //...
+}
+
+// 通过 action 执行非阻塞更新
+function CheckoutForm() {
+  const [isPending, startTransition] = useTransition();
+  const [quantity, setQuantity] = useState(1);
+
+  const updateQuantityAction = async newQuantity => {
+    // To access the pending state of a transition,
+    // call startTransition again.
+    startTransition(async () => {
+      const savedQuantity = await updateQuantity(newQuantity);
+      startTransition(() => {
+        setQuantity(savedQuantity);
+      });
+    });
+  };
+
+  return (
+    <div>
+      <h1>Checkout</h1>
+      <Item action={updateQuantityAction}/>
+      <hr />
+      <Total quantity={quantity} isPending={isPending} />
+    </div>
+  );
+}
 ```
 
 ### 自定义 Hook
@@ -1658,7 +1750,7 @@ await act(async actFn);
 
 允许缓存数据获取或计算的结果, 在任何组件之外调用创建带有缓存的函数版本
 
-- 仅供与 服务器组件一起使用
+- 仅供与 `服务器组件` 一起使用
 
 ```jsx
 import {cache} from 'react';
@@ -1758,6 +1850,8 @@ function TabContainer(){
 
 ### use(experimental)
 
+> 19.0.0 支持
+
 读取类似于 Promise 或 context 的资源的值
 
 - 可以在 循环 或 条件 语句中调用 use, 调用 use 的函数仍然必须是一个 组件 或 Hook
@@ -1802,7 +1896,9 @@ taintUniqueValue(message, lifetime, value);
 
 ### useFormStatus(experimental)
 
-获取上一次表单提交状态信息, 仅获取父级 form 的状态信息
+> 19.0.0 支持
+
+获取上一次表单提交状态信息 Hook, 必须从在 \<form\> 内渲染的组件中调用, 仅会返回父级 form 的状态信息, 不会返回同一组件或子组件中渲染的然和 form 的状态信息
 
 - pending 标识父级 form 是否正在等待提交, 如果调用 useFormStatus 的组件未嵌套在 form 中, 总是返回 false
 - data 包含父级 form 正在提交的 formData 数据, 如果没有进行提交为 null
@@ -2073,6 +2169,8 @@ unmountComponentAtNode(domNode);
 
 ### preconnect(experimental) <em id="preconnect"></em> <!--markdownlint-disable-line-->
 
+> 19.0.0 支持
+
 提前连接到一个期望从中加载资源的服务器
 
 - 对同一服务器进行多次调用 preconnect 具有与单次调用相同的结果
@@ -2093,6 +2191,8 @@ function AppRoot(){
 
 ### prefetchDNS(experimental)
 
+> 19.0.0 支持
+
 允许提前查找期望从中加载资源的服务器的 IP, 和 [preconnect](#preconnect) 类似
 
 ```jsx
@@ -2100,6 +2200,8 @@ prefetchDNS(href);
 ```
 
 ### preinit(experimental) <em id="preinit"></em> <!--markdownlint-disable-line-->
+
+> 19.0.0 支持
 
 > React 框架通常会内置资源处理方案, 不需要手动调用此 API
 
@@ -2124,6 +2226,8 @@ preinit(href, options);
 
 ### preinitModule(experimental) <em id="preinitModule"></em> <!--markdownlint-disable-line-->
 
+> 19.0.0 支持
+
 > React 框架通常会内置资源处理方案, 不需要手动调用此 API
 
 预获取和评估 ESM 模块
@@ -2143,6 +2247,8 @@ preinitModule(href, options)
 
 ### preload(experimental)
 
+> 19.0.0 支持
+
 > React 框架通常会内置资源处理方案, 不需要手动调用此 API
 
 预获取期望使用的资源, 比如样式表、字体、外部脚本
@@ -2154,6 +2260,8 @@ preload(href, options);
 ```
 
 ### preloadModule(experimental)
+
+> 19.0.0 支持
 
 > React 框架通常会内置资源处理方案, 不需要手动调用此 API
 
@@ -2175,8 +2283,8 @@ preloadModule(href, options);
 
 - domNode 某个已经存在的 DOM 节点
 - options
-  - onCaughtError(experimental) 当 React 捕获到错误边界时调用
-  - onUncaughtError(experimental) 当错误边界抛出了一个无法捕获的错误时调用
+  - onCaughtError(experimental) 当 React 捕获到错误边界时调用, 19.0.0 支持
+  - onUncaughtError(experimental) 当错误边界抛出了一个无法捕获的错误时调用, 19.0.0 支持
   - onRecoverableError 当 React 自动从错误中恢复时调用
   - identifierPrefix 一个字符串, React 使用此字符串作为 [useId](#useId) 生成的 id 的前缀, 当在一个页面中使用多个根节点时可以避免冲突
 
