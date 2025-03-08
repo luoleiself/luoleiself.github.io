@@ -2001,9 +2001,7 @@ function Form(){
 
 ### 合成事件
 
-事件处理程序接收到一个 React 合成的事件对象
-
-`SyntheticEvent` 为 React 的事件包装器, 是所有事件的基类型
+事件处理程序接收到一个 React 合成的事件对象, `SyntheticEvent` 为 React 的事件包装器, 是所有事件的基类型
 
 - 事件: on + 事件名称 + Capture(捕获阶段触发)
 - 事件处理器: handle + 事件名称
@@ -2013,22 +2011,28 @@ function Form(){
 
 ```jsx
 function App(){
-  function handleClick(){
-    // ...
-  }
-  function handleClickCapture(){
-    // ...
-  }
+  const handleClick = () => { /*...*/ }
+  const handleClickCapture = () => { /*...*/ }
   return (
-    <div 
-      onClick={handleClick}
-      onClickCapture={handleClickCapture}
-    >
+    <div onClick={handleClick} onClickCapture={handleClickCapture}    >
       <button onClick={handleClick}></button>
     </div>
   )
 }
 ```
+
+**为什么要使用合成事件** <!--markdownlint-disable-line-->
+
+- 跨浏览器兼容性, 不同浏览器实现原生 DOM 事件的方式有所不同
+- 事件委托, React 利用事件委托将所有的事件处理器绑定在根节点上, 然后根据事件冒泡机制将事件派发到相应的组件
+  - 减少内存开销, 避免了为每个元素都创建单独的事件处理器
+  - 提高性能, 事件处理器的减少, 减少了初始化和更新时的开销
+  - 动态插入的元素也能正常工作, 由于事件委托在根节点上, 即使后来动态插入的元素也能正确触发事件
+- 批量更新, React 的合成事件系统允许它对状态更新进行批量处理
+- 防止内存泄漏, React 的合成事件系统会在事件处理完成之后自动清除事件处理器
+- 事件池, React 实现了一个事件池机制, 可以重用事件对象, 减少垃圾回收的压力
+- 简化事件处理逻辑, React 的合成事件系统提供了统一的 API 来处理各种类型的事件
+- 更好的调试体验, React 提供了一些有用的调试工具和功能
 
 #### 属性
 
