@@ -239,3 +239,22 @@ window.requestIdleCallback(() => {
   console.log('requestIdleCallback')
 }, {timeout: 10})
 ```
+
+### [window.crypto](https://developer.mozilla.org/zh-CN/docs/Web/API/Crypto)
+
+> 只读属性
+
+返回当前窗口的作用域的 `Crypto` 对象, 此对象允许网页访问某些加密相关的服务
+
+- Crypto.subtle 返回一个 [SubtleCrypto](https://developer.mozilla.org/zh-CN/docs/Web/API/SubtleCrypto) 对象, 用来访问公共的密码学原语, 例如哈希、签名、加密以及解密
+- Crypto.getRandomValues(typedArray) 使用密码学安全的随机数填充传入的 TypedArray.
+- Crypto.randomUUID() 返回一个随机生成的, 长度为 36 字符的 UUID
+
+```javascript
+var arr = new Uint32Array(10);
+crypto.getRandomValues(arr); // 使用安全随机数填充 arrayBuffer.
+
+crypto.randomUUID(); // 随机生成 UUID
+
+crypto.subtle.encrypt(algorithm, key, data); // 加密数据
+```

@@ -1136,7 +1136,7 @@ function App(){
 }
 ```
 
-- 不能访问其他组件的 DOM 节点, 借助 [forwardRef](#forwardRef) 函数
+- 不能访问其他组件的 DOM 节点, 借助 [forwardRef](#forwardRef) 函数, React 19 支持 props 传递 ref 引用
 
 ```jsx
 import {useRef} from 'react';
@@ -1763,6 +1763,8 @@ const cachedFn = cache(fn);
 
 ### forwardRef <em id="forwardRef"></em> <!--markdownlint-disable-line-->
 
+> React 19 不再支持, 直接使用 prop 传递 ref 引用
+
 允许组件使用 ref 将 DOM 节点暴露给父组件
 
 - render 渲染函数, React 将使用 props 和 ref 调用此函数, 返回的 JSX 作为组件的输出
@@ -2277,7 +2279,7 @@ preload(href, options);
 preloadModule(href, options);
 ```
 
-## 客户端 API
+## ReactDOM Client API
 
 `react-dom/client` API 允许在客户端(浏览器) 渲染 React 组件, 通常在应用程序项目顶层调用
 
@@ -2384,7 +2386,7 @@ setInterval(() => {
 }, 1000);
 ```
 
-## 服务端 API
+## ReactDOM Server API
 
 `react-dom/server` API 允许在服务器端将 React 组件渲染为 HTML, 仅在服务器端应用程序顶层调用
 
@@ -2555,1794 +2557,6 @@ app.use('/', (request, response) => {
   const html = renderToStaticMarkup(<App/>);
   response.send(html);
 });
-```
-
-## React Router
-
-### 路由器
-
-创建路由方式
-
-- 使用 createBrowserRouter 和 RouterProvider
-  - 对象形式
-  - JSX 元素(createRoutesFromElements)
-- 使用 Routes, Route, BrowserRouter|HashRouter 内置组件
-- 使用 useRoutes hook 和 BrowserRouter|HashRouter 内置组件
-
-#### 不支持 data APIs
-
-- \<BrowserRouter\>
-- \<MemoryRouter\>
-- \<HashRouter\>
-- \<NativeRouter\> 用于 React Native
-- \<StaticRouter\>
-
-#### 支持 data APIs
-
-使用此方式创建路由, 同时启用用于数据获取的 loader, actions, fetchers 等 API
-
-- createBrowserRouter
-- createMemoryRouter
-- createHashRouter
-- createStaticRouter
-
-##### createBrowserRouter <em id="createBrowserRouter"></em> <!--markdownlint-disable-line-->
-
-- basename 基础路径
-- future 用于启用新版本语法的配置对象
-- hydrationData 当使用服务器端渲染时允许从服务器端获取数据
-- unstable_dataStrategy 低水平 API, 将会覆盖 React Router 内部的 loader, action 的执行
-- unstable_patchRoutesOnMis
-- window 用于区分环境, 对开发者工具或者测试来说非常有用
-
-返回值
-
-- router 路由信息
-
-```jsx
-const routes = [];
-const router = createBrowserRouter(routes, {
-  basename: '/app',
-  hydrationData: {
-    root: {
-      // ...
-    }
-  },
-});
-```
-
-##### RouterProvider
-
-路由根组件, 所有的路由对象或者 Data APIS 都通过此组件注入 React 应用程序
-
-- router 路由信息
-- fallbackElement 后备内容
-- future 用于启用新版本语法的配置对象
-
-```jsx
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
-import {createBrowserRouer, createRoutesFromElements, RouterProvider, Route} from 'react-router-dom';
-
-// const router = createBrowserRouter();
-
-const root = createRoot(document.getElementById('root'))
-root.render(
-  <StrictMode>
-    <RouterProvider router={router} fallbackElement={<SpinnerOfDom/>}/>
-  </StrictMode>
-);
-```
-
-- 使用对象形式创建路由
-
-```jsx
-// 使用对象形式创建路由
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Root/>,
-    loader: rootLoader,
-    action: rootAction,
-    errorElement: <ErrorPage/>,
-    children: [
-      {index: true, element: <Dashboard/>}
-    ]
-  }
-])
-```
-
-- 使用 JSX 元素创建路由
-
-```jsx
-// 使用 JSX 元素创建路由
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route 
-      path="/"
-      element={<Root/>}
-      errorElement={<ErrorPage/>}
-      loader={rootLoader}
-      action={rootAction}
-    >
-      <Route index element={<Dashboard/>}/>
-      {/* ... */}
-    </Route>
-  )
-);
-```
-
-##### createStaticHandler
-
-通常用于服务器端渲染的 数据获取和提交, 配合 `createStaticRouter` 使用
-
-- routes 路由信息
-- opts
-  - basename
-  - future 用于启用新版本语法的配置对象
-  - mapRouteProperties
-
-返回值
-
-- staticHandler.dataRoutes 路由信息
-- staticHandler.query() 执行当前请求的 action, loader 并返回 context 包含了渲染页面的所有数据
-  - request 请求
-  - opts
-    - routeId 如果需要调用不同的路由的 action 或 loader, 传入指定的 routeId
-    - requestContext 将请求上下文信息传入 action 或 loader
-
-staticHandler.query() 返回值
-
-- context 包含渲染页面信息的请求上下文
-
-##### createStaticRouter
-
-- routes 路由信息
-- context 请求的上下文信息
-- opts
-  - future 用于启用新版本语法的配置对象
-
-返回值
-
-- router 路由信息
-
-##### StaticRouterProvider
-
-接收来自 `createStaticHandler` 的 context 和  `createStaticRouter` 的 router, 用于服务器端渲染
-
-- router 通过 createStaticRouter 创建的路由
-- context 接收来自 staticHandler.query() 返回的结果作为数据
-- hydrate 是否禁用客户端自动数据连接
-- nonce 标识使用严格 CSP(安全内容策略) 时允许资源的加密随机数
-
-```jsx
-"server.jsx"
-import {StrictMode} from 'react';
-import {createStaticHandler, createStaticRouter, StaticRouterProvider} from 'react-router-dom/server';
-import {renderToString} from 'react-dom/server';
-
-// routes
-
-let handler = createStaticHandler(routes);
-
-app.get('*', async (req, res) => {
-  let fetchRequest = createRequest(req, res);
-  let context = await handler.query(fetchRequest);
-
-  let router = createStaticRouter(handler.dataRoutes, context);
-  let html = renderToString(
-    <StrictMode>
-      <StaticRouterProvider router={router} context={context} />
-    </StrictMode>
-  );
-
-  res.send("<!DOCTYPE html>" + html);
-});
-const listener = app.listen(3000, () => {
-  let {port} =  listener.address();
-  console.log(`listening on port ${port}`);
-});
-
-"client.jsx"
-import {StrictMode} from 'react';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-import {hydrateRoot} from 'react-dom/client';
-
-// routes
-let router = createBrowserRouter(routes);
-const root = hydrateRoot(
-  document.getElementById('root'),
-  <StrictMode>
-    <RouterProvider router={router}/>
-  </StrictMode>
-);
-```
-
-### Route <em id="Route"></em> <!--markdownlint-disable-line-->
-
-React Router 创建路由的 [内置组件](#internal-component), data APIs 由类似 [createBrowserRouter](#createBrowserRouter) 创建的路由才有效
-
-- index 标识当路由未匹配到时默认匹配
-- path 路由
-- caseSensitive  path 是否区分大小写
-- handle 当前路由的任意数据, 作用同 [useMatches](#useMatches)
-- element/component 当路由匹配时渲染, 使用 element 意味着不需要再额外的使用 passProps 风格的方式传递 props
-
-```jsx
-// 需要使用其他方式传递 props
-<Route path=":userId" component={Profile} passProps={{animate: true}} />
-// 或者使用 renderProps 传递 props
-// 或者使用 HOC 传递 props
-<Route path=":userId" render={(routeProps) => (<Profile routeProps={routeProps} animate={true} />)} />
-<Route path=":userId" children={({match}) => (
-  match ? <Profile match={match} animate={true} /> : <NotFound /> 
-)} />
-
-// 使用 element 传递 props
-<Route path=":userId" element={<Profile animate={true} />} />
-```
-
-- 使用对象方式创建
-
-```jsx
-import {createBrowserRouter} from 'react-router-dom';
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    loader: async ({request, params}) => {
-      return fetch();
-    },
-    action: async ({request}) => {
-      return update(await request.formData());
-    },
-    children: []
-  }
-]);
-```
-
-- 使用 JSX 元素创建
-
-```jsx
-import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
-
-const router = createBrowserRouter(createRoutesFromElements(
-  <Route
-    path="/"
-    element={<Root/>}
-    errorElement={<ErrorPage/>}
-    lazy={() => import('./a')}
-    loader={async ({request, params}) => {
-      return fetch();
-    }}
-    action={async ({request}) => {
-      return update(await request.formData());
-    }}
-  >
-    <Route index path="" element={<DashBoard/>}/>
-  </Route>
-))
-```
-
-#### Route.action <em id="Route.action"></em> <!--markdownlint-disable-line-->
-
-当 React Router 抽象了异步 UI 和重新验证的复杂性时, 为应用程序提供了一种使用简单的 HTML 和 HTTP 语句执行数据更改的方法
-
-每当应用程序向路由发送 non-get(POST, PUT, PATCH, DELETE) 提交时, 都将调用此 action
-
-动态路由参数分别传递给 [loader](#Route.loader), [useMatch](#useParams), [useParams](#useParams)
-
-- request  request 请求实例
-- params 动态路由参数
-
-```jsx
-import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route
-      path="/projects/:id/edit"
-      action={async ({request, params}) => {
-        console.log(params.id);
-        const formData = request.formData();
-        return editProjectById(params.id);
-      }}
-    >
-      {/* .... */}
-    </Route>
-  )
-);
-```
-
-- 以下几种方式都将调用 Route 的 action
-
-```jsx
-import {useFetcher, useSubmit} from 'react-router-dom';
-
-const fetcher = useFetcher();
-const submit = useSubmit();
-
-// 以下几种方式都将调用 Route 的 action
-<Form method="post" action="/projects"/>;
-<fetcher.Form method="put" action="/projects/123/edit" />;
-submit(data, {method: 'post', action: '/projects'});
-fetcher.submit(data, {method: 'put', action: '/projects/123/edit'})
-```
-
-#### Route.loader <em id="Route.loader"></em> <!--markdownlint-disable-line-->
-
-组件渲染之前调用定义的 loader 函数并将返回的数据传入 React 元素
-
-动态路由参数分别传递给 [action](#Route.action), [useMatch](#useMatch), [useParams](#useParams)
-
-- params 动态路由参数
-- request request 请求实例
-- hydrate 服务器端渲染时处理 hydrate 数据
-
-```jsx
-import {createBrowserRouter, createRoutesFromElements, Route, useLoaderData} from 'react-router-dom';
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route
-      path="/projects/:id"
-      element={<Projects/>}
-      loader={async ({request, params}) => {
-        console.log(params.id);
-        const res = await fetch();
-        if(res.status == 404) {
-          throw new Response('Not Found', {status: 404});
-        }
-        return res.json();
-      }}
-    >
-      {/* ... */}
-    </Route>
-  )
-)
-function Projects(){
-  const projects = useLoaderData();
-
-  return (
-    projects
-  )
-}
-```
-
-#### Route.lazy
-
-路由懒加载
-
-```jsx
-import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route
-      path="/"
-      element={<Layout/>}
-    >
-      <Route path="a" lazy={() => import('./a')} />
-      <Route path="b" lazy={() => import('./b')} />
-    </Route>
-  )
-)
-```
-
-#### Route.shouldRevalidate
-
-如果定义了此函数, 将在路由的 loader 调用之前执行此函数验证新数据, 如果返回 false 则不在调用 loader 并且保持当前页面数据不变
-
-#### Route.errorElement/errorBoundary
-
-当组件的 loader, action 或者在渲染过程中抛出错误时代替 element 显示
-
-```jsx
-import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom';
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route
-      errorElement={<ErrorElement />}
-      loader={async ({request, params}) => {
-        const res = await fetch();
-        if(res.status == 404){
-          throw new Response('Not Found', {status: 404});
-        }
-        const json = res.json();
-        return {json}
-      }}
-    >
-      {/* ... */}
-    </Route>
-  )
-)
-```
-
-#### Route.hydrateFallbackElement/hydrateFallback
-
-初始化服务器端渲染的内容没有被 hyrate 的组件, 如果未使用类似 [createBrowserRouter](#createBrowserRouter) 创建的路由则无效, 通常 SSR 的应用不会使用此项
-
-```jsx
-import {createBrowserRouter} from 'react-router-dom';
-const router = createBrowserRouter([
-  {
-    id: 'root',
-    path: '/',
-    loader: rootLoader,
-    Component: Root,
-    children:[
-      {
-        id: 'invoice',
-        path: 'invoice/:id',
-        loader: invoiceLoader,
-        Component: Invoice,
-        hydrateFallback: InvoiceFallback
-      }
-    ]
-  }
-],
-{
-  future:{
-    v7_partialHydration: true,
-  },
-  hydrationData:{
-    root:{
-      // ...
-    }
-  }
-})
-```
-
-### React Router 内置组件 <em id="internal-component"></em> <!--markdownlint-disable-line-->
-
-#### Await <em id="Await"></em> <!--markdownlint-disable-line-->
-
-用于呈现具有自动错误处理功能的延迟值
-
-- children React 元素或者一个函数
-- resolve 返回一个 Promise 当延迟值被 resolve 后渲染
-- errorElement 当 resolve 被 reject 后渲染
-
-```jsx
-import {Await, useLoaderData, defer, Route} from 'react-router-dom';
-<Route
-  loader={async () => {
-    let book = await getBook();
-    let reviews = getviews();
-
-    return defer({book, reviews});
-  }}
-  element={<Book/>}
->
-  {/* ... */}
-</Route>
-
-function Book(){
-  const {book, reviews} = useLoaderData();
-  return (
-    <div>
-      <h1>title</h1>
-      <Await resolve={reviews}>
-        <Review/>
-      </Await>
-    </div>
-  )
-}
-```
-
-#### Form
-
-围绕普通 HTML 表单的包装器, 模拟浏览器进行客户端路由和数据更改
-
-- action
-- method
-- navigate 标识表单默认提交行为提交之后的动作是否跳转
-- fetchKey
-- replace 标识表单提交行为替换当前历史记录栈
-- relative 标识表单提交的后的跳转路径
-- reloadDocument 标识跳过 React Router 的表单提交行为并使用浏览器内置的表单默认行为
-- state
-- preventScrollReset 标识表单提交行为是否滚动页面位置
-
-#### Link <em id="Link"></em> <!--markdownlint-disable-line-->
-
-路由导航
-
-- to
-- relative 相对路径, 默认为 Route 的相对层级
-- preventScrollRest 标识是否滚动到页面顶部
-- replace 标识是否替换当前历史记录栈
-- state 任何状态
-- reloadDocument
-
-#### NavLink
-
-特殊的 Link, 可以标识当前活动状态的导航
-
-- className 通过函数自定义样式
-- style 通过函数自定义样式
-- children
-- end 改变路由匹配逻辑, 当前路由是否以 to 结尾
-- caseSensitive 是否区分大小写
-- aria-current
-- reloadDocument
-
-```jsx
-import {NavLink} from 'react-router-dom';
-<NavLink
-  to="/message"
-  className={({isActive, isPending, isTransitioning}) => {
-    return isPending ? 'pending' : isActive ? 'active' : ''
-  }}
-  style={({isActive, isPending, isTransitioning}) => {
-    return {
-      fontWeight: isActive ? 'bold' : '',
-      color: isPending ? 'red' : 'black',
-      viewTransitionName: isTransitioning ? 'slide' : ''
-    }
-  }}
-/>
-```
-
-#### Navigate
-
-当组件渲染后改变当前的路由, 通常用在 class 组件中, 建议使用 [useNavigate](#useNavigate) Hook
-
-- to 跳转的目标路由
-- replace 是否使用替换模式
-- state 任何状态
-- relative
-
-#### Outlet
-
-渲染嵌套子路由
-
-```jsx
-function DashBoard(){
-  return (
-    <div>
-      <h1>DashBoard</h1>
-      {/* ... */}
-      <Outlet/>
-    </div>
-  )
-}
-
-function App(){
-  return (
-    <Routes>
-      <Route path="/" element={<DashBoard/>}>
-        <Route
-          path="message"
-          element={<DashBoardMessage/>}
-        />
-        <Route path="tasks" element={<DashBoardTasks/>}/>
-      </Route>
-    </Routes>
-  )
-}
-```
-
-#### [Route](#Route)
-
-React Router [内置组件](#internal-component)
-
-#### Routes
-
-匹配组件内的 Route, 用于不使用 [createBrowserRouter](#createBrowserRouter) 创建 Route 的情况
-
-也可以使用 [useRoutes](#useRoutes) Hook 创建路由
-
-```jsx
-import {Routes, Route, BrowserRouter} from 'react-router-dom';
-
-function App(){
-  return (
-    <>
-      <header>header</header>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={ <DashBoard/> }>
-            <Route path="message" element={ <DashBoardMessage /> } />
-            <Route path="tasks" element={ <DashBoardTasks /> } />
-          </Route>
-          <Route path="team" element={ <Team /> } />
-        </Routes>
-      </BrowserRouter>
-      <footer>footer</footer>
-    </>
-  )
-}
-```
-
-#### ScrollRestoration
-
-在渲染完成之后模拟浏览器在位置更改时的滚动恢复, 以确保滚动位置恢复到正确的位置
-
-### React Router 内置 Hook
-
-#### useActionData
-
-获取上一个导航操作结果的返回值, 如果没有提交操作则返回 undefined
-
-通常用于表单验证错误, 如果表单不正确可以返回错误并让用户重试
-
-#### useAsyncError
-
-获取最近的 [Await](#Await) 组件被 rejection 的结果
-
-#### useAsyncValue
-
-获取最近的 [Await](#Await) 组件被 resolved 的结果
-
-#### useBeforeUnload
-
-当用户离开页面时 (window.onbeforeunload) 保存重要的数据
-
-#### useBlocker
-
-阻止用户离开当前页面, 并呈现自定义 UI 提示用户允许确认导航
-
-- state 当前 blocker 的状态
-  - unblocked 空闲没有阻止状态
-  - blocked 阻止状态
-  - proceeding 正在从阻断器中前进
-- proceed() 允许跳转
-- reset() 重置 blocker 状态并留在当前位置
-
-```jsx
-const blocker = useBlocker();
-```
-
-#### useFetcher
-
-不想在更改 URL 的情况下调用 [loader](#Route.loader), [action](#Route.action)获取页面的数据并重新验证, 或者需要同时进行多个更新
-
-与服务器的许多交互不是导航事件, useFetcher 允许将 UI 插入到操作或 [loader](#Route.loader) 中而不引起导航
-
-- key 默认为 内置组件 生成唯一的 key
-
-- fetcher.Form 像 Form [内置组件](#internal-component) 一样, 只是不会引起导航
-
-- fetcher.state 标识当前 Fetcher 的状态
-  - idle 空闲
-  - submiting 由 fetcher 使用 post, put, patch, delete 提交正在调用路由操作
-  - loading fetcher 正在调用 fetcher.load 或者在单独提交或调用用 `useRevalidator` 之后重新验证
-- fetcher.data 获取从 [loader](#Route.loader) 或 [action](#Route.action) 加载的数据
-- fetcher.formData 当使用 fetcher.Form 和 `fetcher.submit()` 时, formData 可用
-- fetcher.json 当使用 `fetcher.submit(data, {formEnctype: 'application/json'})` 提交时可用
-- fetcher.text 当使用 `fetcher.submit(data, {formEnctype: 'text/plain'})` 提交时可用
-- fetcher.formAction 提交时的 form 的 url
-- fetcher.formMethod 提交时的方法 get, post, put, patch, delete
-
-- fetcher.load(href, options) 从 [loader](#Route.loader) 中获取数据
-- fetcher.submit(data, options?) 包含了 [useSubmit](#useSubmit) 调用的实例, 接收和 [useSubmit](#useSubmit) 相同的参数
-
-```jsx
-import {useEffect} from 'react';
-import {useFetcher} from 'react-router-dom';
-function SomeCompoent(){
-  const fetcher = useFetcher({key: 'new-key'});
-
-  useEffect(() => {
-    fetcher.submit(data, options);
-    fetcher.load(href);
-  },[fetcher]);
-
-  // 渲染的表单不会引起导航 
-  return （
-    <fetcher.Form action="/fetcher-action" method='post'>
-      <button type="submit" onclick={(e) => {
-        if(fetcher.state === 'idle' && !fetcher.data){
-          fetcher.submit(fetcher.formData?.get('username'), {formEnctype: 'application/json'});
-        }
-      }}>Submit</button>
-      <p>fetcher.formAction {fetcher.formAction}</p>
-      <p>fetcher.formMethod {fetcher.formMethod}</p>
-      {fetcher.json ? (<p>{fetcher.json}</p>) : (<p>json: null</p>)}
-      {fetcher.data ? (<div>{fetcher.data}</div>) : (<div>loading data...</div>)}
-    </fetcher.Form>
-  ）  
-}
-```
-
-#### useFetchers
-
-获取除了 load, submit, Form 属性的 fetcher 数组
-
-#### useFormAction
-
-用在 Form [内置组件](#internal-component) 内部自动解析当前路由的默认和相关操作
-
-- 可以直接计算当前的 formAction
-- 也可以用在 [useSubmit](#useSubmit) 或者 `fetcher.submit` 中
-
-```jsx
-import {useFormAction} from 'react-router-dom';
-
-function DeleteButton(){
-  const formAction = useFormAction('destroy');
-  return (
-    <button
-      formAction={formAction}
-      formMethod="post"
-    >
-      Delete
-    </button>
-  )
-}
-```
-
-```jsx
-const submit = useSubmit();
-const formAction = useFormAction('delete');
-submit(formData, {formAction});
-```
-
-#### useHref
-
-#### useInRouterContext
-
-返回组件是否在 Router 的上下文环境中渲染的
-
-#### useLinkClickHandler
-
-获取 Link 的 click 事件句柄
-
-#### useLoaderData
-
-获取路由 [loader](#Route.loader) 返回的数据, 当路由 loader 被调用之后, 数据将自动重新验证并从 loader 中返回最新结果
-
-useLoaderData 不会启动获取, 只读取 React Router 内部管理的结果
-
-```jsx
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
-import {useLoaderData, createBrowserRouter, createRoutesFromElements, RouterProvider} from 'react-router-dom';
-
-function Albums(){
-  const albums = useLoaderData();
-  // ...
-  return <div>Albums</div>;
-}
-const router = createBrowserRouter(createRoutesFromElements(
-  <Route
-    path="/"
-    element={<Albums />}
-    loader={async ({request, params}) => {
-      return fakeFecth();
-    }}
-  />
-));
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <RouterProvider router={router}/>
-  </StrictMode>
-)
-```
-
-#### useLocation
-
-获取当前 location 的对象
-
-- location.hash
-- location.key
-- location.pathname
-- location.search
-- location.state 通过 [\<Link state/\>](#Link) 或者 [navigate](#useNavigate) 创建的
-
-#### useMatch <em id="useMatch"></em> <!--markdownlint-disable-line-->
-
-返回给定路径相对于当前位置上匹配的数据
-
-动态路由参数分别传递给 [loader](#Route.loader), [action](#Route.action), [useParams](#useParams)
-
-```jsx
-import {useMatch, useParams} from 'react-router-dom';
-
-function Random(){
-  const match = useMatch('/projects/:projectId/tasks/:taskId');
-  const params = useParams();
-
-  console.log(match.params.projectId);
-  console.log(match.params.taskId);
-
-  console.log(params.projectId);
-  console.log(params.taskId);
-}
-```
-
-#### useMatches <em id="useMatches"></em> <!--markdownlint-disable-line-->
-
-获取当前页面匹配到的路由信息
-
-#### useNavigate <em id="useNavigate"></em> <!--markdownlint-disable-line-->
-
-返回一个 navigate 函数, 能够以编程式导航, 该函数接收两个参数
-
-- to 跳转的目标路由
-- options
-  - replace
-  - state
-  - preventScrollReset
-  - relative
-
-```jsx
-import {useNavigate} from 'react-router-dom';
-
-function useLogoutTimer(){
-  const userIsInactive = useFakeInactive();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if(userIsInactive){
-      fake.logout();
-      naviagte('/session-time-out', {state: {token: 'token'}});
-    }
-  },[userIsInactive]);
-}
-```
-
-#### useNavigation
-
-获取当前页面的所有导航信息
-
-- navigation.state
-- navigation.location
-- navigation.formData
-- navigation.json
-- navigation.text
-- navigation.formAction
-- navigation.formMethod
-- navigation.formEnctype
-
-#### useNavigationType
-
-返回当前页的导航类型
-
-```jsx
-type NavigationType = 'POP' | 'PUSH' | 'REPLACE';
-```
-
-#### useParams <em id="useParams"></em> <!--markdownlint-disable-line-->
-
-返回当前 url 中被 Route 匹配到的动态路由参数对象
-
-动态路由参数分别传递给 [loader](#Route.loader), [action](#Route.action), [useMatch](#useMatch)
-
-```jsx
-function Books(){
-  const {id} = useParams();
-}
-<Route
-  path="/books/:id"
-  element={<Books/>}
-/>
-```
-
-#### useResolvedPath
-
-返回给定 to 相对于当前位置的 pathname
-
-#### useRevalidator
-
-返回一个验证器对象, 允许重新验证数据
-
-- revalidator.state
-- revalidator.revalidate()
-
-#### useRouteError <em id="useRouteError"></em> <!--markdownlint-disable-line-->
-
-用在 errorElement 内部, 捕获由 [action](#Route.action), [loader](#Route.loader), 或者渲染期间抛出的错误
-
-```jsx
-import {useRouteError, isRouteErrorResponse, Route, json} from 'react-router-dom';
-
-function ErrorBoundary(){
-  const error = useRouteError();
-
-  if(isRouteErrorResponse(error)){
-    return (
-      <div>
-        <h1>Oops!</h1>
-        <h2>{error.status}</h2>
-        <p>{error.statusText}</p>
-        {error.data?.message && <p>{error.data.message}</p>}
-      </div>
-    )
-  } else {
-    return <div>Oops</div>;
-  }
-}
-
-<Route
-  errorElement={<ErrorBoundary/>}
-  action={async () => {
-    throw json(
-      {message: 'email is required' },
-      {status: 400}
-    )
-  }}
-/>
-```
-
-#### useRouteLoaderData
-
-路由树上任何位置的当前渲染路线上的数据都可用, 对于树深层需要来自更高层路由的数据的组件以及需要树深层的子路由的数据的父路由非常有用
-
-```jsx
-import {useRouteLoaderData} from 'react-router-dom';
-
-function SomeComp(){
-  const user = useRouteLoaderData('root');
-  // ...
-}
-createBrowserRouter([
-  {
-    path: '/',
-    loader: () => fetchUser(),
-    element: <Root />
-    id: 'root',
-    children: [
-      {
-        path: 'jobs/:jobId',
-        loader: loaderJob,
-        element: <JobListing />
-      }
-    ]
-  }
-])
-```
-
-#### useRoutes <em id="useRoutes"></em> <!--markdownlint-disable-line-->
-
-相当于 Routes [内置组件](#internal-component) 的函数版本
-
-```jsx
-import {useRoutes, BrowserRouter} from 'react-router-dom';
-
-function App(){
-  const element = useRoutes([
-    { path: '/', element: <DashBoard />, children: [
-      { path: 'message', element: <DashBoardMessage /> },
-      { path: 'tasks', element: <DashBoardTasks /> }
-    ]},
-    { path: 'team', element: <Team /> }
-  ]);
-  return (
-    <>
-      <header></header>
-      <BrowserRouter>
-        {element}
-      </BrowserRouter>
-      <footer></footer>
-    </>
-  )
-}
-```
-
-#### useSearchParams
-
-读取或修改当前 URL 的参数部分
-
-```jsx
-import {useSearchParams} from 'react-router-dom';
-
-function App(){
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  function handleSumbit(e){
-    e.preventDefault();
-    // 序列化字段
-    const params = serializeFormQuery(e.target);
-    setSearchParams(params);
-  }
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="username"/>
-      </form>
-    </div>
-  )
-}
-```
-
-#### useSubmit <em id="useSubmit"></em> <!--markdownlint-disable-line-->
-
-Form 表单提交的命令版本
-
-- submit(data, options?) 手动提交方法
-  - options 支持 form 表单的大多数属性
-
-```jsx
-import {useSubmit, Form} from 'react-router-dom';
-function SearchFiled(){
-  let submit = useSubmit();
-
-  // 每次表单改动时提交 
-  return (
-    <Form onChange={(e) => {
-      submit(null, {method: 'post', action: '/change'});
-    }}>
-      <input type="text" name="search"/>
-      <button type="submit">Search</button>
-    </Form>
-  )
-}
-```
-
-### React Router API
-
-#### json
-
-格式化数据
-
-```jsx
-import {json} from 'react-router-dom';
-
-const loader = async () => {
-  const data = fetchData();
-  return json(data);
-}
-```
-
-#### redirect
-
-路由重定向
-
-```jsx
-import {redirect} from 'react-router-dom';
-
-const loader = async () => {
-  const res = await fetch();
-  if(res.status == 401){
-    return redirect('/login')
-  }
-  return null
-}
-```
-
-#### redirectDocument
-
-触发一个文档级别的重定向, 而不是基于客户端导航, 通常用于从一个应用跳转到另一个应用
-
-#### replace
-
-导航跳转替换当前的历史记录栈
-
-#### createRoutesFromElements
-
-使用 JSX 元素创建路由, 简写形式是 `createRoutesFromChildren`
-
-#### createSearchParams
-
-`new URLSearchParams(init)` 的包装写法
-
-#### defer
-
-延迟 [loader](#Route.loader) 的返回值
-
-```jsx
-import {defer} from 'react-router-dom';
-
-const loader = async () => {
-  let res = await fetch();
-
-  return defer({name: 'zhangsan', age: 18});
-}
-```
-
-#### generatePath
-
-根据动态路由参数生成 url
-
-```jsx
-import {generatePath} from 'react-router-dom';
-
-generatePath('/users/:id/:name', {id: 42, name: 'zhangsan'}); // /users/42/zhangsan
-```
-
-#### isRouteErrorResponse
-
-判断是否是由 [useRouteError](#useRouteError) 捕获的路由错误
-
-#### matchPath
-
-将路由路径模式与 URL 路径进行匹配并返回有关的匹配信息, 否则返回 null
-
-#### matchRoutes
-
-执行一个路由匹配算法从给定的 routes 集合中找到匹配的路由并返回
-
-#### renderMatches
-
-渲染 matchRoutes 匹配结果中的 React 元素
-
-#### resolvePath
-
-根据给定的 to 解析为具有绝对路径的真实 path 对象
-
-## Redux
-
-官方推荐使用封装了 Redux 核心的 @reduxjs/toolkit(RTK) 包, 包含了构建 Redux 应用所必须的 API 方法和常用依赖, 简化了大部分 Redux 任务, 阻止了常见错误, 并让编写 Redux 应用程序变得更容易
-
-<!-- 
-- dispatch 只能处理同步的 action
-
-- createStore  创建一个 Redux 存储实例
-- combineReducers 将多个 reducer 函数合并成为一个更大的 reducer
-- applyMiddleware 将多个中间件组合成一个 store 增强器
-- compose 将多个 store 增强器合并成一个单一的 store 增强器 
--->
-
-### [@reduxjs/toolkit/query](#RTK-Query)
-
-独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据
-
-### @reduxjs/toolkit(RTK)
-
-- 通过单一清晰的函数调用简化 store 设置, 同时保留完全配置 store 选项的能力
-- 消除意外的 mutations
-- 消除手写任何 actionCreator 或 actionType 的需求
-- 消除编写容易出错的手动不可变更新逻辑的需求
-- 允许将相关的代码放在一个文件中, 而不是分布在多个独立文件中
-- 提供优秀的 TypeScript 支持, 其 API 被设计成很好的安全性, 同时减少代码中需要定义的类型数量
-- RTK Query 可以消除编写任何 thunk, reducer, actionCreator 或者副作用狗子来管理数据获取和跟踪加载状态的需求
-
-#### configureStore
-
-特点
-
-- slice reducers 自动传递给 combineReducers
-- 自动添加了 `redux-thunk` 中间件
-- 添加了 Devtools 中间件来捕获更多意外的变更
-- 自动设置了 Redux Devtools Extension
-- 中间件和 Devtools 增强器被组合在一起添加到了 store 中
-
-参数
-
-- reducer
-  - 如果是一个函数, configureStore 直接使用其作为根 reducer
-  - 如果是一个 slice reducers 的对象, configureStore 将使用 combineReducers 合并此对象并自动创建根 reducer
-- middleware 函数, 接收 `getDefaultMiddleware` 函数作为参数, 并返回一个中间件数组, 如果未提供, configureStore 将调用 `getDefaultMiddleware` 设置中间件数组
-- devTools 是否设置 Redux Devtools, 默认 true
-- preloadedState 初始化状态
-- enhancers 增强器函数, 和 middleware 参数作用类似, 使用 `getDefaultEnhancers` 函数获取默认的增强器列表
-
-```jsx
-import {configureStore} from '@reduxjs/toolkit';
-import {offline} from '@redux-offline/redux-offline';
-import offlineConfig from '@redux-offline/redux-offline/lib/defaults'
-
-const store = configureStore({
-  reducer: {
-    counter: counterSlice.reducer
-    // ...
-  },
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(thunk),
-  enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(offline(offlineConfig)))
-});
-```
-
-##### middleware
-
-thunk 中间件实现原理
-
-```jsx
-// thunk 中间件实现原理
-function thunk(store){
-  const next = store.dispatch; // 缓存原 dispatch 方法
-  function dispatchFn(action){
-    if(typeof action === 'function'){
-      // 如果 action 是一个函数, 则传入重写的 dispatchFn 方法
-      action(store.dispatch, store.getState);
-    } else {
-      // 否则直接调用原 dispatch 方法派发 action
-      next(action); 
-    }
-  }
-  store.dispatch = dispatchFn;
-}
-```
-
-applyMiddleware 实现原理
-
-```jsx
-export default function applyMiddleware(store, ...fns){
-  fns.forEach(fn => {
-    fn(store)
-  });
-}
-```
-
-#### createAction <em id="createAction"></em> <!--markdownlint-disable-line-->
-
-用于创建 action 的辅助函数
-
-- type 字符串, 标识 action
-- prepareAction() 可选, 函数, 接收任意个参数作为 action 的 payload 的值
-
-返回值: actionCreator
-
-- actionCreator.match 函数可以区分 action 是否是同一类型, TypeScript 中可以识别 action 中 payload 的类型
-
-```tsx
-import {createAction} from '@reduxjs/toolkit';
-
-const actionCreator = createAction(type, prepareAction?);
-
-// action 类型常量
-function increment(amount: number){
-  return {
-    type: 'INCREMENT',
-    payload: amount
-  }
-}
-const action = increment(3);
-// {type: 'INCREMENT', payload: 3}
-
-// action 创建函数
-const increment = createAction('INCREMENT', (text: string, age: number) => {
-  return {
-    type: "INCREMENT",
-    payload: {
-      text: text,
-      age: age,
-      id: nanoid(),
-      createAt: new Date()
-    }
-  }
-});
-const action = increment('hello createAction', 18);
-// {type: "INCREMENT", payload: {text: "hello createAction", age: 18, id, createAt}}
-
-const increment = createAction<number>('INCREMENT');
-function someFn(action: Action){
-  if(increment.match(action)){
-    // action.payload can be used as `number` here
-  }
-}
-```
-
-#### createReducer <em id="createReducer"></em> <!--markdownlint-disable-line-->
-
-一个简化创建 reducer 函数的工具, 内部使用 Immer 通过在 reducer 中编写可变代码, 大大简化了不可变的更新逻辑, 并支持将特定的操作类型直接映射到 case reducer 函数
-
-- initialState 初始化状态, 可以是一个返回 state 的函数
-- builderCallback 回调函数接收一个 `builder` 对象通过 addCase 方法添加 reducer <em id="builderCallback"></em> <!--markdownlint-disable-line-->
-  - addCase() 接收两个参数, 调用必须在 `addMatcher` 和 `addDefaultCase` 之前
-    - actionCreatorOrType 指定 action.type
-    - reducer
-  - addMatcher() 匹配传入的 action, 调用必须在 `addCase` 之后和 `addDefaultCase` 之前
-    - matcher() 匹配函数, 匹配传入的所有可能的 action.type, 并按定义的顺序调用
-    - reducer
-  - addDefaultCase() 添加默认的 reducer
-    - reducer
-
-返回值: reducer 函数
-
-- 包含 `getInitialState` 函数, 调用 `getInitialState` 返回初始状态, 通常用于测试或者配合 React [useReducer](#useReducer) Hook
-
-```jsx
-import {createReducer, createAction} from '@reduxjs/toolkit';
-const reducer = createReducer(initialState, builderCallback);
-
-// 普通 reducer
-function coutenReducer(state = initialState, action){
-  switch(aciton.type){
-    case 'increment':
-      return {...state, value: state.value++}
-    case 'decrement':
-      return {...state, value: state.value--}
-    case 'incrementByAmount':
-      return {...state, value: state.value + action.payload}
-    default:
-      return {...state}
-  }
-}
-
-// createReducer
-const increment = createAction('counter/increment');
-const decrement = createAction('counter/decrement');
-const incrementByAmount = createAction('counter/incrementByAmount');
-
-const counterReducer = createReducer(initialState, builder => {
-  builder.addCase(increment, (state, action) => {
-    state.value++; // immer 创建的 state 副本, 直接修改
-  }).addCase(decrement, (state, action) => {
-    state.value--;
-  }).addCase(incrementByAmount, (state, action) => {
-    state.value += action.payload;
-  }).addMatcher((action) => isMatchedAction(action.type), (state, action) => {
-    // ...
-  }).addDefaultCase((state, action) => {
-    // ...
-  });
-})
-```
-
-#### createSlice <em id="createSlice"></em> <!--markdownlint-disable-line-->
-
-支持使用 Immer 库编写 reducer, 接受一个初始状态, 对象或者 reducer 函数, 并自动创建一个与 reducer 和 状态对应的 [actionCreator](#createAction), 在内部调用 `createAction` 和 `createReducer`
-
-- name  标识 state, 将作为生成的 [actionCreator](#createAction) 的前缀
-- initialState 初始化状态
-- reducers
-  - 对象方式, 每个 属性方法名 都是一个 reducer
-  - 如果需要自定义 case Reducer, 每个 reducer 将是一个具有 prepare 函数 和 reducer 函数的对象
-    - prepare()
-    - reducer
-  - 如果是一个函数, 将接收一个 create 对象, 具有三个方法
-    - create.reducer(reducer) 标准的 reducer
-    - create.prepareReducer(prepare, reducer) 自定义 actionCreator 的 payload
-    - create.asyncThunk(thunk, opts) 创建异步的函数代替 actionCreator
-      - pending
-      - fulfilled
-      - rejected
-- extraReducers 函数, 处理自己创建的 [actionCreator](#createAction) 之外的情况, 如处理异步请求的状态, 同 [builderCallback](#builderCallback)
-- reducerPath 标识 slice 的位置, 默认 name
-- selectors 接收 state 作为第一个参数和剩余的参数并返回指定结果
-
-返回值, 包含上面的部分属性
-
-- reducer
-- actions
-- caseReducers
-- getInitialState()
-- selectSlice 关联自动创建的一个 selector
-- getSelectors()
-- injectInfo() 注入 slice
-
-```jsx
-import {createSlice, configureStore} from '@reduxjs/toolkit';
-
-const counterSlice = createSlice({
-  name: 'counter',
-  initialState: {value: 0},
-  // reducers 为一个对象
-  reducers: {
-    increment(state, action) {
-      state.value++;
-    },
-    decrement(state, action){
-      state.value--;
-    }
-  },
-  // 自定义 case reducer, prepareAction
-  reducers: {
-    // case reducer, prepareAction
-    incrementByAmout: {
-      reducer(state, action){
-        state.value += action.payload.value;
-      },
-      prepare(text: string){
-        return {payload: {text: text, value: 100}}
-      }
-    }
-  },
-  // reducers 为一个函数, 接收一个 create 对象作为参数, 并返回一个包含 reducer 的对象
-  // create 包含 3 个函数: reducer, prepareReducer, asyncThunk
-  reducers: (create) => ({
-      increment: create.reducer(state, action) => {
-        state.value++;
-      },
-      decrement: create.reducer(state, action) => {
-        state.value--;
-      },
-      incrementByAmount: create.prepareReducer(
-        (text: string) => {
-          return { payload: {text: text, value: 100}}
-        }, (state, action) => {
-          // 从 prepare 回调推断 action type
-          state.value += action.payload.value;
-        }
-      ),
-      fetchTodo: create.asyncThunk(
-        async (id: string, thunkApi) => {
-          const res = await fetch(thunkApi);
-          return (await res.json()) as Item
-        }, {
-          pending: state => {
-            state.loading = true;
-          },
-          rejected: state =>{
-            state.loading = false;
-          },
-          fulfilled: (state, action) => {
-            state.loading = false;
-            state.todos.push(action.payload);
-          }
-        }
-      )
-  }),
-  // 处理自己创建的 actionCreator 之外的情况
-  extraReducers(builder){
-    builder.addCase('INCREMENT', (state, action) => {
-      state.value++;
-    })
-  }
-});
-
-const store = configureStore({
-  reducer: {
-    counter: counterSlice.reducer
-  }
-})
-store.dispatch(counterSlice.actions.increment());
-sotre.dispatch(counterSlice.actions.decrement());
-store.dispatch(counterSlice.actions.incrementByAmount({value: 10}));
-
-store.dispatch({type: 'counter/increment'})
-store.dispatch({type: 'counter/decrement'})
-```
-
-两种获取 selector 的方式
-
-- selectors
-
-```jsx
-const counterSlice = createSlice({
-  name: 'counter',
-  initialState: { value: 0 } satisfies CounterState as CounterState,
-  reducers: {
-    // ...
-  },
-  selectors: {
-    selectValue: (sliceState) => sliceState.value,
-  },
-});
-// createSlice 默认创建一个 selectSlice 方法
-console.log(counterSlice.selectSlice({ counter: { value: 2 } })) // { value: 2 }
-
-// 通过 slice 实例的 selectors 属性获取所有的 selector
-const { selectValue } = counterSlice.selectors
-console.log(selectValue({ counter: { value: 2 } })) // 2
-```
-
-- getSelectors()
-
-```jsx
-const { selectValue } = counterSlice.getSelectors(
-  (rootState: RootState) => rootState.aCounter,
-)
-console.log(selectValue({ aCounter: { value: 2 } })) // 2
-
-const {selectValue} = counterSlice.getSelectors();
-console.log(selectValue({value: 2})) //  2
-```
-
-dispatch 提交
-
-- dispatch 提交 action 时, 如果参数是一个 action 对象形式, 则会忽略 case reducer 中配置的 prepare 方法
-
-```jsx
-const counterSlice = createSlice({
-  name: 'counter',
-  initialState: {
-    count: 0,
-  },
-  reducers: {
-    incrementByAmount:{
-      reducer(state, action){
-        state.count += action.payload;
-      },
-      prepare(val){
-        return {payload: val + 2};
-      }
-    }
-  }
-});
-dispatch(incremetnByAmount(3));
-// action 对象方式提交会忽略 case redcuer 的 prepare 方法
-dispatch({type: 'counter/incrementByAmount', payload: 1});
-```
-
-#### combineSlices
-
-合并多个 slice 为一个 reducer, 并允许初始化后更多的 reducer 注入
-
-返回值
-
-- withLazyLoadedSlices() 向 state 添加声明的 slice
-- inject(slice, options) 添加 slice
-  - options.overrideExisting 布尔值, 标识是否替换已存在的 slice
-- selector() 将 reducer 包装在代理中以确保在当前状态未定义的情况下都能恢复到其初始状态
-
-```jsx
-import {combineSlices} from '@reduxjs/toolkit';
-
-const lazeSlice = createSlice({
-  name: 'counter',
-  initialState: {value: 0}
-});
-
-const rootReducer = combineSlices(staticSlice, userSlice);
-const injectReducer = rootReducer.inject(lazySlice);
-// OR
-const injectSlice = lazySlice.injectInfo(rootReducer);
-
-const selectCounterValue = (rootState) => rootState.counter?.value // number | undefined
-const wrappedSelectCounterValue = injectReducer.selector((rootState) => rooState.counter.value);
-console.log(
-  selectCounterValue({}), // undefined
-  selectCounterValue({counter: {value: 2}}), // 2
-  wrappedSelectCounterValue({}), // 0
-  wrappedSelectCounterValue({counter: {value: 2}}), // 2
-)
-```
-
-#### createAsyncThunk <em id="createAsyncThunk"></em> <!--markdownlint-disable-line-->
-
-接收一个 [actionCreator](#createAction)和一个回调函数并返回一个 Promise, 同时会创建三个 actionCreator 分别对应 pending, fulfilled, rejected 的状态, 不会生成 reducer
-
-- type actionCreator, 如 `users/requestStatus` 将被创建为
-  - pending: `users/requestStatus/pending`
-  - fulfilled: `users/requestStatus/fulfilled`
-  - rejected: `users/requestStatus/rejected`
-- payloadCreator 函数, 将返回一个 promise, 接收两个参数
-  - arg 包含了 thunk actionCreator 被 dispatch 时传入的参数, `dispatch(fetchUsers({status: 'active'}))`
-  - thunkApi 包含了 thunk 函数的所有参数
-    - dispatch()  Redux 的 dispatch 方法
-    - getState()  Redux 的 getState 方法
-    - extra 传递给 thunk 中间件的参数
-    - requestId 自动生成的标识当前请求的唯一 id
-    - signal 信号, AbortController.signal
-    - rejectWithValue(value, [meta]) 修改当前 promise 的状态为 rejected
-    - fulfilledWithValue(value, [meta])  修改当前 promise 的状态为 fulfilled
-- options
-  - condition(arg,{getState, extra}): boolean | Promise\<boolean\> 用来跳过执行 payloadCreator 和 所有的 dispatch
-  - dispatchConditionRejection 布尔值, 如果 condition() 返回 false 所有的 action 都不会 dispatch, 如果想要当 thunk 结束 action 的状态标记为 rejected, 则设置为 true
-  - idGenerator(arg): string 默认的 requestId 由 nanoid() 生成, 自定义生成 id 逻辑
-  - serializeError(error: unknown) => any 替换内部的 `miniSerializeError` 方法
-  - getPendingMeta({arg, requestId}, {getState, extra}): any 创建对象和 `pendingAction.meta` 合并
-
-返回值
-
-- thunk 函数, 带有 3 个状态
-  - pending
-  - fulfilled
-  - rejected
-
-```jsx
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-
-const promise = createAsyncThunk(type, payloadCreator, options?);
-
-const fetchUserById = createAsyncThunk(
-  'users/fetchUserById', 
-  async (userId: number, {dispatch, requestId, getState, fulfilledWithValue, rejectWithValue}) => {
-    try{
-      const response = await fetch(userId);
-      return response.data;
-    }catch(err){
-      return rejectWithValue(err.response.data);
-    }
-  }, {
-    condition(userId, {getState, extra}){
-      const {users} = getState();
-      const fetchStatus = users.requests[userId];
-      if(fetchStatus === 'fulfilled' || fetchStatus === 'loading'){
-        // Already fetched or in progress, don't need to re-fetch
-        return false;
-      }
-    }
-  }
-);
-const usersSlice = createSlice({
-  name: 'users',
-  initialState: { },
-  reducers:{},
-  // 处理 asyncThunk 状态的 reducer
-  extraReducers(builder) {
-    builder.addCase(fetchUserById.pending, (state, action) => {
-      state.status = 'loading';
-    }).addCase(fetchUserById.fulfilled, (state, action) => {
-      state.status = 'fulfilled';
-      state.user = action.payload;
-    }).addCase(fetchUserById.rejected, (state, action) => {
-      state.status = 'rejected';
-    });
-  }
-});
-
-dispatch(fetchUserById(123));
-```
-
-#### createEntityAdapter
-
-生成一组预构建的 reducer 和 seletors, 用于对包含特定类型数据对象实例的规范化状态结构执行 CRUD 操作, 这些 reducer 函数可以作为 case reducer 传递给 [createReducer](#createReducer) 和 [createSlice](#createSlice), 也可以作为 `createReducer` 和 `createSlice` 的辅助函数
-
-- selectId 可选, 函数, 接收一个 entity 实例并返回一个唯一 id, 如果未提供则默认为 entity => entity.id
-- sortComparer 可选, 函数, 接收两个 entity 实例, 返回一个标准的 `Array.sort()` 排序之后的结果 (1, 0, -1) 以指示它们的排序相对排序, 如果未提供将不会排序, 也不会保证排序
-
-- getInitialState() 如果传入对象参数, 将被合并到 initialState 中并返回
-- getSelectors() 生成一组标准的 selector 函数
-
-- addOne/addMany 向 state 添加 items
-- setOne/setMany 添加新 items 或替换现有 items
-- setAll 替换所有 items
-- removeOne/removeMany 根据 ID 删除 items
-- removeAll 移除所有 items
-- updateOne/updateMany 通过提供部分值更新现有 items
-- upsertOne/upsertMany 添加新 items 或更新现有 items
-
-```jsx
-import {createSlice, createAsyncThunk, createEntityAdapter} from '@reduxjs/toolkit';
-
-const todosAdapter = createEntityAdapter({
-  selectId: todo => todo.id,
-  sortComparer: (a, b) => a.id < b.id
-});
-const initialState = todosAdapter.getInitialState({loading: 'idle'});
-
-// Thunk 函数
-const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
-  const response = await client.get("/fakeApi/todos");
-  return response.todos;
-});
-const saveNewTodo = createAsyncThunk("todos/saveNewTodo",
-  async (text) => {
-    const initialTodo = { text };
-    const response = await client.post("/fakeApi/todos", { todo: initialTodo });
-    return response.todo;
-  }
-);
-
-const todosSlice = createSlice({
-  name: 'todos',
-  initialState,
-  reducers: {
-    todoDeleted: todosAdapter.removeOne, // 根据 id 删除 todo
-    completeTodosCleard(state, action) {
-      const completedIds = Object.values(state.entities)
-        .filter(todo => todo.complete)
-        .map(todo => todo.id);
-      // 删除所有已完成的 todo
-      todosAdapter.removeMany(state, completedIds);
-    }
-  },
-  extraReducers(builder){
-    builder.addCase(fetchTodos.pending, (state, action) => {
-      state.status = 'loading';
-    }).addCase(fetchTodos.fulfilled, (state, action) => {
-      state.status = 'idle';
-    }).addCase(saveNewTodo.fulfilled, todosAdapter.addOne)
-  }
-})
-```
-
-#### createSelector <em id="createSelector"></em> <!--markdownlint-disable-line-->
-
-函数组件每次重新渲染都会重新执行 selector, createSelector 用于创建带有**记忆化**的 selector, 当给定的 inputSelector 没有发生变化时返回已缓存的 selector
-
-- inputSelectors 创建记忆化 selector 的依赖, 可以是一个函数, 也可以是多个函数组成的数组, 返回值依次作为 resultFn 的参数传入
-  - selectorFn 接收 state 作为第一个参数和剩余的参数并返回指定结果
-- resultFn 在 inputSelectors 之后调用并依次接收来自 inputSelectors 函数的返回值作为参数并返回结果
-
-返回值, 带有记忆化的函数
-
-```jsx
-import {createSelector} from 'reselect';
-import {useSelector} from 'react-redux';
-
-const selectTodos = state => state.todos;
-const selectTodosStatus = (state, completed) => completed;
-const memoizedSelectTodoCount = createSelector([selectTodos, selectTodosStatus], (todos, completed) => {
-  return todos.filter(todo => todo.completed === completed).length;
-});
-
-function CompletedTodosCount({completed}){
-  const matchingCount = useSelector((state) => memoizedSelectTodoCount(state, complete));
-  return <div>{matchingCount}</div>
-}
-function App(){
-  return (
-    <>
-      <span>Number of done todos</span>
-      <CompletedTodosCount completed={true}/>
-    </>
-  )
-}
-```
-
-#### nanoid
-
-生成一个非加密安全的字符串 id, 通常被用作 [createAsyncThunk](#createAsyncThunk) 的 request IDs.
-
-```jsx
-import {nanoid} from '@reduxjs/toolkit';
-console.log(nanoid()); // 'dgPXxUz_6fWIQBD8XmiSy'
-```
-
-#### miniSerializeError
-
-createAsyncThunk 默认的错误序列化函数
-
-#### copyWithStructuralSharing
-
-递归的将两个相似的对象合并在一起, 如果值看起来相同, 则保留现有的引用. 这在内部用于帮助确保重新获取的数据继续使用相同的引用,
-除非新数据实际发生了变化, 以避免不必要的重新呈现. 否则每次重新获取都可能导致整个数据集被替换, 所有消费组件总是重新渲染
-
-#### @reduxjs/toolkit/query <em id="RTK-Query"></em> <!--markdownlint-disable-line-->
-
-独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据
-
-### react-redux
-
-#### Provider
-
-- store
-- serverState
-- context
-- stabilityCheck
-- children
-
-```jsx
-import {Provider} from 'react-redux';
-import {createRoot} from 'react-dom/client';
-createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
-    {/*  */}
-  </Provider>
-)
-```
-
-#### shallowEqual
-
-#### useSelector
-
-使用 selector 函数从 Redux store 中提取数据用于当前组件
-
-使用 [createSelector](#createSelector) 创建记忆化的 selector
-
-- selector
-- equalityFn
-
-```jsx
-import {useSelector, shallowEqual} from 'react-redux';
-
-const selectedData = useSelector(selectorReturningObject, shallowEqual);
-// OR
-const selectedData = useSelector(selectorReturningObject, {equalityFn: shallowEqual});
-
-function TodoListItem(props){
-  const todo = useSelector(state => state.todos[props.id]);
-  return <div>{todo.text}</div>
-}
-```
-
-#### useDispatch
-
-```jsx
-import {useCallback, memo} from 'react';
-import {useDispatch} from 'react-redux';
-
-function CounterComponent(){
-  const dispatch = useDispatch();
-  const incrementCounter = useCallback(() => {
-    dispatch({type:'increment-counter'});
-  },[dispatch]);
-  return (
-    <div>
-      <span>CounterComponent</span>
-      <MyIncrement onIncrement={incrementCounter}/>
-    </div>
-  )
-}
-const MyIncrement = memo(({onIncrement}) => {
-  return (<button onClick={onIncrement}>increment counter</button>)
-})
-```
-
-#### useStore
-
-大多数情况使用 `useSelector`
-
-```jsx
-import {useStore} from 'react-redux';
-
-function MyComponent(){
-  const store = useStore();
-
-  return <div>{store.getState().todos.length}</div>;
-}
 ```
 
 ## [react-transition-group](https://reactcommunity.org/react-transition-group/)
@@ -4704,11 +2918,9 @@ function App(){
 
 attrs 修改样式化组件的属性, 如果想防止样式化组件使用的 props 被传入到底层 React 组件或者 DOM 元素上, 使用 `$` 前缀修饰 props 将其转换为短暂的 props
 
-```jsx
-styled.tagName.attrs({} | Function);
-```
-
 ```tsx
+styled.tagName.attrs({} | Function);
+
 const Input = styled.input.attrs<{ $size?: string }>(props => ({
   type: "text",
   $size: props.$size || '1em'
@@ -4805,6 +3017,172 @@ const fadeIn = keyframes`
 const FadeInButton = styled.button`
   animation: 1s ${fadeIn} ease-out;
 `;
+```
+
+## tailwindCSS
+
+配置文件
+
+```javascript
+// https://www.tailwindcss.cn/docs/theme
+// tailwind.config.js
+module.exports = {
+  content: ['./src/**/*.{html, js, jsx, ts, tsx}'], // 指定使用 tailwind 类名的文件
+  theme: { // 自定义主题 
+    screens: {   // 响应式
+      'sm': '640px',
+      '3xl': '1600px'
+    },
+    colors: {  // 颜色
+      'blue': '#1fb6ff',
+      'gray': {
+        100: '#f7fafc',
+        900: '#1a202c'
+      },
+      transparent: 'transparent',
+      'bubble-gum': '#ff77e9'
+    },
+    spacing: { // 间距
+      0.5: '0.125rem',
+      1: '0.25rem',
+      1.5: '0.375rem'
+    },
+    opacity: { // 透明度
+      '0': '0',
+      '20', '0.2'
+    },
+    borderRadius: { // 圆角
+      'sm': '0.125rem'
+    }，
+    fontFamily: { // 字体
+      sans: ['Graphik', 'sans-serif']
+    },
+    extend: { // 在默认的主题上添加新值
+      spacing: {
+        '8xl': '96rem',
+        '9xl': '128rem'
+      },
+      fontFamily: {
+        display: 'Oswald, ui-serif' // 添加新的类名 font-display
+      },
+      borderRadius: {
+        '4xl': '2rem'
+      }
+    }
+  },
+  plugins: [  // 注入新样式, tailwind 使用 js 代替 css
+    require('@tailwindcss/forms')
+  ]
+}
+```
+
+### 使用前缀和优先级
+
+```css
+/* 导入 tailwindcss */
+/* 使用前缀, 如果存在类名冲突的情况时给 tailwind 生成的 class 和 css 变量添加前缀 */
+@import 'tailwindcss' prefix(tw);
+/* 
+编译后
+@layer theme {
+  .root {
+    --tw-color-red-500: oklch(0.637 0.237 25.331);
+  }
+}
+@layer utilities {
+  .tw:text-red-500 {
+    color: var(--tw-color-red-500);
+  }
+}
+*/
+
+/* 给 tailwindcss 所有样式末尾添加 !important */
+@import 'tailwindcss' important;
+```
+
+### 指令和函数
+
+- @tailwind 插入样式到 base, components, utilities, variants
+  - base 用于重置规则或应用于html元素的默认样式
+  - components 基于类的样式, 能够使用实用程序覆盖这些样式
+  - utilities 实用程序用于小型、单一用途的类, 这些类应始终优先于任何其他样式
+- @layer 指定自定义样式应该放在哪个层中
+- @apply 将已有的样式应用到自定义样式中
+- @config 指定 Tailwind 编译时的配置文件
+
+- @theme 添加自定义主题变量或重置默认主题
+
+- @source 排除不会 tailwind 自动识别的资源
+
+- @reference 直接在 css 模块, style 标签内, 其他组件内使用 @apply, @variant, 自定义的主题中定义的样式避免重复的 css 输出
+
+- \-\-alpha() 调整颜色的透明度
+- \-\-spacing() 生成主题的间距值
+
+- theme() 在编译时允许使用 tailwind 配置的值, 函数在构建时执行
+- screen() 使用 tailwind 配置的值创建媒体查询
+
+```css
+@import 'tailwindcss';
+
+/* 指定配置文件 */
+@config './tailwind.site.config.js';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定义主题或重置默认主题 */
+@theme {
+  --color-white: #000;
+}
+
+@layer components {
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  }
+  .btn-blue {
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rouded;
+  }
+  .content-area {
+    height: calc(100vh - theme(spacing.12));
+    color: --alpha(var(--color-lime-500) / 50%);
+  }
+  @media screen(sm) { /* @media (min-width: 640px) */
+    /* ... */
+  }
+}
+```
+
+```html
+<!-- bg-[#1da1f2] 使用任意值 -->
+<div class="3xl:text-lg text-gray-900 bg-bubble-gum font-display rounded-sm bg-[#1da1f2]">demo</div>
+
+<!-- 使用任意值(arbitrary values) -->
+<div class="bg-[#316ff6] lg:top-[117px]">使用任意值</div>
+
+<div class="grid grid-cols-[24rem_2.5rem_minmax(0, 1fr)]">使用任意值</div>
+<div class="max-h-[calc(100vh - (--spacing(6)))]">使用任意值</div>
+
+<!-- css 属性 -->
+<div class="[mask-type:luminance] hover:[mask-type:alpha]">css 属性</div>
+
+<!-- 样式优先级: 编译后样式末尾添加 !important -->
+<div class="bg-red-500!">样式优先级</div>
+
+<style>
+  /* 使用自定义主题 */
+  @reference '../../app.css';
+  /* 使用默认主题 */
+  @reference 'tailwindcss'; 
+
+  h1 {
+    @apply text-2xl font-bold text-red-500;
+  }
+</style>
 ```
 
 ## classnames

@@ -16,9 +16,9 @@ tags: CSS
 <input type="checkbox" checked/>
 <input type="radio" />
 <style>
-    input {
-        accent-color: #74992e;
-    }
+  input {
+    accent-color: #74992e;
+  }
 </style>
 ```
 <!-- more -->
@@ -40,10 +40,10 @@ tags: CSS
 <input type="text" style="color-scheme:only light;"/>
 
 <style>
-    /* 为整个页面指定暗色 */
-    :root {
-        color-scheme: dark;
-    }
+  /* 为整个页面指定暗色 */
+  :root {
+    color-scheme: dark;
+  }
 </style>
 ```
 
@@ -58,19 +58,46 @@ CSS 媒体特性用于检测用户是否有将系统的主题色设置为**亮�
 ```css
 /* 设备最小高度为 680px, 或者为纵向模式的屏幕设备 */
 @media(min-height: 680px), screen and (orientation: portrait) {
-    /* ... */
+  /* ... */
+}
+.light {
+  background: #eee;
+  color: black;
+}
+.dark {
+  background: #333;
+  color: white;
 }
 /* 媒体查询配色方案 */
 @media(prefers-color-scheme: light){
-    .light-scheme {
-        background: white;
-        color: #555;
-    }
+  .light.light-scheme {
+    background: white;
+    color: #555;
+  }
+  .dark.light-scheme {
+    background: #eee;
+    color: black;
+  }
 }
 @media(prefers-color-scheme: dark){
-    .dark-scheme {
-        background: #333;
-        color: white;
-    }
+  .light.dark-scheme {
+    background: #333;
+    color: white;
+  }
+  .dark.dark-scheme {
+    background: black;
+    color: #ddd;
+  }
 }
+```
+
+```html
+<div class="light">Day (initial)</div>
+<div class="light light-scheme">Day (changes in light scheme)</div>
+<div class="light dark-scheme">Day (changes in dark scheme)</div>
+<br />
+
+<div class="dark">Night (initial)</div>
+<div class="dark light-scheme">Night (changes in light scheme)</div>
+<div class="dark dark-scheme">Night (changes in dark scheme)</div>
 ```

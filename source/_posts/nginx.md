@@ -116,7 +116,7 @@ access_log /var/log/nginx/access.log main;
 - arbitrary string 任意字符串
 - regular expression 第一个字符为 ~ 开头的正则表达式
 
-```nginx
+```conf
 valid_referers none blocked server_names
                *.example.com example.* www.example.org/galleries/
                ~\.google\.;
@@ -133,7 +133,7 @@ location ~* \.(gif|jpg|png|jpeg)$ {
 
 ### add_header 添加响应头字段
 
-```nginx
+```conf
 add_header name value [always]; # 基础语法
 ```
 
@@ -146,18 +146,35 @@ add_header name value [always]; # 基础语法
 
 ##### 解决跨域
 
-```nginx
+```conf
 location / {
   # 允许跨域主机名
   add_header "Access-Control-Allow-Origin" *;
   # 允许携带 cookie 信息
-  add_header "Access-Control-Allow-Credentials" "true";
+  add_header "Access-Control-Allow-Credentials" true;
   # 允许跨域请求的方法
   add_header "Access-Control-Allow-Methods" "OPTIONS,GET,POST,PUT,DELETE,HEAD";
   # 允许跨域请求时携带的头部信息
   add_header "Access-Control-Allow-Headers" *;
   # 允许发送按段获取资源的请求
   add_header "Access-Control-Expose-Headers" "Content-Length,Content-Range";
+  # 标记预检请求的结果缓存时间
+  add_header 'Access-Control-Max-Age' 86400;
+  add_header 'Origin' $host;
+
+  add_header 'X-Real-IP' $remote_addr;
+  add_header 'path' $request_uri;
+  add_header 'Version' $nginx_version;
+
+  # CSP
+  add_header 'Content-Security-Policy' 'default-src self *.mailsite.com *; 
+                                        img-src *; 
+                                        style-src * cdn.test.com; 
+                                        script-src *; 
+                                        report-uri http://reportcollector.example.com/collector.cgi';
+
+  # HSTS
+  add_header 'Strict-Transport-Security' 'max-age=31536000; includeSubDomains; preload';
 
   if ($request_method = 'OPTIONS') {
     add_header 'Access-Control-Max-Age' 1728000;
@@ -186,14 +203,14 @@ location / {
 - last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置
 - break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令
 
-```nginx
+```conf
 rewrite ^(/download/.*)/media/(\w+)\.?.*$ $1/mp3/$2.mp3 last;
 rewrite ^/users/(.*)$ /show?user=$1 break;
 ```
 
 ### proxy_set_header
 
-```nginx
+```conf
 upstream nginx_boot {
   # ip_hash;
   server 192.168.1.2:8080 weight=100 max_fails=2 fail_timeout=30s;
@@ -217,7 +234,7 @@ server {
 
 ### try_files 尝试检查文件
 
-```nginx
+```conf
 # 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif
 location /images/ {
   root /www/data;

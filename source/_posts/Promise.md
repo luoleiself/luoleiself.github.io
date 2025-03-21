@@ -21,7 +21,7 @@ tags:
 
 - 状态不受外界影响
 
-- Promise.prototype.then 最多接收两个参数, 用于 promise 兑现和拒绝情况的回调函数, 并立即返回一个等效的 promise 对象, 允许链接到其他的 promise 方法实现链式调用
+- Promise.prototype.then 最多接收两个参数, 用于 promise 兑现和拒绝情况的回调函数, 并立即返回一个新的处于待定状态的 promise 对象, 允许链接到其他的 promise 方法实现链式调用
   - 返回的 promise 对象(称之为 p )的行为取决于处理函数(参数函数)的执行结果
   - 处理函数返回值
     - 没有返回值, p 以 undefined 作为其兑现值

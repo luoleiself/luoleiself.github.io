@@ -23,6 +23,7 @@ tags:
 - 304 Not Modified 资源没有改动
 - 305 Use Proxy 使用代理
 - 307 Temporary Redirect 资源临时从不同的 URI 响应
+- 308 Permanent Redirect 永久重定向
 
 - 400 Bad Request 错误的请求
 - 401 Unauthorized 需要验证
@@ -155,3 +156,11 @@ Content-Security-Policy-Report-Only: default-src 'self';
   script-src userscripts.example.com; 
   report-uri /_/csp-reports
 ```
+
+### HTTP cache mode
+
+- force-cache, 自己先在缓存中查找资源, 如果有不管是否过期直接返回
+- default, 自己先在缓存中查找资源, 然后验证资源是否过期, 如果过期再询问服务器资源是否过期
+- no-cache, 自己先在缓存中查找资源, 然后再询问服务器资源是否过期
+- reload, 不查看缓存, 直接从服务器获取资源, 然后使用下载的资源更新缓存
+- no-store, 不查看缓存, 直接从服务器获取资源, 并且不会更新缓存资源
