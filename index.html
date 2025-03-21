@@ -204,6 +204,91 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2024/08/aa27b9262e74/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/08/aa27b9262e74/" class="post-title-link" itemprop="url">MessageChannel</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-08-09 15:20:07 / 修改时间：12:50:22" itemprop="dateCreated datePublished" datetime="2024-08-09T15:20:07+08:00">2024-08-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebAPI/" itemprop="url" rel="index"><span itemprop="name">WebAPI</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>463</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="MessageChannel"><a href="#MessageChannel" class="headerlink" title="MessageChannel"></a>MessageChannel</h2><p>允许创建一个新的消息通道, 并通过它的两个 MessagePort 属性发送数据</p>
+<ul>
+<li>port1 只读属性</li>
+<li>port2 只读属性</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> channel = <span class="keyword">new</span> <span class="title class_">MessageChannel</span>();</span><br><span class="line"><span class="keyword">const</span> para = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;p&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ifr = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;iframe&quot;</span>);</span><br><span class="line"></span><br><span class="line">ifr.<span class="title function_">addEventListener</span>(<span class="string">&quot;load&quot;</span>, iframeLoaded, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">iframeLoaded</span>(<span class="params"></span>) &#123;</span><br><span class="line">  ifr.<span class="property">otherWindow</span>.<span class="title function_">postMessage</span>(<span class="string">&quot;来自主页的问候！&quot;</span>, <span class="string">&quot;*&quot;</span>, [channel.<span class="property">port2</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">channel.<span class="property">port1</span>.<span class="property">onmessage</span> = <span class="keyword">function</span>(<span class="params">e</span>) &#123;</span><br><span class="line">  para.<span class="property">innerHTML</span> = e.<span class="property">data</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2024/07/d4e0016c7e04/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -227,10 +312,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-07-26 22:24:03 / 修改时间：23:03:37" itemprop="dateCreated datePublished" datetime="2024-07-26T22:24:03+08:00">2024-07-26</time>
+              <time title="创建时间：2024-07-26 22:24:03" itemprop="dateCreated datePublished" datetime="2024-07-26T22:24:03+08:00">2024-07-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-21 21:00:10" itemprop="dateModified" datetime="2025-03-21T21:00:10+08:00">2025-03-21</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -246,13 +337,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>1.3k</span>
+              <span>2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -269,7 +360,7 @@
 <li>auto 表示用户代理所选颜色, 应匹配平台的强调色(若有)</li>
 <li>&lt;color&gt; 指定用作强调色的颜色</li>
 </ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;checkbox&quot;</span> <span class="attr">checked</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;radio&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">    <span class="selector-tag">input</span> &#123;</span></span><br><span class="line"><span class="language-css">        accent-<span class="attribute">color</span>: <span class="number">#74992e</span>;</span></span><br><span class="line"><span class="language-css">    &#125;</span></span><br><span class="line"><span class="language-css"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;checkbox&quot;</span> <span class="attr">checked</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;radio&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">  <span class="selector-tag">input</span> &#123;</span></span><br><span class="line"><span class="language-css">    <span class="attribute">accent-color</span>: <span class="number">#74992e</span>;</span></span><br><span class="line"><span class="language-css">  &#125;</span></span><br><span class="line"><span class="language-css"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/07/d4e0016c7e04/#more" rel="contents">
@@ -327,7 +418,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-07 15:57:00" itemprop="dateModified" datetime="2024-08-07T15:57:00+08:00">2024-08-07</time>
+                <time title="修改时间：2024-12-30 17:10:37" itemprop="dateModified" datetime="2024-12-30T17:10:37+08:00">2024-12-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -344,13 +435,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>4.8k</span>
+              <span>5.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>4 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -367,7 +458,12 @@
 <li>网格轨道, 网格布局中使用 grid-template-rows 和 grid-template-columns 属性定义的网格上的行和列, 网格轨道是网格上任意两条相邻线之间的空间.</li>
 <li>fr 单位, 新的长度单位, 表示网格容器中占用的轨道</li>
 <li>minmax(min, max), 函数为一个行/列的尺寸设置了取值范围, 例如 minmax(100px, auto) 表示尺寸至少为 100px, 如果内容尺寸大于 100px 则会根据内容自动调整</li>
-<li>repeat(count, value), 表示轨道列表的重复片段, 允许以更紧凑的形式写入大量显示重复模式的列或行</li>
+<li>repeat(count, value), 表示轨道列表的重复片段, 允许以更紧凑的形式写入大量显示重复模式的列或行<ul>
+<li>repeat(auto-fill/auto-fit, minmax(200px, 1fr)) 根据可用空间动态调整轨道列数, 每列的最小宽度为 200px, 最大为 1fr</li>
+<li>auto-fill 创建尽可能多的轨道(即使这些轨道是空的), 并且不会合并多余的轨道</li>
+<li>auto-fit 创建尽可能多的轨道, 并且会合并多余的轨道, 使得内容能够填充整个容器</li>
+</ul>
+</li>
 </ul>
 <h3 id="属性列表"><a href="#属性列表" class="headerlink" title="属性列表"></a>属性列表</h3><ul>
 <li><p>grid-template-rows</p>
@@ -388,13 +484,27 @@
 <li>grid-row-gap</li>
 </ul>
 </li>
+<li><p>place-items</p>
+<ul>
+<li>align-items</li>
+<li>justify-items</li>
+</ul>
+</li>
+<li><p>place-content</p>
+<ul>
+<li>align-content</li>
+<li>justify-content</li>
+</ul>
+</li>
 <li><p>grid-area</p>
 <ul>
 <li>grid-row</li>
 <li>grid-column</li>
 </ul>
 </li>
-</ul>
+<li><p>align-self</p>
+</li>
+<li><p>justify-self</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/05/7356f3e0fe44/#more" rel="contents">
@@ -452,7 +562,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+                <time title="修改时间：2024-08-09 12:48:44" itemprop="dateModified" datetime="2024-08-09T12:48:44+08:00">2024-08-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -553,7 +663,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+                <time title="修改时间：2025-02-06 11:07:32" itemprop="dateModified" datetime="2025-02-06T11:07:32+08:00">2025-02-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -570,13 +680,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>1.3k</span>
+              <span>4.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>1 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -589,7 +699,7 @@
 
       
           <h2 id="EventSource"><a href="#EventSource" class="headerlink" title="EventSource"></a>EventSource</h2><blockquote>
-<p>当不使用 HTTP/2 时, 服务器发送事件(SSE)受到打开连接数(6)的限制, 这个限制是针对浏览器的. 每个浏览器的所有标签页中对相同域名的连接数最多支持 6 个</p>
+<p>当不使用 HTTP/2 时, 服务器发送事件(SSE)受到打开连接数(6)的限制, 这个限制是针对浏览器的. 每个浏览器的所有标签页中对相同域名的连接数最多支持 6 个(chrome 超过 6 个自动断开连接, firefox 超过 9 个自动断开连接)</p>
 </blockquote>
 <blockquote>
 <p>当使用 HTTP/2 时, 最大并发 HTTP 流的数量是由服务器和客户端协商的(默认为 100)</p>
@@ -660,7 +770,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+                <time title="修改时间：2024-11-21 21:01:56" itemprop="dateModified" datetime="2024-11-21T21:01:56+08:00">2024-11-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -677,7 +787,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>7.7k</span>
+              <span>8.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -1158,111 +1268,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2023/04/12766d614e53/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/04/12766d614e53/" class="post-title-link" itemprop="url">FileSystemAccessAPI</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-04-12 14:02:45" itemprop="dateCreated datePublished" datetime="2023-04-12T14:02:45+08:00">2023-04-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebAPI/" itemprop="url" rel="index"><span itemprop="name">WebAPI</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>3.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>目前仅在 chrome 86 (edge 86, opera 72)及以上版本支持, safari 和 firefox 暂时不支持</p>
-</blockquote>
-<p>允许 Web 应用程序从用户设备的本地文件系统中操作文件, 它为 Web 应用程序提供了更多的灵活性和功能, 使其更接近于本地应用程序的体验</p>
-<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a> 遵循同源策略, 只允许 Web 应用程序在具有相同源的文件系统上进行操作, 当使用该 API 时, 会提示用户授权应用程序访问文件系统</p>
-<ul>
-<li>将文件从本地文件系统上传到 Web 应用程序</li>
-<li>将 Web 应用程中的数据写入到本地文件系统中</li>
-<li>在用户的本地文件系统中创建、重命名和删除文件</li>
-<li>读取本地文件系统上的文件内容</li>
-</ul>
-<h3 id="FileSystemHandle接口"><a href="#FileSystemHandle接口" class="headerlink" title="FileSystemHandle接口"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle">FileSystemHandle</a>接口</h3><p>是 File System Access API 表示文件或目录条目的对象, 多个句柄可以代表同一个条目，通常情况下, 使用它的子接口 <code>FileSystemFileHandle</code> 和 <code>FileSystemDirectoryHandle</code></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 继承</span></span><br><span class="line"><span class="comment"> * FileSystemHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemFileHandle</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemDirectoryHandle</span></span><br><span class="line"><span class="comment"> * FileSystemSyncAccessHandle</span></span><br><span class="line"><span class="comment"> * WritableStream</span></span><br><span class="line"><span class="comment"> *  &lt;- FileSystemWritableFileStream</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/04/12766d614e53/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1334,7 +1339,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1395,7 +1400,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1404,12 +1409,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">557k</span>
+    <span title="站点总字数">631k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:27</span>
+    <span title="站点阅读时长">9:33</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

@@ -204,6 +204,685 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/5ad505cb0ced/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/5ad505cb0ced/" class="post-title-link" itemprop="url">React-Redux.md</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-15 15:37:49" itemprop="dateCreated datePublished" datetime="2022-02-15T15:37:49+08:00">2022-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-21 21:10:56" itemprop="dateModified" datetime="2025-03-21T21:10:56+08:00">2025-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>18k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>官方推荐使用封装了 Redux 核心的 @reduxjs/toolkit(RTK) 包, 包含了构建 Redux 应用所必须的 API 方法和常用依赖, 简化了大部分 Redux 任务, 阻止了常见错误, 并让编写 Redux 应用程序变得更容易</p>
+<!-- 
+- dispatch 只能处理同步的 action
+
+- createStore  创建一个 Redux 存储实例
+- combineReducers 将多个 reducer 函数合并成为一个更大的 reducer
+- applyMiddleware 将多个中间件组合成一个 store 增强器
+- compose 将多个 store 增强器合并成一个单一的 store 增强器 
+-->
+
+<h3 id="reduxjs-toolkit-query"><a href="#reduxjs-toolkit-query" class="headerlink" title="@reduxjs/toolkit/query"></a><a href="#RTK-Query">@reduxjs/toolkit/query</a></h3><p>独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据</p>
+<h3 id="reduxjs-toolkit-RTK"><a href="#reduxjs-toolkit-RTK" class="headerlink" title="@reduxjs/toolkit(RTK)"></a>@reduxjs/toolkit(RTK)</h3><ul>
+<li>通过单一清晰的函数调用简化 store 设置, 同时保留完全配置 store 选项的能力</li>
+<li>消除意外的 mutations</li>
+<li>消除手写任何 actionCreator 或 actionType 的需求</li>
+<li>消除编写容易出错的手动不可变更新逻辑的需求, createSlice 使用 <code>Immer</code> 库来编写 reducer, 可以直接修改 state 状态而不需要使用解构语法</li>
+<li>允许将相关的代码放在一个文件中, 而不是分布在多个独立文件中</li>
+<li>提供优秀的 TypeScript 支持, 其 API 被设计成很好的安全性, 同时减少代码中需要定义的类型数量</li>
+<li>RTK Query 可以消除编写任何 thunk, reducer, actionCreator 或者副作用狗子来管理数据获取和跟踪加载状态的需求</li>
+</ul>
+<h4 id="configureStore"><a href="#configureStore" class="headerlink" title="configureStore"></a>configureStore</h4><p>特点</p>
+<ul>
+<li>slice reducers 自动传递给 combineReducers</li>
+<li>自动添加了 <code>redux-thunk</code> 中间件</li>
+<li>添加了 Devtools 中间件来捕获更多意外的变更</li>
+<li>自动设置了 Redux Devtools Extension</li>
+<li>中间件和 Devtools 增强器被组合在一起添加到了 store 中</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/5ad505cb0ced/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/0eb429a8209b/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/0eb429a8209b/" class="post-title-link" itemprop="url">React-Router.md</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-15 15:37:49" itemprop="dateCreated datePublished" datetime="2022-02-15T15:37:49+08:00">2022-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-21 20:52:44" itemprop="dateModified" datetime="2025-03-21T20:52:44+08:00">2025-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>24k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>22 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="React-Router"><a href="#React-Router" class="headerlink" title="React Router"></a>React Router</h2><p><a target="_blank" rel="noopener" href="https://reactrouter.com/home">React Router v7</a> 示例</p>
+<p>工作模式</p>
+<ul>
+<li>Declareative 声明式, 使用路由组件匹配 url, 导航路由</li>
+<li>Data 在 React rendering 外配置路由, 支持 data APIs</li>
+<li>Framework 包含 Data mode 模式的全栈框架</li>
+</ul>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// npx create-react-router@latest my-react-router-app</span></span><br><span class="line"><span class="comment">// Declareative</span></span><br><span class="line"><span class="title function_">createRoot</span>(root).<span class="title function_">render</span>(</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">BrowserRouter</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">Routes</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/&quot;</span> <span class="attr">element</span>=<span class="string">&#123;</span> &lt;<span class="attr">Root</span> /&gt;</span> &#125; /&gt;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">Routes</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">BrowserRouter</span>&gt;</span></span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Data</span></span><br><span class="line"><span class="keyword">const</span> router = <span class="title function_">createBrowserRouter</span>([</span><br><span class="line">  &#123;<span class="attr">path</span>: <span class="string">&#x27;/&#x27;</span>, <span class="title class_">Component</span>: <span class="title class_">Root</span>, <span class="attr">loader</span>: rootLoader&#125;</span><br><span class="line">]);</span><br><span class="line"><span class="title function_">createRoot</span>(root).<span class="title function_">render</span>(<span class="language-xml"><span class="tag">&lt;<span class="name">RouterProvider</span> <span class="attr">router</span>=<span class="string">&#123;router&#125;/</span>&gt;</span></span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Framework</span></span><br><span class="line"><span class="comment">// routes.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> [</span><br><span class="line">  <span class="title function_">index</span>(<span class="string">&#x27;./home.tsx&#x27;</span>), <span class="comment">// 默认渲染组件</span></span><br><span class="line">  <span class="title function_">route</span>(<span class="string">&#x27;about&#x27;</span>, <span class="string">&#x27;./about.tsx&#x27;</span>),</span><br><span class="line">  <span class="title function_">route</span>(<span class="string">&#x27;dashboard&#x27;</span>, <span class="string">&#x27;./dashboard.tsx&#x27;</span>, [ <span class="comment">// 嵌套路由, 添加路由段</span></span><br><span class="line">    <span class="title function_">index</span>(<span class="string">&#x27;./home.tsx&#x27;</span>),</span><br><span class="line">    <span class="title function_">route</span>(<span class="string">&#x27;settings&#x27;</span>, <span class="string">&#x27;./setting.tsx&#x27;</span>)</span><br><span class="line">  ]),</span><br><span class="line">  <span class="title function_">layout</span>(<span class="string">&#x27;./auth/layout.tsx&#x27;</span>, [ <span class="comment">// 使用 布局, 但不会添加路由段</span></span><br><span class="line">    <span class="title function_">route</span>(<span class="string">&#x27;login&#x27;</span>, <span class="string">&#x27;./auth/login.tsx&#x27;</span>),</span><br><span class="line">    <span class="title function_">route</span>(<span class="string">&#x27;register&#x27;</span>, <span class="string">&#x27;./auth/register.tsx&#x27;</span>)</span><br><span class="line">  ]),</span><br><span class="line">  ...<span class="title function_">prefix</span>(<span class="string">&quot;projects&quot;</span>, [ <span class="comment">// 路由前缀</span></span><br><span class="line">    <span class="title function_">index</span>(<span class="string">&quot;./projects/home.tsx&quot;</span>),</span><br><span class="line">    <span class="title function_">layout</span>(<span class="string">&quot;./projects/project-layout.tsx&quot;</span>, [</span><br><span class="line">      <span class="title function_">route</span>(<span class="string">&quot;:pid&quot;</span>, <span class="string">&quot;./projects/project.tsx&quot;</span>),</span><br><span class="line">      <span class="title function_">route</span>(<span class="string">&quot;:pid/edit&quot;</span>, <span class="string">&quot;./projects/edit-project.tsx&quot;</span>),</span><br><span class="line">    ]),</span><br><span class="line">  ])</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>自动将 loaderData, actionData, params, matches 作为 props 传递给组件</li>
+</ul>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">loader</span>(<span class="params"></span>)&#123;&#125; <span class="comment">// 路由组件渲染之前执行</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">clientLoader</span>(<span class="params">&#123;params&#125;</span>)&#123;&#125; <span class="comment">// 客户端获取数据</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">action</span>(<span class="params"></span>)&#123;&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">clientAction</span>(<span class="params"></span>)&#123;&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">ErrorBoundary</span>(<span class="params"></span>)&#123;&#125; <span class="comment">// 路由发生错误时渲染</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">headers</span>(<span class="params"></span>)&#123;&#125; <span class="comment">// 定义响应头</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">links</span>(<span class="params"></span>)&#123;&#125; <span class="comment">// 定义页面 head 中的 &lt;link&gt; 元素信息</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">meta</span>(<span class="params"></span>)&#123;&#125; <span class="comment">// 定义页面 head 中的 meta 信息</span></span><br><span class="line"><span class="comment">// 允许在 useMatches 中向 路由 匹配 中添加任意内容, 像面包屑</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> handle = &#123;&#125; </span><br><span class="line"><span class="comment">// 是否允许弹出路由重新验证不影响其数据的操作, 默认所有路由在操作后都会重新验证</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">shouldRevalidate</span>(<span class="params"></span>)&#123;&#125; </span><br></pre></td></tr></table></figure>
+
+<p>以下部分为 React Router v6</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/0eb429a8209b/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/7ec5bd96e943/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/7ec5bd96e943/" class="post-title-link" itemprop="url">React.md</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-15 15:37:49" itemprop="dateCreated datePublished" datetime="2022-02-15T15:37:49+08:00">2022-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-21 21:02:08" itemprop="dateModified" datetime="2025-03-21T21:02:08+08:00">2025-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>66k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1:01</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="React"><a href="#React" class="headerlink" title="React"></a>React</h2><p>React 18.3.1</p>
+<h2 id="设计思想"><a href="#设计思想" class="headerlink" title="设计思想"></a>设计思想</h2><ul>
+<li>只有当在组件树中 相同的 位置渲染 相同的 组件时, React 才会一直保留着组件的 state</li>
+<li>在一般安全的情况下采用批处理方式处理 state 更新</li>
+</ul>
+<p>变换</p>
+<ul>
+<li>设计 React 的核心前提是认为 UI 只是把数据通过映射关系变换成另一种形式的数据。同样的输入必会有同样的输出。这恰好就是纯函数。</li>
+</ul>
+<p>抽象</p>
+<ul>
+<li>需要把 UI 抽象成多个隐藏内部细节，又可复用的函数。通过在一个函数中调用另一个函数来实现复杂的 UI</li>
+</ul>
+<p>组合</p>
+<ul>
+<li>将两个或者多个不同的抽象通过组合再次抽象成一个抽象</li>
+</ul>
+<p>不变性</p>
+<ul>
+<li>不直接操作数据源, 副本替换, 可以保持以前版本的数据完好无损, 并在以后重用它们</li>
+<li>不直接操作数据源, 副本替换, 使组件比较其数据是否已更改的成本非常低, 提高子组件的渲染性能</li>
+</ul>
+<p>状态</p>
+<ul>
+<li><p>使用不可变的数据模型, 把可以改变 state 的函数串联起来作为原点放置在顶层</p>
+</li>
+<li><p>状态不存在于组件内, 状态是由 React 保存的, React 通过组件在渲染树中的位置将它保存的每个状态与正确的组件关联起来</p>
+<ul>
+<li>这个变量是否通过 props 从父组件中获取，如果是，则不是一个状态</li>
+<li>这个变量是否在组件的整个生命周期中都保持不变，如果是，则不是一个状态</li>
+<li>这个变量是否可以通过其他状态(state)或者属性(props)计算得到，如果是，则不是一个状态</li>
+<li>这个变量是否在组件的 render 方法中使用，如果不在，则不是一个状态</li>
+</ul>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/7ec5bd96e943/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/12/869c5fdf0d37/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/869c5fdf0d37/" class="post-title-link" itemprop="url">微信小程序</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-24 11:54:05" itemprop="dateCreated datePublished" datetime="2021-12-24T11:54:05+08:00">2021-12-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-03 19:23:55" itemprop="dateModified" datetime="2024-08-03T19:23:55+08:00">2024-08-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/wx/" itemprop="url" rel="index"><span itemprop="name">wx</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>28k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>25 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="隐私协议"><a href="#隐私协议" class="headerlink" title="隐私协议"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html">隐私协议</a></h4><ul>
+<li><p>2.32.3 开始支持</p>
+</li>
+<li><p>2023-09-15 之后, 隐私相关功能默认开始, 对于未声明的处理用户信息的接口或组件直接禁用</p>
+</li>
+<li><p>wx.getPrivacySetting 查询微信侧记录的用户是否有待同意的隐私政策信息, 通过返回结果 res 中的 needAuthorization 字段获取, true 表示还没同意过</p>
+</li>
+<li><p>wx.openPrivacyContract 此接口打开 <code>wx.getPrivacySetting</code> 获取到的开发者在小程序管理后台配置的 《小程序用户隐私保护指引》名称信息的页面</p>
+</li>
+<li><p>wx.requirePrivacyAuthorize 模拟隐私接口调用, 并触发隐私弹窗逻辑</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/privacy/wx.onNeedPrivacyAuthorization.html">wx.onNeedPrivacyAuthorization</a> 监听隐私接口需要用户授权事件, 当需要用户进行隐私授权时会触发. 触发事件时, 开发者需要弹出隐私协议说明,<br>并在用户同意或拒绝授权后调用回调接口 resolve 触发原隐私接口或组件继续执行.</p>
+<ul>
+<li>resolve 是一个函数, 主动调用触发原隐私接口或组件继续执行</li>
+<li>eventInfo 表示触发本次事件的关联信息</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 用户触发此组件时, 微信会同步收到同意信息 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 事件回调表示用户已同意隐私政策后的处理逻辑 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span></span></span><br><span class="line"><span class="tag">  <span class="attr">open-type</span>=<span class="string">&quot;agreePrivacyAuthorization&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">bind:agreeprivacyauthorization</span>=<span class="string">&quot;handleAgreePrivacyAuthorization&quot;</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  同意</span><br><span class="line"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/869c5fdf0d37/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/12/d4d6226b52d2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/d4d6226b52d2/" class="post-title-link" itemprop="url">Charles-手机代理-Https-证书管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-14 14:37:01" itemprop="dateCreated datePublished" datetime="2021-12-14T14:37:01+08:00">2021-12-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-11 11:51:37" itemprop="dateModified" datetime="2024-12-11T11:51:37+08:00">2024-12-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tools/" itemprop="url" rel="index"><span itemprop="name">tools</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>1.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><ul>
+<li>开启 charles 无法代理 https, 检查电脑和手机上的 charles 证书是否过期</li>
+</ul>
+<h3 id="电脑删除证书"><a href="#电脑删除证书" class="headerlink" title="电脑删除证书"></a>电脑删除证书</h3><ol>
+<li>使用 win + r 键调起系统运行窗口, 在输入框中输入 mmc 命令后回车<br><img src="/images/charles-11.jpg" alt="charles-11"></li>
+<li>在弹出的对话框选择 “文件” -&gt; “添加或删除管理单元”<br><img src="/images/charles-12.png" alt="charles-12"></li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/d4d6226b52d2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/12/2f42f14b8489/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/2f42f14b8489/" class="post-title-link" itemprop="url">BABELRC</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-09 16:56:30" itemprop="dateCreated datePublished" datetime="2021-12-09T16:56:30+08:00">2021-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="babel-cli"><a href="#babel-cli" class="headerlink" title="@babel/cli"></a>@babel/cli</h2><h3 id="install"><a href="#install" class="headerlink" title="install"></a>install</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D @babel/cli @babel/core @babel/preset-env</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>--watch | -w 监听文件改变自动编译</li>
+<li>--out-file | -o 输出指定文件名</li>
+<li>--out-dir | -d 编译整个目录<ul>
+<li>编译目录下所有文件输出合并为一个文件</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npx babel index.js -w <span class="comment"># 编译并监听 index.js</span></span><br><span class="line"></span><br><span class="line">npx babel index.js -o index.min.js <span class="comment"># 编译 index.js 文件输出到 index.min.js</span></span><br><span class="line"></span><br><span class="line">npx babel src -d dist <span class="comment"># 编译 src 目录下文件输出到 dist 下</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/2f42f14b8489/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/08/9fc9b29dd769/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -361,7 +1040,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+                <time title="修改时间：2025-03-20 19:54:16" itemprop="dateModified" datetime="2025-03-20T19:54:16+08:00">2025-03-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -378,13 +1057,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>654</span>
+              <span>5.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>1 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -420,6 +1099,8 @@
 <li><p>305 Use Proxy 使用代理</p>
 </li>
 <li><p>307 Temporary Redirect 资源临时从不同的 URI 响应</p>
+</li>
+<li><p>308 Permanent Redirect 永久重定向</p>
 </li>
 <li><p>400 Bad Request 错误的请求</p>
 </li>
@@ -466,6 +1147,57 @@
 <li>%3F ?</li>
 <li>%40 @</li>
 <li>%41 A</li>
+</ul>
+<h3 id="HSTS"><a href="#HSTS" class="headerlink" title="HSTS"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Strict-Transport-Security">HSTS</a></h3><p>HTTP Strict-Transport-Security, HTTP 严格传输安全 是一种安全策略机制, 旨在强制客户端仅通过 HTTPS 协议与服务器进行通信, 并且在未来的一段时间内, 所有对该站点的请求都必须使用 HTTPS.</p>
+<p>通过在 HTTP 响应头中包含一个特殊的指令: <code>Strict-Transport-Security</code> 来实现.</p>
+<p>浏览器接收到这个响应头, 会将该站点标记为 HSTS 站点, 并在指定的时间内自动将所有的 HTTP 请求转换为 HTTPS 请求。即使是手动输入的 http url 或者点击的一个 http 链接也会被自动升级为 HTTPS 请求.</p>
+<p>部分主流浏览器维护了一个预加载的 HSTS 站点列表, 这些站点默认被强制使用 HTTPS, 无需等待首次访问后的响应头设置.</p>
+<ul>
+<li>Chrome 的 HSTS 预加载列表: <a target="_blank" rel="noopener" href="https://www.chromium.org/hsts">https://www.chromium.org/hsts</a></li>
+<li>Firefox 的 HSTS 预加载列表: <a target="_blank" rel="noopener" href="https://hg.mozilla.org/mozilla-central/raw-file/tip/security/manager/ssl/nsSTSPreloadList.inc">nsSTSPreloadList.inc</a></li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Strict-Transport-Security</span><span class="punctuation">: </span>max-age=&lt;expire-time&gt;; includeSubDomains; preload</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>max-age, 浏览器记录的只能使用 HTTPS 访问站点的最大时间(单位秒)</li>
+<li>includeSubDomains, 可选, 表示该策略适用于主域名及其所有子域名</li>
+<li>preload, 可选, 表示该站点希望被列入浏览器的 HSTS 预加载列表</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">$ curl -I https://www.douyin.com</span><br><span class="line">HTTP/1.1 404 Not Found</span><br><span class="line">Server: Tengine</span><br><span class="line">Content-Type: text/plain; charset=utf-8</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Date: Wed, 11 Dec 2024 09:11:02 GMT</span><br><span class="line">cache-control: no-store</span><br><span class="line">Vary: Accept-Encoding, Accept-Encoding</span><br><span class="line">X-Frame-Options: DENY</span><br><span class="line">X-XSS-Protection: 1; mode=block</span><br><span class="line">X-Download-Options: noopen</span><br><span class="line">X-Content-Type-Options: nosniff</span><br><span class="line">content-security-policy: upgrade-insecure-requests ;frame-ancestors https://pc.xgo.bytedance.net https://tcs.bytedance.net https://*.douyin.com https://aidp.bytedance.com https://aidp.bytedance.net https://www.aidp-cqc.com;script-src <span class="string">&#x27;report-sample&#x27;</span> <span class="string">&#x27;strict-dynamic&#x27;</span> <span class="string">&#x27;nonce-4QE2wZ2rc-ztbxrA3IWHy&#x27;</span> <span class="string">&#x27;wasm-unsafe-eval&#x27;</span> <span class="string">&#x27;unsafe-eval&#x27;</span> <span class="string">&#x27;self&#x27;</span> *.bytedance.com *.bytedance.net *.pstatp.com *.bytednsdoc.com *.bytescm.com *.douyin.com *.bytegoofy.com *.snssdk.com *.byted-static.com *.huoshanstatic.com *.douyinstatic.com *.ibytedapm.com *.zijieapi.com *.bytetos.com *.yhgfb-cn-static.com *.byteimg.com;report-uri https://i.snssdk.com/log/sentry/v2/api/slardar/main/?ev_type=csp&amp;bid=douyin_web;report-to main-endpoint</span><br><span class="line">Reporting-Endpoints: main-endpoint=<span class="string">&quot;https://mon.zijieapi.com/monitor_browser/collect/batch/security/?bid=douyin_web&quot;</span>, default=<span class="string">&quot;https://mon.zijieapi.com/monitor_browser/collect/batch/security/?bid=douyin_web&quot;</span></span><br><span class="line">X-Tt-Logid: 20241211171102BFBC2AC0A24F4C05B24E</span><br><span class="line">X-Agw-Info: N1yG692xcEzUcPRkqur4q1w8MlUT0hGFq0kNWMMV07yBP0rl8Ro_MQ8j_XpZ93UiGF_yYjjOLU0-LJkSol7AQbN5g-cwiWw79Mh3Nn_6upuBUoABSTZXiw5xsf5QXhFwSLwtY4xBUmCBdBQIjt7NUQ==</span><br><span class="line">Server-Timing: inner; dur=276,tt_agw; dur=264</span><br><span class="line">Set-Cookie: ttwid=1%7Ct5T1yUApy2aoqf8tihUlKDs27fKNe5akRSMvf5zx5nk%7C1733908262%7C209a31899a105d3c878e20feea33411d21a34e256860ec7250eec309baab71e4; Domain=.douyin.com; Path=/; Expires=Sat, 06 Dec 2025 09:11:02 GMT; HttpOnly</span><br><span class="line">Set-Cookie: UIFID_TEMP=92559570181449f7274d01beb9fdcc50ede300fee49b9150f96a9b11ec20d282f33b1ce26fee42ba9461631433a50fa5108eb52097c37c530c81c602f7edb85602265a215753110a5ddc46f4e991edf4; path=/; expires=Sat, 25 Apr 2026 09:11:02 GMT; domain=douyin.com; samesite=none; secure</span><br><span class="line">Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</span><br><span class="line">Access-Control-Allow-Credentials: <span class="literal">true</span></span><br><span class="line">x-tt-trace-host: 011ff03de9066d57c184f3d11219de2a9150664283b7d9b81d900f399ddf465413a8c909a66ed35f5f7f27db6607d80ca8d1103636a7e5a90d5b92105a23ba0862ae5cdac345035fa6422cb605c9b9dddb594f35c29470ce5c159141f9bdd32f9a</span><br><span class="line">x-tt-trace-tag: <span class="built_in">id</span>=03;cdn-cache=miss;<span class="built_in">type</span>=dyn</span><br><span class="line">server-timing: cdn-cache;desc=MISS,edge;dur=0,origin;dur=303</span><br><span class="line">x-alicdn-da-ups-status: endOs,0,404</span><br><span class="line">Via: live5.cn2073[303,0]</span><br><span class="line">Timing-Allow-Origin: *</span><br><span class="line">EagleId: 3db6831717339082625713776e</span><br></pre></td></tr></table></figure>
+
+<h3 id="CSP"><a href="#CSP" class="headerlink" title="CSP"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP">CSP</a></h3><p>内容安全策略 是一个额外的安全层, 用于检测并消弱某些特定类型的攻击, 包括 跨站脚本(XSS) 和数据注入攻击等. 它通过定义哪些资源可以被加载和执行来限制网页的攻击面.</p>
+<p>CSP 通过 HTTP 响应头或 HTML &lt;meta&gt; 标签传递给浏览器, 浏览器接收到这些策略后根据规则阻止不符合条件的资源加载或执行.</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Content-Security-Policy</span><span class="punctuation">: </span>default-src &#x27;self&#x27;; img-src *; </span><br><span class="line">  media-src media1.com media2.com; </span><br><span class="line">  script-src userscripts.example.com;</span><br><span class="line">  report-uri /_/csp_reports</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;Content-Security-Policy&quot;</span> <span class="attr">content</span>=<span class="string">&quot;default-src &#x27;self&#x27;; img-src https://*; child-src &#x27;none&#x27;;&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>default-src, 默认策略, 适用于所有未明确指定的资源类型, 如果指定了其他指令将覆盖此值</li>
+<li>script-src, 允许加载的 js 源, 可以指定域名、协议或路径, 或者使用关键字 <code>self</code>,<code>unsafe-inline</code>,<code>unsafe-eval</code></li>
+<li>style-src, 允许加载的 CSS 样式表源</li>
+<li>img-src, 允许加载的图像源</li>
+<li>connect-src, 允许通过脚本接口加载的 URL</li>
+<li>font-src, 允许加载的字体源</li>
+<li>object-src, 允许加载的插件对象源, 如 flash</li>
+<li>frame-src, 允许嵌入的框架源</li>
+<li>media-src, 允许加载的音频和视频源</li>
+<li>child-src, (使用 frame-src 和 worker-src 代替)允许加载的子资源, 如 iframe 或 worker</li>
+<li>form-action, 允许提交表单的目的URL</li>
+<li>base-uri, 允许使用的 &lt;base&gt; 标签URI</li>
+<li>sandbox, 启用类似沙盒的限制</li>
+<li>prefetch-src, 允许预加载或预渲染的资源源</li>
+<li>report-uri, 指定违反 CSP 时发送报告的 URL</li>
+<li>report-to, 指定一个或多个组名, 用于接收 CSP 违规报告, 需要配合 Report-To HTTP 头使用</li>
+</ul>
+<p>CSP 仅报告模式, 对任何违规行为将会报告一个指定的 URI 地址, 但不具有强制性</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Content-Security-Policy-Report-Only</span><span class="punctuation">: </span>default-src &#x27;self&#x27;; </span><br><span class="line">  img-src *; </span><br><span class="line">  media-src media1.com media2.com; </span><br><span class="line">  script-src userscripts.example.com; </span><br><span class="line">  report-uri /_/csp-reports</span><br></pre></td></tr></table></figure>
+
+<h3 id="HTTP-cache-mode"><a href="#HTTP-cache-mode" class="headerlink" title="HTTP cache mode"></a>HTTP cache mode</h3><ul>
+<li>force-cache, 自己先在缓存中查找资源, 如果有不管是否过期直接返回</li>
+<li>default, 自己先在缓存中查找资源, 然后验证资源是否过期, 如果过期再询问服务器资源是否过期</li>
+<li>no-cache, 自己先在缓存中查找资源, 然后再询问服务器资源是否过期</li>
+<li>reload, 不查看缓存, 直接从服务器获取资源, 然后使用下载的资源更新缓存</li>
+<li>no-store, 不查看缓存, 直接从服务器获取资源, 并且不会更新缓存资源</li>
 </ul>
 
       
@@ -701,664 +1433,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/07/79ace86dbe61/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/07/79ace86dbe61/" class="post-title-link" itemprop="url">即将废弃或已经废弃的API</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-07-05 12:38:23" itemprop="dateCreated datePublished" datetime="2021-07-05T12:38:23+08:00">2021-07-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebAPI/" itemprop="url" rel="index"><span itemprop="name">WebAPI</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>305</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <ul>
-<li><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/substr">String.prototype.substr()</a></p>
-<blockquote>
-<p>并非 JavaScript 核心语言的一部分,未来将可能被移除掉, 建议使用 substring() 代替</p>
-</blockquote>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee">arguments.callee</a></p>
-<blockquote>
-<p>ES5 严格模式下禁止使用此方法，建议使用方法名调用自己</p>
-</blockquote>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/arguments">Function.arguments</a> 已废弃</p>
-<blockquote>
-<p>是一个类数组对象,表示传入函数的实参. 在函数内部直接使用 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments">arguments</a> 对象访问</p>
-</blockquote>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/compile">regexObj.compile</a> 已废弃</p>
-<blockquote>
-<p>用于编译正则表达式, 和 RegExp 构造函数的作用基本一样</p>
-</blockquote>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear">Date.prototype.getYear</a> 已废弃</p>
-<blockquote>
-<p>使用 getFullYear 代替</p>
-</blockquote>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/setYear">Date.prototype.setYear</a> 已废弃</p>
-<blockquote>
-<p>使用 setFullYear 代替</p>
-</blockquote>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/07/7319b6133009/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/07/7319b6133009/" class="post-title-link" itemprop="url">Tapable总结</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-07-04 21:08:54" itemprop="dateCreated datePublished" datetime="2021-07-04T21:08:54+08:00">2021-07-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack/" itemprop="url" rel="index"><span itemprop="name">webpack</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>19k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>17 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://webpack.docschina.org/">webpack</a> 是一个用于现代 JavaScript 应用程序的静态模块打包工具, webpack 处理应用程序时会在内部构建一个依赖图, 此依赖图对应映射到项目所需的每个模块，并生成一个或多个 bundle</p>
-<p><a target="_blank" rel="noopener" href="https://webpack.docschina.org/api/plugins/">plugin</a> 是 webpack 生态的关键部分, 采用基于事件流的机制, 将各个插件串联起来完成相关的功能, <a target="_blank" rel="noopener" href="https://webpack.docschina.org/api/compiler-hooks/">compiler</a> 模块是 <a target="_blank" rel="noopener" href="https://webpack.docschina.org/">webpack</a> 的主要引擎, 它扩展(extend)自 <a target="_blank" rel="noopener" href="https://github.com/webpack/tapable#tapable">Tapable</a> 类, 用来注册和调用插件.</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://github.com/webpack/tapable#tapable">Tapable</a> 是一个用于事件发布订阅执行的插件架构, 类似于 Node.js 的 EventEmitter 库.</p>
-</blockquote>
-<p><img src="/images/tapable-1.jpg" alt="tapable-1"></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123;</span><br><span class="line">  <span class="title class_">SyncHook</span>,</span><br><span class="line">  <span class="title class_">SyncBailHook</span>,</span><br><span class="line">  <span class="title class_">SyncWaterfallHook</span>,</span><br><span class="line">  <span class="title class_">SyncLoopHook</span>,</span><br><span class="line">  <span class="title class_">AsyncParallelHook</span>,</span><br><span class="line">  <span class="title class_">AsyncParallelBailHook</span>,</span><br><span class="line">  <span class="title class_">AsyncSeriesHook</span>,</span><br><span class="line">  <span class="title class_">AsyncSeriesBailHook</span>,</span><br><span class="line">  <span class="title class_">AsyncSeriesWaterfallHook</span>,</span><br><span class="line">  <span class="title class_">AsyncSeriesLoopHook</span>,</span><br><span class="line">  <span class="title class_">HookMap</span>,</span><br><span class="line">  <span class="title class_">MultiHook</span>,</span><br><span class="line">&#125; = <span class="built_in">require</span>(<span class="string">&#x27;tapable&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<h3 id="钩子分类"><a href="#钩子分类" class="headerlink" title="钩子分类"></a>钩子分类</h3><h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><p>所有 Hook 构造函数都接收一个由参数名称为字符串组成的列表作为可选参数</p>
-<h4 id="执行方式"><a href="#执行方式" class="headerlink" title="执行方式"></a>执行方式</h4><h5 id="Basic-Hook-基础"><a href="#Basic-Hook-基础" class="headerlink" title="Basic Hook (基础)"></a>Basic Hook (基础)</h5><p>钩子调用所在行中调用的每个钩子函数</p>
-<h5 id="WaterFall-瀑布"><a href="#WaterFall-瀑布" class="headerlink" title="WaterFall (瀑布)"></a>WaterFall (瀑布)</h5><p>与基础钩子不同, 它将一个返回值从每个函数传递到下一个函数</p>
-<h5 id="Bail-保证"><a href="#Bail-保证" class="headerlink" title="Bail (保证)"></a>Bail (保证)</h5><p>钩子函数执行中, 只要其中有一个钩子返回 非 <code>undefined</code> 时, 则剩余的钩子函数不再执行</p>
-<h5 id="Loop-循环"><a href="#Loop-循环" class="headerlink" title="Loop (循环)"></a>Loop (循环)</h5><p>循环执行钩子, 当循环钩子函数返回 非 <code>undefined</code> 时, 则从第一个钩子重新启动, 直到所有的钩子返回 <code>undefined</code> 时结束</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/07/7319b6133009/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/06/0bc450a2cb90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/06/0bc450a2cb90/" class="post-title-link" itemprop="url">Promise</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-06-26 16:10:04" itemprop="dateCreated datePublished" datetime="2021-06-26T16:10:04+08:00">2021-06-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-30 13:05:44" itemprop="dateModified" datetime="2024-07-30T13:05:44+08:00">2024-07-30</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>8.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><blockquote>
-<p>是异步编程的一种解决方案, 解决 js 异步回调地狱的问题</p>
-</blockquote>
-<ul>
-<li><p>状态唯一</p>
-<ul>
-<li>pending: 初始状态, 既没有被兑现, 也没有被拒绝</li>
-<li>fulfilled: 操作成功完成</li>
-<li>rejected: 操作失败</li>
-</ul>
-</li>
-<li><p>状态不受外界影响</p>
-</li>
-</ul>
-<h3 id="简单用法"><a href="#简单用法" class="headerlink" title="简单用法"></a>简单用法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> p = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">resolve</span>(<span class="number">200</span>);</span><br><span class="line">&#125;);</span><br><span class="line">p.<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/0bc450a2cb90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/06/c430903d5070/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/06/c430903d5070/" class="post-title-link" itemprop="url">Vue3</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-06-19 15:19:26" itemprop="dateCreated datePublished" datetime="2021-06-19T15:19:26+08:00">2021-06-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-03 18:59:54" itemprop="dateModified" datetime="2024-08-03T18:59:54+08:00">2024-08-03</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ES/VueJs/" itemprop="url" rel="index"><span itemprop="name">VueJs</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>75k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>1:08</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="全局-API"><a href="#全局-API" class="headerlink" title="全局 API"></a>全局 API</h2><h3 id="应用实例-API"><a href="#应用实例-API" class="headerlink" title="应用实例 API"></a>应用实例 API</h3><blockquote>
-<p>调用 createApp 返回一个应用实例，该实例提供了一个应用上下文, 应用实例挂载的整个组件树共享相同的上下文</p>
-</blockquote>
-<h4 id="createApp"><a href="#createApp" class="headerlink" title="createApp()"></a>createApp()</h4><p>创建一个应用实例</p>
-<ul>
-<li>参数<ul>
-<li>{Object} rootComponent 根组件选项</li>
-<li>{Object} rootProps 传递给根组件的 props</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">/* root component options */</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">/* root component props */</span></span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<h4 id="createSSRApp"><a href="#createSSRApp" class="headerlink" title="createSSRApp()"></a>createSSRApp()</h4><p>以 <code>SSR</code> 模式创建一个应用实例, 用法和 <code>createApp()</code> 相同</p>
-<h4 id="app-mount"><a href="#app-mount" class="headerlink" title="app.mount()"></a>app.mount()</h4><p>将应用实例挂载到一个容器元素中</p>
-<ul>
-<li>参数可以是一个实际的 DOM 元素或一个 CSS 选择器, 返回根组件实例</li>
-<li>如果该组件有 <code>template</code> 模板或定义了 <code>render</code> 函数, 则替换容器内所有现存的 DOM 节点, 否则使用容器元素的 innerHTML 作为模板</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">App</span> <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="comment">/* */</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// app.mount(&#x27;#app&#x27;);</span></span><br><span class="line">app.<span class="title function_">mount</span>(<span class="title class_">App</span>);</span><br></pre></td></tr></table></figure>
-
-<h4 id="app-unmount"><a href="#app-unmount" class="headerlink" title="app.unmount()"></a>app.unmount()</h4><p>卸载一个已挂载的应用实例, 同时触发该应用组件树内所有组件的卸载生命周期钩子</p>
-<h4 id="app-provide"><a href="#app-provide" class="headerlink" title="app.provide()"></a>app.provide()</h4><p>提供一个值, 可以在应用中的所有后代组件中注入使用</p>
-<ul>
-<li>参数<ul>
-<li>key, 注入的 key</li>
-<li>value, 注入的 key 对应的值, 返回应用实例本身</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;</span><br><span class="line">  <span class="attr">inject</span>: [<span class="string">&#x27;name&#x27;</span>],</span><br><span class="line">  <span class="attr">template</span>: <span class="string">&#x27;&lt;span&gt;&#123;&#123;name&#125;&#125;&lt;/span&gt;&#x27;</span>,</span><br><span class="line">&#125;);</span><br><span class="line">app.<span class="title function_">provide</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;hello world&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<h4 id="app-component"><a href="#app-component" class="headerlink" title="app.component()"></a>app.component()</h4><p>注册或查找全局组件, 根据参数个数区分</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="comment">/* */</span>);</span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;my-component&#x27;</span>, &#123;</span><br><span class="line">  <span class="comment">/*组件配置项*/</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">component</span>(<span class="string">&#x27;my-component&#x27;</span>); <span class="comment">// 查找已注册的组件</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/c430903d5070/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/04/946abb7dbe1d/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/946abb7dbe1d/" class="post-title-link" itemprop="url">Git命令其他篇</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-04-20 16:57:42" itemprop="dateCreated datePublished" datetime="2021-04-20T16:57:42+08:00">2021-04-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index"><span itemprop="name">tools</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="其他篇"><a href="#其他篇" class="headerlink" title="其他篇"></a>其他篇</h3><h4 id="submodule-仓库"><a href="#submodule-仓库" class="headerlink" title="submodule 仓库"></a>submodule 仓库</h4><h5 id="submodule-init-初始化"><a href="#submodule-init-初始化" class="headerlink" title="submodule init 初始化"></a>submodule init 初始化</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule init [&lt;path&gt;]</span><br></pre></td></tr></table></figure>
-
-<h5 id="submodule-deinit-删除"><a href="#submodule-deinit-删除" class="headerlink" title="submodule deinit 删除"></a>submodule deinit 删除</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git submodule deinit [-f]</span><br><span class="line">git submodule deinit [--all]</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/946abb7dbe1d/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2021/04/b0420868a4bc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/b0420868a4bc/" class="post-title-link" itemprop="url">Git命令操作篇</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-04-20 16:48:57" itemprop="dateCreated datePublished" datetime="2021-04-20T16:48:57+08:00">2021-04-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index"><span itemprop="name">tools</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>4.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="操作篇"><a href="#操作篇" class="headerlink" title="操作篇"></a>操作篇</h3><h4 id="初始化仓库"><a href="#初始化仓库" class="headerlink" title="初始化仓库"></a>初始化仓库</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init [project-name]</span><br></pre></td></tr></table></figure>
-
-<h4 id="克隆仓库"><a href="#克隆仓库" class="headerlink" title="克隆仓库"></a>克隆仓库</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> [url]</span><br></pre></td></tr></table></figure>
-
-<h4 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h4><h5 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h5><ul>
-<li><p>a|all: 列出所有本地和关联远程分支</p>
-</li>
-<li><p>r: 列出关联远程分支</p>
-</li>
-<li><p>v|verbose: 列出分支并显示当前提交信息摘要</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch [-a] [-r] [-v]</span><br></pre></td></tr></table></figure></li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/b0420868a4bc/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1430,7 +1504,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1491,7 +1565,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1500,12 +1574,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">557k</span>
+    <span title="站点总字数">631k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:27</span>
+    <span title="站点阅读时长">9:33</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

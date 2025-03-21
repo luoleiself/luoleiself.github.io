@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Redux官方推荐使用封装了 Redux 核心的 @reduxjs&#x2F;toolkit(RTK) 包, 包含了构建 Redux 应用所必须的 API 方法和常用依赖, 简化了大部分 Redux 任务, 阻止了常见错误, 并让编写 Redux 应用程序变得更容易   @reduxjs&#x2F;toolkit&#x2F;query独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reduce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React-Redux.md">
+<meta property="og:url" content="https://luoleiself.github.io/2022/02/5ad505cb0ced/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="Redux官方推荐使用封装了 Redux 核心的 @reduxjs&#x2F;toolkit(RTK) 包, 包含了构建 Redux 应用所必须的 API 方法和常用依赖, 简化了大部分 Redux 任务, 阻止了常见错误, 并让编写 Redux 应用程序变得更容易   @reduxjs&#x2F;toolkit&#x2F;query独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reduce">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-15T07:37:49.000Z">
+<meta property="article:modified_time" content="2025-03-21T13:10:56.713Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="jsx">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/02/5ad505cb0ced/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>React-Redux.md | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/5ad505cb0ced/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React-Redux.md
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-15 15:37:49" itemprop="dateCreated datePublished" datetime="2022-02-15T15:37:49+08:00">2022-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-21 21:10:56" itemprop="dateModified" datetime="2025-03-21T21:10:56+08:00">2025-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>18k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>官方推荐使用封装了 Redux 核心的 @reduxjs/toolkit(RTK) 包, 包含了构建 Redux 应用所必须的 API 方法和常用依赖, 简化了大部分 Redux 任务, 阻止了常见错误, 并让编写 Redux 应用程序变得更容易</p>
+<!-- 
+- dispatch 只能处理同步的 action
+
+- createStore  创建一个 Redux 存储实例
+- combineReducers 将多个 reducer 函数合并成为一个更大的 reducer
+- applyMiddleware 将多个中间件组合成一个 store 增强器
+- compose 将多个 store 增强器合并成一个单一的 store 增强器 
+-->
+
+<h3 id="reduxjs-toolkit-query"><a href="#reduxjs-toolkit-query" class="headerlink" title="@reduxjs/toolkit/query"></a><a href="#RTK-Query">@reduxjs/toolkit/query</a></h3><p>独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据</p>
+<h3 id="reduxjs-toolkit-RTK"><a href="#reduxjs-toolkit-RTK" class="headerlink" title="@reduxjs/toolkit(RTK)"></a>@reduxjs/toolkit(RTK)</h3><ul>
+<li>通过单一清晰的函数调用简化 store 设置, 同时保留完全配置 store 选项的能力</li>
+<li>消除意外的 mutations</li>
+<li>消除手写任何 actionCreator 或 actionType 的需求</li>
+<li>消除编写容易出错的手动不可变更新逻辑的需求, createSlice 使用 <code>Immer</code> 库来编写 reducer, 可以直接修改 state 状态而不需要使用解构语法</li>
+<li>允许将相关的代码放在一个文件中, 而不是分布在多个独立文件中</li>
+<li>提供优秀的 TypeScript 支持, 其 API 被设计成很好的安全性, 同时减少代码中需要定义的类型数量</li>
+<li>RTK Query 可以消除编写任何 thunk, reducer, actionCreator 或者副作用狗子来管理数据获取和跟踪加载状态的需求</li>
+</ul>
+<h4 id="configureStore"><a href="#configureStore" class="headerlink" title="configureStore"></a>configureStore</h4><p>特点</p>
+<ul>
+<li>slice reducers 自动传递给 combineReducers</li>
+<li>自动添加了 <code>redux-thunk</code> 中间件</li>
+<li>添加了 Devtools 中间件来捕获更多意外的变更</li>
+<li>自动设置了 Redux Devtools Extension</li>
+<li>中间件和 Devtools 增强器被组合在一起添加到了 store 中</li>
+</ul>
+<span id="more"></span>
+
+<p>参数</p>
+<ul>
+<li>reducer<ul>
+<li>如果是一个函数, configureStore 直接使用其作为根 reducer</li>
+<li>如果是一个 slice reducers 的对象, configureStore 将使用 combineReducers 合并此对象并自动创建根 reducer</li>
+</ul>
+</li>
+<li>middleware 函数, 接收 <code>getDefaultMiddleware</code> 函数作为参数, 并返回一个中间件数组, 如果未提供, configureStore 将调用 <code>getDefaultMiddleware</code> 设置中间件数组</li>
+<li>devTools 是否设置 Redux Devtools, 默认 true</li>
+<li>preloadedState 初始化状态</li>
+<li>enhancers 增强器函数, 和 middleware 参数作用类似, 使用 <code>getDefaultEnhancers</code> 函数获取默认的增强器列表</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;configureStore&#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;offline&#125; <span class="keyword">from</span> <span class="string">&#x27;@redux-offline/redux-offline&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> offlineConfig <span class="keyword">from</span> <span class="string">&#x27;@redux-offline/redux-offline/lib/defaults&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = <span class="title function_">configureStore</span>(&#123;</span><br><span class="line">  <span class="attr">reducer</span>: &#123;</span><br><span class="line">    <span class="attr">counter</span>: counterSlice.<span class="property">reducer</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">middleware</span>: <span class="function"><span class="params">getDefaultMiddleware</span> =&gt;</span> <span class="title function_">getDefaultMiddleware</span>().<span class="title function_">concat</span>(thunk),</span><br><span class="line">  <span class="attr">enhancers</span>: <span class="function"><span class="params">getDefaultEnhancers</span> =&gt;</span> <span class="title function_">getDefaultEnhancers</span>().<span class="title function_">concat</span>(<span class="title function_">offline</span>(offlineConfig)))</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h5 id="middleware"><a href="#middleware" class="headerlink" title="middleware"></a>middleware</h5><p>thunk 中间件实现原理</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// thunk 中间件实现原理</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">thunk</span>(<span class="params">store</span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> next = store.<span class="property">dispatch</span>; <span class="comment">// 缓存原 dispatch 方法</span></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">dispatchFn</span>(<span class="params">action</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">typeof</span> action === <span class="string">&#x27;function&#x27;</span>)&#123;</span><br><span class="line">      <span class="comment">// 如果 action 是一个函数, 则传入重写的 dispatchFn 方法</span></span><br><span class="line">      <span class="title function_">action</span>(store.<span class="property">dispatch</span>, store.<span class="property">getState</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 否则直接调用原 dispatch 方法派发 action</span></span><br><span class="line">      <span class="title function_">next</span>(action); </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  store.<span class="property">dispatch</span> = dispatchFn;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>applyMiddleware 实现原理</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">applyMiddleware</span>(<span class="params">store, ...fns</span>)&#123;</span><br><span class="line">  fns.<span class="title function_">forEach</span>(<span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">fn</span>(store)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="createAction"><a href="#createAction" class="headerlink" title="createAction  "></a>createAction <em id="createAction"></em> <!--markdownlint-disable-line--></h4><p>用于创建 action 的辅助函数</p>
+<ul>
+<li>type 字符串, 标识 action</li>
+<li>prepareAction() 可选, 函数, 接收任意个参数作为 action 的 payload 的值</li>
+</ul>
+<p>返回值: actionCreator</p>
+<ul>
+<li>actionCreator.match 函数可以区分 action 是否是同一类型, TypeScript 中可以识别 action 中 payload 的类型</li>
+</ul>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;createAction&#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> actionCreator = <span class="title function_">createAction</span>(<span class="keyword">type</span>, prepareAction?);</span><br><span class="line"></span><br><span class="line"><span class="comment">// action 类型常量</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">increment</span>(<span class="params"><span class="attr">amount</span>: <span class="built_in">number</span></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">type</span>: <span class="string">&#x27;INCREMENT&#x27;</span>,</span><br><span class="line">    <span class="attr">payload</span>: amount</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> action = <span class="title function_">increment</span>(<span class="number">3</span>);</span><br><span class="line"><span class="comment">// &#123;type: &#x27;INCREMENT&#x27;, payload: 3&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// action 创建函数</span></span><br><span class="line"><span class="keyword">const</span> increment = <span class="title function_">createAction</span>(<span class="string">&#x27;INCREMENT&#x27;</span>, <span class="function">(<span class="params"><span class="attr">text</span>: <span class="built_in">string</span>, <span class="attr">age</span>: <span class="built_in">number</span></span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">type</span>: <span class="string">&quot;INCREMENT&quot;</span>,</span><br><span class="line">    <span class="attr">payload</span>: &#123;</span><br><span class="line">      <span class="attr">text</span>: text,</span><br><span class="line">      <span class="attr">age</span>: age,</span><br><span class="line">      <span class="attr">id</span>: <span class="title function_">nanoid</span>(),</span><br><span class="line">      <span class="attr">createAt</span>: <span class="keyword">new</span> <span class="title class_">Date</span>()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> action = <span class="title function_">increment</span>(<span class="string">&#x27;hello createAction&#x27;</span>, <span class="number">18</span>);</span><br><span class="line"><span class="comment">// &#123;type: &quot;INCREMENT&quot;, payload: &#123;text: &quot;hello createAction&quot;, age: 18, id, createAt&#125;&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> increment = createAction&lt;<span class="built_in">number</span>&gt;(<span class="string">&#x27;INCREMENT&#x27;</span>);</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">someFn</span>(<span class="params"><span class="attr">action</span>: <span class="title class_">Action</span></span>)&#123;</span><br><span class="line">  <span class="keyword">if</span>(increment.<span class="title function_">match</span>(action))&#123;</span><br><span class="line">    <span class="comment">// action.payload can be used as `number` here</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="createReducer"><a href="#createReducer" class="headerlink" title="createReducer  "></a>createReducer <em id="createReducer"></em> <!--markdownlint-disable-line--></h4><p>一个简化创建 reducer 函数的工具, 内部使用 <code>Immer</code> 库通过在 reducer 中编写可变代码, 大大简化了不可变的更新逻辑, 并支持将特定的操作类型直接映射到 case reducer 函数</p>
+<ul>
+<li>initialState 初始化状态, 可以是一个返回 state 的函数</li>
+<li>builderCallback 回调函数接收一个 <code>builder</code> 对象通过 addCase 方法添加 reducer <em id="builderCallback"></em> <!--markdownlint-disable-line--><ul>
+<li>addCase() 接收两个参数, 调用必须在 <code>addMatcher</code> 和 <code>addDefaultCase</code> 之前<ul>
+<li>actionCreatorOrType 指定 action.type</li>
+<li>reducer</li>
+</ul>
+</li>
+<li>addMatcher() 匹配传入的 action, 调用必须在 <code>addCase</code> 之后和 <code>addDefaultCase</code> 之前<ul>
+<li>matcher() 匹配函数, 匹配传入的所有可能的 action.type, 并按定义的顺序调用</li>
+<li>reducer</li>
+</ul>
+</li>
+<li>addDefaultCase() 添加默认的 reducer<ul>
+<li>reducer</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>返回值: reducer 函数</p>
+<ul>
+<li>包含 <code>getInitialState()</code>, 返回初始状态, 通常用于测试或者配合 React <code>useReducer</code> Hook 实现 SSR</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;createReducer, createAction&#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> reducer = <span class="title function_">createReducer</span>(initialState, builderCallback);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 普通 reducer</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">coutenReducer</span>(<span class="params">state = initialState, action</span>)&#123;</span><br><span class="line">  <span class="keyword">switch</span>(aciton.<span class="property">type</span>)&#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;increment&#x27;</span>:</span><br><span class="line">      <span class="keyword">return</span> &#123;...state, <span class="attr">value</span>: state.<span class="property">value</span>++&#125;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;decrement&#x27;</span>:</span><br><span class="line">      <span class="keyword">return</span> &#123;...state, <span class="attr">value</span>: state.<span class="property">value</span>--&#125;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;incrementByAmount&#x27;</span>:</span><br><span class="line">      <span class="keyword">return</span> &#123;...state, <span class="attr">value</span>: state.<span class="property">value</span> + action.<span class="property">payload</span>&#125;</span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">      <span class="keyword">return</span> &#123;...state&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// createReducer</span></span><br><span class="line"><span class="keyword">const</span> increment = <span class="title function_">createAction</span>(<span class="string">&#x27;counter/increment&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> decrement = <span class="title function_">createAction</span>(<span class="string">&#x27;counter/decrement&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> incrementByAmount = <span class="title function_">createAction</span>(<span class="string">&#x27;counter/incrementByAmount&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> counterReducer = <span class="title function_">createReducer</span>(initialState, <span class="function"><span class="params">builder</span> =&gt;</span> &#123;</span><br><span class="line">  builder.<span class="title function_">addCase</span>(increment, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">    state.<span class="property">value</span>++; <span class="comment">// immer 创建的 state 副本, 直接修改</span></span><br><span class="line">  &#125;).<span class="title function_">addCase</span>(decrement, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">    state.<span class="property">value</span>--;</span><br><span class="line">  &#125;).<span class="title function_">addCase</span>(incrementByAmount, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">    state.<span class="property">value</span> += action.<span class="property">payload</span>;</span><br><span class="line">  &#125;).<span class="title function_">addMatcher</span>(<span class="function">(<span class="params">action</span>) =&gt;</span> <span class="title function_">isMatchedAction</span>(action.<span class="property">type</span>), <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;).<span class="title function_">addDefaultCase</span>(<span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="createSlice"><a href="#createSlice" class="headerlink" title="createSlice  "></a>createSlice <em id="createSlice"></em> <!--markdownlint-disable-line--></h4><p>使用 <code>Immer</code> 库编写 reducer, 不需要使用解构语法修改 state, 接受一个初始状态, 对象或者 reducer 函数, 并自动创建一个与 reducer 和 状态对应的 <a href="#createAction">actionCreator</a>, 在内部调用 <code>createAction</code> 和 <code>createReducer</code></p>
+<ul>
+<li>name  标识 state, 将作为生成的 <a href="#createAction">actionCreator</a> 的前缀</li>
+<li>initialState 初始化状态</li>
+<li>reducers<ul>
+<li>对象方式, 每个 属性方法名 都是一个 reducer</li>
+<li>如果需要自定义 case Reducer, 每个 reducer 将是一个具有 prepare 函数 和 reducer 函数的对象<ul>
+<li>prepare()</li>
+<li>reducer</li>
+</ul>
+</li>
+<li>如果是一个函数, 将接收一个 create 对象, 具有三个方法<ul>
+<li>create.reducer(reducer) 标准的 reducer</li>
+<li>create.prepareReducer(prepare, reducer) 自定义 actionCreator 的 payload</li>
+<li>create.asyncThunk(thunk, opts) 创建异步的函数代替 actionCreator<ul>
+<li>pending</li>
+<li>fulfilled</li>
+<li>rejected</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>extraReducers 函数, 处理自己创建的 <a href="#createAction">actionCreator</a> 之外的情况, 如处理异步请求的状态, 同 <a href="#builderCallback">builderCallback</a></li>
+<li>reducerPath 标识 slice 的位置, 默认 name</li>
+<li>selectors 接收 state 作为第一个参数和剩余的参数并返回指定结果</li>
+</ul>
+<p>返回值, 包含上面的部分属性</p>
+<ul>
+<li>reducer</li>
+<li>actions</li>
+<li>caseReducers</li>
+<li>getInitialState() 返回初始状态</li>
+<li>selectSlice 关联自动创建的一个 selector</li>
+<li>getSelectors()</li>
+<li>injectInfo() 注入 slice</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;createSlice, configureStore&#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> counterSlice = <span class="title function_">createSlice</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;counter&#x27;</span>,</span><br><span class="line">  <span class="attr">initialState</span>: &#123;<span class="attr">value</span>: <span class="number">0</span>&#125;,</span><br><span class="line">  <span class="comment">// reducers 为一个对象</span></span><br><span class="line">  <span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="title function_">increment</span>(<span class="params">state, action</span>) &#123;</span><br><span class="line">      state.<span class="property">value</span>++;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">decrement</span>(<span class="params">state, action</span>)&#123;</span><br><span class="line">      state.<span class="property">value</span>--;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 自定义 case reducer, prepareAction</span></span><br><span class="line">  <span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="comment">// case reducer, prepareAction</span></span><br><span class="line">    <span class="attr">incrementByAmout</span>: &#123;</span><br><span class="line">      <span class="title function_">reducer</span>(<span class="params">state, action</span>)&#123;</span><br><span class="line">        state.<span class="property">value</span> += action.<span class="property">payload</span>.<span class="property">value</span>;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="title function_">prepare</span>(<span class="params">text: string</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="attr">payload</span>: &#123;<span class="attr">text</span>: text, <span class="attr">value</span>: <span class="number">100</span>&#125;&#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// reducers 为一个函数, 接收一个 create 对象作为参数, 并返回一个包含 reducer 的对象</span></span><br><span class="line">  <span class="comment">// create 包含 3 个函数: reducer, prepareReducer, asyncThunk</span></span><br><span class="line">  <span class="attr">reducers</span>: <span class="function">(<span class="params">create</span>) =&gt;</span> (&#123;</span><br><span class="line">      <span class="attr">increment</span>: create.<span class="title function_">reducer</span>(state, action) =&gt; &#123;</span><br><span class="line">        state.<span class="property">value</span>++;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">decrement</span>: create.<span class="title function_">reducer</span>(state, action) =&gt; &#123;</span><br><span class="line">        state.<span class="property">value</span>--;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">incrementByAmount</span>: create.<span class="title function_">prepareReducer</span>(</span><br><span class="line">        <span class="function">(<span class="params">text: string</span>) =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> &#123; <span class="attr">payload</span>: &#123;<span class="attr">text</span>: text, <span class="attr">value</span>: <span class="number">100</span>&#125;&#125;</span><br><span class="line">        &#125;, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">          <span class="comment">// 从 prepare 回调推断 action type</span></span><br><span class="line">          state.<span class="property">value</span> += action.<span class="property">payload</span>.<span class="property">value</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      ),</span><br><span class="line">      <span class="attr">fetchTodo</span>: create.<span class="title function_">asyncThunk</span>(</span><br><span class="line">        <span class="title function_">async</span> (<span class="attr">id</span>: string, thunkApi) =&gt; &#123;</span><br><span class="line">          <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="title function_">fetch</span>(thunkApi);</span><br><span class="line">          <span class="keyword">return</span> (<span class="keyword">await</span> res.<span class="title function_">json</span>()) <span class="keyword">as</span> <span class="title class_">Item</span></span><br><span class="line">        &#125;, &#123;</span><br><span class="line">          <span class="attr">pending</span>: <span class="function"><span class="params">state</span> =&gt;</span> &#123;</span><br><span class="line">            state.<span class="property">loading</span> = <span class="literal">true</span>;</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="attr">rejected</span>: <span class="function"><span class="params">state</span> =&gt;</span>&#123;</span><br><span class="line">            state.<span class="property">loading</span> = <span class="literal">false</span>;</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="attr">fulfilled</span>: <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">            state.<span class="property">loading</span> = <span class="literal">false</span>;</span><br><span class="line">            state.<span class="property">todos</span>.<span class="title function_">push</span>(action.<span class="property">payload</span>);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      )</span><br><span class="line">  &#125;),</span><br><span class="line">  <span class="comment">// 处理自己创建的 actionCreator 之外的情况</span></span><br><span class="line">  <span class="title function_">extraReducers</span>(<span class="params">builder</span>)&#123;</span><br><span class="line">    builder.<span class="title function_">addCase</span>(<span class="string">&#x27;INCREMENT&#x27;</span>, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">      state.<span class="property">value</span>++;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = <span class="title function_">configureStore</span>(&#123;</span><br><span class="line">  <span class="attr">reducer</span>: &#123;</span><br><span class="line">    <span class="attr">counter</span>: counterSlice.<span class="property">reducer</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">store.<span class="title function_">dispatch</span>(counterSlice.<span class="property">actions</span>.<span class="title function_">increment</span>());</span><br><span class="line">sotre.<span class="title function_">dispatch</span>(counterSlice.<span class="property">actions</span>.<span class="title function_">decrement</span>());</span><br><span class="line">store.<span class="title function_">dispatch</span>(counterSlice.<span class="property">actions</span>.<span class="title function_">incrementByAmount</span>(&#123;<span class="attr">value</span>: <span class="number">10</span>&#125;));</span><br><span class="line"></span><br><span class="line">store.<span class="title function_">dispatch</span>(&#123;<span class="attr">type</span>: <span class="string">&#x27;counter/increment&#x27;</span>&#125;)</span><br><span class="line">store.<span class="title function_">dispatch</span>(&#123;<span class="attr">type</span>: <span class="string">&#x27;counter/decrement&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>两种获取 selector 的方式</p>
+<ul>
+<li>selectors</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> counterSlice = <span class="title function_">createSlice</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;counter&#x27;</span>,</span><br><span class="line">  <span class="attr">initialState</span>: &#123; <span class="attr">value</span>: <span class="number">0</span> &#125; satisfies <span class="title class_">CounterState</span> <span class="keyword">as</span> <span class="title class_">CounterState</span>,</span><br><span class="line">  <span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">selectors</span>: &#123;</span><br><span class="line">    <span class="attr">selectValue</span>: <span class="function">(<span class="params">sliceState</span>) =&gt;</span> sliceState.<span class="property">value</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// createSlice 默认创建一个 selectSlice 方法</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(counterSlice.<span class="title function_">selectSlice</span>(&#123; <span class="attr">counter</span>: &#123; <span class="attr">value</span>: <span class="number">2</span> &#125; &#125;)) <span class="comment">// &#123; value: 2 &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过 slice 实例的 selectors 属性获取所有的 selector</span></span><br><span class="line"><span class="keyword">const</span> &#123; selectValue &#125; = counterSlice.<span class="property">selectors</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">selectValue</span>(&#123; <span class="attr">counter</span>: &#123; <span class="attr">value</span>: <span class="number">2</span> &#125; &#125;)) <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>getSelectors()</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; selectValue &#125; = counterSlice.<span class="title function_">getSelectors</span>(</span><br><span class="line">  <span class="function">(<span class="params">rootState: RootState</span>) =&gt;</span> rootState.<span class="property">aCounter</span>,</span><br><span class="line">)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">selectValue</span>(&#123; <span class="attr">aCounter</span>: &#123; <span class="attr">value</span>: <span class="number">2</span> &#125; &#125;)) <span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123;selectValue&#125; = counterSlice.<span class="title function_">getSelectors</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">selectValue</span>(&#123;<span class="attr">value</span>: <span class="number">2</span>&#125;)) <span class="comment">//  2</span></span><br></pre></td></tr></table></figure>
+
+<p>dispatch 提交</p>
+<ul>
+<li>dispatch 提交 action 时, 如果参数是一个 action 对象形式, 则会忽略 case reducer 中配置的 prepare 方法</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> counterSlice = <span class="title function_">createSlice</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;counter&#x27;</span>,</span><br><span class="line">  <span class="attr">initialState</span>: &#123;</span><br><span class="line">    <span class="attr">count</span>: <span class="number">0</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="attr">incrementByAmount</span>:&#123;</span><br><span class="line">      <span class="title function_">reducer</span>(<span class="params">state, action</span>)&#123;</span><br><span class="line">        state.<span class="property">count</span> += action.<span class="property">payload</span>;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="title function_">prepare</span>(<span class="params">val</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="attr">payload</span>: val + <span class="number">2</span>&#125;;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="title function_">dispatch</span>(<span class="title function_">incrementByAmount</span>(<span class="number">3</span>));</span><br><span class="line"><span class="comment">// action 对象方式提交会忽略 case redcuer 的 prepare 方法</span></span><br><span class="line"><span class="title function_">dispatch</span>(&#123;<span class="attr">type</span>: <span class="string">&#x27;counter/incrementByAmount&#x27;</span>, <span class="attr">payload</span>: <span class="number">1</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="combineSlices"><a href="#combineSlices" class="headerlink" title="combineSlices"></a>combineSlices</h4><p>合并多个 slice 为一个 reducer, 并允许初始化后更多的 reducer 注入</p>
+<p>返回值</p>
+<ul>
+<li>withLazyLoadedSlices() 向 state 添加声明的 slice</li>
+<li>inject(slice, options) 添加 slice<ul>
+<li>options.overrideExisting 布尔值, 标识是否替换已存在的 slice</li>
+</ul>
+</li>
+<li>selector() 将 reducer 包装在代理中以确保在当前状态未定义的情况下都能恢复到其初始状态</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;combineSlices&#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> lazySlice = <span class="title function_">createSlice</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;counter&#x27;</span>,</span><br><span class="line">  <span class="attr">initialState</span>: &#123;<span class="attr">value</span>: <span class="number">0</span>&#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> rootReducer = <span class="title function_">combineSlices</span>(staticSlice, userSlice);</span><br><span class="line"><span class="keyword">const</span> injectReducer = rootReducer.<span class="title function_">inject</span>(lazySlice);</span><br><span class="line"><span class="comment">// OR</span></span><br><span class="line"><span class="keyword">const</span> injectSlice = lazySlice.<span class="title function_">injectInfo</span>(rootReducer);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">selectCounterValue</span> = (<span class="params">rootState</span>) =&gt; rootState.<span class="property">counter</span>?.<span class="property">value</span> <span class="comment">// number | undefined</span></span><br><span class="line"><span class="keyword">const</span> wrappedSelectCounterValue = injectReducer.<span class="title function_">selector</span>(<span class="function">(<span class="params">rootState</span>) =&gt;</span> rooState.<span class="property">counter</span>.<span class="property">value</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  <span class="title function_">selectCounterValue</span>(&#123;&#125;), <span class="comment">// undefined</span></span><br><span class="line">  <span class="title function_">selectCounterValue</span>(&#123;<span class="attr">counter</span>: &#123;<span class="attr">value</span>: <span class="number">2</span>&#125;&#125;), <span class="comment">// 2</span></span><br><span class="line">  <span class="title function_">wrappedSelectCounterValue</span>(&#123;&#125;), <span class="comment">// 0</span></span><br><span class="line">  <span class="title function_">wrappedSelectCounterValue</span>(&#123;<span class="attr">counter</span>: &#123;<span class="attr">value</span>: <span class="number">2</span>&#125;&#125;), <span class="comment">// 2</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="createAsyncThunk"><a href="#createAsyncThunk" class="headerlink" title="createAsyncThunk  "></a>createAsyncThunk <em id="createAsyncThunk"></em> <!--markdownlint-disable-line--></h4><p>接收一个 <a href="#createAction">actionCreator</a>和一个回调函数并返回一个 Promise, 同时会创建三个 actionCreator 分别对应 pending, fulfilled, rejected 的状态, 不会生成 reducer</p>
+<ul>
+<li>type actionCreator, 如 <code>users/requestStatus</code> 将被创建为<ul>
+<li>pending: <code>users/requestStatus/pending</code></li>
+<li>fulfilled: <code>users/requestStatus/fulfilled</code></li>
+<li>rejected: <code>users/requestStatus/rejected</code></li>
+</ul>
+</li>
+<li>payloadCreator 函数, 将返回一个 promise, 接收两个参数<ul>
+<li>arg 包含了 thunk actionCreator 被 dispatch 时传入的参数, <code>dispatch(fetchUsers(&#123;status: &#39;active&#39;&#125;))</code></li>
+<li>thunkApi 包含了 thunk 函数的所有参数<ul>
+<li>dispatch()  Redux 的 dispatch 方法</li>
+<li>getState()  Redux 的 getState 方法</li>
+<li>extra 传递给 thunk 中间件的参数</li>
+<li>requestId 自动生成的标识当前请求的唯一 id</li>
+<li>signal 信号, AbortController.signal</li>
+<li>rejectWithValue(value, [meta]) 修改当前 promise 的状态为 rejected</li>
+<li>fulfilledWithValue(value, [meta])  修改当前 promise 的状态为 fulfilled</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>options<ul>
+<li>condition(arg,{getState, extra}): boolean | Promise&lt;boolean&gt; 用来跳过执行 payloadCreator 和 所有的 dispatch</li>
+<li>dispatchConditionRejection 布尔值, 如果 condition() 返回 false 所有的 action 都不会 dispatch, 如果想要当 thunk 结束 action 的状态标记为 rejected, 则设置为 true</li>
+<li>idGenerator(arg): string 默认的 requestId 由 nanoid() 生成, 自定义生成 id 逻辑</li>
+<li>serializeError(error: unknown) =&gt; any 替换内部的 <code>miniSerializeError</code> 方法</li>
+<li>getPendingMeta({arg, requestId}, {getState, extra}): any 创建对象和 <code>pendingAction.meta</code> 合并</li>
+</ul>
+</li>
+</ul>
+<p>返回值</p>
+<ul>
+<li>thunk 函数, 带有 3 个状态<ul>
+<li>pending</li>
+<li>fulfilled</li>
+<li>rejected</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;createAsyncThunk, createSlice&#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> promise = <span class="title function_">createAsyncThunk</span>(type, payloadCreator, options?);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fetchUserById = <span class="title function_">createAsyncThunk</span>(</span><br><span class="line">  <span class="string">&#x27;users/fetchUserById&#x27;</span>, </span><br><span class="line">  <span class="title function_">async</span> (<span class="attr">userId</span>: number, &#123;dispatch, requestId, getState, fulfilledWithValue, rejectWithValue&#125;) =&gt; &#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">      <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(userId);</span><br><span class="line">      <span class="keyword">return</span> response.<span class="property">data</span>;</span><br><span class="line">    &#125;<span class="keyword">catch</span>(err)&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">rejectWithValue</span>(err.<span class="property">response</span>.<span class="property">data</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, &#123;</span><br><span class="line">    <span class="title function_">condition</span>(<span class="params">userId, &#123;getState, extra&#125;</span>)&#123;</span><br><span class="line">      <span class="keyword">const</span> &#123;users&#125; = <span class="title function_">getState</span>();</span><br><span class="line">      <span class="keyword">const</span> fetchStatus = users.<span class="property">requests</span>[userId];</span><br><span class="line">      <span class="keyword">if</span>(fetchStatus === <span class="string">&#x27;fulfilled&#x27;</span> || fetchStatus === <span class="string">&#x27;loading&#x27;</span>)&#123;</span><br><span class="line">        <span class="comment">// Already fetched or in progress, don&#x27;t need to re-fetch</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"><span class="keyword">const</span> usersSlice = <span class="title function_">createSlice</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">  <span class="attr">initialState</span>: &#123; &#125;,</span><br><span class="line">  <span class="attr">reducers</span>:&#123;&#125;,</span><br><span class="line">  <span class="comment">// 处理 asyncThunk 状态的 reducer</span></span><br><span class="line">  <span class="title function_">extraReducers</span>(<span class="params">builder</span>) &#123;</span><br><span class="line">    builder.<span class="title function_">addCase</span>(fetchUserById.<span class="property">pending</span>, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">      state.<span class="property">status</span> = <span class="string">&#x27;loading&#x27;</span>;</span><br><span class="line">    &#125;).<span class="title function_">addCase</span>(fetchUserById.<span class="property">fulfilled</span>, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">      state.<span class="property">status</span> = <span class="string">&#x27;fulfilled&#x27;</span>;</span><br><span class="line">      state.<span class="property">user</span> = action.<span class="property">payload</span>;</span><br><span class="line">    &#125;).<span class="title function_">addCase</span>(fetchUserById.<span class="property">rejected</span>, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">      state.<span class="property">status</span> = <span class="string">&#x27;rejected&#x27;</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="title function_">dispatch</span>(<span class="title function_">fetchUserById</span>(<span class="number">123</span>));</span><br></pre></td></tr></table></figure>
+
+<h4 id="createEntityAdapter"><a href="#createEntityAdapter" class="headerlink" title="createEntityAdapter"></a>createEntityAdapter</h4><p>生成一组预构建的 reducer 和 seletors, 用于对包含特定类型数据对象实例的规范化状态结构执行 CRUD 操作, 这些 reducer 函数可以作为 case reducer 传递给 <a href="#createReducer">createReducer</a> 和 <a href="#createSlice">createSlice</a>, 也可以作为 <code>createReducer</code> 和 <code>createSlice</code> 的辅助函数</p>
+<ul>
+<li><p>selectId 可选, 函数, 接收一个 entity 实例并返回一个唯一 id, 如果未提供则默认为 entity =&gt; entity.id</p>
+</li>
+<li><p>sortComparer 可选, 函数, 接收两个 entity 实例, 返回一个标准的 <code>Array.sort()</code> 排序之后的结果 (1, 0, -1) 以指示它们的排序相对排序, 如果未提供将不会排序, 也不会保证排序</p>
+</li>
+<li><p>getInitialState() 如果传入对象参数, 将被合并到 initialState 中并返回</p>
+</li>
+<li><p>getSelectors() 生成一组标准的 selector 函数</p>
+</li>
+<li><p>addOne/addMany 向 state 添加 items</p>
+</li>
+<li><p>setOne/setMany 添加新 items 或替换现有 items</p>
+</li>
+<li><p>setAll 替换所有 items</p>
+</li>
+<li><p>removeOne/removeMany 根据 ID 删除 items</p>
+</li>
+<li><p>removeAll 移除所有 items</p>
+</li>
+<li><p>updateOne/updateMany 通过提供部分值更新现有 items</p>
+</li>
+<li><p>upsertOne/upsertMany 添加新 items 或更新现有 items</p>
+</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;createSlice, createAsyncThunk, createEntityAdapter&#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> todosAdapter = <span class="title function_">createEntityAdapter</span>(&#123;</span><br><span class="line">  <span class="attr">selectId</span>: <span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">id</span>,</span><br><span class="line">  <span class="attr">sortComparer</span>: <span class="function">(<span class="params">a, b</span>) =&gt;</span> a.<span class="property">id</span> &lt; b.<span class="property">id</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> initialState = todosAdapter.<span class="title function_">getInitialState</span>(&#123;<span class="attr">loading</span>: <span class="string">&#x27;idle&#x27;</span>&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Thunk 函数</span></span><br><span class="line"><span class="keyword">const</span> fetchTodos = <span class="title function_">createAsyncThunk</span>(<span class="string">&quot;todos/fetchTodos&quot;</span>, <span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="title function_">get</span>(<span class="string">&quot;/fakeApi/todos&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> response.<span class="property">todos</span>;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> saveNewTodo = <span class="title function_">createAsyncThunk</span>(<span class="string">&quot;todos/saveNewTodo&quot;</span>,</span><br><span class="line">  <span class="title function_">async</span> (text) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> initialTodo = &#123; text &#125;;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="title function_">post</span>(<span class="string">&quot;/fakeApi/todos&quot;</span>, &#123; <span class="attr">todo</span>: initialTodo &#125;);</span><br><span class="line">    <span class="keyword">return</span> response.<span class="property">todo</span>;</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> todosSlice = <span class="title function_">createSlice</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;todos&#x27;</span>,</span><br><span class="line">  initialState,</span><br><span class="line">  <span class="attr">reducers</span>: &#123;</span><br><span class="line">    <span class="attr">todoDeleted</span>: todosAdapter.<span class="property">removeOne</span>, <span class="comment">// 根据 id 删除 todo</span></span><br><span class="line">    <span class="title function_">completeTodosCleard</span>(<span class="params">state, action</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> completedIds = <span class="title class_">Object</span>.<span class="title function_">values</span>(state.<span class="property">entities</span>)</span><br><span class="line">        .<span class="title function_">filter</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">complete</span>)</span><br><span class="line">        .<span class="title function_">map</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">id</span>);</span><br><span class="line">      <span class="comment">// 删除所有已完成的 todo</span></span><br><span class="line">      todosAdapter.<span class="title function_">removeMany</span>(state, completedIds);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">extraReducers</span>(<span class="params">builder</span>)&#123;</span><br><span class="line">    builder.<span class="title function_">addCase</span>(fetchTodos.<span class="property">pending</span>, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">      state.<span class="property">status</span> = <span class="string">&#x27;loading&#x27;</span>;</span><br><span class="line">    &#125;).<span class="title function_">addCase</span>(fetchTodos.<span class="property">fulfilled</span>, <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">      state.<span class="property">status</span> = <span class="string">&#x27;idle&#x27;</span>;</span><br><span class="line">    &#125;).<span class="title function_">addCase</span>(saveNewTodo.<span class="property">fulfilled</span>, todosAdapter.<span class="property">addOne</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="createSelector"><a href="#createSelector" class="headerlink" title="createSelector  "></a>createSelector <em id="createSelector"></em> <!--markdownlint-disable-line--></h4><p>函数组件每次重新渲染都会重新执行 selector, createSelector 用于创建带有<strong>记忆化</strong>的 selector, 当给定的 inputSelector 没有发生变化时返回已缓存的 selector</p>
+<ul>
+<li>inputSelectors 创建记忆化 selector 的依赖, 可以是一个函数, 也可以是多个函数组成的数组, 返回值依次作为 resultFn 的参数传入<ul>
+<li>selectorFn 接收 state 作为第一个参数和剩余的参数并返回指定结果</li>
+</ul>
+</li>
+<li>resultFn 在 inputSelectors 之后调用并依次接收来自 inputSelectors 函数的返回值作为参数并返回结果</li>
+</ul>
+<p>返回值, 带有记忆化的函数</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;createSelector&#125; <span class="keyword">from</span> <span class="string">&#x27;reselect&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;useSelector&#125; <span class="keyword">from</span> <span class="string">&#x27;react-redux&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">selectTodos</span> = state =&gt; state.<span class="property">todos</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">selectTodosStatus</span> = (<span class="params">state, completed</span>) =&gt; completed;</span><br><span class="line"><span class="keyword">const</span> memoizedSelectTodoCount = <span class="title function_">createSelector</span>([selectTodos, selectTodosStatus], <span class="function">(<span class="params">todos, completed</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> todos.<span class="title function_">filter</span>(<span class="function"><span class="params">todo</span> =&gt;</span> todo.<span class="property">completed</span> === completed).<span class="property">length</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">CompletedTodosCount</span>(<span class="params">&#123;completed&#125;</span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> matchingCount = <span class="title function_">useSelector</span>(<span class="function">(<span class="params">state</span>) =&gt;</span> <span class="title function_">memoizedSelectTodoCount</span>(state, complete));</span><br><span class="line">  <span class="keyword">return</span> <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;matchingCount&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">span</span>&gt;</span>Number of done todos<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">CompletedTodosCount</span> <span class="attr">completed</span>=<span class="string">&#123;true&#125;/</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="nanoid"><a href="#nanoid" class="headerlink" title="nanoid"></a>nanoid</h4><p>生成一个非加密安全的字符串 id, 通常被用作 <a href="#createAsyncThunk">createAsyncThunk</a> 的 request IDs.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;nanoid&#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">nanoid</span>()); <span class="comment">// &#x27;dgPXxUz_6fWIQBD8XmiSy&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="miniSerializeError"><a href="#miniSerializeError" class="headerlink" title="miniSerializeError"></a>miniSerializeError</h4><p>createAsyncThunk 默认的错误序列化函数</p>
+<h4 id="copyWithStructuralSharing"><a href="#copyWithStructuralSharing" class="headerlink" title="copyWithStructuralSharing"></a>copyWithStructuralSharing</h4><p>递归的将两个相似的对象合并在一起, 如果值看起来相同, 则保留现有的引用. 这在内部用于帮助确保重新获取的数据继续使用相同的引用,<br>除非新数据实际发生了变化, 以避免不必要的重新呈现. 否则每次重新获取都可能导致整个数据集被替换, 所有消费组件总是重新渲染</p>
+<h4 id="reduxjs-toolkit-query-1"><a href="#reduxjs-toolkit-query-1" class="headerlink" title="@reduxjs/toolkit/query  "></a>@reduxjs/toolkit/query <em id="RTK-Query"></em> <!--markdownlint-disable-line--></h4><p>独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据</p>
+<h2 id="react-redux"><a href="#react-redux" class="headerlink" title="react-redux"></a>react-redux</h2><h3 id="Provider"><a href="#Provider" class="headerlink" title="Provider"></a>Provider</h3><ul>
+<li>store</li>
+<li>serverState 使用 SSR 时传递的 prop</li>
+<li>context</li>
+<li>stabilityCheck</li>
+<li>children</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Provider</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;react-redux&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; createRoot &#125; <span class="keyword">from</span> <span class="string">&#x27;react-dom/client&#x27;</span>;</span><br><span class="line"><span class="title function_">createRoot</span>(<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;root&#x27;</span>)).<span class="title function_">render</span>(</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">Provider</span> <span class="attr">store</span>=<span class="string">&#123;store&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    &#123;/*  */&#125;</span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">Provider</span>&gt;</span></span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; hydrateRoot &#125; <span class="keyword">from</span> <span class="string">&#x27;react-dom/client&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Provider</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;react-redux&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; configureStore &#125; <span class="keyword">from</span> <span class="string">&#x27;@reduxjs/toolkit&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> preloadState = <span class="variable language_">window</span>.<span class="property">__PRELOAD_STATE__</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = <span class="title function_">configureStore</span>(&#123;</span><br><span class="line">  <span class="attr">reducers</span>: &#123;&#125;,</span><br><span class="line">  preloadState</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="title function_">hydrateRoot</span>(<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;root&#x27;</span>), </span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">Provider</span> <span class="attr">store</span>=<span class="string">&#123;store&#125;</span> <span class="attr">serverState</span>=<span class="string">&#123;preloadState&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">App</span>/&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">Provider</span>&gt;</span></span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="shallowEqual"><a href="#shallowEqual" class="headerlink" title="shallowEqual"></a>shallowEqual</h3><h3 id="useSelector"><a href="#useSelector" class="headerlink" title="useSelector"></a>useSelector</h3><p>使用 selector 函数从 Redux store 中提取数据用于当前组件</p>
+<p>使用 <a href="#createSelector">createSelector</a> 创建记忆化的 selector</p>
+<ul>
+<li>selector</li>
+<li>equalityFn</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useSelector, shallowEqual&#125; <span class="keyword">from</span> <span class="string">&#x27;react-redux&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> selectedData = <span class="title function_">useSelector</span>(selectorReturningObject, shallowEqual);</span><br><span class="line"><span class="comment">// OR</span></span><br><span class="line"><span class="keyword">const</span> selectedData = <span class="title function_">useSelector</span>(selectorReturningObject, &#123;<span class="attr">equalityFn</span>: shallowEqual&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">TodoListItem</span>(<span class="params">props</span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> todo = <span class="title function_">useSelector</span>(<span class="function"><span class="params">state</span> =&gt;</span> state.<span class="property">todos</span>[props.<span class="property">id</span>]);</span><br><span class="line">  <span class="keyword">return</span> <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;todo.text&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="useDispatch"><a href="#useDispatch" class="headerlink" title="useDispatch"></a>useDispatch</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useCallback, memo&#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;useDispatch&#125; <span class="keyword">from</span> <span class="string">&#x27;react-redux&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">CounterComponent</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> dispatch = <span class="title function_">useDispatch</span>();</span><br><span class="line">  <span class="keyword">const</span> incrementCounter = <span class="title function_">useCallback</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">dispatch</span>(&#123;<span class="attr">type</span>:<span class="string">&#x27;increment-counter&#x27;</span>&#125;);</span><br><span class="line">  &#125;,[dispatch]);</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">span</span>&gt;</span>CounterComponent<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">MyIncrement</span> <span class="attr">onIncrement</span>=<span class="string">&#123;incrementCounter&#125;/</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">MyIncrement</span> = <span class="title function_">memo</span>(<span class="function">(<span class="params">&#123;onIncrement&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> (<span class="language-xml"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;onIncrement&#125;</span>&gt;</span>increment counter<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="useStore"><a href="#useStore" class="headerlink" title="useStore"></a>useStore</h3><p>大多数情况使用 <code>useSelector</code></p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useStore&#125; <span class="keyword">from</span> <span class="string">&#x27;react-redux&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">MyComponent</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> store = <span class="title function_">useStore</span>();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;store.getState().todos.length&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\f3581d54a2fe\" rel="bookmark">React-Nextjs.md</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\0eb429a8209b\" rel="bookmark">React-Router.md</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\18f2de6d45f9\" rel="bookmark">JSUtils</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/02/5ad505cb0ced/" title="React-Redux.md">https://luoleiself.github.io/2022/02/5ad505cb0ced/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/jsx/" rel="tag"># jsx</a>
+              <a href="/tags/React/" rel="tag"># React</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/0eb429a8209b/" rel="prev" title="React-Router.md">
+      <i class="fa fa-chevron-left"></i> React-Router.md
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/f3581d54a2fe/" rel="next" title="React-Nextjs.md">
+      React-Nextjs.md <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redux"><span class="nav-number">1.</span> <span class="nav-text">Redux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#reduxjs-toolkit-query"><span class="nav-number">1.1.</span> <span class="nav-text">@reduxjs&#x2F;toolkit&#x2F;query</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reduxjs-toolkit-RTK"><span class="nav-number">1.2.</span> <span class="nav-text">@reduxjs&#x2F;toolkit(RTK)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#configureStore"><span class="nav-number">1.2.1.</span> <span class="nav-text">configureStore</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#middleware"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">middleware</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#createAction"><span class="nav-number">1.2.2.</span> <span class="nav-text">createAction  </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#createReducer"><span class="nav-number">1.2.3.</span> <span class="nav-text">createReducer  </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#createSlice"><span class="nav-number">1.2.4.</span> <span class="nav-text">createSlice  </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#combineSlices"><span class="nav-number">1.2.5.</span> <span class="nav-text">combineSlices</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#createAsyncThunk"><span class="nav-number">1.2.6.</span> <span class="nav-text">createAsyncThunk  </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#createEntityAdapter"><span class="nav-number">1.2.7.</span> <span class="nav-text">createEntityAdapter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#createSelector"><span class="nav-number">1.2.8.</span> <span class="nav-text">createSelector  </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nanoid"><span class="nav-number">1.2.9.</span> <span class="nav-text">nanoid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#miniSerializeError"><span class="nav-number">1.2.10.</span> <span class="nav-text">miniSerializeError</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#copyWithStructuralSharing"><span class="nav-number">1.2.11.</span> <span class="nav-text">copyWithStructuralSharing</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reduxjs-toolkit-query-1"><span class="nav-number">1.2.12.</span> <span class="nav-text">@reduxjs&#x2F;toolkit&#x2F;query  </span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#react-redux"><span class="nav-number">2.</span> <span class="nav-text">react-redux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Provider"><span class="nav-number">2.1.</span> <span class="nav-text">Provider</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shallowEqual"><span class="nav-number">2.2.</span> <span class="nav-text">shallowEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useSelector"><span class="nav-number">2.3.</span> <span class="nav-text">useSelector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useDispatch"><span class="nav-number">2.4.</span> <span class="nav-text">useDispatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useStore"><span class="nav-number">2.5.</span> <span class="nav-text">useStore</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">631k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

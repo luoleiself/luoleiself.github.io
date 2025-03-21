@@ -329,7 +329,7 @@
 <li><code>component</code> 选项重命名为 <code>loader</code></li>
 <li><code>Loader</code> 函数本身不再接收 <code>resolve</code> 和 <code>reject</code> 参数，且必须返回一个 Promise</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">asyncPage</span> = (<span class="params"></span>) =&gt; <span class="title function_">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> asyncPage = &#123;</span><br><span class="line">  <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>),</span><br><span class="line">  <span class="attr">delay</span>: <span class="number">200</span>,</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">3000</span>,</span><br><span class="line">  <span class="attr">error</span>: <span class="title class_">ErrorComponent</span>,</span><br><span class="line">  <span class="attr">loading</span>: <span class="title class_">LoadingComponent</span>,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="comment">// 不带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPage = <span class="title function_">defineAsyncComponent</span>(<span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>));</span><br><span class="line"><span class="comment">// 带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPageWithOptions = <span class="title function_">defineAsyncComponent</span>(&#123;</span><br><span class="line">  <span class="attr">loader</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>),</span><br><span class="line">  <span class="attr">delay</span>: <span class="number">200</span>,</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">3000</span>,</span><br><span class="line">  <span class="attr">errorComponent</span>: <span class="title class_">ErrorComponent</span>,</span><br><span class="line">  <span class="attr">loadingComponent</span>: <span class="title class_">LoadingComponent</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vue 2.x</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">asyncPage</span> = (<span class="params"></span>) =&gt; <span class="keyword">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> asyncPage = &#123;</span><br><span class="line">  <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>),</span><br><span class="line">  <span class="attr">delay</span>: <span class="number">200</span>,</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">3000</span>,</span><br><span class="line">  <span class="attr">error</span>: <span class="title class_">ErrorComponent</span>,</span><br><span class="line">  <span class="attr">loading</span>: <span class="title class_">LoadingComponent</span>,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// Vue 3.x</span></span><br><span class="line"><span class="comment">// 不带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPage = <span class="title function_">defineAsyncComponent</span>(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>));</span><br><span class="line"><span class="comment">// 带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPageWithOptions = <span class="title function_">defineAsyncComponent</span>(&#123;</span><br><span class="line">  <span class="attr">loader</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./NextPage.vue&#x27;</span>),</span><br><span class="line">  <span class="attr">delay</span>: <span class="number">200</span>,</span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">3000</span>,</span><br><span class="line">  <span class="attr">errorComponent</span>: <span class="title class_">ErrorComponent</span>,</span><br><span class="line">  <span class="attr">loadingComponent</span>: <span class="title class_">LoadingComponent</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h4 id="emits-选项"><a href="#emits-选项" class="headerlink" title="emits 选项"></a>emits 选项</h4><p><code>新增</code>项用来定义组件可以向其父组件触发的事件</p>
 <h3 id="渲染函数"><a href="#渲染函数" class="headerlink" title="渲染函数"></a>渲染函数</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><ul>
@@ -506,10 +506,10 @@
       <div class="popular-posts-title"><a href="\2022\03\28e7482b798b\" rel="bookmark">JS小结</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
+      <div class="popular-posts-title"><a href="\2022\02\f3581d54a2fe\" rel="bookmark">React-Nextjs.md</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
+      <div class="popular-posts-title"><a href="\2021\06\0bc450a2cb90\" rel="bookmark">Promise</a></div>
     </li>
   </ul>
 
@@ -625,7 +625,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -686,7 +686,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -695,12 +695,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">557k</span>
+    <span title="站点总字数">631k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:27</span>
+    <span title="站点阅读时长">9:33</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

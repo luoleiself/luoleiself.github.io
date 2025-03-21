@@ -28,7 +28,7 @@
 <meta property="og:description" content="shell 重置密码 开机按 e 键进入内核编辑 光标移动到倒数第二段 Linux16 末尾添加 init&#x3D;&#x2F;bin&#x2F;sh ctrl + x 进行引导启动, 成功进入命令提示界面 输入 mount -o remount, rw &#x2F; 挂载根目录 使用 passwd 命令修改指定用户密码 直到提示 passwd: all authentication tokens updated successful">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-28T11:55:46.000Z">
-<meta property="article:modified_time" content="2024-07-26T14:00:47.972Z">
+<meta property="article:modified_time" content="2025-02-22T13:58:13.039Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="shell">
@@ -239,7 +239,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+                <time title="修改时间：2025-02-22 21:58:13" itemprop="dateModified" datetime="2025-02-22T21:58:13+08:00">2025-02-22</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -260,13 +260,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>6.6k</span>
+              <span>7.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>6 分钟</span>
+              <span>7 分钟</span>
             </span>
 
         </div>
@@ -294,17 +294,32 @@
 <li>unset 删除变量</li>
 <li>local 声明局部变量,一般用于函数内部</li>
 </ul>
+<p>单中括号是 POSIX 标准兼容的适用于所有 Unix/Linux 系统, 其他一切双方括号, 双圆括号不是 POSIX 标准兼容的但广泛用于 Bash、Zsh等Shell</p>
+<h4 id="PowerShell"><a href="#PowerShell" class="headerlink" title="PowerShell"></a>PowerShell</h4><p>dir env: | Get-childItem env:  查看所有的环境变量</p>
+<p>$env:[NAME] 查看指定环境变量</p>
+<p>设置环境变量</p>
+<p>$env:[NAME=VALUE] 仅在当前会话窗口中有效</p>
+<p>[System.Environment]::SetEnvironmentVariable(NAME, VALUE, ‘User|Machine’) 永久生效, User 表示用户级别, Machine 表示系统级别</p>
+<p>删除环境变量</p>
+<p>Remove-Item env:[NAME] 仅在当前会话窗口中有效</p>
+<p>[System.Environment]::SetEnvironmentVariable(NAME, $null, “User|Machine”) 永久生效, 将环境变量的设置为 $null</p>
 <span id="more"></span>
 
-<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><h4 id=""><a href="#" class="headerlink" title="[ ] | [[ ]]"></a>[ ] | [[ ]]</h4><p>运算表达式两边必须要有空格</p>
-<h4 id="-1"><a href="#-1" class="headerlink" title="${}"></a>${}</h4><p>用于变量替换, 便于理解</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">A=B</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$AB</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;A&#125;</span>B</span><br><span class="line">BB</span><br></pre></td></tr></table></figure>
+<h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><p>[] 是 test 命令的缩写形式, 操作符内的表达式两侧必须要有空格</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">test</span> <span class="string">&quot;abc&quot;</span> = <span class="string">&quot;def&quot;</span> <span class="comment"># 判断字符串是否相等, 相等返回 0, 否则返回 1</span></span><br><span class="line"><span class="built_in">echo</span> $? <span class="comment"># 查看上一条命令的返回码</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">test</span> -e /tmp; <span class="built_in">echo</span> $? <span class="comment"># 调用 test 判断 /tmp 是否存在, 并打印 test 的返回值</span></span><br><span class="line">[ -e /tmp ]; <span class="built_in">echo</span> $? <span class="comment"># 和上面完全等价, /tmp 肯定是存在的, 所以输出 0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># if test -e /tmp; then</span></span><br><span class="line"><span class="comment">#   echo &quot;/tmp exist&quot;;</span></span><br><span class="line"><span class="comment"># else </span></span><br><span class="line"><span class="comment">#   echo &quot;/tmp not exist&quot;;</span></span><br><span class="line"><span class="comment"># fi</span></span><br><span class="line"><span class="comment"># if [[ -e &quot;/tmp&quot; ]]; then</span></span><br><span class="line"><span class="comment">#   echo &quot;/tmp exist&quot;;</span></span><br><span class="line"><span class="comment"># else </span></span><br><span class="line"><span class="comment">#   echo &quot;/tmp not exist&quot;;</span></span><br><span class="line"><span class="comment"># fi</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="高版本支持"><a href="#高版本支持" class="headerlink" title="$[ ] | $(( )) | (( )) 高版本支持"></a>$[ ] | $(( )) | (( )) 高版本支持</h4><p>用于进行数学计算，对于浮点数是当作字符串处理</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">a=5;b=7;c=2</span><br><span class="line"><span class="built_in">echo</span> $((a+b*c))</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $[a+b*c]</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $((<span class="variable">$a</span>+<span class="variable">$b</span>*<span class="variable">$c</span>))</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $[<span class="variable">$a</span>+<span class="variable">$b</span>*<span class="variable">$c</span>]</span><br><span class="line">19</span><br></pre></td></tr></table></figure>
+<h4 id=""><a href="#" class="headerlink" title="${ }"></a>${ }</h4><p>变量替换, 便于理解</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">A=B</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$AB</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;A&#125;</span>B</span><br><span class="line">BB</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;No can no <span class="variable">$&#123;A&#125;</span>B&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="-1"><a href="#-1" class="headerlink" title="(( ))"></a>(( ))</h4><ul>
+<li>$[ ]</li>
+<li>$(( ))</li>
+</ul>
+<p>数学计算，对于浮点数是当作字符串处理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">count=1</span><br><span class="line">((count++))</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;count is <span class="variable">$&#123;count&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line">a=5;b=7;c=2</span><br><span class="line"><span class="built_in">echo</span> $((a+b*c))</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $[a+b*c]</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $((<span class="variable">$a</span>+<span class="variable">$b</span>*<span class="variable">$c</span>))</span><br><span class="line">19</span><br><span class="line"><span class="built_in">echo</span> $[<span class="variable">$a</span>+<span class="variable">$b</span>*<span class="variable">$c</span>]</span><br><span class="line">19</span><br></pre></td></tr></table></figure>
 
 <h4 id="-2"><a href="#-2" class="headerlink" title="$( )"></a>$( )</h4><p>命令替换</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker rm -f $(docker ps -aq) # 移除所有容器</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# docker <span class="built_in">rm</span> -f $(docker ps -aq) <span class="comment"># 移除所有容器</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h4><table>
 <thead>
@@ -358,8 +373,8 @@
 <h4 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a>关系运算符</h4><table>
 <thead>
 <tr>
-<th align="center">在 [ ] 中使用的比较符</th>
-<th align="center">在 (( )) 和 [[]] 中使用的比较符</th>
+<th align="center">在 [ ] 中使用</th>
+<th align="center">在 [[ ]] 和 (( )) 中使用</th>
 <th align="center">说明</th>
 <th align="center">举例</th>
 </tr>
@@ -367,38 +382,38 @@
 <tbody><tr>
 <td align="center">-eq</td>
 <td align="center">==</td>
-<td align="center">equal 的缩写，表示相等</td>
-<td align="center">[ ${a} -eq ${b} ] | [[${a} == ${b}]] | ((${a} == ${b}))</td>
+<td align="center">equal 表示相等</td>
+<td align="center">[ ${a} -eq ${b} ] | [[${a} == ${b}]]</td>
 </tr>
 <tr>
 <td align="center">-ne</td>
 <td align="center">!=</td>
-<td align="center">not equal 的缩写，表示不相等</td>
-<td align="center">[ ${a} -ne ${b} ] | [[${a} != ${b}]] | ((${a} != ${b}))</td>
+<td align="center">not equal 表示不相等</td>
+<td align="center">[ ${a} -ne ${b} ] | [[${a} != ${b}]]</td>
 </tr>
 <tr>
 <td align="center">-gt</td>
 <td align="center">&gt;</td>
-<td align="center">greater than 的缩写，表示大于</td>
-<td align="center">[ ${a} -gt ${b} ] | [[${a} &gt; ${b}]] | ((${a} &gt; ${b}))</td>
+<td align="center">greater than 表示大于</td>
+<td align="center">[ ${a} -gt ${b} ] | [[${a} &gt; ${b}]]</td>
 </tr>
 <tr>
 <td align="center">-ge</td>
 <td align="center">&gt;=</td>
-<td align="center">greater equal 的缩写，表示大于等于</td>
-<td align="center">[ ${a} -ge ${b} ] | [[${a} &gt;= ${b}]]|((${a} &gt;= ${b}))</td>
+<td align="center">greater equal 表示大于等于</td>
+<td align="center">[ ${a} -ge ${b} ] | [[${a} &gt;= ${b}]]</td>
 </tr>
 <tr>
 <td align="center">-lt</td>
 <td align="center">&lt;</td>
-<td align="center">least than 的缩写，表示小于</td>
-<td align="center">[ ${a} -lt ${b} ] | [[${a} &lt; ${b}]] | ((${a} &lt; ${b}))</td>
+<td align="center">least than 表示小于</td>
+<td align="center">[ ${a} -lt ${b} ] | [[${a} &lt; ${b}]]</td>
 </tr>
 <tr>
 <td align="center">-le</td>
 <td align="center">&lt;=</td>
-<td align="center">least equal 的缩写，表示小于等于</td>
-<td align="center">[ ${a} -le ${b} ] | [[${a} &lt;= ${b}]]|((${a} &lt;= ${b}))</td>
+<td align="center">least equal 表示小于等于</td>
+<td align="center">[ ${a} -le ${b} ] | [[${a} &lt;= ${b}]]</td>
 </tr>
 </tbody></table>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$string</span> -ne <span class="string">&#x27;abc&#x27;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Not equal&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Equal&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$a</span> -ge <span class="variable">$b</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Greater equal&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Not greater equal&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
@@ -406,8 +421,8 @@
 <h4 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h4><table>
 <thead>
 <tr>
-<th align="center">在 [ ] 中使用的比较符</th>
-<th align="center">在 (( )) 和 [[]] 中使用的比较符</th>
+<th align="center">在 [ ] 中使用</th>
+<th align="center">在 [[ ]] 和 (( )) 中使用</th>
 <th align="center">说明</th>
 <th align="center">举例</th>
 </tr>
@@ -486,72 +501,72 @@
 <tbody><tr>
 <td align="center">-b</td>
 <td align="center">检测文件是否是块设备文件，如果是，则返回 true</td>
-<td align="center">[ -b $file ] 返回 true</td>
+<td align="center">[ -b $file ]</td>
 </tr>
 <tr>
 <td align="center">-c</td>
 <td align="center">检测文件是否是字符设备文件，如果是，则返回 true</td>
-<td align="center">[ -c $file ] 返回 true</td>
+<td align="center">[ -c $file ]</td>
 </tr>
 <tr>
 <td align="center">-d</td>
 <td align="center">检测文件是否是目录文件，如果是，则返回 true</td>
-<td align="center">[ -d $file ] 返回 true</td>
+<td align="center">[ -d $file ]</td>
 </tr>
 <tr>
 <td align="center">-f</td>
 <td align="center">检测文件是否是普通文件（既不是目录也不是设备文件），如果是，则返回 true</td>
-<td align="center">[ -f $file ] 返回 true</td>
+<td align="center">[ -f $file ]</td>
 </tr>
 <tr>
 <td align="center">-g</td>
 <td align="center">检测文件是否设置了 SGID 位，如果是，则返回 true</td>
-<td align="center">[ -g $file ] 返回 true</td>
+<td align="center">[ -g $file ]</td>
 </tr>
 <tr>
 <td align="center">-k</td>
 <td align="center">检测文件是否设置了粘着位（stucky Bit），如果是，则返回 true</td>
-<td align="center">[ -k $file ] 返回 true</td>
+<td align="center">[ -k $file ]</td>
 </tr>
 <tr>
 <td align="center">-p</td>
 <td align="center">检测文件是否具名管道，如果是，则返回 true</td>
-<td align="center">[ -p $file ] 返回 true</td>
+<td align="center">[ -p $file ]</td>
 </tr>
 <tr>
 <td align="center">-u</td>
 <td align="center">检测文件是否设置了 SUID 位，如果是，则返回 true</td>
-<td align="center">[ -u $file ] 返回 true</td>
+<td align="center">[ -u $file ]</td>
 </tr>
 <tr>
 <td align="center">-r</td>
 <td align="center">检测文件是否可读，如果是，则返回 true</td>
-<td align="center">[ -r $file ] 返回 true</td>
+<td align="center">[ -r $file ]</td>
 </tr>
 <tr>
 <td align="center">-w</td>
 <td align="center">检测文件是否可写，如果是，则返回 true</td>
-<td align="center">[ -w $file ] 返回 true</td>
+<td align="center">[ -w $file ]</td>
 </tr>
 <tr>
 <td align="center">-x</td>
 <td align="center">检测文件是否可执行，如果是，则返回 true</td>
-<td align="center">[ -x $file ] 返回 true</td>
+<td align="center">[ -x $file ]</td>
 </tr>
 <tr>
 <td align="center">-s</td>
 <td align="center">检测文件是否为不为空（文件大小是否不为 0），如果不为 0，则返回 true</td>
-<td align="center">[ -s $file ] 返回 true</td>
+<td align="center">[ -s $file ]</td>
 </tr>
 <tr>
 <td align="center">-e</td>
 <td align="center">检测文件(包括目录)是否存在，如果存在，则返回 true</td>
-<td align="center">[ -e $file ] 返回 true</td>
+<td align="center">[ -e $file ]</td>
 </tr>
 <tr>
 <td align="center">-a</td>
 <td align="center">检测文件(包括目录)是否存在(此命令已废弃)，如果存在，则返回 true</td>
-<td align="center">[ -e $file ] 返回 true</td>
+<td align="center">[ -e $file ]</td>
 </tr>
 </tbody></table>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ -e .node ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;this file is exists&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;this file not exists&#x27;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ -s .zshrc ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;file not empty&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;file is empty&#x27;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
@@ -565,6 +580,8 @@
 <li><code>&lt;</code> 输入重定向</li>
 <li><code>&lt;&lt;</code> 输入重定向</li>
 </ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在文件末尾追加三行文本</span></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; file.txt &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">line 1.</span></span><br><span class="line"><span class="string">line 2.</span></span><br><span class="line"><span class="string">line 3.</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动一个 bash 新实例, 并执行提供的脚本, 单引号 EOF 确保脚本内容中的变量不会被提前替换</span></span><br><span class="line">bash &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">#!/bin/bash</span></span><br><span class="line"><span class="string">echo &quot;Hello, World!&quot;</span></span><br><span class="line"><span class="string">for i in &#123;1..5&#125;; do</span></span><br><span class="line"><span class="string">  echo &quot;Line $i&quot;</span></span><br><span class="line"><span class="string">done</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 连接 mysql 数据库创建表结构并插入两条记录</span></span><br><span class="line">mysql -u username -p database_name &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">CREATE TABLE example (</span></span><br><span class="line"><span class="string">  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,</span></span><br><span class="line"><span class="string">  name VARCHAR(100) NOT NULL</span></span><br><span class="line"><span class="string">);</span></span><br><span class="line"><span class="string">INSERT INTO example (name) VALUES (&#x27;Tom&#x27;), (&#x27;Jerry&#x27;);</span></span><br><span class="line"><span class="string">SELECT * FROM example;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
 <h5 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h5><ul>
 <li><code>|</code> 连接两个命令, 第一个命令的输出作为第二个命令的输入</li>
 </ul>
@@ -578,7 +595,7 @@
 
 <h4 id="while"><a href="#while" class="headerlink" title="while"></a>while</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">j=1</span><br><span class="line"><span class="comment"># 当 do 单独另写一行时, 分号不能省略</span></span><br><span class="line"><span class="keyword">while</span> [ <span class="variable">$j</span> -lt 10 ]; <span class="keyword">do</span></span><br><span class="line">  <span class="comment"># 依次输出 while do 1 到 9</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;while do &quot;</span> <span class="variable">$&#123;j&#125;</span></span><br><span class="line">  j=$[j+1]</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="until"><a href="#until" class="headerlink" title="until"></a>until</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">k=1</span><br><span class="line"><span class="comment"># 当 do 单独另写一行时, 分号不能省略</span></span><br><span class="line">until [ <span class="variable">$k</span> -gt 10 ]; <span class="keyword">do</span></span><br><span class="line">  <span class="comment"># 依次输出 until do 1 到 10</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;until do &quot;</span> <span class="variable">$&#123;k&#125;</span></span><br><span class="line">  k=$[k+1]</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<h4 id="until"><a href="#until" class="headerlink" title="until"></a>until</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">k=1</span><br><span class="line"><span class="comment"># 当 do 单独另写一行时, 分号不能省略</span></span><br><span class="line"><span class="keyword">until</span> [ <span class="variable">$k</span> -gt 10 ]; <span class="keyword">do</span></span><br><span class="line">  <span class="comment"># 依次输出 until do 1 到 10</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;until do &quot;</span> <span class="variable">$&#123;k&#125;</span></span><br><span class="line">  k=$[k+1]</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><h4 id="数组操作"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作</h4><ul>
 <li>*|@ 获取数组的所有元素, <code>$&#123;arr[*]&#125;</code></li>
@@ -615,7 +632,7 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">dateFormat</span></span>() &#123;</span><br><span class="line">  <span class="built_in">echo</span> $(/bin/date +<span class="string">&quot;hello crontab %Y-%m-%d %H:%M:%S&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> $(dateFormat) <span class="comment"># 获取函数的结果</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">dateFormat</span></span>() &#123;</span><br><span class="line">  <span class="built_in">echo</span> $(/bin/date +<span class="string">&quot;hello crontab %Y-%m-%d %H:%M:%S&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> $(dateFormat) <span class="comment"># 获取函数的结果</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 传递参数</span></span><br><span class="line"><span class="function"><span class="title">add</span></span>() &#123;</span><br><span class="line">  <span class="built_in">local</span> num1=<span class="variable">$1</span></span><br><span class="line">  <span class="built_in">local</span> num2=<span class="variable">$2</span></span><br><span class="line">  <span class="built_in">local</span> <span class="built_in">sum</span>=$((num1+num2))</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$sum</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">result=$(add 3 5)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;3 + 5 = <span class="variable">$result</span>&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="特殊变量"><a href="#特殊变量" class="headerlink" title="特殊变量"></a>特殊变量</h4><table>
 <thead>
@@ -765,7 +782,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell-%E9%87%8D%E7%BD%AE%E5%AF%86%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">shell 重置密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.</span> <span class="nav-text">运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">3.1.</span> <span class="nav-text">[ ] | [[ ]]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-1"><span class="nav-number">3.2.</span> <span class="nav-text">${}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81"><span class="nav-number">3.3.</span> <span class="nav-text">$[ ] | $(( )) | (( )) 高版本支持</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-2"><span class="nav-number">3.4.</span> <span class="nav-text">$( )</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.5.</span> <span class="nav-text">算术运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.6.</span> <span class="nav-text">关系运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.7.</span> <span class="nav-text">逻辑运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E7%AC%A6-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E4%B8%8D%E9%9C%80%E8%A6%81%E8%BD%AC%E4%B9%89"><span class="nav-number">3.8.</span> <span class="nav-text">字符串运算符, [ ] 字符串运算不需要转义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%B5%8B%E8%AF%95%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.9.</span> <span class="nav-text">文件测试运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91-%E7%AE%A1%E9%81%93-%E6%B5%81"><span class="nav-number">3.10.</span> <span class="nav-text">重定向 | 管道 | 流</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">3.10.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%A1%E9%81%93"><span class="nav-number">3.10.2.</span> <span class="nav-text">管道</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#if"><span class="nav-number">4.1.</span> <span class="nav-text">if</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case"><span class="nav-number">4.2.</span> <span class="nav-text">case</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#for"><span class="nav-number">4.3.</span> <span class="nav-text">for</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#while"><span class="nav-number">4.4.</span> <span class="nav-text">while</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#until"><span class="nav-number">4.5.</span> <span class="nav-text">until</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84"><span class="nav-number">5.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%93%8D%E4%BD%9C"><span class="nav-number">5.1.</span> <span class="nav-text">数组操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="nav-number">5.2.</span> <span class="nav-text">一维数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E6%95%B0%E7%BB%84"><span class="nav-number">5.3.</span> <span class="nav-text">关联数组</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%8F%98%E9%87%8F"><span class="nav-number">6.1.</span> <span class="nav-text">特殊变量</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell-%E9%87%8D%E7%BD%AE%E5%AF%86%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">shell 重置密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PowerShell"><span class="nav-number">2.1.</span> <span class="nav-text">PowerShell</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.</span> <span class="nav-text">运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">3.1.</span> <span class="nav-text">${ }</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-1"><span class="nav-number">3.2.</span> <span class="nav-text">(( ))</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#-2"><span class="nav-number">3.3.</span> <span class="nav-text">$( )</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.4.</span> <span class="nav-text">算术运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.5.</span> <span class="nav-text">关系运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.6.</span> <span class="nav-text">逻辑运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E7%AC%A6-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E4%B8%8D%E9%9C%80%E8%A6%81%E8%BD%AC%E4%B9%89"><span class="nav-number">3.7.</span> <span class="nav-text">字符串运算符, [ ] 字符串运算不需要转义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%B5%8B%E8%AF%95%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.8.</span> <span class="nav-text">文件测试运算符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91-%E7%AE%A1%E9%81%93-%E6%B5%81"><span class="nav-number">3.9.</span> <span class="nav-text">重定向 | 管道 | 流</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">3.9.1.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%A1%E9%81%93"><span class="nav-number">3.9.2.</span> <span class="nav-text">管道</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#if"><span class="nav-number">4.1.</span> <span class="nav-text">if</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case"><span class="nav-number">4.2.</span> <span class="nav-text">case</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#for"><span class="nav-number">4.3.</span> <span class="nav-text">for</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#while"><span class="nav-number">4.4.</span> <span class="nav-text">while</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#until"><span class="nav-number">4.5.</span> <span class="nav-text">until</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84"><span class="nav-number">5.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%93%8D%E4%BD%9C"><span class="nav-number">5.1.</span> <span class="nav-text">数组操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="nav-number">5.2.</span> <span class="nav-text">一维数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E6%95%B0%E7%BB%84"><span class="nav-number">5.3.</span> <span class="nav-text">关联数组</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%8F%98%E9%87%8F"><span class="nav-number">6.1.</span> <span class="nav-text">特殊变量</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -781,7 +798,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -842,7 +859,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -851,12 +868,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">557k</span>
+    <span title="站点总字数">631k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">8:27</span>
+    <span title="站点阅读时长">9:33</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
