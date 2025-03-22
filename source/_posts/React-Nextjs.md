@@ -34,9 +34,8 @@ ISR(Incremental Static Regeneration)
     - children
 
 - route.ts 使用 Web Request 和 Response API 为给定的路由创建自定义请求处理程序, 和 page.tsx 不能同时存在
-  - Props
-    - request
-    - context
+  - request
+  - context
 - page.tsx 定义路由独有的页面UI
   - Props
     - params 动态路由参数, 一个 Promise, Next.js 14 之前是同步的
@@ -236,7 +235,7 @@ Component hierarchy
 直接在 layout, page, route handlers 中导出以下配置修改行为
 
 ```tsx
-// 阻止页面预渲染, 如果使用 cookie, headers, searchParams 等函数页面自动被视为动态渲染
+// 阻止页面预渲染, 如果使用 cookies, headers, searchParams prop, connection, draftMode, unstable_noStore 等函数页面自动被视为动态渲染
 export const dynamic: string = 'force-dynamic';  // auto | force-dynamic | error | force-static
 
 // layout 和 page 启用部分渲染
@@ -260,6 +259,17 @@ export const preferredRegion: string = 'auto'; // auto | global | home | string 
 // 限制服务器端逻辑的执行时长, next.js 默认不限制
 // export const maxDuration: number = 0;
 ```
+
+### dynamic APIs
+
+动态 APIs 依赖于只能在请求时知道的信息(而不是在预渲染期间提前知道的信息), 使用这些 API 都表明了将在请求时选择整个路由进行动态渲染
+
+- cookies
+- headers
+- connection
+- draftMode
+- searchParams prop
+- unstable_noStore
 
 ### 缓存
 
@@ -297,12 +307,12 @@ next.js 有一个内置的数据缓存, 可以在传入的服务器请求和部�
 
 next.js 在构建时自动渲染和缓存路由, 而不是在服务器上为每个请求渲染从而加快页面加载速度
 
-- 使用流式 `服务器端组件载荷`(特殊的数据格式, 使用 React Server Component Payload 和 Client Component 渲染 HTML) 返回响应而无需等待所有渲染完成
+- 使用流式 `服务器组件载荷`(特殊的数据格式, 使用 React Server Component Payload 和 Client Component 渲染 HTML) 返回响应而无需等待所有渲染完成
 - 默认缓存路由的渲染结果
 
 退出完整路由缓存
 
-- 使用 dynamic APIs
+- 使用 dynamic APIs, cookies, headers, connection, draftMode, searchParams prop, unstable_noStore
 - 导出 dynamic = 'force-dynamic' 或者 revalidate = 0
 - 退出 Data Cache, 如果路由有一个未缓存的获取请求, 这将该路由退出完整路由缓存为每个请求获取特定数据, 其他未退出数据缓存的获取请求仍将缓存在数据缓存中
   这允许缓存和未缓存数据的混合.
@@ -553,7 +563,9 @@ export default async function Page(){
 
 - NextRequest 扩展了 Web Request API
 - NextResponse 扩展了 Web Response API
+
 - notFound 调用方法将抛出 `NEXT_NOT_FOUND` 错误, 渲染 not-found.tsx 内容
+
 - permanentRedirect 永久重定向, 返回 308(HTTP), 如果资源不存在可以使用 notFound 函数代替
 - redirect 重定向
   - path
@@ -724,6 +736,27 @@ export default async function Page({params}: {
 
 - [generateViewport](#viewport) 生成页面的视窗配置
 - ImageResponse 图片构造函数, 生成动态图片 `import { ImageResponse } from 'next/og'`;
+
+- unstable_cache 允许缓存昂贵操作的结果, 并在多个请求中重用它们, 使用 `use cache` 代替
+  - fetchData, 获取数据的异步函数
+  - keyPairs, 一个额外的密钥数组, 为缓存添加标识
+  - options 控制缓存的行为
+    - tags, 一组用于控制缓存失效的标签
+    - revalidate, 缓存应该被验证的时间间隔(秒)
+
+```tsx
+const data = unstable_cache(fetchData, keyParts, options)();
+
+import { unstable_cache } from 'next/cache';
+
+const getCachedUser = unstable_cache(async (id) => getUser(id), ['myy-app-user']);
+
+export default async function Component({ userId }) {
+  const user = await getCachedUser(userId)
+}
+```
+
+- unstable_noStore 声明选择退出静态渲染, 并标识不应缓存特定组件, Next.js 15 使用 `connection` 代替
 
 #### hook
 

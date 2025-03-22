@@ -643,20 +643,20 @@ const TasksDispatchContext = createContext(null);
 function App(){
   // ...
   return (
-    <TasksProvider>
+    <TasksProvider.Provider>
       {/* ... */}
-    </TasksProvider>
+    </TasksProvider.Provider>
   )
 }
 
 function TasksProvider({children}){
   const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
   return (
-    <TasksContext value={tasks}>
-      <TasksDispatchContext value={dispatch}>
+    <TasksContext.Provider value={tasks}>
+      <TasksDispatchContext.Provider value={dispatch}>
         {children}
-      </TasksDispatchContext>
-    </TasksContext>
+      </TasksDispatchContext.Provider>
+    </TasksContext.Provider>
   )
 }
 function tasksReducer(state, action){
@@ -1421,6 +1421,60 @@ function App(){
 }
 ```
 
+#### useTransition
+
+在不阻塞 UI 的情况下在后台处理更新状态, 将某些状态更新标记为 transition, transition 更新不能用于控制文本输入
+
+- isPending 是否存在待处理的 transition
+- startTransition 调用此函数将状态更新标记为 transition, 传递给此函数的函数必须是同步的, React 会立即执行此函数, 并将在其执行期间发生的所有状态更新标记为 transition, 如果在其执行期间, 尝试稍后执行状态更新, 这些状态更新不会被标记为 transition
+
+```jsx
+const [isPending, startTransition] = useTransition();
+```
+
+```jsx
+import {useTransition, useState} from 'react';
+
+// 切换标签页
+function TabContainer(){
+  const [isPending, startTransition] = useTransition();
+  const [tab, setTab] = useState('about');
+
+  function selectTab(nextTab){
+    startTransition(() => {
+      setTab(nextTab);
+    })
+  }
+  //...
+}
+
+// 通过 action 执行非阻塞更新
+function CheckoutForm() {
+  const [isPending, startTransition] = useTransition();
+  const [quantity, setQuantity] = useState(1);
+
+  const updateQuantityAction = async newQuantity => {
+    // To access the pending state of a transition,
+    // call startTransition again.
+    startTransition(async () => {
+      const savedQuantity = await updateQuantity(newQuantity);
+      startTransition(() => {
+        setQuantity(savedQuantity);
+      });
+    });
+  };
+
+  return (
+    <div>
+      <h1>Checkout</h1>
+      <Item action={updateQuantityAction}/>
+      <hr />
+      <Total quantity={quantity} isPending={isPending} />
+    </div>
+  );
+}
+```
+
 #### useSyncExternalStore
 
 订阅外部 store
@@ -1496,60 +1550,6 @@ function subscribe(callback){
 function useOnlineStatus(){
   const isOnline = useSyncExternalStore(subscribe, () => navigator.onLine, () => true);
   return isOnline;
-}
-```
-
-#### useTransition
-
-在不阻塞 UI 的情况下更新状态, 将某些状态更新标记为 transition, transition 更新不能用于控制文本输入
-
-- isPending 是否存在待处理的 transition
-- startTransition 调用此函数将状态更新标记为 transition, 传递给此函数的函数必须是同步的, React 会立即执行此函数, 并将在其执行期间发生的所有状态更新标记为 transition, 如果在其执行期间, 尝试稍后执行状态更新, 这些状态更新不会被标记为 transition
-
-```jsx
-const [isPending, startTransition] = useTransition();
-```
-
-```jsx
-import {useTransition, useState} from 'react';
-
-// 切换标签页
-function TabContainer(){
-  const [isPending, startTransition] = useTransition();
-  const [tab, setTab] = useState('about');
-
-  function selectTab(nextTab){
-    startTransition(() => {
-      setTab(nextTab);
-    })
-  }
-  //...
-}
-
-// 通过 action 执行非阻塞更新
-function CheckoutForm() {
-  const [isPending, startTransition] = useTransition();
-  const [quantity, setQuantity] = useState(1);
-
-  const updateQuantityAction = async newQuantity => {
-    // To access the pending state of a transition,
-    // call startTransition again.
-    startTransition(async () => {
-      const savedQuantity = await updateQuantity(newQuantity);
-      startTransition(() => {
-        setQuantity(savedQuantity);
-      });
-    });
-  };
-
-  return (
-    <div>
-      <h1>Checkout</h1>
-      <Item action={updateQuantityAction}/>
-      <hr />
-      <Total quantity={quantity} isPending={isPending} />
-    </div>
-  );
 }
 ```
 
