@@ -244,6 +244,7 @@ const counterReducer = createReducer(initialState, builder => {
 - injectInfo() 注入 slice
 
 ```jsx
+// counter.js
 import {createSlice, configureStore} from '@reduxjs/toolkit';
 
 const counterSlice = createSlice({
@@ -312,7 +313,10 @@ const counterSlice = createSlice({
     })
   }
 });
+export const { increment, decrement, incrementByAmount, fetchTodo } = counterSlice.actions;
+export default counterSlice.reducer;
 
+// store.js
 const store = configureStore({
   reducer: {
     counter: counterSlice.reducer
