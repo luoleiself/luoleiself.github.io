@@ -317,14 +317,15 @@ export const { increment, decrement, incrementByAmount, fetchTodo } = counterSli
 export default counterSlice.reducer;
 
 // store.js
+import counterReducer { increment, decrement, incrementByAmount, fetchTodo } from 'counter.js';
 const store = configureStore({
   reducer: {
-    counter: counterSlice.reducer
+    counter: counterReducer
   }
 })
-store.dispatch(counterSlice.actions.increment());
-sotre.dispatch(counterSlice.actions.decrement());
-store.dispatch(counterSlice.actions.incrementByAmount({value: 10}));
+store.dispatch(increment());
+sotre.dispatch(decrement());
+store.dispatch(incrementByAmount({value: 10}));
 
 store.dispatch({type: 'counter/increment'})
 store.dispatch({type: 'counter/decrement'})
