@@ -13,7 +13,135 @@ tags:
 RSC(React Server Component)
 ISR(Incremental Static Regeneration)
 
+### Server Component
+
+- 数据获取, 将数据获取移动到更靠近数据源的服务器上, 可以减少获取渲染所需数据的时间以及客户端需要发出的请求数量来提高性能
+- 安全性, 在服务器上保留敏感数据和逻辑, 例如 token 和 API keys, 而不会将它们暴露给客户端
+- 缓存, 通过在服务器上渲染, 结果可以被缓存并在后续请求和跨用户中重用, 减少每个请求的渲染和数据获取量
+- 性能, 减少所需的客户端 javascript 的数量, 对于弱网环境或设备较弱的用户来说需要下载、解析和执行的客户端 javascript 较少
+- 初始化页面加载和首次内容绘制(FCP), 在服务器上生成 HTML, 允许用户立即查看页面而无需等客户端下载、解析和执行渲染页面所需要的 javascript
+- SEO 和 社交网络共享(SNS), 渲染的 HTML 可供搜索引擎机器人用来检索页面, 社交网络机器人可用于为页面生成社交卡预览
+- 流式传输, 服务器组件允许将渲染工作分成块, 并在准备就绪时将其流式传输到客户端. 这允许用户提前查看页面的部分内容, 而无需等待整个页面在服务器上渲染
+
+渲染流程:
+
+1. 按单个路由段和 Suspense Boundaries 拆分块
+2. 每个块使用 RSC Payload 和 客户端组件 JavaScript 指令渲染 HTML, 然后返回给客户端
+3. 客户端立即显示路由的快速非交互式页面预览, 这仅适用于初始化页面加载
+4. RSC Payload 用于协调客户端和 RSC 树并更新 DOM, JavaScript 指令用于 hydrate 客户端组件并使应用程序具有交互性
+
+#### RSC Payload
+
+渲染 RSC 树的紧凑二进制表示形式, 包含
+
+- RSC 的渲染结果
+- 客户端组件应渲染的占位符及其 JavaScript 文件的引用
+- 从 RSC 传递给客户端组件的任何信息
+
+#### 渲染策略
+
+- Static Rendering, 编译时渲染
+- Dynamic Redering
+- Streaming, 使用 Suspense 组件和 loading.tsx 开启
+
+#### Server Action
+
+是一个在服务器上执行的异步函数, 它们可以在服务器和客户端组件之间调用, 以处理 Next.js 应用程序中的表单和提交和数据突变
+
+- 不限于 \<form\>, 可以从 Event Handlers、useEffect、第三方库和其他表单元素 \<button\> 调用
+- 与 Next.js cache 和 revalidate 集成, 当调用一个 action 时, Next.js 可以在单个服务器往返中返回更新的 UI 和新数据
+- 使用 HTTP 的 POST 方法调用
+- 接收的参数 和 返回值 必须可由 React 序列化
+- 可以在应用程序的任何地方重复使用
+- 从其使用的 layout 和 page 继承 运行时
+- 从其使用的 layout 和 page 继承路由段设置, 包含 maxDuration 等字段
+
+```tsx
+// app/invoices/page.tsx
+'use client';
+import React, { useActionState } from 'react'
+import { createInvoice } from './action'
+
+export type InitialStateType = { message: string }
+
+const initialState: InitialStateType = { message: ''}
+export default function Page() {
+  const [state, formAction, pending] = useActionState(createInvoice, initialState)
+
+  return (
+    <form action={formAction}>
+      <input type="text" name="customerId" className='border-1 border-blue-300 rounded-2xl py-2 px-4 my-4' placeholder='customer id' /><br />
+      <p className='text-red-500 text-xl'>{state?.message}</p>
+      <input type="text" name="amount" className='border-1 border-blue-300 rounded-2xl py-2 px-4 my-4' placeholder='amount' /><br />
+      <input type="checkbox" name="status" className='w-4 h-6 border-blue-300 border-1 rounded-2xl' /><br />
+      <button type="submit" disabled={pending} className='border-1 border-blue-300 rounded-2xl py-2 px-4 text-2xl text-gray-600 enabled:hover:border-blue-700 enabled:hover:text-white cursor-pointer'>Submit</button>
+      <br />
+    </form>
+  )
+}
+
+// app/invoices/action.ts
+'use server';
+import { redirect } from "next/navigation";
+import type { InitialStateType } from './page'
+
+export async function createInvoice(prevState: InitialStateType, formData: FormData) {
+  const customerId = formData.get('customerId');
+  const amount = formData.get('amount');
+  const status = formData.get('status');
+  console.log(customerId, amount, status);
+  // mutate data
+  // revaliate cache
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  // 如果 customerId 不符合条件则返回提示信息
+  if (!customerId || Number(customerId) > 100) {
+    return { ...prevState, message: 'Please enter a valid customer ID' };
+  }
+  redirect('/');
+}
+```
+<!-- more -->
+
+在 useEffect 中使用
+
+```tsx
+// app/view-count.tsx
+'use client'
+import { incrementViews } from './actions'
+import { useState, useEffect } from 'react'
+ 
+export default function ViewCount({ initialViews }: { initialViews: number }) {
+  const [views, setViews] = useState(initialViews)
+ 
+  useEffect(() => {
+    const updateViews = async () => {
+      const updatedViews = await incrementViews()
+      setViews(updatedViews)
+    }
+    updateViews()
+  }, [])
+ 
+  return <p>Total Views: {views}</p>
+}
+```
+
 ### 文件规范
+
+Component hierarchy
+
+```tsx
+<Layout>
+  <Template>
+    <ErrorBoundary fallback={<Error />}>
+      <Suspense fallback={<Loading />}>
+        <ErrorBoundary fallback={<NotFound />}>
+          <Page />
+        </ErrorBoundary>
+      </Suspense>
+    </ErrorBoundary>
+  </Template>
+</Layout>
+```
 
 应用根目录或 src 目录下
 
@@ -28,7 +156,7 @@ ISR(Incremental Static Regeneration)
   - Props
     - children
     - params 动态路由参数, 一个 Promise, Next.js 14 之前是同步的
-    - [slot...] 动态插槽
+    - ...slot 动态插槽
 - template.tsx 类似于 layout.tsx 能够包含布局和页面, 当路由发生改变时会重置状态
   - Props
     - children
@@ -57,7 +185,6 @@ ISR(Incremental Static Regeneration)
       not-found.tsx
   */
   ```
-<!-- more -->
 
 - error.tsx 允许处理运行时的错误并显示回退 UI
   - Props
@@ -138,21 +265,21 @@ export default function GlobalError({
 */
 ```
 
-Component hierarchy
+#### 环境变量
 
-```tsx
-<Layout>
-  <Template>
-    <ErrorBoundary fallback={<Error />}>
-      <Suspense fallback={<Loading />}>
-        <ErrorBoundary fallback={<NotFound />}>
-          <Page />
-        </ErrorBoundary>
-      </Suspense>
-    </ErrorBoundary>
-  </Template>
-</Layout>
-```
+环境变量自动加载到 route handlers
+
+- 使用 .env 加载环境变量
+- 在 next.js 运行时外使用 `@next/env` 包中的 `loadEnvConfig` 函数加载环境变量
+- 只有以 `NEXT_PUBLIC_` 开头的环境变量才会导出给客户端
+
+加载顺序
+
+1. process.env
+2. .env.$(NODE_ENV).local
+3. .env.local (Not checked when NODE_ENV is test)
+4. .env.$(NODE_ENV)
+5. .env
 
 ### 路由结构
 
@@ -307,7 +434,7 @@ next.js 有一个内置的数据缓存, 可以在传入的服务器请求和部�
 
 next.js 在构建时自动渲染和缓存路由, 而不是在服务器上为每个请求渲染从而加快页面加载速度
 
-- 使用流式 `服务器组件载荷`(特殊的数据格式, 使用 React Server Component Payload 和 Client Component 渲染 HTML) 返回响应而无需等待所有渲染完成
+- 使用流式 `服务器组件载荷`(RSC Payload) 和 Client Component 指令渲染 HTML, 返回响应而无需等待所有渲染完成
 - 默认缓存路由的渲染结果
 
 退出完整路由缓存
@@ -534,10 +661,11 @@ sitemap <em id="sitemap"></em> <!--markdownlint-disable-line-->
 // app/sitemap.ts
 // dynamic sitemap
 import type { MetadataRoute } from 'next'
+// generateSitemaps 分割 sitemap 为多个 xml, 返回一个对象数组, id 作为 sitemap 的参数
 export function generateSitemaps(){
-  return {}
+  return [{id: 0}, {id: 1}, {id: 2}];
 }
-export default function sitemap(): MetadataRoute.Sitemap {
+export default function sitemap({id}: {id: number}): MetadataRoute.Sitemap {
  // ...
 }
 ```

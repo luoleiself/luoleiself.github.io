@@ -43,6 +43,7 @@ React 18.3.1
 
 - 返回类型不匹配, React 组件需要返回 React 元素(JSX), 而 async 函数默认返回一个 Promise, 导致 React 无法正确渲染组件
 - 生命周期和状态管理, 异步操作通常涉及到副作用, 这些不应该在组件的渲染阶段进行, 它们应该在组件的生命周期方法或者特定的钩子中
+
 <!--more-->
 
 ```javascript
@@ -1297,11 +1298,13 @@ function App(){
 
 #### useDeferredValue
 
-> 允许延迟更新 UI 的非关键部分, 以让其他部分先更新
+将某个值的更新延迟到更合适的时机, 以避免不必要的渲染或阻塞主线程
 
-- 当 useDeferredValue 接收到与之前不同的值时, 除了当前渲染, 它还会安排一个后台重新渲染, 这个后台是可被中断的, 如果 value 有新的更新, React 会从头开始重新启动后台渲染
-- useDeferredValue 本身不能阻止额外的网络请求
-- useDeferredValue 本身不会引起任何固定的延迟, 一旦 React 完成原始的重新渲染, 它会立即开始使用新的延迟值处理后台重新渲染, 由事件(例如 输入)引起的任何更新都会中断后台重新渲染, 并被优先处理
+- React 内部通过调度机制(Scheduler)将 useDeferredValue 的更新标记为低优先级任务
+- React 处理高优先级任务时, 会暂时跳过 useDeferredValue 的更新直到主线程空闲时再处理
+- 如果 value 有新的更新(Object.is 进行比较), React 会重新启动一个可被中断的渲染任务
+- 不能阻止额外的网络请求
+- 不会引起任何固定的延迟, 一旦 React 完成原始的重新渲染, 它会立即开始使用新的延迟值处理后台重新渲染, 由事件(例如 输入)引起的任何更新都会中断后台重新渲染, 并被优先处理
 - 由 useDeferredValue 引起的后台重新渲染在提交到屏幕之前不会触发 Effect, 如果后台重新渲染被暂停, Effect 将在数据加载后和 UI 更新后运行
 
   - value 延迟的值
@@ -1346,9 +1349,16 @@ function App(){
 
 > 19.0.0 支持
 
-允许在进行异步操作时显示不同 state, 它接受 state 作为参数, 并返回该 state 的副本, 在异步操作(如网络请求)期间可以不同, 这种技术有助于使应用程序在感觉上响应地更加快速.
+核心思想是 `乐观更新`, 即在异步操作完成之前, 假设操作会成功并立即更新 UI, 这种技术有助于使应用程序在感觉上响应地更加快速.
 
-这个状态被称为 乐观 状态是因为通常用于立即向用户呈现执行操作的结果, 即使实际上操作需要一段时间来完成
+通过维护两个状态来实现: 一个是当前的实际状态, 另一个是乐观状态
+
+当异步操作开始时, useOptimistic 会立即更新乐观状态, 并触发 UI 重新渲染
+
+- 异步操作成功, 乐观状态和真实状态同步
+- 异步操作失败, 自动回滚乐观状态
+
+参数
 
 - state 初始时和没有挂起操作时要返回的值
 - updateFn 接受当前的 state 和传递给 addOptimistic 的乐观值, 并返回结果乐观状态. 它必须是一个纯函数
@@ -1411,10 +1421,10 @@ function App(){
   ]);
 
   async function sendMessage(formData){
-    // 模拟异步操作
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    // 更新状态
-    setMessages(messages => [...messages, {text: formData.get('message')}]);
+    try {
+      await new Promise((resolve, reject) => setTimeout(reject, 3000)); // 模拟异步操作 失败
+      setMessages(messages => [...messages, {text: formData.get('message')}]); // 更新状态
+    } catch(err) {}
   }
 
   return <Thread messages={messages} sendMessage={sendMessage}/>
@@ -1423,7 +1433,7 @@ function App(){
 
 #### useTransition
 
-在不阻塞 UI 的情况下在后台处理更新状态, 将某些状态更新标记为 transition, transition 更新不能用于控制文本输入
+将某些 状态更新 标记为 `过渡` 状态, 允许 React 在后台处理这些更新, 而不阻塞用户界面. 通过将更新任务调整优先级来实现
 
 - isPending 是否存在待处理的 transition
 - startTransition 调用此函数将状态更新标记为 transition, 传递给此函数的函数必须是同步的, React 会立即执行此函数, 并将在其执行期间发生的所有状态更新标记为 transition, 如果在其执行期间, 尝试稍后执行状态更新, 这些状态更新不会被标记为 transition
@@ -3017,145 +3027,19 @@ const FadeInButton = styled.button`
 
 ## tailwindCSS
 
-配置文件
+tailwindcss
 
-```javascript
-// https://www.tailwindcss.cn/docs/theme
-// tailwind.config.js
-module.exports = {
-  content: ['./src/**/*.{html, js, jsx, ts, tsx}'], // 指定使用 tailwind 类名的文件
-  theme: { // 自定义主题 
-    screens: {   // 响应式
-      'sm': '640px',
-      '3xl': '1600px'
-    },
-    colors: {  // 颜色
-      'blue': '#1fb6ff',
-      'gray': {
-        100: '#f7fafc',
-        900: '#1a202c'
-      },
-      transparent: 'transparent',
-      'bubble-gum': '#ff77e9'
-    },
-    spacing: { // 间距
-      0.5: '0.125rem',
-      1: '0.25rem',
-      1.5: '0.375rem'
-    },
-    opacity: { // 透明度
-      '0': '0',
-      '20', '0.2'
-    },
-    borderRadius: { // 圆角
-      'sm': '0.125rem'
-    }，
-    fontFamily: { // 字体
-      sans: ['Graphik', 'sans-serif']
-    },
-    extend: { // 在默认的主题上添加新值
-      spacing: {
-        '8xl': '96rem',
-        '9xl': '128rem'
-      },
-      fontFamily: {
-        display: 'Oswald, ui-serif' // 添加新的类名 font-display
-      },
-      borderRadius: {
-        '4xl': '2rem'
-      }
-    }
-  },
-  plugins: [  // 注入新样式, tailwind 使用 js 代替 css
-    require('@tailwindcss/forms')
-  ]
-}
-```
+@tailwindcss/postcss
 
-### 使用前缀和优先级
+postcss
 
-```css
-/* 导入 tailwindcss */
-/* 使用前缀, 如果存在类名冲突的情况时给 tailwind 生成的 class 和 css 变量添加前缀 */
-@import 'tailwindcss' prefix(tw);
-/* 
-编译后
-@layer theme {
-  .root {
-    --tw-color-red-500: oklch(0.637 0.237 25.331);
-  }
-}
-@layer utilities {
-  .tw:text-red-500 {
-    color: var(--tw-color-red-500);
-  }
-}
-*/
+v3 版本支持 `tailwind.config.js` 配置文件
 
-/* 给 tailwindcss 所有样式末尾添加 !important */
-@import 'tailwindcss' important;
-```
-
-### 指令和函数
-
-- @tailwind 插入样式到 base, components, utilities, variants
-  - base 用于重置规则或应用于html元素的默认样式
-  - components 基于类的样式, 能够使用实用程序覆盖这些样式
-  - utilities 实用程序用于小型、单一用途的类, 这些类应始终优先于任何其他样式
-- @layer 指定自定义样式应该放在哪个层中
-- @apply 将已有的样式应用到自定义样式中
-- @config 指定 Tailwind 编译时的配置文件
-
-- @theme 添加自定义主题变量或重置默认主题
-
-- @source 排除不会 tailwind 自动识别的资源
-
-- @reference 直接在 css 模块, style 标签内, 其他组件内使用 @apply, @variant, 自定义的主题中定义的样式避免重复的 css 输出
-
-- \-\-alpha() 调整颜色的透明度
-- \-\-spacing() 生成主题的间距值
-
-- theme() 在编译时允许使用 tailwind 配置的值, 函数在构建时执行
-- screen() 使用 tailwind 配置的值创建媒体查询
-
-```css
-@import 'tailwindcss';
-
-/* 指定配置文件 */
-@config './tailwind.site.config.js';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* 自定义主题或重置默认主题 */
-@theme {
-  --color-white: #000;
-}
-
-@layer components {
-  h1 {
-    @apply text-2xl;
-  }
-  h2 {
-    @apply text-xl;
-  }
-  .btn-blue {
-    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rouded;
-  }
-  .content-area {
-    height: calc(100vh - theme(spacing.12));
-    color: --alpha(var(--color-lime-500) / 50%);
-  }
-  @media screen(sm) { /* @media (min-width: 640px) */
-    /* ... */
-  }
-}
-```
+应用
 
 ```html
 <!-- bg-[#1da1f2] 使用任意值 -->
-<div class="3xl:text-lg text-gray-900 bg-bubble-gum font-display rounded-sm bg-[#1da1f2]">demo</div>
+<div class="3xl:text-lg text-gray-900 bg-white font-display rounded-sm bg-[#1da1f2]">demo</div>
 
 <!-- 使用任意值(arbitrary values) -->
 <div class="bg-[#316ff6] lg:top-[117px]">使用任意值</div>
@@ -3168,7 +3052,108 @@ module.exports = {
 
 <!-- 样式优先级: 编译后样式末尾添加 !important -->
 <div class="bg-red-500!">样式优先级</div>
+```
 
+### 指令
+
+- @tailwind 插入样式到 base, components, utilities, variants, v4 不再支持该指令
+  - base 用于重置规则或应用于html元素的默认样式
+  - components 基于类的样式, 能够使用实用程序覆盖这些样式
+  - utilities 实用程序用于小型、单一用途的类, 这些类应始终优先于任何其他样式
+
+- @import CSS 指令, 导入 tailwindcss
+- @theme 添加自定义主题变量或重置默认主题
+
+```css
+/* 导入 tailwindcss */
+/* 使用前缀, 如果存在类名冲突的情况时给 tailwind 生成的 class 和 css 变量添加前缀 */
+@import 'tailwindcss' prefix(tw);
+/* 给 tailwindcss 所有样式末尾添加 !important */
+@import 'tailwindcss' important;
+
+/* 自定义主题变量 */
+/* 命名空间颜色变量前缀: --color-*  */
+/* 命令空间字体变量前缀: --font-*  */
+/* 命令空间间距变量前缀: --spacing-*  */
+/* 命令空间圆角变量前缀: --radius-*  */
+/* ... */
+@theme {
+  --color-dblue-300: #0088ff;
+  --spacing-50: '50rem';
+  --tab-size-github: 8;
+}
+```
+
+- @source 排除不被 tailwind 自动识别的资源
+
+- @apply 将已有的实用程序应用到自定义样式中
+- @layer 指定自定义样式应该放在哪个层中
+- @utility 添加实用程序
+  - \-\-value(--theme-key-*) 解析一组主题 keys 的应用程序的值
+- @variant 在样式中应用 tailwind 的变体
+- @custom-variant 添加自定义的变体
+
+```css
+@import 'tailwindcss';
+
+/* 添加默认样式 */
+@layer base {
+  h1 {
+    font-size: var(--text-2xl);
+  }
+}
+
+/* 添加基于类的样式 */
+@layer components {
+ .card {
+    background-color: var(--color-white);
+    border-radius: var(--rounded-lg);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-xl);
+    @apply rounded-2xl;
+  }
+}
+
+/* 定义实用程序 */
+@utility content-auto {
+  content-visibility: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+@utility tab-* {
+  tab-size: --value(integer);
+}
+
+/* 添加应用程序到自定义样式中 */
+.select2-dropdown {
+  @apply rounded-b-lg shadow-md;
+}
+
+/* 添加变体 */
+.my-element {
+  background: white;
+  @variant dark {
+    background: black;
+  }
+}
+```
+
+```html
+<!-- use @layer components difine classes -->
+<div class="card">use @layer components difine classes</div>
+
+<!-- use utility -->
+<div class="content-auto hover:content-auto">Hello World!</div>
+
+<!-- use `--value(--theme-key-*)` function resolve utility value -->
+<!-- --value(type) validate the bare value -->
+<div class="tab-2 tab-4">Function utility</div>
+```
+
+- @reference 直接在 css 模块, style 标签内, 其他组件内使用 @apply, @variant, 自定义的主题中定义的样式避免重复的 css 输出
+
+```html
 <style>
   /* 使用自定义主题 */
   @reference '../../app.css';
@@ -3179,6 +3164,31 @@ module.exports = {
     @apply text-2xl font-bold text-red-500;
   }
 </style>
+```
+
+- @config 加载旧版本的 js 配置文件, v4 兼容旧版本
+- @plugin 加载旧版本的 js 配置文件中的插件, v4 兼容旧版本
+
+#### 函数
+
+- \-\-alpha() 调整颜色的透明度
+- \-\-spacing() 生成主题的间距值
+
+```css
+.my-element {
+  color: --alpha(var(--color-lime-300) / 50%);
+  margin: --spacing(4);
+  margin: calc(var(--spacing) * 4);
+}
+```
+
+- theme() 在编译时允许使用 tailwind 配置的值, 函数在构建时执行， v4 兼容旧版本
+- screen() 使用 tailwind 配置的值创建媒体查询
+
+```css
+.my-element {
+  margin: theme(spacing.12);
+}
 ```
 
 ## classnames
