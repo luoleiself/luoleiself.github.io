@@ -15,6 +15,8 @@ ISR(Incremental Static Regeneration)
 
 ### Server Component
 
+可以在服务器上渲染和缓存的 UI, 在 next.js 中, 渲染工作进一步按路由段划分, 以实现流式和部分渲染
+
 - 数据获取, 将数据获取移动到更靠近数据源的服务器上, 可以减少获取渲染所需数据的时间以及客户端需要发出的请求数量来提高性能
 - 安全性, 在服务器上保留敏感数据和逻辑, 例如 token 和 API keys, 而不会将它们暴露给客户端
 - 缓存, 通过在服务器上渲染, 结果可以被缓存并在后续请求和跨用户中重用, 减少每个请求的渲染和数据获取量
@@ -22,6 +24,13 @@ ISR(Incremental Static Regeneration)
 - 初始化页面加载和首次内容绘制(FCP), 在服务器上生成 HTML, 允许用户立即查看页面而无需等客户端下载、解析和执行渲染页面所需要的 javascript
 - SEO 和 社交网络共享(SNS), 渲染的 HTML 可供搜索引擎机器人用来检索页面, 社交网络机器人可用于为页面生成社交卡预览
 - 流式传输, 服务器组件允许将渲染工作分成块, 并在准备就绪时将其流式传输到客户端. 这允许用户提前查看页面的部分内容, 而无需等待整个页面在服务器上渲染
+
+渲染策略
+
+- Static Rendering, 路由在构建时渲染, 或在数据重新验证后在后台渲染, 结果被缓存. 以优化用户和服务器请求之间共享渲染的结果
+- Dynamic Redering, 在请求时渲染路由, 针对个性化的数据或只有在请求时才知道的信息
+- Streaming, 从服务器逐步渲染 UI, 并在准备就绪时流式传输给客户端, 允许用户在整个内容完整渲染之前立即看到页面的部分内容.
+  有助于提高初始化页面加载性能, 以及依赖于较慢数据获取的 UI. 可以使用 Suspense 组件和 loading.tsx 开启
 
 渲染流程:
 
@@ -37,12 +46,6 @@ ISR(Incremental Static Regeneration)
 - RSC 的渲染结果
 - 客户端组件应渲染的占位符及其 JavaScript 文件的引用
 - 从 RSC 传递给客户端组件的任何信息
-
-#### 渲染策略
-
-- Static Rendering, 编译时渲染
-- Dynamic Redering
-- Streaming, 使用 Suspense 组件和 loading.tsx 开启
 
 #### Server Action
 

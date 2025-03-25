@@ -44,8 +44,6 @@ React 18.3.1
 - 返回类型不匹配, React 组件需要返回 React 元素(JSX), 而 async 函数默认返回一个 Promise, 导致 React 无法正确渲染组件
 - 生命周期和状态管理, 异步操作通常涉及到副作用, 这些不应该在组件的渲染阶段进行, 它们应该在组件的生命周期方法或者特定的钩子中
 
-<!--more-->
-
 ```javascript
 // state
 let count = 0;
@@ -76,6 +74,14 @@ const workloop = () => {
 }
 workloop();
 ```
+
+### Actions
+
+> React 19 支持
+
+一个异步函数, 执行数据变更然后响应更新状态, [useTransition](#useTransition), [useActionState](#useActionState), [useOptimistic](#useOptimistic)
+
+<!--more-->
 
 ### 构建 state 原则
 
@@ -570,12 +576,14 @@ function Counter() {
 
 #### useContext <em id="useContext"></em> <!-- markdownlint-disable-line -->
 
+> React 19 直接将 \<Context\> 渲染为提供者, 不再需要使用 \<Context.Provider\>
+
 深度传递信息
 
 Context 允许父组件向其下层无论多深的任何组件提供信息, 而无需通过 props 显式传递
 
 - 接收一个 context 对象(React.createContext 的返回值)并返回该 context 的当前值
-- 仍需要在上层组件树中使用 Provider 提供 context
+- 仍需要在上层组件树中使用 Provider 提供 context, React 19 可以省略 .Provider
 
 使用 Context: 如果以下方法不适合再考虑使用
 
@@ -614,6 +622,7 @@ const ThemeContext = createContext(themes);
 function ContextDemo() {
   const [theme, setTheme] = useState('dark');
   return (
+    // React 19 可以省略 .Provider
     <ThemeContext.Provider value={themes[theme]}>
       <h2>ContextDemo</h2>
       <p>current theme: {theme}</p>
@@ -644,6 +653,7 @@ const TasksDispatchContext = createContext(null);
 function App(){
   // ...
   return (
+    // React 19 可以省略 .Provider
     <TasksProvider.Provider>
       {/* ... */}
     </TasksProvider.Provider>
@@ -653,6 +663,7 @@ function App(){
 function TasksProvider({children}){
   const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
   return (
+    // React 19 可以省略 .Provider
     <TasksContext.Provider value={tasks}>
       <TasksDispatchContext.Provider value={dispatch}>
         {children}
@@ -699,6 +710,7 @@ function Section({children}){
 
   return (
     <section>
+      {/* React 19 可以省略 .Provider */}
       <LevelContext.Provider value={level + 1}>
         {children}
       </LevelContext.Provider>
@@ -1211,9 +1223,39 @@ function App(){
 }
 ```
 
-#### useActionState(experimental)
+#### useDebugValue
 
-> 19.0.0 支持
+> 可用于在 React 开发者工具中为自定义 Hook 添加标签
+
+- 第二个可选参数, 只有在Hook被检查时才会被调用，接收debug值作为参数，并返回一个格式化的显示值
+
+```jsx
+useDebugValue(value， format?);
+
+// useDebugValue(date, date => date.toLocalDateString());
+```
+
+```jsx
+import {useDebugValue, useSyncExternalStore} from 'react';
+
+function useOnlineStatus(){
+  const isOnline = useSyncExternalStore(subscribe, () => navigator.onLine, () => true);
+  // 在开发者工具中为 StatusBar 组件添加标签
+  useDebugValue(isOnline ? 'Online' : 'Offline');
+  return isOnline;
+}
+function StatusBar(){
+  const isOnline = useOnlineStatus();
+  return <h1></h1>;
+}
+function App(){
+  return <StatusBar />;
+}
+```
+
+#### useActionState(experimental) <em id='useActionState'></em> <!--markdownlint-disable-line-->
+
+> React 19 支持
 
 可以根据某个表单动作的结果更新 state 的 Hook
 
@@ -1232,8 +1274,8 @@ function App(){
 返回值
 
 - 当前的 state, 第一次渲染时, 该值为传入的 initialState, 在 action 被调用后该值会变成 action 的返回值
-- 一个新的 action 函数用于 form 组件的 action 参数或表单中任意一个 button 组件的 formAction 参数中传递
-- 一个 isPending 标识, 用于表明是否有正在 pending 的 Transition
+- 新的 action 函数, 用于 form 组件的 action 参数或表单中任意一个 button 组件的 formAction 参数中传递
+- isPending, 用于表明是否有正在 pending 的 Transition
 
 ```jsx
 const [state, formAction, isPending] = useActionState(fn, initialState, permalink?);
@@ -1266,88 +1308,9 @@ function StatusForm(){
 }
 ```
 
-#### useDebugValue
+#### useOptimistic(experimental) <em id='useOptimistic'></em> <!--markdownlint-disable-line-->
 
-> 可用于在 React 开发者工具中为自定义 Hook 添加标签
-
-- 第二个可选参数, 只有在Hook被检查时才会被调用，接收debug值作为参数，并返回一个格式化的显示值
-
-```jsx
-useDebugValue(value， format?);
-
-// useDebugValue(date, date => date.toLocalDateString());
-```
-
-```jsx
-import {useDebugValue, useSyncExternalStore} from 'react';
-
-function useOnlineStatus(){
-  const isOnline = useSyncExternalStore(subscribe, () => navigator.onLine, () => true);
-  // 在开发者工具中为 StatusBar 组件添加标签
-  useDebugValue(isOnline ? 'Online' : 'Offline');
-  return isOnline;
-}
-function StatusBar(){
-  const isOnline = useOnlineStatus();
-  return <h1></h1>;
-}
-function App(){
-  return <StatusBar />;
-}
-```
-
-#### useDeferredValue
-
-将某个值的更新延迟到更合适的时机, 以避免不必要的渲染或阻塞主线程
-
-- React 内部通过调度机制(Scheduler)将 useDeferredValue 的更新标记为低优先级任务
-- React 处理高优先级任务时, 会暂时跳过 useDeferredValue 的更新直到主线程空闲时再处理
-- 如果 value 有新的更新(Object.is 进行比较), React 会重新启动一个可被中断的渲染任务
-- 不能阻止额外的网络请求
-- 不会引起任何固定的延迟, 一旦 React 完成原始的重新渲染, 它会立即开始使用新的延迟值处理后台重新渲染, 由事件(例如 输入)引起的任何更新都会中断后台重新渲染, 并被优先处理
-- 由 useDeferredValue 引起的后台重新渲染在提交到屏幕之前不会触发 Effect, 如果后台重新渲染被暂停, Effect 将在数据加载后和 UI 更新后运行
-
-  - value 延迟的值
-  - initialValue 可选, 组件初始渲染时使用的值, 如果省略在初始渲染期间不会延迟
-
-```jsx
-const deferredValue = useDeferredValue(value, initialValue);
-```
-
-```jsx
-import {useState, useDeferredValue, Suspense} from 'react';
-function App(){
-  const [query, setQuery] = useState('');
-  const deferredQuery = useDeferredValue(query);
-  const isStale = query !== deferredQuery;
-  
-  const style = {
-    opacity: isStale ? 0.5 : 1,
-    transition: isStale ? 'opacity 0.2s 0.2s linear': 'opacity 0.2s 0.2s linear'
-  }
-
-  // 每次输入时, 旧的列表会略微变暗, 直到新的结果列表加载完毕
-  // 或者使用 CSS 过渡来延迟变暗的过程
-  return (
-    <>
-      <label>
-        Search albums:
-        <input value={query} onChange={(e) => setQuery(e.target.value)}/>
-      </label>
-      <Suspense>
-        <div id="style-id" style={style}>
-          {/* 查询结果列表 */}
-          <SearhReasults query={deferredQuery}/>
-        </div>
-      </Suspense>
-    </>
-  )
-}
-```
-
-#### useOptimistic(experimental)
-
-> 19.0.0 支持
+> React 19 支持
 
 核心思想是 `乐观更新`, 即在异步操作完成之前, 假设操作会成功并立即更新 UI, 这种技术有助于使应用程序在感觉上响应地更加快速.
 
@@ -1355,7 +1318,7 @@ function App(){
 
 当异步操作开始时, useOptimistic 会立即更新乐观状态, 并触发 UI 重新渲染
 
-- 异步操作成功, 乐观状态和真实状态同步
+- 异步操作成功, 同步乐观状态和真实状态
 - 异步操作失败, 自动回滚乐观状态
 
 参数
@@ -1431,12 +1394,65 @@ function App(){
 }
 ```
 
-#### useTransition
+#### useDeferredValue
+
+将某个值的更新延迟到更合适的时机, 以避免不必要的渲染或阻塞主线程
+
+- React 内部通过调度机制(Scheduler)将 useDeferredValue 的更新标记为低优先级任务
+- React 处理高优先级任务时, 会暂时跳过 useDeferredValue 的更新直到主线程空闲时再处理
+- 如果 value 有新的更新(Object.is 进行比较), React 会重新启动一个可被中断的渲染任务
+- 不能阻止额外的网络请求
+- 不会引起任何固定的延迟, 一旦 React 完成原始的重新渲染, 它会立即开始使用新的延迟值处理后台重新渲染, 由事件(例如 输入)引起的任何更新都会中断后台重新渲染, 并被优先处理
+- 由 useDeferredValue 引起的后台重新渲染在提交到屏幕之前不会触发 Effect, 如果后台重新渲染被暂停, Effect 将在数据加载后和 UI 更新后运行
+
+  - value 延迟的值
+  - initialValue 可选, 组件初始渲染时使用的值, 如果省略在初始渲染期间不会延迟
+
+```jsx
+const deferredValue = useDeferredValue(value, initialValue);
+```
+
+```jsx
+import {useState, useDeferredValue, Suspense} from 'react';
+function App(){
+  const [query, setQuery] = useState('');
+  const deferredQuery = useDeferredValue(query);
+  const isStale = query !== deferredQuery;
+  
+  const style = {
+    opacity: isStale ? 0.5 : 1,
+    transition: isStale ? 'opacity 0.2s 0.2s linear': 'opacity 0.2s 0.2s linear'
+  }
+
+  // 每次输入时, 旧的列表会略微变暗, 直到新的结果列表加载完毕
+  // 或者使用 CSS 过渡来延迟变暗的过程
+  return (
+    <>
+      <label>
+        Search albums:
+        <input value={query} onChange={(e) => setQuery(e.target.value)}/>
+      </label>
+      <Suspense>
+        <div id="style-id" style={style}>
+          {/* 查询结果列表 */}
+          <SearhReasults query={deferredQuery}/>
+        </div>
+      </Suspense>
+    </>
+  )
+}
+```
+
+#### useTransition <em id='useTransition'></em> <!--markdownlint-disable-line-->
 
 将某些 状态更新 标记为 `过渡` 状态, 允许 React 在后台处理这些更新, 而不阻塞用户界面. 通过将更新任务调整优先级来实现
 
 - isPending 是否存在待处理的 transition
-- startTransition 调用此函数将状态更新标记为 transition, 传递给此函数的函数必须是同步的, React 会立即执行此函数, 并将在其执行期间发生的所有状态更新标记为 transition, 如果在其执行期间, 尝试稍后执行状态更新, 这些状态更新不会被标记为 transition
+- startTransition 调用此函数将状态更新标记为 transition, 传递给此函数的函数 React 会立即执行并将在其执行期间发生的所有状态更新标记为 transition
+  - 如果在其执行期间, 尝试在 setTimeout 中执行状态更新, 这些状态更新不会被标记为 transition
+  - 只有在可以访问该状态的 set 函数时, 才能将其对应的状态更新包装为 transition
+  - 标记为 transition 的状态更新将被其状态更新打断
+  - 不能用于控制文本输入
 
 ```jsx
 const [isPending, startTransition] = useTransition();
@@ -1858,7 +1874,7 @@ function TabContainer(){
 
 ### use(experimental)
 
-> 19.0.0 支持
+> React 19 支持
 
 读取类似于 Promise 或 context 的资源的值
 
@@ -1904,9 +1920,9 @@ taintUniqueValue(message, lifetime, value);
 
 ### useFormStatus(experimental)
 
-> 19.0.0 支持
+> React 19 支持
 
-获取上一次表单提交状态信息 Hook, 必须从在 \<form\> 内渲染的组件中调用, 仅会返回父级 form 的状态信息, 不会返回同一组件或子组件中渲染的然和 form 的状态信息
+获取上一次表单提交状态信息 Hook, 必须从在 [\<form\>](#form) 内渲染的组件中调用, 仅会返回父级 form 的状态信息, 不会返回同一组件或子组件中渲染的然和 form 的状态信息
 
 - pending 标识父级 form 是否正在等待提交, 如果调用 useFormStatus 的组件未嵌套在 form 中, 总是返回 false
 - data 包含父级 form 正在提交的 formData 数据, 如果没有进行提交为 null
@@ -1995,7 +2011,9 @@ function Form(){
 - suppressContentEditableWarning 此属性禁用 当 DOM 元素拥有 contentEditable 属性时，React 发出警告
 - suppressHydrationWarning 此属性禁用警告, 如果 React 服务器与客户端渲染不同的内容时发出警告
 
-#### 表单
+### \<form\> <em id='form'></em> <!--markdownlint-disable-line-->
+
+React \<form\> action, \<input\> 和 \<button\> 的 formAction 支持传入函数, 以便使用 Actions 自动提交表单, 当 \<form\> action 提交成功时, React 将自动为非受控组件重置表单
 
 - React 不支持在 option 元素上传递 selected 属性
 
@@ -2067,6 +2085,12 @@ function App(){
 - persist 不适用 ReactDOM, 在 React Native 中, 调用此函数以读取事件后的属性
 - isPersistent 不适用 ReactDOM, 在 React Native 中, 返回是否调用了 persist
 
+### 支持文档元数据
+
+> React 19 支持
+
+在组件中添加 title, link, meta 文档元数据标签, React 将自动将它们提升到文档的 head 部分. 旧版本需要借助 `react-helmet` 库实现
+
 ## ReactDOM API
 
 ### createPortal
@@ -2130,7 +2154,7 @@ function App(){
 
 ### findDOMNode(deprected)
 
-React 18 开始, 使用 ref 代替
+> React 18 开始, 使用 ref 代替
 
 获取组件实例对用的浏览器 DOM 节点
 
@@ -2140,7 +2164,7 @@ const domNode = findDOMNode(componentInstance);
 
 ### hydrate(deprected)
 
-React 18 开始, 使用 [hydrateRoot](#hydrateRoot) 代替
+> React 18 开始, 使用 [hydrateRoot](#hydrateRoot) 代替
 
 允许 React 17 及以下版本中使用 `react-dom/server` 生成的 HTML 内容作为浏览器 DOM 节点, 并在其中显示 React 组件
 
@@ -2154,7 +2178,7 @@ hydrate(reactNode, domNode, callback?);
 
 ### render(deprected)
 
-React 18 开始, 使用 [createRoot](#createRoot) 代替
+> React 18 开始, 使用 [createRoot](#createRoot) 代替
 
 将一段 JSX 片段渲染到浏览器 DOM 容器节点中
 
@@ -2171,7 +2195,7 @@ render(<App/>, document.getElementById('root'));
 
 ### unmountComponentAtNode(deprected)
 
-React 18 开始, 使用 root.unmount 代替
+> React 18 开始, 使用 root.unmount 代替
 
 从 DOM 中移除一个已挂载的 React 组件
 
@@ -2181,7 +2205,7 @@ unmountComponentAtNode(domNode);
 
 ### preconnect(experimental) <em id="preconnect"></em> <!--markdownlint-disable-line-->
 
-> 19.0.0 支持
+> React 19 支持
 
 提前连接到一个期望从中加载资源的服务器
 
@@ -2203,7 +2227,7 @@ function AppRoot(){
 
 ### prefetchDNS(experimental)
 
-> 19.0.0 支持
+> React 19 支持
 
 允许提前查找期望从中加载资源的服务器的 IP, 和 [preconnect](#preconnect) 类似
 
@@ -2213,9 +2237,9 @@ prefetchDNS(href);
 
 ### preinit(experimental) <em id="preinit"></em> <!--markdownlint-disable-line-->
 
-> 19.0.0 支持
+> React 19 支持
 
-> React 框架通常会内置资源处理方案, 不需要手动调用此 API
+React 框架通常会内置资源处理方案, 不需要手动调用此 API
 
 预获取和评估样式表或外部脚本
 
@@ -2238,9 +2262,9 @@ preinit(href, options);
 
 ### preinitModule(experimental) <em id="preinitModule"></em> <!--markdownlint-disable-line-->
 
-> 19.0.0 支持
+> React 19 支持
 
-> React 框架通常会内置资源处理方案, 不需要手动调用此 API
+React 框架通常会内置资源处理方案, 不需要手动调用此 API
 
 预获取和评估 ESM 模块
 
@@ -2259,9 +2283,9 @@ preinitModule(href, options)
 
 ### preload(experimental)
 
-> 19.0.0 支持
+> React 19 支持
 
-> React 框架通常会内置资源处理方案, 不需要手动调用此 API
+React 框架通常会内置资源处理方案, 不需要手动调用此 API
 
 预获取期望使用的资源, 比如样式表、字体、外部脚本
 
@@ -2273,9 +2297,9 @@ preload(href, options);
 
 ### preloadModule(experimental)
 
-> 19.0.0 支持
+> React 19 支持
 
-> React 框架通常会内置资源处理方案, 不需要手动调用此 API
+React 框架通常会内置资源处理方案, 不需要手动调用此 API
 
 预获取期望使用的 ESM 模块
 
@@ -2295,8 +2319,8 @@ preloadModule(href, options);
 
 - domNode 某个已经存在的 DOM 节点
 - options
-  - onCaughtError(experimental) 当 React 捕获到错误边界时调用, 19.0.0 支持
-  - onUncaughtError(experimental) 当错误边界抛出了一个无法捕获的错误时调用, 19.0.0 支持
+  - onCaughtError(experimental) 当 React 捕获到错误边界时调用, React 19 支持
+  - onUncaughtError(experimental) 当错误边界抛出了一个无法捕获的错误时调用, React 19 支持
   - onRecoverableError 当 React 自动从错误中恢复时调用
   - identifierPrefix 一个字符串, React 使用此字符串作为 [useId](#useId) 生成的 id 的前缀, 当在一个页面中使用多个根节点时可以避免冲突
 
@@ -2400,7 +2424,7 @@ setInterval(() => {
 
 #### renderToNodeStream(deprected)
 
-React 18 开始, 改用 [renderToPipeableStream](#renderToPipeableStream)
+> React 18 开始, 改用 [renderToPipeableStream](#renderToPipeableStream)
 
 输出 HTML 字符串的 Node.js 只读流, 此方法会缓冲所有输出, 因此实际上它并没有提供任何流式传输的好处
 
@@ -2412,6 +2436,23 @@ React 18 开始, 改用 [renderToPipeableStream](#renderToPipeableStream)
 
 ```jsx
 const stream = renderToNodeStream(reactNode, options?);
+```
+
+#### renderToStaticNodeStream(deprected)
+
+> React 19 开始废弃
+
+将 Node.js 只读流渲染为非交互式 React 树, 无法 hydrate 交互功能
+
+输出 HTML 字符串的 Node.js 只读流, 此方法会缓冲所有输出, 因此实际上它并没有提供任何流式传输的好处
+
+此方法输出的 HTML 不能被客户端 hydrate 转换成具有交互功能
+
+- options
+  - identifierPrefix 字符串前缀, 由 [useId](#useId) 生成的 id 使用
+
+```jsx
+const stream = renderToStaticNodeStream(reactNode, options?);
 ```
 
 #### renderToPipeableStream <em id="renderToPipeableStream"></em> <!--markdownlint-disable-line-->
@@ -2452,21 +2493,6 @@ app.use('/', (request, response) => {
     }
   });
 });
-```
-
-#### renderToStaticNodeStream
-
-将 Node.js 只读流渲染为非交互式 React 树, 无法 hydrate 交互功能
-
-输出 HTML 字符串的 Node.js 只读流, 此方法会缓冲所有输出, 因此实际上它并没有提供任何流式传输的好处
-
-此方法输出的 HTML 不能被客户端 hydrate 转换成具有交互功能
-
-- options
-  - identifierPrefix 字符串前缀, 由 [useId](#useId) 生成的 id 使用
-
-```jsx
-const stream = renderToStaticNodeStream(reactNode, options?);
 ```
 
 ### Web 流服务器 API
@@ -2563,6 +2589,63 @@ app.use('/', (request, response) => {
   const html = renderToStaticMarkup(<App/>);
   response.send(html);
 });
+```
+
+## ReactDOM Static API
+
+允许为 React 组件生成静态 HTML
+
+### prerender
+
+> React 19 支持
+
+使用 可读的 Web 流将 React 树渲染为静态 HTML, 仅在支持 Web 流的环境中使用, 包括 浏览器、Deno 和一些现代的边缘运行时环境
+
+- options <em id='prerender_options'></em> <!--markdownlint-disable-line-->
+  - bootstrapScriptContent, 插入 script 标签内的资源
+  - bootstrapScripts, 引入资源链接
+  - bootstrapModules, 引入资源链接, 使用 模块 方式
+  - identifierPrefix, useId Hooks 的前缀
+  - namespaceURI, 根命名空间 URI
+  - onError, 函数, 发生错误时调用
+  - progressiveChunkSize, 块的大小
+  - signal, 中断信号, 允许中断 SSR
+
+```tsx
+const { prelude } = await prerender(reactNode, options);
+
+import { prerender } from 'react-dom/static';
+
+async function handler(request) {
+  const { prelude } = await prerender(<App />, {
+    bootstrapScripts: ['/main.js']
+  });
+  return new Response(prelude, {
+    headers: {'Content-Type': 'text/html'}
+  })
+}
+```
+
+### prerenderToNodeStream
+
+> React 19 支持
+
+使用 Node.js 流将 React 树渲染为静态 HTML, 仅在支持 Node.js 流的环境中使用
+
+- options, 参数同 [prerender options](#prerender_options)
+
+```tsx
+const { prelude } = await prerenderToNodeStream(reactNode, options);
+
+import { prerenderToNodeStream } from 'react-dom/static';
+app.use('/', async (req, res) => {
+  const { prelude } = await prerenderToNodeStream(<App />, {
+    bootstrapScripts: ['/main.js']
+  });
+
+  res.setHeader('Content-Type', 'text/html');
+  prelude.pipe(res);
+})
 ```
 
 ## [react-transition-group](https://reactcommunity.org/react-transition-group/)
