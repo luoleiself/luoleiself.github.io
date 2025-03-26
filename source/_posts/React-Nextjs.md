@@ -409,7 +409,7 @@ export const preferredRegion: string = 'auto'; // auto | global | home | string 
 
 渲染路由时, 第一次调用特定请求时结果不在内存中而是缓存 `MISS`, 函数将被执行获取外部数据后存储到内存中,
 在同一渲染过程中, 请求的后续函数调用将是缓存 `HIT`, 数据在不执行函数的情况下从内存中返回,
-一旦路由被渲染并且渲染过程完成时, 内存将会被 重置, 所有请求记忆都会被清除
+一旦路由被渲染并且渲染过程完成时, 内存将会被 `重置`, 所有请求记忆都会被清除
 
 - 仅适用于 fetch 请求中的 GET 方法, 其他请求方法不会被记忆
 - 仅适用于 React 组件树, 例如 `generateMetadata`、`generateStaticParams`、Layout、Page 和其他服务器组件中, route handlers 不适用因为不属于 React 组件树
@@ -443,7 +443,7 @@ next.js 在构建时自动渲染和缓存路由, 而不是在服务器上为每�
 退出完整路由缓存
 
 - 使用 dynamic APIs, cookies, headers, connection, draftMode, searchParams prop, unstable_noStore
-- 导出 dynamic = 'force-dynamic' 或者 revalidate = 0
+- 在 layout、page、route Handler 中 export const dynamic = 'force-dynamic'; 或者 export const revalidate = 0;
 - 退出 Data Cache, 如果路由有一个未缓存的获取请求, 这将该路由退出完整路由缓存为每个请求获取特定数据, 其他未退出数据缓存的获取请求仍将缓存在数据缓存中
   这允许缓存和未缓存数据的混合.
   

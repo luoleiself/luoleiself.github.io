@@ -2648,6 +2648,28 @@ app.use('/', async (req, res) => {
 })
 ```
 
+## React Server Component
+
+服务器组件是一种新型的组件, 它在打包之前, 在独立于客户端应用程序或 SSR 服务器的环境中提前渲染. 服务器组件可以在构建时运行一次, 也可以在每次请求时在 web 服务器中运行.
+
+异步组件是服务器组件的一个新特性, 允许在渲染中 await.
+
+```tsx
+async function Page(){
+  // ...
+}
+```
+
+### Directives
+
+- 'use client' 只能使用 单引号 或 双引号
+
+定义了在 `模块依赖树` 上的服务器和客户端代码的边界，而不是在 `渲染树` 上.
+
+- 'use server' 只能使用 单引号 或 双引号
+
+标记可以从客户端代码调用的服务器函数, 由于网络调用始终是异步的, 'use server' 只能用于异步函数
+
 ## [react-transition-group](https://reactcommunity.org/react-transition-group/)
 
 ### Transition
