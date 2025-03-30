@@ -266,6 +266,9 @@ Hi ......! You\'ve successfully authenticated, but GitHub does not provide shell
 # 初始化一个 bash
 [vagrant@centos8s ~]$ eval `ssh-agent -s`
 
+# 将本地 root 的公钥文件复制到远程主机 root 用户下
+[vagrant@centos8s ~]$ ssh-copy-id root@192.168.31.163
+
 # 使用 ssh-add 将密钥添加到 ssh 认证代理
 [vagrant@centos8s ~]$ ssh-add ~/.ssh/github_25519
 Identity added: /home/vagrant/.ssh/github_25519 (......@163.com)

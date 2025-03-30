@@ -923,6 +923,82 @@ EXPOSE 80
 CMD ["python", "app.py"]
 ```
 
+### docker compose 数据库
+
+```yaml
+name: myapp # ${COMPOSE_PROJECT_NAME} 以环境变量形式访问项目名称
+services:
+  redis:
+    image: redis:7
+#   使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器
+#   container_name: redis-container
+    ports:
+      - '6379:6379'
+    command: ['redis-server', '--appendonly yes', '--logfile /data/redis.log']
+    volumes:
+      - /var/lib/redis:/data
+      - /var/lib/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - my-app-network
+#   deploy:
+#     replicas: 3
+#       labels:
+#         com.myapp.redis.description: 'This label will appear on the redis server'
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test123
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql
+    networks:
+      - my-app-network
+  mongodb:
+#   mongodb 6.0 以上 docker 镜像不再包含 mongo shell 工具. 只包含 mongod 数据库服务器
+#   手动下载 mongosh 工具, 或者使用 mongodb 6.0 之前的版本
+    image: mongo:latest
+    container_name: mongodb-container
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGODB_BIND_IP: 0.0.0.0
+    command: ['mongod', '--logpath', '/var/log/mongodb/mongod.log']
+    volumes:
+      - /var/lib/mongodb:/data/db
+      - /var/lib/mongodb/logs:/var/log/mongodb
+    networks:
+      - my-app-network
+#   挂载临时文件系统添加初始化脚本安装 mongosh
+    tmpfs:
+      - /tmp
+#   首次创建容器需要先执行 entrypoint 命令安装 mongosh, 然后再注释 entrypoint
+#   entrypoint: ['/bin/sh', '-c', 'apt-get update && apt-get install -y wget && wget -qO- https://downloads.mongodb.com/compass/mongosh-1.5.4-linux-x64.tgz | tar -xz -C /usr/local/bin --strip-components 1 mongosh-1.5.4-linux-x64/bin/mongosh && exec docker-entrypoint.sh $$MONGO_INITDB_ROOT_USERNAME $$MONGO_INITDB_ROOT_PASSWORD']
+# sqllite:
+#   image: sqllite3:latest
+#   command: ['sqllite3', '/data/database.db'] # 启动 sqllite 并指向数据库文件
+#   volumes:
+#     - /var/lib/sqllite:/data
+#   networks:
+#     - my-app-network
+volumes:
+  db-data:
+    labels:
+      - 'com.myapp.volumes.description=share data vaolume'
+networks:
+  my-app-network:
+    driver: bridge
+    name: myapp-network # 定义网络名称, 在 docker network 列表中显示
+    attachable: true  # 允许独立的容器连接到此网络
+    enable_ipv6: true
+```
+
 ## Docker Swarm
 
 ### 介绍
