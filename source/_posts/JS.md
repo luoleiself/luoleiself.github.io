@@ -237,7 +237,9 @@ el.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 ```javascript
 window.requestIdleCallback(() => {
   console.log('requestIdleCallback')
-}, {timeout: 10})
+}, {timeout: 10});
+
+window.scheduler.postTack();
 ```
 
 ### [window.crypto](https://developer.mozilla.org/zh-CN/docs/Web/API/Crypto)
