@@ -431,43 +431,6 @@
   </entry>
   
   <entry>
-    <title>Redis-List</title>
-    <link href="https://luoleiself.github.io/2022/11/3f42dc25499d/"/>
-    <id>https://luoleiself.github.io/2022/11/3f42dc25499d/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2024-09-19T07:48:57.433Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;Lists-命令&quot;&gt;&lt;a href=&quot;#Lists-命令&quot; class=&quot;headerlink&quot; title=&quot;Lists 命令&quot;&gt;&lt;/a&gt;Lists 命令&lt;/h3&gt;&lt;blockquote&gt;
-&lt;p&gt;Redis 3.2 之后, List 数据类型底层使用 quickList 代替双向链表和压缩列表&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.&lt;/p&gt;
-&lt;p&gt;List 类型的底层数据结构是由&lt;strong&gt;双向链表&lt;/strong&gt;或&lt;strong&gt;压缩列表&lt;/strong&gt;实现的&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;如果列表元素的个数小于 512 个,列表每个元素值都小于 64B 时, Redis 使用&lt;strong&gt;压缩列表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
-&lt;li&gt;如果列表元素不满足上面的条件, Redis 使用&lt;strong&gt;双向链表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight yaml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 配置底层数据结构存储数量限制&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;hash-max-listpack-entries&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;512&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;hash-max-listpack-value&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;64&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;添加元素&quot;&gt;&lt;a href=&quot;#添加元素&quot; class=&quot;headerlink&quot; title=&quot;添加元素&quot;&gt;&lt;/a&gt;添加元素&lt;/h4&gt;&lt;p&gt;LPUSH 和 LPUSHX 命令将多个元素&lt;strong&gt;逆序&lt;/strong&gt;插入到列表头部&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建&lt;/li&gt;
-&lt;li&gt;LPUSHX key element [element …] 批量添加多个元素到&lt;strong&gt;已存在&lt;/strong&gt;的列表头部并返回列表的长度, 列表为空或者不存在返回 0&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSH list:zhang name1 name2 name3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSHX list:zhang name1 name4 name5 name6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSH list:zhang name1 name4 name5 name6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LRANGE list:zhang 0 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 1) &lt;span class=&quot;string&quot;&gt;&amp;quot;name6&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 2) &lt;span class=&quot;string&quot;&gt;&amp;quot;name5&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 4) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 5) &lt;span class=&quot;string&quot;&gt;&amp;quot;name6&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 6) &lt;span class=&quot;string&quot;&gt;&amp;quot;name5&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 7) &lt;span class=&quot;string&quot;&gt;&amp;quot;name4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 8) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 9) &lt;span class=&quot;string&quot;&gt;&amp;quot;name3&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10) &lt;span class=&quot;string&quot;&gt;&amp;quot;name2&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# LPUSHX 对空列表或不存在的列表不进行操作&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSHX list:zhang:1 name1 name2 name3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;list:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &lt;span class=&quot;string&quot;&gt;&amp;quot;hash:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Redis-Other-Structs</title>
     <link href="https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/"/>
     <id>https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/</id>
@@ -532,11 +495,48 @@
   </entry>
   
   <entry>
+    <title>Redis-List</title>
+    <link href="https://luoleiself.github.io/2022/11/3f42dc25499d/"/>
+    <id>https://luoleiself.github.io/2022/11/3f42dc25499d/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2024-09-19T07:48:57.433Z</updated>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Lists-命令&quot;&gt;&lt;a href=&quot;#Lists-命令&quot; class=&quot;headerlink&quot; title=&quot;Lists 命令&quot;&gt;&lt;/a&gt;Lists 命令&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;Redis 3.2 之后, List 数据类型底层使用 quickList 代替双向链表和压缩列表&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.&lt;/p&gt;
+&lt;p&gt;List 类型的底层数据结构是由&lt;strong&gt;双向链表&lt;/strong&gt;或&lt;strong&gt;压缩列表&lt;/strong&gt;实现的&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果列表元素的个数小于 512 个,列表每个元素值都小于 64B 时, Redis 使用&lt;strong&gt;压缩列表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
+&lt;li&gt;如果列表元素不满足上面的条件, Redis 使用&lt;strong&gt;双向链表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight yaml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 配置底层数据结构存储数量限制&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;hash-max-listpack-entries&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;512&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;hash-max-listpack-value&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;64&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;添加元素&quot;&gt;&lt;a href=&quot;#添加元素&quot; class=&quot;headerlink&quot; title=&quot;添加元素&quot;&gt;&lt;/a&gt;添加元素&lt;/h4&gt;&lt;p&gt;LPUSH 和 LPUSHX 命令将多个元素&lt;strong&gt;逆序&lt;/strong&gt;插入到列表头部&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建&lt;/li&gt;
+&lt;li&gt;LPUSHX key element [element …] 批量添加多个元素到&lt;strong&gt;已存在&lt;/strong&gt;的列表头部并返回列表的长度, 列表为空或者不存在返回 0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSH list:zhang name1 name2 name3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSHX list:zhang name1 name4 name5 name6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSH list:zhang name1 name4 name5 name6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LRANGE list:zhang 0 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 1) &lt;span class=&quot;string&quot;&gt;&amp;quot;name6&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 2) &lt;span class=&quot;string&quot;&gt;&amp;quot;name5&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 4) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 5) &lt;span class=&quot;string&quot;&gt;&amp;quot;name6&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 6) &lt;span class=&quot;string&quot;&gt;&amp;quot;name5&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 7) &lt;span class=&quot;string&quot;&gt;&amp;quot;name4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 8) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 9) &lt;span class=&quot;string&quot;&gt;&amp;quot;name3&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10) &lt;span class=&quot;string&quot;&gt;&amp;quot;name2&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# LPUSHX 对空列表或不存在的列表不进行操作&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSHX list:zhang:1 name1 name2 name3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;list:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &lt;span class=&quot;string&quot;&gt;&amp;quot;hash:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Redis-Set-Zset</title>
     <link href="https://luoleiself.github.io/2022/11/3bfcb546cd4a/"/>
     <id>https://luoleiself.github.io/2022/11/3bfcb546cd4a/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2024-09-19T08:59:22.291Z</updated>
+    <updated>2025-03-24T10:37:44.774Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;Sets-命令&quot;&gt;&lt;a href=&quot;#Sets-命令&quot; class=&quot;headerlink&quot; title=&quot;Sets 命令&quot;&gt;&lt;/a&gt;Sets 命令&lt;/h3&gt;&lt;p&gt;Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.&lt;/p&gt;
@@ -578,7 +578,7 @@
     <link href="https://luoleiself.github.io/2022/11/80b3dfc88923/"/>
     <id>https://luoleiself.github.io/2022/11/80b3dfc88923/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2024-07-26T14:00:47.959Z</updated>
+    <updated>2025-03-24T10:29:30.578Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;Strings-命令&quot;&gt;&lt;a href=&quot;#Strings-命令&quot; class=&quot;headerlink&quot; title=&quot;Strings 命令&quot;&gt;&lt;/a&gt;Strings 命令&lt;/h3&gt;&lt;p&gt;字符串是基础的 key-value 类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 &lt;strong&gt;512MB&lt;/strong&gt;.&lt;/p&gt;
@@ -707,7 +707,7 @@
     <link href="https://luoleiself.github.io/2022/05/bc4d38208f0f/"/>
     <id>https://luoleiself.github.io/2022/05/bc4d38208f0f/</id>
     <published>2022-05-31T06:40:43.000Z</published>
-    <updated>2025-02-26T14:55:52.163Z</updated>
+    <updated>2025-03-29T08:29:26.686Z</updated>
     
     
     <summary type="html">&lt;h3 id=&quot;命令行输出内容变身&quot;&gt;&lt;a href=&quot;#命令行输出内容变身&quot; class=&quot;headerlink&quot; title=&quot;命令行输出内容变身&quot;&gt;&lt;/a&gt;命令行输出内容变身&lt;/h3&gt;&lt;p&gt;格式: &#92;033[显示方式;前景色;背景色 m …… &#92;033[0m&lt;/p&gt;
