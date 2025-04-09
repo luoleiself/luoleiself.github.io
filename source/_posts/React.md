@@ -2013,7 +2013,7 @@ function Form(){
 
 ### \<form\> <em id='form'></em> <!--markdownlint-disable-line-->
 
-React \<form\> action, \<input\> 和 \<button\> 的 formAction 支持传入函数, 以便使用 Actions 自动提交表单, 当 \<form\> action 提交成功时, React 将自动为非受控组件重置表单
+React \<form\> action, \<input\> 和 \<button\> 的 formAction 支持传入函数, 以便使用 Actions 自动提交表单, 当 \<form\> action 提交成功时, React 将自动为 `非受控组件` 重置表单
 
 - React 不支持在 option 元素上传递 selected 属性
 
