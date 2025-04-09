@@ -431,6 +431,43 @@
   </entry>
   
   <entry>
+    <title>Redis-List</title>
+    <link href="https://luoleiself.github.io/2022/11/3f42dc25499d/"/>
+    <id>https://luoleiself.github.io/2022/11/3f42dc25499d/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2024-09-19T07:48:57.433Z</updated>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Lists-命令&quot;&gt;&lt;a href=&quot;#Lists-命令&quot; class=&quot;headerlink&quot; title=&quot;Lists 命令&quot;&gt;&lt;/a&gt;Lists 命令&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;Redis 3.2 之后, List 数据类型底层使用 quickList 代替双向链表和压缩列表&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.&lt;/p&gt;
+&lt;p&gt;List 类型的底层数据结构是由&lt;strong&gt;双向链表&lt;/strong&gt;或&lt;strong&gt;压缩列表&lt;/strong&gt;实现的&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果列表元素的个数小于 512 个,列表每个元素值都小于 64B 时, Redis 使用&lt;strong&gt;压缩列表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
+&lt;li&gt;如果列表元素不满足上面的条件, Redis 使用&lt;strong&gt;双向链表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight yaml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 配置底层数据结构存储数量限制&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;hash-max-listpack-entries&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;512&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;hash-max-listpack-value&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;64&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;添加元素&quot;&gt;&lt;a href=&quot;#添加元素&quot; class=&quot;headerlink&quot; title=&quot;添加元素&quot;&gt;&lt;/a&gt;添加元素&lt;/h4&gt;&lt;p&gt;LPUSH 和 LPUSHX 命令将多个元素&lt;strong&gt;逆序&lt;/strong&gt;插入到列表头部&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建&lt;/li&gt;
+&lt;li&gt;LPUSHX key element [element …] 批量添加多个元素到&lt;strong&gt;已存在&lt;/strong&gt;的列表头部并返回列表的长度, 列表为空或者不存在返回 0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSH list:zhang name1 name2 name3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSHX list:zhang name1 name4 name5 name6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSH list:zhang name1 name4 name5 name6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LRANGE list:zhang 0 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 1) &lt;span class=&quot;string&quot;&gt;&amp;quot;name6&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 2) &lt;span class=&quot;string&quot;&gt;&amp;quot;name5&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 4) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 5) &lt;span class=&quot;string&quot;&gt;&amp;quot;name6&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 6) &lt;span class=&quot;string&quot;&gt;&amp;quot;name5&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 7) &lt;span class=&quot;string&quot;&gt;&amp;quot;name4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 8) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 9) &lt;span class=&quot;string&quot;&gt;&amp;quot;name3&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10) &lt;span class=&quot;string&quot;&gt;&amp;quot;name2&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# LPUSHX 对空列表或不存在的列表不进行操作&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSHX list:zhang:1 name1 name2 name3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;list:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &lt;span class=&quot;string&quot;&gt;&amp;quot;hash:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Redis-Other-Structs</title>
     <link href="https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/"/>
     <id>https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/</id>
@@ -449,6 +486,48 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFADD hll foo bar zap&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFADD hll zap zap zap&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFADD hll foo bar&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFCOUNT hll&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFADD other-hll 1 2 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; PFCOUNT hll other-hll&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
+    
+    
+    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis-Set-Zset</title>
+    <link href="https://luoleiself.github.io/2022/11/3bfcb546cd4a/"/>
+    <id>https://luoleiself.github.io/2022/11/3bfcb546cd4a/</id>
+    <published>2022-11-09T10:03:19.000Z</published>
+    <updated>2025-03-24T10:37:44.774Z</updated>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Sets-命令&quot;&gt;&lt;a href=&quot;#Sets-命令&quot; class=&quot;headerlink&quot; title=&quot;Sets 命令&quot;&gt;&lt;/a&gt;Sets 命令&lt;/h3&gt;&lt;p&gt;Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.&lt;/p&gt;
+&lt;p&gt;Set: 键名: key, 键类型: set, 键值: string&lt;/p&gt;
+&lt;p&gt;Set 类型的底层数据结构是由&lt;strong&gt;哈希表&lt;/strong&gt;或&lt;strong&gt;整数集合&lt;/strong&gt;实现的&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果集合中的元素都是整数且元素个数小于 512 个, Redis 使用&lt;strong&gt;整数集合&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
+&lt;li&gt;如果集合中的元素不满足上面条件, Redis 使用&lt;strong&gt;哈希表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight yaml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 配置底层数据结构存储数量限制&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;set-max-intset-entries&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;512&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;成员操作&quot;&gt;&lt;a href=&quot;#成员操作&quot; class=&quot;headerlink&quot; title=&quot;成员操作&quot;&gt;&lt;/a&gt;成员操作&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&quot;是否包含成员&quot;&gt;&lt;a href=&quot;#是否包含成员&quot; class=&quot;headerlink&quot; title=&quot;是否包含成员&quot;&gt;&lt;/a&gt;是否包含成员&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在&lt;/li&gt;
+&lt;li&gt;SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, Redis 6.2.0 支持&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *  &lt;span class=&quot;comment&quot;&gt;# 查看当前数据库中的 key&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(empty array)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 空集合判断是否包含成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello hehe&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 向 myset 添加成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SADD myset hello world hehe haha gg&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 判断 myset 是否包含成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello yy hehe&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
     
     
     
@@ -495,72 +574,31 @@
   </entry>
   
   <entry>
-    <title>Redis-List</title>
-    <link href="https://luoleiself.github.io/2022/11/3f42dc25499d/"/>
-    <id>https://luoleiself.github.io/2022/11/3f42dc25499d/</id>
+    <title>Redis-app</title>
+    <link href="https://luoleiself.github.io/2022/11/46691d911248/"/>
+    <id>https://luoleiself.github.io/2022/11/46691d911248/</id>
     <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2024-09-19T07:48:57.433Z</updated>
+    <updated>2024-12-18T08:40:33.315Z</updated>
     
     
-    <summary type="html">&lt;h3 id=&quot;Lists-命令&quot;&gt;&lt;a href=&quot;#Lists-命令&quot; class=&quot;headerlink&quot; title=&quot;Lists 命令&quot;&gt;&lt;/a&gt;Lists 命令&lt;/h3&gt;&lt;blockquote&gt;
-&lt;p&gt;Redis 3.2 之后, List 数据类型底层使用 quickList 代替双向链表和压缩列表&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.&lt;/p&gt;
-&lt;p&gt;List 类型的底层数据结构是由&lt;strong&gt;双向链表&lt;/strong&gt;或&lt;strong&gt;压缩列表&lt;/strong&gt;实现的&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;如果列表元素的个数小于 512 个,列表每个元素值都小于 64B 时, Redis 使用&lt;strong&gt;压缩列表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
-&lt;li&gt;如果列表元素不满足上面的条件, Redis 使用&lt;strong&gt;双向链表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
+    <summary type="html">&lt;h2 id=&quot;缓存穿透、击穿、雪崩&quot;&gt;&lt;a href=&quot;#缓存穿透、击穿、雪崩&quot; class=&quot;headerlink&quot; title=&quot;缓存穿透、击穿、雪崩&quot;&gt;&lt;/a&gt;缓存穿透、击穿、雪崩&lt;/h2&gt;&lt;h3 id=&quot;缓存穿透&quot;&gt;&lt;a href=&quot;#缓存穿透&quot; class=&quot;headerlink&quot; title=&quot;缓存穿透&quot;&gt;&lt;/a&gt;缓存穿透&lt;/h3&gt;&lt;p&gt;缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃&lt;/p&gt;
+&lt;h4 id=&quot;解决办法&quot;&gt;&lt;a href=&quot;#解决办法&quot; class=&quot;headerlink&quot; title=&quot;解决办法 &quot;&gt;&lt;/a&gt;解决办法 &lt;!-- markdownlint-disable-line --&gt;&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;接口层增加校验, 如用户鉴权校验、id 做基础校验、 id &amp;lt;= 0 的直接拦截&lt;/li&gt;
+&lt;li&gt;从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击&lt;/li&gt;
+&lt;li&gt;布隆过滤器, 类似于一个 hash set, 用于快速判断某个元素是否存在于集合中, 其典型的应用场景就是快速判断一个 key 是否存在于某容器, 不存在就直接返回. 布隆过滤器的关键就在于 hash 算法和容器大小&lt;/li&gt;
 &lt;/ul&gt;
-&lt;figure class=&quot;highlight yaml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 配置底层数据结构存储数量限制&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;hash-max-listpack-entries&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;512&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;hash-max-listpack-value&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;64&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;添加元素&quot;&gt;&lt;a href=&quot;#添加元素&quot; class=&quot;headerlink&quot; title=&quot;添加元素&quot;&gt;&lt;/a&gt;添加元素&lt;/h4&gt;&lt;p&gt;LPUSH 和 LPUSHX 命令将多个元素&lt;strong&gt;逆序&lt;/strong&gt;插入到列表头部&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建&lt;/li&gt;
-&lt;li&gt;LPUSHX key element [element …] 批量添加多个元素到&lt;strong&gt;已存在&lt;/strong&gt;的列表头部并返回列表的长度, 列表为空或者不存在返回 0&lt;/li&gt;
+&lt;h3 id=&quot;缓存击穿&quot;&gt;&lt;a href=&quot;#缓存击穿&quot; class=&quot;headerlink&quot; title=&quot;缓存击穿&quot;&gt;&lt;/a&gt;缓存击穿&lt;/h3&gt;&lt;p&gt;缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期), 在高并发下对同一 key 的操作. 如果在缓存中没有获取到数据, 又同时在数据库中获取到数据, 引起数据库压力过大.&lt;/p&gt;
+&lt;h4 id=&quot;解决办法-1&quot;&gt;&lt;a href=&quot;#解决办法-1&quot; class=&quot;headerlink&quot; title=&quot;解决办法 &quot;&gt;&lt;/a&gt;解决办法 &lt;!-- markdownlint-disable-line --&gt;&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;设置热点数据永不过期&lt;/li&gt;
+&lt;li&gt;接口限流与熔断、降级, 重要的接口一定要做好限流策略, 防止用户恶意刷接口, 同时要降级准备, 当接口中的某些服务不可用时, 进行熔断, 失败快速返回机制&lt;/li&gt;
+&lt;li&gt;加互斥锁&lt;/li&gt;
 &lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSH list:zhang name1 name2 name3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSHX list:zhang name1 name4 name5 name6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSH list:zhang name1 name4 name5 name6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LRANGE list:zhang 0 11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 1) &lt;span class=&quot;string&quot;&gt;&amp;quot;name6&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 2) &lt;span class=&quot;string&quot;&gt;&amp;quot;name5&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 4) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 5) &lt;span class=&quot;string&quot;&gt;&amp;quot;name6&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 6) &lt;span class=&quot;string&quot;&gt;&amp;quot;name5&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 7) &lt;span class=&quot;string&quot;&gt;&amp;quot;name4&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 8) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; 9) &lt;span class=&quot;string&quot;&gt;&amp;quot;name3&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10) &lt;span class=&quot;string&quot;&gt;&amp;quot;name2&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11) &lt;span class=&quot;string&quot;&gt;&amp;quot;name1&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# LPUSHX 对空列表或不存在的列表不进行操作&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; LPUSHX list:zhang:1 name1 name2 name3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) &lt;span class=&quot;string&quot;&gt;&amp;quot;list:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) &lt;span class=&quot;string&quot;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) &lt;span class=&quot;string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4) &lt;span class=&quot;string&quot;&gt;&amp;quot;hash:zhang&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis-Set-Zset</title>
-    <link href="https://luoleiself.github.io/2022/11/3bfcb546cd4a/"/>
-    <id>https://luoleiself.github.io/2022/11/3bfcb546cd4a/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2025-03-24T10:37:44.774Z</updated>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;Sets-命令&quot;&gt;&lt;a href=&quot;#Sets-命令&quot; class=&quot;headerlink&quot; title=&quot;Sets 命令&quot;&gt;&lt;/a&gt;Sets 命令&lt;/h3&gt;&lt;p&gt;Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.&lt;/p&gt;
-&lt;p&gt;Set: 键名: key, 键类型: set, 键值: string&lt;/p&gt;
-&lt;p&gt;Set 类型的底层数据结构是由&lt;strong&gt;哈希表&lt;/strong&gt;或&lt;strong&gt;整数集合&lt;/strong&gt;实现的&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;如果集合中的元素都是整数且元素个数小于 512 个, Redis 使用&lt;strong&gt;整数集合&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
-&lt;li&gt;如果集合中的元素不满足上面条件, Redis 使用&lt;strong&gt;哈希表&lt;/strong&gt;作为底层数据结构&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight yaml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 配置底层数据结构存储数量限制&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;set-max-intset-entries&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;512&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;成员操作&quot;&gt;&lt;a href=&quot;#成员操作&quot; class=&quot;headerlink&quot; title=&quot;成员操作&quot;&gt;&lt;/a&gt;成员操作&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5 id=&quot;是否包含成员&quot;&gt;&lt;a href=&quot;#是否包含成员&quot; class=&quot;headerlink&quot; title=&quot;是否包含成员&quot;&gt;&lt;/a&gt;是否包含成员&lt;/h5&gt;&lt;ul&gt;
-&lt;li&gt;SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在&lt;/li&gt;
-&lt;li&gt;SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, Redis 6.2.0 支持&lt;/li&gt;
-&lt;/ul&gt;
-&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; KEYS *  &lt;span class=&quot;comment&quot;&gt;# 查看当前数据库中的 key&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(empty array)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 空集合判断是否包含成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello hehe&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 向 myset 添加成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SADD myset hello world hehe haha gg&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 判断 myset 是否包含成员&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SMISMEMBER myset hello yy hehe&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;1) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 0&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3) (&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+&lt;h3 id=&quot;缓存雪崩&quot;&gt;&lt;a href=&quot;#缓存雪崩&quot; class=&quot;headerlink&quot; title=&quot;缓存雪崩&quot;&gt;&lt;/a&gt;缓存雪崩&lt;/h3&gt;&lt;p&gt;缓存雪崩是指缓存中数据大批量到过期时间, 而查询数据量巨大, 引起数据库压力过大甚至崩溃. 和缓存击穿不同的是, 缓存击穿指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查不到从而查询数据库&lt;/p&gt;
+&lt;h4 id=&quot;解决办法-2&quot;&gt;&lt;a href=&quot;#解决办法-2&quot; class=&quot;headerlink&quot; title=&quot;解决办法 &quot;&gt;&lt;/a&gt;解决办法 &lt;!-- markdownlint-disable-line --&gt;&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生&lt;/li&gt;
+&lt;li&gt;如果缓存数据库是分布式部署, 将热点数据均匀分布在不同的缓存数据库中&lt;/li&gt;
+&lt;li&gt;设置热点数据永不过期&lt;/li&gt;
+&lt;/ul&gt;</summary>
     
     
     
@@ -630,44 +668,6 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; SETRANG name 1 xyz&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;(&lt;span class=&quot;built_in&quot;&gt;integer&lt;/span&gt;) 8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;127.0.0.1:6379&amp;gt; GET name&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&amp;quot;axyz1234&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="server" scheme="https://luoleiself.github.io/categories/server/"/>
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/categories/server/Redis/"/>
-    
-    
-    <category term="Redis" scheme="https://luoleiself.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis-app</title>
-    <link href="https://luoleiself.github.io/2022/11/46691d911248/"/>
-    <id>https://luoleiself.github.io/2022/11/46691d911248/</id>
-    <published>2022-11-09T10:03:19.000Z</published>
-    <updated>2024-12-18T08:40:33.315Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;缓存穿透、击穿、雪崩&quot;&gt;&lt;a href=&quot;#缓存穿透、击穿、雪崩&quot; class=&quot;headerlink&quot; title=&quot;缓存穿透、击穿、雪崩&quot;&gt;&lt;/a&gt;缓存穿透、击穿、雪崩&lt;/h2&gt;&lt;h3 id=&quot;缓存穿透&quot;&gt;&lt;a href=&quot;#缓存穿透&quot; class=&quot;headerlink&quot; title=&quot;缓存穿透&quot;&gt;&lt;/a&gt;缓存穿透&lt;/h3&gt;&lt;p&gt;缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃&lt;/p&gt;
-&lt;h4 id=&quot;解决办法&quot;&gt;&lt;a href=&quot;#解决办法&quot; class=&quot;headerlink&quot; title=&quot;解决办法 &quot;&gt;&lt;/a&gt;解决办法 &lt;!-- markdownlint-disable-line --&gt;&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;接口层增加校验, 如用户鉴权校验、id 做基础校验、 id &amp;lt;= 0 的直接拦截&lt;/li&gt;
-&lt;li&gt;从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击&lt;/li&gt;
-&lt;li&gt;布隆过滤器, 类似于一个 hash set, 用于快速判断某个元素是否存在于集合中, 其典型的应用场景就是快速判断一个 key 是否存在于某容器, 不存在就直接返回. 布隆过滤器的关键就在于 hash 算法和容器大小&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&quot;缓存击穿&quot;&gt;&lt;a href=&quot;#缓存击穿&quot; class=&quot;headerlink&quot; title=&quot;缓存击穿&quot;&gt;&lt;/a&gt;缓存击穿&lt;/h3&gt;&lt;p&gt;缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期), 在高并发下对同一 key 的操作. 如果在缓存中没有获取到数据, 又同时在数据库中获取到数据, 引起数据库压力过大.&lt;/p&gt;
-&lt;h4 id=&quot;解决办法-1&quot;&gt;&lt;a href=&quot;#解决办法-1&quot; class=&quot;headerlink&quot; title=&quot;解决办法 &quot;&gt;&lt;/a&gt;解决办法 &lt;!-- markdownlint-disable-line --&gt;&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;设置热点数据永不过期&lt;/li&gt;
-&lt;li&gt;接口限流与熔断、降级, 重要的接口一定要做好限流策略, 防止用户恶意刷接口, 同时要降级准备, 当接口中的某些服务不可用时, 进行熔断, 失败快速返回机制&lt;/li&gt;
-&lt;li&gt;加互斥锁&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&quot;缓存雪崩&quot;&gt;&lt;a href=&quot;#缓存雪崩&quot; class=&quot;headerlink&quot; title=&quot;缓存雪崩&quot;&gt;&lt;/a&gt;缓存雪崩&lt;/h3&gt;&lt;p&gt;缓存雪崩是指缓存中数据大批量到过期时间, 而查询数据量巨大, 引起数据库压力过大甚至崩溃. 和缓存击穿不同的是, 缓存击穿指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查不到从而查询数据库&lt;/p&gt;
-&lt;h4 id=&quot;解决办法-2&quot;&gt;&lt;a href=&quot;#解决办法-2&quot; class=&quot;headerlink&quot; title=&quot;解决办法 &quot;&gt;&lt;/a&gt;解决办法 &lt;!-- markdownlint-disable-line --&gt;&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生&lt;/li&gt;
-&lt;li&gt;如果缓存数据库是分布式部署, 将热点数据均匀分布在不同的缓存数据库中&lt;/li&gt;
-&lt;li&gt;设置热点数据永不过期&lt;/li&gt;
-&lt;/ul&gt;</summary>
     
     
     
