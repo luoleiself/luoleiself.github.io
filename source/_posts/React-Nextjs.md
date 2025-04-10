@@ -15,7 +15,7 @@ ISR(Incremental Static Regeneration)
 
 ## Server Component
 
-异步组件是服务器组件的一个新特性, 允许在渲染中 await.
+`异步组件` 是服务器组件的一个新特性, 允许在渲染中 `await`.
 
 可以在服务器上渲染和缓存的 UI, 在 next.js 中, 渲染工作进一步按路由段划分, 以实现流式和部分渲染
 
