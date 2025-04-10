@@ -297,6 +297,10 @@ export default function GlobalError({
 
 ## 路由结构
 
+page routes 模式下, 所有的导出 React Component 的文件都将作为路由可用.
+
+app routes 模式下, 只有 page, route 命名的文件才会被解析为路由段的 UI, 否则路由是 404, 其他命名文件相对是安全的.
+
 - pages 以当前目录下的 文件名 创建路由段, 目录下的 index.tsx 创建页面
   - [fileName] 动态路由, 动态路由参数可以在 `layout.tsx`, `page.tsx`, `route.ts` 和 `generateMetadata` 中获取
     - [...fileName] 截获所有动态路由参数
