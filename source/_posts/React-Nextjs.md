@@ -41,7 +41,7 @@ ISR(Incremental Static Regeneration)
 3. 客户端立即显示路由的快速非交互式页面预览, 这仅适用于初始化页面加载
 4. RSC Payload 用于协调客户端和 RSC 树并更新 DOM, JavaScript 指令用于 hydrate 客户端组件并使应用程序具有交互性
 
-## RSC Payload
+### RSC Payload
 
 渲染 RSC 树的紧凑二进制表示形式, 包含
 
@@ -142,6 +142,191 @@ export default function ViewCount({ initialViews }: { initialViews: number }) {
 - Link 扩展了 HTML a 元素提供预获取和路由导航
 - Script 设置 js 资源
 
+## 路由
+
+### pages router
+
+`pages router` 模式下, pages 目录下所有的导出 React Component 的文件都将作为路由可用.
+  
+- pages 以当前目录下的 文件名 创建路由段, 目录下的 index.tsx 创建页面
+  - [fileName] 动态路由, 动态路由参数使用 [useRouter](#use-router) 访问. <em id="pages-dynamic-route"></em> <!--markdownlint-disable-line-->
+    - [...fileName] 截获所有动态路由参数
+    - [[...fileName]] 可选的截获所有动态路由参数, 同时会截获不带任何动态参数的路由
+
+#### API route <em id="api-route"></em> <!--markdownlint-disable-line-->
+
+任意在 `pages/api` 目录下的文件使用文件名映射为 `/api/*` 并作为 api 入口而不是页面，不会增加客户端打包的代码大小.
+
+支持在文件中导出 config 配置对象修改默认配置.
+
+- API route 不能使用特殊的 CORS，只能使用 same-origin. 可以自定义包装一个 request handler 使用 CORS.
+- API route 不能和静态导出一起使用, [app router](#app-router) 中的 [Route handler](#route-handler) 可以.
+
+```ts
+// pages/api/hello.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+type ResponseData = { 'message': string };
+
+// 导出 config 对象修改默认配置
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '1mb',
+    }
+  }.
+  maxDuration: 5,
+}
+
+export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  console.log(req.query);
+  res.status(200).json({ message: 'Hello from Next.js API Route'});
+}
+```
+
+- **Dynamic API Routes**
+
+API route 支持动态路由，命名规则同 [pages router 动态路由](#pages-dynamic-route). 动态路由参数在 `req.query` 中获取.
+
+```ts
+// pages/api/post/[...slug].ts
+import type { NextApiRequest, NextApiResponse } from 'next'; 
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { slug } = req.query;
+  res.end(`Post: ${slug.join(', ')}`);
+}
+```
+
+- 匹配规则
+  - `pages/api/post/create.js` 匹配 `/api/post/create`
+  - `pages/api/post/[pid].js` 匹配 `/api/post/1`, `/api/post/abc`, 不能匹配 `/api/post/create`
+  - `pages/api/post/[...slug].js` 匹配 `/api/post/1/2`, `/api/post/a/b/c`, 不能匹配 `/api/post/create`, `/api/post/abc`
+
+### app router <em id="app-router"></em> <!--markdownlint-disable-line-->
+
+`app router` 模式下, app 目录下只有 page, route 命名的文件才会被解析为路由段的 UI, 否则路由是 404, 其他命名文件不会被外部访问, 相对是安全的.
+
+- app 以当前目录下的 目录名 创建路由段, 目录下的 page.tsx 创建页面
+  - _folderName 私有目录, 当前目录及子目录被 `路由解析 忽略`, 将 \_ 转义为 `%5F` 后命名目录路由段可正常访问
+  - (folderName) 路由分组, 目录名被 `路由解析 忽略`, 使用相同的布局
+  
+  - @folderName 并行路由, 被 `路由解析 忽略`. 同时或有条件地 在同一 layout.tsx 中渲染一个或多个页面.
+
+    不能够影响 url, 插槽和正常页面合并之后形成与路由相关的最终页面.
+  
+    使用 `插槽` 渲染页面, 硬导航时无法恢复未匹配路由的插槽的活动状态时使用插槽的 default.tsx 渲染.
+
+  ```tsx
+  // 访问 / 同时渲染 app/pages.tsx, @team/page.tsx, @analytics/page.tsx
+  export default function Layout({ children, team, analytics }: readonly<{
+      children: React.ReactNode;
+      team: React.ReactNode;
+      analytics: React.ReactNode;
+    }>) {
+      return (
+        <>
+          {children}
+          <div className="flex justify-center items-center">
+            {team}
+            {analytics}
+          </div>
+        </>
+      )
+  }
+  ```
+
+  - [folderName] 动态路由, 动态路由参数可以在 `layout.tsx`, `page.tsx`, `route.ts` 和 `generateMetadata` 中获取
+    - [...folderName] 截获所有动态路由参数
+    - [[...folerName]] 可选的截获所有动态路由参数, 同时会截获不带任何动态参数的路由
+
+    ```tsx
+    /*
+      app
+        photo
+          [id]
+            page.tsx
+        doc
+          [[...slug]]
+            page.tsx
+        page.tsx
+    */
+    ```
+
+  - (..)folderName 拦截路由, 在另一个页面中使用布局渲染拦截当前路由
+    - (.)folderName 匹配同一级的路由
+    - (..)folderName 匹配上一级的路由
+    - (..)(..)folderName 匹配上上一级的路由
+    - (...)folderName 匹配根路由
+
+  ```tsx
+  // 在 app/page.tsx 软导航 /photo/110 将渲染拦截路由 @modal/(.)photo/[id]/page.tsx 下的内容
+  // 硬导航 /photo/110 时渲染 app/photo/[id]/page.tsx
+  /* 
+    app
+      @modal
+        default.tsx // 返回 null 在未匹配到 插槽 时不渲染内容
+        (.)photo
+          [id]
+            page.tsx
+      photo
+        [id]
+          page.tsx
+      layout.tsx  
+      page.tsx
+  */
+  ```
+
+#### Route handler
+
+功能类似于 [API route](#api-route), 但是只能用在 [app router](#app-router) 模式下，并且在同一层级下不能和 page.tsx 同时存在.
+
+- 动态路由参数在第二个参数 context 中获取.
+
+```ts
+// app/blog/[id].ts
+
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  console.log("id", id);
+  
+  return new NextResponse(new Blob([JSON.stringify({ hello: 'world', status: 200, statusText: 'response ok!' })], { type: 'application/json' }))
+}
+export async function POST(req: NextRequest) {
+  // ...
+}
+```
+
+### 路由段
+
+直接在 layout, page, [Route Handler](#route-handler) 中导出以下配置修改行为.
+
+```tsx
+// 阻止页面预渲染, 如果使用 cookies, headers, searchParams prop, connection, draftMode, unstable_noStore 等函数页面自动被视为动态渲染
+export const dynamic: string = 'force-dynamic';  // auto | force-dynamic | error | force-static
+
+// layout 和 page 启用部分渲染
+export const experimental_ppr: boolean = true;
+
+// 控制访问非 generateStaticParams 生成的动态段时会发生什么
+export const dyanmicParams: boolean = true;
+
+// 设置 layout 和 page 的验证时间间隔(秒)
+export const revalidate: boolean | number = false; // false | 0 | number
+
+// 高级设置, 如果需要重置默认行为时使用
+// export const fetchCache: string = 'auto'; // auto | default-cache | only-cache | force-cache | force-no-store | default-no-store | only-no-store
+
+// 设置运行时
+export const runtime: string = 'nodejs';  //nodejs | edge
+
+// 设置首选区域
+export const preferredRegion: string = 'auto'; // auto | global | home | string | string[]
+
+// 限制服务器端逻辑的执行时长, next.js 默认不限制
+// export const maxDuration: number = 0;
+```
+
 ## 文件规范
 
 Component hierarchy
@@ -177,9 +362,10 @@ Component hierarchy
   - Props
     - children
 
-- route.ts 使用 Web Request 和 Response API 为给定的路由创建自定义请求处理程序, 和 page.tsx 不能同时存在
+- route.ts 使用 Web Request 和 Response API 为给定的路由创建自定义请求处理程序, 和 page.tsx 不能同时存在 <em id="route-handler"></em> <!--markdownlint-disable-line-->
   - request
   - context
+    - params, 解析的当前路由的动态路由参数
 - page.tsx 定义路由独有的页面UI
   - Props
     - params 动态路由参数, 一个 Promise, Next.js 14 之前是同步的
@@ -283,7 +469,7 @@ export default function GlobalError({
 
 ### 环境变量
 
-环境变量自动加载到 route handlers
+环境变量自动加载到 [route handler](#route-handler)
 
 - 使用 .env 加载环境变量
 - 在 next.js 运行时外使用 `@next/env` 包中的 `loadEnvConfig` 函数加载环境变量
@@ -297,126 +483,16 @@ export default function GlobalError({
 4. .env.$(NODE_ENV)
 5. .env
 
-## 路由结构
-
-`page routes` 模式下, 所有的导出 React Component 的文件都将作为路由可用.
-
-`app routes` 模式下, 只有 page, route 命名的文件才会被解析为路由段的 UI, 否则路由是 404, 其他命名文件相对是安全的.
-
-- pages 以当前目录下的 文件名 创建路由段, 目录下的 index.tsx 创建页面
-  - [fileName] 动态路由, 动态路由参数可以在 `layout.tsx`, `page.tsx`, `route.ts` 和 `generateMetadata` 中获取
-    - [...fileName] 截获所有动态路由参数
-    - [[...fileName]] 可选的截获所有动态路由参数, 同时会截获不带任何动态参数的路由
-- app 以当前目录下的 目录名 创建路由段, 目录下的 page.tsx 创建页面
-  - _folderName 私有目录, 当前目录及子目录被 `路由解析 忽略`, 将 \_ 转义后命名目录路由段可正常访问
-  - (folderName) 路由分组, 目录名被 `路由解析 忽略`, 使用相同的布局
-  
-  - @folderName 并行路由, 被 `路由解析 忽略`. 同时或有条件地 在同一 layout.tsx 中渲染一个或多个页面.
-
-    不能够影响 url, 插槽和正常页面合并之后形成与路由相关的最终页面.
-  
-    使用 `插槽` 渲染页面, 硬导航时无法恢复未匹配路由的插槽的活动状态时使用插槽的 default.tsx 渲染.
-
-  ```tsx
-  // 访问 / 同时渲染 app/pages.tsx, @team/page.tsx, @analytics/page.tsx
-  export default function Layout({ children, team, analytics }: readonly<{
-      children: React.ReactNode;
-      team: React.ReactNode;
-      analytics: React.ReactNode;
-    }>) {
-      return (
-        <>
-          {children}
-          <div className="flex justify-center items-center">
-            {team}
-            {analytics}
-          </div>
-        </>
-      )
-  }
-  ```
-
-  - [folderName] 动态路由, 动态路由参数可以在 `layout.tsx`, `page.tsx`, `route.ts` 和 `generateMetadata` 中获取
-    - [...folderName] 截获所有动态路由参数
-    - [[...folerName]] 可选的截获所有动态路由参数, 同时会截获不带任何动态参数的路由
-
-    ```tsx
-    /*
-      app
-        photo
-          [id]
-            page.tsx
-        doc
-          [[...slug]]
-            page.tsx
-        page.tsx
-    */
-    ```
-
-  - (..)folderName 拦截路由, 在另一个页面中使用布局渲染拦截当前路由
-    - (.)folderName 匹配同一级的路由
-    - (..)folderName 匹配上一级的路由
-    - (..)(..)folderName 匹配上上一级的路由
-    - (...)folderName 匹配根路由
-
-  ```tsx
-  // 在 app/page.tsx 软导航 /photo/110 将渲染拦截路由 @modal/(.)photo/[id]/page.tsx 下的内容
-  // 硬导航 /photo/110 时渲染 app/photo/[id]/page.tsx
-  /* 
-    app
-      @modal
-        default.tsx // 返回 null 在未匹配到 插槽 时不渲染内容
-        (.)photo
-          [id]
-            page.tsx
-      photo
-        [id]
-          page.tsx
-      layout.tsx  
-      page.tsx
-  */
-  ```
-
-## 路由段
-
-直接在 layout, page, route handlers 中导出以下配置修改行为
-
-```tsx
-// 阻止页面预渲染, 如果使用 cookies, headers, searchParams prop, connection, draftMode, unstable_noStore 等函数页面自动被视为动态渲染
-export const dynamic: string = 'force-dynamic';  // auto | force-dynamic | error | force-static
-
-// layout 和 page 启用部分渲染
-export const experimental_ppr: boolean = true;
-
-// 控制访问非 generateStaticParams 生成的动态段时会发生什么
-export const dyanmicParams: boolean = true;
-
-// 设置 layout 和 page 的验证时间间隔(秒)
-export const revalidate: boolean | number = false; // false | 0 | number
-
-// 高级设置, 如果需要重置默认行为时使用
-// export const fetchCache: string = 'auto'; // auto | default-cache | only-cache | force-cache | force-no-store | default-no-store | only-no-store
-
-// 设置运行时
-export const runtime: string = 'nodejs';  //nodejs | edge
-
-// 设置首选区域
-export const preferredRegion: string = 'auto'; // auto | global | home | string | string[]
-
-// 限制服务器端逻辑的执行时长, next.js 默认不限制
-// export const maxDuration: number = 0;
-```
-
 ## dynamic APIs
 
 动态 APIs 依赖于只能在请求时知道的信息(而不是在预渲染期间提前知道的信息), 使用这些 API 都表明了将在请求时选择整个路由进行动态渲染
 
 - cookies
 - headers
-- connection
+- [connection](#connection) 标记渲染内容等待用户的请求传入
 - draftMode
 - searchParams prop
-- unstable_noStore
+- unstable_noStore 声明选择退出静态渲染, 并标识不应缓存特定组件
 
 ## 缓存
 
@@ -429,7 +505,7 @@ export const preferredRegion: string = 'auto'; // auto | global | home | string 
 一旦路由被渲染并且渲染过程完成时, 内存将会被 `重置`, 所有请求记忆都会被清除
 
 - 仅适用于 fetch 请求中的 GET 方法, 其他请求方法不会被记忆
-- 仅适用于 React 组件树, 例如 `generateMetadata`、`generateStaticParams`、Layout、Page 和其他服务器组件中, route handlers 不适用因为不属于 React 组件树
+- 仅适用于 React 组件树, 例如 `generateMetadata`、[generateStaticParams](#generateStaticParams)、Layout、Page 和其他服务器组件中, [route handler](#route-handler) 不适用因为不属于 React 组件树
 
 不推荐退出请求记忆
 
@@ -459,8 +535,8 @@ next.js 在构建时自动渲染和缓存路由, 而不是在服务器上为每�
 
 退出完整路由缓存
 
-- 使用 dynamic APIs, cookies, headers, connection, draftMode, searchParams prop, unstable_noStore
-- 在 layout、page、route Handler 中 export const dynamic = 'force-dynamic'; 或者 export const revalidate = 0;
+- 使用 dynamic APIs: cookies, headers, [connection](#connection), draftMode, searchParams prop, unstable_noStore
+- 在 layout、page、[route Handler](#route-handler) 中 export const dynamic = 'force-dynamic'; 或者 export const revalidate = 0;
 - 退出 Data Cache, 如果路由有一个未缓存的获取请求, 这将该路由退出完整路由缓存为每个请求获取特定数据, 其他未退出数据缓存的获取请求仍将缓存在数据缓存中
   这允许缓存和未缓存数据的混合.
   
@@ -473,6 +549,461 @@ next.js 有一个客户端的路由缓存, 用于存储路由段的 RSC(React Se
 - 布局被缓存并在导航时重用(部分渲染)
 - 加载状态被缓存并在导航中重用, 以实现即时导航
 - 默认页面不会被缓存, 但在浏览器向前和向后导航期间会被重用
+
+## 函数
+
+### pages router Function
+
+- getInitialProps(), 导出函数, 在服务端和客户端都运行，函数的返回结果将作为 React 组件的 props.
+  - ctx, 一个包含了 pathname, query, asPath, req, res, error 属性的上下文对象
+
+```tsx
+import { NextPageContext } from 'next'
+ 
+Page.getInitialProps = async (ctx: NextPageContext) => {
+  const res = await fetch('https://api.github.com/repos/vercel/next.js')
+  const json = await res.json()
+  return { stars: json.stargazers_count }
+}
+ 
+export default function Page({ stars }: { stars: number }) {
+  return stars
+}
+```
+
+- getStaticProps(), 导出函数, Next.js 将在 `构建时` 使用这个函数返回的结果 `预渲染` 这个页面组件, 可以直接在函数内获取数据
+  - ctx, 一个包含了 params, preview, previewData, drafMode, locale, locales 等属性的对象
+
+```tsx
+import type { InferGetStaticPropsType, GetStaticProps } from 'next'
+ 
+type Repo = {
+  name: string
+  stargazers_count: number
+}
+ 
+export const getStaticProps = (async (ctx) => {
+  const res = await fetch('https://api.github.com/repos/vercel/next.js')
+  const repo = await res.json()
+  return { props: { repo } }
+}) satisfies GetStaticProps<{
+  repo: Repo
+}>
+ 
+export default function Page({ repo }: InferGetStaticPropsType<typeof getStaticProps>) {
+  return repo.stargazers_count
+}
+```
+
+- getStaticPaths(), 导出函数, 使用动态路由时, Next.js 将 `静态预渲染` 这个函数返回的所有路径
+
+```tsx
+import type {
+  InferGetStaticPropsType,
+  GetStaticProps,
+  GetStaticPaths,
+} from 'next'
+ 
+type Repo = {
+  name: string
+  stargazers_count: number
+}
+ 
+export const getStaticPaths = (async () => {
+  return {
+    paths: [
+      {
+        params: {
+          name: 'next.js',
+        },
+      }, // See the "paths" section below
+    ],
+    fallback: true, // false or "blocking"
+  }
+}) satisfies GetStaticPaths
+ 
+export const getStaticProps = (async (context) => {
+  const res = await fetch('https://api.github.com/repos/vercel/next.js')
+  const repo = await res.json()
+  return { props: { repo } }
+}) satisfies GetStaticProps<{
+  repo: Repo
+}>
+ 
+export default function Page({
+  repo,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  return repo.stargazers_count
+}
+```
+
+- getServerSideProps(), 导出函数, 在每个路由请求时使用这个函数返回的结果 `预渲染` 页面组件, 需要依赖请求的信息才能渲染页面时.
+  - ctx, 一个包含了 params, req, res, query, preview, locale 等属性的上下文对象
+
+```tsx
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+ 
+type Repo = {
+  name: string
+  stargazers_count: number
+}
+ 
+export const getServerSideProps = (async (ctx) => {
+  // Fetch data from external API
+  const res = await fetch('https://api.github.com/repos/vercel/next.js')
+  const repo: Repo = await res.json()
+  // Pass data to the page via props
+  return { props: { repo } }
+}) satisfies GetServerSideProps<{ repo: Repo }>
+ 
+export default function Page({ repo }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  return (
+    <main>
+      <p>{repo.stargazers_count}</p>
+    </main>
+  )
+}
+```
+
+- withRouter(), 高阶组件,  向组件内注入 router, 通常使用 [useRouter](#use-router).
+
+```tsx
+import { withRouter } from 'next/router';
+ 
+function Page({ router }) {
+  return <p>{router.pathname}</p>
+}
+ 
+export default withRouter(Page);
+```
+
+### app router Function
+
+- headers 一个 async 函数, 在服务器组件内读取请求头信息
+- cookies 一个 async 函数, 在服务器组件内读取请求中的 cookies
+
+```tsx
+// page.tsx
+import {cookies, headers} from 'next/headers';
+export default async function Page(){
+  const headersList = await headers();
+  const ua = headersList.get('user-agent');
+
+  const cookieStore = await cookies();
+  const theme = cookieStore.get('theme');
+
+  return '...';
+}
+```
+
+- NextRequest 扩展了 Web Request API
+- NextResponse 扩展了 Web Response API
+
+- notFound 调用方法将抛出 `NEXT_NOT_FOUND` 错误, 渲染 not-found.tsx 内容
+
+- permanentRedirect 永久重定向, 返回 308(HTTP), 如果资源不存在可以使用 notFound 函数代替
+- redirect 重定向
+  - path
+  - type, replace(default) | push
+- revalidatePath 按需清理特定路径的缓存数据
+  - path
+  - type, page | layout
+- revalidateTag 按需清理特定缓存标记的缓存数据
+  - tag
+
+- after 注册在响应结束之后执行的任务, 通常记录日志和数据分析
+
+```tsx
+// layout.tsx
+import {after} from 'next/server';
+export default function Layout({children}){
+  after(() => {
+    // layout 渲染完成发送给请求后执行
+    log();
+  })
+  return (
+    <div>
+      Hello World
+      {children}
+    </div>
+  )
+}
+```
+
+- connection 标记渲染内容等待用户的请求传入 <em id="connection"></em> <!--markdownlint-disable-line-->
+
+当不使用 dynamic APIs 时希望在运行时动态渲染而不是在构建时静态渲染, 通常用在访问有意更改渲染结果的外部信息时
+
+```tsx
+// page.tsx
+import {connection} from 'next/server';
+export default async function Page(){
+  await connection(); // 等待请求传入
+  // Everything below will be excluded from prerendering
+  const rand = Math.rand();
+  return <span>{rand}</span>
+}
+```
+
+- drafMode 启用或禁用草稿模式(draftMode), async 函数
+  - isEnabled, 标识 draftMode 是否启用
+  - enable(), 启用 draftMode
+  - disable(), 禁用 draftMode
+
+草稿模式允许在 next.js 应用程序中预览无头 CMS 中的草稿内容而无需重建整个网站, 对于在构建时静态渲染的内容允许切换到动态渲染并查看更改非常有用
+
+```tsx
+// page.tsx
+import {draftMode} from 'next/server';
+async function getData(){
+  const {isEnabled} = await draftMode();
+  const url = isEnabled ? 'https://draft.example.com' : 'https://product.example.com';
+
+  const res = await fetch(url);
+  return res.json();
+}
+export default async function Page(){
+  const {title, desc} = await getData();
+  return (
+    <main>
+      <h1>{title}</h1>
+      <p>{desc}</p>
+    </main>
+  )
+}
+
+// app/api/draft/route.ts
+import {draftMode, NextRequest} from 'next/server';
+import {redirect} from 'next/navigation';
+export async function GET(req: NextRequest) {
+  // Parse query string parameters
+  const { searchParams } = new URL(req.nextUrl)
+  const secret = searchParams.get('secret')
+  const slug = searchParams.get('slug')
+ 
+  // Check the secret and next parameters
+  // This secret should only be known to this Route Handler and the CMS
+  if (secret !== 'MY_SECRET_TOKEN' || !slug) {
+    return new Response('Invalid token', { status: 401 })
+  }
+ 
+  // Fetch the headless CMS to check if the provided `slug` exists
+  // getPostBySlug would implement the required fetching logic to the headless CMS
+  const post = await getPostBySlug(slug)
+ 
+  // If the slug doesn't exist prevent draft mode from being enabled
+  if (!post) {
+    return new Response('Invalid slug', { status: 401 })
+  }
+ 
+  // Enable Draft Mode by setting the cookie
+  const draft = await draftMode()
+  draft.enable()
+ 
+  // Redirect to the path from the fetched post
+  // We don't redirect to searchParams.slug as that might lead to open redirect vulnerabilities
+  redirect(post.slug)
+}
+```
+
+- fetch 扩展了 Web fetch API
+- generateImageMetadata 生成一个或多个不同版本的图片元数据, 希望避免硬编码元数据时例如 Icon
+  - params, 一个 Promise, Next.js 14 之前是同步的
+  - 返回值
+    - id, string,required
+    - alt, string
+    - size, {width: number, height: number}
+    - contentType, string
+
+```tsx
+import {ImageResponse} from 'next/og';
+export function generateImageMetadata(){
+  return [
+    {id: 'small', contentType: 'image/png', size: {width: 40, height: 40}},
+    {id: 'medium', contentType: 'image/png', size: {width: 72, height: 72}}
+  ]
+}
+export default function Icon({id}: {id: string}){
+  return new ImageResponse((
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 88,
+        background: '#000',
+        color: '#fafafa',
+      }}>
+      Icon {id}
+    </div>
+  ))
+}
+```
+
+- [generateMetadata](#metadata) 生成页面元数据
+- [generateSitemaps](#sitemap) 生成应用站点地图
+
+- generateStaticParams 合并动态路由段和静态路由, 在构建时生成路由而不是在请求时按需生成 <em id="generateStaticParams"></em> <!--markdownlint-disable-line-->
+  - Props
+    - params 动态路由参数, 一个 Promise, Next.js 14 之前是同步的
+
+```tsx
+export async function generateStaticParams({ params }) {
+  return [
+    { category: 'a', product: '1' },
+    { category: 'b', product: '2' },
+    { category: 'c', product: '3' },
+  ];
+}
+// Three versions of this page will be statically generated
+// using the `params` returned by `generateStaticParams`
+// - /products/a/1
+// - /products/b/2
+// - /products/c/3
+export default async function Page({params}: {
+  params: Promise<{category: string, product: string}>
+}){
+  const {categor, product} = await params;
+  // ...
+}
+```
+
+- [generateViewport](#viewport) 生成页面的视窗配置
+- ImageResponse 图片构造函数, 生成动态图片 `import { ImageResponse } from 'next/og'`;
+
+- unstable_cache 允许缓存昂贵操作的结果, 并在多个请求中重用它们, 使用 `use cache` 代替
+  - fetchData, 获取数据的异步函数
+  - keyPairs, 一个额外的密钥数组, 为缓存添加标识
+  - options 控制缓存的行为
+    - tags, 一组用于控制缓存失效的标签
+    - revalidate, 缓存应该被验证的时间间隔(秒)
+
+```tsx
+const data = unstable_cache(fetchData, keyParts, options)();
+
+import { unstable_cache } from 'next/cache';
+
+const getCachedUser = unstable_cache(async (id) => getUser(id), ['myy-app-user']);
+
+export default async function Component({ userId }) {
+  const user = await getCachedUser(userId)
+}
+```
+
+- unstable_noStore 声明选择退出静态渲染, 并标识不应缓存特定组件, Next.js 15 使用 [connection](#connection) 代替
+
+```tsx
+import { unstable_noStore as noStore } from 'next/cache';
+ 
+export default async function ServerComponent() {
+  noStore();
+  const result = await db.query(...);
+  ...
+}
+```
+
+### hook
+
+Client Component Hook
+
+- useLinkStatus 跟踪 Link 组件的挂起状态, 当导航到新路由完成时展示内联的视觉反馈.
+- useParams 获取动态路由参数
+- usePathname 获取当前 url 的路径
+- useReportWebVitals 获取网站性能指标
+- useRouter 编程式改变路由 <em id="use-router"></em> <!--markdownlint-disable-line-->
+
+```tsx
+'use client';
+export default function Page(){
+  const router = useRouter();
+  
+  return (<div>
+    Hello World!
+    <button onClick={() => router.push('/login')}>login</button>
+  </div>);
+}
+```
+
+- useSearchParams 获取当前 url 查询参数
+
+- useSelectedLayoutSegment 获取当前 layout 下面一层的活动路由段, 通常用于在父布局中改变子段的状态
+- useSelectedLayoutSegments 获取当前 layout 下的活动路由段, 通常用于在父布局中改变子段的状态
+
+```tsx
+// app/blog/blog-nav-link.tsx
+'use client'
+ 
+import Link from 'next/link'
+import { useSelectedLayoutSegment } from 'next/navigation'
+ 
+// This *client* component will be imported into a blog layout
+export default function BlogNavLink({
+  slug,
+  children,
+}: {
+  slug: string
+  children: React.ReactNode
+}) {
+  // Navigating to `/blog/hello-world` will return 'hello-world'
+  // for the selected layout segment
+  const segment = useSelectedLayoutSegment()
+  const isActive = slug === segment
+ 
+  return (
+    <Link
+      href={`/blog/${slug}`}
+      // Change style depending on whether the link is active
+      style={{ fontWeight: isActive ? 'bold' : 'normal' }}
+    >
+      {children}
+    </Link>
+  )
+}
+
+// app/blog/layout.tsx
+// Import the Client Component into a parent Layout (Server Component)
+import { BlogNavLink } from './blog-nav-link'
+import getFeaturedPosts from './get-featured-posts'
+ 
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const featuredPosts = await getFeaturedPosts()
+  return (
+    <div>
+      {featuredPosts.map((post) => (
+        <div key={post.id}>
+          <BlogNavLink slug={post.slug}>{post.title}</BlogNavLink>
+        </div>
+      ))}
+      <div>{children}</div>
+    </div>
+  )
+}
+```
+
+- userAgent 获取 request 请求中的 user-agent
+
+```tsx
+import { NextRequest, NextResponse, userAgent } from "next/server";
+export function middleware(req: NextRequest){
+  const ua = userAgent(req);
+  console.log('ua', ua)
+
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set('x-hello-form-middleware', 'hello');
+
+   return NextResponse.next({
+    request: {
+      headers: requestHeaders
+    }
+  })
+}
+```
 
 ## 元数据
 
@@ -690,318 +1221,30 @@ export default function sitemap({id}: {id: number}): MetadataRoute.Sitemap {
 }
 ```
 
-## 函数
+## configuration
 
-- headers 一个 async 函数, 在服务器组件内读取请求头信息
-- cookies 一个 async 函数, 在服务器组件内读取请求中的 cookies
+- headers 允许给匹配的 path 添加头部信息
+- rewrites 允许将传入的请求 url 重写为目标 url, 通常作为接口代理
+- redirects 根据匹配的 url 重定向到目标 url
 
-```tsx
-// page.tsx
-import {cookies, headers} from 'next/headers';
-export default async function Page(){
-  const headersList = await headers();
-  const ua = headersList.get('user-agent');
-
-  const cookieStore = await cookies();
-  const theme = cookieStore.get('theme');
-
-  return '...';
-}
-```
-
-- NextRequest 扩展了 Web Request API
-- NextResponse 扩展了 Web Response API
-
-- notFound 调用方法将抛出 `NEXT_NOT_FOUND` 错误, 渲染 not-found.tsx 内容
-
-- permanentRedirect 永久重定向, 返回 308(HTTP), 如果资源不存在可以使用 notFound 函数代替
-- redirect 重定向
-  - path
-  - type, replace(default) | push
-- revalidatePath 按需清理特定路径的缓存数据
-  - path
-  - type, page | layout
-- revalidateTag 按需清理特定缓存标记的缓存数据
-  - tag
-
-- after 注册在响应结束之后执行的任务, 通常记录日志和数据分析
-
-```tsx
-// layout.tsx
-import {after} from 'next/server';
-export default function Layout({children}){
-  after(() => {
-    // layout 渲染完成发送给请求后执行
-    log();
-  })
-  return (
-    <div>
-      Hello World
-      {children}
-    </div>
-  )
-}
-```
-
-- connection 标记渲染内容等待用户的请求传入
-
-当不使用 dynamic APIs 时希望在运行时动态渲染而不是在构建时静态渲染, 通常用在访问有意更改渲染结果的外部信息时
-
-```tsx
-// page.tsx
-import {connection} from 'next/server';
-export default async function Page(){
-  await connection(); // 等待请求传入
-  // Everything below will be excluded from prerendering
-  const rand = Math.rand();
-  return <span>{rand}</span>
-}
-```
-
-- drafMode 启用或禁用草稿模式(draftMode), async 函数
-  - isEnabled, 标识 draftMode 是否启用
-  - enable(), 启用 draftMode
-  - disable(), 禁用 draftMode
-
-草稿模式允许在 next.js 应用程序中预览无头 CMS 中的草稿内容而无需重建整个网站, 对于在构建时静态渲染的内容允许切换到动态渲染并查看更改非常有用
-
-```tsx
-// page.tsx
-import {draftMode} from 'next/server';
-async function getData(){
-  const {isEnabled} = await draftMode();
-  const url = isEnabled ? 'https://draft.example.com' : 'https://product.example.com';
-
-  const res = await fetch(url);
-  return res.json();
-}
-export default async function Page(){
-  const {title, desc} = await getData();
-  return (
-    <main>
-      <h1>{title}</h1>
-      <p>{desc}</p>
-    </main>
-  )
-}
-
-// app/api/draft/route.ts
-import {draftMode, NextRequest} from 'next/server';
-import {redirect} from 'next/navigation';
-export async function GET(request: NextRequest) {
-  // Parse query string parameters
-  const { searchParams } = new URL(request.nextUrl)
-  const secret = searchParams.get('secret')
-  const slug = searchParams.get('slug')
- 
-  // Check the secret and next parameters
-  // This secret should only be known to this Route Handler and the CMS
-  if (secret !== 'MY_SECRET_TOKEN' || !slug) {
-    return new Response('Invalid token', { status: 401 })
+```ts
+// next.config.js
+module.exports = {
+  async redirects() {
+    return [{source: '/about', destination: '/new/about', permanent: true}]
+  },
+  async headers() {
+    return [{
+      source: '/about',
+      headers: [
+        {key: '', value:''}
+      ]
+    }]
+  },
+  async rewrites() {
+    return [
+      {source: '/api/:path*', destination: '/v1/api/:path*'}
+    ]
   }
- 
-  // Fetch the headless CMS to check if the provided `slug` exists
-  // getPostBySlug would implement the required fetching logic to the headless CMS
-  const post = await getPostBySlug(slug)
- 
-  // If the slug doesn't exist prevent draft mode from being enabled
-  if (!post) {
-    return new Response('Invalid slug', { status: 401 })
-  }
- 
-  // Enable Draft Mode by setting the cookie
-  const draft = await draftMode()
-  draft.enable()
- 
-  // Redirect to the path from the fetched post
-  // We don't redirect to searchParams.slug as that might lead to open redirect vulnerabilities
-  redirect(post.slug)
-}
-```
-
-- fetch 扩展了 Web fetch API
-- generateImageMetadata 生成一个或多个不同版本的图片元数据, 希望避免硬编码元数据时例如 Icon
-  - params, 一个 Promise, Next.js 14 之前是同步的
-  - 返回值
-    - id, string,required
-    - alt, string
-    - size, {width: number, height: number}
-    - contentType, string
-
-```tsx
-import {ImageResponse} from 'next/og';
-export function generateImageMetadata(){
-  return [
-    {id: 'small', contentType: 'image/png', size: {width: 40, height: 40}},
-    {id: 'medium', contentType: 'image/png', size: {width: 72, height: 72}}
-  ]
-}
-export default function Icon({id}: {id: string}){
-  return new ImageResponse((
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 88,
-        background: '#000',
-        color: '#fafafa',
-      }}>
-      Icon {id}
-    </div>
-  ))
-}
-```
-
-- [generateMetadata](#metadata) 生成页面元数据
-- [generateSitemaps](#sitemap) 生成应用站点地图
-- generateStaticParams 合并动态路由段和静态路由, 在构建时生成路由而不是在请求时按需生成
-  - Props
-    - params 动态路由参数, 一个 Promise, Next.js 14 之前是同步的
-
-```tsx
-export async function generateStaticParams() {
-  return [
-    { category: 'a', product: '1' },
-    { category: 'b', product: '2' },
-    { category: 'c', product: '3' },
-  ];
-}
-// Three versions of this page will be statically generated
-// using the `params` returned by `generateStaticParams`
-// - /products/a/1
-// - /products/b/2
-// - /products/c/3
-export default async function Page({params}: {
-  params: Promise<{category: string, product: string}>
-}){
-  const {categor, product} = await params;
-  // ...
-}
-```
-
-- [generateViewport](#viewport) 生成页面的视窗配置
-- ImageResponse 图片构造函数, 生成动态图片 `import { ImageResponse } from 'next/og'`;
-
-- unstable_cache 允许缓存昂贵操作的结果, 并在多个请求中重用它们, 使用 `use cache` 代替
-  - fetchData, 获取数据的异步函数
-  - keyPairs, 一个额外的密钥数组, 为缓存添加标识
-  - options 控制缓存的行为
-    - tags, 一组用于控制缓存失效的标签
-    - revalidate, 缓存应该被验证的时间间隔(秒)
-
-```tsx
-const data = unstable_cache(fetchData, keyParts, options)();
-
-import { unstable_cache } from 'next/cache';
-
-const getCachedUser = unstable_cache(async (id) => getUser(id), ['myy-app-user']);
-
-export default async function Component({ userId }) {
-  const user = await getCachedUser(userId)
-}
-```
-
-- unstable_noStore 声明选择退出静态渲染, 并标识不应缓存特定组件, Next.js 15 使用 `connection` 代替
-
-### hook
-
-Client Component Hook
-
-- useParams 获取动态路由参数
-- usePathname 获取当前 url 的路径
-- useReportWebVitals 获取网站性能指标
-- useRouter 编程式改变路由
-
-```tsx
-'use client';
-export default function Page(){
-  const router = useRouter();
-  
-  return (<div>
-    Hello World!
-    <button onClick={() => router.push('/login')}>login</button>
-  </div>);
-}
-```
-
-- useSearchParams 获取当前 url 查询参数
-
-- useSelectedLayoutSegment 获取当前 layout 下面一层的活动路由段, 通常用于在父布局中改变子段的状态
-- useSelectedLayoutSegments 获取当前 layout 下的活动路由段, 通常用于在父布局中改变子段的状态
-
-```tsx
-// app/blog/blog-nav-link.tsx
-'use client'
- 
-import Link from 'next/link'
-import { useSelectedLayoutSegment } from 'next/navigation'
- 
-// This *client* component will be imported into a blog layout
-export default function BlogNavLink({
-  slug,
-  children,
-}: {
-  slug: string
-  children: React.ReactNode
-}) {
-  // Navigating to `/blog/hello-world` will return 'hello-world'
-  // for the selected layout segment
-  const segment = useSelectedLayoutSegment()
-  const isActive = slug === segment
- 
-  return (
-    <Link
-      href={`/blog/${slug}`}
-      // Change style depending on whether the link is active
-      style={{ fontWeight: isActive ? 'bold' : 'normal' }}
-    >
-      {children}
-    </Link>
-  )
-}
-
-// app/blog/layout.tsx
-// Import the Client Component into a parent Layout (Server Component)
-import { BlogNavLink } from './blog-nav-link'
-import getFeaturedPosts from './get-featured-posts'
- 
-export default async function Layout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const featuredPosts = await getFeaturedPosts()
-  return (
-    <div>
-      {featuredPosts.map((post) => (
-        <div key={post.id}>
-          <BlogNavLink slug={post.slug}>{post.title}</BlogNavLink>
-        </div>
-      ))}
-      <div>{children}</div>
-    </div>
-  )
-}
-```
-
-- userAgent 获取 request 请求中的 user-agent
-
-```tsx
-import { NextRequest, NextResponse, userAgent } from "next/server";
-export function middleware(request: NextRequest){
-  const ua = userAgent(request);
-  console.log('ua', ua)
-
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-hello-form-middleware', 'hello');
-
-   return NextResponse.next({
-    request: {
-      headers: requestHeaders
-    }
-  })
 }
 ```
