@@ -297,7 +297,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-### 路由段
+#### 路由段
 
 直接在 layout, page, [Route Handler](#route-handler) 中导出以下配置修改行为.
 
@@ -353,7 +353,15 @@ Component hierarchy
   - request
 - instrumentation.ts 用于将可观察工具集成到应用程序中, 能够跟踪性能和行为, 并在生产中调试问题
 
-路由文件
+### pages router conventions
+
+- _app, 自定义 App 页面, [app router](#app-router) 模式下使用 layout 代替
+- _document,  自定义 document 页面, [app router](#app-router) 模式下使用 layout 代替
+- _error, 自定义错误页面, [app router](#app-router) 模式下使用 error.js 代替
+- 404, 404 Error page, [app router](#app-router) 模式下使用 not-found.js 代替
+- 500, 500 Error page
+
+### app router conventions
 
 - layout.tsx 在多个页面之间共享布局的UI, 能够保持跨路由的状态、交互性, 不会重新渲染.
   - Props
