@@ -155,7 +155,7 @@ export default function ViewCount({ initialViews }: { initialViews: number }) {
 
 #### API route <em id="api-route"></em> <!--markdownlint-disable-line-->
 
-任意在 `pages/api` 目录下的文件使用文件名映射为 `/api/*` 并作为 api 入口而不是页面，不会增加客户端打包的代码大小.
+任意在 `pages/api` 目录下的文件使用 `文件名` 映射为 `/api/*` 并作为 api 入口而不是页面，不会增加客户端打包的代码大小.
 
 支持在文件中导出 config 配置对象修改默认配置.
 
