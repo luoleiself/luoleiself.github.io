@@ -864,13 +864,13 @@ firewall-cmd --check-config # 检查永久配置是否有错误
 
 firewall-cmd --get-zones # 查看可用的区域
 firewall-cmd --zone=public --list-all # 列出指定区域的所有规则
-firewall-cmd --zone-public --list-service # 列出指定区域的服务
+firewall-cmd --zone=public --list-service # 列出指定区域的服务
 
 firewall-cmd --zone=public --add-service=http --permanent # 允许 http 服务
 firewall-cmd --zone=public --add-service=http --permanent # 允许 https 服务
 firewall-cmd --zone=public --add-port=22 --permanent # 允许 22 端口
 firewall-cmd --reload # 重新加载配置
 
+firewall-cmd --zone=public --remove-service=http --permanent # 移除 http 服务
 firewall-cmd --zone=public --remove-port=22 --permanent # 移除 22 端口
-firewall-cmd --zone-public --remove-service=http --permanent # 移除 http 服务
 ```
