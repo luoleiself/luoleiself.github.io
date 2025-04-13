@@ -308,14 +308,16 @@ export const dynamic: string = 'force-dynamic';  // auto | force-dynamic | error
 // layout 和 page 启用部分渲染
 export const experimental_ppr: boolean = true;
 
-// 控制访问非 generateStaticParams 生成的动态段时会发生什么
+// 控制访问非 generateStaticParams 生成的动态段时会发生什么, 
+// true, generateStaticParams 中未包含的动态路由段是按需生成的
+// false, generateStaticParams 中未包含的动态路由段将返回 404
 export const dyanmicParams: boolean = true;
 
 // 设置 layout 和 page 的验证时间间隔(秒)
 export const revalidate: boolean | number = false; // false | 0 | number
 
 // 高级设置, 如果需要重置默认行为时使用
-// export const fetchCache: string = 'auto'; // auto | default-cache | only-cache | force-cache | force-no-store | default-no-store | only-no-store
+export const fetchCache: string = 'auto'; // auto | default-cache | only-cache | force-cache | force-no-store | default-no-store | only-no-store
 
 // 设置运行时
 export const runtime: string = 'nodejs';  //nodejs | edge
