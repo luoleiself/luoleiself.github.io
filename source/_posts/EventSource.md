@@ -13,19 +13,30 @@ tags:
 
 > 当使用 HTTP/2 时, 最大并发 HTTP 流的数量是由服务器和客户端协商的(默认为 100)
 
+Server-Sent Events 服务器发送事件
+
 Web 内容与服务器发送事件通信的接口, 通信方向是单向的, 数据消息只能从服务器发送到客户端. 如果接收消息中有一个 event 字段, 触发的事件与 event 字段的值相同, 如果不存在 event 字段, 则将触发通用的 message 事件
 
 - url, 表示远程资源的位置
 - configuration, 可选, 一个对象
   - withCredentials, 标识 CORS 是否包含凭据, 默认为 false
 
+### 消息格式
+
+数据以 `文本流(text/event-stream)` 的形式从服务器发送到客户端, 每一行数据都必须以 `换行符(\n)` 结束, 每条消息以两个 `换行符(\n\n)` 结束
+
+- event 自定义事件类型(可选), 不使用默认触发 message
+- id 消息 ID, 用于断线重连定位
+- retry 重连间隔(毫秒)
+- data 数据内容
+
 ```javascript
 const sse = new EventSource(url, configuration);
 /**
  * 没有 event 字段时触发
  * event: message
- * data: user data
  * id: someid
+ * data: user data
  */
 sse.onmessage = function (e) {
   console.log(e);
@@ -35,8 +46,8 @@ sse.onmessage = function (e) {
  * 触发 notice 事件回调
  *
  * event: notice
- * data: useful data
  * id: someid
+ * data: useful data
  */
 sse.addEventListener('notice', (e) => {
   console.log(evt);
@@ -64,6 +75,8 @@ sse.addEventListener('notice', (e) => {
 - message, 接收到数据时触发
 - open, 连接打开时触发
 
+连接服务器
+
 ```html
 <!-- client -->
 <p><button id="close">Close</button></p>
@@ -87,8 +100,8 @@ sse.addEventListener('notice', (e) => {
   * 这将仅监听类似下面的事件
   *
   * event: notice
-  * data: useful data
   * id: someid
+  * data: useful data
   */
   sse.addEventListener('notice', function (e) {
     console.log('notice', e)
@@ -127,6 +140,8 @@ sse.addEventListener('notice', (e) => {
 </script>
 ```
 
+服务器推送数据
+
 ```javascript
 // server.js
 import express from 'express';
@@ -146,11 +161,13 @@ app.get('/evt-source', (req, res) => {
     /**
      * event: notice
      * id: 1738749223324
+     * retry: 500
      * data: {"message":"Message at 2025-02-05T09:53:43.324Z","count":1}
      */
     // 数据以文本流的形式从服务器发送到客户端, 每一行数据都必须以换行符(\n)结束, 
+    // 重连时间间隔 500 毫秒
     // 并且每条消息以两个换行符(\n\n)结束
-    res.write(`event: ${evtName}\nid: ${Date.now()}\nretiry: 10\ndata: ${JSON.stringify(data)}\n\n`);
+    res.write(`event: ${evtName}\nid: ${Date.now()}\nretry: 500\ndata: ${JSON.stringify(data)}\n\n`);
   };
 
   // 发送初始事件
