@@ -750,6 +750,10 @@ function App(){
 
 #### useEffect
 
+> 不能使用异步函数作为第一个参数
+> 清理机制冲突, useEffect 需要返回一个清理函数 或 undefined, React 无法处理异步函数隐式返回的 Promise 作为清理函数
+> 异步函数的执行会打破 useEffect 的生命周期顺序, React 无法保证异步操作的完成时机与组件更新周期的协调
+
 Effect 允许指定由渲染本身, 而不是特定事件引起的副作用
 
 Effect 是一种 脱围 机制, 可以逃出 React 并使组件和一些外部系统同步, 例如非 React 组件, 网络, 浏览器DOM
@@ -760,8 +764,8 @@ Effect 是一种 脱围 机制, 可以逃出 React 并使组件和一些外部�
 - 如果 Effect 的不同部分因不同原因需要重新运行, 将其拆分为多个 Effect
 - 默认情况下，它在第一次渲染之后和每次更新之后都会执行
 - 第二个参数为依赖项数组, 控制 effect 的执行时机
-  - 依赖项为空数组, 表示只会在组件挂载后执行
   - 没有依赖项数组时, 表示每次重新渲染后重新执行
+  - 依赖项为空数组, 表示只会在组件挂载后执行
 
 不使用 Effect 的情况:
 
@@ -988,7 +992,7 @@ const cachedFn = useCallback(()=>{
 
 #### useMemo
 
-缓存每次重新渲染都需要计算的结果
+用在客户端组件内缓存计算结果, 记忆化组件内部数据的转换
 
 把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值
 
@@ -1770,13 +1774,70 @@ await act(async actFn);
 
 ### cache(experimental)
 
-允许缓存数据获取或计算的结果, 在任何组件之外调用创建带有缓存的函数版本
+> 只能用在服务器组件, 记忆化可以跨组件共享的工作, 并且缓存会在服务器请求之间失效
 
-- 仅供与 `服务器组件` 一起使用
+在任何组件之外调用以创建和 fn 具有相同类型签名的已缓存版本
+
+- 缓存代价昂贵的计算
 
 ```jsx
 import {cache} from 'react';
 const cachedFn = cache(fn);
+
+// 缓存代价昂贵的计算, 使用 cache 跳过重复工作,
+// 相同的 user 对象只会调用一次 calculateUserMetrics;
+const getUserMetrics = cache(calculateUserMetrics);
+function Profile({user}){
+  const metrics = getUserMetrics(user);
+  // ...
+}
+function TeamReport({user}){
+  const metrics = getUserMetrics(user);
+  // ...
+}
+```
+
+- 共享数据快照
+
+```tsx
+import {cache} from 'react';
+// 共享数据快照
+const getTemperature = cache(async (city) => {
+  return await fetchTemperature(city);
+});
+async function AnimateWeatherCard({city}) {
+  const temperature = await getTemperature(city);
+  // ...
+}
+async function MinimalWeatherCard({city}) {
+  const temperature = await getTemperature(city);
+  // ...
+}
+```
+
+- 预加载数据
+
+```tsx
+// 预加载数据, 通过缓存长时间运行的数据获取
+import {cache} from 'react';
+const getUser = cache(async (id) => {
+  return await db.user.query(id);
+});
+async function Profile({id}) {
+  const user = await getUser(id); // 使用缓存结果
+  return (
+    <section>
+      <img src={user.profilePic}/>
+      <h2>{user.name}</h2>
+    </section>
+  )
+}
+function Page({id}){
+  getUser(id); // 启动异步数据查询并缓存结果
+  return (
+    <Profile id={id} />
+  )
+}
 ```
 
 ### createContext
@@ -1834,9 +1895,7 @@ function App(){
 
 ### memo
 
-允许组件在 props 没有改变的情况下跳过重新渲染
-
-只有当组件经常使用完全相同的 props 进行渲染时, 并且其重新渲染逻辑是非常昂贵的, 使用 memo 优化才有意义
+根据组件的 props 记忆化组件渲染, 并且其重新渲染逻辑是非常昂贵的, 使用 memo 优化才有意义
 
 - 记忆化只与从父组件传递给组件的 props 有关, 即使组件已被记忆化, 当其使用的 context 发生变化时, 仍将重新渲染
 - componennt 要进行缓存的组件, memo 不会修改该组件, 而是返回一个新的、记忆化的组件, 接受任何有效的 React 组件, 包含函数式组件和 [forwardRef](#forwardRef) 组件

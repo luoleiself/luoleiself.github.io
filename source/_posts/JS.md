@@ -108,54 +108,6 @@ console.log(array1.copyWithin(1, 3));
 <![endif]-->
 ```
 
-### ArrayBuffer
-
-ArrayBuffer 对象用来表示通用的、固定长度的原始二进制数据缓冲区, 可以理解为一个字节数组. 不能直接操作 ArrayBuffer, 需要通过 `类型化数组对象(TypedArray)`或 `DataView` 操作
-ArrayBuffer 构造函数创建一个以字节为单位的固定长度的新 ArrayBuffer, 或者从现有的数据中获取数组缓冲区(例如: Base64 字符串或者 Blob 类文件对象 )
-
-```javascript
-var buffer = new ArrayBuffer(10); // 创建一个 10 字节的缓冲区
-var i8a = new Int32Array(buffer); // 并使用 Int32Array 视图引用它
-```
-
-#### TypedArray
-
-不能实例化
-描述底层 `二进制数据缓冲区(ArrayBuffer)` 的类数组视图, 没有可用的 TypedArray 全局属性和 TypedArray 构造函数, 其为所有类型化数组的子类提供了实用方法的通用接口, 当创建 TypedArray 子类(例如 Int8Array) 的实例时, 在内存中会创建数组缓冲区, 如果将 ArrayBuffer 实例作为构造函数参数时, 则使用该 ArrayBuffer.
-
-- Int8Array -128 到 127, 1 字节, 8 位有符号整型(补码)
-- Uint8Array 0 到 255, 1 字节, 8 位无符号整型
-- Uint8ClampedArray 0 到 255, 1 字节, 8 位无符号整型(一定在 0 - 255 之间)
-- Int16Array -32768 到 32767, 2 字节, 16 位有符号整型(补码)
-- Uint16Array 0 到 65535, 2 字节, 16 位无符号整型
-- Int32Array -2147483648 到 2147483647, 4 字节, 32 位有符号整型(补码)
-- Uint32Array 0 到 4294967295, 4 字节, 32 位无符号整型
-- Float32Array -3.4E38 到 3.4E38 并且 1.2E-38 是最小的正数, 4 字节, 32 位 IEEE 浮点数(7 位有效数字，例如 1.234567)
-- Float64Array -1.8E308 到 1.8E308 并且 5E-324 是最小的正数, 8 字节, 64 位 IEEE 浮点数(16 位有效数字，例如 1.23456789012345)
-- BigInt64Array -263 到 263 - 1, 8 字节, 64 位有符号整型(补码)
-- BigUint64Array 0 到 264 - 1, 8 字节, 64 位无符号整型
-
-```javascript
-var ia = new Int8Array(10);
-ia[0] = 42;
-```
-
-#### DataView
-
-DataView 是一个可以从二进制 `ArrayBuffer` 对象中读写多种数值类型的底层接口, 使用它时, 不需要考虑不同平台的字节序问题
-DataView 构造函数可以传入一个已经存在的 `ArrayBuffer` 或 `SharedArrayBuffer` 作为数据源, 第二个参数可以指定 buffer 中的字节偏移, 第三个参数可以指定 DataView 对象的字节长度, 返回表示指定数据缓冲区的新 DataView 对象
-
-```javascript
-var buffer = new ArrayBuffer(16);
-var view = new DataView(buffer);
-
-view.setUint8(0, 42); // 设置指定偏移量的值
-view.getUint8(0); // 获取指定偏移量的值
-
-view.setInt32(1, 2147483647);
-view.getInt32(1);
-```
-
 ### [document.activeElement](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement)
 
 > 只读属性
@@ -200,6 +152,16 @@ el.scrollIntoView({ block: 'end' });
 el.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 ```
 
+### export default import
+
+- export default 向外暴露的成员，可以使用任意变量来接收
+- 在一个模块中, export default 只允许向外暴露一次
+- 在一个模块中, 可以同时使用 export default 和 export 向外暴露成员
+- 使用 export 向外暴露的成员, 只能使用 `{ }` 的形式来接收, 这种形式称为 按需导出
+- export 可以向外暴露多个成员, 同时, 如果某些成员在 import 导入时不需要, 可以不在 `{ }` 中定义
+- 使用 export 导出的成员, 必须严格按照导出时候的名称来使用 `{ }` 按需接收
+- 如果想更改变量名称可以使用 as 定义别名
+
 ### eval
 
 避免使用 eval, 可以使用 `Function('"use strict"; console.log("hello world")')()` 代替, `Function` 直接调用此构造函数可以动态创建函数
@@ -216,15 +178,45 @@ el.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 - NaN 和 Infinity 格式的数值及 null 都会被当作 null
 - 其它类型的对象, 包括 Map/WeakMap/Set/WeakSet, 仅会序列化可枚举的属性
 
-### export default import
+### [structuredClone()](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/structuredClone)
 
-- export default 向外暴露的成员，可以使用任意变量来接收
-- 在一个模块中, export default 只允许向外暴露一次
-- 在一个模块中, 可以同时使用 export default 和 export 向外暴露成员
-- 使用 export 向外暴露的成员, 只能使用 `{ }` 的形式来接收, 这种形式称为 按需导出
-- export 可以向外暴露多个成员, 同时, 如果某些成员在 import 导入时不需要, 可以不在 `{ }` 中定义
-- 使用 export 导出的成员, 必须严格按照导出时候的名称来使用 `{ }` 按需接收
-- 如果想更改变量名称可以使用 as 定义别名
+使用`结构化克隆算法`将给定的值进行深拷贝
+
+结构化克隆算法用于复制复杂 JavaScript 对象的算法, 它通过递归输入对象来构建克隆, 同时保持先前访问过的引用的映射, 以避免无限遍历循环
+
+- value, 被克隆的对象
+- options, 可选参数
+  - transfer, 一个 `可转移对象` 的数组, 里面的对象将被移动而不是克隆到返回的对象上
+
+```javascript
+const original = {name: 'Tom'};
+const clone = structuredClone(original);
+
+console.log(clone !== original); // true
+
+// 把一个数组的属性转移到新对像并移除源对象里的属性
+const u8 = Uint8Array.from({length: 1024 * 1024 * 16}, (v, i) => i);
+const transfer = structuredClone(u8, {
+  transfer: [u8.buffer],
+});
+console.log(u8.byteLength); // 0
+```
+
+[可转移对象](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects)
+拥有属于自己的资源的对象, 这些资源可以从一个上下文转移到另一个, 确保资源一次仅在一个上下文可用. 通常用于共享资源
+
+支持的对象
+
+- ArrayBuffer
+- MessagePort
+- ReadableStream
+- WritableStream
+- TransformStream
+- AudioData
+- ImageBitmap
+- VideoFrame
+- OffscreenCanvas
+- RTCDataChannel
 
 ### [window.requestIdleCallback](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestIdleCallback)
 

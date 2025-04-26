@@ -16,17 +16,23 @@ tags:
 
 ```javascript
 const channel = new MessageChannel();
-const para = document.querySelector("p");
+const output = document.querySelector(".output");
+const iframe = document.querySelector("iframe");
 
-const ifr = document.querySelector("iframe");
+// 处理 port1 收到的消息
+channel.port1.onmessage = function(e) {
+  output.innerHTML = e.data;
+};
 
-ifr.addEventListener("load", iframeLoaded, false);
-
+iframe.addEventListener("load", iframeLoaded, false);
 function iframeLoaded() {
-  ifr.otherWindow.postMessage("来自主页的问候！", "*", [channel.port2]);
+  // 把 port2 传给 iframe
+  iframe.contentWindow.postMessage('Hello from the main page!', '*', [channel.port2]);
 }
 
-channel.port1.onmessage = function(e) {
-  para.innerHTML = e.data;
-};
+// 在 iframe 中...
+window.addEventListener('message', (evt) => {
+  const messagePort = evt.ports?.[0];
+  messagePort.postMessage('Hello from the iframe!');
+})
 ```

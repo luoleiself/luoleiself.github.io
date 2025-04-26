@@ -157,7 +157,7 @@ export default function ViewCount({ initialViews }: { initialViews: number }) {
 
 任意在 `pages/api` 目录下的文件使用 `文件名` 映射为 `/api/*` 并作为 api 入口而不是页面，不会增加客户端打包的代码大小.
 
-支持在文件中导出 config 配置对象修改默认配置.
+在文件中导出 config 配置对象修改默认配置.
 
 - API route 不能使用特殊的 CORS，只能使用 same-origin. 可以自定义包装一个 request handler 使用 CORS.
 - API route 不能和静态导出一起使用, [app router](#app-router) 中的 [Route handler](#route-handler) 可以.
@@ -173,7 +173,9 @@ export const config = {
   api: {
     bodyParser: {
       sizeLimit: '1mb',
-    }
+    },
+    externalResolver: true,
+    responseLimit: '4mb'
   }.
   maxDuration: 5,
 }
@@ -502,7 +504,7 @@ export default function GlobalError({
 - [connection](#connection) 标记渲染内容等待用户的请求传入
 - draftMode
 - searchParams prop
-- unstable_noStore 声明选择退出静态渲染, 并标识不应缓存特定组件
+- unstable_noStore 声明选择退出静态渲染, 并标识不应缓存特定组件, Next.js 15 使用 connection 代替
 
 ## 缓存
 
