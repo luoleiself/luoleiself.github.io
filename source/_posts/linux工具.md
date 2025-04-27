@@ -257,6 +257,10 @@ $ date +%::z
 # 使用 ssh -T 测试连通性
 [vagrant@centos8s ~]$ ssh -T git@github.com
 git@github.com: Permission denied (publickey).
+
+# 不进入交互 shell, 直接执行命令
+[vagrant@centos8s ~]$ ssh -p 2222 user@host "command"
+
 # 或者使用 -i 每次都指定密钥
 [vagrant@centos8s ~]$ ssh -i ~/.ssh/github_25519 -T git@github.com
 Hi ......! You\'ve successfully authenticated, but GitHub does not provide shell access.
@@ -287,6 +291,39 @@ All identities removed.
 # 列出所有的密钥摘要信息
 [vagrant@centos8s ~]$ ssh-add -l
 The agent has no identities.
+```
+
+### scp 主机之间复制文件
+
+```bash
+scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
+```
+
+- -C 传输过程中允许压缩文件
+- -p 保留源文件的修改时间, 访问时间, 访问权限
+- -q 不显示传输进度条
+- -r 递归复制整个目录
+- -v 详细方式显示输出
+- -P 指定数据传输的端口号
+- -l 限制传输带宽 KB/s
+
+#### 本地复制到远程
+
+```bash
+# 拷贝文件, 可以使用原文件名也可以重新命名文件
+[root@localhost ~]# scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/
+
+# 拷贝目录
+[root@localhost ~]# scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/
+```
+
+#### 远程复制到本地
+
+```bash
+# 拷贝文件, 可以使用原文件名也可以重新命名文件
+[root@localhost ~]# scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/
+# 拷贝目录
+[root@localhost ~]# scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 ```
 
 ### awk
@@ -562,39 +599,6 @@ $ git branch -a | \
     } \
   }' | \
   xargs -t -I {} git branch -dr {}
-```
-
-### scp 主机之间复制文件
-
-```bash
-scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
-```
-
-- -C 传输过程中允许压缩文件
-- -p 保留源文件的修改时间, 访问时间, 访问权限
-- -q 不显示传输进度条
-- -r 递归复制整个目录
-- -v 详细方式显示输出
-- -P 指定数据传输的端口号
-- -l 限制传输带宽 KB/s
-
-#### 本地复制到远程
-
-```bash
-# 拷贝文件, 可以使用原文件名也可以重新命名文件
-[root@localhost ~]# scp -Cp /home/workspace/file1.txt root@192.168.1.3:/home/workspace/
-
-# 拷贝目录
-[root@localhost ~]# scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/
-```
-
-#### 远程复制到本地
-
-```bash
-# 拷贝文件, 可以使用原文件名也可以重新命名文件
-[root@localhost ~]# scp -Cp root@192.168.1.3:/home/workspace/file1.txt /home/workspace/
-# 拷贝目录
-[root@localhost ~]# scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 ```
 
 ### crontab 定时任务
