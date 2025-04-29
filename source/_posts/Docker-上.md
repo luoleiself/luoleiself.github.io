@@ -77,27 +77,37 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 镜像的操作命令可直接用在 `docker` 或 `docker image` 命令后面
 
 - images 查看本地镜像列表, 作用同 `image ls`
-- rmi 删除本地镜像, 作用同 `image rm`
-- tag 给镜像文件创建标签
-- build 从 Dockerfile 构建镜像
-- load|import 导入镜像归档文件
-- save 保存镜像到归档文件
 - history 查看镜像的历史信息
-- pull [OPTIONS] NAME[:TAG|@DIGEST] 从远程仓库拉取镜像
-
-### 镜像导入和导出
-
-```bash
-[root@localhost ~]# docker [image] save -o  # 归档一个或多个镜像文件
-[root@localhost ~]# docker [image] load -i  # 从归档文件加载镜像文件
-```
-
-### 批量删除多个镜像
+- rmi 删除本地镜像, 作用同 `image rm`
 
 ```bash
 docker rmi -f $(docker images -aq)
 docker image rm -f $(docker image ls -aq) # 功能同上
 ```
+
+- search [OPTIONS] TERM 从镜像仓库查找镜像
+
+- load|import 从归档文件导入镜像
+- save [OPTIONS] IMAGE [IMAGE...] 保存多个镜像到归档文件
+
+```bash
+[root@localhost ~]# docker [image] save -o bak.tar centos01:v1 centos02:v1 # 归档一个或多个镜像文件
+```
+
+- commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]] 基于容器创建一个镜像
+- build 从 [Dockerfile 构建镜像](#build-image)
+
+- pull [OPTIONS] NAME[:TAG|@DIGEST] 从远程仓库拉取镜像
+- push [OPTIONS] NAME[:TAG] 将镜像上传到镜像仓库
+
+- tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG] 创建一个指向 源镜像 的 目标镜像标签
+
+```bash
+# 创建一个指向 源镜像 的 目标镜像标签
+[root@localhost ~]# docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+```
+
+![docker-3](/images/docker-3.png)
 
 ### 从容器构建镜像
 
@@ -139,7 +149,7 @@ nginx        latest    12766a6745ee   2 days ago      142MB
 centos       latest    5d0da3dc9764   6 months ago    231MB
 ```
 
-### 从 Dockerfile 构建镜像
+### 从 Dockerfile 构建镜像 <em id='build-image'></em> <!--markdownlint-disable-line-->
 
 `.` 上下文路径
 
@@ -172,7 +182,7 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
 容器的操作命令可直接用在 `docker` 或 `docker container` 命令后面
 
 - create 创建新容器
-- run 创建并启动一个容器
+- run [创建并启动一个容器](#run-container)
 - start|stop|kill 启动|停止容器
 - pause 暂停容器
 - restart 重启容器
@@ -187,9 +197,7 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
   - -n, \-\-tail 查看指定行数
   - -t, \-\-timestamps 输出日志添加时间戳
 
-- rm 删除容器
 - port 查看容器映射端口
-- export 导出容器文件系统为归档文件
 - wait 阻塞一个或多个容器直到停止运行, 并打印容器的退出码
 
 ```bash
@@ -197,7 +205,27 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
 0
 ```
 
-### 运行
+- export [OPTIONS] CONTAINER 导出容器的文件系统到归档文件
+
+```bash
+[root@localhost ~]# docker [image] export -o bak.tar centos01  # 导出容器的文件系统到归档文件
+```
+
+- rm 删除容器
+
+```bash
+[root@localhost ~]# docker rm -f $(docker ps -aq) # 删除所有容器
+```
+
+- stats 统计容器使用情况
+
+```bash
+[root@localhost ~]# docker stats
+CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I/O      BLOCK I/O     PIDS
+a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB / 0B   6.79MB / 0B   1
+```
+
+### 运行 <em id='run-container'></em> <!--markdownlint-disable-line-->
 
 如果本地不存在镜像时则先从远程拉取镜像(docker pull 镜像名)
 
@@ -350,15 +378,27 @@ CONTAINER ID   IMAGE     COMMAND       CREATED        STATUS                    
 a441e0564165   centos    "/bin/bash"   25 hours ago   Exited (0) 2 seconds ago             vigorous_turing
 ```
 
-### 文件拷贝 cp <em id="dockercp"></em> <!--markdownlint-disable-line-->
+- -e 运行容器时指定环境变量
+- -w 容器工作目录
+
+```bash
+[root@localhost ~]# docker exec -it -e PATH=/usr/local/v12.22.1/bin:$PATH centos01 node -v
+v12.22.1
+[root@localhost ~]# docker exec -it -w /usr/local centos01  pwd
+/usr/local
+```
+
+### 文件拷贝 cp <em id="docker-cp"></em> <!--markdownlint-disable-line-->
 
 - -a, \-\-archive 复制文档的所有信息
 
-#### 拷贝宿主机到容器内
-
 ```bash
-docker cp [宿主机路径] [容器标识]:[容器内路径]
+docker cp [宿主机路径] [容器标识]:[容器内路径]  # 拷贝宿主机文件到 容器内 目录
+
+docker cp [容器标识]:[容器内路径] [宿主机路径]  # 拷贝容器内文件 到 宿主机目录
 ```
+
+#### 拷贝宿主机到容器内
 
 ```bash
 # 拷贝宿主机文件到 a441e0564165 /user/local 下
@@ -368,10 +408,6 @@ bin  etc  games  include  lib  lib64  libexec  sbin  share  src  v12.22.1
 ```
 
 #### 拷贝容器内到宿主机
-
-```bash
-docker cp [容器标识]:[容器内路径] [宿主机路径]
-```
 
 ```bash
 [root@localhost ~]# ls /home/
@@ -387,49 +423,6 @@ drwxr-xr-x 1 root root 4096 Apr 10 08:06 ..
 [root@localhost ~]# docker cp -a a441e0564165:/home/hello.txt /home/vagrant
 [root@localhost ~]# ls
 centos01  description-pak  hello.txt
-```
-
-### 容器环境变量和工作目录
-
-- -e 运行容器时指定环境变量
-- -w 容器工作目录
-
-```bash
-[root@localhost ~]# docker exec -it -e PATH=/usr/local/v12.22.1/bin:$PATH centos01 node -v
-v12.22.1
-[root@localhost ~]# docker exec -it -w /usr/local centos01  pwd
-/usr/local
-```
-
-### 容器导入和导出
-
-- export 从容器中导出为归档文件
-
-- import 从归档文件中导入为镜像文件
-
-```bash
-[root@localhost ~]# docker [container] export -o centos01.tar.gz centos01 # 归档容器
-
-# 导入归档文件为镜像
-[root@localhost ~]# docker [image] import centos01.tar.gz [REPOSITORY[:TAG]]
-```
-
-![docker-3](/images/docker-3.png)
-
-### 删除所有容器
-
-```bash
-docker rm -f $(docker ps -aq)
-```
-
-### 查看容器资源使用情况统计
-
-```bash
-docker stats
-
-[root@localhost ~]# docker stats
-CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT     MEM %     NET I/O      BLOCK I/O     PIDS
-a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB / 0B   6.79MB / 0B   1
 ```
 
 ## 数据卷

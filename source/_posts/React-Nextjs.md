@@ -196,6 +196,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { slug } = req.query;
+  // 获取 searchParams 手动分割 req.query
   res.end(`Post: ${slug.join(', ')}`);
 }
 ```
@@ -204,6 +205,16 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   - `pages/api/post/create.js` 匹配 `/api/post/create`
   - `pages/api/post/[pid].js` 匹配 `/api/post/1`, `/api/post/abc`, 不能匹配 `/api/post/create`
   - `pages/api/post/[...slug].js` 匹配 `/api/post/1/2`, `/api/post/a/b/c`, 不能匹配 `/api/post/create`, `/api/post/abc`
+
+#### NextApiRequest/NextApiResponse
+
+用于传统的 Next.js API 路由(pages/api 目录下的路由)
+
+- 基于 Node.js 的 http 模块
+- 包含 Express 风格的请求处理方法
+- 适用于 Pages Router 的 API 路由
+- 基于 URL 解析
+- 需要使用 bodyParser 中间件
 
 ### app router <em id="app-router"></em> <!--markdownlint-disable-line-->
 
@@ -291,6 +302,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   console.log("id", id);
+  const searchParams = req.nextUrl.searchParams; // 获取 Query Params;
+  console.log(searchParams);
   
   return new NextResponse(new Blob([JSON.stringify({ hello: 'world', status: 200, statusText: 'response ok!' })], { type: 'application/json' }))
 }
@@ -298,6 +311,16 @@ export async function POST(req: NextRequest) {
   // ...
 }
 ```
+
+#### NextRequest/NextResponse
+
+用于 [App Router](#app-router) 的中间件和路由处理器(Route Handler)
+
+- 基于 Web API 的 Request/Response 对象
+- 提供更现代的 Web 标准 API
+- 适用于 App Router 和中间件
+- 提供增强的 NextUrl 对象
+- 自动解析请求(不需要 bodyParser)
 
 #### 路由段
 
