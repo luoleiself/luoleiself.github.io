@@ -13,7 +13,7 @@ tags:
 RSC(React Server Component)
 ISR(Incremental Static Regeneration)
 
-## Server Component
+## React Server Component
 
 `异步组件` 是服务器组件的一个新特性, 允许在渲染中 `await`.
 

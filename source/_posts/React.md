@@ -2709,13 +2709,29 @@ app.use('/', async (req, res) => {
 
 ## React Server Component
 
-服务器组件是一种新型的组件, 它在打包之前, 在独立于客户端应用程序或 SSR 服务器的环境中提前渲染. 服务器组件可以在构建时运行一次, 也可以在每次请求时在 web 服务器中运行.
+RSC(服务器组件)是一种新型的组件, 它在打包之前, 在独立于客户端应用程序或 SSR 服务器的环境中提前渲染. 服务器组件可以在构建时运行一次, 也可以在每次请求时在 web 服务器中运行.
 
 `异步组件` 是服务器组件的一个新特性, 允许在渲染中 `await`.
 
 ```tsx
 async function Page(){
   // ...
+}
+```
+
+### Server Function
+
+2024年9月之前被称为 Server Action, Server Function 允许客户端组件调用在服务器上执行的异步函数
+
+```tsx
+import { Button } from './Button';
+function EmptyNode(){
+  async function createNodeAction(){
+    // Server Function
+    'use server';
+    await db.notes.create();
+  }
+  return <Button onClick={createNodeAction}/>;
 }
 ```
 
