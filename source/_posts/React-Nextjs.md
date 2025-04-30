@@ -196,7 +196,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { slug } = req.query;
-  // 获取 searchParams 手动分割 req.query
+  const {method, body, query: {slug, ...searchParams}} = req; // 获取 searchParams 手动分割 req.query
+  console.log('req', method, slug, searchParams, body);
   res.end(`Post: ${slug.join(', ')}`);
 }
 ```
@@ -298,6 +299,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
 ```ts
 // app/blog/[id].ts
+import type { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
