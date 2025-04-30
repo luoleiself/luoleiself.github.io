@@ -144,9 +144,11 @@ export default function ViewCount({ initialViews }: { initialViews: number }) {
 
 ## 路由
 
+pages router 和 app router 模式下, 组成路由段的 文件 必须包含一个默认导出的组件
+
 ### pages router
 
-`pages router` 模式下, pages 目录下所有的导出 React Component 的文件都将作为路由可用.
+`pages router` 模式下, pages 目录下所有的包含默认导出 React Component 的文件都将作为路由段可用.
   
 - pages 以当前目录下的 文件名 创建路由段, 目录下的 index.tsx 创建页面
   - [fileName] 动态路由, 动态路由参数使用 [useRouter](#use-router) 访问. <em id="pages-dynamic-route"></em> <!--markdownlint-disable-line-->
@@ -168,7 +170,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 type ResponseData = { 'message': string };
 
-// 导出 config 对象修改默认配置
+export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+  console.log(req.query);
+  res.status(200).json({ message: 'Hello from Next.js API Route'});
+}
+```
+
+```ts
+// pages/api/hello.ts
+
+// 导出 config 对象修改 api route 默认配置
 export const config = {
   api: {
     bodyParser: {
@@ -178,11 +189,6 @@ export const config = {
     responseLimit: '4mb'
   }.
   maxDuration: 5,
-}
-
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  console.log(req.query);
-  res.status(200).json({ message: 'Hello from Next.js API Route'});
 }
 ```
 
@@ -219,9 +225,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
 ### app router <em id="app-router"></em> <!--markdownlint-disable-line-->
 
-`app router` 模式下, app 目录下只有 page, route 命名的文件才会被解析为路由段的 UI, 否则路由是 404, 其他命名文件不会被外部访问, 相对是安全的.
+基于 React Server Component 的路由模式, 支持共享布局、嵌套路由、加载状态、错误处理等.
 
-- app 以当前目录下的 目录名 创建路由段, 目录下的 page.tsx 创建页面
+`app router` 模式下, app 目录下只有 page 文件包含一个默认导出 React Component 和 route 命名的文件才会被解析为路由段的 UI, 否则路由是 404, 其他命名文件不会被外部访问, 相对是安全的.
+
+- app 以当前目录下的 目录名 创建路由段, 目录下的 page.tsx 或 route.ts 创建页面
   - _folderName 私有目录, 当前目录及子目录被 `路由解析 忽略`, 将 \_ 转义为 `%5F` 后命名目录路由段可正常访问
   - (folderName) 路由分组, 目录名被 `路由解析 忽略`, 使用相同的布局
   
