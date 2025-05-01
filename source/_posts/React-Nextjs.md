@@ -17,7 +17,7 @@ ISR(Incremental Static Regeneration)
 
 `异步组件` 是服务器组件的一个新特性, 允许在渲染中 `await`.
 
-可以在服务器上渲染和缓存的 UI, 在 next.js 中, 渲染工作进一步按路由段划分, 以实现流式和部分渲染
+RSC 是一种新型的组件, 它在打包之前在独立于客户端应用程序或 SSR 服务器的环境中提前渲染, 在 next.js 中, 渲染工作进一步按路由段划分, 以实现流式和部分渲染
 
 - 数据获取, 将数据获取移动到更靠近数据源的服务器上, 可以减少获取渲染所需数据的时间以及客户端需要发出的请求数量来提高性能
 - 安全性, 在服务器上保留敏感数据和逻辑, 例如 token 和 API keys, 而不会将它们暴露给客户端
@@ -49,9 +49,11 @@ ISR(Incremental Static Regeneration)
 - 客户端组件应渲染的占位符及其 JavaScript 文件的引用
 - 从 RSC 传递给客户端组件的任何信息
 
-### Server Action
+### Server Function
 
 是一个在服务器上执行的异步函数, 它们可以在服务器和客户端组件之间调用, 以处理 Next.js 应用程序中的表单和提交和数据突变
+
+当使用 'use server' 指令定义服务器函数时, 将自动创建一个指向服务器函数的引用, 并将该引用传递给客户端组件. 当在客户端组件调用该函数时, React 向服务器发送一个请求来执行该函数, 并返回结果
 
 - 不限于 \<form\>, 可以从 Event Handlers、useEffect、第三方库和其他表单元素 \<button\> 调用
 - 与 Next.js cache 和 revalidate 集成, 当调用一个 action 时, Next.js 可以在单个服务器往返中返回更新的 UI 和新数据

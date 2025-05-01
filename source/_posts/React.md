@@ -75,13 +75,41 @@ const workloop = () => {
 workloop();
 ```
 
+### 并发 React
+
+React 在底层实现上使用了非常复杂的技术, 如优先队列，多级缓冲. 使得 React 能够同时准备多个版本的 UI.
+
+`并发渲染`的关键特性是渲染可中断, React 即使渲染被中断, UI 也会保持一致, 它会在整个 DOM 树被计算完毕前一直等待, 完毕后再执行 DOM 变更. 这样做, React 就可以在后台提前准备新的屏幕内容, 而不阻塞主线程. 这意味着用户输入可以被立即响应, 即使存在大量渲染任务, 也能有流畅的用户体验.
+
+### 自动批处理
+
+当 React 在一个单独的重渲染事件中批量处理多个状态更新以此实现优化性能. 没有自动批处理的话, 仅能够在 React 事件处理程序中批量更新.
+
+在 React 18 之前, 默认情况下 promise、setTimeout、原生应用的事件处理程序以及其他任何事件中的更新都不会被批处理.
+
+```tsx
+// React 18 之前: 只有 React 事件会被批处理
+setTimeout(() => {
+  setCount(c => c + 1);
+  setFlag(f => !f);
+  // React 会渲染两次, 每次更新一个状态(没有批处理)
+}, 1000);
+
+// React 18 之后: React 事件, promise, setTimeout, 原生事件, 其他任何事件都被批处理
+setTimeout(() => {
+  setCount(c => c + 1);
+  setFlag(f => !f);
+  // React 仅会重渲染一次(批处理);
+}, 1000);
+```
+
+<!--more-->
+
 ### Actions
 
 > React 19 支持
 
 一个异步函数, 执行数据变更然后响应更新状态, [useTransition](#useTransition), [useActionState](#useActionState), [useOptimistic](#useOptimistic)
-
-<!--more-->
 
 ### 构建 state 原则
 
@@ -2709,7 +2737,7 @@ app.use('/', async (req, res) => {
 
 ## React Server Component
 
-RSC(服务器组件)是一种新型的组件, 它在打包之前, 在独立于客户端应用程序或 SSR 服务器的环境中提前渲染. 服务器组件可以在构建时运行一次, 也可以在每次请求时在 web 服务器中运行.
+RSC(服务器组件)是一种新型的组件, 它在打包之前在独立于客户端应用程序或 SSR 服务器的环境中提前渲染. 服务器组件可以在构建时运行一次, 也可以在每次请求时在 web 服务器中运行.
 
 `异步组件` 是服务器组件的一个新特性, 允许在渲染中 `await`.
 
@@ -2723,8 +2751,11 @@ async function Page(){
 
 2024年9月之前被称为 Server Action, Server Function 允许客户端组件调用在服务器上执行的异步函数
 
+当使用 'use server' 指令定义服务器函数时, 将自动创建一个指向服务器函数的引用, 并将该引用传递给客户端组件. 当在客户端组件调用该函数时, React 向服务器发送一个请求来执行该函数, 并返回结果
+
 ```tsx
 import { Button } from './Button';
+
 function EmptyNode(){
   async function createNodeAction(){
     // Server Function
