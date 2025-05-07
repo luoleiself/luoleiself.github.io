@@ -161,6 +161,8 @@ pages router 和 app router 模式下, 组成路由段的 文件 必须包含一
 
 任意在 `pages/api` 目录下的文件使用 `文件名` 映射为 `/api/*` 并作为 api 入口而不是页面，不会增加客户端打包的代码大小.
 
+***以 index 命名的文件名不会作为 api 路由段的一部分***
+
 在文件中导出 config 配置对象修改默认配置.
 
 - API route 不能使用特殊的 CORS，只能使用 same-origin. 可以自定义包装一个 request handler 使用 CORS.
