@@ -315,7 +315,7 @@ db.survey.find({results: { $elemMatch: { product: "xyz", score: { $gte: 8 } }}})
 
 - $ 充当占位符，用于更新与查询条件匹配的第一个元素
 - $[] 充当占位符，以更新数组中与查询条件匹配的文档中的所有元素
-- $[<identifier>] 充当占位符，以更新与查询条件匹配的文档中所有符合 arrayFilters 条件的元素
+- $[\<identifier\>] 充当占位符，以更新与查询条件匹配的文档中所有符合 arrayFilters 条件的元素
 - $addToSet 仅向数组中添加尚不存在于该数组的元素, 配合 $each 批量添加元素
 - $pop  删除数组的第一项或最后一项，-1 第一个，1 最后一个
 - $pull 删除与指定查询匹配的所有数组元素
@@ -362,7 +362,7 @@ db.orders.aggregate([
 
 阶段
 
-- $addFileds 为文档添加新字段
+- $addFields 为文档添加新字段
 - $bucket 根据指定的表达式和存储桶边界将传入的文档分为多个组
 - $collStats  返回有关集合或视图的统计信息
 - $count 计数
