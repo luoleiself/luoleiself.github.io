@@ -776,6 +776,50 @@ function App(){
 }
 ```
 
+- 状态切换
+
+```tsx
+import { useState, useContext, createContext } from 'react';
+
+const ToggleContext = createContext();
+function Toggle({children}) {
+  const [on, setOn] = useState(false);
+  const toggle = () => setOn(prev => !prev);
+
+  return <ToggleContext.provider value={{on, toggle}}>
+    {children}
+  </ToggleContext.Provider>
+}
+function Button() {
+  const {toggle} = useContext(ToggleContext);
+  return <button onClick={toggle}>Toggle</button>
+}
+function On({children}) {
+  const {on} = useContext(ToggleContext);
+  return on ? children : null;
+}
+function Off({children}) {
+  const {on} = useContext(ToggleContext);
+  return !on ? children : null;
+}
+Toggle.Button = Button;
+Toggle.On = On;
+Toggle.Off = Off;
+export default Toggle;
+
+function App(){
+  return <Toggle>
+    <Toggle.Button />
+    <Toggle.On>
+      <p>The toggle is ON!</p>
+    </Toggle.On>
+    <Toggle.Off>
+      <p>The toggle is OFF!</p>
+    </Toggle.Off>
+  </Toggle>
+}
+```
+
 #### useEffect
 
 > 不能使用异步函数作为第一个参数
