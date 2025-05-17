@@ -288,6 +288,49 @@ class Greeting extends Component {
 - React 将 boolean, null, undefined 视为空值, 不做任何渲染
 - 直接在 JSX 中渲染对象 React 将报错 (not valid React element)
 
+### 生命周期
+
+#### 挂载阶段
+
+组件首次挂载时 `由内而外` 先依次执行 `layoutEffect` 的 setup, 然后再依次执行 `effect` 的 setup
+
+1. 父组件函数体执行(包括所有 Hook 初始化)
+2. 子组件函数体执行(包括所有 Hook 初始化)
+3. 子组件 useLayoutEffect 执行
+4. 父组件 useLayoutEffect 执行
+5. 子组件 useEffect 执行
+6. 父组件 useEffect 执行
+
+![react-mounting](../images/react-mounting.png)
+
+#### 更新阶段
+
+组件更新时 `由内而外` 先依次执行有依赖变化的 `layoutEffect` 的 cleanup 和 setup, 然后再依次执行有依赖变化的 `effect` 的 cleanup 和 setup
+
+1. 父组件函数体执行
+2. 子组件函数体执行
+3. 子组件 useLayoutEffect cleanup 执行(如果有依赖变化)
+4. 父组件 uselayoutEffect cleanup 执行(如果有依赖变化)
+5. 子组件 useLayoutEffect 执行(如果有依赖变化)
+6. 父组件 useLayoutEffect 执行(如果有依赖变化)
+7. 子组件 useEffect cleanup 执行(如果有依赖变化)
+8. 父组件 useEffect cleanup 执行(如果有依赖变化)
+9. 子组件 useEffect 执行(如果有依赖变化)
+10. 父组件 useEffect 执行(如果有依赖变化)
+
+![react-updating](../images/react-updating.png)
+
+#### 卸载阶段
+
+组件卸载时, 从卸载组件开始 `由外而内` 先依次执行 `layoutEffect` 的 cleanup, 然后再依次执行 `effect` 的 cleanup
+
+1. 父组件 useLayoutEffect cleanup 执行
+2. 子组件 useLayoutEffect cleanup 执行
+3. 父组件 useEffect cleanup 执行
+4. 子组件 useEffect cleanup 执行
+
+![react-unmounting](../images/react-unmounting.png)
+
 ### 使用 TypeScript
 
 - DOM 事件, React.SyntheticEvent 是所有事件的基类型
