@@ -478,7 +478,22 @@ db.artists.aggregate([
   - sortBy 指定每个分区内用于对文档进行排序的字段, 使用与 $sort 阶段相同的语法
   - output 指定一个对象, 其中包含要填充缺失值的每个字段
 - $geoNear  根据与地理空间点的接近程度返回有序的文档流
-- $group  按指定的标识符表达式对输入文档进行分组，并将累加器表达式（如果指定）应用于每个群组
+- $group  按指定的标识符表达式对输入文档进行分组，并将累加器表达式（如果指定）应用于每个群组, 不会对其输出文档进行排序
+  - _id 指定群组标识符表达式, 如果指定的 \_id 值为空值或任何其他常量值, $group 阶段将返回聚合所有输入文档值的单个文档
+  - field 使用累加器操作符进行计算
+
+```ts
+[
+  {
+    $group: {
+      _id: <expression>， // Group key
+      <field1>: { <accumulator1>: <expression1> },
+      // ...
+    }
+  }
+]
+```
+
 - $indexStats 返回集合中每个索引使用情况的统计信息, 此阶段采用一个空文档, 不需要配置项
 - $limit  将未修改的前 n 个文档传递到管道的下一阶段，其中 n 为指定的限制
 - $lookup 对同一数据库中的集合执行`左外连接`, 以过滤外部集合中的文档进行处理
@@ -695,6 +710,8 @@ db.sales.aggregate([
 db.sales.aggregate([
   {$group: {_id: '$item', avgAmount: {$avg: {$multiply: ['$price', '$quantity']}, avgQuantity: {$avg: '$quantity'}}}}
 ]);
+// 按 item 对文档进行分组, 以检索非重复的项值
+// 使用 $avg 累加器来计算每组的平均金额和平均数量
 // output: avgAmount = sum(group(price * quantity)) / groupNum; avgQuantity = sum(group(quantity)) / groupNum
 // { "_id" : "xyz", "avgAmount" : 37.5, "avgQuantity" : 7.5 }
 // { "_id" : "jkl", "avgAmount" : 20, "avgQuantity" : 1 }
