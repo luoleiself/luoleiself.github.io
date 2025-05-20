@@ -77,10 +77,8 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 镜像的操作命令可直接用在 `docker` 或 `docker image` 命令后面
 
 - images 查看本地镜像列表, 作用同 `image ls`
-  - \-\-filter \<FILTER_TYPE\>=\<VALUE\> 根据指定条件过滤镜像
-    - status  按状态过滤
-    - name 按名称过滤
-    - id 按 id 过滤
+  - \-f, \-\-filter \<FILTER_TYPE\>=\<VALUE\> 根据指定条件过滤镜像
+    - reference 按镜像名称过滤
     - label 按标签过滤
     - before/since  按创建时间过滤
     - dangling  按悬空镜像过滤
@@ -198,6 +196,20 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
 - events 获取 docker 服务器的实时事件
 - diff 显示容器文件系统的前后变化
 - ps 查看容器列表, 作用同 `container ls`
+  - \-f, \-\-filter \<FILTER_TYPE\>=\<VALUE\> 根据指定条件过滤容器
+    - id 按 id 过滤
+    - name 按容器名称过滤
+    - label 按标签过滤
+    - exited 按退出码过滤
+    - status 按状态过滤, 包含 created, restarting, running, removing, paused, exited, dead
+    - ancestor 按创建容器的镜像过滤
+    - before/since  按创建时间过滤
+    - network 按容器连接的网络过滤
+    - publish/expose  按容器发布或暴露的端口过滤
+    - health  按容器基于它们的健康状态过滤
+    - isolation 仅支持 windows 守护进程
+    - is-task 按容器是否时服务的任务过滤
+
 - inspect 查看容器详细信息, 作用同 `container inspect`
 - logs 输出容器运行日志
 
@@ -440,6 +452,12 @@ centos01  description-pak  hello.txt
 - create 创建数据卷
 - inspect 显示数据卷的详细信息
 - ls 显示所有数据卷
+  - \-f, \-\-filter \<FILTER_TYPE\>=\<VALUE\> 根据指定条件过滤数据卷
+    - dangling 按悬空数据卷过滤
+    - driver  按数据卷驱动名称过滤
+    - label 按数据卷标签过滤
+    - name  按数据卷名称过滤
+
 - rm 删除数据据按
 - prune 移除所有未使用的本地数据卷
 

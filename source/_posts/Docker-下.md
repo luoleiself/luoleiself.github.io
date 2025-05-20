@@ -65,6 +65,15 @@ veth-pair 就是一对的虚拟设备接口，和 tap/tun 设备不同的是，�
 
 ### [网络模式](https://docs.docker.com/network/)
 
+- ls 查看网络列表
+  - \-f, \-\-filter \<FILTER_TYPE\>=\<VALUE\> 根据指定条件过滤网络
+    - driver 按网络模式过滤
+    - id  按网络 id 过滤
+    - label 按标签过滤
+    - name  按网络名称过滤
+    - scope 按网络作用域过滤
+    - type 按网络类型过滤
+
 ```bash
 [root@localhost ~]# docker network ls
 NETWORK ID     NAME      DRIVER    SCOPE
@@ -589,7 +598,7 @@ docker compose -f -p -c --env-file up [service_name]
   - \-\-protocol string  指定协议, tcp(default) | udp
 - ps 查看所有容器
   - -a, \-\-all 列出所有容器
-  - \-\-filter string 过滤服务
+  - \-f, \-\-filter \<FILTER_TYPE\>=\<VALUE\> 根据指定条件过滤服务容器
   - \-\-format string 使用自定义模板格式化输出, table(default) | table TEMPLATE | json | TEMPLATE
   - \-\-services 显示服务名称
   - \-\-status stringArray 通过状态过滤服务, [paused | restarting | removing | running | dead | created | exited]
