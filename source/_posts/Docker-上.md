@@ -77,6 +77,14 @@ systemctl enable docker # 设置 docker 守护进程开机启动
 镜像的操作命令可直接用在 `docker` 或 `docker image` 命令后面
 
 - images 查看本地镜像列表, 作用同 `image ls`
+  - \-\-filter \<FILTER_TYPE\>=\<VALUE\> 根据指定条件过滤镜像
+    - status  按状态过滤
+    - name 按名称过滤
+    - id 按 id 过滤
+    - label 按标签过滤
+    - before/since  按创建时间过滤
+    - dangling  按悬空镜像过滤
+
 - history 查看镜像的历史信息
 - rmi 删除本地镜像, 作用同 `image rm`
 
