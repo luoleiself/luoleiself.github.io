@@ -732,34 +732,31 @@ tar [OPTION...] [FILE]...
 ### curl
 
 - \-\-help [all] For all options use the manual
+
+```bash
+curl --help all
+```
+
 - \-s,\-\-silent Silent mode
+- \-S,\-\-show-error show error even when -s is used
 - \-v,\-\-verbose Make the operation more talkative
 - \-#,\-\-progress-bar Display transfer progress as a bar
 - \-L,\-\-location Follow redirects
 - \-X,\-\-request \<method\> Specify request method to use
 - \-H,\-\-header \<header\/@file\> Pass custom headers to server
 
-```bash
-curl --help all
-
-curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
---header 'Access-Token: clt.01*********3d3d' \
---header 'Content-Type: application/json' \
---data '{
-  "name": "zhangsan",
-  "age": 18
-}'
-```
+- \-I,\-\-head 仅显示文档信息
+- \-A,\-\-user-agent \<name\> 发送 user-agent
 
 - \-b,\-\-cookie \<data|filename\> Send cookies from string/load from file
 
 ```bash
-curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
---cookie 'name=zhangsan;age=18' \
+curl -L -X POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+-b 'name=zhangsan;age=18' \
 -v
 
-curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
---header 'Cookie: name=zhangsan;age=18' \
+curl -L -X POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+-H 'Cookie: name=zhangsan;age=18' \
 -v
 ```
 
@@ -771,17 +768,25 @@ curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode
   - \-\-data-urlencode \<data\> HTTP POST data URL encoded
 
 ```bash
-curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
---header 'Access-Token: clt.01*********3d3d' \
---header 'Content-Type: application/x-www-form-urlencoded' \
+curl -L -X POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+-H 'Access-Token: clt.01*********3d3d' \
+-H 'Content-Type: application/json' \
+-d '{
+  "name": "zhangsan",
+  "age": 18
+}'
+
+curl -L -X POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+-H 'Access-Token: clt.01*********3d3d' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'client-key=tt10abc********' \
 --data-urlencode 'client_secret=7820************' \
 --data-urlencode 'code=ffab5ec*********' \
 --data-urlencode 'grant_type=authorization_code'
 
-curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
---header 'Access-Token: clt.01*********3d3d' \
---header 'Content-Type: application/json' \
+curl -L -X POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+-H 'Access-Token: clt.01*********3d3d' \
+-H 'Content-Type: application/json' \
 --data-raw '{
   "app_id": "tt*******",
   "app_name": "douyin",
@@ -798,10 +803,10 @@ curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode
   - \-\-form-string \<name=string\> Specify multipart MIME data
 
 ```bash
-curl --location --request POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
---header 'Access-Token: clt.01*********3d3d' \
---header 'Content-Type: multipart/form-data' \
---header 'Accept: */*' \
+curl -L -X POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
+-H 'Access-Token: clt.01*********3d3d' \
+-H 'Content-Type: multipart/form-data' \
+-H 'Accept: */*' \
 --form 'appid=tt1yyyy' \
 --form 'material_type="1000"' \
 --form 'material_file=@"/Users/xxx.jpg"'
