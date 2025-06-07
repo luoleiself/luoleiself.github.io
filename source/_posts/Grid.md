@@ -37,20 +37,21 @@ CSS Grid 布局 和 Flexible 布局的主要区别在于 CSS Flexible 是为了�
   - grid-column-gap
   - grid-row-gap
 
-- place-items
-  - align-items
-  - justify-items
-
-- place-content
-  - align-content
-  - justify-content
-
 - grid-area
   - grid-row
   - grid-column
   
-- align-self
-- justify-self
+- place-content 简写属性
+  - align-content 设置 flex 布局和 grid 布局交叉轴上内容项之间和周围分配空间
+  - justify-content 设置 flex 布局和 grid 布局主轴上的对齐方式
+
+- place-items 简写属性
+  - align-items 设置所有子元素在交叉轴上的对齐方式
+  - justify-items 设置所有盒中的项目沿适当轴线对齐到每个盒子
+
+- align-self  设置子元素在交叉轴上的对齐方式, 覆盖 align-items 的值
+
+- justify-self  设置单个盒子在其布局容器适当轴中的对齐方式
 <!-- more -->
 
 ### 容器属性
@@ -319,11 +320,3 @@ grid-area: 2 / 2 / auto / span 3;
 ##### grid-column-end
 
 指定有边框所在的垂直网格线
-
-#### align-self
-
-设置单个项目在其布局容器中垂直于主轴中的对其方式, 覆盖已有的 `align-items` 的值
-
-#### justify-self
-
-设置单个项目在其布局容器中主轴中的对其方式

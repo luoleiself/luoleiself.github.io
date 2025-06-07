@@ -101,3 +101,31 @@ CSS 媒体特性用于检测用户是否有将系统的主题色设置为**亮�
 <div class="dark light-scheme">Night (changes in light scheme)</div>
 <div class="dark dark-scheme">Night (changes in dark scheme)</div>
 ```
+
+### pointer-events
+
+指定在什么情况下(如果有)某个特定的图形元素可以成为鼠标事件的 target
+
+- none 指定元素永远不会成为鼠标事件的 target, 当其后代元素的 pointer-events 属性指定其他值时, 鼠标事件可以指向后代元素
+      例如: 页面上显示自定义水印效果不影响页面交互, 使用容器元素包含水印覆盖整个 body 将优先级设置为最高并设置此属性使容器元素不被鼠标事件选中
+
+### 布局
+
+#### place-content
+
+简写属性
+
+- align-content 设置 flex 布局的纵轴和 grid 布局的主轴在内容项之间和周围分配空间
+- justify-content 设置 flex 布局和 grid 布局主轴上的对齐方式
+
+#### place-items 简写属性
+
+简写属性
+
+- align-items 设置 flex 布局的交叉轴和 grid 布局的块向轴上的子元素的对齐方式
+- justify-items 设置所有盒中的项目沿适当轴线对齐到每个盒子
+
+#### 单个盒子属性
+
+- align-self  设置 flex 布局和 grid 布局中的子元素的行为, 覆盖 align-items 的值
+- justify-self  设置单个盒子在其布局容器适当轴中的对齐方式
