@@ -718,7 +718,7 @@ db.sales.aggregate([
 // { "_id" : "abc", "avgAmount" : 60, "avgQuantity" : 6 }
 ```
 
-数组表达式操作符
+##### 数组表达式操作符
 
 - $first 返回一组文档中第一个文档的表达式结果, 仅当文档按定义的顺序排列时才有意义
 - $last 返回一组文档中最后一个文档的表达式结果, 仅当文档按指定顺序排列时才有意义
@@ -777,7 +777,7 @@ db.inventory.aggregate([
 // { "_id" : 3, "item" : "ABC3", "dimensions" : { "l" : 50 } }
 ```
 
-条件表达式操作符
+##### 条件表达式操作符
 
 - $cond 一种三目运算符, 它可用于计算一个表达式, 并根据结果返回另外两个表达式之一的值
 - $ifNull 返回第一个表达式的非空结果; 或者, 如果第一个表达式生成空结果, 则返回第二个表达式的结果
@@ -798,7 +798,7 @@ db.inventory.aggregate([
 }
 ```
 
-[日期表达式操作符](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/)
+##### [日期表达式操作符](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/)
 
 - $dateAdd 向日期对象添加多个时间单位
 - $dateDiff 返回两个日期之间的差值
@@ -830,7 +830,7 @@ db.inventory.aggregate([
 // { "_id" : 3, "costsOneDollar" : true }
 ```
 
-对象表达式操作符
+##### 对象表达式操作符
 
 - $mergeObjects 将多个文档合并为一个文档, 后面的文档会覆盖前面文档的同名字段, 非文档的参数将会忽略
 - $setField 添加、更新或删除文档中的指定字段
@@ -884,7 +884,7 @@ db.inventory.aggregate([
 // { "_id" : 3, "item" : "XYZ1", "dimensions" : [ { "k" : "l", "v" : 70 }, { "k" : "w", "v" : 75 }, { "k" : "uom", "v" : "cm" } ] }
 ```
 
-集合表达式操作符
+##### 集合表达式操作符
 
 - $allElementsTrue  如果集合中没有元素计算结果为 false, 则返回 true 否则返回 false
 - $anyElementsTrue  如果集合中的任何元素计算结果为 true, 则返回 true 否则返回 false
@@ -911,7 +911,7 @@ db.inventory.aggregate([
 {$setUnion: [['a','b'], [['b', 'a']]]}  // ['a', 'b', ['a', 'b']]
 ```
 
-字符串表达式操作符
+##### 字符串表达式操作符
 
 - $indexOfBytes 在字符串中搜索子串出现的位置, 并返回第一次出现的索引, 未找到则返回 -1
   - string 字符串值
@@ -919,7 +919,7 @@ db.inventory.aggregate([
   - start 起始位置
   - end 结束位置
 
-类型表达式操作符
+##### 类型表达式操作符
 
 - $type 返回字段的 BSON 数据类型
 - $toUUID 将字符串转换为 UUID
@@ -935,3 +935,119 @@ db.inventory.aggregate([
     - utf8
     - hex
     - uuid
+
+#### 分组结果合并原始文档
+
+- 使用 `$mergeObjects` 合并字段
+
+```ts
+[{
+  $group: {
+    _id: '$groupField',
+    count: {$sum: 1},
+    // 合并所有原始文档的字段
+    mergedDoc: {$mergeObjects: '$$ROOT'}
+  }
+}, {
+  $project: {
+    _id: 1,
+    count: 1,
+    // 展开合并后的文档
+    // otherField1: '$mergedDoc.field1',
+    // otherField2: '$mergedDoc.field2',
+    // 保留整个合并文档
+    originalDoc: '$mergedDoc'
+  }
+}]
+```
+
+- 使用 `$first` 或 `$last` 保留特定字段
+
+```ts
+[{
+  $group: {
+    _id: '$groupField',
+    count: {$sum: 1},
+    // 保留每个分组中第一个文档的特定字段
+    // field1: {$first: '$field1'},
+    // field2: {$first: '$field2'},
+    // 保留整个文档
+    originalDoc: {$first: '$$ROOT'}
+  }
+}]
+```
+
+- 使用 `$addFields` 或 `$project` 重组数据
+
+```ts
+[{
+  $group: {
+    _id: '$groupField',
+    count: {$sum: 1},
+    docs: {$push: '$$ROOT'}, // 将分组内的所有文档存入数组
+  }
+}, {
+  $unwind: '$docs', // 展开文档数组
+}, {
+  $addFields: {
+    // 将分组统计结果与原文档字段合并
+    'docs.count': '$count',
+    'docs.groupId': '$_id'
+  }
+}, {
+  $replaceRoot: {
+    newRoot: '$docs', // 将 docs 提升为根文档
+  }
+}]
+```
+
+- 使用 `$lookup` 自连接
+- 使用 `$set` 简化操作
+
+```ts
+[{
+  $group: {
+    _id: '$groupField',
+    count: {$sum: 1},
+    firstDoc: {$first: '$$ROOT'}
+  }
+}, {
+  $set: {
+    'firstDoc.count': '$count',
+    'firstDoc.groupId': '$_id'
+  }
+}, {
+  $replaceRoot: {
+    newRoot: '$firstDoc'
+  }
+}]
+```
+
+将一个订单集合, 按客户ID分组统计订单数量和总金额, 同时保留客户信息
+
+```ts
+db.orders.aggregate([{
+  $group: {
+    _id: '$customId',
+    orderCount: {$sum: 1},
+    totalAmount: {$sum: '$amount'},
+    customerInfo: {
+      $first: {
+        name: '$customerName',
+        email: '$customerEmail',
+        joinDate: '$customerJoinDate'
+      }
+    }
+  }
+}, {
+  $project: {
+    customerId: '$_id',
+    _id: 0,
+    orderCount: 1,
+    totalAmount: 1,
+    name: '$customerInfo.name',
+    email: '$customerInfo.email',
+    joinDate: '$customerInfo.joinDate'
+  }
+}])
+```
