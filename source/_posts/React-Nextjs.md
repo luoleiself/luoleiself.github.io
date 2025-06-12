@@ -148,7 +148,7 @@ export default function ViewCount({ initialViews }: { initialViews: number }) {
 
 pages router 和 app router 模式下, 组成路由段的 文件 必须包含一个默认导出的组件
 
-### pages router
+### pages router <em id="pages-router"></em> <!--markdownlint-disable-line-->
 
 `pages router` 模式下, pages 目录下所有的包含默认导出 React Component 的文件都将作为路由段可用.
   
@@ -167,6 +167,8 @@ pages router 和 app router 模式下, 组成路由段的 文件 必须包含一
 
 - API route 不能使用特殊的 CORS，只能使用 same-origin. 可以自定义包装一个 request handler 使用 CORS.
 - API route 不能和静态导出一起使用, [app router](#app-router) 中的 [Route handler](#route-handler) 可以.
+
+- request.method 处理不同的请求方式
 
 ```ts
 // pages/api/hello.ts
@@ -223,7 +225,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
 - 基于 Node.js 的 http 模块
 - 包含 Express 风格的请求处理方法
-- 适用于 Pages Router 的 API 路由
+- 适用于 [Pages Router](#pages-router) 的 API 路由
 - 基于 URL 解析
 - 需要使用 bodyParser 中间件
 
@@ -422,6 +424,13 @@ Component hierarchy
 
 - loading.tsx 创建基于加载时的状态, 配合 `Suspense` 组件使用
 
+```tsx
+// loading.tsx
+export default function Loading() {
+  return <div>Loading...</div>
+}
+```
+
 - not-found.tsx 路由未匹配到时渲染的 UI, 默认自动匹配 app 目录下的 not-found.tsx, 嵌套路由下手动调用 notFound 函数渲染局部 not-found.tsx
 
   ```tsx
@@ -435,6 +444,11 @@ Component hierarchy
       page.tsx
       not-found.tsx
   */
+  export default function NotFound() {
+    return (
+      <div>Not Found</div>
+    )
+  }
   ```
 
 - error.tsx 允许处理运行时的错误并显示回退 UI
@@ -514,6 +528,20 @@ export default function GlobalError({
       layout.tsx
       page.tsx
 */
+```
+
+- mdx-components.tsx 在 pages 或 app 目录同级定义一个解析 markdown 的组件, Next.js 15 开始支持, 只能用在 [App Router](#app-router) 中
+
+```tsx
+// /app
+// mdx-components.tsx
+import type { MDXComponents } from 'mdx/types';
+
+export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return {
+    ...components,
+  }
+}
 ```
 
 ### 环境变量
