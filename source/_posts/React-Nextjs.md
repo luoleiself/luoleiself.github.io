@@ -530,7 +530,7 @@ export default function GlobalError({
 */
 ```
 
-- mdx-components.tsx 在 pages 或 app 目录同级定义一个解析 markdown 的组件, Next.js 15 开始支持, 只能用在 [App Router](#app-router) 中
+- mdx-components.tsx 在 app 目录同级定义一个解析 markdown 的组件, Next.js 15 开始支持, 只能用在 [App Router](#app-router) 中
 
 ```tsx
 // /app
@@ -569,7 +569,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 - [connection](#connection) 标记渲染内容等待用户的请求传入
 - draftMode
 - searchParams prop
-- unstable_noStore 声明选择退出静态渲染, 并标识不应缓存特定组件, Next.js 15 使用 connection 代替
+- unstable_noStore 声明选择退出静态渲染, 并标识不应缓存特定组件, Next.js 15 使用 [connection](#connection) 代替
 
 ## 缓存
 

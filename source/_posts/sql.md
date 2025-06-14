@@ -151,6 +151,18 @@ cls # 清屏, 类似于 console.log()
 
 - db.createUser() 创建用户并指定用户的数据库或者集合访问权限
 
+```ts
+db.createUser({
+  user: "<name>", 
+  pwd: '', 
+  customData: {},
+  roles: [
+    {role: "dbAdmin", db: 'test'},
+    {role: 'dbOwner', db: 'admin'}
+  ]
+}, writeConcernConf);
+```
+
 ### database
 
 - db.help() 返回当前数据库对象上常用方法的文本信息
@@ -318,6 +330,8 @@ db.sensorReading.find({readings: {$type: 'array'}});
 - $where  匹配满足 javascript 表达式的文档
 
 ```javascript
+// { name: { $regex: /acme.*corp/i, $nin: [ 'acmeblahcorp' ] } }
+
 // 查询 spent 金额超过 budget 的所有文档
 db.monthlyBudget.find({$expr: { $gt: [ "$spent" , "$budget" ] }});
 // 查询 qty 字段的值 模 4 等于 0 的所有文档
@@ -988,6 +1002,19 @@ db.inventory.aggregate([
   - substring 子串
   - start 起始位置
   - end 结束位置
+- $regexFind  将正则表达式应用于字符串, 并返回第一个匹配子字符串的信息.
+
+```ts
+// { $regexFind: { input: <expression> , regex: <expression>, options: <expression> } }
+
+db.restaurants.aggregate([
+  {
+    $addFields: {
+      resultObject: { $regexFind: { input: "$category", regex: /cafe/, options: 'im' } }
+    }
+  }
+]);
+```
 
 ##### 类型表达式操作符
 
