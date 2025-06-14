@@ -159,16 +159,20 @@ centos       latest    5d0da3dc9764   6 months ago    231MB
 
 `.` 上下文路径
 
-- -f 指定配置文件, 默认 `${PWD}/Dockerfile`
+- \-\-add-host 添加主机映射信息
+- \-\-build-arg 通过命令行设置构建镜像过程中的参数, 可以覆盖 `ARG` 设置的参数
+
+- -f, \-\-file 指定配置文件, 默认 `${PWD}/Dockerfile`
 - -t 指定新创建的镜像名称和标签
 - \-\-no-cache 构建镜像时不使用缓存
 - \-\-compress 使用 gzip 压缩构建上下文环境
 - \-\-label 设置镜像元数据
 - \-\-network 设置构建过程中 `RUN` 指令的网络模式
-- \-\-build-arg 通过命令行设置构建镜像过程中的参数, 可以覆盖 `ARG` 设置的参数
+
+- -t, \-\-tag 添加镜像的标签(name:tag)
 
 ```bash
-docker build -f /path/to/Dockerfile -t name:tag .
+docker build -f /path/to/Dockerfile --build-arg 'NODE_ENV=production' -t name:tag .
 ```
 
 ## 容器
@@ -253,9 +257,11 @@ a441e0564165   vigorous_turing   0.00%     1.336MiB / 481.6MiB   0.28%     1.6kB
 docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命令
 ```
 
-- \-\-name 容器名称
-- -d, \-\-detach 后台方式运行
+- \-\-add-host list 添加主机 ip 映射
 - -a, \-\-attach 附加到标准输出中
+- -d, \-\-detach 后台方式运行
+- \-\-name 容器名称
+- -h, \-\-hostname 设置容器的主机名
 - -i, \-\-interactive 即使没有附加也保持 STDIN 打开, 如果需要执行命令则需要开启这个选项
 - -t, \-\-tty 分配一个伪终端进行执行, 一个连接用户的终端与容器 stdin 和 stdout 的桥梁
 - -P, \-\-publish-all 将宿主机的随机端口映射到容器使用的端口上
@@ -267,8 +273,9 @@ docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命�
 
 - -e, \-\-env 设置容器运行的环境变量
 - \-\-env-file 设置容器运行的环境变量文件
+- \-\-expose 暴露端口号
+
 - -w, \-\-workdir 设置容器内部的工作目录
-- -h, \-\-hostname 设置容器的主机名
 - -v, \-\-volumes 设置容器数据卷映射
 - \-\-mount 挂载文件系统
 - \-\-tmpfs 挂载临时文件系统
@@ -280,6 +287,8 @@ docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命�
 - \-\-link 连接到另一个容器
 - \-\-network 连接到指定的网络, 默认为 docker0
 
+- \-\-log-opt 日志设置
+
 - \-\-privileged 授予此容器扩展权限
 - \-\-entrypoint 覆盖镜像文件中默认的 ENTRYPOINT
 - \-\-read-only 只读模式挂在容器文件系统
@@ -289,7 +298,6 @@ docker run --name 'helloWorld' -it 镜像名 在启动的容器里执行的命�
   - always
   - unless-stopped
 
-- \-\-add-host list 添加主机 ip 映射
 - \-\-dns list 设置 dns 服务
 - \-\-cpus 指定容器运行时的 cpu 数量
 - -m, \-\-memory 指定容器运行时的内存大小

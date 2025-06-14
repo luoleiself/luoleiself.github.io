@@ -609,9 +609,11 @@ docker compose -f -p -c --env-file up [service_name]
 - exec 在运行的容器中执行命令
   - -d, \-\-detach
   - -e, \-\-env stringArray 设置环境变量
+  - \-\-index int  指定容器执行, 如果服务有多个副本时
   - -T, \-\-no-TTY  不分配伪 TTY, 默认每次执行命令时都分配 TTY
   - -w, \-\-workdir string 设置本次命令的工作目录
 - run 在服务上运行一次性命令
+  - \-\-build 启动容器之前构建镜像
   - -d, \-\-detach
   - -i, \-\-interactive 交互式运行
   - -e, \-\-env stringArray 设置环境变量
@@ -639,7 +641,6 @@ docker compose -f -p -c --env-file up [service_name]
 
 - up 创建服务并启动容器
 
-  - -f 指定配置文件
   - -d, \-\-detach 后台运行容器
   - \-\-attach 连接服务的输出
   - \-\-no-attach 不连接服务的输出
@@ -651,6 +652,8 @@ docker compose -f -p -c --env-file up [service_name]
   - \-\-no-log-prefix 打印日志时不适用前缀
   - \-\-no-recreate 如果容器存在则不创建新的容器
   - -y 非交互式运行命令, 所有的提示都回答 yes
+
+  - -t, \-\-timeout int 延迟关闭容器
 
 ```bash
 [root@localhost ~]# docker compose up service_id # 启动指定服务

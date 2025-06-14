@@ -166,6 +166,76 @@ cls # 清屏, 类似于 console.log()
 
 - db.createCollection() 在当前数据库对象上创建集合, 第二个可选参数可以配置 固定集 的大小
 - db.getCollection() 获取指定名称的集合
+- db.serverStatus() 查看数据库状态
+
+#### 备份和恢复
+
+- -h, \-\-host  连接的数据库(端口号)
+- \-\-port 数据库端口号
+- -u, \-\-username  使用用户名认证
+- -p, \-\-password  使用密码认证
+- -d, \-\-db  选择数据库
+- -c，\-\-collection  选择集合
+- \-\-uri   数据库连接字符串格式
+
+mongodump
+
+- -o, \-\-out  存储目录, 默认使用 dump
+- \-\-gzip  使用 gzip 压缩归档文件
+- \-\-archive  设置归档文件名
+- \-\-excludeCollection  排除指定的集合
+- \-\-excludeCollectionsWithPrefix  排除指定前缀的集合
+- -j, \-\-numParallelCollections  指定并行执行备份的集合数量
+
+mongorestore
+
+- \-\-archive  使用归档文件
+- \-\-gzip  使用 gzip 解压归档文件
+- \-\-dir 恢复备份文件的目录
+- \-\-drop  恢复备份之前是否删除集合数据
+- \-\-noIndexRestore  不恢复索引
+- \-\-noOptionsRestore  不恢复集合的配置项
+- \-\-stopOnError   插入文档失败时停止, 默认情况下, mongorestore 尝试文档验证和重复 key 的错误
+- \-\-preserveUUID  保持原集合中的 UUIDs, 默认为 false
+
+mongoexport
+
+- -f, \-\-fields=\<fields\>[,\<fields\>]*   导出的数据字段
+- \-\-fieldFile  导出的数据字段的文件, 每个字段一行
+- \-\-type  指定导出文件的格式, json(默认) | csv | tsv
+- -o, \-\-out  导出的文件名
+- \-\-jsonArray  导出一个 JSON 数组每个对象一行
+- \-\-pretty  导出一个人类阅读友好的 JSON 格式
+- \-\-noHeaderLine  导出 CSV 文件不使用字段名作为首行
+- -q, \-\-query  查询条件, JSON 字符串格式
+- \-\-queryFile  查询条件的文件
+- \-\-skip  指定导出文档的起始位置
+- \-\-limit  指定导出文档的数量
+- \-\-sort  排序条件, JSON 字符串格式
+- \-\-assertExists  如果集合不存在则导出失败  
+
+mongoimport
+
+- -f, \-\-fields=\<fields\>[,\<fields\>]*   导出的数据字段
+- \-\-fieldFile  导入的数据字段的文件, 每个字段一行
+- \-\-file  导入的数据文件
+- \-\-jsonArray  将导入文件作为 JSON 数组
+- \-\-type  导入文件的格式, json(默认) | csv | tsv
+- \-\-headerline  使用第一行作为列字段, 仅 CSV, TSV 支持
+- \-\-ignoreBlanks   忽略空行, 仅 CSV, TSV 支持
+- \-\-drop  插入文档之前是否删除集合数据
+- \-\-mode  导入模式, insert(默认)|upsert|merge|delete,
+
+```bash
+# 备份
+mongodump -h 127.0.0.1:27017 -d test -o ~/test
+# 恢复备份
+mongorestore -h 127.0.0.1:27017 -d test --dir ~/test --drop
+# 导出数据
+mongoexport -h 127.0.0.1:27017 -d test -o ~/test.json --type json --jsonArray --query '{age: {$gt: 18}}' --limit 100
+# 导入数据
+mongoimport -h 127.0.0.1:27017 -d test --file ~/test.json --type json --drop --mode upsert
+```
 
 ### collection
 
