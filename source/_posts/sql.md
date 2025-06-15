@@ -126,6 +126,205 @@ SELECT * FROM accounts WHERE balance > 500 FOR UPDATE; -- 等待 事务 A 完成
 COMMIT;
 ```
 
+## 索引
+
+- 数据库管理系统里面一个经过排序的数据结构, 为了帮助查询变得更快
+- 如果定义了主键索引则采用, 没有则使用第一个唯一索引加非空约束作为主键索引, 都没有的话定义一个新的隐藏字段包含 rowid 作为主键索引
+- 聚簇索引决定了表中数据行的实际物理存储顺序
+
+- 覆盖索引, 如果查询所需的全部列都在同一个非聚簇索引中(即所谓的覆盖索引), 则不需要再回表去读取完整的数据行.
+- 联合索引, mysql 可以有效地利用最左边前缀原则来匹配查询条件, 对于联合索引 (col1, col2), 如果查询只涉及 col1, 仍然可以使用这个索引来加速搜索, 如果查询涉及到 col2 却没有 col1, 则无法有效利用此索引.
+
+```sql
+-- 添加索引
+create [unique|primary|fulltext] index index_name on t1(filed);
+
+-- 添加索引
+alter table t1 add [unique|primary|fulltext] index index_name(filed);
+
+-- 添加索引
+create table table_name (
+  id int,
+  name varchar(255),
+  index idx_name(name)
+);
+
+-- 删除索引
+drop index index_name on table_name;
+```
+
+### 聚簇索引(主键索引)
+
+唯一约束的基础上增加非空约束, 只能创建一个
+
+### 唯一索引
+
+同一个表中某个列的数据不能重复, 可以为 null, 可以创建多个唯一索引
+
+```sql
+create table table_name (
+  id int,
+  name varchar(255),
+  email varchar(255) unique
+)
+```
+
+### 普通索引
+
+非唯一索引或简单索引, 主要用于加速对表中的数据的查询操作, 而不对列中的值增加任何唯一约束
+
+### 联合索引
+
+基于多列创建的索引, 能够提高涉及多列查询的性能
+
+```sql
+create table table_name (
+  order_id int,
+  customer_id int,
+  order_date date,
+  index idx_order_customer (order_id, customer_id)
+)
+```
+
+### 全文索引
+
+专门用于全文搜索, 适用于大文本(TEXT, CHAR, VARCHAR), 仅支持 myisam 和 innodb 存储引擎
+
+```sql
+create table table_name (
+  id int,
+  name varchar(255),
+  email varchar(255) unique,
+  title varchar(200)
+  body text,
+  fulltext (title, body)
+)
+```
+
+## 多表查询
+
+### 连接查询
+
+#### 内连接
+
+- 相当于查询 A、B 交集部分数据
+
+```sql
+-- 显式内连接
+select * from t1 inner join t2 on condition;
+-- 隐式内连接
+select * from t1, t2 where condition;
+```
+
+#### 外连接
+
+##### 左外连接
+
+- 查询**左表**所有数据, 以及两张表交集部分数据
+- 右表中不满足的数据填充 null
+
+```sql
+select * from t1 left join t2 on condition;
+```
+
+##### 右外连接
+
+- 查询**右表**所有数据, 以及两张表交集部分数据
+- 左表中不满足的数据填充 null
+
+```sql
+select * from t1 right join t2 on condition;
+```
+
+#### 自连接
+
+- 当前表与自身的连接查询, 自连接必须使用表别名
+- 可以是内连接查询, 也可以是外连接查询
+
+```sql
+ select * from t1 as a [inner|left|right] join t2 as b on condition;
+```
+
+#### 联合查询
+
+- 查询的字段类型必须保持一致
+- 把多次查询的结果合并起来, 形成一个新的结果集
+- 默认已去重(distinct), union all 不去重
+
+```sql
+select * from t1 where condition union [all] select * from t2 where condition;
+```
+
+### 子查询
+
+- sql 查询语句内嵌套查询语句, 称为嵌套语句
+
+#### 标量子查询(单值子查询)
+
+- 子查询的结果为单个值
+- =, <>, >, >=, <, <= 常用操作符
+
+```sql
+select * from t1 where id = (select id from t1 where condition);
+```
+
+#### 列子查询
+
+- 子查询的结果为一列
+- in, not in, any, some, all 常用操作符
+
+```sql
+select * from t1 where id in (select id from t1 where condition);
+
+-- 查询销售部和市场部的所有员工信息
+select * from emp where dept_id in (select id from dept where name = '销售部' or name = '市场部');
+
+-- 查询比财务部所有人工资都高的员工信息
+select * from emp where salary > all (select salary from emp where dept_id = (select id from dept where name = '财务部'));
+
+-- 查询比研发部其中任意一人工资高的员工信息
+select * from emp where salary > any (select salary from emp where dept_id = (select id from dept where name = '研发部')); 
+```
+
+#### 行子查询
+
+- 子查询的结果为一行(可以是多列)
+- =, <>, in, not in 常用操作符
+
+```sql
+-- 查询与张三的薪资及直属领导相同的员工信息
+select * from emp where (salary,managerid) = (select salary,managerid from emp where name = '张三');
+
+-- 查询与张三不在同一部门的员工信息
+select * from emp where dept_id not in (select dept_id from emp where name = '张三');
+```
+
+#### 表子查询
+
+- 子查询的结果为多行多列
+- in 常用操作符
+
+```sql
+-- 查询所有的部门信息, 并统计部门的员工人数
+select d.id,d.name,(select count(*) from emp as e where e.dept_id = d.id) as '人数' from dept as d;
+
+-- 查询与张三, 李四的职位和薪资相同的员工信息
+select * from emp where (salary,jobs) in (select salary,jobs from emp where name = '张三' or name = '李四');
+
+-- 查询入职日期是 2006-01-01 之后的员工信息, 及其部门信息
+select e.*,d.* from (select * from emp where entrydate > '2006-01-01') as e left join dept as d on e.dept_id = d.id;
+```
+
+### 聚合查询
+
+通常使用 group by 子句和聚合函数
+
+- sum()
+- avg()
+- max()
+- min()
+- count()
+
 ## mongosh
 
 ```mongosh
@@ -179,6 +378,8 @@ db.createUser({
 - db.createCollection() 在当前数据库对象上创建集合, 第二个可选参数可以配置 固定集 的大小
 - db.getCollection() 获取指定名称的集合
 - db.serverStatus() 查看数据库状态
+
+- db.auth() 用户认证
 
 #### 备份和恢复
 
@@ -261,6 +462,20 @@ mongoimport -h 127.0.0.1:27017 -d test --file ~/test.json --type json --drop --m
 
 - db.[collectionName].countDocuments() 获取当前集合中的文档的数量
 
+#### indexs
+
+一个经过排序的特殊的数据结构, 提高查询效率
+
+- getIndexs() 查看索引
+- createIndex() 创建索引, 索引名称必须是唯一的, 不能重命名已有的索引名称
+
+```ts
+db.<collection>.createIndex({ <field>: <value> }, { name: "<indexName>", unique: true });
+```
+
+- dropIndex() 删除指定索引
+- dropIndexes() 批量删除索引, 不指定索引名则删除 _id 索引之外的所有索引
+
 ### document
 
 - ObjectId  对象标识符, 4 个字节的时间戳秒数, 5 个字节的进程随机数, 3 个字节的递增计数器
@@ -291,7 +506,7 @@ mongoimport -h 127.0.0.1:27017 -d test --file ~/test.json --type json --drop --m
 - $lte 匹配小于等于指定值的值
 - $ne 匹配所有不等于指定值的值
 - $nin 不匹配数组中指定值的任何值
-- $in 匹配字段值等于指定数组中任何值的文档, 支持使用`正则表达式`匹配, 与 [聚合操作符 $in](#in-2) 的返回值不同 <em id="in-1"></em> <!--markdownlint-disable-line-->
+- $in 匹配字段值等于指定数组中任何值的文档, 支持使用`正则表达式`匹配, 与 [聚合操作符 $in](#in-2) 不同 <em id="in-1"></em> <!--markdownlint-disable-line-->
 
 ```ts
 // { field: { $in: [<value1>, <value2>, ... <valueN> ] } } // 查询操作符 $in
@@ -394,6 +609,14 @@ db.survey.find({results: { $elemMatch: { product: "xyz", score: { $gte: 8 } }}})
 - $setOnInsert  如果某一更新操作导致插入文档，则设置字段的值。对修改现有文档的更新操作没有影响。
 - $unset  从文档中删除指定的字段。
 
+```ts
+db.users.updateOne({name: 'laoli'}， {$inc: {age: 10}}); // 将名字为 laoli 的文档的 age 增加 10
+
+db.users.updateMany({city: {$in: ['beijing']}}, {$set: {city: 'shanghai'}}); // 将城市为 beijing 的文档的 city 设置为 shanghai
+
+db.users.updateMany({name: 'laoli'}， {$rename: ['lve', 'love']}); // 将名字为 laoli 的文档的 lve 重命名为 love
+```
+
 其他操作符
 
 - $bit 对整数值执行按位 AND、OR、XOR 更新
@@ -417,6 +640,12 @@ db.survey.find({results: { $elemMatch: { product: "xyz", score: { $gte: 8 } }}})
 - $position 修改 $push 运算符，以指定在数组中添加元素的位置
 - $slice  修改 $push 运算符以限制更新后数组的大小, 负数表示从数组尾部开始截取, 正数表示从数组头部开始截取
 - $sort 修改 $push 运算符，以对存储在数组中的文档重新排序
+
+```ts
+db.users.updateOne({name: 'laoli'}, {$push: {lve: 'TV'}}); // 将名字为 laoli 的文档的 lve 数组添加 TV
+
+db.users.updateMany({age: {$gte: 35}}, {$addToSet: {lve: {$each: ['code', 'football']}}}); // 将年龄 大于等于 35 岁的文档的 lve 增加 code 和 football
+```
 
 ### 聚合操作
 
@@ -806,7 +1035,7 @@ db.sales.aggregate([
 
 - $first 返回一组文档中第一个文档的表达式结果, 仅当文档按定义的顺序排列时才有意义
 - $last 返回一组文档中最后一个文档的表达式结果, 仅当文档按指定顺序排列时才有意义
-- $in 返回一个布尔值, 表示第一个值是否在第二个值为数组中, 不支持`正则表达式`匹配, 与 [查询操作符 $in](#in-1) 的返回值不同 <em id="in-2"></em> <!--markdownlint-disable-line-->
+- $in 返回一个布尔值, 表示第一个值是否在第二个值为数组中, 不支持`正则表达式`匹配, 与 [查询操作符 $in](#in-1) 不同 <em id="in-2"></em> <!--markdownlint-disable-line-->
 - $indexOfArray 搜索数组中出现的指定值, 并返回首次出现的数字索引, 如果未找到返回 -1, 如果不是一个数组或者数组不存在则返回 null
   - array 搜索的数组
   - search value 搜索的值
@@ -1148,3 +1377,7 @@ db.orders.aggregate([{
   }
 }])
 ```
+
+### 副本集
+
+### 分片集
