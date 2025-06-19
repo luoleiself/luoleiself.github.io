@@ -1090,6 +1090,86 @@ db.inventory.aggregate([
 // { "_id" : 3, "item" : "ABC3", "dimensions" : { "l" : 50 } }
 ```
 
+- $filter 根据指定条件选择要返回的数组的子集, 返回一个数组，其中仅包含与条件匹配的元素。返回的元素按原始顺序排列
+  - input 输入的数组
+  - as 每个元素的变量名
+  - cond 可解析为布尔值的表达式, 它可用于确定输出数组中是否应包含某一元素.
+  - limit 限制 $filter 返回的匹配大量元素的数量
+
+```ts
+// 语法
+{
+  $filter: {
+    input: <array>,
+    as: <string>,
+    cond: <expression>,
+    limit: <number expression>
+  }
+}
+```
+
+```ts
+// db.sales.insertMany([
+//   {
+//     _id: 0,
+//     items: [
+//       { item_id: 43, quantity: 2, price: 10, name: "pen" },
+//       { item_id: 2, quantity: 1, price: 240, name: "briefcase" }
+//     ]
+//   },
+//   {
+//     _id: 1,
+//     items: [
+//       { item_id: 23, quantity: 3, price: 110, name: "notebook" },
+//       { item_id: 103, quantity: 4, price: 5, name: "pen" },
+//       { item_id: 38, quantity: 1, price: 300, name: "printer" }
+//     ]
+//   },
+//   {
+//     _id: 2,
+//     items: [
+//       { item_id: 4, quantity: 1, price: 23, name: "paper" }
+//     ]
+//   }
+// ]);
+
+db.sales.aggregate([
+  {
+    $project: {
+      items: {
+        $filter: {
+          input: "$items",
+          as: "item",
+          cond: { $gte: [ "$$item.price", 100 ] }
+        }
+      }
+    }
+  }
+]);
+
+// output
+// [
+//   {
+//     _id: 0,
+//     items: [ { item_id: 2, quantity: 1, price: 240, name: 'briefcase' } ]
+//   }, {
+//     _id: 1,
+//     items: [
+//       { item_id: 23, quantity: 3, price: 110, name: 'notebook' },
+//       { item_id: 38, quantity: 1, price: 300, name: 'printer' }
+//     ]
+//   },
+//   { _id: 2, items: [] }
+// ]
+```
+
+- $map 对数组中的每个元素应用子表达式, 并按顺序返回生成值的数组
+- $range 根据用户定义的输入，输出一个包含整数序列的数组
+- $reduce 遍历数组中的每个元素, 并将它们组合成一个值
+- $slice 返回数组的子集
+- $sortArray 对数组的元素进行排序
+- $zip 将两个数组进行合并
+
 ##### 条件表达式操作符
 
 - $cond 一种三目运算符, 它可用于计算一个表达式, 并根据结果返回另外两个表达式之一的值
