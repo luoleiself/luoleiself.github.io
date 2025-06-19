@@ -1191,6 +1191,44 @@ db.sales.aggregate([
 }
 ```
 
+##### 自定义聚合表达式操作
+
+- $accumulator 定义自定义累加器
+- $function 定义自定义函数
+
+```ts
+{
+  $accumulator: {
+    init: <code>,
+    initArgs: <array expression>,        // Optional
+    accumulate: <code>,
+    accumulateArgs: <array expression>,
+    merge: <code>,
+    finalize: <code>,                    // Optional
+    lang: <string>
+  }
+}
+
+{
+  $function: {
+    body: <code>,
+    args: <array expression>,
+    lang: "js"
+  }
+}
+/* 
+{ $function:
+  {
+    body: function(name) {
+      return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"
+    },
+    args: [ "$name" ],
+    lang: "js"
+  }
+}
+*/
+```
+
 ##### [日期表达式操作符](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/)
 
 - $dateAdd 向日期对象添加多个时间单位
@@ -1280,7 +1318,7 @@ db.inventory.aggregate([
 ##### 集合表达式操作符
 
 - $allElementsTrue  如果集合中没有元素计算结果为 false, 则返回 true 否则返回 false
-- $anyElementsTrue  如果集合中的任何元素计算结果为 true, 则返回 true 否则返回 false
+- $anyElementTrue  如果集合中的任何元素计算结果为 true, 则返回 true 否则返回 false
 - $setDifference  取两个集并返回一个包含仅存在于第一个集中的元素的数组, 即对第二个集取相对于第一个集的相对补集, 计算第二个集合的补集, 忽略重复项和顺序并且不会递归嵌套数组
 - $setEquals  比较两个或多个数组, 如果具有相同的不同元素则返回 true, 否则返回 false, 忽略重复项和顺序并且不会递归嵌套数组
 - $setIsSubset  比较两个数组, 当第一个数组是第二个数组的子集时返回 true, 否则返回 false, 忽略重复项和顺序并且不会递归嵌套数组
@@ -1288,6 +1326,18 @@ db.inventory.aggregate([
 - $setUnion 接受两个或多个数组, 并返回一个数组, 其中包含出现在每个输入数组中的元素, 计算并集, 忽略重复项和顺序并且不会递归嵌套数组
 
 ```ts
+// { $allElementsTrue: [ <expression> ] }
+{ $allElementsTrue: [ [ true, 1, "someString" ] ] } // true
+{ $allElementsTrue: [ [ [ false ] ] ] } // true
+{ $allElementsTrue: [ [ ] ] } // true
+{ $allElementsTrue: [ [ null, false, 0 ] ] } // false
+
+// { $anyElementTrue: [ <expression> ] }
+{ $anyElementTrue: [ [ true, false ] ] } // true
+{ $anyElementTrue: [ [ [ false ] ] ] } // true
+{ $anyElementTrue: [ [ null, false, 0 ] ] } // false
+{ $anyElementTrue: [ [ ] ] } // false
+
 {$setDifference: [['a','b','a'], ['b','a']]} // []
 {$setDifference: [['a','b','c'], [['b','a']]]} // ['c']
 
@@ -1302,6 +1352,27 @@ db.inventory.aggregate([
 
 {$setUnion: [['a','b','a'], ['b','a']]} // ['b', 'a']
 {$setUnion: [['a','b'], [['b', 'a']]]}  // ['a', 'b', ['a', 'b']]
+
+db.collection.aggregate([
+  {
+    $match: {
+      $expr: {
+        $anyElementTrue: {
+          $map: {
+            input: "$arrayField",
+            as: "item",
+            in: { // 条件表达式
+              $and: [
+                { $gt: ["$$item.price", 100] }, 
+                { $lt: ["$$item.price", 1000] }
+              ] 
+            }
+          }
+        }
+      }
+    }
+  }
+]);
 ```
 
 ##### 字符串表达式操作符
