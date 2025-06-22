@@ -317,6 +317,10 @@ select e.*,d.* from (select * from emp where entrydate > '2006-01-01') as e left
 
 ### 聚合查询
 
+- 单一聚合
+- 聚合管道
+- mapReduce  MongoDB 5.0 开始废弃, 使用聚合管道代替
+
 通常使用 group by 子句和聚合函数
 
 - sum()
@@ -737,6 +741,8 @@ db.inventory.distinct( "dept" );
   - boundaries 边界,基于指定每个存储桶边界的 groupBy 表达式的值
   - default 指定附加存储桶 _id 的字面量
   - output 一份文档, 指定除 _id 字段之外要包含在输出文档中的字段
+- $bucketAuto 根据指定的表达式, 将接收到的文档归类到特定数量的组中, 自动确定存储桶的边界,以尝试将文档均匀地分配到指定数量的存储桶中
+  - buckets 整型, 一个 32 位正整数, 用于指定将输入文档按组分到存储桶的数量
 
 ```ts
 /*
@@ -779,10 +785,24 @@ db.artists.aggregate([
 //     { "name" : "Edvard Munch", "year_born" : 1863 }
 //   ]
 // }
+
+{
+  $bucketAuto: {
+    groupBy: <expression>,
+    buckets: <number>,
+    output: {
+      <output1>: { <$accumulator expression> },
+      ...
+    }
+    granularity: <string>
+  }
+}
 ```
 
+- $changeStream  返回集合、数据库或整个集群上的变更流游标, 必须是聚合管道中的 **第一阶段**
 - $collStats  返回有关集合或视图的统计信息, 必须是聚合管道中的 **第一阶段**
-- $count 计数
+- $count  将文档传递到下一阶段, 该阶段包含输入到该阶段的文档数的计数
+- $densify  在文档序列中创建新文档, 其中缺少字段中的某些值
 - $documents  从输入表达式返回字面文档
   - 只能在数据库级聚合管道中使用
   - 必须是聚合管道中的 **第一阶段**
@@ -790,10 +810,43 @@ db.artists.aggregate([
 - $fill 填充文档中的 null 和缺失的字段值
   - sortBy 指定每个分区内用于对文档进行排序的字段, 使用与 $sort 阶段相同的语法
   - output 指定一个对象, 其中包含要填充缺失值的每个字段
+
+```ts
+// dailySales
+// [
+//   {
+//     "date": ISODate("2022-02-02"),
+//     "bootsSold": 10,
+//     "sandalsSold": 20,
+//     "sneakersSold": 12
+//   },
+//   {
+//     "date": ISODate("2022-02-03"),
+//     "bootsSold": 7,
+//     "sneakersSold": 18
+//   },
+//   {
+//     "date": ISODate("2022-02-04"),
+//     "sneakersSold": 5
+//   }
+// ]
+// 将每天销售中缺少的鞋款的销售数量设置为 0
+db.dailySales.aggregate( [{
+  $fill: {
+    output: {
+      "bootsSold": { value: 0 },
+      "sandalsSold": { value: 0 },
+      "sneakersSold": { value: 0 }
+    }
+  }
+}]);
+```
+
 - $geoNear  根据与地理空间点的接近程度返回有序的文档流
+- $graphLookup  对集合执行递归搜索, 并提供按照递归深度和查询筛选器限制搜索的选项
 - $group  按指定的标识符表达式对输入文档进行分组，并将累加器表达式（如果指定）应用于每个群组, 不会对其输出文档进行排序
   - _id 指定群组标识符表达式, 如果指定的 \_id 值为空值或任何其他常量值, $group 阶段将返回聚合所有输入文档值的单个文档
-  - field 使用累加器操作符进行计算
+  - field 可选, 使用累加器操作符进行计算
 
 ```ts
 [
@@ -869,6 +922,9 @@ db.orders.aggregate([
   - allHosts  配置聚合阶段如何以分片集群中的节点为目标
 - $project  重塑流中的文档至管道中的下个阶段，指定的字段可以是文档中已有字段或新计算的字段. 例如添加新的字段或删除现有字段
 - $redact 根据存储在文档本身中的信息, 限制整个文档被输出或者文档中的内容被输出
+  - $$DESCEND  返回当前文档级别的字段, 不包括嵌入式文档
+  - $$PRUNE  排除当前文档/嵌入式文档级别的所有字段, 而不进一步检查任何已排除的字段
+  - $$KEEP  返回或保留此当前文档/嵌入式文档级别的所有字段, 而不进一步检查此级别的字段
 
 ```ts
 /*
@@ -976,20 +1032,45 @@ db.students.aggregate([
 - $skip 跳过前 n 个文档，其中 n 是指定的跳过编号，并将未修改的剩余文档传递到管道的下一阶段
 - $sort 按指定的排序键对文档流重新排序。仅顺序会改变，而文档则保持不变
 - $sortByCount  根据指定表达式的值对传入文档进行分组，然后计算每个不同群组中的文档数量
-- $unionWith 将两个集合合并为一个结果集
-- $unset  从文档中删除/排除字段, $unset 是删除字段的 $project 阶段的别名
-- $unwind 解构输入文档中的数组字段, 以便为每个元素输出文档, 并用该元素替换该数组字段的值, 忽略无法转换成 `单元素数组` 的文档
 
 ```ts
+{ $sort: { <field1>: <sort order>, <field2>: <sort order> ... } }
+```
+
+- $unionWith 将两个集合合并为一个结果集
+  - coll 如果省略 pipeline 则为必传
+  - pipeline  应用于输入文档聚合管道
+
+```ts
+{ $unionWith: { coll: "<collection>", pipeline: [ <stage1>, ... ] } }
+```
+
+- $unset  从文档中删除/排除字段, $unset 是删除字段的 $project 阶段的别名
+- $unwind 解构输入文档中的数组字段, 以便为每个元素输出文档, 并用该元素替换该数组字段的值, 忽略无法转换成 `单元素数组` 的文档
+  - path  数组字段的字段路径
+  - includeArrayIndex  可选, 新字段的名称, 用于保存该元素的数组索引, 名称不能以 `$` 开头
+  - preserveNullAndEmptyArrays  可选, 默认为 false
+    - 如果为 true, 如果 path 为 null、缺失或空, $unwind 会输出文档
+    - 如果为 false, 如果 path 为 null、缺失或空, $unwind 不会输出文档
+
+```ts
+{
+  $unwind: {
+    path: <field path>,
+    includeArrayIndex: <string>,
+    preserveNullAndEmptyArrays: <boolean>
+  }
+}
+
 /*
 // inventory
 { "_id" : 1, "item" : "ABC1", sizes: [ "S", "M", "L"] }
 */
-db.inventory.aggregate([{$unwind: '$sizes'}]);
+db.inventory.aggregate([{$unwind: {path: '$sizes', includeArrayIndex: 'arrayIndex'} }]);
 // output:
-// { "_id" : 1, "item" : "ABC1", "sizes" : "S" }
-// { "_id" : 1, "item" : "ABC1", "sizes" : "M" }
-// { "_id" : 1, "item" : "ABC1", "sizes" : "L" }
+// { "_id" : 1, "item" : "ABC1", "sizes" : "S", arrayIndex: NumberLong(0) }
+// { "_id" : 1, "item" : "ABC1", "sizes" : "M", arrayIndex: NumberLong(1) }
+// { "_id" : 1, "item" : "ABC1", "sizes" : "L", arrayIndex: NumberLong(2) }
 ```
 
 #### 操作符
@@ -1529,6 +1610,23 @@ db.orders.aggregate([{
 }])
 ```
 
-### 副本集
+### 批量写入
 
-### 分片集
+通过更少的数据库调用来执行多个写入操作
+
+```ts
+[
+  [ 'deleteMany' => [ $filter ] ],
+  [ 'deleteOne'  => [ $filter ] ],
+  [ 'insertOne'  => [ $document ] ],
+  [ 'replaceOne' => [ $filter, $replacement, $options ] ],
+  [ 'updateMany' => [ $filter, $update, $options ] ],
+  [ 'updateOne'  => [ $filter, $update, $options ] ],
+]
+
+db.
+```
+
+## 副本集
+
+## 分片集
