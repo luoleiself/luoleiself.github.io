@@ -535,7 +535,7 @@ yaml 文件中不能使用 tab 缩进, 只能使用空格
 
 ```bash
 # 启动指定服务, 不加参数则默认启动所有服务
-docker compose -f -p -c --env-file up [service_name]
+docker compose -f -p -c --env-file .env.development up [service_name]
 
 # 以下的命令不带服务名称则默认对所有服务执行相同操作
 ```
@@ -543,12 +543,21 @@ docker compose -f -p -c --env-file up [service_name]
 ### 参数
 
 - \-\-all-resources 引入所有的资源, 即使未被服务使用
-- \-\-compatibility 运行 compose 兼容模式
 - -f, \-\-file stringArray 指定配置文件
+
 - -p, \-\-project-name string 指定项目名称
 - \-\-project-directory string 指定项目工作目录
+
 - -c, \-\-context 指定上下文环境名称
 - \-\-env-file stringArray 指定环境变量配置文件
+- \-\-parallel 设置并行
+- \-\-compatibility 运行 compose 兼容模式
+
+- \-\-profile 启用指定的服务, web 服务默认启动
+
+```bash
+docker compose --profile db up -d # 只启动 db, web 服务
+```
 
 ### 命令
 
@@ -802,6 +811,8 @@ services:
     links:    # 定义网络连接另一个服务的容器
       - db:mysql   # 可以直接使用 服务名, 或者使用 服务名:别名 方式
     scale: 6  # 设置容器数量, 如果 scale 和 deploy.replicas 同时存在则必须保持一致
+    profiles: # 指定启动时的 profile
+      - 'db'
 
   db:
     image: mysql
@@ -816,6 +827,8 @@ services:
       - db-data:/var/lib/mysql   # 挂载公共数据卷 db-data
     networks:
       - my-web-network
+    profiles: # 指定启动时的 profile
+      - 'debug'
 
 # 跨服务共享数据卷定义到顶层指令 volumes
 volumes:
