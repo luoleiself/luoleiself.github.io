@@ -1150,7 +1150,7 @@ db.sales.aggregate([
 { $arrayElemAt: [ "$undefinedField", 0 ] }  // null, 第一个参数解析为未定义的数组
 ```
 
-- $isArray 返回操作数是否为数组
+- $isArray 判断操作数是否为数组, 返回一个布尔值
 - $reverseArray 接受数组表达式作为参数, 并返回其中的元素按倒序排列的数组
 - $size 如果数组字段达到指定大小, 则选择文档
 - $arrayToObject 将数组转换为单个文档, 数组必须是由两个元素组成的数组或者包含 k 和 v 字段的对象组成的数组
@@ -1244,16 +1244,124 @@ db.sales.aggregate([
 // ]
 ```
 
-- $map 对数组中的每个元素应用子表达式, 并按顺序返回生成值的数组
-- $range 根据用户定义的输入，输出一个包含整数序列的数组
-- $reduce 遍历数组中的每个元素, 并将它们组合成一个值
+- $map 对数组中的每个项目应用表达式，并返回包含已应用结果的数组
+  - input 解析为数组的表达式
+  - as  可选, 代表 input 数组中每个元素的变量名称
+  - in  应用于 input 数组中每个元素的表达式, 该表达式单独引用带有 as 中指定的变量名称的每个元素
+
+```ts
+{ $map: { input: <expression>, as: <string>, in: <expression> } }
+{
+  $map: {
+    input: '$pubStat',
+    as: 'item',
+    in: {
+      $and: [
+        {
+          $or: [
+            { $eq: ['$$item.auditStatus', 'success'] },
+            { $eq: ['$$item.auditStatus', 'faile'] }
+          ]
+        }, {
+          $eq: ['$$item.visibilityType', 2]
+        },
+      ]
+    }
+  }
+}
+```
+
+- $range 返回一个数组，其元素是生成的数字序列
+  - start 开始
+  - end 结束
+  - step  步长
+
+```ts
+{ $range: [ <start>, <end>, <non-zero step> ] }
+{ $range: [ 0, 10, 2 ] }  // [ 0, 2, 4, 6, 8 ]
+{ $range: [ 10, 0, -2 ] } // [ 10, 8, 6, 4, 2 ]
+{ $range: [ 0, 10, -2 ] } // [ ]
+{ $range: [ 0, 5 ] }  // [ 0, 1, 2, 3, 4 ]
+```
+
+- $reduce 将表达式应用于数组中的每个元素，并将它们组合成一个值
+  - input 解析为数组的表达式
+  - initialValue  在 in 之前设置的初始累积 value, 将应用于 input 数组的第一个元素
+  - in  一个有效的表达式, $reduce 将按从左到右的顺序应用于 input 数组中的每个元素
+
+```ts
+{
+  $reduce: {
+    input: <array>,
+    initialValue: <expression>,
+    in: <expression>
+  }
+}
+{
+  $reduce: {
+    input: ["a", "b", "c"],
+    initialValue: "",
+    in: { $concat : ["$$value", "$$this"] }
+  }
+}
+// "abc"
+
+{
+  $reduce: {
+    input: [ 1, 2, 3, 4 ],
+    initialValue: { sum: 5, product: 2 },
+    in: {
+      sum: { $add : ["$$value.sum", "$$this"] },
+      product: { $multiply: [ "$$value.product", "$$this" ] }
+    }
+  }
+}
+// { "sum" : 15, "product" : 48 }
+
+{
+  $reduce: {
+    input: [ [ 3, 4 ], [ 5, 6 ] ],
+    initialValue: [ 1, 2 ],
+    in: { $concatArrays : ["$$value", "$$this"] }
+  }
+}
+// [ 1, 2, 3, 4, 5, 6 ]
+```
+
 - $slice 返回数组的子集
+  - array 解析为数组的表达式
+  - position  解析为整数的有效表达式, 指定截取的位置
+  - n 解析为整数的有效表达式, 指定返回元素的个数
 - $sortArray 对数组的元素进行排序
-- $zip 将两个数组进行合并
+  - input 待排序的数组
+  - sortBy  指定排序的文档或布尔值
+
+```ts
+{ $slice: [ <array>, <position>, <n> ] }
+{ $slice: [ [ 1, 2, 3 ], 1, 1 ] }  //[ 2 ]
+{ $slice: [ [ 1, 2, 3 ], -2 ] } // [ 2, 3 ]
+{ $slice: [ [ 1, 2, 3 ], 15, 2 ] }  // [  ]
+{ $slice: [ [ 1, 2, 3 ], -15, 2 ] } // [ 1, 2 ]
+
+{
+  $sortArray: {
+    input: <array>,
+    sortBy: <sort spec>
+  }
+}
+```
+
+- $zip 将两个数组进行合并, 将 `[ [ 1, 2, 3 ], [ "a", "b", "c" ] ]` 转化为 `[ [ 1, "a" ], [ 2, "b" ], [ 3, "c" ] ]`
 
 ##### 条件表达式操作符
 
 - $cond 一种三目运算符, 它可用于计算一个表达式, 并根据结果返回另外两个表达式之一的值
+
+```ts
+{ $cond: { if: <boolean-expression>, then: <true-case>, else: <false-case> } }
+{ $cond: [ <boolean-expression>, <true-case>, <false-case> ] }
+```
+
 - $ifNull 返回第一个表达式的非空结果; 或者, 如果第一个表达式生成空结果, 则返回第二个表达式的结果
 - $switch 对一系列 case 表达式求值
   - branches  控制分支文档的数组, 每个分支均为一个包含以下字段的文档
