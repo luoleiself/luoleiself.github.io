@@ -1,5 +1,5 @@
 ---
-title: Docker-下
+title: Docker-Compose
 date: 2022-04-30 11:11:58
 categories:
   - [tools]
@@ -533,6 +533,13 @@ Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行�
 
 yaml 文件中不能使用 tab 缩进, 只能使用空格
 
+```yaml
+${VAR:-default}   如果 变量名 对应的环境变量未设置或为空, 则使用 默认值, 否则使用环境变量的值 
+${VAR-default}    仅当 变量名 对应的环境变量 完全未定义 时才用默认值(为空时不会替换)
+${VAR:?error}     严格模式, 如果 变量名 对应的环境变量 未设置/为空, 则报错并显示错误信息 error
+${VAR:+alternate} 反向逻辑, 如果 变量名 已设置且非空, 则使用 alternate 值
+```
+
 ```bash
 # 启动指定服务, 不加参数则默认启动所有服务
 docker compose -f -p -c --env-file .env.development up [service_name]
@@ -573,6 +580,10 @@ docker compose --profile db up -d # 只启动 db, web 服务
   - \-\-environment 打印环境变量的插值
   - \-\-format string 格式化输出, 值可选 yaml(default) | json
   - \-\-images 输出镜像名称
+
+  - \-\-hash  输出服务的配置 hash, 一个一行
+  - \-\-profiles  输出指定的服务名, 一个一行
+  
   - -o, \-\-output string 保存到指定文件中, 默认是标准输出流
   - -q, \-\-quiet 仅验证配置项, 不输出任何信息
   - \-\-services 输出服务名称
@@ -598,7 +609,12 @@ docker compose --profile db up -d # 只启动 db, web 服务
   - -t, \-\-timeout int 延迟关机的时长秒
   - -v, \-\-volumes 移除在 compose.yaml 中 volumes 顶层指令中声明的具名和匿名数据卷
 
-- logs 查看容器日志
+- logs 查看服务输出日志
+  - \-f, \-\-follow  监听日志输出
+  - \-\-index int  指定哪个容器执行命令, 如果服务有多个副本时
+  - \-n, \-\-tail  输出容器日志的最后几行
+  - \-\-since  显示指定时间开始的日志
+  - \-\-until  显示截止到指定时间的日志
 - stats 查看容器资源的使用情况
 
 - ls 列出正在运行的 compose 项目
@@ -616,9 +632,9 @@ docker compose --profile db up -d # 只启动 db, web 服务
 
 - top 显示运行的进程信息
 - exec 在运行的容器中执行命令
-  - -d, \-\-detach
+  - -d, \-\-detach  后台运行命令
   - -e, \-\-env stringArray 设置环境变量
-  - \-\-index int  指定容器执行, 如果服务有多个副本时
+  - \-\-index int  指定哪个容器执行命令, 如果服务有多个副本时
   - -T, \-\-no-TTY  不分配伪 TTY, 默认每次执行命令时都分配 TTY
   - -w, \-\-workdir string 设置本次命令的工作目录
 - run 在服务上运行一次性命令
@@ -627,9 +643,10 @@ docker compose --profile db up -d # 只启动 db, web 服务
   - -i, \-\-interactive 交互式运行
   - -e, \-\-env stringArray 设置环境变量
   - -l, \-\-label stringArray 添加或覆盖 label
-  - -p, \-\-publish stringArray 发布容器的端口到宿主机
   - -P, \-\-service-ports 运行命令所有服务的端口都能映射到宿主机
-  - \-\-pull 运行执行拉取镜像
+  - \-\-name  给容器定义名字
+  - \-\-pull  运行之前拉取镜像
+  - -p, \-\-publish stringArray 发布容器的端口到宿主机
   - \-\-rm 当容器退出时自动移除
   - -v, \-\-volume stringArray 挂载数据卷
   - -w, \-\-workdir string 设置容器内的工作目录
@@ -640,13 +657,14 @@ docker compose --profile db up -d # 只启动 db, web 服务
 - version 查看版本信息
 - watch 监听文件系统更新时服务容器重构/重启的构建上下文
 
-- create 创建容器
+- create 为服务创建容器
 
   - \-\-build 启动容器之前构建镜像
   - \-\-no-build 不构建镜像即使镜像不存在
   - \-\-force-recreate 即使配置项或镜像没有改变也要重新创建容器
   - \-\-no-recreate 如果容器存在则不创建新的容器
-  - \-\-scale scale 调整服务实例数量, 并覆盖 compose.yaml 配置文件中的 scale 配置
+  - \-\-pull 创建之前拉取镜像
+  - \-\-scale scale 调整服务实例数量, 并覆盖 `compose.yaml` 配置文件中的 scale 配置
 
 - up 创建服务并启动容器
 
@@ -657,7 +675,8 @@ docker compose --profile db up -d # 只启动 db, web 服务
   - \-\-no-build 不构建镜像即使镜像不存在
   - \-\-no-start 创建服务之后不启动它
   - \-\-no-deps 不启动关联的服务
-  - \-\-scale scale 调整服务实例数量, 覆盖 compose.yaml 配置文件中的 scale 配置
+  - \-\-pull 启动之前拉取镜像
+  - \-\-scale scale 调整服务实例数量, 覆盖 `compose.yaml` 配置文件中的 scale 配置
   - \-\-no-log-prefix 打印日志时不适用前缀
   - \-\-no-recreate 如果容器存在则不创建新的容器
   - -y 非交互式运行命令, 所有的提示都回答 yes
@@ -835,6 +854,7 @@ volumes:
   db-data:   # 声明卷名, compose 自动创建该卷名并会添加项目名前缀
   data:
     name: 'my-app-data'
+
 networks:
   front-tier:
   back-tier:
@@ -1022,127 +1042,4 @@ networks:
     name: myapp-network # 定义网络名称, 在 docker network 列表中显示
     attachable: true  # 允许独立的容器连接到此网络
     enable_ipv6: true
-```
-
-## Docker Swarm
-
-### 介绍
-
-Swarm 是 Docker 官方提供的一款集群管理工具, 其主要作用是把若干台 Docker 主机抽象为一个整体, 并且通过一个入口统一管理这些 Docker 主机上的各种 Docker 资源
-
-从集群角度来说, 一个 Swarm 由一个或多个 Docker 节点组成. 这些节点可以是物理服务器、虚拟机、树莓派(Raspberry Pi)或云实例. 唯一的前提就是要求所有节点通过可靠的网络相连
-
-节点会被配置为管理节点(Manager)或工作节点(Worker). 管理节点负责集群控制面(Control Plane), 进行诸如监控集群状态、分发任务至工作节点等操作. 工作节点接收来自管理节点的任务并执行.
-
-Swarm 的配置和状态信息保存在一套位于所有管理节点上的分布式 etcd 数据库中. 该数据库运行于内存中, 并保持数据的最新状态. 关于该数据库最棒的是, 它几乎不需要任何配置, 作为 Swarm 的一部分被安装, 无须管理
-
-- Swarm 和 Kubernetes 比较类似, 但是更加轻, 具有的功能也较 kubernetes 更少一些
-- Docker Swarm 包含两方面：一个企业级的 Docker 安全集群, 以及一个微服务应用编排引擎
-- Swarm 默认内置有加密的分布式集群存储(encrypted distributed cluster store)、加密网络(Encrypted Network)、公用 TLS(Mutual TLS)、安全集群接入令牌 Secure Cluster Join Token)以及一套简化数字证书管理的 PKI(Public Key Infrastructure). 我们可以自如地添加或删除节点
-- 编排方面, Swarm 提供了一套丰富的 API 使得部署和管理复杂的微服务应用变得易如反掌. 通过将应用定义在声明式配置文件中, 就可以使用原生的 Docker 命令完成部署
-
-![docker-7](/images/docker-7.gif)
-
-### 令牌格式
-
-```bash
-PREFIX - VERSION - SWARM ID - TOKEN
-
-SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh
-```
-
-- PREFIX 令牌前缀,便于区分 固定为 SWMTKN
-- VERSION Swarm 的版本信息
-- SWARM ID Swarm 认证信息的一个哈希值
-- TOKEN 标识管理节点还是工作节点的准入令牌
-
-### 初始化 init
-
-- \-\-advertise-addr 指定其他节点用来连接到当前管理节点的 IP 和端口, 当节点上有多个 IP 时指定
-- \-\-listen-addr 指定用于承载 Swarm 流量的 IP 和端口. 其设置通常与 `--advertise-addr` 相匹配, 但是当节点上有多个 IP 的时候,可用于指定具体某个 IP
-- \-\-autolock 启用锁
-
-#### 开放端口
-
-- 每个节点都需要安装 Docker, 并且能够与 Swarm 的其他节点通信
-
-需要在路由器和防火墙中开放如下端口
-
-- 2377/tcp: 用于客户端与 Swarm 进行安全通信
-- 7946/tcp 与 7946/udp: 用于控制面 gossip 分发
-- 4789/udp: 用于基于 VXLAN 的覆盖网络
-
-```bash
-[root@localhost ~]# docker swarm init --advertise-addr 192.168.1.2 --listen-addr 192.168.1.2
-Swarm initialized: current node (5r1q8c5jaawi9w1wd8yr7w3u2) is now a manager.
-
-To add a worker to this swarm, run the following command:
-
-  docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh 192.168.1.2:2377
-
-To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
-```
-
-### 生成节点令牌
-
-- join-token
-
-#### 生成管理节点令牌
-
-```bash
-[root@localhost ~]# docker swarm join-token manager
-To add a manager to this swarm, run the following command:
-
-  docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-58yur8457jq0ghy45qnvislbi 192.168.1.2:2377
-```
-
-#### 生成工作节点令牌
-
-```bash
-[root@localhost ~]# docker swarm join-token worker
-To add a worker to this swarm, run the following command:
-
-  docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh 192.168.1.2:2377
-```
-
-### 更新节点令牌
-
-- \-\-rotate
-
-#### 更新管理节点令牌
-
-```bash
-[root@localhost ~]# docker swarm join-token --rotate manager
-```
-
-#### 更新工作节点令牌
-
-```bash
-[root@localhost ~]# docker swarm join-token --rotate worker
-```
-
-### 添加节点 join
-
-- \-\-token
-
-```bash
-[root@localhost ~]# docker swarm join --token TOKEN HOST:PORT
-```
-
-#### 添加管理节点
-
-```bash
-[root@localhost ~]# docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-58yur8457jq0ghy45qnvislbi 192.168.1.2:2377
-```
-
-#### 添加工作节点
-
-```bash
-[root@localhost ~]# docker swarm join --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh 192.168.1.2:2377
-```
-
-### 移除节点
-
-```bash
-[root@localhost ~]# docker swarm leave
 ```
