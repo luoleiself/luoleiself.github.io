@@ -866,52 +866,70 @@ db.dailySales.aggregate( [{
   - from 在同一数据库中指定待连接到本地集合的外部集合
   - localField 指定执行等值匹配时本地文档的字段, 如果输入文档不包含 localField 则被视为 null 值
   - foreignField 指定外部文档的 foreignField 对本地文档的 localField 执行等值匹配, 如果外部文档不包含 foreignField 值, 则使用 null 进行匹配
-  - let 引用管道阶段中的变量
-  - pipeline 不能包含 $merge 或 $out 阶段
+  - let 指定在管道阶段中使用的变量, 使用变量表达式访问本地集合文档中的字段, 这些文档输入到 pipeline
+  - pipeline 不能包含 $merge 或 $out 阶段. 无法访问输入文档中的字段, 可以使用 let 选项定义文档字段的变量, 然后在 pipeline 阶段引用这些变量
   - as 指定要添加到输入文档中的新数组字段的名称, 新数组字段包含来自 from 集合的匹配文档, 如果指定名称已存在将被重写
 
 ```ts
 /*
 // orders
-{ "_id" : 1, "item" : "almonds", "price" : 12, "quantity" : 2 }
-{ "_id" : 2, "item" : "pecans", "price" : 20, "quantity" : 1 }
-{ "_id" : 3  }
-// inventory
-{ "_id" : 1, "sku" : "almonds", "description": "product 1", "instock" : 120 }
-{ "_id" : 2, "sku" : "bread", "description": "product 2", "instock" : 80 }
-{ "_id" : 3, "sku" : "cashews", "description": "product 3", "instock" : 60 }
-{ "_id" : 4, "sku" : "pecans", "description": "product 4", "instock" : 70 }
-{ "_id" : 5, "sku": null, "description": "Incomplete" }
-{ "_id" : 6 }
+[
+  { _id: 1, item: "almonds", price: 12, ordered: 2 },
+  { _id: 2, item: "pecans", price: 20, ordered: 1 },
+  { _id: 3, item: "cookies", price: 10, ordered: 60 }
+] 
+// warehouses
+[
+  { _id: 1, stock_item: "almonds", warehouse: "A", instock: 120 },
+  { _id: 2, stock_item: "pecans", warehouse: "A", instock: 80 },
+  { _id: 3, stock_item: "almonds", warehouse: "B", instock: 60 },
+  { _id: 4, stock_item: "cookies", warehouse: "B", instock: 40 },
+  { _id: 5, stock_item: "cookies", warehouse: "A", instock: 80 }
+]
 */
 db.orders.aggregate([
-  {$lookup: {from: 'inventory', localField: 'item', foreignField: 'sku', as: 'inventory_docs'}}
+  {
+    $lookup: {
+      from: 'warehouses',
+      localField: 'item',
+      foreignField: 'stock_item',
+      let: { order_qty: '$ordered' },
+      pipeline: [
+        {
+          $match: {
+            $expr: [ { $gte: ['$instock', '$$order_qty'] } ]
+          } 
+        },
+        { $project: { stock_item: 0， _id: 0 } }
+      ],
+      as: 'stockdata'
+    }
+  }
 ]);
 // output: localField 和 foreignField 不包含的则作为 null 值执行匹配
 // {
-//   "_id" : 1,
-//   "item" : "almonds",
-//   "price" : 12,
-//   "quantity" : 2,
-//   "inventory_docs" : [
-//     { "_id" : 1, "sku" : "almonds", "description" : "product 1", "instock" : 120 }
+//   _id: 1,
+//   item: 'almonds',
+//   price: 12,
+//   ordered: 2,
+//   stockdata: [
+//     { warehouse: 'A', instock: 120 },
+//     { warehouse: 'B', instock: 60 }
 //   ]
-// }
+// },
 // {
-//   "_id" : 2,
-//   "item" : "pecans",
-//   "price" : 20,
-//   "quantity" : 1,
-//   "inventory_docs" : [
-//     { "_id" : 4, "sku" : "pecans", "description" : "product 4", "instock" : 70 }
-//   ]
-// }
+//   _id: 2,
+//   item: 'pecans',
+//   price: 20,
+//   ordered: 1,
+//   stockdata: [ { warehouse: 'A', instock: 80 } ]
+// },
 // {
-//   "_id" : 3,
-//   "inventory_docs" : [
-//     { "_id" : 5, "sku" : null, "description" : "Incomplete" },
-//     { "_id" : 6 }
-//   ]
+//   _id: 3,
+//   item: 'cookies',
+//   price: 10,
+//   ordered: 60,
+//   stockdata: [ { warehouse: 'A', instock: 80 } ]
 // }
 ```  
 
