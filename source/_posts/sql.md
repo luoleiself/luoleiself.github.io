@@ -1584,12 +1584,20 @@ db.collection.aggregate([
 
 ##### 字符串表达式操作符
 
+- $concat 连接任意数量的字符串
+- $dateToString 以格式化字符串的形式返回日期
 - $indexOfBytes 在字符串中搜索子串出现的位置, 并返回第一次出现的索引, 未找到则返回 -1
   - string 字符串值
   - substring 子串
   - start 起始位置
   - end 结束位置
+- $indexOfCP  在字符串中搜索子串出现的位置, 并返回第一次出现时的 UTF-8 码位索引, 未找到则返回 -1
+- $ltrim  删除字符串开头和结尾的空白或指定字符
+- $rtrim
+- $trim
 - $regexFind  将正则表达式应用于字符串, 并返回第一个匹配子字符串的信息.
+- $regexFindAll 将正则表达式应用于字符串, 并返回有关所有匹配字符串的信息
+- $regexMatch 将正则表达式应用于字符串并返回一个布尔值, 表示是否已找到匹配项
 
 ```ts
 // { $regexFind: { input: <expression> , regex: <expression>, options: <expression> } }
@@ -1601,6 +1609,16 @@ db.restaurants.aggregate([
     }
   }
 ]);
+```
+
+- $replaceOne 替换给定输入中匹配字符串的第一个实例
+- $replaceAll 替换给定输入中匹配字符串的所有实例
+- $split  根据给定字符串拆分子字符串并返回子字符串数组
+- $toLower  将字符串转换成小写
+- $toUpper  将字符串转换成大写
+
+```ts
+{ $split: [ "June-15-2013", "-" ] } // [ "June", "15", "2013" ]
 ```
 
 ##### 类型表达式操作符
