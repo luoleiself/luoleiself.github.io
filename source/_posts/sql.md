@@ -867,7 +867,9 @@ db.dailySales.aggregate( [{
   - localField 指定执行等值匹配时本地文档的字段, 如果输入文档不包含 localField 则被视为 null 值
   - foreignField 指定外部文档的 foreignField 对本地文档的 localField 执行等值匹配, 如果外部文档不包含 foreignField 值, 则使用 null 进行匹配
   - let 指定在管道阶段中使用的变量, 使用变量表达式访问本地集合文档中的字段, 这些文档输入到 pipeline
-  - pipeline 不能包含 $merge 或 $out 阶段. 无法访问输入文档中的字段, 可以使用 let 选项定义文档字段的变量, 然后在 pipeline 阶段引用这些变量
+  - pipeline 指定在 `外部集合` 上运行的管道, 返回外部集合的文档, 如果返回所有文档, 指定一个空的管道: []
+    - 不能包含 $merge 或 $out 阶段.
+    - 无法访问输入文档中的字段, 可以使用 let 选项定义文档字段的变量, 然后在 pipeline 阶段引用这些变量.
   - as 指定要添加到输入文档中的新数组字段的名称, 新数组字段包含来自 from 集合的匹配文档, 如果指定名称已存在将被重写
 
 ```ts
