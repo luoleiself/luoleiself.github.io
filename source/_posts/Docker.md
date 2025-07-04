@@ -220,6 +220,8 @@ a441e0564165   centos    "/bin/bash"   28 hours ago   Exited (0) 3 hours ago    
   - -f, \-\-follow 实时输出容器运行日志
   - -n, \-\-tail 查看指定行数
   - -t, \-\-timestamps 输出日志添加时间戳
+  - \-\-since string  输出指定时间开始的日志, '2022-01-02T13:23:37Z' 或者 '45m'
+  - \-\-until string  输出截止到指定时间的日志, '2022-01-02T13:23:37Z' 或者 '45m'
 
 - port 查看容器映射端口
 - wait 阻塞一个或多个容器直到停止运行, 并打印容器的退出码
