@@ -392,7 +392,43 @@ Component hierarchy
 
 - middleware.ts 在请求完成之前在服务器上运行代码, 根据传入的请求修改响应, 对于实现自定义服务器端逻辑非常有用, 配合 `matcher` 使用过滤指定范围的请求
   - request
-- instrumentation.ts 用于将可观察工具集成到应用程序中, 能够跟踪性能和行为, 并在生产中调试问题
+
+- instrumentation.ts 使用代码将可观察工具集成到应用程序中, 能够跟踪性能和行为, 并在生产中调试问题
+  - register, 导出一个函数, 该函数将在启动一个新的 Next.js 服务实例时调用一次
+  - onRequestError, 导出一个函数, 当 Next.js 服务器捕获到错误时将触发该函数, 该函数内的任务必须是同步执行的
+    - error
+    - request
+    - context
+
+```ts
+// instrumentation.ts
+import { type Instrumentation } from 'next';
+export async function register() {
+  try {
+    // Init system
+    if (process.env.NEXT_RUNTIME === 'nodejs') {
+      await Promise.all([]);
+    }
+  } catch(error) {
+    console.log('Init system error', error);
+    exit(1);
+  }
+}
+
+export const onRequestError: Instrumentation.onRequestError = async (err, request, context) => {
+  await fetch('https://.../report-error', {
+    method: 'POST',
+    body: JSON.stringify({
+      message: err.message,
+      request,
+      context,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+```
 
 ### pages router conventions
 
