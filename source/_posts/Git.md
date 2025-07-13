@@ -145,7 +145,7 @@ git restore [options] [\<pathspec\>…]
 - -3,--theirs 在合并冲突时，恢复为另一个分支的版本（即"他们"的版本）
 - --dry-run 显示将要恢复的文件和路径，而不实际进行恢复
 - -p 交互式恢复
-- git restore . 恢复整个工作目录
+- git restore . 恢复工作区的整个工作目录
 
 ## 暂存
 
@@ -174,6 +174,61 @@ git restore [options] [\<pathspec\>…]
 - git commit -v # 提交时显示所有 `diff` 信息
 - git commit --amend -m 'message' # 使用一次新的 `commit`，替代上一次提交, 如果代码没有任何新变化，则用来改写上一次 `commit` 的提交信息
 - git commit --amend [file1] [file2] ... # 重做上一次 `commit`，并包括指定文件的新变化
+
+## 查看信息
+
+### status
+
+- git status # 显示有变更的文件
+- git status --porcelain  # 显示工作区和暂存区的有变更的文件及路径
+
+### log
+
+- git log # 显示当前分支的历史版本
+- git log origin/master   # 查看远程分支的历史记录
+- git log --stat # 显示 `commit` 历史，以及每次 `commit` 发生变更的文件
+- git log --follow [file] # 显示某个文件的版本历史，包括文件改名
+- git log --stat --summary # 查看每个版本变动的档案和行数
+- git log -p [commit] [file] # 显示指定版本号指定文件的修改详情
+
+### diff
+
+- git diff [options] [commit [commit]] [--] [path...] # 比较指定文件的指定版本之间的不同
+- git diff [first-branch] ... [second-branch] # 显示两次提交之间的差异
+- git diff # 显示暂存区和工作区的差异
+- git diff --cached [file] # 显示暂存区和上一个 `commit` 的差异
+- git diff HEAD # 显示工作区与当前分支最新 `commit` 之间的差异
+- git diff --staged # 比较暂存区和版本库差异
+- git diff --stat # 仅仅比较统计信息
+- git diff --check # 它将会找到可能的空白错误并将它们为你列出来
+
+- git diff --name-only 只显示有变更的文件名及路径
+
+![diff](/images/git-diff-1.jpg)
+
+### blame/show/whatchanged
+
+- git whatchanged [file] # 显示某个文件的版本历史，包括文件改名
+- git blame [file] # 显示指定文件是什么人什么时候修改过
+- git show [commit] # 显示某次提交的元数据和内容变化
+- git show --name-only [commit] # 显示某次提交发生变化的文件
+- git show [commit]:[filename] # 显示某次提交时，某个文件的内容
+- git reflog # 显示当前分支的最近几次提交
+
+## 标签
+
+- -l \-\-list
+- -d, \-\-delete
+
+- git tag # 列出所有 tag
+- git tag [tag] # 新建一个 `tag`，在当前 `commit` 上
+- git tag [tag] [commit] # 新建一个 `tag`，在指定 `commit` 上
+- git show [tag] # 查看 `tag` 信息
+- git push [remote] [tag] # 提交指定 `tag`
+- git push [remote] --tags # 提交所有 `tag`
+- git tag -d [tagname] # 删除一个本地标签
+- git push origin :refs/tags/[tagname] # 删除远程仓库的指定标签
+- git checkout -b [branch] [tag]   # 新建一个分支，指向某个 `tag`
 
 ## 分支
 
@@ -239,58 +294,6 @@ git switch [options] \<branch-name\> [\<start-point\>]
 - \-\-skip: 重启合并跳过当前的修改
 
 ![rebase](/images/git-branch-3.png)
-
-## 标签
-
-- -l \-\-list
-- -d, \-\-delete
-
-- git tag # 列出所有 tag
-- git tag [tag] # 新建一个 `tag`，在当前 `commit` 上
-- git tag [tag] [commit] # 新建一个 `tag`，在指定 `commit` 上
-- git show [tag] # 查看 `tag` 信息
-- git push [remote] [tag] # 提交指定 `tag`
-- git push [remote] --tags # 提交所有 `tag`
-- git tag -d [tagname] # 删除一个本地标签
-- git push origin :refs/tags/[tagname] # 删除远程仓库的指定标签
-- git checkout -b [branch] [tag]   # 新建一个分支，指向某个 `tag`
-
-## 查看信息
-
-### status
-
-- git status # 显示有变更的文件
-
-### log
-
-- git log # 显示当前分支的历史版本
-- git log origin/master   # 查看远程分支的历史记录
-- git log --stat # 显示 `commit` 历史，以及每次 `commit` 发生变更的文件
-- git log --follow [file] # 显示某个文件的版本历史，包括文件改名
-- git log --stat --summary # 查看每个版本变动的档案和行数
-- git log -p [commit] [file] # 显示指定版本号指定文件的修改详情
-
-### diff
-
-- git diff [options] [commit [commit]] [--] [path...] # 比较指定文件的指定版本之间的不同
-- git diff # 显示暂存区和工作区的差异
-- git diff --cached [file] # 显示暂存区和上一个 `commit` 的差异
-- git diff HEAD # 显示工作区与当前分支最新 `commit` 之间的差异
-- git diff [first-branch] ... [second-branch] # 显示两次提交之间的差异
-- git diff --staged # 比较暂存区和版本库差异
-- git diff --stat # 仅仅比较统计信息
-- git diff --check # 它将会找到可能的空白错误并将它们为你列出来
-
-![diff](/images/git-diff-1.jpg)
-
-### blame/show/whatchanged
-
-- git whatchanged [file] # 显示某个文件的版本历史，包括文件改名
-- git blame [file] # 显示指定文件是什么人什么时候修改过
-- git show [commit] # 显示某次提交的元数据和内容变化
-- git show --name-only [commit] # 显示某次提交发生变化的文件
-- git show [commit]:[filename] # 显示某次提交时，某个文件的内容
-- git reflog # 显示当前分支的最近几次提交
 
 ## 远程同步
 
