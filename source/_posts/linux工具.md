@@ -530,16 +530,23 @@ grep [OPTION]... PATTERN [FILE]...
 - -q,\-\-quiet 取消显示,只返回退出状态, `0` 表示找到了匹配的行
 - -l,\-\-files-with-matches 打印匹配模板的文件清单
 - -L,\-\-files-without-match 打印不匹配模板的文件清单
-- -n,\-\-line-number 在匹配的行前面打印行号
 - -x,\-\-line-regexp 仅匹配整行
 - -w,\-\-word-regexp 仅匹配整个单词
-- -v,\-\-invert-match 显示不包括文本的所有信息
 - -R,-r,\-\-recursive 递归的读取目录下的所有文件,包括子目录
 
 ```bash
 grep -A 3 'pattern' file.txt # 向下搜索并显示匹配内容的后 3 行
 grep -B 3 'pattern' file.txt # 向上搜索并显示匹配内容的前 3 行
 grep -C 3 'pattern' file.txt 
+```
+
+- -n,\-\-line-number 在匹配的行前面打印行号
+- -v,\-\-invert-match 显示不包括文本的所有信息
+
+```bash
+# 在匹配的行前输出行号
+# 过滤指定作者修改的文件记录中不包含 .tsx 的记录
+git log --author luolei --pretty=format:"" --name-only | grep -n -v '.tsx'
 ```
 
 #### 批量删除本地关联的 git 远程分支
