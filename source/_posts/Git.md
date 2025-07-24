@@ -253,8 +253,28 @@ git restore [options] [\<pathspec\>…]
 
 - git push origin --delete [remote_branch_name]   # 删除远程分支
 
+### cherry
+
+比较两个分支之间提交差异的工具，特别适合识别哪些提交已经或尚未被应用到目标分支.
+
+- `+` 开头的行表示提交只存在于当前分支
+- `-` 开头的行表示提交已经存在于比较的分支
+
+```bash
+git cherry [-v] [<upstream> [<head> [<limit>]]] # 比较分支的提交差异
+```
+
+- -v，\-\-[no-]verbose  显示完成的提交信息
+
 ### cherry-pick
 
+- \-\-continue  继续 cherry-pick 操作
+- \-\-abort 完全取消整个 cherry-pick 操作序列
+- \-\-skip  跳过当前冲突的提交，继续下一个
+- \-\-quit  退出 cherry-pick 操作但保留已完成的更改, 忽略剩余的提交序列
+- -e, \-\-[no-]edit 编辑提交信息
+- -n, \-\-no-commit 应用提交但不自动提交
+- -x  在提交信息中追加来源信息
 - git cherry-pick --no-commit/-n \<commit-ish\> # 选择一个或者多个 commit，合并进当前分支,手动 commit,
 - git cherry-pick [options] commit1...commitN # 选择 commit 区间合并, 含尾不含头
 - git cherry-pick [options] commit1^...commitN # 选择 commit 区间合并, 包含头和尾
