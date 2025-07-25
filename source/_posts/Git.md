@@ -275,7 +275,7 @@ git cherry [-v] [<upstream> [<head> [<limit>]]] # 比较分支的提交差异
 - -e, \-\-[no-]edit 编辑提交信息
 - -n, \-\-no-commit 应用提交但不自动提交
 - -x  在提交信息中追加来源信息
-- git cherry-pick --no-commit/-n \<commit-ish\> # 选择一个或者多个 commit，合并进当前分支,手动 commit,
+- -X, \-\-[no-]strategy-option \<option\> # 配置 merge 策略
 - git cherry-pick [options] commit1...commitN # 选择 commit 区间合并, 含尾不含头
 - git cherry-pick [options] commit1^...commitN # 选择 commit 区间合并, 包含头和尾
 
