@@ -151,17 +151,19 @@ git restore [options] [\<pathspec\>…]
 
 - git stash # 将没有提交的内容(包含工作区和暂存区)保存至堆栈中
   - 如果工作区的文件没有被 git 管理过, 就不能被保存到堆栈
-  - [-u | --include-untracked | --only-untracked] # 对未追踪文件进行储藏
-  - [-a | --all] # 对所有文件进行储藏
-  - [-S | --staged] # 对所有文件进行储藏
+  - [-u | --include-untracked | --only-untracked] # 对未追踪文件进行暂存
+  - [-a | --all] # 对所有文件进行暂存
+  - -S, \-\-staged # 只暂存暂存区的修改
+  - -k，\-\-[no-]keep-index  # 只暂存工作目录的修改
   - [(-m | --message) \<message\>] # 同命令 git stash save
-- git stash save [\<message\>] # 保存堆栈时可以添加备注信息
+- git stash save [\<message\>] # 保存堆栈时添加备注信息
 - git stash branch \<branchname\> [\<stash\>] # 将堆栈中指定的条目迁出到新分支上
+
 - git stash list # 列出堆栈中保存的记录
 - git stash show [\<stash\>] # 查看堆栈中最新保存的更改信息
-- git stash pop [stash@{0}] # 取出堆栈中指定的 stash 并移出堆栈中
-- git stash apply [stash@{0}] # 取出堆栈中指定的 stash 不移出堆栈中
-- git stash drop [stash@{0}]   # 移出堆栈中指定的 stash, 配合 apply 使用
+- git stash pop [stash@{n}] # 取出堆栈中指定的 stash 并移出堆栈中
+- git stash apply [stash@{n}] # 取出堆栈中指定的 stash 不移出堆栈中
+- git stash drop [stash@{n}]   # 移出堆栈中指定的 stash, 配合 apply 使用
 - git stash clear # 清空堆栈中
 
 ![stash](/images/git-stash-1.jpg)
