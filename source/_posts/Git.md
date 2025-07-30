@@ -278,6 +278,11 @@ git cherry [-v] [<upstream> [<head> [<limit>]]] # 比较分支的提交差异
 - -n, \-\-no-commit 应用提交但不自动提交
 - -x  在提交信息中追加来源信息
 - -X, \-\-[no-]strategy-option \<option\> # 配置 merge 策略
+- -m, \-\-mainline \<parent-number\>  处理合并提交时指定主分支
+- \-\-ff 使用快进方式
+- \-\-no-merges  跳过所有的合并, 只处理常规提交
+- \-\-allow-empty  允许应用空提交
+- \-\-allow-empty-message  允许应用空消息的提交
 - git cherry-pick [options] commit0 commit1...commitN # 选择 commit 区间合并, 含尾不含头
 - git cherry-pick [options] commit1^...commitN # 选择 commit 区间合并, 包含头和尾
 
