@@ -280,11 +280,42 @@ git cherry [-v] [<upstream> [<head> [<limit>]]] # 比较分支的提交差异
 - -X, \-\-[no-]strategy-option \<option\> # 配置 merge 策略
 - -m, \-\-mainline \<parent-number\>  处理合并提交时指定主分支
 - \-\-ff 使用快进方式
-- \-\-no-merges  跳过所有的合并, 只处理常规提交
+
 - \-\-allow-empty  允许应用空提交
 - \-\-allow-empty-message  允许应用空消息的提交
+- \-\-empty=(drop|keep|stop)  如何处理被 cherry-pick 的提交与当前历史记录中已有的更改重复的情况
+  - drop   这个提交会被丢弃
+  - keep   这个提交会被保留, 暗含 --allow-empty 选项
+  - stop   默认行为, 当提交被应用时, cherry-pick 操作将停止, 允许检查该提交
+
 - git cherry-pick [options] commit0 commit1...commitN # 选择 commit 区间合并, 含尾不含头
 - git cherry-pick [options] commit1^...commitN # 选择 commit 区间合并, 包含头和尾
+
+```bash
+git cherry-pick [--edit] [-n] [-m <parent-number>] [-s] [-x] [--ff] [-S[<keyid>]] <commit>...
+
+# 使用 rev-list 获取提交区间非合并的提交并 cherry-pick 到当前分支
+git cherry-pick -x $(git rev-list --no-merges <start-commit>^..<end-commit>)
+```
+
+### rev-list
+
+按照时间顺序倒序列出提交对象
+
+```bash
+git rev-list [<options>] <commit>... [--] [<path>...]
+```
+
+- -n \<n\>  限制输出的提交数量
+- \-\-max-count=\<n\>  限制输出的提交数量
+- \-\-skip=\<n\>  跳过指定数量的提交
+- \-\-since \<date\>  指定开始时间
+- \-\-until \<date\>  指定结束时间
+- \-\-after \<date\>  指定开始时间
+- \-\-before \<date\>  指定结束时间
+
+- \-\-merges   只显示合并后的提交
+- \-\-no-merges  不显示有一个以上父级的提交
 
 ### switch
 
@@ -361,3 +392,11 @@ git switch [options] \<branch-name\> [\<start-point\>]
 - git fsck   # 对仓库进行检查
 - git bisect # 查找问题
 - git blame   # 查找问题
+
+### notes
+
+添加、移除或读取附加在对象上的注释，而不影响对象本身
+
+```bash
+git notes add -m "This is a note" <object>;
+```
