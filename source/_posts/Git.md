@@ -159,6 +159,11 @@ git restore [options] [\<pathspec\>…]
 - git stash save [\<message\>] # 保存堆栈时添加备注信息
 - git stash branch \<branchname\> [\<stash\>] # 将堆栈中指定的条目迁出到新分支上
 
+```bash
+# 基于 stash@{1} 创建新分支 new-feature, 创建成功时删除 stash@{1}
+git stash branch new-feature stash@{1}
+```
+
 - git stash list # 列出堆栈中保存的记录
 - git stash show [\<stash\>] # 查看堆栈中最新保存的更改信息
 - git stash pop [stash@{n}] # 取出堆栈中指定的 stash 并移出堆栈中
