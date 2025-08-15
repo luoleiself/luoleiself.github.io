@@ -507,46 +507,83 @@ grep [OPTION]... PATTERN [FILE]...
 - -V,\-\-version 显示版本信息
 - -c,\-\-count 统计符合字符串条件的行数
 - -i,\-\-ignore-case 忽略大小写
-- -e,\-\-regexp=PATTERN 使用正则表达式匹配
-
-  ```bash
-  # 使用 -e 参数 需要将正则中的部分字符转义才能使用
-  [root@localhost ~]# grep -i -e "foo\|bar"
-  ```
-
-- -E,\-\-extended-regexp 使用扩展正则表达式匹配(ERE)
-
-  ```bash
-  [root@localhost ~]# grep -i -E "foo|bar" # 此处不需要进行字符转义
-  ```
-
-- -G,\-\-basic-regexp 使用基础正则表达式(BRE)
-- -A{NUM},\-\-after-context=NUM 查找某些字符的内容, 并向下延伸 `NUM` 行
-- -B{NUM},\-\-before-context=NUM 查找某些字符的内容, 并向上延伸 `NUM` 行
-- -C{NUM},\-\-context=NUM 查找某些字符的内容, 并向上和向下各延伸 `NUM` 行
-- -f File,\-\-file=File 从文件中提取模板
-- -h,\-\-no-filename 当搜索多个文件时, 不显示匹配文件名前缀
-- -o,\-\-only-matching 只显示正则表达式匹配的部分
-- -q,\-\-quiet 取消显示,只返回退出状态, `0` 表示找到了匹配的行
-- -l,\-\-files-with-matches 打印匹配模板的文件清单
-- -L,\-\-files-without-match 打印不匹配模板的文件清单
-- -x,\-\-line-regexp 仅匹配整行
-- -w,\-\-word-regexp 仅匹配整个单词
-- -R,-r,\-\-recursive 递归的读取目录下的所有文件,包括子目录
-
-```bash
-grep -A 3 'pattern' file.txt # 向下搜索并显示匹配内容的后 3 行
-grep -B 3 'pattern' file.txt # 向上搜索并显示匹配内容的前 3 行
-grep -C 3 'pattern' file.txt 
-```
-
 - -n,\-\-line-number 在匹配的行前面打印行号
-- -v,\-\-invert-match 显示不包括文本的所有信息
+- -v,\-\-invert-match 显示不包括文本的所有信息, 反向匹配
+- -R,-r,\-\-recursive 递归的读取目录下的所有文件,包括子目录
 
 ```bash
 # 在匹配的行前输出行号
 # 过滤指定作者修改的文件记录中不包含 .tsx 的记录
 git log --author luolei --pretty=format:"" --name-only | grep -n -v '.tsx'
+
+# 使用 -c 参数 统计匹配的行数
+grep -c 'faild log' /var/log/nginx/access.log
+
+# 使用 -n 参数 输出匹配的行号
+grep -n 'faild log' /var/log/nginx/access.log
+
+# 使用 -e 参数 需要将正则中的部分字符转义才能使用
+[root@localhost ~]# grep -i -e "foo\|bar"
+```
+
+- -o,\-\-only-matching 只显示正则表达式匹配的部分
+
+```bash
+# 使用 -o 匹配 IP 地址
+grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" /var/log/auth.log
+```
+
+- -l,\-\-files-with-matches 打印匹配模板的文件清单
+- -L,\-\-files-without-match 打印不匹配模板的文件清单
+
+```bash
+# 在Nginx虚拟主机配置目录中，找出所有绑定了example.com域名的配置文件
+grep -l "server_name example.com" /etc/nginx/sites-available/
+```
+
+- -e,\-\-regexp=PATTERN 使用正则表达式匹配
+- -E,\-\-extended-regexp 使用扩展正则表达式匹配(ERE)
+
+```bash
+[root@localhost ~]# grep -i -E "foo|bar" # 此处不需要进行字符转义
+```
+
+- -G,\-\-basic-regexp 使用基础正则表达式(BRE)
+- -f File,\-\-file=File 从文件中提取模板
+- -h,\-\-no-filename 当搜索多个文件时, 不显示匹配文件名前缀
+- -q,\-\-quiet 取消显示,只返回退出状态, `0` 表示找到了匹配的行
+- -x,\-\-line-regexp 仅匹配整行
+- -w,\-\-word-regexp 仅匹配整个单词
+- \-\-color=auto 颜色高亮
+
+```bash
+# 在系统日志中高亮显示警告信息
+grep --color "WARNING" /var/log/syslog
+```
+
+- \-\-include={FILE} 搜索指定文件
+- \-\-exclude={FILE} 忽略指定文件
+- \-\-exclude-dir={DIR} 忽略指定目录
+
+```bash
+# 搜索所有 txt 文件, 忽略所有 log 文件
+grep --include="*.txt" --exclude="*.log" "hello" *
+
+# 仅搜索 .conf 后缀的配置文件
+grep -r "timeout" /etc/ --include="*.conf"
+
+# 搜索所有配置文件, 忽略 vendor 目录下的文件
+grep -r "database" /var/www/ --exclude-dir="vendor"
+```
+
+- -A{NUM},\-\-after-context=NUM 查找某些字符的内容, 并向下延伸 `NUM` 行
+- -B{NUM},\-\-before-context=NUM 查找某些字符的内容, 并向上延伸 `NUM` 行
+- -C{NUM},\-\-context=NUM 查找某些字符的内容, 并向上和向下各延伸 `NUM` 行
+
+```bash
+grep -A 3 'pattern' file.txt # 向下搜索并显示匹配内容的后 3 行
+grep -B 3 'pattern' file.txt # 向上搜索并显示匹配内容的前 3 行
+grep -C 3 'pattern' file.txt 
 ```
 
 #### 批量删除本地关联的 git 远程分支
