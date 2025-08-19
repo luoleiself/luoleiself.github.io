@@ -92,6 +92,9 @@ docker image rm -f $(docker image ls -aq) # 功能同上
 ```
 
 - search [OPTIONS] TERM 从镜像仓库查找镜像
+  - -f, \-\-filter string  过滤指定条件的镜像
+  - \-\-format string   使用指定格式显示镜像
+  - \-\-limit int   搜索结果的数量限制
 
 - load|import 从归档文件导入镜像
 - save [OPTIONS] IMAGE [IMAGE...] 保存多个镜像到归档文件
