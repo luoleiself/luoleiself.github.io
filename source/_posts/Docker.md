@@ -175,7 +175,7 @@ centos       latest    5d0da3dc9764   6 months ago    231MB
 - -t, \-\-tag 添加镜像的标签(name:tag)
 
 ```bash
-docker build -f /path/to/Dockerfile --build-arg 'NODE_ENV=production' -t name:tag .
+docker build -f /path/to/Dockerfile --build-arg NODE_ENV=production -t name:tag .
 ```
 
 ## 容器
@@ -687,7 +687,7 @@ docker build 时会为每个阶段构建一个临时的中间镜像, 但最终�
   - RUN [OPTIONS] ['\<command\>', ...]
 - WORKDIR 为`RUN`, `CMD`, `ENTRYPOINT`, `COPY`, `ADD` 指定工作目录
 
-- ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效
+- ARG 构建参数, 作用与 ENV 一致, ARG 中的环境变量仅在 `Dockerfile` 内有效, docker build --build-arg 参数覆盖 ARG 指定定义参数
 - ENV 设置持久化环境变量, 如果只想在构建构建阶段有效使用 `ARG` 指令
 
 ```yaml
