@@ -79,64 +79,72 @@ sse.addEventListener('notice', (e) => {
 
 ```html
 <!-- client -->
-<p><button id="close">Close</button></p>
+<h1>SSE(event-source) Demo</h1>
+<p><button id="event-source">Start SSE</button> <button id="close">Close</button></p>
 <ul id="list"></ul>
 <script>
-  const sse = new EventSource('/evt-source', { withCredentials: true });
+  let sse = null;
   const list = document.getElementById('list');
-  const liMessageColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')'
-  const liNoticeColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')'
-  const btn = document.getElementById('close')
+  document.getElementById('event-source').addEventListener('click', function () {
+    sse = new EventSource('/evt-source', { withCredentials: true });
+    const liMessageColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')'
+    const liNoticeColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')'
 
-  btn.onclick = function () {
-    sse.close()
-  }
+    /*
+    * 这将仅监听类似下面的事件
+    *
+    * event: notice
+    * id: someid
+    * data: useful data
+    */
+    sse.addEventListener('notice', function (e) {
+      console.log('notice', e)
+      const data = JSON.parse(e.data)
+      const li = document.createElement('li')
+      li.style.color = liNoticeColor
+      li.innerHTML = 'event: ' + e.type + ' count:' + data.count
+      list.appendChild(li)
+    })
 
-  sse.addEventListener('connected', function (e) {
-    console.log('connected', e)
-  })
+    /*
+    * “message”事件是一个特例，因为它可以捕获没有 event 字段的事件，
+    * 以及具有特定类型 `event：message` 的事件。
+    * 它不会触发任何其他类型的事件。
+    */
+    sse.addEventListener('message', function (e) {
+      console.log('message', e)
+      const data = JSON.parse(e.data)
+      const li = document.createElement('li')
+      li.style.color = liMessageColor
+      li.innerHTML = 'event: ' + e.type + ' count:' + data.count
+      list.appendChild(li)
+    })
 
-  /*
-  * 这将仅监听类似下面的事件
-  *
-  * event: notice
-  * id: someid
-  * data: useful data
-  */
-  sse.addEventListener('notice', function (e) {
-    console.log('notice', e)
-    const data = JSON.parse(e.data)
-    const li = document.createElement('li')
-    li.style.color = liNoticeColor
-    li.innerHTML = 'event: ' + e.type + ' count:' + data.count
-    list.appendChild(li)
-  })
+    sse.addEventListener('open', function (e) {
+      console.log('open', e)
+      const li = document.createElement('li')
+      li.innerHTML = 'event: ' + e.type;
+      list.appendChild(li)
+    })
 
-  /*
-  * “message”事件是一个特例，因为它可以捕获没有 event 字段的事件，
-  * 以及具有特定类型 `event：message` 的事件。
-  * 它不会触发任何其他类型的事件。
-  */
-  sse.addEventListener('message', function (e) {
-    console.log('message', e)
-    const data = JSON.parse(e.data)
-    const li = document.createElement('li')
-    li.style.color = liMessageColor
-    li.innerHTML = 'event: ' + e.type + ' count:' + data.count
-    list.appendChild(li)
-  })
+    sse.addEventListener('connected', function (e) {
+      console.log('connected', e)
+      const li = document.createElement('li')
+      li.innerHTML = 'event: ' + e.type;
+      list.appendChild(li)
+    })
 
-  sse.addEventListener('closed', function (e) {
-    console.log('closed', e)
-  })
+    sse.addEventListener('error', function (e) {
+      console.log('error', e)
+      const li = document.createElement('li')
+      li.innerHTML = 'event: ' + e.type;
+      list.appendChild(li)
+    })
+  });
 
-  sse.addEventListener('open', function (e) {
-    console.log('open', e)
-  })
-
-  sse.addEventListener('error', function (e) {
-    console.log('error', e)
-  })
+  document.getElementById('close').onclick = function () {
+    sse?.close();
+  };
 </script>
 ```
 
@@ -152,7 +160,7 @@ let count = 1
 app.use(express.static('./'))
 
 app.get('/evt-source', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Content-Type', 'text/event-stream'); // 指定响应头为 text/event-stream
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
@@ -177,7 +185,7 @@ app.get('/evt-source', (req, res) => {
   const timer = setInterval(() => {
     sendEvent(Math.random() > 0.5 ? 'notice' : 'message', { message: `Message at ${new Date().toISOString()}`, count: count });
     count++;
-  }, 5000);
+  }, 1000);
 
   // 当客户端断开连接时清除定时器
   req.on('close', () => {

@@ -38,7 +38,7 @@ app.get('/evt-source', (req, res) => {
   const timer = setInterval(() => {
     sendEvent(Math.random() > 0.5 ? 'notice' : 'message', { message: `Message at ${new Date().toISOString()}`, count: count });
     count++;
-  }, 5000);
+  }, 1000);
 
   // 当客户端断开连接时清除定时器
   req.on('close', () => {
