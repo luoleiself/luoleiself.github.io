@@ -47,6 +47,8 @@ while (treeWalker.nextNode()) {
 }
 ```
 
+<!--more-->
+
 ### treeWalker
 
 - root, 只读属性, 表示新建 TreeWalker 时所声明的根节点
