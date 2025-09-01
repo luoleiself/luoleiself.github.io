@@ -8,14 +8,14 @@ tags:
   - shell
 ---
 
-### 命令行输出内容变身
+## 命令行输出内容变身
 
 格式: \033\[显示方式;前景色;背景色 m ...... \033\[0m
 
 - \033[ 固定格式
 - \033[0m 非必需, 如果省略表示后面输出内容的样式都会应用当前设置的样式
 
-#### 属性集
+### 属性集
 
 | 前景色 | 背景色 | 色值   |
 | :------: | :------: | ------ |
@@ -28,7 +28,7 @@ tags:
 | 36     | 46     | 青蓝色 |
 | 37     | 47     | 白色   |
 
-#### 显示方式
+### 显示方式
 
 | 显示方式 | 表现行为 |
 | :------: | -------- |
@@ -51,7 +51,7 @@ tags:
 ```
 
 <!-- more -->
-### date
+## date
 
 ```bash
 $ date
@@ -90,7 +90,7 @@ $ date +%B
 October
 ```
 
-#### Y-m-d
+### Y-m-d
 
 - %Y 年份的完整格式
 - %y 年份的最后两位数字, 00..99
@@ -114,16 +114,18 @@ $ date +%d
 - %g 年份的最后两位数字, ISO 格式
 - %G 年份的完整格式, ISO 格式
 
-- %D 日期格式, %m/%d/%y
-- %F 日期格式, %+4Y-%m-%d
-- %x 本地日期表示格式, 类似 %D
-
 ```bash
 $ date +%g
 24
 $ date +%G
 2024
+```
 
+- %D 日期格式, %m/%d/%y
+- %F 日期格式, %+4Y-%m-%d
+- %x 本地日期表示格式, 类似 %D
+
+```bash
 $ date +%D
 10/10/24
 $ date +%F
@@ -142,7 +144,7 @@ $ date +%q
 4
 ```
 
-#### H:M:S
+### H:M:S
 
 - %H 小时的24时格式
 - %I 小时的12时格式
@@ -195,7 +197,7 @@ $ date +%N
 322722000
 ```
 
-#### week
+### week
 
 - %t a tab
 - %u 一周中的第几天, 1为周一, 1..7
@@ -232,7 +234,7 @@ $ date +%::z
 +08:00:00
 ```
 
-### ssh 操作
+## ssh 操作
 
 - ssh-keyscan 收集公钥中的主机地址
 - ssh-copy-id 将本地的公钥文件复制到远程主机对应账户下的 authorized_keys 文件中
@@ -293,7 +295,7 @@ All identities removed.
 The agent has no identities.
 ```
 
-### scp 主机之间复制文件
+## scp 主机之间复制文件
 
 ```bash
 scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
@@ -307,7 +309,7 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 - -P 指定数据传输的端口号
 - -l 限制传输带宽 KB/s
 
-#### 本地复制到远程
+### 本地复制到远程
 
 ```bash
 # 拷贝文件, 可以使用原文件名也可以重新命名文件
@@ -317,7 +319,7 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 [root@localhost ~]# scp -rCp /home/workspace/ root@192.168.1.3:/home/workspace/
 ```
 
-#### 远程复制到本地
+### 远程复制到本地
 
 ```bash
 # 拷贝文件, 可以使用原文件名也可以重新命名文件
@@ -326,7 +328,7 @@ scp [options] [[user@]host1:]file1 ... [[user@]host2:]file2
 [root@localhost ~]# scp -rCp root@192.168.1.3:/home/workspace/ /home/workspace
 ```
 
-### awk
+## awk
 
 awk 是一种可以对文本和输入数据进行处理的编程语言, 默认情况下, awk 对文件的每一行都视为一条记录, 然后每一条记录被进一步分解成一系列的字段
 
@@ -337,7 +339,7 @@ awk 是一种可以对文本和输入数据进行处理的编程语言, 默认�
 [root@localhost ~]# awk -v name="hello world" -F : '{print $1}' /etc/passwd
 ```
 
-#### 内建变量
+### 内建变量
 
 - OFMT 输出数字格式(默认%.6g)
 - CONVFMT 数字转换格式(默认值为%.6g)ENVIRON 环境变量关联数组
@@ -352,7 +354,7 @@ awk 是一种可以对文本和输入数据进行处理的编程语言, 默认�
 [root@localhost ~]# git branch -r | awk 'BEGIN {print "hello awk, I am coming\n"}END{print "hello awk, good bye\n"}{printf "NF--%s NR--%s FNR--%s $0--%s\n",NF,NR,FNR,$0;}'
 ```
 
-##### 字段分隔符
+#### 字段分隔符
 
 - \-F 字段分隔符
 - FS 字段的分隔符, 默认为空格, 可以使用 -F 参数设置
@@ -363,12 +365,12 @@ awk 是一种可以对文本和输入数据进行处理的编程语言, 默认�
 [root@localhost ~]# awk -F : '{print $1}' /etc/passwd
 ```
 
-##### 记录分隔符
+#### 记录分隔符
 
 - RS 输入记录的分隔符, 默认为换行符
 - ORS 输出的记录分隔符, 默认为换行符
 
-##### 记录统计
+#### 记录统计
 
 - $0 完整的输入记录
 - $1-$n 表示当前行第几个字段, $(NF - n) 动态计算第几个字段
@@ -392,13 +394,26 @@ $1 = 2
 $2 =
 ```
 
-##### 参数
+#### 参数
 
 - ARGC 命令行参数个数(不包括 awk 的选项和 awk 的程序内容)
 - ARGV 命令行参数序列数组,下标从 0 开始
 - ARGIND 命令行中当前文件的位置(从 0 开始算)
 
-##### 流程控制
+### 内置函数
+
+- gsub(r, s) 在整个 $0 中用 s 替换 r
+- gsub(r, s, t) 在整个 t 中用 s 替换 r
+- index(s, t) 返回 s 中字符串 t 的第一位置
+- length(s) 返回 s 的长度
+- match(s, r) 测试 s 是否包含匹配 r 的字符串
+- split(s, a, fs) 在 fs 上将 s 分成序列 a
+- sprint(fmt, exp) 返回经 fmt 格式化后的 exp
+- sub(r, s) 用 $0 中最左边最长的子串代替 s
+- substr(r, p) 返回字符串 s 中从 p 开始的后缀部分
+- substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分
+
+### 流程控制
 
 - BEGIN { 这里面是行处理语句执行前的语句 }
 - END { 这里面是行处理语句执行完成后的语句 }
@@ -450,20 +465,7 @@ good bye awk
 三
 ```
 
-##### 内置函数
-
-- gsub(r, s) 在整个 $0 中用 s 替换 r
-- gsub(r, s, t) 在整个 t 中用 s 替换 r
-- index(s, t) 返回 s 中字符串 t 的第一位置
-- length(s) 返回 s 的长度
-- match(s, r) 测试 s 是否包含匹配 r 的字符串
-- split(s, a, fs) 在 fs 上将 s 分成序列 a
-- sprint(fmt, exp) 返回经 fmt 格式化后的 exp
-- sub(r, s) 用 $0 中最左边最长的子串代替 s
-- substr(r, p) 返回字符串 s 中从 p 开始的后缀部分
-- substr(s, p, n) 返回字符串 s 中从 p 开始长度为 n 的后缀部分
-
-### xargs
+## xargs
 
 将参数列表转换成小块分段传递给其他命令, 以避免参数列表过长的问题, 可单独使用, 也可以使用管道符、重定位符等其他命令配合使用
 
@@ -495,7 +497,7 @@ xargs [OPTION]... COMMAND INITIAL-ARGS...
 [root@localhost ~]# touch file{1..4}
 ```
 
-### grep
+## grep
 
 > BRE 定义了 4 组元字符 `[ ]` `.` `^` `$`
 > ERE 增加了 3 组元字符 `{ }` `()` `|`
@@ -586,7 +588,7 @@ grep -B 3 'pattern' file.txt # 向上搜索并显示匹配内容的前 3 行
 grep -C 3 'pattern' file.txt 
 ```
 
-#### 批量删除本地关联的 git 远程分支
+### 批量删除本地关联的 git 远程分支
 
 - awk 和 xargs 命令结合使用
 
@@ -645,7 +647,7 @@ $ git branch -a | \
   xargs -t -I {} git branch -dr {}
 ```
 
-### crontab 定时任务
+## crontab 定时任务
 
 - -u 指定用户
 - -e 使用编辑器设置时程表
@@ -660,7 +662,7 @@ $ git branch -a | \
 |Month|1-12 or JAN-DEC|
 |Day of week|0-6 or SUN-SAT|
 
-#### 特殊字符
+### 特殊字符
 
 - \* 表示所有可能的值, 表示在所有时间点都执行任务
 - \, 用于分隔多个值, 表示多个时间点执行任务
@@ -674,7 +676,7 @@ $ git branch -a | \
 0 1-3 * * 1 # 表示每周一的凌晨1点到3点执行任务
 ```
 
-#### 每分钟向指定文件追加写入一条数据
+### 每分钟向指定文件追加写入一条数据
 
 ```bash
 #!/bin/bash
@@ -698,7 +700,7 @@ fi
 * * * * * /bin/bash /root/workspace/crontab-out-format.sh # 定时任务
 ```
 
-### tar 归档
+## tar 归档
 
 ```bash
 tar [OPTION...] [FILE]...
@@ -715,14 +717,14 @@ tar [OPTION...] [FILE]...
 - \-\-atime-preserve 不改变转储文件的存取时间
 - \-m,\-\-modification-time 当从一个档案中恢复文件时, 不使用新的时间标签
 
-#### 压缩工具
+### 压缩工具
 
 - \-j,\-\-bzip2 调用 bzip2 执行压缩或解压缩
 - \-J,\-\-xz,\-\-lzma 调用 XZ Utils 执行压缩或解压缩
 - \-z,\-\-gzip,\-\-gunzip,\-\-ungzip 调用 gzip 执行压缩或解压缩
 - \-Z,\-\-compress,\-\-uncompress 调用 compress 执行压缩或解压缩
 
-#### 解压缩
+### 解压缩
 
 - \-c,\-\-create 创建新的 tar 文件
 
@@ -738,7 +740,7 @@ tar [OPTION...] [FILE]...
 [root@centos7 ~]tar -xzvf redis-stable.tar.gz redis-stable
 ```
 
-#### 列出文件
+### 列出文件
 
 - \-t,\-\-list 列出压缩文件中的信息
 
@@ -746,7 +748,7 @@ tar [OPTION...] [FILE]...
 [root@centos7 ~]tar -ztf archive.tar.gz # 输出压缩包的文件列表
 ```
 
-#### 添加文件
+### 添加文件
 
 - \-r,\-\-append 向压缩包中添加文件, 如果压缩包不存在则新建压缩包
 
@@ -755,7 +757,7 @@ tar [OPTION...] [FILE]...
 [root@centos7 ~]tar -rf archive.tar file1.txt file2.txt
 ```
 
-#### 提取文件
+### 提取文件
 
 - \-\-files-from=FILE 提取从 FILE 文件中列出的文件列表
 - \-\-wildcards 使用通配符匹配文件名
@@ -773,7 +775,7 @@ tar [OPTION...] [FILE]...
 [root@centos7 ~]tar -zxf redis-stable.tar.gz --wildcards '*/sentinel.conf' --strip-components=1 -C ./ 
 ```
 
-### curl
+## curl
 
 - \-\-help [all] For all options use the manual
 
@@ -859,7 +861,7 @@ curl -L -X POST 'https://developer.toutiao.com/api/apps/v2/jscode2session' \
 - \-o,\-\-output \<file\> Write to file instead of stdout
 - \-\-output-dir \<dir\> Directory to save files in
 
-### 批量重命名文件
+## 批量重命名文件
 
 ```bash
 #!/usr/bin/env bash
@@ -887,43 +889,51 @@ if [ $count -eq 1 ]; then
 fi
 ```
 
-### firewall-cmd
-
-- \-\-check-config 检查永久配置是否有错误
-
-- \-\-state 查看防火墙状态
-- \-\-reload 重新加载配置
-- \-\-permanent 配置永久有效
-
-- \-\-get-zones 查看可用的区域
-- \-\-set-default-zone 设置系统的默认区域
-- \-\-get-active-zones 查看所有活动区域以及包含的接口
-- \-\-zone=\<zone\> 指定区域
-- \-\-info-zone=\<zone\> 查看指定区域的详细信息
-
-- \-\-list-all 查看当前活动的防火墙规则
-- \-\-list-service 查看允许的服务
-- \-\-list-ports 查看允许的端口
-
-- \-\-add-interface 添加接口
-- \-\-add-service 添加服务, 允许指定的服务通过防火墙
-- \-\-add-port  添加端口, 允许指定的接口通过防火墙
-- \-\-remove-service 移除服务
-- \-\-remove-port 移除端口
-- \-\-set-log-denied=[all|off] 启用/禁用防火墙的日志记录功能
+## iptables
 
 ```bash
-firewall-cmd --check-config # 检查永久配置是否有错误
-
-firewall-cmd --get-zones # 查看可用的区域
-firewall-cmd --zone=public --list-all # 列出指定区域的所有规则
-firewall-cmd --zone=public --list-service # 列出指定区域的服务
-
-firewall-cmd --zone=public --add-service=http --permanent # 允许 http 服务
-firewall-cmd --zone=public --add-service=http --permanent # 允许 https 服务
-firewall-cmd --zone=public --add-port=22 --permanent # 允许 22 端口
-firewall-cmd --reload # 重新加载配置
-
-firewall-cmd --zone=public --remove-service=http --permanent # 移除 http 服务
-firewall-cmd --zone=public --remove-port=22 --permanent # 移除 22 端口
+ufw  -------+
+                    | --> iptables --> Linux Kernel Netfilter
+firewall-cmd -------+
 ```
+
+- 表 (Tables)：用于实现特定功能。
+  - filter：默认表，用于数据包过滤（允许或拒绝）。
+  - nat：用于网络地址转换（例如端口转发、共享上网）。
+  - mangle：用于修改数据包内容（如 TTL、TOS）。
+  - raw：用于配置数据包豁免连接跟踪机制。
+- 链 (Chains)：规则的分组，代表数据包流通的路径。
+  - INPUT：处理 进入本机 的数据包。
+  - OUTPUT：处理 从本机发出 的数据包。
+  - FORWARD：处理 经过本机路由 的数据包（当本机作为路由器时）。
+  - PREROUTING (nat, mangle, raw)：数据包进入后，路由判断之前 处理。
+  - POSTROUTING (nat, mangle)：数据包发出前，路由判断之后 处理。
+- 规则 (Rules)：具体的条件匹配和动作，按照从上到下的顺序执行。
+- 动作 (Targets)：当数据包匹配规则后采取的操作。
+  - ACCEPT：允许数据包通过。
+  - DROP：丢弃数据包（无任何回应，像石沉大海）。
+  - REJECT：拒绝数据包（会向发送方返回一个 reject 响应）。
+  - LOG：将匹配的数据包信息记录到日志（/var/log/messages 或 syslog），然后继续执行下一条规则。
+  - SNAT：源地址转换，用于共享上网。
+  - DNAT：目标地址转换，用于端口转发。
+
+| 参数 | 全称 | 功能说明 |
+| :--- | :--- | :--- |
+| -A | --append | 在链的 末尾 添加一条新规则 |
+| -I | --insert | 在链的 指定位置 插入一条新规则（如 -I INPUT 1 插入为第1条） |
+| -D | --delete | 从链中 删除 一条规则（可按编号或完整规则内容删除） |
+| -L | --list | 列出 指定链中的所有规则 |
+| -F | --flush | 清空 指定链中的所有规则（不指定链则清空所有） |
+| -P | --policy | 设置链的 默认策略（如 -P INPUT DROP） |
+| -p | --protocol | 指定协议，如 tcp, udp, icmp, all |
+| -s | --source | 指定 源地址（IP 或网段） |
+| -d | --destination | 指定 目标地址（IP 或网段） |
+| --sport | --source-port | 指定 源端口 |
+| --dport | --destination-port | 指定 目标端口 |
+| -i | --in-interface | 指定数据包进入的 网络接口（如 eth0, wlan0） |
+| -o | --out-interface | 指定数据包发出的 网络接口 |
+| -j | --jump | 指定要执行的目标动作（ACCEPT, DROP, REJECT 等） |
+| -m | --match | 加载扩展模块（如 state, multiport） |
+| -n | --numeric | 以数字形式显示输出（不解析主机名、服务名） |
+| -v | --verbose | 显示详细信息（常与 -L 连用） |
+| --line-numbers | | 列出规则时，显示 规则编号（用于删除和插入） |
