@@ -3114,3 +3114,50 @@ function App() {
   </div>)
 }
 ```
+
+乐观更新
+
+```tsx
+const updateUser = async ({ id, userData }) => {
+  // API 调用
+  const response = await fetch(`/api/users/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData),
+  });
+  return response.json();
+};
+
+function OptimisticUpdate() {
+  const queryClient = useQueryClient();
+  
+  const mutation = useMutation({
+    mutationFn: updateUser,
+    // 乐观更新：在请求前更新UI
+    onMutate: async (newUserData) => {
+      // 取消任何进行中的查询
+      await queryClient.cancelQueries({ queryKey: ['users'] });
+      
+      // 保存前一个状态用于回滚
+      const previousUsers = queryClient.getQueryData(['users']);
+      
+      // 乐观更新
+      queryClient.setQueryData(['users'], (old) =>
+        old.map(user =>
+          user.id === newUserData.id ? { ...user, ...newUserData } : user
+        )
+      );
+      
+      return { previousUsers };
+    },
+    // 出错时回滚
+    onError: (err, newUserData, context) => {
+      queryClient.setQueryData(['users'], context.previousUsers);
+    },
+    // 成功或失败后都重新获取确保数据正确
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+}
+```
