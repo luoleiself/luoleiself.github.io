@@ -200,15 +200,52 @@ location / {
 
 至少有两个参数, 第一个参数匹配 URI 的正则表达式, 第二个参数是替换匹配的 URI, 第三个参数是标志位, 可以停止处理进一步的 rewrite 指令或发送重定向状态码(301|302)
 
-- last 停止执行当前 server 上下文中的指令, 会继续搜索新 URI 匹配的位置
-- break 停止执行当前 server 上下文中的指令, 取消搜索新 URI 匹配的位置, 不执行新位置中的 rewrite 指令
+- last  停止处理当前 rewrite 规则集, 重新开始 location 匹配
+- break 停止处理当前 rewrite 规则集, 继续在当前 location 块中执行, 不会重新进行 location 匹配
+- redirect  返回 302 临时重定向
+- permanent 返回 301 永久重定向
 
 ```conf
+# Rewrite rule to redirect media files to mp3 format
+# Matches: /download/.../media/filename.ext -> /download/.../mp3/filename.mp3
 rewrite ^(/download/.*)/media/(\w+)\.?.*$ $1/mp3/$2.mp3 last;
-rewrite ^/users/(.*)$ /show?user=$1 break;
+
+# API versioning using rewrite
+# Matches: /api/v1/users -> /v1/api/users
+rewrite ^/api/v1/(.*)$ /v1/api/$1 last;
+
+# Rewrite rule to handle user profile URLs
+# Matches: /users/username -> /show?user=username
+rewrite ^/users/(.*)$ /show?user=$1 break; 
+
+# Rewrite rule to remove .html extension from URLs
+# Matches: /page.html -> /page
+rewrite ^(.+)\.html$ $1 permanent;
+
+# Rewrite rule to add trailing slash for directories
+# Matches: /directory -> /directory/
+rewrite ^([^.]*[^/])$ $1/ permanent;
+
+# Rewrite rule for old blog structure to new structure
+# Matches: /blog/2022/04/post-name -> /posts/post-name
+rewrite ^/blog/\d{4}/\d{2}/(.+)$ /posts/$1 permanent;
+
+# Handle old documentation URLs
+# Matches: /docs/old-path -> /documentation/new-path
+rewrite ^/docs/(.*)$ /documentation/$1 permanent;
+
+# Mobile redirect based on user agent
+# Redirect mobile users to mobile subdomain
+if ($http_user_agent ~* "(mobile|iphone|ipod|ipad|android)") {
+  rewrite ^(.*)$ http://m.example.com$1 permanent;
+}
 ```
 
-### proxy_set_header
+### proxy_set_header 设置或修改代理请求头的指令
+
+```nginx
+proxy_set_header <field> <value>;
+```
 
 ```conf
 upstream nginx_boot {
@@ -232,7 +269,7 @@ server {
 }
 ```
 
-### try_files 尝试检查文件
+### try_files 按顺序尝试多个文件
 
 ```conf
 # 如果源文件不存在则内部重定向最后一个参数指定的 URI, 返回 /www/data/images/default.gif
