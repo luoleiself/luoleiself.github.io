@@ -3770,6 +3770,197 @@ app.mount('#app');
 
 ![vue3-directives-hooks-3](/images/vue3-directives-hooks-3.jpg)
 
+### 自定义 Hook
+
+```typescript
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import type { Ref } from 'vue';
+
+/**
+ * Vue hook for monitoring storage changes for a specific key
+ * Supports both localStorage and sessionStorage monitoring
+ * Supports automatic JSON parsing and returns the changed value
+ * @param key storage key to monitor
+ * @param options configuration options
+ * @returns reactive value and cleanup function
+ */
+export const useLocalStorageMonitor = <T = any>(
+  key: string,
+  options: {
+    /** Whether to automatically parse JSON strings */
+    parseJSON?: boolean;
+    /** Default value when key doesn't exist or parsing fails */
+    defaultValue?: T;
+    /** Custom callback for value changes */
+    onChange?: (newValue: T | null, oldValue: T | null) => void;
+    /** Storage type to monitor: 'localStorage' or 'sessionStorage' */
+    storageType?: 'localStorage' | 'sessionStorage';
+  } = {}
+) => {
+  const { parseJSON = true, defaultValue = null, onChange, storageType = 'localStorage' } = options;
+  
+  // Get the storage object based on the storageType
+  const storage = storageType === 'sessionStorage' ? sessionStorage : localStorage;
+  
+  // Reactive value that will be updated when storage changes
+  const value: Ref<T | null> = ref(null);
+  let currentValue = storage.getItem(key);
+  let pollInterval: NodeJS.Timeout | null = null;
+
+  /**
+   * Parse value from storage with error handling
+   */
+  const parseValue = (rawValue: string | null): T | null => {
+    if (rawValue === null) {
+      return defaultValue ?? null;
+    }
+
+    if (!parseJSON) {
+      return rawValue as T;
+    }
+
+    try {
+      return JSON.parse(rawValue) as T;
+    } catch (error) {
+      console.warn(`Failed to parse ${storageType} value for key "${key}":`, error);
+      return defaultValue ?? null;
+    }
+  };
+
+  /**
+   * Update the reactive value and trigger callbacks
+   */
+  const updateValue = (newRawValue: string | null, oldRawValue: string | null) => {
+    const newParsedValue = parseValue(newRawValue);
+    const oldParsedValue = parseValue(oldRawValue);
+    
+    value.value = newParsedValue;
+    currentValue = newRawValue;
+    
+    if (onChange) {
+      onChange(newParsedValue, oldParsedValue);
+    }
+  };
+
+  /**
+   * Handle storage events from other tabs/windows
+   * Note: sessionStorage events only fire within the same tab, localStorage events fire across tabs
+   */
+  const handleStorageEvent = (event: StorageEvent) => {
+    if (event.key === key && event.storageArea === storage) {
+      updateValue(event.newValue, currentValue);
+    }
+  };
+
+  /**
+   * Manual check for storage changes (polling fallback)
+   */
+  const handleStorageChangeManual = () => {
+    const newValue = storage.getItem(key);
+    if (newValue !== currentValue) {
+      updateValue(newValue, currentValue);
+    }
+  };
+
+  /**
+   * Override storage methods to detect same-tab changes
+   */
+  let originalSetItem: typeof storage.setItem;
+  let originalRemoveItem: typeof storage.removeItem;
+
+  const setupStorageOverride = () => {
+    // Store original methods
+    originalSetItem = storage.setItem;
+    originalRemoveItem = storage.removeItem;
+
+    // Override setItem
+    storage.setItem = function (k: string, value: string) {
+      const oldValue = storage.getItem(k);
+      originalSetItem.call(this, k, value);
+      if (k === key && oldValue !== value) {
+        updateValue(value, oldValue);
+      }
+    };
+
+    // Override removeItem
+    storage.removeItem = function (k: string) {
+      const oldValue = storage.getItem(k);
+      originalRemoveItem.call(this, k);
+      if (k === key && oldValue !== null) {
+        updateValue(null, oldValue);
+      }
+    };
+  };
+
+  /**
+   * Restore original storage methods
+   */
+  const restoreStorageOverride = () => {
+    if (originalSetItem && originalRemoveItem) {
+      storage.setItem = originalSetItem;
+      storage.removeItem = originalRemoveItem;
+    }
+  };
+
+  /**
+   * Initialize the hook
+   */
+  const initialize = () => {
+    // Set initial value
+    value.value = parseValue(currentValue);
+
+    // Setup event listeners and overrides
+    window.addEventListener('storage', handleStorageEvent);
+    setupStorageOverride();
+
+    // Setup polling as fallback (every 1 second)
+    pollInterval = setInterval(handleStorageChangeManual, 1000);
+  };
+
+  /**
+   * Cleanup function
+   */
+  const cleanup = () => {
+    window.removeEventListener('storage', handleStorageEvent);
+    restoreStorageOverride();
+    
+    if (pollInterval) {
+      clearInterval(pollInterval);
+      pollInterval = null;
+    }
+  };
+
+  // Vue lifecycle hooks
+  onMounted(() => {
+    initialize();
+  });
+
+  onBeforeUnmount(() => {
+    cleanup();
+  });
+
+  return {
+    /** Reactive value that updates when storage changes */
+    value: value as Ref<T | null>,
+    /** Manual cleanup function */
+    cleanup
+  };
+};
+
+/**
+ * Convenience hook for monitoring sessionStorage changes
+ * @param key sessionStorage key to monitor
+ * @param options configuration options (same as useLocalStorageMonitor)
+ * @returns reactive value and cleanup function
+ */
+export const useSessionStorageMonitor = <T = any>(
+  key: string,
+  options: Omit<Parameters<typeof useLocalStorageMonitor>[1], 'storageType'> = {}
+) => {
+  return useLocalStorageMonitor<T>(key, { ...options, storageType: 'sessionStorage' });
+};
+```
+
 ### 服务端渲染
 
 #### renderToString()
