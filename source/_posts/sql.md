@@ -482,7 +482,13 @@ db.<collection>.createIndex({ <field>: <value> }, { name: "<indexName>", unique:
 
 ### document
 
-- ObjectId  对象标识符, 4 个字节的时间戳秒数, 5 个字节的进程随机数, 3 个字节的递增计数器
+- ObjectId  12个字节组成的对象标识符, 4 个字节的时间戳秒数, 5 个字节的进程随机数, 3 个字节的递增计数器
+  - hexadecimal 可选。新对象标识符的 24 个字符十六进制字符串值。
+  - integer 可选。整数值（以秒为单位）被添加到 Unix 纪元 以创建新的时间戳。
+  - ObjectId().getTimestamp() 以日期形式返回对象的时间戳部分
+  - ObjectId().toString() 以十六进制字符串形式返回对象标识符
+  - ObjectId.createFromBase64(\<base64String\> [, \<subType\>]) 根据 base64 值创建对象标识符
+  - ObjectId.createFromHexString(\<hexadecimalString\>) 根据十六进制值创建对象标识符
 - String  字符串, utf-8 编码
 - Integer 数值
 - Double  双精度类型, 用于存储浮点数
