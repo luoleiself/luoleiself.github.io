@@ -356,6 +356,10 @@ git switch [options] \<branch-name\> [\<start-point\>]
 - \-\-quit: 放弃合并
 - \-\-skip: 重启合并跳过当前的修改
 
+#### 合并多个 commit
+
+git rebase -i HEAD~n  # 交互式合并从当前 commit 开始的 n 个commit
+
 ![rebase](/images/git-branch-3.png)
 
 ## 远程同步
