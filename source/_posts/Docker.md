@@ -83,6 +83,15 @@ systemctl enable docker # 设置 docker 守护进程开机启动
     - before/since  按创建时间过滤
     - dangling  按悬空镜像过滤
 
+```bash
+docker images -f "dangling=true"  # 查看所有悬空镜像
+docker images -f "reference=centos:7" # 查看指定名称镜像
+docker images -f "label=com.docker.compose.project=demo" # 查看指定标签镜像
+
+docker images -f "before=centos:7" -f "since=centos:10"  # 查看指定镜像版本区间的镜像
+docker images -f "before=10min" # 查看最近10分钟的镜像
+```
+
 - history 查看镜像的历史信息
 - rmi 删除本地镜像, 作用同 `image rm`
 
