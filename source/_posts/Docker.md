@@ -84,8 +84,11 @@ systemctl enable docker # 设置 docker 守护进程开机启动
     - dangling  按悬空镜像过滤
 
 ```bash
+docker images -f "reference=hello-world:*"  # 查看指定名称的所有版本的镜像
+docker images -f "reference=REPOSITORY:TAG" # 查看指定名称镜像
+
 docker images -f "dangling=true"  # 查看所有悬空镜像
-docker images -f "reference=centos:7" # 查看指定名称镜像
+
 docker images -f "label=com.docker.compose.project=demo" # 查看指定标签镜像
 
 docker images -f "before=centos:7" -f "since=centos:10"  # 查看指定镜像版本区间的镜像
