@@ -80,7 +80,7 @@ systemctl enable docker # 设置 docker 守护进程开机启动
   - \-f, \-\-filter \<FILTER_TYPE\>=\<VALUE\> 根据指定条件过滤镜像
     - reference 按镜像名称过滤
     - label 按标签过滤
-    - before/since  按创建时间过滤
+    - before/since  按创建时间或镜像版本号过滤, 按镜像版本号过滤时不包含当前条件中的镜像版本
     - dangling  按悬空镜像过滤
 
 ```bash
