@@ -198,6 +198,12 @@ git stash branch new-feature stash@{1}
 - git log --stat --summary # 查看每个版本变动的档案和行数
 - git log -p [commit] [file] # 显示指定版本号指定文件的修改详情
 
+- git log --max-count=[number] # 显示最近的 [number] 个提交
+- git log --skip=[number] # 跳过 [number] 个提交
+- git log --[since|after|before]=[date] # 限定时间范围
+- git log --branches[=\<pattern\>]  # 限定分支范围
+- git log --tags[=\<pattern\>] # 限定标签范围
+
 ### diff
 
 - git diff [options] [commit [commit]] [--] [path...] # 比较指定文件的指定版本之间的不同
