@@ -394,6 +394,16 @@ Component hierarchy
   - request
 - proxy.ts Next.js 16 之后代替 middleware.ts, 功能保持不变, 以更好地反映其用途
 
+```ts
+import { NextRequest, NextResponse } from 'next/server'
+export  function proxy (req: NextRequest) {
+  return NextResponse.next();
+}
+export const config = {
+  matcher: ['/middleware', '/api/:path*'],
+}
+```
+
 - instrumentation.ts 使用代码将可观察工具集成到应用程序中, 能够跟踪性能和行为, 并在生产中调试问题
   - register, 导出一个函数, 该函数将在启动一个新的 Next.js 服务实例时调用一次
   - onRequestError, 导出一个函数, 当 Next.js 服务器捕获到错误时将触发该函数, 该函数内的任务必须是同步执行的
