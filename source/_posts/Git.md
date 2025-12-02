@@ -243,6 +243,12 @@ git stash branch new-feature stash@{1}
 - git push origin :refs/tags/[tagname] # 删除远程仓库的指定标签
 - git checkout -b [branch] [tag]   # 新建一个分支，指向某个 `tag`
 
+- git tag -m \<message\> # 在当前 commit 上创建一个 tag 并添加注释
+- git tag -e [tagname] # 编辑一个 tag 的注释
+- git tag --contains [commit] # 显示包含指定提交的标签
+- git tag --merged [commit] # 显示包含指定提交的标签
+- git tag --sort \<key\> # 按照指定的排序方式显示标签
+
 ## 分支
 
 ![upstream](/images/git-branch-1.jpg)
