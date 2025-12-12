@@ -304,6 +304,7 @@ services:
                  missing  # 默认选项, Compose 仅当缓存中镜像不可用时从镜像仓库拉取
                  build    # Compose 构建镜像如果镜像已经存在则重新构建
     image: redis
+    cpuset: '0,2,4,6' # 绑定 cpu
     build:
       context: redis
       dockerfile: /redis.Dockerfile
