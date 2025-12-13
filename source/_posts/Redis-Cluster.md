@@ -433,7 +433,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 
 - 数据自动分片: 集群自动将数据分布到不同的节点上, 实现数据的均衡存储和负载均衡
 - 自动故障转移: 当主节点发生故障时, 集群会自动进行故障检测, 并将从节点升级为新的主节点, 以保证系统的可用性
-- 内部通信协议: 集集群使用 Gossip 协议进行节点之间的通信和状态更新, 确保集群的一致性和高效性
+- 内部通信协议: 集集群使用 `Gossip` 协议进行节点之间的通信和状态更新, 确保集群的一致性和高效性
 - 客户端路由: 客户端可以通过集群提供的路由机制, 自动将请求发送到正确的节点上, 实现透明访问
 - 负载均衡: 在 Redis 集群中, 数据和请求会自动分布到不同的节点上, 实现负载均衡, 这样可以避免单个节点过载, 提高系统的稳定性和性能
 - 扩展性好: 通过使用 Redis 集群, 可以便利地扩展系统的容量和性能, 将数据和请求分布到多个节点上, 提高整体系统的吞吐量和承载能力
@@ -441,29 +441,44 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 
 ### 命令
 
+使用 `redis-cli -c -p port` 命令接入集群节点
+
 - redis-cli \-\-cluster help # 查看集群命令帮助信息
-- redis-cli \-\-cluster create host1:port1 ... hostN:portN # 创建指定 IP 和 Port 的服务器作为集群
-  - \-\-cluster-replicas \<arg\> # 指定集群中主节点和从节点数量的比例, 1 表示 1:1
-- redis-cli \-\-cluster add-node new_host:new_port existing_host:existing_port # 添加集群节点
-  - \-\-cluster-slave # 添加集群节点从服务器
-  - \-\-cluster-master-id \<arg\> # 添加到指定主服务器下
-- redis-cli \-\-cluster reshard \<host:port\> # 重新分配节点的 hash 插槽
+- redis-cli \-\-cluster create \<host1:port1\> ... \<hostN:portN\> # 创建指定 IP 和 Port 的服务器作为集群
+  - \-\-cluster-config-file  \<file\>   # 集群配置文件
+  - \-\-cluster-replicas \<num\> # 指定集群中主节点和从节点数量的比例, 1 表示 1:1
+  - \-\-cluster-timeout \<ms\>   # 节点超时时间
+  - \-\-cluster-yes  # 自动确认配置
+  - \-a \<password\> # 设置密码
+  - \-\-askpass   # 交互式输入密码
+- redis-cli \-\-cluster add-node \<new_host:new_port\> \<existing_host:existing_port\> # 添加集群节点
+  - \-\-cluster-slave # 添加为从节点
+  - \-\-cluster-master-id \<id\> # 添加到指定节点 ID
+- redis-cli \-\-cluster del-node \<host:port\> \<node_id\> # 删除集群节点
+  - \-\-cluster-yes # 自动确认
+
+- redis-cli \-\-cluster replicate \<host:port\> \<node_id\>  # 设置主节点的副本
+
+- redis-cli \-\-cluster reshard \<host:port\> # 手动重新分配节点槽位
   - \-\-cluster-from \<arg\> # 已有节点 id, 多个 id 之间使用半角逗号分隔
   - \-\-cluster-to \<arg\> # 新节点 id
   - \-\-cluster-slots \<arg\> # 新节点的 hash 槽数量
-- redis-cli \-\-cluster rebalance \<host:port\> # 重新分配节点
+
+- redis-cli \-\-cluster rebalance \<host:port\> # 自动重新分配节点
   - \-\-cluster-weight \<node1=w1...nodeN=wN\> # 分配节点权重
   - \-\-cluster-timeout \<arg\> # 节点超时时间
   - \-\-cluster-threshold \<arg\> # 节点阈值
+  - \-\-cluster-use-empty-masters
+
+- redis-cli \-\-cluster failover    # 手动故障转移
+
 - redis-cli \-\-cluster import host:port # 导入指定节点
   - \-\-cluster-from \<arg\> # 从指定 id
   - \-\-cluster-from-user \<arg\> # 指定用户名
   - \-\-cluster-from-pass \<arg\> # 指定密码
 - redis-cli \-\-cluster info \<host:port\> # 查看指定节点信息
 - redis-cli \-\-cluster check \<host:port\> # 检查指定节点
-- redis-cli \-\-cluster del-node host:port node_id # 删除集群节点
-- redis-cli \-\-cluster call host:port command arg arg ... arg # 集群节点执行指定命令
-
+- redis-cli \-\-cluster call \<host:port\> \<command\> [args...] # 集群节点执行指定命令
   - \-\-cluster-only-masters 所有主节点
   - \-\-cluster-only-replicas 所有副本节点
 
@@ -475,9 +490,25 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 - redis-cli \-\-cluster set-timeout host:port milliseconds # 设置节点的超时时间
 - redis-cli \-\-cluster backup host:port backup_directory # 备份节点数据到指定目录
 
-使用 `redis-cli -c -p port` 命令接入集群节点
-
 ### 集群部署
+
+#### 集群命令
+
+- CLUSTER HELP 在 Redis 命令行中查看所有集群操作命令
+
+```bash
+127.0.0.1:6380> CLUSTER HELP
+```
+
+- CLUSTER INFO
+- CLUSTER SLOTS 返回集群中 hash 槽的详细信息, redis 7.0 开始使用 CLUSTER SHARDS 命令代替
+- CLUSTER REPLICAS \<node-id\> 列出指定节点的所有副本节点的信息, 功能和 CLUSTER NODES 类似
+- CLUSTER NODES
+- CLUSTER REPLICATE \<node-id\> 配置当前节点为指定主节点的从节点
+- CLUSTER KEYSLOT \<somekey\> 计算指定 key 所在的 hash 槽
+- CLUSTER COUNTKEYSINSLOT \<slot\> 统计集群中 hash 槽中存储的 key 的数量
+- CLUSTER FAILOVER 手动启动集群故障转移操作, 此命令只能发送给集群从节点
+- CLUSTER FLUSHSLOTS 清空当前节点的所有插槽
 
 #### 编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line -->
 
@@ -491,6 +522,9 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 # # 引入 redis 默认配置文件
 # include /root/redis-cluster/redis.conf
 
+port  6379
+appendonly yes
+daemonize yes
 cluster-enabled yes # 开启集群模式
 # 修改集群节点文件名, 默认在存储在当前目录下
 cluster-config-file nodes-6379.conf
@@ -514,7 +548,7 @@ cluster-node-timeout 15000
 
 # 默认当某一插槽不可用时, 整个集群都挂掉
 # no 表示仅该插槽不可用, 默认 yes
-# cluster-require-full-coverage yes
+cluster-require-full-coverage yes
 
 # 允许集群失效的情况下依然可以从节点中读取数据, 保证了高可用性
 # 默认 no, 不允许
@@ -618,7 +652,7 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 [OK] All 16384 slots covered.
 ```
 
-#### 连接 Redis 服务器
+#### 连接节点服务器
 
 使用 `redis-cli -c -p port` 命令接入集群节点
 
@@ -627,24 +661,6 @@ M: 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381
 ```bash
 [root@centos7 redis-cluster]# redis-cli -c -p 6379
 ```
-
-#### 集群命令
-
-- CLUSTER HELP 在 Redis 命令行中查看所有集群操作命令
-
-```bash
-127.0.0.1:6380> CLUSTER HELP
-```
-
-- CLUSTER INFO
-- CLUSTER SLOTS 返回集群中 hash 槽的详细信息, redis 7.0 开始使用 CLUSTER SHARDS 命令代替
-- CLUSTER REPLICAS \<node-id\> 列出指定节点的所有副本节点的信息, 功能和 CLUSTER NODES 类似
-- CLUSTER NODES
-- CLUSTER REPLICATE \<node-id\> 配置当前节点为指定主节点的从节点
-- CLUSTER KEYSLOT \<somekey\> 计算指定 key 所在的 hash 槽
-- CLUSTER COUNTKEYSINSLOT \<slot\> 统计集群中 hash 槽中存储的 key 的数量
-- CLUSTER FAILOVER 手动启动集群故障转移操作, 此命令只能发送给集群从节点
-- CLUSTER FLUSHSLOTS 清空当前节点的所有插槽
 
 #### 查看节点信息
 
@@ -769,7 +785,11 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382@16382 master - 0 1669529206000 7 connected 0-5460
 76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381@16381 master - 1669529208334 1669529202178 3 disconnected 10923-16383
 4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529209355 2 connected
+```
 
+- kill 停止 6381 端口的进程后再启动进程
+
+```bash
 # 6381 恢复后变为 6384 的从节点
 127.0.0.1:6379> CLUSTER NODES
 2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 myself,slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529245000 7 connected
@@ -780,25 +800,30 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529244000 2 connected
 ```
 
-#### 查看节点配置文件
+#### 添加主节点
 
-```bash
-[root@centos7 redis-cluster]# cat nodes-6381.conf
-76cb8ea9a5d6ba0fa43d31cfa4c33cea8442e07d 127.0.0.1:6381@16381 myself,slave eaf9833aa105e36b22f6330585a972239bab9f50 0 1669529243521 8 connected
-2b144f1d7bdb31000a519492be980c6634576462 127.0.0.1:6379@16379 slave 6c9823906baa11aba873a798cce3a3b3c95465f2 0 1669529243524 7 connected
-4a56b76a379da615b606a499ae475e986eda3efd 127.0.0.1:6383@16383 slave a770892444fbbe4b7d9391b458ac04d6bcba26f0 0 1669529243524 2 connected
-eaf9833aa105e36b22f6330585a972239bab9f50 127.0.0.1:6384@16384 master - 0 1669529243529 8 connected 10923-16383
-6c9823906baa11aba873a798cce3a3b3c95465f2 127.0.0.1:6382@16382 master - 0 1669529243529 7 connected 0-5460
-a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529243524 2 connected 5461-10922
-vars currentEpoch 8 lastVoteEpoch 7
-```
+`redis-cli --cluster add-node 127.0.0.1:6386 127.0.0.1:6379`   # 添加主节点 6386
 
-#### 添加新节点
+##### 重新分配槽位
+
+- 自动分配槽位
+
+`redis-cli --cluster rebalance 127.0.0.1:6379 --cluster-use-empty-masters`
+
+- 带权重重新分片
+
+`redis-cli --cluster rebalance 127.0.0.1:6379 --cluster-weight 127.0.0.1:6380=1.5 --cluster-weight 127.0.0.1:6381=1.0`
+
+##### 手动重新分片
+
+`redis-cli --cluster reshard 127.0.0.1:6379` # 交互式重新分片
+
+#### 添加从节点
 
 按照 [编辑配置文件](#bjpzwj) 创建并修改 `cluster6385.conf` 文件
 启动服务器 `redis-server cluster6385.conf`, 同时查看服务器是否正常启动
 
-- 使用命令 `redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379` 将 6385 添加为 6379 的从节点
+- `redis-cli --cluster add-node --cluster-slave 127.0.0.1:6385 127.0.0.1:6379` 将 6385 添加为 6379 的从节点
 
 ```bash
 # 向 6379 节点添加新的从节点
@@ -817,6 +842,14 @@ vars currentEpoch 8 lastVoteEpoch 7
 [OK] 0 keys in 3 masters.
 0.00 keys per slot on average.
 ```
+
+#### 删除节点
+
+迁移主节点所有槽位
+
+`redis-cli --cluster rebalance 127.0.0.1:6379 --cluster-weight 127.0.0.1:6386=0` # 清空 6386 节点的槽位
+
+`redis-cli --cluster del-node 127.0.0.1:6379 <6386-node-id>`   # 删除节点
 
 ### 集群优点
 
