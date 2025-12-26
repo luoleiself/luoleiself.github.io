@@ -41,7 +41,7 @@ repl_backlog_histlen:0
 > Redis 2.8 以上使用 PSYNC 命令完成同步
 
 1. 从节点向主节点发送 `PSYNC` 命令, 如果从节点是首次连接主节点时会触发一次全量复制
-2. 接到 `PSYNC` 命令的主节点会调用 `BGSAVE` 命令启动一个新线程创建 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令
+2. 接到 `PSYNC` 命令的主节点会调用 `BGSAVE` 命令 fork 一个新线程创建 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令
 3. 当 RDB 文件生成完毕后, 主节点向所有从节点发送 RDB 文件, 并在发送期间继续记录被执行的写命令
 4. 从节点接收到 RDB 文件后丢弃所有旧数据并载入这个文件
 5. 主节点将缓冲区记录的所有写命令发送给从节点执行
@@ -57,6 +57,7 @@ repl_backlog_histlen:0
 **运行时有效**, 只在`本次服务器运行时有效`, 重启服务器后将会丢失配置信息
 
 - 方式一: **启动** Redis 服务器时使用指定参数 `redis-server --port 6380 --replicaof 127.0.0.1 6379`
+
 - 方式二: **连接** Redis 服务器使用内置命令 `REPLICAOF host port`
 
 ```bash
@@ -126,22 +127,27 @@ pidfile /var/run/redis_6379.pid
 loglevel notice
 # 修改日志文件名, 默认为空
 # 守护进程模式将指定 /dev/null
-logfile "/temp/log/6379.log"
+logfile ""
 # 修改持久化文件名, 默认为 dump.rdb
-dbfilename dump6379.rdb
+dbfilename dump.rdb
 
 # 是否在未开启持久化模式下删除复制中使用的 RDB 文件, 默认 no
 # rdb-del-sync-files no
 
-dir "" # 持久化文件存放目录
+dir "" # 工作目录, dbfilename, logfile, appenddirname 目录相对于此配置项
+
+appendonly no # 是否开启 AOF
+appendfilename "appendonly.aof"  # AOF 文件名
+appenddirname "appendonlydir" # AOF 存储目录
+
 # 配置主服务器 ip 和 port
-# replicaof <masterip> <masterport>
+replicaof <masterip> <masterport>
 
 # 副本和主服务器同步时的认证密码, 如果主服务器开启验证
 # masterauth <master-password>
 # 副本和主服务器同步时的认证用户
 # 如果主服务器使用 requirepass 配置项, 则必须配置此项
-# masteruser <username>
+masteruser <username>
 
 # 从节点只读模式, 默认 yes
 # replica-read-only yes
@@ -281,8 +287,9 @@ replica-priority > replica-offset > run-ID
 
 ### 配置方式
 
-- 方式一: 使用命令指定参数 `redis-server /path/to/sentinel.conf --sentinel` 开启哨兵模式
-- 方式二: 使用命令 `redis-sentinel /path/to/sentinel.conf` 开启哨兵模式
+- 方式一: **启动** Redis 服务器时使用指定参数 `redis-server /path/to/sentinel.conf --sentinel`
+
+- 方式二: **配置文件** 指定配置项 `redis-sentinel /path/to/sentinel.conf`
 
 sentinel.conf 配置文件
 
@@ -291,8 +298,7 @@ protected-mode no # 保护模式, 默认 yes, 只能允许本机连接
 port 26379 # 服务端口号
 daemonize no # 是否后台运行模式
 pidfile /var/run/redis-sentinel-26379.pid # 进程文件
-# sentinel announce-ip <ip> # 监听指定地址和端口的实例
-# sentinel announce-port <port>
+loglevel notice   # 日志等级
 logfile "" # 日志文件
 dir /tmp # 工作目录
 
@@ -300,24 +306,29 @@ dir /tmp # 工作目录
 # sentinel monitor <master-name> <ip> <redis-port> <quorum>
 sentinel monitor mymaster 127.0.0.1 6379 2
 
-# 通过本地地址监听外部网络中的 redis
+# 通过本地地址监听外部网络中的 redis，通常用在 NAT 环境中
 # sentinel announce-ip <ip>
 # sentinel announce-port <port>
 
-# 认证配置
+# 设置用于与主节点和副本进行身份验证的密码
 # sentinel auth-pass <master-name> <password>
 
-# 不可触达的超时时间, 默认 30 sec
-# sentinel down-after-milliseconds <master-name> <milliseconds>
-sentinel down-after-milliseconds mymaster 30000
-
-# 功能同 redis.conf 中的配置项
+# 配置哨兵节点的认证密码
 # requirepass <password>
 
 # 配置其他 sentinel 认证的用户, 如果没有配置 sentinel-user
 # 将使用 default 用户 和 sentinel-pass 进行认证
 # sentinel sentinel-user <username>
 # sentinel sentinel-pass <password>
+
+# 不可触达的超时时间, 默认 30 sec
+# sentinel down-after-milliseconds <master-name> <milliseconds>
+sentinel down-after-milliseconds mymaster 30000
+
+# ACL 日志内存大小
+acllog-max-len 128
+# ACL 日志存储文件
+# aclfile /etc/redis/sentinel-users.acl
 
 # 当主服务器宕机时支持最大同时重配服务器的数量, 默认 1
 # sentinel parallel-syncs <master-name> <numreplicas>
@@ -329,7 +340,7 @@ sentinel failover-timeout mymaster 180000
 
 # 服务器唤起脚本文件
 # sentinel notification-script <master-name> <script-path>
-sentinel notification-script mymaster /var/redis/notify.sh
+# sentinel notification-script mymaster /var/redis/notify.sh
 
 # 拒绝脚本配置, 默认 yes
 sentinel deny-scripts-reconfig yes
@@ -343,24 +354,24 @@ sentinel deny-scripts-reconfig yes
 - 3 个哨兵配置
 
 ```yaml
-# sentinel26379.conf
+# sentinel_26379.conf
 port 26379
 pidfile /var/run/redis-sentinel-26379.pid
-logfile "/tmp/log/redis_26379.log"
+logfile "redis_26379.log"
 dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 
-# sentinel36379.conf
+# sentinel_36379.conf
 port 36379
 pidfile /var/run/redis-sentinel-36379.pid
-logfile "/tmp/log/redis_36379.log"
+logfile "redis_36379.log"
 dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 
-# sentinel46379.conf
+# sentinel_46379.conf
 port 46379
 pidfile /var/run/redis-sentinel-46379.pid
-logfile "/tmp/log/redis_46379.log"
+logfile "redis_46379.log"
 dir /tmp
 sentinel monitor myredis 127.0.0.1 6379 2
 ```
@@ -368,32 +379,32 @@ sentinel monitor myredis 127.0.0.1 6379 2
 - 3 台 redis 服务器配置
 
 ```yaml
-# redis6379.conf
+# redis_6379.conf
 bind 127.0.0.1
 port 6379
 daemonize yes
 pidfile /var/run/redis_6379.pid
-logfile "/tmp/log/redis_6379.log"
+logfile "redis_6379.log"   #  文件目录相对于 dir 配置项
 dir /tmp
 dbfilename dump6379.rdb
 
-# redis6380.conf
+# redis_6380.conf
 bind 127.0.0.1
 port 6380
 daemonize yes
 pidfile /var/run/redis_6380.pid
-logfile "/tmp/log/redis_6380.log"
+logfile "redis_6380.log"   #  文件目录相对于 dir 配置项
 dir /tmp
 dbfilename dump6380.rdb
 # 配置主服务器 ip 和 port
 replicaof 127.0.0.1 6379
 
-# redis6381.conf
+# redis_6381.conf
 bind 127.0.0.1
 port 6381
 daemonize yes
 pidfile /var/run/redis_6381.pid
-logfile "/tmp/log/redis_6381.log"
+logfile "redis_6381.log"   #  文件目录相对于 dir 配置项
 dir /tmp
 dbfilename dump6381.rdb
 # 配置主服务器 ip 和 port
@@ -403,12 +414,12 @@ replicaof 127.0.0.1 6379
 - 根据配置文件启动所有服务
 
 ```bash
-[root@centos7 ~]# redis-server .config/redis6379.conf # 启动 redis 服务器
-[root@centos7 ~]# redis-server .config/redis6380.conf # 启动 redis 服务器
-[root@centos7 ~]# redis-server .config/redis6381.conf # 启动 redis 服务器
-[root@centos7 ~]# redis-sentinel .config/sentinel26379.conf # 启动哨兵
-[root@centos7 ~]# redis-sentinel .config/sentinel36379.conf # 启动哨兵
-[root@centos7 ~]# redis-sentinel .config/sentinel46379.conf # 启动哨兵
+[root@centos7 ~]# redis-server .config/redis_6379.conf # 启动 redis 服务器
+[root@centos7 ~]# redis-server .config/redis_6380.conf # 启动 redis 服务器
+[root@centos7 ~]# redis-server .config/redis_6381.conf # 启动 redis 服务器
+[root@centos7 ~]# redis-sentinel .config/sentinel_26379.conf # 启动哨兵
+[root@centos7 ~]# redis-sentinel .config/sentinel_36379.conf # 启动哨兵
+[root@centos7 ~]# redis-sentinel .config/sentinel_46379.conf # 启动哨兵
 ```
 
 ## 集群模式
@@ -525,7 +536,9 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 port  6379
 appendonly yes
 daemonize yes
-cluster-enabled yes # 开启集群模式
+
+# 开启集群模式
+cluster-enabled yes
 # 修改集群节点文件名, 默认在存储在当前目录下
 cluster-config-file nodes-6379.conf
 # 设置节点失联时间, 超过该时间集群自动切换主从节点, 默认 15000 milsec
@@ -576,12 +589,12 @@ cluster-require-full-coverage yes
 redis 进程后中括号中的 cluster 表示 redis 工作在集群模式下, 需要进一步配置 redis 的集群关系
 
 ```bash
-[root@centos7 redis-cluster]# redis-server cluster6379.conf
-[root@centos7 redis-cluster]# redis-server cluster6380.conf
-[root@centos7 redis-cluster]# redis-server cluster6381.conf
-[root@centos7 redis-cluster]# redis-server cluster6382.conf
-[root@centos7 redis-cluster]# redis-server cluster6383.conf
-[root@centos7 redis-cluster]# redis-server cluster6384.conf
+[root@centos7 redis-cluster]# redis-server cluster_6379.conf
+[root@centos7 redis-cluster]# redis-server cluster_6380.conf
+[root@centos7 redis-cluster]# redis-server cluster_6381.conf
+[root@centos7 redis-cluster]# redis-server cluster_6382.conf
+[root@centos7 redis-cluster]# redis-server cluster_6383.conf
+[root@centos7 redis-cluster]# redis-server cluster_6384.conf
 [root@centos7 redis-cluster]# ps -ef | grep redis
 root      3731     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6379 [cluster]
 root      3737     1  0 05:49 ?        00:00:00 redis-server 127.0.0.1:6380 [cluster]

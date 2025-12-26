@@ -109,12 +109,27 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 - CONFIG REWRITE 将内存中的配置项重写到配置文件中
 - CONFIG SET parameter value [parameter value ...] 设置配置项
 
+- clear 清空屏幕
+- help command 显示命令的帮助信息
+  - @[string] 显示当前数据类型的帮助信息
+- ECHO message 打印信息
+
+- SAVE 保存数据到本地磁盘
+- WAIT numreplicas timeout 阻止当前客户端, 直到所有先前的写入命令成功传输并至少由指定数量的副本确认, 如果达到了以毫秒为单位指定的超时, 则即使尚未达到指定的副本数量, 该命令也会返回
+
+- ROLE 返回当前实例的角色是 master、slave、sentinel, 和当前实例上下文副本的信息
+
+- PING [message] 测试连接是否正常, 通常返回 PONG, 如果传入了 message 则会输出 message
+- QUIT 关闭退出当前连接
+- SHUTDOWN [NOSAVE|SAVE] [NOW] [FORCE] [ABORT] 同步保存数据到硬盘上并关闭服务
+
 - INFO [section [section ...]] 返回服务的相关信息, 没有参数返回所有
 
   - server 返回 redis 服务的通用信息
   - clients 返回客户端链接的信息
 
     ```bash
+    127.0.0.1:6379> INFO clients
     # Clients
     connected_clients:1
     cluster_connections:0
@@ -132,6 +147,7 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - replication 返回副本的信息
 
     ```bash
+    127.0.0.1:6379> INFO replication
     # Replication
     role:master
     connected_slaves:0
@@ -163,22 +179,56 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
   - default 返回默认配置信息
   - everything 返回所有信息(包含 all 和 modules)
 
-- help command 显示命令的帮助信息
-  - @[string] 显示当前数据类型的帮助信息
-- ECHO message 打印信息
+- CLIENT 管理客户端连接
+  - HELP  帮助命令
+  - ID  显示当前客户端连接的 ID
+  - INFO  显示当前客户端连接的基本信息
 
-- SAVE 保存数据到本地磁盘
-- WAIT numreplicas timeout 阻止当前客户端, 直到所有先前的写入命令成功传输并至少由指定数量的副本确认, 如果达到了以毫秒为单位指定的超时, 则即使尚未达到指定的副本数量, 该命令也会返回
+  ```bash
+  127.0.0.1:6379> CLIENT ID
+  (integer) 7
+  127.0.0.1:6379> CLIENT INFO
+  id=7 addr=127.0.0.1:33676 laddr=127.0.0.1:6379 fd=13 name= age=1386 idle=0 flags=N db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=26 qbuf-free=20448 argv-mem=10 multi-mem=0 rbs=1024 rbp=0 obl=0 oll=0 omem=0 tot-mem=22554 events=r cmd=client|info user=default redir=-1 resp=2 lib-name= lib-ver= io-thread=0 tot-net-in=1145 tot-net-out=265388 tot-cmds=41
+  ```
 
-- ROLE 返回当前实例的角色是 master、slave、sentinel, 和当前实例上下文副本的信息
+  - LIST  显示所有客户端连接的信息
 
-- PING [message] 测试连接是否正常, 通常返回 PONG, 如果传入了 message 则会输出 message
-- QUIT 关闭退出当前连接
-- SHUTDOWN [NOSAVE|SAVE] [NOW] [FORCE] [ABORT] 同步保存数据到硬盘上并关闭服务
+  ```bash
+  127.0.0.1:6379> CLIENT LIST
+  id=7 addr=127.0.0.1:33676 laddr=127.0.0.1:6379 fd=13 name= age=1438 idle=0 flags=N db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=26 qbuf-free=20448 argv-mem=10 multi-mem=0 rbs=1024 rbp=0 obl=0 oll=0 omem=0 tot-mem=22554 events=r cmd=client|list user=default redir=-1 resp=2 lib-name= lib-ver= io-thread=0 tot-net-in=1171 tot-net-out=265749 tot-cmds=42
+  id=12 addr=127.0.0.1:46842 laddr=127.0.0.1:6379 fd=14 name= age=183 idle=52 flags=O db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=0 qbuf-free=0 argv-mem=0 multi-mem=0 rbs=1024 rbp=0 obl=0 oll=0 omem=0 tot-mem=2048 events=r cmd=monitor user=default redir=-1 resp=2 lib-name= lib-ver= io-thread=0 tot-net-in=69 tot-net-out=1223 tot-cmds=3
+  ```
 
+  - KILL 关闭指定客户端连接
+    - ADDR ip:port 关闭指定 IP 地址的客户端连接
+    - ID client-id  关闭指定 ID(CLIENT LIST) 的客户端连接
+    - TYPE type 关闭所有指定类型的客户端, normal, master, slave, replica, pubsub
+    - USER username 关闭所有使用用户名认证的客户端连接
+    - MAXAGE maxage 关闭所有超过指定使用时间(秒)的客户端连接
+
+  ```bash
+  127.0.0.1:6379> CLIENT KILL ID 12
+  (integer) 1
+  ```
+
+  - PAUSE timeout [WRITE | ALL] 挂起所有或写操作的客户端连接指定的时间(毫秒)
+  - UNPAUSE 恢复挂起的客户端连接
+  
 - MONITOR 启动监听模式输出服务器执行的每条命令
 
-- clear 清空屏幕
+```bash
+127.0.0.1:6379> MONITOR
+OK
+1766737036.492371 [0 127.0.0.1:33676] "CLIENT" "INFO"
+1766737044.078892 [0 127.0.0.1:33676] "CLIENT" "ID"
+1766737054.836362 [0 127.0.0.1:33676] "GET" "name"
+1766737060.347504 [0 127.0.0.1:33676] "MGET" "name" "age" "addr"
+1766737074.246919 [0 127.0.0.1:33676] "HGETALL" "hs"
+1766737085.040931 [0 127.0.0.1:33676] "HGET" "hs" "name"
+1766737091.852032 [0 127.0.0.1:33676] "HMGET" "hs" "name" "age" "addr"
+1766737115.606276 [0 127.0.0.1:33676] "KEYS" "*"
+1766737350.182122 [0 127.0.0.1:33676] "SCAN" "0" "MATCH" "*" "COUNT" "10"
+```
 
 ## Keys 命令
 
@@ -227,9 +277,6 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 127.0.0.1:6379> SCAN 0 MATCH *n* COUNT 2
 1) "1"
 2) 1) "bit:zhang"
-127.0.0.1:6379> SCAN 0 MATCH *n* TYPE list
-1) "0"
-2) (empty array)
 127.0.0.1:6379> SCAN 0 MATCH *n* TYPE string
 1) "0"
 2) 1) "bit:zhang"
@@ -237,6 +284,9 @@ WantedBy=multi-user.target # 表示服务所在 target, target 表示一组服�
 127.0.0.1:6379> SCAN 0 MATCH *n* TYPE hash
 1) "0"
 2) 1) "xiaoming"
+127.0.0.1:6379> SCAN 0 COUNT 10 TYPE list
+1) "0"
+2) 1) "letters"
 ```
 
 ### 过期时间
@@ -697,8 +747,8 @@ save 3600 1 300 100 60 10000
 RDB(Redis Database), 在指定的时间间隔以指定的次数将内存中的数据集以快照的方式写入一个二进制文件中, 然后保存到磁盘中, 也就是 snapshot 快照, 默认生成的文件为 dump.rdb
 Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任何 I/O 操作, 这样就保证了 Redis 极高的性能, 如果需要进行大规模数据的恢复,且对于数据恢复的完整性不是非常敏感, 此方式比 AOF 方式更加的高效
 
-- `dbfilename dump.rdb` 默认文件名
-- `dir ./` 默认存储目录
+- `dbfilename dump.rdb` 默认 rdb 文件名
+- `dir ""` 工作目录, dbfilename, logfile, appenddirname 目录相对于当前配置项
 
 - redis-check-rdb 检查 RDB 文件
 
@@ -723,8 +773,8 @@ Redis 会单独 fork 一个子进程进行持久化, 而主进程不会进行任
 AOF(Append Only File), 将执行过的写命令全部记录下来, 在数据恢复时按照从前往后的顺序再将指令都执行一遍
 
 - `appendonly yes` 启动 AOF 模式, 默认为 no
-- `appendfilename appendonly.aof` 默认文件名
-- `appenddirname appendonlydir` 默认存储目录
+- `appendfilename "appendonly.aof"` 默认文件名
+- `appenddirname "appendonlydir"` 默认存储目录, 相对于 `dir` 配置项
 - `appendfsync everysec` 持久化策略, 每秒钟执行一次, 可以修改为 `always` 和 `no`
   - `always` 每次将新命令附加到 AOF 时, 速度慢, 但是最安全
   - `no` 将写入策略权交给操作系统, 速度快, 但是不安全
