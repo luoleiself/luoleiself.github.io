@@ -281,8 +281,8 @@ redis 单例实例, 使脚本能够与运行它的 Redis 服务器进行交互
 
 全局变量
 
-- KEYS 获取脚本声明的键参数
-- ARGV 获取脚本声明的键参数剩余的参数
+- KEYS 获取脚本声明的键参数, 下标从 1 开始
+- ARGV 获取脚本声明的键参数剩余的参数, 下标从 1 开始
 
 <em id="redis.call"></em> <!-- markdownlint-disable-line -->
 
@@ -296,6 +296,64 @@ redis 单例实例, 使脚本能够与运行它的 Redis 服务器进行交互
 OK
 127.0.0.1:6379> GET name
 "hello redis"
+
+127.0.0.1:6379> get user:100:score
+"60"
+127.0.0.1:6379> EVAL "if redis.call('EXISTS', KEYS[1]) == 1 then return redis.call('INCRBY', KEYS[1], ARGV[1]) else return nil end" 1 user:100:score 10
+(integer) 70
+127.0.0.1:6379> get user:100:score
+"70"
+```
+
+分布式接口限流，每秒钟限制接口的最大请求次数
+
+```lua
+local key = KEYS[1]
+local limit = tonumber(ARGV[1])
+local expire_time = tonumber(ARGV[2])
+
+local current = redis.call('GET', key)
+
+if current and tonumber(current) >= limit then
+  -- 超出限制
+  return 0
+end
+
+current = redis.call('INCR', key)
+
+if tonumber(current) == 1 then
+  -- 第一次访问, 设置过期时间
+  redis.call('EXPIRE', key, expire_time)
+end
+
+-- 允许访问
+return 1
+```
+
+```bash
+# key: rate:limit:192.168.1.1
+# limit: 5 次
+# expire: 100 秒
+[root@centos7 workspace]# cat rate_limit.lua | redis-cli -x SCRIPT LOAD
+"688faba01b26f6e54969ba7b9d0ce340b4c298c0"
+127.0.0.1:6379> SCRIPT EXISTS 688faba01b26f6e54969ba7b9d0ce340b4c298c0
+1) (integer) 1
+127.0.0.1:6379> EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:limit:192.168.1.1 5 100
+(integer) 1
+127.0.0.1:6379> EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:limit:192.168.1.1 5 100
+(integer) 1
+127.0.0.1:6379> EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:limit:192.168.1.1 5 100
+(integer) 1
+127.0.0.1:6379> EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:limit:192.168.1.1 5 100
+(integer) 1
+127.0.0.1:6379> EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:limit:192.168.1.1 5 100
+(integer) 1
+127.0.0.1:6379> EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:limit:192.168.1.1 5 100
+(integer) 0
+127.0.0.1:6379> GET rate:limit:192.168.1.1
+"5"
+127.0.0.1:6379> TTL rate:limit:192.168.1.1
+(integer) 66
 ```
 
 - redis.error_reply(x) 辅助函数, 返回一个错误信息

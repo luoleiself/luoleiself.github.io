@@ -115,7 +115,7 @@ redis.conf 基础配置，[集群配置](#redisclusterconfigure) <em id="redisba
 include /root/redis-cluster/redis.conf
 # 修改绑定 ip, 此处演示全为本机
 bind 127.0.0.1
-# 保护模式, 默认 yes, 只能允许本机连接
+# 禁用保护模式, 默认 yes 只能允许本机连接
 protected-mode no
 # 修改 redis 端口号, 本机演示需要修改, 多机器时可以不用
 port 6379
@@ -294,9 +294,9 @@ replica-priority > replica-offset > run-ID
 sentinel.conf 配置文件
 
 ```yaml
-protected-mode no # 保护模式, 默认 yes, 只能允许本机连接
 port 26379 # 服务端口号
-daemonize no # 是否后台运行模式
+protected-mode no # 保护模式, 默认 no, 可以在网络外部访问
+daemonize no # 是否后台运行, 默认 no
 pidfile /var/run/redis-sentinel-26379.pid # 进程文件
 loglevel notice   # 日志等级
 logfile "" # 日志文件
@@ -349,6 +349,452 @@ sentinel deny-scripts-reconfig yes
 ![redis-2](/images/redis-2.png)
 ![redis-3](/images/redis-3.png)
 
+### API
+
+INFO 命令作用同在 `数据节点` 上操作
+
+- INFO sentinel  查看 sentinel 节点信息
+
+```bash
+luolei@KLVC-WXX9:~$ redis-cli -h 127.0.0.1 -p 26379
+127.0.0.1:26379> INFO sentinel
+# Sentinel
+sentinel_masters:1
+sentinel_tilt:1
+sentinel_tilt_since_seconds:17
+sentinel_total_tilt:24
+sentinel_running_scripts:0
+sentinel_scripts_queue_length:0
+sentinel_simulate_failure_flags:0
+master0:name=mymaster,status=ok,address=127.0.0.1:6379,slaves=2,sentinels=3
+```
+
+#### SENTINEL
+
+- HELP 帮助命令
+- CKQUORUM 检查当前哨兵配置的权重是否满足进行故障转移操作的投票数
+- CONFIG SET param value [param value ...] 设置全局哨兵的配置参数
+- CONFIG GET param [param param ...] 获取全局哨兵的配置
+
+```bash
+127.0.0.1:26380> SENTINEL CKQUORUM mymaster
+OK 3 usable Sentinels. Quorum and failover authorization can be reached
+```
+
+- FLUSHCONFIG 重写配置信息到磁盘上, 可以用来将配置项保存到其他磁盘上
+- INFO-CACHE \<master-name\> 返回主节点的所有副本的缓存信息
+- SIMULATE-FAILURE [CRASH-AFTER-ELECTION] [CRASH-AFTER-PROMOTION] [HELP] 模拟一次哨兵节点崩溃故障
+
+- GET-MASTER-ADDR-BY-NAME \<master-name\> 根据主节点名称获取 ip 和端口号
+- FAILOVER \<master-name\> 直接执行故障转移操作不询问其他哨兵节点
+- IS-MASTER-DOWN-BY-ADDR \<ip\> \<port\> \<current-epoch\> \<runid\> 通过当前哨兵节点检查指定节点是否下线
+
+```bash
+127.0.0.1:26380> SENTINEL GET-MASTER-ADDR-BY-NAME mymaster
+1) "127.0.0.1"
+2) "6379"
+
+127.0.0.1:26379> SENTINEL FAILOVER mymaster
+OK
+
+127.0.0.1:26379> INFO sentinel
+# Sentinel
+sentinel_masters:1
+sentinel_tilt:1
+sentinel_tilt_since_seconds:25
+sentinel_total_tilt:83
+sentinel_running_scripts:0
+sentinel_scripts_queue_length:0
+sentinel_simulate_failure_flags:0
+master0:name=mymaster,status=ok,address=127.0.0.1:6381,slaves=2,sentinels=3
+
+127.0.0.1:26380> SENTINEL GET-MASTER-ADDR-BY-NAME mymaster
+1) "127.0.0.1"
+2) "6381"
+```
+
+- MYID   获取当前哨兵节点的 ID
+- PENDING-SCRIPTS  获取挂起的脚本信息
+
+```bash
+127.0.0.1:26381> SENTINEL MYID
+"0da9806af77e04836bc484e04235a86567cb9d2a"
+
+127.0.0.1:26381> SENTINEL PENDING-SCRIPTS
+(empty array)
+```
+
+- MASTERS   显示所有监控的主节点的状态信息
+- MASTER \<master-name\>  显示指定主节点的状态信息
+
+```bash
+127.0.0.1:26381> SENTINEL MASTERS
+1)  1) "name"
+    2) "mymaster"
+    3) "ip"
+    4) "127.0.0.1"
+    5) "port"
+    6) "6381"
+    7) "runid"
+    8) "1cb144641741bbf5fdfb3cb9899a3d88cefaa98d"
+    9) "flags"
+   10) "master"
+   11) "link-pending-commands"
+   12) "0"
+   13) "link-refcount"
+   14) "1"
+   15) "last-ping-sent"
+   16) "0"
+   17) "last-ok-ping-reply"
+   18) "480"
+   19) "last-ping-reply"
+   20) "480"
+   21) "down-after-milliseconds"
+   22) "30000"
+   23) "info-refresh"
+   24) "6960"
+   25) "role-reported"
+   26) "master"
+   27) "role-reported-time"
+   28) "1710683"
+   29) "config-epoch"
+   30) "1"
+   31) "num-slaves"
+   32) "2"
+   33) "num-other-sentinels"
+   34) "2"
+   35) "quorum"
+   36) "2"
+   37) "failover-timeout"
+   38) "180000"
+   39) "parallel-syncs"
+   40) "2"
+#########################################
+127.0.0.1:26381> SENTINEL MASTER mymaster
+ 1) "name"
+ 2) "mymaster"
+ 3) "ip"
+ 4) "127.0.0.1"
+ 5) "port"
+ 6) "6381"
+ 7) "runid"
+ 8) "1cb144641741bbf5fdfb3cb9899a3d88cefaa98d"
+ 9) "flags"
+10) "master"
+11) "link-pending-commands"
+12) "0"
+13) "link-refcount"
+14) "1"
+15) "last-ping-sent"
+16) "0"
+17) "last-ok-ping-reply"
+18) "922"
+19) "last-ping-reply"
+20) "922"
+21) "down-after-milliseconds"
+22) "30000"
+23) "info-refresh"
+24) "4976"
+25) "role-reported"
+26) "master"
+27) "role-reported-time"
+28) "1578143"
+29) "config-epoch"
+30) "1"
+31) "num-slaves"
+32) "2"
+33) "num-other-sentinels"
+34) "2"
+35) "quorum"
+36) "2"
+37) "failover-timeout"
+38) "180000"
+39) "parallel-syncs"
+40) "2"
+```
+
+- REPLICAS \<master-name\>    获取指定主节点的所有副本状态信息
+
+```bash
+127.0.0.1:26381> SENTINEL REPLICAS mymaster
+1)  1) "name"
+    2) "127.0.0.1:6380"
+    3) "ip"
+    4) "127.0.0.1"
+    5) "port"
+    6) "6380"
+    7) "runid"
+    8) "21bf545d749eb9e3bebb635b2ff4a324a45111cc"
+    9) "flags"
+   10) "slave"
+   11) "link-pending-commands"
+   12) "0"
+   13) "link-refcount"
+   14) "1"
+   15) "last-ping-sent"
+   16) "0"
+   17) "last-ok-ping-reply"
+   18) "720"
+   19) "last-ping-reply"
+   20) "720"
+   21) "down-after-milliseconds"
+   22) "30000"
+   23) "info-refresh"
+   24) "9414"
+   25) "role-reported"
+   26) "slave"
+   27) "role-reported-time"
+   28) "2460026"
+   29) "master-link-down-time"
+   30) "0"
+   31) "master-link-status"
+   32) "ok"
+   33) "master-host"
+   34) "127.0.0.1"
+   35) "master-port"
+   36) "6381"
+   37) "slave-priority"
+   38) "100"
+   39) "slave-repl-offset"
+   40) "1002916"
+   41) "replica-announced"
+   42) "1"
+2)  1) "name"
+    2) "127.0.0.1:6379"
+    3) "ip"
+    4) "127.0.0.1"
+    5) "port"
+    6) "6379"
+    7) "runid"
+    8) "acaa1a5530f6fe99b4c2b801bdcdeaa892adac84"
+    9) "flags"
+   10) "slave"
+   11) "link-pending-commands"
+   12) "0"
+   13) "link-refcount"
+   14) "1"
+   15) "last-ping-sent"
+   16) "0"
+   17) "last-ok-ping-reply"
+   18) "720"
+   19) "last-ping-reply"
+   20) "720"
+   21) "down-after-milliseconds"
+   22) "30000"
+   23) "info-refresh"
+   24) "9414"
+   25) "role-reported"
+   26) "slave"
+   27) "role-reported-time"
+   28) "2419748"
+   29) "master-link-down-time"
+   30) "0"
+   31) "master-link-status"
+   32) "ok"
+   33) "master-host"
+   34) "127.0.0.1"
+   35) "master-port"
+   36) "6381"
+   37) "slave-priority"
+   38) "100"
+   39) "slave-repl-offset"
+   40) "1002916"
+   41) "replica-announced"
+   42) "1"
+```
+
+- SENTINELS \<master-name\> 获取指定主节点的除当前哨兵节点以外的其他哨兵节点的状态信息
+
+```bash
+127.0.0.1:26381> SENTINEL SENTINELS mymaster
+1)  1) "name"
+    2) "228e225887fc9c4d3a2b27f2757b250e895f143b"
+    3) "ip"
+    4) "127.0.0.1"
+    5) "port"
+    6) "26379"
+    7) "runid"
+    8) "228e225887fc9c4d3a2b27f2757b250e895f143b"
+    9) "flags"
+   10) "sentinel"
+   11) "link-pending-commands"
+   12) "0"
+   13) "link-refcount"
+   14) "1"
+   15) "last-ping-sent"
+   16) "0"
+   17) "last-ok-ping-reply"
+   18) "610"
+   19) "last-ping-reply"
+   20) "610"
+   21) "down-after-milliseconds"
+   22) "30000"
+   23) "last-hello-message"
+   24) "143"
+   25) "voted-leader"
+   26) "?"
+   27) "voted-leader-epoch"
+   28) "0"
+2)  1) "name"
+    2) "ab9327497b410c1cc89772e17e2548ac1f0e0b8e"
+    3) "ip"
+    4) "127.0.0.1"
+    5) "port"
+    6) "26380"
+    7) "runid"
+    8) "ab9327497b410c1cc89772e17e2548ac1f0e0b8e"
+    9) "flags"
+   10) "sentinel"
+   11) "link-pending-commands"
+   12) "0"
+   13) "link-refcount"
+   14) "1"
+   15) "last-ping-sent"
+   16) "0"
+   17) "last-ok-ping-reply"
+   18) "610"
+   19) "last-ping-reply"
+   20) "610"
+   21) "down-after-milliseconds"
+   22) "30000"
+   23) "last-hello-message"
+   24) "1357"
+   25) "voted-leader"
+   26) "?"
+   27) "voted-leader-epoch"
+   28) "0"
+```
+
+- REMOVE \<master-name\>   移除监控主节点
+- MONITOR \<name\> \<ip\> \<port\> \<quorum\>  开启监控主节点, 配置项将会被重置
+
+```bash
+127.0.0.1:26381> SENTINEL REMOVE mymaster
+OK
+127.0.0.1:26381> SENTINEL MASTERS
+(empty array)
+
+127.0.0.1:26381> SENTINEL MONITOR mymaster 127.0.0.1 6381 2
+OK
+127.0.0.1:26381> SENTINEL masters
+1)  1) "name"
+    2) "mymaster"
+    3) "ip"
+    4) "127.0.0.1"
+    5) "port"
+    6) "6381"
+    7) "runid"
+    8) "1cb144641741bbf5fdfb3cb9899a3d88cefaa98d"
+    9) "flags"
+   10) "master"
+   11) "link-pending-commands"
+   12) "0"
+   13) "link-refcount"
+   14) "1"
+   15) "last-ping-sent"
+   16) "0"
+   17) "last-ok-ping-reply"
+   18) "-1309"
+   19) "last-ping-reply"
+   20) "-1309"
+   21) "down-after-milliseconds"
+   22) "30000"
+   23) "info-refresh"
+   24) "2947"
+   25) "role-reported"
+   26) "master"
+   27) "role-reported-time"
+   28) "2980"
+   29) "config-epoch"
+   30) "1"
+   31) "num-slaves"
+   32) "2"
+   33) "num-other-sentinels"
+   34) "2"
+   35) "quorum"
+   36) "2"
+   37) "failover-timeout"
+   38) "180000"
+   39) "parallel-syncs"
+   40) "1"
+```
+
+- SET \<master-name\> \<option\> \<value\> [\<option\> \<value\> ...] 设置当前哨兵节点对指定主节点的配置项, 执行成功会立即更新当前哨兵节点的配置文件
+
+```bash
+127.0.0.1:26380> SENTINEL SET mymaster down-after-milliseconds 10000
+OK
+luolei@KLVC-WXX9:~$ cat sentinel-26380.conf
+protected-mode no
+port 26380
+daemonize yes
+pidfile "/var/run/redis-sentinel-26380.pid"
+loglevel notice
+logfile "sentinel-26380.log"
+dir "/var/redis"
+sentinel monitor mymaster 127.0.0.1 6381 2
+
+acllog-max-len 128
+
+sentinel deny-scripts-reconfig yes
+sentinel resolve-hostnames no
+sentinel announce-hostnames no
+
+# Generated by CONFIG REWRITE
+latency-tracking-info-percentiles 50 99 99.9
+user default on nopass sanitize-payload ~* &* +@all
+sentinel myid ab9327497b410c1cc89772e17e2548ac1f0e0b8e
+sentinel config-epoch mymaster 1
+sentinel leader-epoch mymaster 0
+sentinel current-epoch 1
+
+sentinel known-replica mymaster 127.0.0.1 6379
+
+sentinel known-replica mymaster 127.0.0.1 6380
+
+sentinel known-sentinel mymaster 127.0.0.1 26381 0da9806af77e04836bc484e04235a86567cb9d2a
+
+sentinel known-sentinel mymaster 127.0.0.1 26379 228e225887fc9c4d3a2b27f2757b250e895f143b
+
+sentinel down-after-milliseconds mymaster 10000
+##########################################################
+127.0.0.1:26381> SENTINEL SET mymaster parallel-syncs 2
+OK
+luolei@KLVC-WXX9:~$ cat sentinel-26381.conf
+protected-mode no
+port 26381
+daemonize yes
+pidfile "/var/run/redis-sentinel-26381.pid"
+loglevel notice
+logfile "sentinel-26381.log"
+dir "/var/redis"
+sentinel monitor mymaster 127.0.0.1 6381 2
+
+acllog-max-len 128
+
+sentinel deny-scripts-reconfig yes
+sentinel resolve-hostnames no
+sentinel announce-hostnames no
+
+# Generated by CONFIG REWRITE
+latency-tracking-info-percentiles 50 99 99.9
+user default on nopass sanitize-payload ~* &* +@all
+sentinel myid 0da9806af77e04836bc484e04235a86567cb9d2a
+sentinel config-epoch mymaster 1
+sentinel leader-epoch mymaster 0
+sentinel current-epoch 1
+
+sentinel known-replica mymaster 127.0.0.1 6380
+
+sentinel known-replica mymaster 127.0.0.1 6379
+
+sentinel known-sentinel mymaster 127.0.0.1 26379 228e225887fc9c4d3a2b27f2757b250e895f143b
+
+sentinel known-sentinel mymaster 127.0.0.1 26380 ab9327497b410c1cc89772e17e2548ac1f0e0b8e
+
+sentinel parallel-syncs mymaster 2
+```
+
 ### 一主三从哨兵配置
 
 - 3 个哨兵配置
@@ -356,6 +802,7 @@ sentinel deny-scripts-reconfig yes
 ```yaml
 # sentinel_26379.conf
 port 26379
+daemonize yes # 后台运行
 pidfile /var/run/redis-sentinel-26379.pid
 logfile "redis_26379.log"
 dir /tmp
@@ -363,6 +810,7 @@ sentinel monitor myredis 127.0.0.1 6379 2
 
 # sentinel_36379.conf
 port 36379
+daemonize yes  # 后台运行
 pidfile /var/run/redis-sentinel-36379.pid
 logfile "redis_36379.log"
 dir /tmp
@@ -370,6 +818,7 @@ sentinel monitor myredis 127.0.0.1 6379 2
 
 # sentinel_46379.conf
 port 46379
+daemonize yes  # 后台运行
 pidfile /var/run/redis-sentinel-46379.pid
 logfile "redis_46379.log"
 dir /tmp
@@ -382,7 +831,8 @@ sentinel monitor myredis 127.0.0.1 6379 2
 # redis_6379.conf
 bind 127.0.0.1
 port 6379
-daemonize yes
+protected-mode no # 禁用保护模式
+daemonize yes  # 后台运行
 pidfile /var/run/redis_6379.pid
 logfile "redis_6379.log"   #  文件目录相对于 dir 配置项
 dir /tmp
@@ -391,7 +841,8 @@ dbfilename dump6379.rdb
 # redis_6380.conf
 bind 127.0.0.1
 port 6380
-daemonize yes
+protected-mode no # 禁用保护模式
+daemonize yes  # 后台运行
 pidfile /var/run/redis_6380.pid
 logfile "redis_6380.log"   #  文件目录相对于 dir 配置项
 dir /tmp
@@ -402,7 +853,8 @@ replicaof 127.0.0.1 6379
 # redis_6381.conf
 bind 127.0.0.1
 port 6381
-daemonize yes
+protected-mode no # 禁用保护模式
+daemonize yes  # 后台运行
 pidfile /var/run/redis_6381.pid
 logfile "redis_6381.log"   #  文件目录相对于 dir 配置项
 dir /tmp
@@ -533,9 +985,11 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 # # 引入 redis 默认配置文件
 # include /root/redis-cluster/redis.conf
 
+protected-mode no # 禁用保护模式
+
 port  6379
 appendonly yes
-daemonize yes
+daemonize yes  # 后台运行
 
 # 开启集群模式
 cluster-enabled yes

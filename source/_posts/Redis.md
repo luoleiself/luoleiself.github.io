@@ -61,10 +61,18 @@ Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括
   - \-r 指定运行命令的次数
   - \-i 设置不同命令调用之间的延迟(以秒为单位)
   - \-x 从标准输入中读取最后一个参数
-  - \-\-bigkeys 查找大键
-  - \-\-stat 监控当前 redis 的使用情况
+  - \-n \<db\>  数据库编号
+  - \-t \<timeout\> 连接服务器的超时时间
   - \-\-eval \<file\> 使用 EVAL 命令解析 lua 脚本
   - \-\-function-rdb \<filename\> 从现有服务器中提取函数(不包含 key)
+
+  - \-\-scan  使用 SCAN 命令查找键
+  - \-\-bigkeys 查找大键
+  - \-\-pattern \<pat\> 当使用 --scan, --bigkeys, --memkeys, --keystats， --hotkeys 参数时, 匹配键的模式, 默认 *
+  - \-\-count \<count\> 当使用 --scan, --bigkeys, --memkeys, --keystats， --hotkeys 参数时, 匹配键的数量, 默认 10
+
+  - \-\-replica 设置主从关系的主节点
+  - \-\-stat 监控当前 redis 的使用情况
 
 ```bash
 # 加载 lua 脚本注册的 redis 函数
@@ -308,8 +316,8 @@ OK
 
 - TTL key 返回指定 key 以**秒**为单位剩余的生存时间
 - PTTL key 返回指定 key 以**毫秒**为单位剩余的生存时间
-  - \-2 key 不存在
   - \-1 key 存在但没有设置剩余生存时间
+  - \-2 key 不存在
 
 ```bash
 127.0.0.1:6379> TTL age
@@ -352,7 +360,8 @@ OK
 
 - include /path/to/\*.conf # 导入其他 redis 配置文件
 
-- protected-mode yes # 保护模式, 默认 yes, 只能允许本机连接
+- protected-mode yes # 保护模式, 默认 yes 只能允许本机连接
+- daemonize no  # 后台运行模式
 
 - tcp-backlog 511 # tcp 连接数
 - timeout 0 # 关闭客户端连接的延迟, 0 表示禁用, 单位秒

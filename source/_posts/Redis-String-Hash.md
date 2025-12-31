@@ -7,7 +7,7 @@ tags:
   - Redis
 ---
 
-### Strings 命令
+## Strings 命令
 
 字符串是基础的 key-value 类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 **512MB**.
 
@@ -15,7 +15,7 @@ String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic 
 
 > 因为 C 语言的字符串并不记录自身长度, 所以获取长度的复杂度为 O(n), SDS 结构里用 len 属性记录字符串长度, 所有复杂度为 O(1)
 
-#### 设置值
+### 设置值
 
 - SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]
 
@@ -90,7 +90,7 @@ OK
 (integer) 2
 ```
 
-##### 过期时间
+#### 过期时间
 
 - SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok
 - PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok
@@ -102,7 +102,7 @@ OK
 OK
 ```
 
-##### 批量设置值
+#### 批量设置值
 
 - MSET key value [key value ...] 批量设置 key 的值
 - MSETNX key value [key value ...] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败
@@ -130,7 +130,7 @@ OK
 
 <!-- more -->
 
-#### 获取值
+### 获取值
 
 - GET key 获取一个 key 的值, 不存在返回 \<nil\>
 - GETSET key value 设置指定 key 的值并返回原来的值, key 不存在返回 \<nil\>
@@ -173,7 +173,7 @@ OK
 
 - STRLEN key 返回指定 key 的值的长度, key 不存在返回 0
 
-##### 批量获取值
+#### 批量获取值
 
 - MGET key [key ...] 批量获取 key 的值, key 不存在返回 \<nil\>
 
@@ -203,27 +203,27 @@ OK
 (error) ERR value is not an integer or out of range
 ```
 
-#### 数值操作
+### 数值操作
 
-##### 增加
+#### 增加
 
 - INCR key 将 key 中存储的数字值增加 1 并返回修改后的值, 非数字值或值为浮点数报错, key 不存在从 0 开始计算
 - INCRBY key increment 将 key 中存储的数字值加上给定的增量值(increment), 返回值同 `INCR`
 - INCRBYFLOAT key increment 将 key 中存储的数字值加上给定的浮点增量值(increment), 返回值同 `INCR`
 
-##### 减少
+#### 减少
 
 - DECR key 将 key 中存储的数字值减 1 并返回修改后的值, 非数字值或者值为浮点数会报错, key 不存在从 0 开始计算
 - DECRBY key decrement 将 key 中存储的数字值减去给定的增量值(decrement), 返回值同 `DECR`
 
-#### 应用
+### 应用
 
 - 共享 session
 - 分布式锁
 - 计数器
 - 限流
 
-### Hashes 命令
+## Hashes 命令
 
 > Redis 7.0 之后, 压缩列表数据结构由 listpack 数据结构实现
 
@@ -242,7 +242,7 @@ hash-max-listpack-entries 512
 hash-max-listpack-value 64
 ```
 
-#### 哈希存取
+### 哈希存取
 
 - HSETNX key field value 将键值对存入到哈希表中且当指定 field 不存在时, 1 成功, 0 失败(字段已存在)
 - HSET key field value [field value ...] 同时将多个键值对存入到哈希表中并返回新添加的数量, 如果 field 已存在则修改 field 的值
@@ -277,13 +277,13 @@ OK
 6) "beijing"
 ```
 
-#### 哈希删除字段
+### 哈希删除字段
 
 - HEXISTS key field 查看哈希表中是否存在 field, 1 表示存在, 0 表示不存在或者哈希表不存在
 
 - HDEL key field [field ...] 批量删除多个 field 并返回删除字段成功的数量, 0 表示 field 未找到或者哈希表不存在
 
-#### 获取哈希键、值、长度
+### 获取哈希键、值、长度
 
 - HLEN key 获取哈希表中字段的数量, 0 表示哈希表为空或者不存在
 - HSTRLEN key field 返回哈希表中指定 field 的值的字符串长度, 哈希表或者指定字段不存在返回 0
@@ -309,12 +309,12 @@ OK
 3) "beijing"
 ```
 
-#### 哈希字段数值操作
+### 哈希字段数值操作
 
 - HINCRBY key field increment 为哈希表中指定的 field 的数字值加上给定的增量值(increment)并返回修改后的值, 非数字值报错, 哈希表不存在新建, 字段不存在从 0 开始计算
 - HINCRBYFLOAT key field increment 为哈希表中指定的 field 的数字值加上给定的浮点数增量值(increment)并返回修改后的值, 非数字值报错, 哈希表不存在新建, 字段不存在从 0 开始计算
 
-#### 迭代哈希
+### 迭代哈希
 
 - HSCAN key cursor [MATCH pattern] [COUNT count] 使用模式(pattern)匹配迭代哈希表中的键值对
   - cursor 游标
@@ -330,7 +330,7 @@ OK
    4) "new-redis"
 ```
 
-#### 随机获取哈希字段
+### 随机获取哈希字段
 
 - HRANDFIELD key [count [WITHVALUES]] 从哈希表中获取一个或多个随机字段, 哈希表为空返回 \<nil\>
   - count 指定返回随机的字段的数量, 默认为 1
@@ -354,9 +354,9 @@ OK
 (nil)
 ```
 
-#### 使用案例
+### 使用案例
 
-##### 存储用户的基本信息
+#### 存储用户的基本信息
 
 以用户 uid 作为 key, 用户的基本信息组成的 field => value 作为值, 使用 hash 存储
 

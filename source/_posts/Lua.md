@@ -9,7 +9,7 @@ tags:
 
 Lua 是一门强大、快速、轻量的嵌入式动态类型脚本语言, 使用 ANSI C 语言编写并以源代码形式开放, 其设计目的是为了嵌入应用程序中, 从而为应用程序提供灵活的扩展和定制功能
 
-### 数据类型
+## 数据类型
 
 Lua 有八种基本数据类型: nil、boolean、number、string、function、userdata、thread、table
 
@@ -323,7 +323,7 @@ __gc was called...
 属性为 `弱键强值` 的表也被称为 `暂时表`, 对于一张暂时表, 它的值是否可达仅取决于其对应键是否可达
 对一张表的弱属性的修改仅在下次手机循环才生效, 只有那些有显式构造过程的对象才会从弱表中移除, 值, 例如数字和轻量 C 函数, 不受垃圾收集器管辖, 因此不会从弱表中移除(除非它们的关联项被回收)
 
-### 协程 <em id="coroutine"></em> <!-- markdownlint-disable-line -->
+## 协程 <em id="coroutine"></em> <!-- markdownlint-disable-line -->
 
 lua 支持协程(协同式多线程), 一个协程在 lua 中代表了一段独立的执行线程, 协程拥有独立的堆栈, 独立的局部变量, 同时又与其他协程共享全局变量和其他大部分东西,
 
@@ -415,7 +415,7 @@ main    true    10      end
 main    false   cannot resume dead coroutine
 ```
 
-#### 生产者与消费者
+### 生产者与消费者
 
 ```lua
 local newProducer
@@ -437,13 +437,13 @@ newProducer = coroutine.create(producer)
 consumer()
 ```
 
-### 词法约定
+## 词法约定
 
-#### 关键字
+### 关键字
 
 and break do else elseif end false for function goto if in local nil not or repeat return then true until while
 
-#### 字符串
+### 字符串
 
 ```lua
 --这是单行注释, 不会被执行
@@ -518,7 +518,7 @@ alo
 ]]
 ```
 
-#### 变量
+### 变量
 
 Lua 有三种变量: 全局变量, 局部变量和表的域
 所有没有显式声明的局部变量名都被当做全局变量, 在变量的首次赋值之前, 默认值都为 nil
@@ -539,14 +539,14 @@ end
 print(x) -- 10 全局变量
 ```
 
-#### 控制结构
+### 控制结构
 
 - if, if exp then block {elseif exp then block} [else block] end
 - while, while exp do block end
 - for, for exp do block end
 - repeat, repeat block until exp
 
-#### 运算符
+### 运算符
 
 - 算术运算符: + - \* / // % ^ -
 - 关系运算符: == ~= < <= > >=
@@ -555,7 +555,7 @@ print(x) -- 10 全局变量
 - 字符串拼接: ..
 - 取长度操作符(元方法\_\_len): #
 
-#### 函数定义
+### 函数定义
 
 - 冒号语法可以用来定义方法, 使函数有一个隐形的形参 self, 代表函数自己
 
@@ -617,12 +617,12 @@ myrectangle:printArea()
 print("---------------------------------------")
 ```
 
-### C API 中的函数和类型
+## C API 中的函数和类型
 
 - lua_status(lua_State \*L) 返回线程 L 的状态, 正常状态为 0(LUA_OK), 当线程用 lua_resume 执行完毕并抛出了一个错误时, 状态值时错误码, 如果线程被挂起, 状态为 LUA_YIELD
 - lua_version(lua_State \*L) 返回在 Lua 内核中保存的版本数字的地址
 
-### 辅助库
+## 辅助库
 
 辅助库提供了一些便捷函数, 方便在 C 中为 Lua 编程, 基础 API 提供了 C 和 Lua 交互用的主要函数, 而辅助库则为一些常见的任务提供了高阶函数
 所有辅助库中的函数和类型都定义在头文件 lauxlib.h 中, 它们均带有前缀 luaL\_
@@ -630,7 +630,7 @@ print("---------------------------------------")
 一些辅助库函数会在内部使用一些额外的栈空间, 当辅助库使用的栈空间少于 5 个时, 它们不会取检查栈大小, 而是简单的假设栈够用
 一些辅助库看中的函数用于检查 C 函数的参数, 因为错误信息格式化为指代参数
 
-#### 函数和类型
+### 函数和类型
 
 - luaL_addchar(luaL_Buffer \*B, char c) 向缓存 B 添加一个字节 c
 - luaL_addlstring(luaL_Buffer *B, const char *s, size_t l) 向缓存 B 添加一个长度为 l 的字符串 s, 这个字符串可以包含零
@@ -641,13 +641,13 @@ print("---------------------------------------")
 - luaL_len(lua_State \*L, int index) 以数字形式返回给定索引处值的 长度, 等价于在 lua 中使用 # 的操作, 如果结果不是一个整数, 则抛出一个错误
 - luaL_loadstring(lua_State \*L, const char \*s) 将一个字符串加载为 lua 代码块, 这个函数使用 lua_load 加载一个零结尾的字符串 s, 返回值和 lua_load 相同
 
-### 标准库
+## 标准库
 
 标准库提供了一些有用的函数, 它们都是直接用 C API 实现的, 其中一些函数提供了原本语言就有的服务(type/getmetatable), 另一些提供和 `外部` 打交道的服务(I/O)
 还有些本可以用 lua 本身来实现, 但在 C 中实现可以满足关键点上的性能需求(例如 table.sort)
 所有的库都是直接用 C API 实现的, 并以分离的 C 模块形式提供
 
-#### 基础库
+### 基础库
 
 - assert(v[,message]) 如果参数 v 的值为假(nil 或 false)就会调用 error, message 为错误对象, 否则返回所有的参数
 - error (message [, level]) 终止正在执行的函数, 并返回 message 的内容作为错误信息, level 指示获取错误的位置: 1 默认, 为调用 error 的位置(文件+行), 2 指出调用 error 函数的函数, 0 不添加错误位置信息
@@ -697,9 +697,9 @@ end
 - tostring(v) 将参数 v 转换为可阅读的字符串形式
 - type(v) 返回指定参数的类型编码的字符串形式
 
-#### [协程库](#coroutine)
+### [协程库](#coroutine)
 
-#### 包管理库
+### 包管理库
 
 模块: 封装公用的代码以 API 接口的形式在其他地方调用, 简单理解是将变量、常量、函数放在一个 table 里面，然后 return 返回
 
@@ -732,7 +732,7 @@ print(tst.getName())
 print(modulestr)
 ```
 
-#### 字符串控制
+### 字符串控制
 
 这个库提供了字符串处理的通用函数
 
@@ -749,7 +749,7 @@ print(modulestr)
 - string.match 返回在字符串中查找符合匹配模式的第一个子串")
 - string.sub 截取字符串", string.sub('hello world', 1, 6))
 
-#### 基础 UTF-8 支持
+### 基础 UTF-8 支持
 
 这个库提供了怼 UTF-8 编码的基础支持, 所有的函数都放在表 utf8 中, 此库不提供除编码处理之外的任何 unicode 支持
 
@@ -759,7 +759,7 @@ print(modulestr)
 - uft8.len(s [, i [, j]]) 返回字符串 s 中从位置 i 到 j 间(包含两端) UTF-8 字符的个数, 默认 i 为 1, j 为 -1
 - uft8.offset(s, n [, i]) 返回编码在 s 中的第 n 个字符的开始位置(按字节数)(从位置 i 开始统计), 如果指定的字符不在其中或在结束点之后, 函数返回 nil
 
-#### 表控制
+### 表控制
 
 - table.insert(list, [pos, ] value) 在 list 的位置 pos 处插入元素 value, 并向后移动元素, table.insert(tb1, 3, "hello world")
 - table.pack(...) 返回用所有参数乘以键 1, 2, 等填充的新表, 并将 n 这个域设为参数的总数
@@ -768,11 +768,11 @@ print(modulestr)
 - table.unpack(list [, i [, j]]) 返回 list 中的元素, 默认 i 为 1, j 为 #list
 - table.concat 列出表中指定区间的所有元素, table.concat({"hello", "world", "lua", 2022}, "-")
 
-#### 数学函数
+### 数学函数
 
 这个库提供了基本的数学函数, 所有函数都放在表 math 中, 注解有 integer/float 的函数会对整数参数返回整数结果, 对浮点(或混合)参数返回浮点结果, 圆整函数(math.ceil, math.floor, math.modf)的结果在整数范围内是返回整数, 否则返回浮点数
 
-#### 输入输出
+### 输入输出
 
 I/O 库提供了两套不同风格的文件处理接口
 
@@ -860,7 +860,7 @@ print("读取所有内容", file:read("*a"))
 file:close()
 ```
 
-#### 操作系统库
+### 操作系统库
 
 - os.clock() 返回程序使用的按秒计 CPU 时间的近似值
 - os.date([format [, time]]) 返回一个包含日期及时刻的字符串或表, 格式化方法取决于所给字符串 format
@@ -879,7 +879,7 @@ file:close()
 - os.time([table]) 当不传参数时, 返回当前时刻, 如果传入一张表则返回由这张表表示的时刻, 这张表必须包含域 year, month, day, 可以包含 hour(默认为 12), min(默认为 0), sec(默认为 0), 以及 isdst(默认为 nil)
 - os.tmpname() 返回一个可用于临时文件的文件名字符串, 这个文件在使用前必须显式打开, 不再使用时需要显式删除
 
-#### 调试库
+### 调试库
 
 lua 提供了 debug 库用于提供创建自定义调试器的功能
 
@@ -900,7 +900,7 @@ lua 提供了 debug 库用于提供创建自定义调试器的功能
 - debug.upvalueid(f, n) 返回指定函数第 n 个上值的唯一标识符(一个轻量用户数据), 这个唯一标识符可以让程序检查两个不同的闭包是否共享了上值, 如果是则返回相同的标识符
 - debug.upvaluejoin(f1, n1, f2, n2) 让 lua 闭包 f1 的第 n1 个值引用 lua 闭包 f2 的第 n2 个值
 
-### 其他语法
+## 其他语法
 
 ```lua
 #!/usr/local/bin/lua
@@ -970,11 +970,11 @@ print("多状态的迭代器: 使用闭包, 或者将所有的状态信息封装
 print("---------------------------------------")
 ```
 
-### 包管理工具
+## 包管理工具
 
 LuaRocks 是一个 Lua 包管理器，基于 Lua 语言开发，提供一个命令行的方式来管理 Lua 包依赖、安装第三方 Lua 包等，社区比较流行的包管理器之一
 
-#### 安装
+### 安装
 
 ```bash
 [root@centos7 workspace]# wget https://luarocks.org/releases/luarocks-3.9.2.tar.gz
@@ -984,7 +984,7 @@ LuaRocks 是一个 Lua 包管理器，基于 Lua 语言开发，提供一个命�
 [root@centos7 workspace]# luarocks --version
 ```
 
-#### 常用命令
+### 常用命令
 
 - \-\-help 查看命令帮助信息
 - show \<rock\> 显示指定包的详细信息
@@ -1002,7 +1002,7 @@ LuaRocks 是一个 Lua 包管理器，基于 Lua 语言开发，提供一个命�
 - unpack \<rock\> 解包一个 rock
 - upload \<rockspec\> 创建一个 rock 并上传到公共服务器
 
-#### 连接 redis
+### 连接 redis
 
 ```lua
 local redis = require "redis"
