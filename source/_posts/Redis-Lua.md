@@ -75,6 +75,8 @@ Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所
 40)     Prints this help.
 ```
 
+<!-- more -->
+
 - FUNCTION DELETE 删除指定的库
 - FUNCTION LIST 查看所有库和函数
 

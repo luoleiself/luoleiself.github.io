@@ -182,6 +182,7 @@ Reading messages... (press Ctrl-C to quit)
 ```bash
 127.0.0.1:6379> PUBSUB CHANNELS
 1) "conn"
+2) "__sentinel__:hello"
 
 127.0.0.1:6379> PUBSUB NUMSUB hello conn
 1) "hello"

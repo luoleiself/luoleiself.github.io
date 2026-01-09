@@ -50,6 +50,8 @@ repl_backlog_histlen:0
 - 全量复制: 从节点接收到数据库文件后, 将其全部加载到内存中
 - 增量复制: 主节点将新的所有收集到的修改命令依次传给从节点, 完成同步
 
+<!-- more -->
+
 ### 命令模式
 
 ===每台 Redis 服务器都是主节点===, 只用配置从服务器即可
@@ -387,7 +389,7 @@ OK 3 usable Sentinels. Quorum and failover authorization can be reached
 
 - GET-MASTER-ADDR-BY-NAME \<master-name\> 根据主节点名称获取 ip 和端口号
 - FAILOVER \<master-name\> 直接执行故障转移操作不询问其他哨兵节点
-- IS-MASTER-DOWN-BY-ADDR \<ip\> \<port\> \<current-epoch\> \<runid\> 通过当前哨兵节点检查指定节点是否下线
+- IS-MASTER-DOWN-BY-ADDR \<ip\> \<port\> \<current-epoch\> \<runid\> 当前哨兵节点询问其他哨兵节点指定节点是否客观下线
 
 ```bash
 127.0.0.1:26380> SENTINEL GET-MASTER-ADDR-BY-NAME mymaster
@@ -795,6 +797,52 @@ sentinel known-sentinel mymaster 127.0.0.1 26380 ab9327497b410c1cc89772e17e2548a
 sentinel parallel-syncs mymaster 2
 ```
 
+#### CLIENT
+
+管理客户端连接
+
+- GETNAME   获取当前连接的名称
+- SETNAME \<name\>   设置当前连接的名称
+- SETINFO \<option\> \<value\>  设置当前客户端的元属性
+- ID  获取当前连接的 id
+- INFO   获取当前连接的状态信息
+
+```bash
+127.0.0.1:26381> CLIENT ID
+(integer) 8
+127.0.0.1:26381> CLIENT SETNAME test
+OK
+127.0.0.1:26381> CLIENT GETNAME
+"test"
+127.0.0.1:26381> CLIENT INFO
+id=8 addr=127.0.0.1:57060 laddr=127.0.0.1:26381 fd=23 name=test age=686 idle=0 flags=N db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=26 qbuf-free=20448 argv-mem=10 multi-mem=0 rbs=1024 rbp=0 obl=0 oll=0 omem=0 tot-mem=22554 events=r cmd=client|info user=default redir=-1 resp=2 lib-name= lib-ver= io-thread=0 tot-net-in=951 tot-net-out=39039 tot-cmds=23
+```
+
+- LIST   获取所有客户端连接的信息
+  - TYPE (NORMAL|MASTER|REPLICA|PUBSUB)
+
+```bash
+127.0.0.1:26381> CLIENT LIST
+id=3 addr=127.0.0.1:48136 laddr=127.0.0.1:26381 fd=20 name=sentinel-ab932749-cmd age=2099 idle=0 flags=N db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=0 qbuf-free=0 argv-mem=0 multi-mem=0 rbs=1024 rbp=7 obl=0 oll=0 omem=0 tot-mem=2048 events=r cmd=ping user=default redir=-1 resp=2 lib-name= lib-ver= io-thread=0 tot-net-in=165341 tot-net-out=18272 tot-cmds=3052
+id=4 addr=127.0.0.1:48140 laddr=127.0.0.1:26381 fd=21 name=sentinel-228e2258-cmd age=2099 idle=0 flags=N db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=0 qbuf-free=0 argv-mem=0 multi-mem=0 rbs=1024 rbp=7 obl=0 oll=0 omem=0 tot-mem=2048 events=r cmd=publish user=default redir=-1 resp=2 lib-name= lib-ver= io-thread=0 tot-net-in=165327 tot-net-out=18265 tot-cmds=3051
+id=8 addr=127.0.0.1:57060 laddr=127.0.0.1:26381 fd=23 name=test age=612 idle=0 flags=N db=0 sub=0 psub=0 ssub=0 multi=-1 watch=0 qbuf=26 qbuf-free=20448 argv-mem=10 multi-mem=0 rbs=1024 rbp=10 obl=0 oll=0 omem=0 tot-mem=22554 events=r cmd=client|list user=default redir=-1 resp=2 lib-name= lib-ver= io-thread=0 tot-net-in=925 tot-net-out=37943 tot-cmds=22
+```
+
+- KILL 关闭指定客户端连接
+  - ADDR ip:port 关闭指定 IP 地址的客户端连接
+  - ID client-id  关闭指定 ID(CLIENT LIST) 的客户端连接
+  - TYPE type 关闭所有指定类型的客户端, normal, master, slave, replica, pubsub
+  - USER username 关闭所有使用用户名认证的客户端连接
+  - MAXAGE maxage 关闭所有超过指定使用时间(秒)的客户端连接
+
+```bash
+127.0.0.1:26381> CLIENT KILL 127.0.0.1:50656
+OK
+```
+
+- PAUSE timeout [WRITE | ALL] 挂起所有或写操作的客户端连接指定的时间(毫秒)
+- UNPAUSE 恢复挂起的客户端连接
+
 ### 一主三从哨兵配置
 
 - 3 个哨兵配置
@@ -902,6 +950,14 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 - 扩展性好: 通过使用 Redis 集群, 可以便利地扩展系统的容量和性能, 将数据和请求分布到多个节点上, 提高整体系统的吞吐量和承载能力
 - 高可用性: 通过 Redis 集群, 可以将数据分布到多个节点上, 实现数据的冗余备份和容错能力, 当部分节点不可用时, 集群仍然可以继续提供服务, 保证系统的可用性
 
+### 功能限制
+
+- key 批量操作支持有限, MSET、MGET等只支持具有相同 slot 值的 key 执行此批量操作, 需要使用分组方式 `MSET name:{user_id} zhangsan age:{user_id} 20 addr:{user_id} beijing`
+- key 事务操作支持有限, 只支持多 key 在同一节点上事务操作, 当多个 key 分布在不同节点上时无法使用事务功能
+- key 作为数据分区的最小粒度, 因此不能将一个大的键值对象如 hash、list等映射到不同的节点
+- 不支持多数据库
+- 复制结构只支持一层, 从节点只能复制主节点, 不支持嵌套树状复制结构
+
 ### 命令
 
 使用 `redis-cli -c -p port` 命令接入集群节点
@@ -972,6 +1028,7 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 - CLUSTER COUNTKEYSINSLOT \<slot\> 统计集群中 hash 槽中存储的 key 的数量
 - CLUSTER FAILOVER 手动启动集群故障转移操作, 此命令只能发送给集群从节点
 - CLUSTER FLUSHSLOTS 清空当前节点的所有插槽
+- CLUSTER MIGRATION  管理槽位迁移
 
 #### 编辑配置文件 <em id="bjpzwj"></em> <!-- markdownlint-disable-line -->
 
@@ -1317,16 +1374,3 @@ a770892444fbbe4b7d9391b458ac04d6bcba26f0 127.0.0.1:6380@16380 master - 0 1669529
 `redis-cli --cluster rebalance 127.0.0.1:6379 --cluster-weight 127.0.0.1:6386=0` # 清空 6386 节点的槽位
 
 `redis-cli --cluster del-node 127.0.0.1:6379 <6386-node-id>`   # 删除节点
-
-### 集群优点
-
-- 实现扩容
-- 分担压力
-- 无中心配置相对简单
-
-### 集群缺点
-
-- 多建操作不支持, 例如 `MSET` 命令设置多个键不支持, 需要使用分组方式 `MSET name{user} zhangsan age{user} 20 addr{user} beijing`
-- 多键的 Redis 事务不支持
-- Lua 脚本不支持
-- 迁移方案需要整体迁移而不是逐步过渡, 复杂度较大

@@ -937,3 +937,12 @@ firewall-cmd -------+
 | -n | --numeric | 以数字形式显示输出（不解析主机名、服务名） |
 | -v | --verbose | 显示详细信息（常与 -L 连用） |
 | --line-numbers | | 列出规则时，显示 规则编号（用于删除和插入） |
+
+## user|group
+
+- addgroup/adduser  Alpine/BusyBox 专用，更简单，适合容器
+  - 更简单、更安全的默认配置
+  - 命令选项相对较少
+- groupadd/useradd  标准 Linux 发行版，功能更强大
+  - 功能更丰富、选项更多
+  - 来自 shadow-utils 软件包
