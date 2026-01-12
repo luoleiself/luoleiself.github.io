@@ -7,7 +7,7 @@ tags:
   - http
 ---
 
-### 状态码
+## 状态码
 
 - 100 Continue 请求继续
 - 101 Switching Protocols 协议切换，通过 upgrade 消息头切换协议
@@ -17,13 +17,13 @@ tags:
 - 204 No Content 没有响应实体
 - 206 Partial Content 服务器处理部分 GET 请求
 
-- 301 Moved Permanently 资源永久移动
+- 301 Moved Permanently 资源永久移动，请求方法可能会被客户端改写, 通常用于 GET 和 HEAD 请求的响应
 - 302 Move Temporarily 资源临时移动
 - 303 See Other 参见其他
 - 304 Not Modified 资源没有改动
 - 305 Use Proxy 使用代理
 - 307 Temporary Redirect 资源临时从不同的 URI 响应
-- 308 Permanent Redirect 永久重定向
+- 308 Permanent Redirect 永久重定向, 禁止客户端更改请求方法, 通常用于 POST 请求的响应
 
 - 400 Bad Request 错误的请求
 - 401 Unauthorized 需要验证
@@ -39,7 +39,7 @@ tags:
 - 504 Gateway Timeout 网关超时
 - 505 HTTP Version Not Supported 服务器不支持的使用的 HTTP 版本
 
-### URL 编码常用
+## URL 编码常用
 
 - %21 !
 - %22 "
@@ -61,7 +61,7 @@ tags:
 - %40 @
 - %41 A
 
-### [HSTS](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Strict-Transport-Security)
+## [HSTS](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Strict-Transport-Security)
 
 HTTP Strict-Transport-Security, HTTP 严格传输安全 是一种安全策略机制, 旨在强制客户端仅通过 HTTPS 协议与服务器进行通信, 并且在未来的一段时间内, 所有对该站点的请求都必须使用 HTTPS.
 
@@ -113,7 +113,7 @@ Timing-Allow-Origin: *
 EagleId: 3db6831717339082625713776e
 ```
 
-### [CSP](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP)
+## [CSP](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP)
 
 内容安全策略 是一个额外的安全层, 用于检测并消弱某些特定类型的攻击, 包括 跨站脚本(XSS) 和数据注入攻击等. 它通过定义哪些资源可以被加载和执行来限制网页的攻击面.
 
@@ -157,7 +157,7 @@ Content-Security-Policy-Report-Only: default-src 'self';
   report-uri /_/csp-reports
 ```
 
-### HTTP cache mode
+## HTTP cache mode
 
 - force-cache, 自己先在缓存中查找资源, 如果有不管是否过期直接返回
 - default, 自己先在缓存中查找资源, 然后验证资源是否过期, 如果过期再询问服务器资源是否过期

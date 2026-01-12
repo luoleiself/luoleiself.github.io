@@ -7,9 +7,9 @@ tags:
   - wx
 ---
 
-### 敲黑板
+## 敲黑板
 
-#### [隐私协议](https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html)
+### [隐私协议](https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/PrivacyAuthorize.html)
 
 - 2.32.3 开始支持
 - 2023-09-15 之后, 隐私相关功能默认开始, 对于未声明的处理用户信息的接口或组件直接禁用
@@ -35,7 +35,7 @@ tags:
 
 <!-- more -->
 
-##### 耦合使用
+#### 耦合使用
 
 - 隐私同意按钮 与 [手机号快速验证组件](#getPhoneNumber)、[手机号实时验证组件](#getPhoneNumber) 耦合使用
 
@@ -57,18 +57,18 @@ tags:
 </button>
 ```
 
-##### 清空历史同步状态
+#### 清空历史同步状态
 
 物理删除小程序时将清空历史同步状态, 下次访问小程序时, 需要重新同步微信当前用户是否同意隐私信息收集使用规则
 
-#### [头像昵称 API 调整](https://developers.weixin.qq.com/community/develop/doc/00022c683e8a80b29bed2142b56c01)
+### [头像昵称 API 调整](https://developers.weixin.qq.com/community/develop/doc/00022c683e8a80b29bed2142b56c01)
 
 - 20221026 起, 小程序 wx.getUserProfile 接口将被收回, wx.getUserInfo 接口获取用户头像将统一返回默认灰色头像，昵称将统一返回 “微信用户”
 - 2.21.2 基础库开始, 如果业务需获取用户头像昵称，可以使用 [头像昵称填写能力](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/userProfile.html)
 
-#### 地理位置
+### 地理位置
 
-##### [地理位置 API 调整](https://developers.weixin.qq.com/community/develop/doc/000a02f2c5026891650e7f40351c01?blockType=1)
+#### [地理位置 API 调整](https://developers.weixin.qq.com/community/develop/doc/000a02f2c5026891650e7f40351c01?blockType=1)
 
 - 20220628 起, 使用地理位置 API 需要在 app.json 配置项 requirePrivateInfos 提前声明
 
@@ -80,7 +80,7 @@ tags:
 
 ![wx-1](/images/wx-1.png)
 
-##### [接口权限申请](https://developers.weixin.qq.com/community/develop/doc/000e8ccb5ac498318cbd26c495bc01?blockType=1)
+#### [接口权限申请](https://developers.weixin.qq.com/community/develop/doc/000e8ccb5ac498318cbd26c495bc01?blockType=1)
 
 - getFuzzyLocation
 - getLocation
@@ -92,16 +92,16 @@ tags:
 - 20220418 起, 如果使用以上接口, 需要在小程序管理后台申请接口权限
 - 地理位置新增接口和相关流程调整
 
-##### [choosePoi|chooseLocation](https://developers.weixin.qq.com/community/develop/doc/0006e45df2cac030e6edf367c56001?blockType=1)
+#### [choosePoi|chooseLocation](https://developers.weixin.qq.com/community/develop/doc/0006e45df2cac030e6edf367c56001?blockType=1)
 
 - 20220613 起, 使用该接口不在需要用户授权 scope.userLocation
 - wx.choosePoi 回调信息中不再返回真实的经纬度信息, 全部返回(0,0)
 
-##### [getFuzzyLocation](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html)
+#### [getFuzzyLocation](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html)
 
 - 2.25.0 开始, 新增获取模糊地理位置接口, 接口规则同 [chooseLocation](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html)
 
-#### [getPhoneNumber](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html) <em id="getPhoneNumber"></em> <!--markdownlint-disable-line-->
+### [getPhoneNumber](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html) <em id="getPhoneNumber"></em> <!--markdownlint-disable-line-->
 
 - e.detail.encryptedData
 - e.detail.iv
@@ -121,7 +121,7 @@ tags:
 ></button>
 ```
 
-#### [wx.openSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html)
+### [wx.openSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.openSetting.html)
 
 - 2.3.0 开始, [打开小程序设置页](https://developers.weixin.qq.com/community/develop/doc/000cea2305cc5047af5733de751008)
 
@@ -135,7 +135,7 @@ tags:
 openSetting(){ wx.openSetting() }
 ```
 
-#### [wx.getSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.getSetting.html)
+### [wx.getSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.getSetting.html)
 
 - 2.10.1 开始, withSubscriptions 参数控制是否同时获取用户订阅消息的订阅状态, 默认 false
 - [SubscriptionsSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/SubscriptionsSetting.html) 订阅消息设置
@@ -162,7 +162,7 @@ wx.getSetting({ withSubscriptions: true })
   });
 ```
 
-#### [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html) 订阅消息 <em id="subscribe"></em> <!--markdownlint-disable-line-->
+### [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html) 订阅消息 <em id="subscribe"></em> <!--markdownlint-disable-line-->
 
 调起客户端小程序订阅消息界面, 返回用户订阅消息的操作结果, 如果用户勾选了订阅消息界面的 **总是保持以上选择，不再询问** 选项时, 消息模板会被记录在用户的小程序设置页, 并且在每次调用此 API 时不再弹出订阅消息界面(只返回订阅消息结果), 通过 `wx.getSetting` API 可以获取用户订阅消息的订阅状态
 
@@ -192,26 +192,26 @@ wx.requestSubscribeMessage({ tmplIds: [] /*消息模板 id*/ })
   });
 ```
 
-##### **总是保持以上选择，不再询问**
+#### **总是保持以上选择，不再询问**
 
 - 已勾选(默认), 每次调用此 API 不再弹出订阅消息界面, 只返回记录在用户的小程序设置页中的订阅消息结果
 - 未勾选, 每次调用此 API 都会弹出订阅消息界面
 
-##### 订阅消息的总开关
+#### 订阅消息的总开关
 
 订阅消息的总开关 **关闭** 时, 调用此 API 会报一个小程序错误, 可以使用 App.onError 或者 wx.onError 捕获错误
 
 ![wx-2](/images/wx-2.jpg)
 
-#### 组件[behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
+### 组件[behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
 - 自定义组件混入 behaviors, 在 attached 钩子函数中调用混入的方法获取不到, 需要在 ready 中调用
 
-#### ios 微信小程序 input 输入框使用 bind:focus 时, 在 input 获取焦点后会出现输入法键盘,然后点击其他下拉框或自定义组件会出现 input 仍然可以编辑状态
+### ios 微信小程序 input 输入框使用 bind:focus 时, 在 input 获取焦点后会出现输入法键盘,然后点击其他下拉框或自定义组件会出现 input 仍然可以编辑状态
 
 - 修改 input 的 focus 属性
 
-#### 小程序多 appId 平台提审和接口域名切换
+### 小程序多 appId 平台提审和接口域名切换
 
 使用以下 API 获取小程序 appId, 根据 appid 推送不同平台和切换不同接口域名
 
@@ -220,12 +220,12 @@ wx.requestSubscribeMessage({ tmplIds: [] /*消息模板 id*/ })
 - [wx.getAccountInfoSync](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html) 获取当前帐号信息, 线上小程序版本号仅支持在正式版小程序中获取, 开发版和体验版中无法获取
   - 2.2.2 支持
 
-#### 单页应用添加微信分享打包后分享时好好坏
+### 单页应用添加微信分享打包后分享时好好坏
 
 - [企微](https://developer.work.weixin.qq.com/document/path/90542) 微信 JSSDK 签名的 url 和当前显示的 url 不一致导致自定义分享信息失败,在路由钩子函数或者监听路由变化时重新请求接口签名
 - [微信](https://developers.weixin.qq.com/community/develop/doc/000088945c4320dae71d677d15b400?jumpto=reply&parent_commentid=000062cf8fcaf80be71d58bd15b4&commentid=000a68a75ac9188cf81d2be8353c) 微信中打开普通 URL 链接分享仍为普通 URL 链接, 卡片形式的链接不受此影响
 
-#### 小程序内嵌 H5 页区分运行环境
+### 小程序内嵌 H5 页区分运行环境
 
 小程序内嵌 H5 页区分运行环境是小程序还是 H5 执行不同逻辑调用 wx.miniProgram.getEnv 依赖微信 JSSDK 1.4 以上版本, 微信 JSSDK 1.0 报错
 
@@ -246,9 +246,9 @@ if (result && result[0] == `micromessenger`) {
 }
 ```
 
-### 逻辑层
+## 逻辑层
 
-#### [注册页面](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/page.html)
+### [注册页面](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/page.html)
 
 - options 2.10.1, 页面的组件选项, 同 [Component 构造器](#zidingyizujian)中的 options
 - behaviors 2.9.2, 使多个页面可以共享相同的数据和方法
@@ -273,11 +273,11 @@ Page({
 });
 ```
 
-#### [API](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/api.html#API)
+### [API](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/api.html#API)
 
 - 2.10.2 支持 callback 和 promise 两种调用方式. 接口参数 Object 对象不包含 success/fail/complete 时默认返回 promise, 否则按回调方式执行,无返回值
 
-#### [Router](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Router.html)
+### [Router](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Router.html)
 
 页面路由器对象, 可以通过 `this.pageRouter` 或 `this.router` 获取当前页面或自定义组件的路由器对象
 
@@ -304,9 +304,9 @@ Page({
 - `this.pageRouter` 和 `this.router` 在页面中获得相同的路由器对象
 - 在自定义组件中, `this.pageRouter` 将相对于自定义组件所在的页面进行路由跳转, `this.router` 相对于自定义组件本身的路径
 
-### 视图层
+## 视图层
 
-#### [WXML](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/)
+### [WXML](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/)
 
 - dataset 自定义数据以 `data-` 开头, 多个单词使用连字符 `-` 连接, 此写法会被自动转换成驼峰写法, 大写字符会自动转换成小写字符
 
@@ -320,7 +320,7 @@ v-bind:my-event
 
 - 2.9.3 支持简易双向绑定 `model:property="{{myProperty}}"`
 
-#### [事件](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html)
+### [事件](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html)
 
 - 1.5.0 支持事件捕获阶段, 可使用 `capture-bind`, `capture-catch` 关键字
 
@@ -359,7 +359,7 @@ v-bind:my-event
 </view>
 ```
 
-#### [响应显示区域](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)
+### [响应显示区域](https://developers.weixin.qq.com/miniprogram/dev/framework/view/resizable.html)
 
 - 2.4.0 支持屏幕旋转, 可配置全局或者页面的屏幕旋转
 
@@ -381,7 +381,7 @@ v-bind:my-event
 { "resizable": true, "frameset": true }
 ```
 
-#### [动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
+### [动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
 
 - 2.9.0 支持[关键帧动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)代替旧的 `wx.createAnimation`
 
@@ -395,7 +395,7 @@ this.animate(selector, keyframes, duration, callback);
 this.clearAnimation(selector, options, callback);
 ```
 
-#### [初始渲染缓存](https://developers.weixin.qq.com/miniprogram/dev/framework/view/initial-rendering-cache.html)
+### [初始渲染缓存](https://developers.weixin.qq.com/miniprogram/dev/framework/view/initial-rendering-cache.html)
 
 - 2.11.1 支持
 
@@ -445,19 +445,19 @@ Page({
 });
 ```
 
-### 小程序运行时
+## 小程序运行时
 
-#### [运行机制](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/operating-mechanism.html)
+### [运行机制](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/operating-mechanism.html)
 
 - 前台进入后台 `5秒` 后进入挂起状态, 小程序代码停止运行
 - 挂起状态维持 `30分钟` 后会被销毁, 如果小程序占用系统资源过高,可能会被系统销毁或者微信客户端主动回收
 
-##### 小程序启动
+#### 小程序启动
 
 - 冷启动: 小程序首次打开或者销毁后再次打开
 - 热启动: 已经打开过小程序, 然后在一段时间内再次打开该小程序, 此时小程序并未被销毁, 只是从后台状态切换到前台状态
 
-##### 前台和后台
+#### 前台和后台
 
 包括但不限于以下情况再次进入微信并打开小程序都会重新进入前台状态:
 
@@ -467,7 +467,7 @@ Page({
 - 小程序前台运行时直接把微信切后台(手势或 Home 键)
 - 小程序前台运行时直接锁屏
 
-##### 重新启动策略
+#### 重新启动策略
 
 - 2.8.0 支持如果冷启动时不带`path`参数, 默认进入小程序的首页, 在 `页面.json` 或者 `app.json` 修改小程序冷启动时的默认行为
 
@@ -479,7 +479,7 @@ Page({
 { "restartStrategy": "homePage" }
 ```
 
-##### 退出状态
+#### 退出状态
 
 小程序可能被销毁之前, 页面回调函数 `onSaveExitState` 会被调用, 如果需要保留页面页面中的状态, 可以在这个回调函数中保存一些数据, 下次启动时可以通过 `exitState` 获得已保存得数据, 如果小程序退出时间过久`1天`会丢弃保存的数据
 
@@ -510,18 +510,18 @@ Page({
 });
 ```
 
-#### [更新机制](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/update-mechanism.html)
+### [更新机制](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/update-mechanism.html)
 
 正常情况下, 在小程序发布新版后 24 小时之后, 新版本可以覆盖 99% 以上的用户
 
 - 小程序每次 冷启动 时都会异步检查是否有更新版本, 如果有更新版本, 将会异步下载新版本的代码包并在下一次冷启动时替换使用
 - 启动时使用 API `wx.getUpdateManager` 进行处理
 
-### 自定义组件 <em id="zidingyizujian"></em> <!-- markdownlint-disable-line -->
+## 自定义组件 <em id="zidingyizujian"></em> <!-- markdownlint-disable-line -->
 
 - 1.6.3 支持
 
-#### [构造器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/component.html)
+### [构造器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/component.html)
 
 - data
 - methods
@@ -564,7 +564,7 @@ Page({
 - this.selectComponent(selector) 父组件中获取子组件实例对象
 - this.triggerEvent(evtName, evtDetail, evtOptions) 组件触发事件
 
-#### [引用](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
+### [引用](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/)
 
 - 在 `页面.json` 文件中配置
 
@@ -585,7 +585,7 @@ Page({
 </view>
 ```
 
-#### [模板和样式](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html)
+### [模板和样式](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html)
 
 - slot
 
@@ -652,13 +652,13 @@ Page({
   >
   ```
 
-#### [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html)
+### [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html)
 
 - WXML 数据绑定: 用于父组件向子组件的指定属性设置数据
 - 事件: 用于子组件向父组件传递数据
 - 父组件中获取子组件实例对象 this.selectComponent(selector), 可以直接访问子组件的任意数据和方法
 
-#### [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
+### [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
 - 内置 behaviors
 
@@ -682,7 +682,7 @@ Page({
     - 多次引用 behavior, 生命周期只会被执行一次
 - 2.15.0 [behaviors 中声明的生命周期钩子会被 Page 和 Component 构造器中声明的同名钩子覆盖执行, 和上面文档中描述的不一样](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
 
-#### [组件之间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html) <em id="relations"></em> <!-- markdownlint-disable-line -->
+### [组件之间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html) <em id="relations"></em> <!-- markdownlint-disable-line -->
 
 - type 目标组件的相对关系
   - parent
@@ -747,7 +747,7 @@ Component({
 });
 ```
 
-#### [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html) <em id="observers"></em> <!-- markdownlint-disable-line-->
+### [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html) <em id="observers"></em> <!-- markdownlint-disable-line-->
 
 用于监听和响应任何属性和数据字段的变化,作用类似于计算属性
 
@@ -768,7 +768,7 @@ Component({
 });
 ```
 
-#### [纯数据字段](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/pure-data.html) <em id="pureDataPattern"></em> <!-- markdownlint-disable-line -->
+### [纯数据字段](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/pure-data.html) <em id="pureDataPattern"></em> <!-- markdownlint-disable-line -->
 
 - 纯数据字段是一些不用于界面渲染的 data 字段(包括 setData 设置的字段), 既不会展示在界面上,也不会传递给其他组件，可以用于提升页面更新性能
 
@@ -788,7 +788,7 @@ Component({
 });
 ```
 
-#### [抽象节点](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/generics.html) <em id="generic-node"></em> <!-- markdownlint-disable-line -->
+### [抽象节点](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/generics.html) <em id="generic-node"></em> <!-- markdownlint-disable-line -->
 
 > 1.9.6 支持
 
@@ -848,23 +848,23 @@ generic-node
 }
 ```
 
-#### [自定义组件扩展](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/extend.html)
+### [自定义组件扩展](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/extend.html)
 
 - 2.2.3 支持, 详细用法看文档
 
-#### [开发第三方自定义组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/trdparty.html)
+### [开发第三方自定义组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/trdparty.html)
 
 - 2.2.1 支持
 
-#### [单元测试](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/unit-test.html)
+### [单元测试](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/unit-test.html)
 
 - 2.2.1 支持
 
-#### [获取更新性能统计信息](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/update-perf-stat.html)
+### [获取更新性能统计信息](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/update-perf-stat.html)
 
 - 2.12.0 支持
 
-#### [占位组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/placeholder.html) <em id="componentplaceholder"></em> <!-- markdownlint-disable-line -->
+### [占位组件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/placeholder.html) <em id="componentplaceholder"></em> <!-- markdownlint-disable-line -->
 
 在使用 [分包异步化](https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/async.html) 或 用时注入 等特性时, 不可用的自定义组件使用 占位组件 临时替代渲染, 使渲染过程不被阻塞
 
@@ -886,7 +886,7 @@ generic-node
 }
 ```
 
-### 插件
+## 插件
 
 插件是对一组 js 接口、[自定义组件](#zidingyizujian)或页面的封装, 用于嵌入到小程序中使用. 插件不能独立运行, 必须嵌入到其它小程序中才能使用
 第三方小程序在使用插件时, 无法看到插件的代码, 因此, 插件适合用来封装自己的功能或服务, 提供给第三方小程序进行展示和使用.
@@ -895,7 +895,7 @@ generic-node
 
 插件拥有更强的独立性, 拥有独立的 API 接口、域名列表等, 但同时会受到一些限制, 如 一些 API 无法调用或功能受限
 
-#### 开发插件
+### 开发插件
 
 插件跳转链接: `plugin-private://PLUGIN_APPID/PATH/TO/PAGE`
 
@@ -914,7 +914,7 @@ const miniProgramExports = requireMiniProgram();
 miniProgramExports.greeting(); // "Greetings from Weixin MiniProgram!"
 ```
 
-##### 插件目录结构
+#### 插件目录结构
 
 ```conf
 plugin
@@ -932,7 +932,7 @@ plugin
   |- plugin.json
 ```
 
-##### 插件配置文件
+#### 插件配置文件
 
 > 向使用者小程序开放的所有自定义组件、页面和 js 接口都必须在插件配置文件 `plugin.json` 中列出
 
@@ -949,7 +949,7 @@ plugin
 }
 ```
 
-##### 引用小程序的自定义组件
+#### 引用小程序的自定义组件
 
 如果需要在页面或自定义组件中将一部分区域交给使用者小程序渲染, 但在插件中不能直接指定使用者小程序的自定义组件路径, 因此无法直接通过 `usingComponents` 得方式来引用, 需要使用 [抽象节点](#generic-node)
 
@@ -1001,7 +1001,7 @@ plugin
 }
 ```
 
-##### 其它注意事项
+#### 其它注意事项
 
 - 插件可以预览和上传, 但没有体验版
 - 插件可以同时有多个线上版本, 由使用插件的使用者小程序决定具体使用的版本号
@@ -1012,7 +1012,7 @@ plugin
 - 插件不能直接引用其它插件, 必须在使用者小程序的配置中声明引用之后互相调用
 - 对于 js 接口, 可以使用 `requirePlugin`, 但不能直接在文件开头使用, 因为被依赖的插件可能还没有被初始化
 
-#### 使用插件
+### 使用插件
 
 使用插件之前需要先在小程序管理后台添加插件, 如果插件无需申请, 添加后可直接使用, 否则需要申请并等待插件开发者通过后方可使用
 
@@ -1069,7 +1069,7 @@ requireMiniProgram().whoami; // 'Wechat MiniProgram'
 }
 ```
 
-##### 跳转插件页面
+#### 跳转插件页面
 
 `plugin://PLUGIN_NAME/PLUGIN_PAGE`
 
@@ -1077,7 +1077,7 @@ requireMiniProgram().whoami; // 'Wechat MiniProgram'
 <navigator url="plugin://PLUGIN_NAME/PLUGIN_PAGE">To plugin page!</navigator>
 ```
 
-#### 插件使用组件的限制
+### 插件使用组件的限制
 
 不能在插件页面中使用
 
@@ -1093,7 +1093,7 @@ requireMiniProgram().whoami; // 'Wechat MiniProgram'
 - navigator 需要基础库 2.1.0
 - live-player 和 live-pusher 需要基础库 2.3.0
 
-#### 插件功能页
+### 插件功能页
 
 > 2.1.0 支持, 使用插件功能页之前, 先激活功能页特性, 配置对应的功能页函数, 再使用 `functional-page-navigator` 组件跳转到插件功能页
 
@@ -1136,11 +1136,11 @@ requireMiniProgram().whoami; // 'Wechat MiniProgram'
 </functional-page-navigator>
 ```
 
-##### 用户信息功能页
+#### 用户信息功能页
 
 用于帮助插件获取用户信息, 相当于 wx.login 和 wx.getUserInfo 的功能
 
-##### 支付功能页
+#### 支付功能页
 
 支付功能页用于帮助完成支付, 相当于 wx.requestPayment 的功能
 
@@ -1159,33 +1159,33 @@ exports.beforeRequestPayment = function (paymentArgs, callback) {
 };
 ```
 
-###### 配置功能页函数
+##### 配置功能页函数
 
 支付功能页需要在插件中提供一个函数来响应插件中的支付调用, 即在插件中跳转到支付功能页或调用 wx.requestPluginPayment 时, 这个函数就会在合适的时机被调用来帮助完成支付, 如果不提供功能页函数, 功能页将通过 fail 事件返回错误
 
 支付功能页函数应以导出函数的方式提供在插件所有者小程序的根目录下的 functional-page/request-payment.js 文件中名为 beforeRequestPayment
 
-##### 收获地址功能页
+#### 收获地址功能页
 
 - 2.16.1 开始, 插件内可直接使用 wx.chooseAddress 实现对应的功能, 点击 `functional-page-navigator` 将不再进入功能页
 
-##### 发票功能页
+#### 发票功能页
 
 - 2.16.1 开始, 插件内可直接使用 wx.chooseInvoice 实现对应的功能, 点击 `functional-page-navigator` 将不再进入功能页
 
-##### 发票抬头功能页
+#### 发票抬头功能页
 
 - 2.16.1 开始, 插件内可直接使用 wx.chooseInvoiceTitle 实现对应的功能, 点击 `functional-page-navigator` 将不再进入功能页
 
-### 基础能力
+## 基础能力
 
-### 连接硬件能力
+## 连接硬件能力
 
-### 开放能力
+## 开放能力
 
-### 移动应用
+## 移动应用
 
-#### [微信内网页跳转 APP](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/WeChat_H5_Launch_APP.html)
+### [微信内网页跳转 APP](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/WeChat_H5_Launch_APP.html)
 
 使用 [微信开放标签](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_Open_Tag.html) 完成微信内网页跳转到 APP 的需求
 
@@ -1194,9 +1194,9 @@ exports.beforeRequestPayment = function (paymentArgs, callback) {
 
 微信开放平台 -> 管理中心 -> 公众号详情页 -> 接口信息
 
-#### 开放标签
+### 开放标签
 
-##### 跳转小程序
+#### 跳转小程序
 
 `<wx-open-launch-weapp>`
 
@@ -1235,7 +1235,7 @@ exports.beforeRequestPayment = function (paymentArgs, callback) {
 </script>
 ```
 
-##### 跳转 App
+#### 跳转 App
 
 `<wx-open-launch-app>`
 
@@ -1269,7 +1269,7 @@ exports.beforeRequestPayment = function (paymentArgs, callback) {
 </script>
 ```
 
-##### 订阅通知
+#### 订阅通知
 
 > 部分规则和返回数据结构参考 [wx.requestSubscribeMessage](#subscribe)
 
@@ -1311,7 +1311,7 @@ exports.beforeRequestPayment = function (paymentArgs, callback) {
 </script>
 ```
 
-##### 音频播放
+#### 音频播放
 
 `<wx-open-audio>`
 

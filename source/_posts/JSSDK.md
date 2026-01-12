@@ -9,13 +9,13 @@ tags:
   - JSSDK
 ---
 
-### 敲黑板
+## 敲黑板
 
-#### [onMenuShareAppMessage](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html) (微信提示: 即将废弃)
+### [onMenuShareAppMessage](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html) (微信提示: 即将废弃)
 
 - jweixin-1.4.0.js
 
-##### 企微(4.0.6) 中使用此 API 的位置
+#### 企微(4.0.6) 中使用此 API 的位置
 
 - 转发
 - 转发给客户
@@ -27,7 +27,7 @@ tags:
 
 <!-- more -->
 
-#### [updateAppMessageShareData](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html)
+### [updateAppMessageShareData](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html)
 
 - jweixin-1.4.0.js
 
@@ -43,7 +43,7 @@ wx.updateAppMessageShareData({
 });
 ```
 
-#### [updateTimelineShareData](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html)
+### [updateTimelineShareData](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html)
 
 - jweixin-1.4.0.js
 
@@ -59,7 +59,7 @@ wx.updateTimelineShareData({
 });
 ```
 
-#### [wx.invoke](https://developer.work.weixin.qq.com/document/path/90490)
+### [wx.invoke](https://developer.work.weixin.qq.com/document/path/90490)
 
 - jweixin-1.4.0.js
 

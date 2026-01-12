@@ -12,7 +12,7 @@ tags:
 
 > fetch() 表单上传时, 不能设置 `Content-Type` 头, 否则会丢失文件边界
 
-### 浏览器引擎
+## 浏览器引擎
 
 | 浏览器  |    渲染引擎    |                               js 引擎                                |
 | :-----: | :------------: | :------------------------------------------------------------------: |
@@ -22,7 +22,7 @@ tags:
 | Firefox |     Gecko      | ~Monkey 系列(SpiderMonkey / TraceMonkey / JaegerMonkey / OdinMonkey) |
 |  Opera  | WebKit / Blink |                               Carakan                                |
 
-### 改变原数组的方法
+## 改变原数组的方法
 
 - pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度
 - push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度
@@ -78,7 +78,7 @@ console.log(array1.copyWithin(1, 3));
 // expected output: Array ["d", "d", "e", "d", "e"]
 ```
 
-### 表单 accept 属性
+## 表单 accept 属性
 
 表单 input type="file" 上传图片时，accept 属性以文件名结尾格式在部分手机上使用时会提示 '没有应用可执行此操作', 将文件名结尾的格式改为 MIME 类型的格式
 
@@ -88,18 +88,18 @@ console.log(array1.copyWithin(1, 3));
 <input type="file" accept="image/png,image/jpeg" />
 ```
 
-### beforescriptexecute|afterscriptexecute <!-- markdownlint-disable-line -->
+## beforescriptexecute|afterscriptexecute <!-- markdownlint-disable-line -->
 
 当 HTML 文档中的 script 标签内的代码执行`前|后`触发该事件, 如果这个 script 标签是用 `appendChild` 等方法动态插入的, 则不会触发该类事件
 
-### IOS v-model 短信验证码自动填充两次
+## IOS v-model 短信验证码自动填充两次
 
 原因是ios系统bug，复制验证码会触发 UITextFieldTextDidChangeNotification 监听事件，导致验证码出现两次
 
 - 如果 type 是 text 或者 password 时, 可以给 input 添加 maxlength 属性限制最大长度.
 - 如果 type 是 number 时, 可以监听 @input 事件进行截字.
 
-### [IE 10 开始不再支持条件注释引入资源](<https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/hh801214(v=vs.85)?redirectedfrom=MSDN>)
+## [IE 10 开始不再支持条件注释引入资源](<https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/hh801214(v=vs.85)?redirectedfrom=MSDN>)
 
 ```html
 <!--[if lt IE 9]>
@@ -108,13 +108,13 @@ console.log(array1.copyWithin(1, 3));
 <![endif]-->
 ```
 
-### [document.activeElement](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement)
+## [document.activeElement](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement)
 
 > 只读属性
 
 用来返回当前在 DOM 或 shadow DOM 树中处于焦点状态 Element, 如 HTMLInputElement 或 HTMLTextAreaElement 元素中有文字被选中时, activeElement 属性就会返回该元素, 其它情况如 select 元素或者 input, textarea 元素
 
-#### [Element.scrollIntoViewIfNeeded](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoViewIfNeeded)
+### [Element.scrollIntoViewIfNeeded](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoViewIfNeeded)
 
 > 非标准化
 
@@ -128,7 +128,7 @@ var el = document.getElementById('child');
 el.scrollIntoViewIfNeeded(true);
 ```
 
-#### [Element.scrollIntoView](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoView)
+### [Element.scrollIntoView](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoView)
 
 滚动元素的父容器, 使被调用 scrollIntoView 的元素对用户可见, 取决于其它元素的布局情况, 此元素可能不会完全滚动到顶端或底端
 
@@ -152,7 +152,7 @@ el.scrollIntoView({ block: 'end' });
 el.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 ```
 
-### export default import
+## export default import
 
 - export default 向外暴露的成员，可以使用任意变量来接收
 - 在一个模块中, export default 只允许向外暴露一次
@@ -162,11 +162,11 @@ el.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 - 使用 export 导出的成员, 必须严格按照导出时候的名称来使用 `{ }` 按需接收
 - 如果想更改变量名称可以使用 as 定义别名
 
-### eval
+## eval
 
 避免使用 eval, 可以使用 `Function('"use strict"; console.log("hello world")')()` 代替, `Function` 直接调用此构造函数可以动态创建函数
 
-### [JSON.stringify](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+## [JSON.stringify](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
 
 - 转换值如果有 toJSON 方法则直接使用该方法的返回值
 - 非数组对象的属性不能保证以特定的顺序出现在序列化后的字符串中
@@ -178,7 +178,7 @@ el.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 - NaN 和 Infinity 格式的数值及 null 都会被当作 null
 - 其它类型的对象, 包括 Map/WeakMap/Set/WeakSet, 仅会序列化可枚举的属性
 
-### [structuredClone()](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/structuredClone)
+## [structuredClone()](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/structuredClone)
 
 使用`结构化克隆算法`将给定的值进行深拷贝
 
@@ -218,7 +218,7 @@ console.log(u8.byteLength); // 0
 - OffscreenCanvas
 - RTCDataChannel
 
-### [window.requestIdleCallback](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestIdleCallback)
+## [window.requestIdleCallback](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestIdleCallback)
 
 插入一个函数, 这个函数将在浏览器空闲时期被调用. 使开发者能够在主事件循环上执行后台和低优先级工作, 而不会影响延迟关键事件
 
@@ -234,7 +234,7 @@ window.requestIdleCallback(() => {
 window.scheduler.postTack();
 ```
 
-### [window.crypto](https://developer.mozilla.org/zh-CN/docs/Web/API/Crypto)
+## [window.crypto](https://developer.mozilla.org/zh-CN/docs/Web/API/Crypto)
 
 > 只读属性
 

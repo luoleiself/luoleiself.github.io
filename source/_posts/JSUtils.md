@@ -8,7 +8,7 @@ tags:
   - js
 ---
 
-#### 函数防抖
+## 函数防抖
 
 ```javascript
 /**
@@ -35,7 +35,7 @@ const debounce = function (fn, delay) {
 };
 ```
 
-#### 函数节流
+## 函数节流
 
 ```javascript
 /**
@@ -63,7 +63,7 @@ const throttle = function (fn, delay) {
 
 <!-- more -->
 
-#### 复制剪贴板
+## 复制剪贴板
 
 ```javascript
 /**
@@ -114,9 +114,9 @@ const copyText = function (text) {
 };
 ```
 
-#### 正则篇
+## 正则篇
 
-##### 检查身份证号
+### 检查身份证号
 
 ```javascript
 /**
@@ -130,7 +130,7 @@ const checkCardNo = function (value) {
 };
 ```
 
-##### 检查手机号
+### 检查手机号
 
 ```javascript
 /**
@@ -143,7 +143,7 @@ const checkTel = function (value) {
 };
 ```
 
-##### 检查邮箱
+### 检查邮箱
 
 ```javascript
 /**
@@ -156,7 +156,7 @@ const checkEmail = function (value) {
 };
 ```
 
-#### 数字千分位分割
+## 数字千分位分割
 
 - 使用 Number 包装对象的原型方法 toLocaleString
   - locales 指定地区语言, 默认使用系统的区域设置
@@ -219,7 +219,7 @@ const numberFormat = function (value, delimiter = ',') {
 };
 ```
 
-#### 根据图片尺寸计算宽高比例
+## 根据图片尺寸计算宽高比例
 
 ```javascript
 /**
@@ -252,7 +252,7 @@ const calcImgRatio = function (width, height) {
 };
 ```
 
-#### Base64 图片转 File 文件
+## Base64 图片转 File 文件
 
 ```javascript
 /**
@@ -284,7 +284,7 @@ function dataURL2File(dataUrl, fileName) {
 }
 ```
 
-#### 图片对象或链接转 Base64
+## 图片对象或链接转 Base64
 
 ```javascript
 /**
@@ -344,7 +344,7 @@ function file2DataURL(arg) {
 }
 ```
 
-#### DOM 拖动
+## DOM 拖动
 
 ```javascript
 var $popDom = null; // 指定拖动的 DOM
@@ -394,7 +394,7 @@ $popDom.on('mousedown', function (evt) {
 });
 ```
 
-#### 日期倒计时
+## 日期倒计时
 
 ```javascript
 (function () {
@@ -612,7 +612,7 @@ var { pause, resume, cancel } = date.leftDown(function (obj) {
 // });
 ```
 
-#### JS 批量样式
+## JS 批量样式
 
 ```javascript
 // Dom 添加边框
@@ -630,7 +630,7 @@ var { pause, resume, cancel } = date.leftDown(function (obj) {
     .toUpperCase();
 ```
 
-#### 修改 history
+## 修改 history
 
 ```javascript
 // 修改历史记录阻止后退功能
@@ -646,7 +646,7 @@ $(document).ready(function () {
 });
 ```
 
-#### 存储单位转换
+## 存储单位转换
 
 ```javascript
 function formatSizeUnits(kb) {
@@ -662,7 +662,7 @@ function formatSizeUnits(kb) {
 }
 ```
 
-#### requestAnimationFrame 数字累加
+## requestAnimationFrame 数字累加
 
 ```javascript
 function roll(o, s , e){
@@ -684,7 +684,7 @@ function roll(o, s , e){
 }
 ```
 
-#### JS 创建 Element
+## JS 创建 Element
 
 ```javascript
 /*
