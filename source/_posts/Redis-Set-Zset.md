@@ -7,7 +7,7 @@ tags:
   - Redis
 ---
 
-### Sets 命令
+## Sets 命令
 
 Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.
 
@@ -23,7 +23,7 @@ Set 类型的底层数据结构是由**哈希表**或**整数集合**实现的
 set-max-intset-entries 512
 ```
 
-#### 成员操作
+### 成员操作
 
 - SADD key member [member ...] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员
 
@@ -31,7 +31,7 @@ set-max-intset-entries 512
 
 - SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)
 
-##### 是否包含成员
+#### 是否包含成员
 
 - SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在
 - SMISMEMBER key member [member ...] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, Redis 6.2.0 支持
@@ -55,7 +55,7 @@ set-max-intset-entries 512
 
 <!-- more -->
 
-##### 批量移除成员
+#### 批量移除成员
 
 - SREM key member [member ...] 批量移除集合中的成员并返回移除成功的数量, 集合为空或者不存在或者不包含移除成员返回 0
 
@@ -91,10 +91,10 @@ set-max-intset-entries 512
 (empty array)
 ```
 
-##### 移除指定成员并添加到其他集合
+#### 移除指定成员并添加到其他集合
 
 - SMOVE source destination member 将源集合中的指定成员移除并添加到目标集合中
-  - 返回值 
+  - 返回值
     - 1 表示源集合指定成员移除成功(目标集合中可能包含该成员也可能不包含)
     - 0 表示源集合为空或者源集合不包含指定成员
 
@@ -145,7 +145,7 @@ OK
 2) "hello"
 ```
 
-#### 随机获取成员
+### 随机获取成员
 
 - SPOP key [count] 移除指定集合随机的多个成员并返回移除的成员, 改变原集合, 不带 count 如果集合为空或者不存在返回 \<nil\>, 否则返回 (empty array), count 不能为负数
   - count 指定随机移除的数量, 默认为 1
@@ -236,7 +236,7 @@ OK
 (integer) 6
 ```
 
-#### 遍历无序集合
+### 遍历无序集合
 
 - SSCAN key cursor [MATCH pattern] [COUNT count] 迭代集合中的成员, 返回下一次游标开始的位置和结果, 游标 0 表示迭代已结束
   - cursor 游标
@@ -275,7 +275,7 @@ OK
 2) 1) "bc"
 ```
 
-#### 获取无序集合差异
+### 获取无序集合差异
 
 - SDIFF key [key ...] 比较第一个集合和其他集合之间的差异并返回差异的结果, 第一个集合为空或者第一个集合的所有成员在出现在其他集合中返回(empty array)
 
@@ -345,7 +345,7 @@ OK
 1) "hello"
 ```
 
-#### 获取无序集合交集
+### 获取无序集合交集
 
 - SINTER key [key ...] 返回所有给定集合之间的交集, key 不存在被当作空集合, 当给定集合中有一个空集合时返回结果也为空集合(empty array)
 
@@ -432,7 +432,7 @@ OK
 (error) ERR LIMIT can't be negative
 ```
 
-#### 获取无序集合并集
+### 获取无序集合并集
 
 - SUNION key [key ...] 返回所有给定集合的并集并移除相同的成员只保留一个, 不存在的 key 被当作空集合, 集合都为空返回 (empty array)
 
@@ -490,13 +490,13 @@ OK
 4) "hello"
 ```
 
-#### 应用
+### 应用
 
 - 用户标签
 - 生成随机数字抽奖
 - 社交需求
 
-### Sorted sets 命令
+## Sorted sets 命令
 
 > Redis 7.0 开始, 压缩列表数据结构由 listpack 数据结构实现
 
@@ -517,7 +517,7 @@ zset-max-listpack-entries 128
 zset-max-listpack-value 64
 ```
 
-#### 特殊标识符
+### 特殊标识符
 
 - \- 负
 - \+ 正
@@ -525,7 +525,7 @@ zset-max-listpack-value 64
 - \(val 不包含 val
 - \[val 包含 val
 
-#### 添加成员
+### 添加成员
 
 - ZADD key [NX|XX] [GT|LT] [CH] [INCR] score member [score member ...] 添加更新成员, 通常只返回添加的新成员的数量
 
@@ -661,7 +661,7 @@ zset-max-listpack-value 64
 2) "10"
 ```
 
-#### 指定成员的分值增量
+### 指定成员的分值增量
 
 - ZINCRBY key increment member 对指定成员的分值加上增量并返回修改后的分值, 如果指定成员不存在则添加新成员, 等同于 `ZADD key increment member`
 
@@ -688,9 +688,9 @@ zset-max-listpack-value 64
 10) "1"
 ```
 
-#### 移除成员
+### 移除成员
 
-##### 分值最大或最小
+#### 分值最大或最小
 
 - ZPOPMAX key [count] 移除指定集合的指定数量的最高分值成员并返回移除的成员和分值, count 默认为 1, 如果集合为空或者不存在返回 (empty array), Redis `5.0.0 支持
 
@@ -752,7 +752,7 @@ zset-max-listpack-value 64
 3) "1"
 ```
 
-##### 指定区间
+#### 指定区间
 
 - ZREMRANGEBYLEX key min max 移除指定字典区间的所有成员并返回成功移除的数量, min 和 max 需要使用 `(` 或 `[` 前导符, 0 表示集合为空或者未找到结果
 
@@ -828,7 +828,7 @@ zset-max-listpack-value 64
 4) "f"
 ```
 
-##### 批量移除相同成员
+#### 批量移除相同成员
 
 - ZREM key member [member ...] 批量移除指定的成员并返回成功移除的数量, 如果指定成员不存在则被忽略, 0 表示集合为空或者成员不存在
 
@@ -841,7 +841,7 @@ zset-max-listpack-value 64
 (integer) 1
 ```
 
-##### 批量移除相邻成员
+#### 批量移除相邻成员
 
 - ZMPOP numkeys key [key ...] MIN|MAX [COUNT count] 从多个集合中第 1 个非空集合中移除指定数量的最高或最低分值的成员并返回移除的成员和分值及成员所属的集合名称, count 默认为 1, 集合为空或者不存在返回 \<nil\>, Redis 7.0.0 支持
   - COUNT count 移除成员的数量, 默认为 1
@@ -889,11 +889,11 @@ zset-max-listpack-value 64
       2) "3"
 ```
 
-#### 获取成员数量
+### 获取成员数量
 
 - ZCARD key 返回指定集合的成员数量, 集合为空或者不存在返回 0
 
-##### 指定分值区间
+#### 指定分值区间
 
 - ZCOUNT key min max 统计指定分值区间的成员数量, 0 表示未找到结果
 
@@ -918,7 +918,7 @@ zset-max-listpack-value 64
 (integer) 2
 ```
 
-##### 指定字典区间
+#### 指定字典区间
 
 - ZLEXCOUNT key min max 计算指定字典区间内成员数量, 0 表示未找到结果
 
@@ -939,7 +939,7 @@ zset-max-listpack-value 64
 (integer) 0
 ```
 
-#### 随机获取指定数量成员
+### 随机获取指定数量成员
 
 - ZRANDMEMBER key [count [WITHSCORES]] 返回指定集合随机的多个成员, 不改变原集合, 如果集合为空或者不存在返回 \<nil\>, 否则返回 (empty array), Redis 6.2.0 支持
   - count 指定随机返回的数量, 默认为 1
@@ -968,7 +968,7 @@ zset-max-listpack-value 64
 6) "2"
 ```
 
-#### 获取指定成员排名
+### 获取指定成员排名
 
 ```bash
 127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
@@ -1008,7 +1008,7 @@ zset-max-listpack-value 64
 (integer) 1
 ```
 
-#### 获取指定成员分值
+### 获取指定成员分值
 
 ```bash
 127.0.0.1:6379> ZRANGE myz 0 -1 WITHSCORES
@@ -1051,7 +1051,7 @@ zset-max-listpack-value 64
 2) "3"
 ```
 
-#### 遍历有序集合
+### 遍历有序集合
 
 - ZRANGE key start stop [BYSCORE|BYLEX] [REV] [LIMIT offset count] [WITHSCORES] 遍历有序集合的指定区间, 并返回默认递增顺序的成员
 
@@ -1127,7 +1127,7 @@ zset-max-listpack-value 64
    2) "5"
 ```
 
-#### 获取有序集合差异
+### 获取有序集合差异
 
 ```bash
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d
@@ -1160,7 +1160,7 @@ zset-max-listpack-value 64
 4) "4"
 ```
 
-#### 获取有序集合交集
+### 获取有序集合交集
 
 ```bash
 127.0.0.1:6379> ZADD myz  1 a 2 b 3 c
@@ -1256,7 +1256,7 @@ zset-max-listpack-value 64
 4) "8"
 ```
 
-#### 获取有序集合并集
+### 获取有序集合并集
 
 ```bash
 127.0.0.1:6379> ZADD myz 1 a 2 b 3 c 4 d
@@ -1308,7 +1308,7 @@ zset-max-listpack-value 64
 12) "32"
 ```
 
-#### 应用 <!-- markdownlint-disable-line -->
+### 应用 <!-- markdownlint-disable-line -->
 
 - 排行榜
 - 用户点赞
