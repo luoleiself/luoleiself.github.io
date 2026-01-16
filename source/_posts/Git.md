@@ -15,6 +15,26 @@ tags:
 - git init [project-name] # 新建一个目录，将其初始化为 `Git` 代码库
 - git clone [url] # 下载一个项目和它的整个代码历史
 
+## Husky
+
+Husky 是一个 Git hooks 工具，它让在 Git 仓库中使用 Git hooks 变得更加简单和方便
+
+### 自动化代码质量检查
+
+- pre-commit hook：在提交代码前运行
+- pre-push hook：在推送代码前运行
+- commit-msg hook：验证提交消息格式
+
+### 项目结构
+
+```code
+.husky/
+├── _/                    # Husky 内部脚本
+├── pre-commit           # pre-commit hook 脚本
+├── commit-msg           # commit-msg hook 脚本
+└── pre-push             # pre-push hook 脚本
+```
+
 ## 配置
 
 - git config --system --unset credential.helper # 重置 Git 本地用户凭据
@@ -181,6 +201,8 @@ git stash branch new-feature stash@{1}
 - git commit -v # 提交时显示所有 `diff` 信息
 - git commit --amend -m 'message' # 使用一次新的 `commit`，替代上一次提交, 如果代码没有任何新变化，则用来改写上一次 `commit` 的提交信息
 - git commit --amend [file1] [file2] ... # 重做上一次 `commit`，并包括指定文件的新变化
+
+- git commit -n, \-\-no-verify  # 提交时忽略 pre-commit 和 commit-msg hooks
 
 ## 查看信息
 
