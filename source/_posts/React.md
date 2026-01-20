@@ -2836,17 +2836,76 @@ app.use('/', async (req, res) => {
 
 ## React Server Component
 
+`异步组件` 是服务器组件的一个新特性, 允许在渲染中 `await`.
+
 RSC(服务器组件)是一种新型的组件, 它在打包之前在独立于客户端应用程序或 SSR 服务器的环境中提前渲染. 服务器组件可以在构建时运行一次, 也可以在每次请求时在 web 服务器中运行.
 
-`异步组件` 是服务器组件的一个新特性, 允许在渲染中 `await`.
+- 服务器组件不支持交互
+- 服务器组件不能使用大多数 hooks, 由于服务器组件渲染后不会在内存中保留, 并且不能拥有自己的状态
 
 - 按需拆分边界, 将页面拆分为：
   - 服务器部分（数据获取、静态内容）
   - 客户端部分（交互、状态、效果）
 
+### 标记客户端组件
+
+FancyText 既是服务器组件也是客户端组件
+
+  1. 将 FancyText 作为 App 的子组件使用, 将该使用标记为服务器组件
+  2. 当 FancyText 在 InspirationGenerator 下导入并调用时, FancyText 将标记为客户端组件
+
+CopyRight 是服务器组件
+
+  1. CopyRight 在 App 模块内导入并调用, 将标记为服务器组件, 由于可以将 JSX 作为 props 传递, 客户端组件可以渲染服务器组件. InspirationGenerator 以 children 的形式接收 CopyRight, 但并未直接导入并调用 CopyRight 模块, 所以这些都是由 App 完成的.
+
 ```tsx
-async function Page(){
-  // ...
+// Copyright
+export default function Copyright({year}) {
+  return <p className='small'>©️ {year}</p>;
+}
+
+// FancyText.tsx
+export default function FancyText({title, text}) {
+  return title
+    ? <h1 className='fancy title'>{text}</h1>
+    : <h3 className='fancy cursive'>{text}</h3>
+}
+
+// App.tsx
+import FancyText from './FancyText';
+import InspirationGenerator from './InspirationGenerator';
+import Copyright from './Copyright';
+
+export default function App() {
+  return (
+    <>
+      <FancyText title text="Get Inspired App" />
+      <InspirationGenerator>
+        <Copyright year={2004} />
+      </InspirationGenerator>
+    </>
+  );
+}
+
+// InspirationGenerator.tsx
+'use client';
+import { useState } from 'react';
+import inspirations from './inspirations';
+import FancyText from './FancyText';
+
+export default function InspirationGenerator({children}) {
+  const [index, setIndex] = useState(0);
+  const quote = inspirations[index];
+  const next = () => setIndex((index + 1) % inspirations.length);
+
+  return (
+    <>
+      <p>Your inspirational quote is:</p>
+      <FancyText text={quote} />
+      <button onClick={next}>Inspire me again</button>
+      {children}
+    </>
+  );
 }
 ```
 
@@ -2855,6 +2914,19 @@ async function Page(){
 2024年9月之前被称为 Server Action, Server Function 允许客户端组件调用在服务器上执行的异步函数
 
 当使用 'use server' 指令定义服务器函数时, 将自动创建一个指向服务器函数的引用, 并将该引用传递给客户端组件. 当在客户端组件调用该函数时, React 向服务器发送一个请求来执行该函数, 并返回结果
+
+1. 将函数调用序列化为 HTTP POST 请求
+2. 发送到服务器端
+3. 在服务器上反序列化并执行函数
+4. 将结果序列化并返回
+
+为什么使用 POST
+
+- 幂等性：POST 用于创建/修改数据，支持非幂等操作
+- 请求体：POST 可以携带复杂的序列化数据
+- 语义正确：Server Functions 通常执行有副作用的操作
+
+优点
 
 - 表单提交, 替代传统的表单处理
 - 数据变更, 创建、更新、删除操作
@@ -2876,13 +2948,29 @@ function EmptyNode(){
 
 ### Directives
 
-- 'use client' 只能使用 单引号 或 双引号
+#### 'use client'
+
+只能使用 单引号 或 双引号
 
 定义了在 `模块依赖树` 上的服务器和客户端代码的边界，而不是在 `渲染树` 上.
 
-- 'use server' 只能使用 单引号 或 双引号
+如果组件在带有 'use client' 指示符的模块中定义, 或者组件在客户端组件中导入并调用, 那么组件的使用将是客户端组件. 否则, 组件的使用将是服务器组件.
 
-标记可以从客户端代码调用的服务器函数, 由于网络调用始终是异步的, 'use server' 只能用于异步函数
+- 交互性 - onClick、onChange 等事件
+- 状态管理 - useState、useReducer
+- 生命周期 - useEffect、useLayoutEffect
+- 浏览器API - window、localStorage、geolocation
+- 第三方库 - 需要DOM交互的库（如图表、地图）
+
+#### 'use server'
+
+只能使用 单引号 或 双引号
+
+标记可以从客户端代码调用的服务器函数
+
+- 'use server' 只能在服务器端文件中使用。生成的服务器函数可以通过 props 传递给客户端组件
+- 'use server' 只能用于异步函数, 网络调用始终是异步的
+- 服务器函数专为更新服务器状态变更而设计, 不建议用于数据获取
 
 ## @tanstack/react-query
 

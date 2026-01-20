@@ -63,6 +63,12 @@ RSC 是一种新型的组件, 它在打包之前在独立于客户端应用程�
 - 从其使用的 layout 和 page 继承 运行时
 - 从其使用的 layout 和 page 继承路由段设置, 包含 maxDuration 等字段
 
+为什么使用 POST
+
+- 幂等性：POST 用于创建/修改数据，支持非幂等操作
+- 请求体：POST 可以携带复杂的序列化数据
+- 语义正确：Server Functions 通常执行有副作用的操作
+
 ```tsx
 // app/invoices/page.tsx
 'use client';
