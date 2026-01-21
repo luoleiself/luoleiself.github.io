@@ -241,6 +241,15 @@ Lua 允许在 Redis 中运行部分应用程序逻辑, 这样的脚本可以跨�
 
 Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它们, 但 EVAL 脚本被视为客户端应用程序的一部分, 这就是它们没有命名、版本化或持久化的原因. 因此, 如果所有脚本丢失, 应用程序可能需要随时重新加载
 
+- 不能在 lua 脚本中声明全局变量, 只能使用 local 声明局部变量, 否则将执行报错
+
+```bash
+127.0.0.1:6379> EVAL "name=10; return name" 0   # 声明全局变量执行报错
+(error) ERR user_script:1: Attempt to modify a readonly table script: be32aff3876f2170bc8f0e19998edc94924341e1, on @user_script:1.
+127.0.0.1:6379> EVAL "local name=10; return name" 0   # local 声明局部变量正常执行
+(integer) 10
+```
+
 ### 脚本命令
 
 > **脚本参数化** 为了确保在独立部署和集群部署中正确执行脚本, 脚本访问的所有键名都必须作为输入键参数显式提供
