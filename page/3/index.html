@@ -204,6 +204,734 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/3bfcb546cd4a/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/3bfcb546cd4a/" class="post-title-link" itemprop="url">Redis-Set-Zset</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-01-14 09:02:34" itemprop="dateModified" datetime="2026-01-14T09:02:34+08:00">2026-01-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>28k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>26 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Sets-命令"><a href="#Sets-命令" class="headerlink" title="Sets 命令"></a>Sets 命令</h2><p>Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.</p>
+<p>Set: 键名: key, 键类型: set, 键值: string</p>
+<p>Set 类型的底层数据结构是由<strong>哈希表</strong>或<strong>整数集合</strong>实现的</p>
+<ul>
+<li>如果集合中的元素都是整数且元素个数小于 512 个, Redis 使用<strong>整数集合</strong>作为底层数据结构</li>
+<li>如果集合中的元素不满足上面条件, Redis 使用<strong>哈希表</strong>作为底层数据结构</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置底层数据结构存储数量限制</span></span><br><span class="line"><span class="string">set-max-intset-entries</span> <span class="number">512</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="成员操作"><a href="#成员操作" class="headerlink" title="成员操作"></a>成员操作</h3><ul>
+<li><p>SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员</p>
+</li>
+<li><p>SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0</p>
+</li>
+<li><p>SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)</p>
+</li>
+</ul>
+<h4 id="是否包含成员"><a href="#是否包含成员" class="headerlink" title="是否包含成员"></a>是否包含成员</h4><ul>
+<li>SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在</li>
+<li>SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, Redis 6.2.0 支持</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *  <span class="comment"># 查看当前数据库中的 key</span></span><br><span class="line">(empty array)</span><br><span class="line"><span class="comment"># 空集合判断是否包含成员</span></span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello hehe</span><br><span class="line">1) (<span class="built_in">integer</span>) 0</span><br><span class="line">2) (<span class="built_in">integer</span>) 0</span><br><span class="line"><span class="comment"># 向 myset 添加成员</span></span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world hehe haha gg</span><br><span class="line">(<span class="built_in">integer</span>)</span><br><span class="line"><span class="comment"># 判断 myset 是否包含成员</span></span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello yy hehe</span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">2) (<span class="built_in">integer</span>) 0</span><br><span class="line">3) (<span class="built_in">integer</span>) 1</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/3bfcb546cd4a/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/819f95816ecc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/819f95816ecc/" class="post-title-link" itemprop="url">Redis</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-31 16:58:24" itemprop="dateModified" datetime="2025-12-31T16:58:24+08:00">2025-12-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>20k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>18 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API, Redis 能读的速度是 11 万次/s，写的速度是 8.1 万次/s<br>Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p><img src="/images/redis-1.jpg" alt="redis-1"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/819f95816ecc/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/c32a91c061ac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/c32a91c061ac/" class="post-title-link" itemprop="url">sql</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-10-20 17:51:42" itemprop="dateModified" datetime="2025-10-20T17:51:42+08:00">2025-10-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/sql/" itemprop="url" rel="index"><span itemprop="name">sql</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><p>mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> [<span class="keyword">GLOBAL</span><span class="operator">|</span>SESSION] TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 全局设置</span></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 当前会话设置</span></span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务开始时设置</span></span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="读未提交-Read-Uncommitted"><a href="#读未提交-Read-Uncommitted" class="headerlink" title="读未提交(Read Uncommitted)"></a>读未提交(Read Uncommitted)</h3><p>最低级别的隔离, 允许一个事务读取另一个事务尚未提交的数据, 通常不推荐使用此级别, 除非对数据一致性要求非常低的场景</p>
+<p>问题:</p>
+<ul>
+<li>脏读(Dirty Read), 一个事务可以读取到另一个事务未提交的数据, 如果该事务回滚, 则会导致数据不一致</li>
+<li>不可重复读(Non-repeatable Read), 在一个事务中多次读取同一数据可能会得到不同的结果</li>
+<li>幻读(Phantom Read), 在一个事务中执行相同的查询可能会返回不同的行集, 因为其他事务插入了新的行</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 事务 A</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">UPDATE</span> accounts <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">-</span> <span class="number">100</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 暂时不提交</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 B</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;</span><br><span class="line"><span class="keyword">SELECT</span> balance <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 可能读取到 900 (脏读)</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/c32a91c061ac/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/5db91eb9b055/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/5db91eb9b055/" class="post-title-link" itemprop="url">sql-aggregate</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-02 20:35:46" itemprop="dateModified" datetime="2025-07-02T20:35:46+08:00">2025-07-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/sql/" itemprop="url" rel="index"><span itemprop="name">sql</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>35k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>32 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h2><p>操作处理多个文档并返回计算结果, 由 一个或多个处理文档的 <code>阶段</code> 组成</p>
+<ul>
+<li>每个阶段对输入文档执行一个操作</li>
+<li>从一个阶段输出的文档将传递到下一个阶段</li>
+<li>一个聚合管道可以返回针对文档组的结果</li>
+</ul>
+<p>字段路径, 使用 <code>$</code> 前缀启用字段路径表达式访问输入文档中的字段.</p>
+<p>管道优化, 该阶段会尝试重塑管道以提高性能, 优先使用 $match、$sort、$limit、$skip 阶段限制进入管道的文档</p>
+<p>限制</p>
+<ul>
+<li>结果大小限制, 每个文档均受 MB16 BSON 文档大小的限制的约束</li>
+<li>阶段数量限制, 单个管道中允许的聚合管道阶段数量最大为 1000 个</li>
+<li>内存限制, 6.0 开始 allowDiskUseByDefault 参数控制需要 100MB 以上内存容量来执行的管道阶段是否默认会将临时文件写入磁盘</li>
+</ul>
+<p><code>db.[collectionName].aggregate()</code> 方法运行的聚合管道不会修改集合中的文档, 除非管道包含 <code>$merge</code> 或 <code>$out</code> 阶段</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  <span class="comment">// stage 1: Filter pizza order document by pizza size</span></span><br><span class="line">  &#123;<span class="attr">$match</span>: &#123;<span class="attr">size</span>: <span class="string">&#x27;medium&#x27;</span>&#125;&#125;,</span><br><span class="line">  <span class="comment">// stage 2: Group remaining document by pizza name and calcuate total quantity</span></span><br><span class="line">  &#123;<span class="attr">$group</span>: &#123;<span class="attr">_id</span>: <span class="string">&#x27;$name&#x27;</span>, <span class="attr">totalQuantity</span>: &#123;<span class="attr">$sum</span>: <span class="string">&quot;$quantity&quot;</span>&#125;&#125;&#125;,</span><br><span class="line">  <span class="comment">// stage 3: Sort document by totalQuantity in descending order</span></span><br><span class="line">  &#123;<span class="attr">$sort</span>: &#123;<span class="attr">totalQuantity</span>: -<span class="number">1</span>&#125;&#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>变量可以保存任何 BSON 类型的数据, 访问变量时需要使用 <code>$$</code> 前缀.</p>
+<h4 id="用户变量"><a href="#用户变量" class="headerlink" title="用户变量"></a>用户变量</h4><p>变量名称可包含 ASCII 字符和任意非 ASCII 字符, 必须以小写 ASCII 字符开头</p>
+<h4 id="系统变量"><a href="#系统变量" class="headerlink" title="系统变量"></a>系统变量</h4><ul>
+<li>NOW 返回当前日期时间值的变量, 为部署的所有成员返回相同的值, 并在聚合管道的所有阶段保持不变.</li>
+<li>CLUSTER_TIME 返回当前时间戳值的变量<ul>
+<li>仅适用于副本集和分片的集群</li>
+<li>为部署的所有节点返回相同的值, 并在管道的所有阶段保持不变</li>
+</ul>
+</li>
+<li>ROOT  引用根文档, 即当前正在聚合管道阶段处理的顶层文档<ul>
+<li>引用聚合管道中当前正在处理的完整文档</li>
+<li>常用于需要保留原始文档内容的场景</li>
+<li>在 $group、$project 等阶段特别有用</li>
+</ul>
+</li>
+<li>CURRENT 引用聚合管道阶段正在处理的 <code>字段路径</code> 的起始位置</li>
+<li>REMOVE  一个求值为缺失的变量, 允许排除 $addFields 和 $project 阶段的字段</li>
+<li>DESCEND $redact 表达式的允许结果之一, 返回当前文档级别的字段, 不包括嵌入式文档</li>
+<li>PRUNE $redact 表达式的允许结果之一, 排除当前文档/嵌入式文档级别的所有字段, 而不进一步检查任何已排除的字段</li>
+<li>KEEP  $redact 表达式的允许结果之一, 返回或保留此当前文档/嵌入式文档级别的所有字段, 而不进一步检查此级别的字段</li>
+<li>SEARCH_META search 查询元数据结果的变量, 在所有支持的聚合管道阶段中, 设立变量 $SEARCH_META 的字段会返回查询的元数据结果</li>
+<li>USER_ROLES  返回分配给当前用户的角色</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/5db91eb9b055/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/05/bbb1955164c4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/05/bbb1955164c4/" class="post-title-link" itemprop="url">Editor</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-31 14:40:43" itemprop="dateCreated datePublished" datetime="2022-05-31T14:40:43+08:00">2022-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-06-23 10:58:59" itemprop="dateModified" datetime="2025-06-23T10:58:59+08:00">2025-06-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/editor/" itemprop="url" rel="index"><span itemprop="name">editor</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;[typescriptreact]&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;editor.defaultFormatter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vscode.typescript-language-features&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;editor.codeActionsOnSave&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;source.organizeImports&quot;</span><span class="punctuation">:</span> <span class="string">&quot;never&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;source.removeUnusedImports&quot;</span><span class="punctuation">:</span> <span class="string">&quot;explicit&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;[javascript]&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;editor.defaultFormatter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vscode.typescript-language-features&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;editor.codeActionsOnSave&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;source.organizeImports&quot;</span><span class="punctuation">:</span> <span class="string">&quot;never&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;source.removeUnusedImports&quot;</span><span class="punctuation">:</span> <span class="string">&quot;explicit&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;[typescript]&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;editor.defaultFormatter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vscode.typescript-language-features&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;editor.codeActionsOnSave&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;source.organizeImports&quot;</span><span class="punctuation">:</span> <span class="string">&quot;never&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;source.removeUnusedImports&quot;</span><span class="punctuation">:</span> <span class="string">&quot;explicit&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;[vue]&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;editor.defaultFormatter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Vue.volar&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;editor.codeActionsOnSave&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;source.organizeImports&quot;</span><span class="punctuation">:</span> <span class="string">&quot;never&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;source.removeUnusedImports&quot;</span><span class="punctuation">:</span> <span class="string">&quot;explicit&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/05/bc4d38208f0f/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/05/bc4d38208f0f/" class="post-title-link" itemprop="url">linux工具</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-31 14:40:43" itemprop="dateCreated datePublished" datetime="2022-05-31T14:40:43+08:00">2022-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-01-08 10:12:04" itemprop="dateModified" datetime="2026-01-08T10:12:04+08:00">2026-01-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>16 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="命令行输出内容变身"><a href="#命令行输出内容变身" class="headerlink" title="命令行输出内容变身"></a>命令行输出内容变身</h2><p>格式: \033[显示方式;前景色;背景色 m …… \033[0m</p>
+<ul>
+<li>\033[ 固定格式</li>
+<li>\033[0m 非必需, 如果省略表示后面输出内容的样式都会应用当前设置的样式</li>
+</ul>
+<h3 id="属性集"><a href="#属性集" class="headerlink" title="属性集"></a>属性集</h3><table>
+<thead>
+<tr>
+<th align="center">前景色</th>
+<th align="center">背景色</th>
+<th>色值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">30</td>
+<td align="center">40</td>
+<td>黑色</td>
+</tr>
+<tr>
+<td align="center">31</td>
+<td align="center">41</td>
+<td>红色</td>
+</tr>
+<tr>
+<td align="center">32</td>
+<td align="center">42</td>
+<td>绿色</td>
+</tr>
+<tr>
+<td align="center">33</td>
+<td align="center">43</td>
+<td>黄色</td>
+</tr>
+<tr>
+<td align="center">34</td>
+<td align="center">44</td>
+<td>蓝色</td>
+</tr>
+<tr>
+<td align="center">35</td>
+<td align="center">45</td>
+<td>紫红色</td>
+</tr>
+<tr>
+<td align="center">36</td>
+<td align="center">46</td>
+<td>青蓝色</td>
+</tr>
+<tr>
+<td align="center">37</td>
+<td align="center">47</td>
+<td>白色</td>
+</tr>
+</tbody></table>
+<h3 id="显示方式"><a href="#显示方式" class="headerlink" title="显示方式"></a>显示方式</h3><table>
+<thead>
+<tr>
+<th align="center">显示方式</th>
+<th>表现行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td>默认</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td>高亮</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td>下划线</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td>闪烁</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td>反色</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td>不可见</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出字体为绿色的 你好hello world</span></span><br><span class="line">[root@localhost ~]# <span class="built_in">printf</span> <span class="string">&#x27;\033[1;32m你好hello world\033[0m\n&#x27;</span></span><br><span class="line"><span class="comment"># 输出字体为绿色并带有下划线的 你好hello world</span></span><br><span class="line">[root@localhost ~]# <span class="built_in">printf</span> <span class="string">&#x27;\033[4;32m你好hello world\033[0m\n&#x27;</span></span><br><span class="line"><span class="comment"># 输出背景色为绿色的 你好hello world</span></span><br><span class="line">[root@localhost ~]# <span class="built_in">printf</span> <span class="string">&#x27;\033[7;32m你好hello world\033[0m\n&#x27;</span></span><br><span class="line"><span class="comment"># 输出内容不可见</span></span><br><span class="line">[root@localhost ~]# <span class="built_in">printf</span> <span class="string">&#x27;\033[8;32m你好hello world\033[0m\n&#x27;</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/05/bc4d38208f0f/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/05/0d965ffa3e9b/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -346,7 +1074,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
+                <time title="修改时间：2026-01-12 11:10:32" itemprop="dateModified" datetime="2026-01-12T11:10:32+08:00">2026-01-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -381,10 +1109,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h3><h4 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h4><ul>
+          <h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="onMenuShareAppMessage-微信提示-即将废弃"><a href="#onMenuShareAppMessage-微信提示-即将废弃" class="headerlink" title="onMenuShareAppMessage (微信提示: 即将废弃)"></a><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html">onMenuShareAppMessage</a> (微信提示: 即将废弃)</h3><ul>
 <li>jweixin-1.4.0.js</li>
 </ul>
-<h5 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h5><ul>
+<h4 id="企微-4-0-6-中使用此-API-的位置"><a href="#企微-4-0-6-中使用此-API-的位置" class="headerlink" title="企微(4.0.6) 中使用此 API 的位置"></a>企微(4.0.6) 中使用此 API 的位置</h4><ul>
 <li>转发</li>
 <li>转发给客户</li>
 <li>群发到客户群</li>
@@ -419,7 +1147,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/04/2c0c514706b8/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/04/6b29e5e9f372/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -433,7 +1161,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/04/2c0c514706b8/" class="post-title-link" itemprop="url">Docker-下</a>
+            <a href="/2022/04/6b29e5e9f372/" class="post-title-link" itemprop="url">Docker-Compose</a>
         </h2>
 
         <div class="post-meta">
@@ -450,7 +1178,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-30 15:39:34" itemprop="dateModified" datetime="2025-03-30T15:39:34+08:00">2025-03-30</time>
+                <time title="修改时间：2025-12-12 20:48:20" itemprop="dateModified" datetime="2025-12-12T20:48:20+08:00">2025-12-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -475,13 +1203,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>29k</span>
+              <span>11k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>26 分钟</span>
+              <span>10 分钟</span>
             </span>
 
         </div>
@@ -493,251 +1221,246 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Docker-网络"><a href="#Docker-网络" class="headerlink" title="Docker 网络"></a>Docker 网络</h2><p>Docker 网络架构源自一种叫作容器网络模型(CNM)的方案, 该方案是开源的并且支持插接式连接</p>
-<p>Libnetwork 是 Docker 对 CNM 的一种实现, 提供了 Docker 核心网络架构的全部功能. 不同的驱动可以通过插拔的方式接入 Libnetwork 来提供定制化的网络拓扑</p>
-<p>CNM 定义了 3 个基本要素：沙盒(Sandbox)、终端(Endpoint)和网络(Network)</p>
-<ul>
-<li>沙盒是一个独立的网络栈, 其中包括以太网接口、端口、路由表以及 DNS 配置</li>
-<li>终端就是虚拟网络接口。就像普通网络接口一样，终端主要职责是负责创建连接. 在 CNM 中, 终端负责将沙盒连接到网络</li>
-<li>网络是 802.1d 网桥(类似大家熟知的交换机)的软件实现. 因此, 网络就是需要交互的终端的集合, 并且终端之间相互独立</li>
+          <h2 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h2><ul>
+<li>Docker Compose 以服务为单位, 将为每一个服务部署一个容器</li>
+<li>默认以 <code>应用名称-服务名称-数字</code> 方式作为容器名称</li>
+<li>默认以 <code>应用名称_数据卷名</code> 方式作为数据卷名称</li>
+<li>默认以 <code>应用名称_网络名</code> 方式作为网络名称</li>
 </ul>
-<p>docker 网络采用 veth-pair 技术, 每次启动容器时会自动创建一对虚拟网络设备接口, 一端连着网络协议栈, 一端彼此相连, 停止容器时自动删除, docker0 网卡作为中间的桥梁, 常见的网络模式包含 bridge, host, none, container, overlay 等.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/04/2c0c514706b8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
+<p>Docker Compose 是定义和运行多容器 Docker 应用程序的工具, 运行部分命令时需要在 <code>compose.yaml/docker-compose.yaml</code> 文件所在目录中, 以 <code>应用名称-服务名称-数字</code> 编号为规则命名容器, 配置文件使用 yaml 语法, yaml 是一个可读性高，用来表达数据序列化的格式.</p>
+<p>yaml 文件中不能使用 tab 缩进, 只能使用空格</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">$&#123;VAR:-default&#125;</span>   <span class="string">如果</span> <span class="string">变量名</span> <span class="string">对应的环境变量未设置或为空,</span> <span class="string">则使用</span> <span class="string">默认值,</span> <span class="string">否则使用环境变量的值</span> </span><br><span class="line"><span class="string">$&#123;VAR-default&#125;</span>    <span class="string">仅当</span> <span class="string">变量名</span> <span class="string">对应的环境变量</span> <span class="string">完全未定义</span> <span class="string">时才用默认值(为空时不会替换)</span></span><br><span class="line"><span class="string">$&#123;VAR:?error&#125;</span>     <span class="string">严格模式,</span> <span class="string">如果</span> <span class="string">变量名</span> <span class="string">对应的环境变量</span> <span class="string">未设置/为空,</span> <span class="string">则报错并显示错误信息</span> <span class="string">error</span></span><br><span class="line"><span class="string">$&#123;VAR:+alternate&#125;</span> <span class="string">反向逻辑,</span> <span class="string">如果</span> <span class="string">变量名</span> <span class="string">已设置且非空,</span> <span class="string">则使用</span> <span class="string">alternate</span> <span class="string">值</span></span><br></pre></td></tr></table></figure>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动指定服务, 不加参数则默认启动所有服务</span></span><br><span class="line">docker compose -f -p -c --env-file .env.development up [service_name]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以下的命令不带服务名称则默认对所有服务执行相同操作</span></span><br></pre></td></tr></table></figure>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/04/6a14bcf31f14/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/6a14bcf31f14/" class="post-title-link" itemprop="url">vagrant</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-29 17:19:28" itemprop="dateCreated datePublished" datetime="2022-04-29T17:19:28+08:00">2022-04-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index"><span itemprop="name">tools</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>1.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="vagrant-命令行报错-Encoding-UndefinedConversionError"><a href="#vagrant-命令行报错-Encoding-UndefinedConversionError" class="headerlink" title="vagrant 命令行报错 Encoding::UndefinedConversionError"></a>vagrant 命令行报错 Encoding::UndefinedConversionError</h3><p>使用 vagrant 命令时提示 process_builder.rb:44:in `encode!’: “\xE5” to UTF-8 in conversion from ASCII-8BIT to UTF-8 to UTF-16LE (Encoding::UndefinedConversionError)</p>
-<p>本例使用的 vagrant 版本为 2.2.10, 安装目录：&lt;br/&gt; D:\HashiCorp\Vagrant\embedded\gems\2.2.10\gems\childprocess-4.0.0\lib\childprocess\windows\process_builder.rb 第 44 行</p>
-<p>修改 newstr.encode!(‘UTF-16LE’) 为 &lt;br/&gt; newstr.encode!(‘UTF-16LE’, invalid: :replace, undef: :replace, replace: ‘?’) <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41606390/article/details/122854431">参考连接</a></p>
-<h3 id="vagrant-自制-box-启动时-Authentication-failure"><a href="#vagrant-自制-box-启动时-Authentication-failure" class="headerlink" title="vagrant 自制 box 启动时 Authentication failure"></a>vagrant 自制 box 启动时 Authentication failure</h3><ul>
-<li>vagrant 2.3.6</li>
-<li>virtualBox 7.0.8</li>
-<li>win 11</li>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>--all-resources 引入所有的资源, 即使未被服务使用</p>
+</li>
+<li><p>-f, --file stringArray 指定配置文件</p>
+</li>
+<li><p>-p, --project-name string 指定项目名称</p>
+</li>
+<li><p>--project-directory string 指定项目工作目录</p>
+</li>
+<li><p>-c, --context 指定上下文环境名称</p>
+</li>
+<li><p>--env-file stringArray 指定环境变量配置文件</p>
+</li>
+<li><p>--parallel 设置并行</p>
+</li>
+<li><p>--compatibility 运行 compose 兼容模式</p>
+</li>
+<li><p>--profile 启用指定的服务, web 服务默认启动</p>
+</li>
 </ul>
-<blockquote>
-<p>Authentication failure 是 ssh 登录证书错误, 但虚拟机已经启动完成</p>
-</blockquote>
-<ul>
-<li><code>.ssh/authorized_keys</code> 或 <code>.vagrant/machines/default/virtualbox/private_key</code> 有变化(内容改动/文件存在)</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">==&gt; default: Forwarding ports...</span><br><span class="line">    default: 22 (guest) =&gt; 2222 (host) (adapter 1)</span><br><span class="line">==&gt; default: Booting VM...</span><br><span class="line">==&gt; default: Waiting <span class="keyword">for</span> machine to boot. This may take a few minutes...</span><br><span class="line">    default: SSH address: 127.0.0.1:2222</span><br><span class="line">    default: SSH username: vagrant</span><br><span class="line">    default: SSH auth method: private key</span><br><span class="line">    default: Warning: Authentication failure. Retrying...</span><br><span class="line">    default: Warning: Authentication failure. Retrying...</span><br><span class="line">    default: Warning: Authentication failure. Retrying...</span><br><span class="line">    default: Warning: Authentication failure. Retrying...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/04/6a14bcf31f14/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose --profile db up -d <span class="comment"># 只启动 db, web 服务</span></span><br></pre></td></tr></table></figure>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/04/a3c215997ec2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/a3c215997ec2/" class="post-title-link" itemprop="url">shell</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-28 19:55:46" itemprop="dateCreated datePublished" datetime="2022-04-28T19:55:46+08:00">2022-04-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-25 17:03:35" itemprop="dateModified" datetime="2025-03-25T17:03:35+08:00">2025-03-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>7.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="shell-重置密码"><a href="#shell-重置密码" class="headerlink" title="shell 重置密码"></a>shell 重置密码</h3><ol>
-<li>开机按 <code>e</code> 键进入内核编辑</li>
-<li>光标移动到倒数第二段 <code>Linux16</code> 末尾添加 <code>init=/bin/sh</code></li>
-<li><code>ctrl + x</code> 进行引导启动, 成功进入命令提示界面</li>
-<li>输入 <code>mount -o remount, rw /</code> 挂载根目录</li>
-<li>使用 <code>passwd</code> 命令修改指定用户密码</li>
-<li>直到提示 <code>passwd: all authentication tokens updated successfully.</code></li>
-<li>输入 <code>touch /.autorelabel</code> 回车</li>
-<li>输入 <code>exec /sbin/init</code> 回车重启系统</li>
-</ol>
 <h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
-<li>export 导出全局变量</li>
-<li>declare 声明变量</li>
-<li>unset 删除变量</li>
-<li>local 声明局部变量,一般用于函数内部</li>
+<li><p>attach 连接运行服务的标准输入输出</p>
+</li>
+<li><p>build 构建服务</p>
+</li>
+<li><p>commit 从服务容器创建一个新的镜像</p>
+<ul>
+<li>-a, --author 作者</li>
+<li>-m, --message string 提交信息</li>
+<li>-c, --change list 应用 Dockerfile 指令创建镜像</li>
+<li>--index int 指定如果有多个副本的服务的容器</li>
+<li>-p, --pause 提交过程中是否中断容器运行, 默认为 true</li>
 </ul>
-<p>单中括号是 POSIX 标准兼容的适用于所有 Unix/Linux 系统, 其他一切双方括号, 双圆括号不是 POSIX 标准兼容的但广泛用于 Bash、Zsh等Shell</p>
-<h4 id="PowerShell"><a href="#PowerShell" class="headerlink" title="PowerShell"></a>PowerShell</h4><p>dir env: | Get-childItem env:  查看所有的环境变量</p>
-<p>$env:[NAME] 查看指定环境变量</p>
-<p>设置环境变量</p>
-<p>$env:[NAME=VALUE] 仅在当前会话窗口中有效</p>
-<p>[System.Environment]::SetEnvironmentVariable(NAME, VALUE, ‘User|Machine’) 永久生效, User 表示用户级别, Machine 表示系统级别</p>
-<p>删除环境变量</p>
-<p>Remove-Item env:[NAME] 仅在当前会话窗口中有效</p>
-<p>[System.Environment]::SetEnvironmentVariable(NAME, $null, “User|Machine”) 永久生效, 将环境变量的设置为 $null</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/04/a3c215997ec2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+</li>
+<li><p>config 解析验证 compose.yaml 配置文件</p>
+<ul>
+<li><p>--environment 打印环境变量的插值</p>
+</li>
+<li><p>--format string 格式化输出, 值可选 yaml(default) | json</p>
+</li>
+<li><p>--images 输出镜像名称</p>
+</li>
+<li><p>--hash  输出服务的配置 hash, 一个一行</p>
+</li>
+<li><p>--profiles  输出指定的服务名, 一个一行</p>
+</li>
+<li><p>-o, --output string 保存到指定文件中, 默认是标准输出流</p>
+</li>
+<li><p>-q, --quiet 仅验证配置项, 不输出任何信息</p>
+</li>
+<li><p>--services 输出服务名称</p>
+</li>
+<li><p>--volumes  输出数据卷名称</p>
+</li>
+</ul>
+</li>
+<li><p>cp 在容器和本地文件系统之间拷贝文件</p>
+</li>
+<li><p>events 接收一个来自容器的真实的事件</p>
+</li>
+<li><p>export 导出容器文件系统为归档文件</p>
+</li>
+<li><p>images 列出创建容器的镜像</p>
+</li>
+<li><p>start 启动服务</p>
+</li>
+<li><p>restart 重启服务</p>
+</li>
+<li><p>wait 阻塞直到所有的服务容器停止</p>
+</li>
+<li><p>stop 停止服务</p>
+</li>
+<li><p>kill 强制停止容器</p>
+</li>
+<li><p>pause 暂停服务</p>
+</li>
+<li><p>unpasue 取消暂停服务</p>
+</li>
+<li><p>rm 移除已经停止的容器, 默认情况下附加到容器上的匿名数据卷不会被移除</p>
+<ul>
+<li>-f, --force 不询问确认操作直接移除</li>
+<li>-s, --stop 在移除之前停止容器</li>
+<li>-v, --volumes 移除所有附加到容器上的匿名数据卷</li>
+</ul>
+</li>
+<li><p>down 停止并移除容器, 网络</p>
+<ul>
+<li>--rmi string 移除服务使用的镜像</li>
+<li>-t, --timeout int 延迟关机的时长秒</li>
+<li>-v, --volumes 移除在 compose.yaml 中 volumes 顶层指令中声明的具名和匿名数据卷</li>
+</ul>
+</li>
+<li><p>logs 查看服务输出日志</p>
+<ul>
+<li>-f, --follow  监听日志输出</li>
+<li>--index int  指定哪个容器执行命令, 如果服务有多个副本时</li>
+<li>-n, --tail  输出容器日志的最后几行</li>
+<li>--since  显示指定时间开始的日志</li>
+<li>--until  显示截止到指定时间的日志</li>
+</ul>
+</li>
+<li><p>stats 查看容器资源的使用情况</p>
+</li>
+<li><p>ls 列出正在运行的 compose 项目</p>
+</li>
+<li><p>port 查看公共端口绑定信息</p>
+<ul>
+<li>--index int 指定如果有多个副本的服务的容器</li>
+<li>--protocol string  指定协议, tcp(default) | udp</li>
+</ul>
+</li>
+<li><p>ps 查看所有容器</p>
+<ul>
+<li>-a, --all 列出所有容器</li>
+<li>-f, --filter &lt;FILTER_TYPE&gt;=&lt;VALUE&gt; 根据指定条件过滤服务容器</li>
+<li>--format string 使用自定义模板格式化输出, table(default) | table TEMPLATE | json | TEMPLATE</li>
+<li>--services 显示服务名称</li>
+<li>--status stringArray 通过状态过滤服务, [paused | restarting | removing | running | dead | created | exited]</li>
+</ul>
+</li>
+<li><p>pull 拉取服务镜像</p>
+</li>
+<li><p>push 推送服务镜像</p>
+</li>
+<li><p>top 显示运行的进程信息</p>
+</li>
+<li><p>exec 在运行的容器中执行命令</p>
+<ul>
+<li>-d, --detach  后台运行命令</li>
+<li>-e, --env stringArray 设置环境变量</li>
+<li>--index int  指定哪个容器执行命令, 如果服务有多个副本时</li>
+<li>-T, --no-TTY  不分配伪 TTY, 默认每次执行命令时都分配 TTY</li>
+<li>-w, --workdir string 设置本次命令的工作目录</li>
+</ul>
+</li>
+<li><p>run 在服务上运行一次性命令</p>
+<ul>
+<li>--build 启动容器之前构建镜像</li>
+<li>-d, --detach</li>
+<li>-i, --interactive 交互式运行</li>
+<li>-e, --env stringArray 设置环境变量</li>
+<li>-l, --label stringArray 添加或覆盖 label</li>
+<li>-P, --service-ports 运行命令所有服务的端口都能映射到宿主机</li>
+<li>--name  给容器定义名字</li>
+<li>--pull  运行之前拉取镜像</li>
+<li>-p, --publish stringArray 发布容器的端口到宿主机</li>
+<li>--rm 当容器退出时自动移除</li>
+<li>-v, --volume stringArray 挂载数据卷</li>
+<li>-w, --workdir string 设置容器内的工作目录</li>
+</ul>
+</li>
+<li><p>scale 调整服务</p>
+<ul>
+<li>--no-deps 不启动关联的服务</li>
+</ul>
+</li>
+<li><p>version 查看版本信息</p>
+</li>
+<li><p>watch 监听文件系统更新时服务容器重构/重启的构建上下文</p>
+</li>
+<li><p>create 为服务创建容器</p>
+<ul>
+<li>--build 启动容器之前构建镜像</li>
+<li>--no-build 不构建镜像即使镜像不存在</li>
+<li>--force-recreate 即使配置项或镜像没有改变也要重新创建容器</li>
+<li>--no-recreate 如果容器存在则不创建新的容器</li>
+<li>--pull 创建之前拉取镜像</li>
+<li>--scale scale 调整服务实例数量, 并覆盖 <code>compose.yaml</code> 配置文件中的 scale 配置</li>
+</ul>
+</li>
+<li><p>up 创建服务并启动容器</p>
+<ul>
+<li><p>-d, --detach 后台运行容器</p>
+</li>
+<li><p>--attach 连接服务的输出</p>
+</li>
+<li><p>--no-attach 不连接服务的输出</p>
+</li>
+<li><p>--build 启动容器之前构建镜像</p>
+</li>
+<li><p>--no-build 不构建镜像即使镜像不存在</p>
+</li>
+<li><p>--no-start 创建服务之后不启动它</p>
+</li>
+<li><p>--no-deps 不启动关联的服务</p>
+</li>
+<li><p>--pull 启动之前拉取镜像</p>
+</li>
+<li><p>--scale scale 调整服务实例数量, 覆盖 <code>compose.yaml</code> 配置文件中的 scale 配置</p>
+</li>
+<li><p>--no-log-prefix 打印日志时不适用前缀</p>
+</li>
+<li><p>--no-recreate 如果容器存在则不创建新的容器</p>
+</li>
+<li><p>-y 非交互式运行命令, 所有的提示都回答 yes</p>
+</li>
+<li><p>-t, --timeout int 延迟关闭容器</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# docker compose up service_id <span class="comment"># 启动指定服务</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整指定服务实例数量, 先去掉 compose.yaml/docker-compose.yaml 配置文件 service 指定的端口, 在单机中会出现端口占用问题</span></span><br><span class="line">[root@localhost ~]# docker compose up --scale web=5 -d</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><ul>
+<li>使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># compose.yaml/docker-compose.yaml</span></span><br><span class="line"><span class="attr">version:</span> <span class="number">3.9</span>   <span class="comment"># 版本, obsolete(已过时)</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">myapp</span> <span class="comment"># 定义默认的项目名称, 将以环境变量 $&#123;COMPOSE_PROJECT_NAME&#125; 的方式公开</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">web:</span>   <span class="comment"># 服务名称</span></span><br><span class="line">    <span class="attr">annotations:</span> <span class="comment"># 容器声明, 可以是 arr 或 map</span></span><br><span class="line">      <span class="attr">com.example.foo:</span> <span class="string">bar</span></span><br><span class="line">      <span class="comment"># - com.example.foo=bar</span></span><br><span class="line">    <span class="attr">attach:</span> <span class="literal">false</span> <span class="comment"># 设置为 false 时不会主动收集服务日志, 默认为 false, v2.20.0 以上支持</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">&#x27;./web&#x27;</span>  <span class="comment"># 指定构建 web 服务的镜像的上下文环境目录</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span>  <span class="comment"># 指定构建镜像的配置文件名称</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&#x27;bundle&#x27;</span>, <span class="string">&#x27;exec&#x27;</span>, <span class="string">&#x27;thin&#x27;</span>, <span class="string">&#x27;-p&#x27;</span>, <span class="string">&#x27;3000&#x27;</span>]  <span class="comment"># 覆盖镜像配置文件(Dockerfile)中的CMD指令</span></span><br><span class="line">    <span class="attr">ports:</span> <span class="comment"># 端口映射</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;5000:5000&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;0.0.0.0:80:80/tcp&#x27;</span> <span class="comment"># 指定 ip 地址和协议, 或修改 /etc/docker/daemon.json 配置项&quot;ipv6&quot;:false</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">target:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">host_ip:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">        <span class="attr">published:</span> <span class="number">8080</span></span><br><span class="line">        <span class="attr">protocol:</span> <span class="string">tcp</span></span><br><span class="line">        <span class="attr">mode:</span> <span class="string">host</span></span><br><span class="line">    <span class="attr">privileged:</span> <span class="literal">true</span>   <span class="comment"># 配置容器目录权限</span></span><br><span class="line">    <span class="attr">read_only:</span> <span class="literal">true</span>    <span class="comment"># 开启容器文件系统只读模式</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span>    <span class="comment"># 定义容器重启模式 &quot;no&quot; | always | on-failure | unless-stopped</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">my-web</span>  <span class="comment"># 容器名称, 使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器</span></span><br><span class="line">    <span class="attr">env_file:</span> <span class="string">.env</span> <span class="comment"># 环境变量配置文件</span></span><br><span class="line">    <span class="attr">environment:</span>  <span class="comment"># 设置容器内环境变量</span></span><br><span class="line">      <span class="attr">RACK_ENV:</span> <span class="string">development</span></span><br><span class="line">      <span class="attr">SHOW:</span> <span class="string">&#x27;true&#x27;</span></span><br><span class="line">      <span class="attr">USER_INPUT:</span></span><br><span class="line">    <span class="attr">entrypoint:</span>   <span class="comment"># 覆盖镜像配置文件(Dockerfile)中的 ENTRYPOINT 指令</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">php</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">-d</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">vendor/bin/phpunit</span></span><br><span class="line">    <span class="attr">external_links:</span>   <span class="comment"># 将服务容器连接到 compose 应用管理以外的服务, 作用同 links</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">redis</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">database:mysql</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">database:postgresql</span></span><br><span class="line">    <span class="attr">extra_hosts:</span>  <span class="comment"># 添加主机 ip 映射关系到容器网络接口配置中(/etc/hosts)</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;somehost:162.242.195.82&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;otherhost:50.31.209.229&#x27;</span></span><br><span class="line">    <span class="attr">volumes:</span> <span class="comment"># 挂载数据卷</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">volume</span></span><br><span class="line">        <span class="attr">source:</span> <span class="string">db-data</span></span><br><span class="line">        <span class="attr">target:</span> <span class="string">/data</span></span><br><span class="line">        <span class="attr">read_only:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">volume:</span></span><br><span class="line">          <span class="attr">nocopy:</span> <span class="literal">true</span></span><br><span class="line">          <span class="attr">subpath:</span> <span class="string">sub</span></span><br><span class="line">        <span class="attr">tempfs:</span></span><br><span class="line">          <span class="attr">size:</span> <span class="number">1024</span></span><br><span class="line">          <span class="attr">mode:</span> <span class="number">755</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">bind</span></span><br><span class="line">        <span class="attr">source:</span> <span class="string">/home/workspace</span></span><br><span class="line">        <span class="attr">target:</span> <span class="string">/home/workVolume</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/home/workspace:/var/workspace</span>  <span class="comment"># 定义指定路径数据卷</span></span><br><span class="line">    <span class="attr">tmpfs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/run</span>  <span class="comment"># 挂载容器内临时文件系统</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/tmp</span></span><br><span class="line">    <span class="attr">volumes_from:</span>     <span class="comment"># 挂载共享数据卷</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">service_name</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">service_name:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">container:container_name</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">container:container_name:rw</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host|none|service:[service name]&quot;</span> <span class="comment"># 设置服务容器的网络模式</span></span><br><span class="line">    <span class="attr">networks:</span>  <span class="comment"># 自定义网络模式</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-web-network</span></span><br><span class="line">    <span class="attr">platform:</span> <span class="string">linux/amd64</span> <span class="comment"># 设置服务容器运行的目标平台</span></span><br><span class="line">    <span class="comment"># 当前服务启动的依赖优先于当前服务启动</span></span><br><span class="line">    <span class="comment"># 当前服务关闭优先于当前服务的依赖关闭</span></span><br><span class="line">    <span class="attr">depends_on:</span>  <span class="comment"># 服务启动依赖, </span></span><br><span class="line">      <span class="attr">db:</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">service_healthy</span></span><br><span class="line">        <span class="attr">restart:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">redis:</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">service_healthy</span></span><br><span class="line">      <span class="comment"># - db</span></span><br><span class="line">      <span class="comment"># - redis</span></span><br><span class="line">    <span class="attr">deploy:</span>  <span class="comment"># 部署</span></span><br><span class="line">      <span class="comment"># 外部客户端连接服务的方式</span></span><br><span class="line">      <span class="comment"># vip(Virtual IP) 为服务分配虚拟 IP, 客户端使用虚拟 IP 连接</span></span><br><span class="line">      <span class="comment"># dnsrr 平台配置 dns 条目, 使用服务名称查询 IP 地址列表连接</span></span><br><span class="line">      <span class="attr">endpoint_mode:</span> <span class="string">vip</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">com.example.description:</span> <span class="string">&#x27;This label will appear on the web server&#x27;</span> <span class="comment"># 服务元数据</span></span><br><span class="line">      <span class="attr">mode:</span> <span class="string">replicated</span> <span class="comment"># 服务运行模式, global | replicaated(default) | replicated-job | global-job</span></span><br><span class="line">      <span class="attr">replicas:</span> <span class="number">6</span> <span class="comment"># 实例</span></span><br><span class="line">      <span class="attr">restart_policy:</span> <span class="comment"># 服务重启策略, 如果缺失, compose 会使用服务 restart 项</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">on-failure</span></span><br><span class="line">        <span class="attr">delay:</span> <span class="string">5s</span></span><br><span class="line">        <span class="attr">max_attempts:</span> <span class="number">3</span></span><br><span class="line">        <span class="attr">window:</span> <span class="string">120s</span></span><br><span class="line">      <span class="attr">rollback_config:</span> <span class="comment"># 服务回滚设置</span></span><br><span class="line">      <span class="attr">update_config:</span> <span class="comment"># 服务升级设置</span></span><br><span class="line">        <span class="attr">parallelism:</span> <span class="number">2</span></span><br><span class="line">        <span class="attr">delay:</span> <span class="string">10s</span></span><br><span class="line">        <span class="attr">order:</span> <span class="string">stop-first</span></span><br><span class="line">    <span class="attr">dns:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span>  <span class="comment"># 自定义网络的 DNS 服务器</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span> <span class="string">common.yml</span>   <span class="comment"># 当前配置中扩展另一个服务</span></span><br><span class="line">    <span class="attr">labels:</span>    <span class="comment"># 添加容器元数据</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;com.example.description=Accounting webapp&#x27;</span></span><br><span class="line">    <span class="attr">develop:</span> <span class="comment"># 定义开发模式容器同步</span></span><br><span class="line">      <span class="attr">devices:</span></span><br><span class="line">      <span class="attr">dns:</span></span><br><span class="line">      <span class="attr">dns_opt:</span></span><br><span class="line">      <span class="attr">dns_search:</span></span><br><span class="line">    <span class="attr">healthcheck:</span> <span class="comment"># 服务健康检查</span></span><br><span class="line">      <span class="attr">test:</span> [<span class="string">&quot;CMD&quot;</span>, <span class="string">&quot;curl&quot;</span>, <span class="string">&quot;-f&quot;</span>, <span class="string">&quot;http://localhost&quot;</span>]</span><br><span class="line">      <span class="attr">interval:</span> <span class="string">1m30s</span></span><br><span class="line">      <span class="attr">timeout:</span> <span class="string">10s</span></span><br><span class="line">      <span class="attr">retries:</span> <span class="number">3</span></span><br><span class="line">      <span class="attr">start_period:</span> <span class="string">40s</span></span><br><span class="line">      <span class="attr">start_interval:</span> <span class="string">5s</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">redis:</span> <span class="comment"># 服务名称 </span></span><br><span class="line">    <span class="comment"># 当同时使用 image 和 build 指令构建时, 将按照 pull_policy 的定义进行构建, </span></span><br><span class="line">    <span class="comment"># 如果未定义 pull_policy 时, Compose 会尝试先拉取镜像, 如果在镜像仓库或缓存中找不到镜像时从源构建</span></span><br><span class="line">    <span class="attr">pull_policy:</span> <span class="string">always</span>   <span class="comment"># Compose 总是从镜像仓库拉取镜像</span></span><br><span class="line">                 <span class="string">never</span>    <span class="comment"># Compose 不会从镜像仓库拉取镜像而是依赖缓存中的镜像, 如果缓存中不存在则报告错误</span></span><br><span class="line">                 <span class="string">missing</span>  <span class="comment"># 默认选项, Compose 仅当缓存中镜像不可用时从镜像仓库拉取</span></span><br><span class="line">                 <span class="string">build</span>    <span class="comment"># Compose 构建镜像如果镜像已经存在则重新构建</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">cpuset:</span> <span class="string">&#x27;0,2,4,6&#x27;</span> <span class="comment"># 绑定 cpu</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">redis</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">/redis.Dockerfile</span></span><br><span class="line">    <span class="attr">volumes:</span>   <span class="comment"># 挂载数据卷</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/home/workspace</span>   <span class="comment"># 定义匿名数据卷</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db-data:/var/lib/redis</span>  <span class="comment"># 挂载公共数据卷 db-data</span></span><br><span class="line">    <span class="attr">networks:</span>   <span class="comment"># 自定义网络模式</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-web-network</span></span><br><span class="line">    <span class="attr">links:</span>    <span class="comment"># 定义网络连接另一个服务的容器</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db:mysql</span>   <span class="comment"># 可以直接使用 服务名, 或者使用 服务名:别名 方式</span></span><br><span class="line">    <span class="attr">scale:</span> <span class="number">6</span>  <span class="comment"># 设置容器数量, 如果 scale 和 deploy.replicas 同时存在则必须保持一致</span></span><br><span class="line">    <span class="attr">profiles:</span> <span class="comment"># 指定启动时的 profile</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;db&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;3306:3306&#x27;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="number">123456</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">test</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">test</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">test123</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db-data:/var/lib/mysql</span>   <span class="comment"># 挂载公共数据卷 db-data</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-web-network</span></span><br><span class="line">    <span class="attr">profiles:</span> <span class="comment"># 指定启动时的 profile</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 跨服务共享数据卷定义到顶层指令 volumes</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">db-data:</span>   <span class="comment"># 声明卷名, compose 自动创建该卷名并会添加项目名前缀</span></span><br><span class="line">  <span class="attr">data:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">&#x27;my-app-data&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">front-tier:</span></span><br><span class="line">  <span class="attr">back-tier:</span></span><br><span class="line">  <span class="attr">backend:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">custom-driver</span></span><br><span class="line">  <span class="attr">my-web-network:</span>   <span class="comment"># 声明自定义网络模式, compose 自动创建该网络并会添加项目名前缀</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myapp-network</span> <span class="comment"># 定义网络名称, 在 docker network 列表中显示</span></span><br><span class="line">    <span class="attr">attachable:</span> <span class="literal">true</span>  <span class="comment"># 允许独立的容器连接到此网络</span></span><br><span class="line">    <span class="attr">enable_ipv6:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">external:</span> <span class="literal">true</span>  <span class="comment"># 指定此网络的生命周期在应用程序的生命周期之外进行维护, Compose 不会尝试创建这些网络, 如果不存在则返回错误</span></span><br><span class="line"><span class="attr">configs:</span> <span class="comment"># 允许服务调整其行为而无须重新构建 docker 镜像</span></span><br><span class="line">  <span class="attr">http_config:</span></span><br><span class="line">    <span class="attr">file:</span> <span class="string">./httpd.conf</span></span><br><span class="line"><span class="attr">secrets:</span> <span class="comment"># 针对敏感数据的配置</span></span><br><span class="line">  <span class="attr">server-certificate:</span></span><br><span class="line">    <span class="attr">file:</span> <span class="string">./server.cert</span></span><br><span class="line">  <span class="attr">token:</span></span><br><span class="line">    <span class="attr">environment:</span> <span class="string">&#x27;OAUTH_TOKEN&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="volumes"><a href="#volumes" class="headerlink" title="volumes"></a>volumes</h4><ul>
+<li><p>使用路径方式挂载数据卷</p>
+</li>
+<li><p>使用卷名方式挂载数据卷, 需要在 <code>一级配置项</code> 中声明, compose 会自动创建以项目名为前缀的卷名, 如果不需要卷名前缀, 则使用 <code>external: true</code> 指定卷名, 但是需要手动创建该卷名</p>
+</li>
+</ul>
+<h3 id="多实例-Web-应用"><a href="#多实例-Web-应用" class="headerlink" title="多实例 Web 应用"></a>多实例 Web 应用</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># compose.yaml</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">myapp</span></span><br><span class="line"><span class="attr">service:</span></span><br><span class="line">  <span class="attr">nginx:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:latest</span></span><br><span class="line">    <span class="attr">port:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;80:80&#x27;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./nginx.conf:/etc/nginx/nginx.conf</span>  <span class="comment"># 自定义 nginx 配置文件</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">web</span></span><br><span class="line">    <span class="attr">network:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">webnet</span></span><br><span class="line">  <span class="attr">web:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">web</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">./my-web-app.Dockerfile</span></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">replicas:</span> <span class="number">3</span> <span class="comment"># 启动 3 个 web 实例</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ENV=production</span></span><br><span class="line">    <span class="attr">network:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">webnet</span></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">webnet:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br></pre></td></tr></table></figure>
+
+<p>nginx</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># nginx.conf</span><br><span class="line">http &#123;</span><br><span class="line">  upstream web_backend &#123;</span><br><span class="line">    server web:80;</span><br><span class="line">    server web:80;</span><br><span class="line">    server web:80;</span><br><span class="line">  &#125;</span><br><span class="line">  server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    location / &#123;</span><br><span class="line">      proxy_pass http://web_backend;</span><br><span class="line"></span><br><span class="line">      proxy_set_header Host $host;</span><br><span class="line">      proxy_set_header X-Reap-IP $remote_addr;</span><br><span class="line">      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>web 应用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hello_world</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Hello, World!&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>, port=<span class="number">80</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># my-web-app.Dockerfile</span></span><br><span class="line"><span class="comment"># 使用官方 Python 镜像作为基础镜像</span></span><br><span class="line"><span class="keyword">FROM</span> python:<span class="number">3.9</span>-slim</span><br><span class="line"><span class="comment"># 设置工作目录</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制依赖文件并安装依赖</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> requirements.txt .</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> pip install --no-cache-dir -r requirements.txt</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制应用代码</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . .</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;python&quot;</span>, <span class="string">&quot;app.py&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="docker-compose-数据库"><a href="#docker-compose-数据库" class="headerlink" title="docker compose 数据库"></a>docker compose 数据库</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">myapp</span> <span class="comment"># $&#123;COMPOSE_PROJECT_NAME&#125; 以环境变量形式访问项目名称</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis:7</span></span><br><span class="line"><span class="comment">#   使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器</span></span><br><span class="line"><span class="comment">#   container_name: redis-container</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;6379:6379&#x27;</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&#x27;redis-server&#x27;</span>, <span class="string">&#x27;--appendonly yes&#x27;</span>, <span class="string">&#x27;--logfile /data/redis.log&#x27;</span>]</span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/redis:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/redis/redis.conf:/usr/local/etc/redis/redis.conf</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-app-network</span></span><br><span class="line"><span class="comment">#   deploy:</span></span><br><span class="line"><span class="comment">#     replicas: 3</span></span><br><span class="line"><span class="comment">#       labels:</span></span><br><span class="line"><span class="comment">#         com.myapp.redis.description: &#x27;This label will appear on the redis server&#x27;</span></span><br><span class="line">  <span class="attr">mysql:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mysql-container</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;3306:3306&#x27;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="number">123456</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">test</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">test</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">test123</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/mysql:/var/lib/mysql</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-app-network</span></span><br><span class="line">  <span class="attr">mongodb:</span></span><br><span class="line"><span class="comment">#   mongodb 6.0 以上 docker 镜像不再包含 mongo shell 工具. 只包含 mongod 数据库服务器</span></span><br><span class="line"><span class="comment">#   手动下载 mongosh 工具, 或者使用 mongodb 6.0 之前的版本</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mongo:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mongodb-container</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;27017:27017&#x27;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MONGO_INITDB_ROOT_USERNAME:</span> <span class="string">root</span></span><br><span class="line">      <span class="attr">MONGO_INITDB_ROOT_PASSWORD:</span> <span class="number">123456</span></span><br><span class="line">      <span class="attr">MONGODB_BIND_IP:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&#x27;mongod&#x27;</span>, <span class="string">&#x27;--logpath&#x27;</span>, <span class="string">&#x27;/var/log/mongodb/mongod.log&#x27;</span>]</span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/mongodb:/data/db</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/mongodb/logs:/var/log/mongodb</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-app-network</span></span><br><span class="line"><span class="comment">#   挂载临时文件系统添加初始化脚本安装 mongosh</span></span><br><span class="line">    <span class="attr">tmpfs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/tmp</span></span><br><span class="line"><span class="comment">#   首次创建容器需要先执行 entrypoint 命令安装 mongosh, 然后再注释 entrypoint</span></span><br><span class="line"><span class="comment">#   entrypoint: [&#x27;/bin/sh&#x27;, &#x27;-c&#x27;, &#x27;apt-get update &amp;&amp; apt-get install -y wget &amp;&amp; wget -qO- https://downloads.mongodb.com/compass/mongosh-1.5.4-linux-x64.tgz | tar -xz -C /usr/local/bin --strip-components 1 mongosh-1.5.4-linux-x64/bin/mongosh &amp;&amp; exec docker-entrypoint.sh $$MONGO_INITDB_ROOT_USERNAME $$MONGO_INITDB_ROOT_PASSWORD&#x27;]</span></span><br><span class="line"><span class="comment"># sqllite:</span></span><br><span class="line"><span class="comment">#   image: sqllite3:latest</span></span><br><span class="line"><span class="comment">#   command: [&#x27;sqllite3&#x27;, &#x27;/data/database.db&#x27;] # 启动 sqllite 并指向数据库文件</span></span><br><span class="line"><span class="comment">#   volumes:</span></span><br><span class="line"><span class="comment">#     - /var/lib/sqllite:/data</span></span><br><span class="line"><span class="comment">#   networks:</span></span><br><span class="line"><span class="comment">#     - my-app-network</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">db-data:</span></span><br><span class="line">    <span class="attr">labels:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;com.myapp.volumes.description=share data vaolume&#x27;</span></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">my-app-network:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myapp-network</span> <span class="comment"># 定义网络名称, 在 docker network 列表中显示</span></span><br><span class="line">    <span class="attr">attachable:</span> <span class="literal">true</span>  <span class="comment"># 允许独立的容器连接到此网络</span></span><br><span class="line">    <span class="attr">enable_ipv6:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
       
     </div>
 
@@ -756,7 +1479,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/04/1e58889c42cf/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/04/51fff91923b2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -770,7 +1493,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/04/1e58889c42cf/" class="post-title-link" itemprop="url">nginx</a>
+            <a href="/2022/04/51fff91923b2/" class="post-title-link" itemprop="url">Docker-Swarm</a>
         </h2>
 
         <div class="post-meta">
@@ -780,114 +1503,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-04-15 11:15:45" itemprop="dateCreated datePublished" datetime="2022-04-15T11:15:45+08:00">2022-04-15</time>
+              <time title="创建时间：2022-04-30 11:11:58" itemprop="dateCreated datePublished" datetime="2022-04-30T11:11:58+08:00">2022-04-30</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-17 22:08:09" itemprop="dateModified" datetime="2025-03-17T22:08:09+08:00">2025-03-17</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>5.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>5 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><p>命令行提示错误 98: address already in use</p>
-<p>查找系统进程中已存在的 nginx 进程号, 使用 <code>kill -9 $PID</code> 关闭进程后重启 nginx 服务</p>
-<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><ul>
-<li><p>$nginx_version nginx 版本</p>
-</li>
-<li><p>$connection_requests TCP 链接当前的请求数量</p>
-</li>
-<li><p>$proxy_protocol_addr 获取代理访问服务器的客户端地址，如果是直接访问，该值为空字符串</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/04/1e58889c42cf/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/03/27a05caca8fb/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/03/27a05caca8fb/" class="post-title-link" itemprop="url">Docker-上</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-03-22 18:37:24" itemprop="dateCreated datePublished" datetime="2022-03-22T18:37:24+08:00">2022-03-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-05 14:10:16" itemprop="dateModified" datetime="2025-03-05T14:10:16+08:00">2025-03-05</time>
+                <time title="修改时间：2025-06-26 11:21:14" itemprop="dateModified" datetime="2025-06-26T11:21:14+08:00">2025-06-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -912,285 +1535,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>21k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>19 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="敲黑板"><a href="#敲黑板" class="headerlink" title="敲黑板"></a>敲黑板</h2><ul>
-<li><p>Package docker-ce is not available, but is referred to by another package.</p>
-<p>如果提示未发现可用的 docker-ce 包时,检查系统镜像源是否正确(如果不能翻墙时, 使用国内的镜像源修改 /etc/apt/source.list)</p>
-</li>
-<li><p>Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get <a href="http://%2Fvar%2Frun%2Fdocker.sock/v1.24/images/json">http://%2Fvar%2Frun%2Fdocker.sock/v1.24/images/json</a>: dial unix /var/run/docker.sock: connect: permission denied</p>
-<p>执行 docker 相关命令时提示, 表示 docker 权限不足</p>
-<ul>
-<li><p>使用 sudo 命令运行 docker 命令</p>
-</li>
-<li><p>将当前用户加入到 docker 组中</p>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# <span class="built_in">cat</span> /etc/group | grep docker</span><br><span class="line">docker:x:994:vagrant</span><br><span class="line">[root@localhost ~]# <span class="built_in">cat</span> /etc/gshadow | grep docker</span><br><span class="line">docker:!::vagrant</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">groupadd docker <span class="comment"># 添加 docker 用户组</span></span><br><span class="line">gpasswd -a <span class="variable">$USER</span> docker <span class="comment"># 添加登陆用户到 docker 用户组中</span></span><br><span class="line">newgrp docker <span class="comment"># 更新用户组</span></span><br><span class="line">或者</span><br><span class="line">usermod -aG docker <span class="variable">$USER</span> <span class="comment"># 给用户添加一个新的附属组</span></span><br><span class="line">newgrp docker <span class="comment"># 重新登陆组</span></span><br><span class="line"></span><br><span class="line">systemctl restart docker <span class="comment"># 重启 docker 服务</span></span><br><span class="line"></span><br><span class="line">systemctl <span class="built_in">enable</span> docker <span class="comment"># 设置 docker 守护进程开机启动</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/03/27a05caca8fb/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/03/0734d1c7c12c/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/03/0734d1c7c12c/" class="post-title-link" itemprop="url">JS</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-03-05 10:35:34" itemprop="dateCreated datePublished" datetime="2022-03-05T10:35:34+08:00">2022-03-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-07 19:43:11" itemprop="dateModified" datetime="2025-04-07T19:43:11+08:00">2025-04-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>7.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>–no-sandbox –disable-web-security –user-data-dir=C:\chromedata</p>
-</blockquote>
-<blockquote>
-<p>fetch() 表单上传时, 不能设置 <code>Content-Type</code> 头, 否则会丢失文件边界</p>
-</blockquote>
-<h3 id="浏览器引擎"><a href="#浏览器引擎" class="headerlink" title="浏览器引擎"></a>浏览器引擎</h3><table>
-<thead>
-<tr>
-<th align="center">浏览器</th>
-<th align="center">渲染引擎</th>
-<th align="center">js 引擎</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">IE</td>
-<td align="center">Trident</td>
-<td align="center">JScript(IE3.0-IE8.0) / Chakra(IE9~)</td>
-</tr>
-<tr>
-<td align="center">Chrome</td>
-<td align="center">webkit / Blink</td>
-<td align="center">V8</td>
-</tr>
-<tr>
-<td align="center">Safari</td>
-<td align="center">webkit</td>
-<td align="center">Nitro(SquirrelFish)</td>
-</tr>
-<tr>
-<td align="center">Firefox</td>
-<td align="center">Gecko</td>
-<td align="center">~Monkey 系列(SpiderMonkey / TraceMonkey / JaegerMonkey / OdinMonkey)</td>
-</tr>
-<tr>
-<td align="center">Opera</td>
-<td align="center">WebKit / Blink</td>
-<td align="center">Carakan</td>
-</tr>
-</tbody></table>
-<h3 id="改变原数组的方法"><a href="#改变原数组的方法" class="headerlink" title="改变原数组的方法"></a>改变原数组的方法</h3><ul>
-<li>pop 从数组中删除最后一个元素,并返回该元素的值(数组为空时返回 undefined). 此方法更改数组的长度</li>
-<li>push 将一个或多个元素添加到数组的末尾, 并返回该数组的新长度</li>
-<li>shift 从数组中删除第一个元素,并返回该元素的值(数组为空则返回 undefined). 此方法更改数组的长度</li>
-<li>unshift 将一个或多个元素添加到数组的开头. 并返回该数组的新长度(该方法修改原有数组)</li>
-<li>reverse 将数组中元素的位置颠倒, 并返回该数组. 该方法会改变原数组</li>
-<li>sort 用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/In-place_algorithm">原地算法</a>对数组的元素进行排序, 并返回数组<ul>
-<li>compareFunction 用来指定按某种顺序进行排列的函数, 省略则按照转换为的字符串的 unicode 位点进行排序<ul>
-<li>firstEl 第一个用于比较的元素</li>
-<li>secondEl 第二个用于比较的元素</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>splice 通过删除或替换现有元素或者原地添加新的元素来修改数组, 并以数组形式返回被修改的内容. 此方法会改变原数组<ul>
-<li>start 指定修改的开始位置</li>
-<li>deleteCount 整数, 表示要移除的数组元素的个数, 如果为 0 或者负数, 则不移除元素</li>
-<li>item1, item2 要添加进数组的元素,从 start 位置开始, 不指定则删除数组元素</li>
-</ul>
-</li>
-<li>fill 用一个固定值填充一个数组中从起始索引到终止索引内的全部元素. 不包括终止索引. 返回修改后的数组<ul>
-<li>value 用来填充数组元素的值</li>
-<li>start 起始索引, 默认值为 0</li>
-<li>end 终止索引, 默认值为 this.length</li>
-</ul>
-</li>
-<li>copyWithin 浅复制数组的一部分到同一数组中的另一个位置, 并返回它, 不会改变原数组的长度. 返回改变后的数组<ul>
-<li>target 整数, 复制序列到该位置, 如果是负数, target 将从末尾开始计算. 如果 target 大于等于 arr.length, 将会不发生拷贝</li>
-<li>start 整数, 开始复制元素的起始位置, 如果是负数, start 将从末尾开始计算. 如果 start 被忽略, copyWithin 将会从 0 开始复制</li>
-<li>end 整数, 开始复制元素的结束位置, copyWithin 将会拷贝到该位置, 但不包括 end 这个位置的元素. 如果是负数, end 将从末尾开始计算. 如果忽略则复制到数组结尾</li>
-</ul>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/03/0734d1c7c12c/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/03/ee675758fc33/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/03/ee675758fc33/" class="post-title-link" itemprop="url">TreeWalker</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-03-05 10:35:34" itemprop="dateCreated datePublished" datetime="2022-03-05T10:35:34+08:00">2022-03-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-07 19:43:08" itemprop="dateModified" datetime="2025-04-07T19:43:08+08:00">2025-04-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebAPI/" itemprop="url" rel="index"><span itemprop="name">WebAPI</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebAPI/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>2.2k</span>
+              <span>2.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -1208,142 +1553,43 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="TreeWalker"><a href="#TreeWalker" class="headerlink" title="TreeWalker"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/TreeWalker">TreeWalker</a></h2><p>表示文档子树中的节点和它们的位置</p>
+          <h2 id="Docker-Swarm"><a href="#Docker-Swarm" class="headerlink" title="Docker Swarm"></a>Docker Swarm</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>Swarm 是 Docker 官方提供的一款集群管理工具, 其主要作用是把若干台 Docker 主机抽象为一个整体, 并且通过一个入口统一管理这些 Docker 主机上的各种 Docker 资源</p>
+<p>从集群角度来说, 一个 Swarm 由一个或多个 Docker 节点组成. 这些节点可以是物理服务器、虚拟机、树莓派(Raspberry Pi)或云实例. 唯一的前提就是要求所有节点通过可靠的网络相连</p>
+<p>节点会被配置为管理节点(Manager)或工作节点(Worker). 管理节点负责集群控制面(Control Plane), 进行诸如监控集群状态、分发任务至工作节点等操作. 工作节点接收来自管理节点的任务并执行.</p>
+<p>Swarm 的配置和状态信息保存在一套位于所有管理节点上的分布式 etcd 数据库中. 该数据库运行于内存中, 并保持数据的最新状态. 关于该数据库最棒的是, 它几乎不需要任何配置, 作为 Swarm 的一部分被安装, 无须管理</p>
 <ul>
-<li>root 表示对象的根节点</li>
-<li>whatShow, 默认值: 0xFFFFFFFF, 表示位掩码的 unsigned long, 由 <a target="_blank" rel="noopener" href="https://dom.spec.whatwg.org/#interface-nodefilter">NodeFilter</a> 的常用属性组合而成, 此参数便于筛选出特定类型的节点<ul>
-<li>0xFFFFFFFF, NodeFilter.SHOW_ALL 显示所有节点</li>
-<li>0x2       , NodeFilter.SHOW_ATTIBUTE 显示 Attr 节点</li>
-<li>0x80      , NodeFilter.SHOW_COMMENT 显示 Comment 节点</li>
-<li>0x1       , NodeFilter.SHOW_ELEMENT 显示 Element 节点</li>
-<li>0x4       , NodeFilter.SHOW_TEXT    显示 Text 节点</li>
+<li>Swarm 和 Kubernetes 比较类似, 但是更加轻, 具有的功能也较 kubernetes 更少一些</li>
+<li>Docker Swarm 包含两方面：一个企业级的 Docker 安全集群, 以及一个微服务应用编排引擎</li>
+<li>Swarm 默认内置有加密的分布式集群存储(encrypted distributed cluster store)、加密网络(Encrypted Network)、公用 TLS(Mutual TLS)、安全集群接入令牌 Secure Cluster Join Token)以及一套简化数字证书管理的 PKI(Public Key Infrastructure). 我们可以自如地添加或删除节点</li>
+<li>编排方面, Swarm 提供了一套丰富的 API 使得部署和管理复杂的微服务应用变得易如反掌. 通过将应用定义在声明式配置文件中, 就可以使用原生的 Docker 命令完成部署</li>
 </ul>
-</li>
-<li>filter, 回调函数或包含 acceptNode() 方法的对象, 其返回值为 NodeFilter.FILTER_ACCEPT, NodeFilter.FILTER_REJECT 或 NodeFilter.FILTER_SKIP<ul>
-<li>NodeFilter.FILTER_ACCEPT 包含此节点</li>
-<li>NodeFilter.FILTER_REJECT 不包含以此节点为根的子树中的任意节点</li>
-<li>NodeFilter.FILTER_SKIP   不包含此节点</li>
+<p><img src="/images/docker-7.gif" alt="docker-7"></p>
+<h3 id="令牌格式"><a href="#令牌格式" class="headerlink" title="令牌格式"></a>令牌格式</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PREFIX - VERSION - SWARM ID - TOKEN</span><br><span class="line"></span><br><span class="line">SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>PREFIX 令牌前缀,便于区分 固定为 SWMTKN</li>
+<li>VERSION Swarm 的版本信息</li>
+<li>SWARM ID Swarm 认证信息的一个哈希值</li>
+<li>TOKEN 标识管理节点还是工作节点的准入令牌</li>
 </ul>
-</li>
+<h3 id="初始化-init"><a href="#初始化-init" class="headerlink" title="初始化 init"></a>初始化 init</h3><ul>
+<li>--advertise-addr 指定其他节点用来连接到当前管理节点的 IP 和端口, 当节点上有多个 IP 时指定</li>
+<li>--listen-addr 指定用于承载 Swarm 流量的 IP 和端口. 其设置通常与 <code>--advertise-addr</code> 相匹配, 但是当节点上有多个 IP 的时候,可用于指定具体某个 IP</li>
+<li>--autolock 启用锁</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回新创建的 TreeWalker 对象 </span></span><br><span class="line"><span class="keyword">const</span> tw = <span class="variable language_">document</span>.<span class="title function_">createTreeWalker</span>(root, whatToShow, filter);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> treeWalker = <span class="variable language_">document</span>.<span class="title function_">createTreeWalker</span>(<span class="variable language_">document</span>.<span class="property">body</span>, <span class="title class_">NodeFilter</span>.<span class="property">SHOW_ElEMENT</span>, <span class="function">(<span class="params">node</span>) =&gt;</span> </span><br><span class="line">  node.<span class="property">classList</span>.<span class="title function_">contains</span>(<span class="string">&#x27;no-escape&#x27;</span>) </span><br><span class="line">  ? <span class="title class_">NodeFilter</span>.<span class="property">FILTER_REJECT</span></span><br><span class="line">  : node.<span class="title function_">closest</span>(<span class="string">&#x27;.escape&#x27;</span>)</span><br><span class="line">    ? <span class="title class_">NodeFilter</span>.<span class="property">FILTER_ACCEPT</span></span><br><span class="line">    : <span class="title class_">NodeFilter</span>.<span class="property">FILTER_SKIP</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">while</span> (treeWalker.<span class="title function_">nextNode</span>()) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> node <span class="keyword">of</span> treeWalker.<span class="property">currentNode</span>.<span class="property">childNodes</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (node.<span class="property">nodeType</span> === <span class="title class_">Node</span>.<span class="property">TEXT_NODE</span> &amp;&amp; <span class="regexp">/\S/</span>.<span class="title function_">test</span>(node.<span class="property">data</span>)) &#123;</span><br><span class="line">      <span class="comment">// 排除仅含空白符的文本节点</span></span><br><span class="line">      node.<span class="property">data</span> = <span class="built_in">encodeURI</span>(node.<span class="property">data</span>.<span class="title function_">replace</span>(<span class="regexp">/\s+/g</span>, <span class="string">&quot; &quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="treeWalker"><a href="#treeWalker" class="headerlink" title="treeWalker"></a>treeWalker</h3><ul>
-<li><p>root, 只读属性, 表示新建 TreeWalker 时所声明的根节点</p>
-</li>
-<li><p>whatToShow, 只读属性, 返回一个 unsigned long 类型的常量位掩码, 表示需要筛选的 Node 类型</p>
-</li>
-<li><p>filter, 只读属性, 返回一个实现 NodeFilter 接口对象, 用来挑选相关的节点</p>
-</li>
-<li><p>currentNode, 返回 TreeWalker 当前指向的 Node</p>
-</li>
-<li><p>parentNode(), 移动当前 Node 到文档顺序中的第一个可见的祖先节点并返回该节点, 如果没有则返回 null 同时不会发生移动</p>
-</li>
-<li><p>firstChild(), 移动当前 Node 到当前节点的第一个可见子节点并返回该节点, 如果没有则返回 null 同时不会发生移动</p>
-</li>
-<li><p>lastChild(), 移动当前 Node 到当前节点的最后一个可见子节点并返回该节点, 如果没有则返回 null 同时不会发生移动</p>
-</li>
-<li><p>previousSibling(), 移动当前 Node 到当前节点的前一个兄弟节点并返回该节点, 如果没有则返回 null 同时不会发生移动</p>
-</li>
-<li><p>nextSibling(), 移动当前 Node 到当前节点的后一个兄弟节点并返回该节点, 如果没有则返回 null 同时不会发生移动</p>
-</li>
-<li><p>previousNode(), 移动当前 Node 到文档顺序中前一个节点并返回该节点, 如果没有则返回 null 同时不会发生移动</p>
-</li>
-<li><p>nextNode(), 移动当前 Node 到文档顺序中下一个节点并返回该节点, 如果没有则返回 null 同时不会发生移动</p>
-</li>
+<h4 id="开放端口"><a href="#开放端口" class="headerlink" title="开放端口"></a>开放端口</h4><ul>
+<li>每个节点都需要安装 Docker, 并且能够与 Swarm 的其他节点通信</li>
 </ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">title</span>&gt;</span>Demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;container&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">html</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> w1 = <span class="variable language_">document</span>.<span class="title function_">createTreeWalker</span>(<span class="variable language_">document</span>.<span class="property">body</span>, <span class="title class_">NodeFilter</span>.<span class="property">SHOW_ALL</span>);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> node = w1.<span class="title function_">firstChild</span>(); <span class="comment">// nodeName: #Text</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> w2 = <span class="variable language_">document</span>.<span class="title function_">createTreeWalker</span>(<span class="variable language_">document</span>.<span class="property">body</span>, <span class="title class_">NodeFilter</span>.<span class="property">SHOW_ELEMENT</span>);</span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> el = w2.<span class="title function_">firstChild</span>(); <span class="comment">// nodeName: DIV  </span></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/18f2de6d45f9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/18f2de6d45f9/" class="post-title-link" itemprop="url">JSUtils</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-19 17:54:09" itemprop="dateCreated datePublished" datetime="2022-02-19T17:54:09+08:00">2022-02-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-31 14:17:15" itemprop="dateModified" datetime="2024-08-31T14:17:15+08:00">2024-08-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index"><span itemprop="name">tools</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>20k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>19 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="函数防抖"><a href="#函数防抖" class="headerlink" title="函数防抖"></a>函数防抖</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> debounce 函数防抖</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Function</span>&#125; fn 执行方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; delay 延迟时间 默认 300 毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Function</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> debounce = <span class="keyword">function</span> (<span class="params">fn, delay</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;fn is not Function&#x27;</span>);</span><br><span class="line">  delay = delay &gt;= <span class="number">0</span> ? delay : <span class="number">300</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> timer;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> context = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">let</span> args = <span class="variable language_">arguments</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (timer) <span class="built_in">clearTimeout</span>(timer);</span><br><span class="line"></span><br><span class="line">    timer = <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      fn.<span class="title function_">apply</span>(context, args);</span><br><span class="line">    &#125;, delay);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h4 id="函数节流"><a href="#函数节流" class="headerlink" title="函数节流"></a>函数节流</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@method</span> throttle 函数节流</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Function</span>&#125; fn 执行方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Number</span>&#125; delay 延迟时间 默认 300 毫秒</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> &#123;<span class="type">Function</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> throttle = <span class="keyword">function</span> (<span class="params">fn, delay</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;fn is not Function&#x27;</span>);</span><br><span class="line">  delay = delay &gt;= <span class="number">0</span> ? delay : <span class="number">300</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> previous = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> _this = <span class="variable language_">this</span>;</span><br><span class="line">    <span class="keyword">var</span> args = <span class="variable language_">arguments</span>;</span><br><span class="line">    <span class="keyword">var</span> now = <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">    <span class="keyword">if</span> (now - previous &gt; delay) &#123;</span><br><span class="line">      fn.<span class="title function_">apply</span>(_this, args);</span><br><span class="line">      previous = now;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>需要在路由器和防火墙中开放如下端口</p>
+<ul>
+<li>2377/tcp: 用于客户端与 Swarm 进行安全通信</li>
+<li>7946/tcp 与 7946/udp: 用于控制面 gossip 分发</li>
+<li>4789/udp: 用于基于 VXLAN 的覆盖网络</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# docker swarm init --advertise-addr 192.168.1.2 --listen-addr 192.168.1.2</span><br><span class="line">Swarm initialized: current node (5r1q8c5jaawi9w1wd8yr7w3u2) is now a manager.</span><br><span class="line"></span><br><span class="line">To add a worker to this swarm, run the following <span class="built_in">command</span>:</span><br><span class="line"></span><br><span class="line">  docker swarm <span class="built_in">join</span> --token SWMTKN-1-5uqag7ddbx6jp9l273blxmda6308l5cn23487hbwsnw71w6dsh-eh4h7yhzchi0p6cy2ihg539jh 192.168.1.2:2377</span><br><span class="line"></span><br><span class="line">To add a manager to this swarm, run <span class="string">&#x27;docker swarm join-token manager&#x27;</span> and follow the instructions.</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/02/18f2de6d45f9/#more" rel="contents">
+              <a class="btn" href="/2022/04/51fff91923b2/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1366,7 +1612,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1434,20 +1680,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1495,7 +1741,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1504,12 +1750,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">645k</span>
+    <span title="站点总字数">756k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:47</span>
+    <span title="站点阅读时长">11:27</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="react-transition-groupTransition包含 4 个状态  entering entered exiting exited  props  nodeRef 执行动画的关联 DOM 节点, 早期的版本使用 findDOMNode(deprected) 查找 DOM 节点, 报错的替换方案 in 切换 enter 和 exit 的状态 appear 控制组件首次挂载时的默认行为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React-Tailwind.md">
+<meta property="og:url" content="https://luoleiself.github.io/2022/02/373c196b66d1/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="react-transition-groupTransition包含 4 个状态  entering entered exiting exited  props  nodeRef 执行动画的关联 DOM 节点, 早期的版本使用 findDOMNode(deprected) 查找 DOM 节点, 报错的替换方案 in 切换 enter 和 exit 的状态 appear 控制组件首次挂载时的默认行为">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-15T07:37:49.000Z">
+<meta property="article:modified_time" content="2025-08-23T08:59:30.565Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="jsx">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/02/373c196b66d1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>React-Tailwind.md | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/373c196b66d1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React-Tailwind.md
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-15 15:37:49" itemprop="dateCreated datePublished" datetime="2022-02-15T15:37:49+08:00">2022-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-08-23 16:59:30" itemprop="dateModified" datetime="2025-08-23T16:59:30+08:00">2025-08-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="react-transition-group"><a href="#react-transition-group" class="headerlink" title="react-transition-group"></a><a target="_blank" rel="noopener" href="https://reactcommunity.org/react-transition-group/">react-transition-group</a></h2><h3 id="Transition"><a href="#Transition" class="headerlink" title="Transition"></a>Transition</h3><p>包含 4 个状态</p>
+<ul>
+<li>entering</li>
+<li>entered</li>
+<li>exiting</li>
+<li>exited</li>
+</ul>
+<p>props</p>
+<ul>
+<li>nodeRef 执行动画的关联 DOM 节点, 早期的版本使用 findDOMNode(deprected) 查找 DOM 节点, 报错的替换方案</li>
+<li>in 切换 enter 和 exit 的状态</li>
+<li>appear 控制组件首次挂载时的默认行为</li>
+<li>enter 控制进入的动画</li>
+<li>exit 控制退出的动画</li>
+<li>timeout 动画的时长</li>
+<li>addEvenetListener 添加自定义的事件</li>
+<li>onEnter</li>
+<li>onEntering</li>
+<li>onEntered</li>
+<li>onExit</li>
+<li>onExiting</li>
+<li>onExited</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useState, useRef&#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">Transition</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;react-transition-group&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> [isProp, setInProp] = <span class="title function_">useState</span>(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> nodeRef = <span class="title function_">useRef</span>(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Transition</span> <span class="attr">nodeRef</span>=<span class="string">&#123;nodeRef&#125;</span> <span class="attr">in</span>=<span class="string">&#123;inProp&#125;</span> <span class="attr">timeout</span>=<span class="string">&#123;500&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">h2</span>&gt;</span>react-transition-group Transition component<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">Transition</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setInProp(true)&#125;&gt;Click to Enter<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="CSSTransition"><a href="#CSSTransition" class="headerlink" title="CSSTransition"></a>CSSTransition</h3><p>继承 Transition 的所有 props, 使用 CSS 设置动画</p>
+<ul>
+<li>classNames 当组件在 appear, enter, exit 时应用于组件的动画名称前缀</li>
+</ul>
+<p>classNames=”my-node” 将会应用以下几种样式</p>
+<ul>
+<li>my-node-appear, my-node-appear-active, my-node-appear-done</li>
+<li>my-node-enter, my-node-enter-active, my-node-enter-done</li>
+<li>my-node-exit, my-node-exit-active, my-node-exit-done</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useState, useRef&#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">CSSTransition</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;react-transition-group&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> [inProp, setInProp] = <span class="title function_">useState</span>(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> nodeRef = <span class="title function_">useRef</span>(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">CSSTransition</span> <span class="attr">nodeRef</span>=<span class="string">&#123;nodeRef&#125;</span> <span class="attr">in</span>=<span class="string">&#123;inProp&#125;</span> <span class="attr">timeout</span>=<span class="string">&#123;500&#125;</span> <span class="attr">classNames</span>=<span class="string">&quot;my-node&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">ref</span>=<span class="string">&#123;nodeRef&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">          react-transition-group CSSTransition component</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">CSSTransition</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setInProp(true)&#125;&gt;Click to Enter<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  )  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;</span><br><span class="line">  .<span class="property">my</span>-node-enter,</span><br><span class="line">  .<span class="property">my</span>-node-appear &#123;</span><br><span class="line">    <span class="attr">opacity</span>: <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  .<span class="property">my</span>-node-enter-active,</span><br><span class="line">  .<span class="property">my</span>-node-appear-active &#123;</span><br><span class="line">    <span class="attr">opacity</span>: <span class="number">1</span>;</span><br><span class="line">    <span class="attr">transition</span>: opacity 500ms;</span><br><span class="line">  &#125;</span><br><span class="line">  .<span class="property">my</span>-node-exit &#123;</span><br><span class="line">    <span class="attr">opacity</span>: <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  .<span class="property">my</span>-node-exit-active &#123;</span><br><span class="line">    <span class="attr">opacity</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attr">transition</span>: opacity 500ms;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="SwitchTransition"><a href="#SwitchTransition" class="headerlink" title="SwitchTransition"></a>SwitchTransition</h3><p>切换两个组件的动画, 需要使用 key 作为 Transition 或 CSSTransition 的 props</p>
+<ul>
+<li>mode 动画的模式 in-out|out-in, 默认 out-in</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useState, useRef&#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">SwitchTransition</span>, <span class="title class_">CSSTransition</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;react-transition-group&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> [state, setState] = <span class="title function_">useState</span>(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> helloRef = <span class="title function_">useRef</span>(<span class="literal">null</span>);</span><br><span class="line">  <span class="keyword">const</span> goodByeRef = <span class="title function_">useRef</span>(<span class="literal">null</span>);</span><br><span class="line">  <span class="keyword">const</span> nodeRef = state ? goodByeRef : helloRef;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">SwitchTransition</span> <span class="attr">mode</span>=<span class="string">&quot;out-in&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">CSSTransition</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">key</span>=<span class="string">&#123;state</span> ? &#x27;<span class="attr">goodeBye</span>, <span class="attr">world</span>&#x27; <span class="attr">:</span> &#x27;<span class="attr">hello</span> <span class="attr">world</span>&#x27;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">nodeRef</span>=<span class="string">&#123;nodeRef&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">classNames</span>=<span class="string">&quot;fade&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">      &gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">button</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">ref</span>=<span class="string">&#123;nodeRef&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">          <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setState(state =&gt; !state)&#125;</span></span><br><span class="line"><span class="language-xml">        &gt;</span></span><br><span class="line"><span class="language-xml">          &#123;state ? &#x27;goodBye, world&#x27; : &#x27;hello world&#x27;&#125;</span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;/<span class="name">CSSTransition</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">SwitchTransition</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="TransitionGroup"><a href="#TransitionGroup" class="headerlink" title="TransitionGroup"></a>TransitionGroup</h3><p>管理多个动画列表</p>
+<ul>
+<li>component 指定渲染的元素, 默认 div</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useState&#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">TransitionGroup</span>, <span class="title class_">CSSTransition</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;raect-transition-group&#x27;</span>;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">const</span> [books, setBooks] = <span class="title function_">useState</span>([]);</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">TransitionGroup</span> <span class="attr">component</span>=<span class="string">&quot;ul&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      &#123;books.map(&#123;id, name, author, date&#125; =&gt; &#123;</span></span><br><span class="line"><span class="language-xml">        return (</span></span><br><span class="line"><span class="language-xml">          <span class="tag">&lt;<span class="name">CSSTransition</span> <span class="attr">key</span>=<span class="string">&#123;id&#125;</span> <span class="attr">timeout</span>=<span class="string">&#123;500&#125;</span> <span class="attr">classNames</span>=<span class="string">&quot;book&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;name&#125;-&#123;author&#125;-&#123;date&#125;<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">          <span class="tag">&lt;/<span class="name">CSSTransition</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        )</span></span><br><span class="line"><span class="language-xml">      &#125;)&#125;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">TransitionGroup</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="CSSInJs"><a href="#CSSInJs" class="headerlink" title="CSSInJs"></a>CSSInJs</h2><h3 id="标签函数"><a href="#标签函数" class="headerlink" title="标签函数"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Template_literals#%E5%B8%A6%E6%A0%87%E7%AD%BE%E7%9A%84%E6%A8%A1%E6%9D%BF">标签函数</a></h3><p>模板字符串的高级用法</p>
+<p>标签函数第一个参数包含一个字符串数组, 其余的参数与表达式相关</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> person = <span class="string">&quot;Mike&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> age = <span class="number">28</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">myTag</span>(<span class="params">strings, personExp, ageExp</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> str0 = strings[<span class="number">0</span>]; <span class="comment">// &quot;That &quot;</span></span><br><span class="line">  <span class="keyword">const</span> str1 = strings[<span class="number">1</span>]; <span class="comment">// &quot; is a &quot;</span></span><br><span class="line">  <span class="keyword">const</span> str2 = strings[<span class="number">2</span>]; <span class="comment">// &quot;.&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> ageStr = ageExp &gt; <span class="number">99</span> ? <span class="string">&quot;centenarian&quot;</span> : <span class="string">&quot;youngster&quot;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 我们甚至可以返回使用模板字面量构建的字符串</span></span><br><span class="line">  <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;str0&#125;</span><span class="subst">$&#123;personExp&#125;</span><span class="subst">$&#123;str1&#125;</span><span class="subst">$&#123;ageStr&#125;</span><span class="subst">$&#123;str2&#125;</span>`</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> output = myTag<span class="string">`That <span class="subst">$&#123;person&#125;</span> is a <span class="subst">$&#123;age&#125;</span>.`</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(output);</span><br><span class="line"><span class="comment">// That Mike is a youngster.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下都是等价的写法</span></span><br><span class="line">fn<span class="string">`some string here`</span>;</span><br><span class="line"><span class="title function_">fn</span>([<span class="string">&#x27;some string here&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> aVar = <span class="string">&#x27;good&#x27;</span>;</span><br><span class="line">fn<span class="string">`this is a <span class="subst">$&#123;aVar&#125;</span> day`</span>;</span><br><span class="line"><span class="title function_">fn</span>([<span class="string">&#x27;this is a &#x27;</span>, <span class="string">&#x27;day&#x27;</span>], aVar);</span><br></pre></td></tr></table></figure>
+
+<h3 id="styled-components"><a href="#styled-components" class="headerlink" title="styled-components"></a><a target="_blank" rel="noopener" href="https://styled-components.com/docs/basics">styled-components</a></h3><p>影响打包性能, 导致 js 文件体积变大</p>
+<p>动态生成唯一的 className, 对样式覆写不太友好</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> styled <span class="keyword">from</span> <span class="string">&#x27;styled-components&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>基本使用, 使用标签函数创建样式化的组件</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">Title</span> = styled.<span class="property">h1</span><span class="string">`</span></span><br><span class="line"><span class="string">  font-size: 1.5em;</span></span><br><span class="line"><span class="string">  text-align: center;</span></span><br><span class="line"><span class="string">  color: #bf4f74;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Wrapper</span> = styled.<span class="property">section</span><span class="string">`</span></span><br><span class="line"><span class="string">  padding: 4em;</span></span><br><span class="line"><span class="string">  background: yellowlight;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Wrapper</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Title</span>&gt;</span>title<span class="tag">&lt;/<span class="name">Title</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">Wrapper</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 渲染结果</span></span><br><span class="line">&lt;section&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>title<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line">&lt;/section&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>样式扩展</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建 Button 组件</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Button</span> = styled.<span class="property">button</span><span class="string">`</span></span><br><span class="line"><span class="string">  color: #bf4f74;</span></span><br><span class="line"><span class="string">  font-size: 1em;</span></span><br><span class="line"><span class="string">  margin: 1em;</span></span><br><span class="line"><span class="string">  padding: 0.25em 1em;</span></span><br><span class="line"><span class="string">  border: 2px solid #bf4f74;</span></span><br><span class="line"><span class="string">  border-radius: 3px;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"><span class="comment">// 基于 Button 组件扩展并覆盖样式</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">TomatoButton</span> = <span class="title function_">styled</span>(<span class="title class_">Button</span>)<span class="string">`</span></span><br><span class="line"><span class="string">  color: tomato;</span></span><br><span class="line"><span class="string">  border-color: tomato;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Button</span>&gt;</span>Normal Button<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">TomatoButton</span>&gt;</span>Tomato Button<span class="tag">&lt;/<span class="name">TomatoButton</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 渲染结果</span></span><br><span class="line">&lt;button&gt;<span class="title class_">Normal</span> <span class="title class_">Button</span>&lt;/button&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">button</span>&gt;</span>Tomato Button<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>样式化任何组件</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// react-router-dom&#x27;s Link Component</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Link</span> = (<span class="params">&#123;className, children&#125;</span>) =&gt; (</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">a</span> <span class="attr">className</span>=<span class="string">&#123;className&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    &#123;children&#125;</span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">StyledLink</span> = <span class="title function_">styled</span>(<span class="title class_">Link</span>)<span class="string">`</span></span><br><span class="line"><span class="string">  color: #bf4f74;</span></span><br><span class="line"><span class="string">  font-weight: bold;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Link</span>&gt;</span>UnStyled Link<span class="tag">&lt;/<span class="name">Link</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">StyledLink</span>&gt;</span>Styled Link<span class="tag">&lt;/<span class="name">StyledLink</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>支持伪类, 伪元素, 嵌套样式</li>
+</ul>
+<h4 id="as-更改渲染结果"><a href="#as-更改渲染结果" class="headerlink" title="as 更改渲染结果"></a>as 更改渲染结果</h4><p>as props 更改样式化组件呈现的标签或组件</p>
+<ul>
+<li>as 接收标签</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Button</span>&gt;</span>Normal Button<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Button</span> <span class="attr">as</span>=<span class="string">&quot;a&quot;</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>Link with Button styles<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">TomatoButton</span> <span class="attr">as</span>=<span class="string">&quot;a&quot;</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>Link with Tomato Button styles<span class="tag">&lt;/<span class="name">TomatoButton</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 渲染结果</span></span><br><span class="line">&lt;button&gt;<span class="title class_">Normal</span> <span class="title class_">Button</span>&lt;/button&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>Link with Button styles<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>Link with Tomato Button styles<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>as 接收组件</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接收 props 并将 props.children 反转</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">ReverseButton</span> = props =&gt; <span class="language-xml"><span class="tag">&lt;<span class="name">Button</span> &#123; <span class="attr">...props</span> &#125; <span class="attr">children</span>=<span class="string">&#123;</span> <span class="attr">props.children.split</span>(&#x27;&#x27;)<span class="attr">.reverse</span>() &#125; /&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Button</span>&gt;</span>Normal Button<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Button</span> <span class="attr">as</span>=<span class="string">&#123;</span> <span class="attr">ReverseButton</span> &#125;&gt;</span>Custom Button with Normal Button styles<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 渲染结果</span></span><br><span class="line">&lt;button&gt;<span class="title class_">Normal</span> <span class="title class_">Button</span>&lt;/button&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">button</span>&gt;</span>selyts nottuB lamroN htiw nottuB motsuC<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="获取-props"><a href="#获取-props" class="headerlink" title="获取 props"></a>获取 props</h4><p>添加 <code>$</code> 前缀将 props 转换为短暂的 props, 防止样式化组件使用的 props 被传入到底层的 React 组件或者 DOM 元素上</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">Button</span> = styled.<span class="property">button</span>&lt;&#123; $primary?: <span class="built_in">boolean</span> &#125;&gt;<span class="string">`</span></span><br><span class="line"><span class="string">  background: <span class="subst">$&#123;props =&gt; props.$primary ? <span class="string">&#x27;#bf4f74&#x27;</span> : <span class="string">&#x27;white&#x27;</span>&#125;</span>;</span></span><br><span class="line"><span class="string">  color: <span class="subst">$&#123;props =&gt; props.$primary ? <span class="string">&#x27;white&#x27;</span> : <span class="string">&#x27;#bf4f74&#x27;</span>&#125;</span>;</span></span><br><span class="line"><span class="string">  font-size: 1em;</span></span><br><span class="line"><span class="string">  margin: 1em;</span></span><br><span class="line"><span class="string">  padding: 0.25em 1em;</span></span><br><span class="line"><span class="string">  border: 2px solid #bf4f74;</span></span><br><span class="line"><span class="string">  border-radius: 3px;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Button</span>&gt;</span>Normal Button<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Button</span> $<span class="attr">primary</span>&gt;</span>Primary Button<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 渲染结果</span></span><br><span class="line">&lt;button&gt;<span class="title class_">Normal</span>&lt;/button&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">button</span>&gt;</span>Primary<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span> <span class="comment">// 和 Normal button 样式相反</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="attrs-属性重写"><a href="#attrs-属性重写" class="headerlink" title="attrs 属性重写"></a>attrs 属性重写</h4><p>attrs 修改样式化组件的属性, 如果想防止样式化组件使用的 props 被传入到底层 React 组件或者 DOM 元素上, 使用 <code>$</code> 前缀修饰 props 将其转换为短暂的 props</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">styled.<span class="property">tagName</span>.<span class="title function_">attrs</span>(&#123;&#125; | <span class="title class_">Function</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Input</span> = styled.<span class="property">input</span>.<span class="property">attrs</span>&lt;&#123; $size?: <span class="built_in">string</span> &#125;&gt;(<span class="function"><span class="params">props</span> =&gt;</span> (&#123;</span><br><span class="line">  <span class="attr">type</span>: <span class="string">&quot;text&quot;</span>,</span><br><span class="line">  <span class="attr">$size</span>: props.<span class="property">$size</span> || <span class="string">&#x27;1em&#x27;</span></span><br><span class="line">&#125;))<span class="string">`</span></span><br><span class="line"><span class="string">  border: 2px solid #BF4F74;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  /* use the dynamically computed prop */</span></span><br><span class="line"><span class="string">  margin: <span class="subst">$&#123;props =&gt; props.$size&#125;</span>;</span></span><br><span class="line"><span class="string">  padding: <span class="subst">$&#123;props =&gt; props.$size&#125;</span>;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">PassWordInput</span> = <span class="title function_">styled</span>(<span class="title class_">Input</span>).<span class="title function_">attrs</span>(&#123;<span class="attr">type</span>: <span class="string">&#x27;password&#x27;</span>&#125;)<span class="string">`</span></span><br><span class="line"><span class="string">  border: 2px solid aqua;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Input</span> <span class="attr">placeholder</span>=<span class="string">&quot;A bigger text input&quot;</span> $<span class="attr">size</span>=<span class="string">&quot;2em&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">PassWordInput</span> <span class="attr">placeholder</span>=<span class="string">&quot;A normal password input&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 渲染结果</span></span><br><span class="line">&lt;input <span class="keyword">type</span>=<span class="string">&quot;text&quot;</span> placeholder=<span class="string">&quot;A bigger text input&quot;</span>/&gt; <span class="comment">// margin 和 padding 都为传入的 2em</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;password&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;A normal password input&quot;</span>/&gt;</span></span> <span class="comment">// margin 和 padding 都为默认的 1em</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="其他组件和API"><a href="#其他组件和API" class="headerlink" title="其他组件和API"></a>其他组件和API</h4><ul>
+<li>StyleSheetManager 管理样式化组件的辅助组件</li>
+<li>ThemeProvider<ul>
+<li>theme</li>
+</ul>
+</li>
+<li>ThemeConsumer</li>
+<li>withTheme 高阶组件, 传递的组件将接收到一个包含 theme prop 的 theme 对象</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;withTheme&#125; <span class="keyword">from</span> <span class="string">&#x27;styled-components&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params">props</span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">button</span> <span class="attr">style</span>=<span class="string">&#123;&#123;color:</span> <span class="attr">props.theme.color</span>&#125;&#125;&gt;</span>Button<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">withTheme</span>(<span class="title class_">App</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>useTheme 获取 ThemeProvider 传递的 theme 的 Hook</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">ThemeProvider</span>, <span class="title class_">ThemeConsumer</span>, useTheme&#125; <span class="keyword">from</span> <span class="string">&#x27;styled-components&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">ThemeProvider</span> <span class="attr">theme</span>=<span class="string">&#123;&#123;color:</span> &#x27;<span class="attr">mediumseagreen</span>&#x27;&#125;&#125;&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">Button</span>/&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">ThemeProvider</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Button</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">const</span> theme = <span class="title function_">useTheme</span>();</span><br><span class="line">  <span class="keyword">const</span> style = &#123;<span class="attr">color</span>: theme.<span class="property">color</span>&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">button</span> <span class="attr">style</span>=<span class="string">&#123;style&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      Button</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 等价于</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Button</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">ThemeConsumer</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      &#123;theme =&gt; <span class="tag">&lt;<span class="name">button</span> <span class="attr">style</span>=<span class="string">&#123;&#123;color:</span> <span class="attr">theme.coloer</span>&#125;&#125;&gt;</span>Button<span class="tag">&lt;/<span class="name">button</span>&gt;</span>&#125;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">ThemeConsumer</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>isStyledComponent 判断是否是样式化组件</li>
+<li>createGlobalStyle 创建全局样式</li>
+<li>css 创建样式片段</li>
+<li>keyframes 创建动画的辅助函数</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;keyframes&#125; <span class="keyword">from</span> <span class="string">&#x27;styled-components&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> fadeIn = keyframes<span class="string">`</span></span><br><span class="line"><span class="string">  0% &#123;</span></span><br><span class="line"><span class="string">    opacity:0</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">  100% &#123;</span></span><br><span class="line"><span class="string">    opacity: 1;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">FadeInButton</span> = styled.<span class="property">button</span><span class="string">`</span></span><br><span class="line"><span class="string">  animation: 1s <span class="subst">$&#123;fadeIn&#125;</span> ease-out;</span></span><br><span class="line"><span class="string">`</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="tailwindCSS"><a href="#tailwindCSS" class="headerlink" title="tailwindCSS"></a>tailwindCSS</h2><p>tailwindcss</p>
+<p>@tailwindcss/postcss</p>
+<p>postcss</p>
+<p>v3 版本支持 <code>tailwind.config.js</code> 配置文件</p>
+<p>应用</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- bg-[#1da1f2] 使用任意值 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;3xl:text-lg text-gray-900 bg-white font-display rounded-sm bg-[#1da1f2]&quot;</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 使用任意值(arbitrary values) --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;bg-[#316ff6] lg:top-[117px]&quot;</span>&gt;</span>使用任意值<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;grid grid-cols-[24rem_2.5rem_minmax(0, 1fr)]&quot;</span>&gt;</span>使用任意值<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;max-h-[calc(100vh - (--spacing(6)))]&quot;</span>&gt;</span>使用任意值<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- css 属性 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;[mask-type:luminance] hover:[mask-type:alpha]&quot;</span>&gt;</span>css 属性<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 样式优先级: 编译后样式末尾添加 !important --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;bg-red-500!&quot;</span>&gt;</span>样式优先级<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h3><ul>
+<li><p>@tailwind 插入样式到 base, components, utilities, variants, v4 不再支持该指令</p>
+<ul>
+<li>base 用于重置规则或应用于html元素的默认样式</li>
+<li>components 基于类的样式, 能够使用实用程序覆盖这些样式</li>
+<li>utilities 实用程序用于小型、单一用途的类, 这些类应始终优先于任何其他样式</li>
+</ul>
+</li>
+<li><p>@import CSS 指令, 导入 tailwindcss</p>
+</li>
+<li><p>@theme 添加自定义主题变量或重置默认主题</p>
+</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 导入 tailwindcss */</span></span><br><span class="line"><span class="comment">/* 使用前缀, 如果存在类名冲突的情况时给 tailwind 生成的 class 和 css 变量添加前缀 */</span></span><br><span class="line"><span class="keyword">@import</span> <span class="string">&#x27;tailwindcss&#x27;</span> prefix(tw);</span><br><span class="line"><span class="comment">/* 给 tailwindcss 所有样式末尾添加 !important */</span></span><br><span class="line"><span class="keyword">@import</span> <span class="string">&#x27;tailwindcss&#x27;</span> important;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 自定义主题变量 */</span></span><br><span class="line"><span class="comment">/* 命名空间颜色变量前缀: --color-*  */</span></span><br><span class="line"><span class="comment">/* 命令空间字体变量前缀: --font-*  */</span></span><br><span class="line"><span class="comment">/* 命令空间间距变量前缀: --spacing-*  */</span></span><br><span class="line"><span class="comment">/* 命令空间圆角变量前缀: --radius-*  */</span></span><br><span class="line"><span class="comment">/* ... */</span></span><br><span class="line"><span class="keyword">@theme</span> &#123;</span><br><span class="line">  <span class="attr">--color-dblue-300</span>: <span class="number">#0088ff</span>;</span><br><span class="line">  <span class="attr">--spacing-50</span>: <span class="string">&#x27;50rem&#x27;</span>;</span><br><span class="line">  <span class="attr">--tab-size-github</span>: <span class="number">8</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>@source 排除不被 tailwind 自动识别的资源</p>
+</li>
+<li><p>@apply 将已有的实用程序应用到自定义样式中</p>
+</li>
+<li><p>@layer 指定自定义样式应该放在哪个层中</p>
+</li>
+<li><p>@utility 添加实用程序</p>
+<ul>
+<li>--value(–theme-key-*) 解析一组主题 keys 的应用程序的值</li>
+</ul>
+</li>
+<li><p>@variant 在样式中应用 tailwind 的变体</p>
+</li>
+<li><p>@custom-variant 添加自定义的变体</p>
+</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@import</span> <span class="string">&#x27;tailwindcss&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 添加默认样式 */</span></span><br><span class="line"><span class="keyword">@layer</span> base &#123;</span><br><span class="line">  <span class="selector-tag">h1</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="built_in">var</span>(--text-<span class="number">2</span>xl);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 添加基于类的样式 */</span></span><br><span class="line"><span class="keyword">@layer</span> components &#123;</span><br><span class="line"> <span class="selector-class">.card</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="built_in">var</span>(--color-white);</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="built_in">var</span>(--rounded-lg);</span><br><span class="line">    <span class="attribute">padding</span>: <span class="built_in">var</span>(--spacing-<span class="number">6</span>);</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="built_in">var</span>(--shadow-xl);</span><br><span class="line">    <span class="keyword">@apply</span> rounded-<span class="number">2</span>xl;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 定义实用程序 */</span></span><br><span class="line"><span class="keyword">@utility</span> content-auto &#123;</span><br><span class="line">  <span class="attribute">content-visibility</span>: auto;</span><br><span class="line">  &amp;::-webkit-scrollbar &#123;</span><br><span class="line">    <span class="attribute">display</span>: none;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@utility</span> tab-* &#123;</span><br><span class="line">  <span class="attribute">tab-size</span>: <span class="built_in">--value</span>(integer);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 添加应用程序到自定义样式中 */</span></span><br><span class="line"><span class="selector-class">.select2-dropdown</span> &#123;</span><br><span class="line">  <span class="keyword">@apply</span> rounded-b-lg shadow-md;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 添加变体 */</span></span><br><span class="line"><span class="selector-class">.my-element</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: white;</span><br><span class="line">  <span class="keyword">@variant</span> dark &#123;</span><br><span class="line">    <span class="attribute">background</span>: black;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- use @layer components difine classes --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;card&quot;</span>&gt;</span>use @layer components difine classes<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- use utility --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;content-auto hover:content-auto&quot;</span>&gt;</span>Hello World!<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- use `--value(--theme-key-*)` function resolve utility value --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- --value(type) validate the bare value --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;tab-2 tab-4&quot;</span>&gt;</span>Function utility<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>@reference 直接在 css 模块, style 标签内, 其他组件内使用 @apply, @variant, 自定义的主题中定义的样式避免重复的 css 输出</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">  <span class="comment">/* 使用自定义主题 */</span></span></span><br><span class="line"><span class="language-css">  <span class="keyword">@reference</span> <span class="string">&#x27;../../app.css&#x27;</span>;</span></span><br><span class="line"><span class="language-css">  <span class="comment">/* 使用默认主题 */</span></span></span><br><span class="line"><span class="language-css">  <span class="keyword">@reference</span> <span class="string">&#x27;tailwindcss&#x27;</span>; </span></span><br><span class="line"><span class="language-css"></span></span><br><span class="line"><span class="language-css">  <span class="selector-tag">h1</span> &#123;</span></span><br><span class="line"><span class="language-css">    <span class="keyword">@apply</span> text-<span class="number">2</span>xl font-bold text-red-<span class="number">500</span>;</span></span><br><span class="line"><span class="language-css">  &#125;</span></span><br><span class="line"><span class="language-css"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>@config 加载旧版本的 js 配置文件, v4 兼容旧版本</li>
+<li>@plugin 加载旧版本的 js 配置文件中的插件, v4 兼容旧版本</li>
+</ul>
+<h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><ul>
+<li>--alpha() 调整颜色的透明度</li>
+<li>--spacing() 生成主题的间距值</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.my-element</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="built_in">--alpha</span>(<span class="built_in">var</span>(--color-lime-<span class="number">300</span>) / <span class="number">50%</span>);</span><br><span class="line">  <span class="attribute">margin</span>: <span class="built_in">--spacing</span>(<span class="number">4</span>);</span><br><span class="line">  <span class="attribute">margin</span>: <span class="built_in">calc</span>(<span class="built_in">var</span>(--spacing) * <span class="number">4</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>theme() 在编译时允许使用 tailwind 配置的值, 函数在构建时执行， v4 兼容旧版本</li>
+<li>screen() 使用 tailwind 配置的值创建媒体查询</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.my-element</span> &#123;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="built_in">theme</span>(spacing.<span class="number">12</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="classnames"><a href="#classnames" class="headerlink" title="classnames"></a>classnames</h2>
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\0eb429a8209b\" rel="bookmark">React-Router.md</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\f3581d54a2fe\" rel="bookmark">React-Nextjs.md</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\5ad505cb0ced\" rel="bookmark">React-Redux.md</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\02\7ec5bd96e943\" rel="bookmark">React.md</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\03\5f5e09a672cd\" rel="bookmark">ArrayBuffer</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/02/373c196b66d1/" title="React-Tailwind.md">https://luoleiself.github.io/2022/02/373c196b66d1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/tags/jsx/" rel="tag"># jsx</a>
+              <a href="/tags/React/" rel="tag"># React</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/f3581d54a2fe/" rel="prev" title="React-Nextjs.md">
+      <i class="fa fa-chevron-left"></i> React-Nextjs.md
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/0eb429a8209b/" rel="next" title="React-Router.md">
+      React-Router.md <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#react-transition-group"><span class="nav-number">1.</span> <span class="nav-text">react-transition-group</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Transition"><span class="nav-number">1.1.</span> <span class="nav-text">Transition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSSTransition"><span class="nav-number">1.2.</span> <span class="nav-text">CSSTransition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SwitchTransition"><span class="nav-number">1.3.</span> <span class="nav-text">SwitchTransition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TransitionGroup"><span class="nav-number">1.4.</span> <span class="nav-text">TransitionGroup</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSSInJs"><span class="nav-number">2.</span> <span class="nav-text">CSSInJs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%87%BD%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">标签函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#styled-components"><span class="nav-number">2.2.</span> <span class="nav-text">styled-components</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#as-%E6%9B%B4%E6%94%B9%E6%B8%B2%E6%9F%93%E7%BB%93%E6%9E%9C"><span class="nav-number">2.2.1.</span> <span class="nav-text">as 更改渲染结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-props"><span class="nav-number">2.2.2.</span> <span class="nav-text">获取 props</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attrs-%E5%B1%9E%E6%80%A7%E9%87%8D%E5%86%99"><span class="nav-number">2.2.3.</span> <span class="nav-text">attrs 属性重写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%BB%84%E4%BB%B6%E5%92%8CAPI"><span class="nav-number">2.2.4.</span> <span class="nav-text">其他组件和API</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tailwindCSS"><span class="nav-number">3.</span> <span class="nav-text">tailwindCSS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4"><span class="nav-number">3.1.</span> <span class="nav-text">指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.1.</span> <span class="nav-text">函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#classnames"><span class="nav-number">4.</span> <span class="nav-text">classnames</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">756k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

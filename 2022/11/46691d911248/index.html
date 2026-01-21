@@ -28,7 +28,7 @@
 <meta property="og:description" content="缓存穿透、击穿、雪崩缓存穿透缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃 解决办法  接口层增加校验">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2024-12-18T08:40:33.315Z">
+<meta property="article:modified_time" content="2025-08-31T15:10:41.267Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-18 16:40:33" itemprop="dateModified" datetime="2024-12-18T16:40:33+08:00">2024-12-18</time>
+                <time title="修改时间：2025-08-31 23:10:41" itemprop="dateModified" datetime="2025-08-31T23:10:41+08:00">2025-08-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,13 +259,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>2.6k</span>
+              <span>2.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>2 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -347,7 +347,21 @@
 </ul>
 <h3 id="Redis-实现分布式ID"><a href="#Redis-实现分布式ID" class="headerlink" title="Redis 实现分布式ID"></a>Redis 实现分布式ID</h3><p>INCR 命令实现分布式 ID</p>
 <h3 id="基于-UUID-实现分布式ID"><a href="#基于-UUID-实现分布式ID" class="headerlink" title="基于 UUID 实现分布式ID"></a>基于 UUID 实现分布式ID</h3><p>UUID 是通过一系列算法生成的 128 位长度的数字, 通常基于时间戳、计算机硬件标识符、随机数等元素来生成</p>
-<h3 id="基于雪花算法实现分布式-ID"><a href="#基于雪花算法实现分布式-ID" class="headerlink" title="基于雪花算法实现分布式 ID"></a>基于雪花算法实现分布式 ID</h3>
+<h3 id="基于雪花算法实现分布式-ID"><a href="#基于雪花算法实现分布式-ID" class="headerlink" title="基于雪花算法实现分布式 ID"></a>基于雪花算法实现分布式 ID</h3><h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h3 id="扫描-key"><a href="#扫描-key" class="headerlink" title="扫描 key"></a>扫描 key</h3><h4 id="KEYS"><a href="#KEYS" class="headerlink" title="KEYS"></a>KEYS</h4><ul>
+<li>阻塞式操作, 其他命令必须等待</li>
+<li>全量遍历, 遍历数据库中所有的 key, 在遍历完成之前, Redis 无法处理任何其他命令</li>
+<li>生产环境灾难</li>
+</ul>
+<h4 id="SCAN"><a href="#SCAN" class="headerlink" title="SCAN"></a>SCAN</h4><ul>
+<li>非阻塞式操作, 扫描过程中其他命令可以继续处理</li>
+<li>对业务无影响, 每次扫描的计算量很小(cursor), 不会长时间阻塞 Redis 主线程, 对线上服务的影响极小</li>
+<li>COUNT 参数指定每次扫描的元素数量, 默认为 10</li>
+</ul>
+<h4 id="使用-Set-或-Zset-存储-key-的索引部分"><a href="#使用-Set-或-Zset-存储-key-的索引部分" class="headerlink" title="使用 Set 或 Zset 存储 key 的索引部分"></a>使用 Set 或 Zset 存储 key 的索引部分</h4><ul>
+<li>不再需要 SCAN 扫面, 直接读取索引 Set 的所有成员</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SET prefix:123 456</span><br><span class="line">SADD index:prefix 123</span><br></pre></td></tr></table></figure>
+
     </div>
 
     
@@ -357,19 +371,19 @@
   <div class="popular-posts-header">相关文章推荐</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\d53dbf627f77\" rel="bookmark">Redis-Cluster</a></div>
+    </li>
+    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\11\3f42dc25499d\" rel="bookmark">Redis-List</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\08b1664c9566\" rel="bookmark">Redis-Lua</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\11\4c5a8bb1e1ca\" rel="bookmark">Redis-Other-Structs</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\11\3bfcb546cd4a\" rel="bookmark">Redis-Set-Zset</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\11\02c91f48b138\" rel="bookmark">Redis-PubSub</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\11\80b3dfc88923\" rel="bookmark">Redis-String-Hash</a></div>
     </li>
   </ul>
 
@@ -402,12 +416,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/11/80b3dfc88923/" rel="prev" title="Redis-String-Hash">
-      <i class="fa fa-chevron-left"></i> Redis-String-Hash
+    <a href="/2022/11/02c91f48b138/" rel="prev" title="Redis-PubSub">
+      <i class="fa fa-chevron-left"></i> Redis-PubSub
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/11/02c91f48b138/" rel="next" title="Redis-PubSub">
-      Redis-PubSub <i class="fa fa-chevron-right"></i>
+    <a href="/2022/11/4c5a8bb1e1ca/" rel="next" title="Redis-Other-Structs">
+      Redis-Other-Structs <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -467,7 +481,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E3%80%81%E5%87%BB%E7%A9%BF%E3%80%81%E9%9B%AA%E5%B4%A9"><span class="nav-number">1.</span> <span class="nav-text">缓存穿透、击穿、雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">1.1.</span> <span class="nav-text">缓存穿透</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">1.1.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">1.2.</span> <span class="nav-text">缓存击穿</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">1.3.</span> <span class="nav-text">缓存雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.</span> <span class="nav-text">慢查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%8D%E6%9D%82%E5%BA%A6%E8%BF%87%E9%AB%98%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="nav-number">2.1.</span> <span class="nav-text">使用复杂度过高的命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7-Key-%E9%97%AE%E9%A2%98"><span class="nav-number">2.2.</span> <span class="nav-text">大 Key 问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E8%BF%87%E6%9C%9F"><span class="nav-number">2.3.</span> <span class="nav-text">集中过期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F-UUID"><span class="nav-number">3.</span> <span class="nav-text">分布式 UUID</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE"><span class="nav-number">3.1.</span> <span class="nav-text">数据库自增主键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E9%9B%86%E7%BE%A4"><span class="nav-number">3.2.</span> <span class="nav-text">数据库自增主键集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%B7%E6%AE%B5"><span class="nav-number">3.3.</span> <span class="nav-text">数据库号段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8FID"><span class="nav-number">3.4.</span> <span class="nav-text">Redis 实现分布式ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-UUID-%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8FID"><span class="nav-number">3.5.</span> <span class="nav-text">基于 UUID 实现分布式ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-ID"><span class="nav-number">3.6.</span> <span class="nav-text">基于雪花算法实现分布式 ID</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E3%80%81%E5%87%BB%E7%A9%BF%E3%80%81%E9%9B%AA%E5%B4%A9"><span class="nav-number">1.</span> <span class="nav-text">缓存穿透、击穿、雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">1.1.</span> <span class="nav-text">缓存穿透</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">1.1.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">1.2.</span> <span class="nav-text">缓存击穿</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">1.3.</span> <span class="nav-text">缓存雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">解决办法 </span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.</span> <span class="nav-text">慢查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%8D%E6%9D%82%E5%BA%A6%E8%BF%87%E9%AB%98%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="nav-number">2.1.</span> <span class="nav-text">使用复杂度过高的命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7-Key-%E9%97%AE%E9%A2%98"><span class="nav-number">2.2.</span> <span class="nav-text">大 Key 问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E8%BF%87%E6%9C%9F"><span class="nav-number">2.3.</span> <span class="nav-text">集中过期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F-UUID"><span class="nav-number">3.</span> <span class="nav-text">分布式 UUID</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE"><span class="nav-number">3.1.</span> <span class="nav-text">数据库自增主键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E9%9B%86%E7%BE%A4"><span class="nav-number">3.2.</span> <span class="nav-text">数据库自增主键集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%B7%E6%AE%B5"><span class="nav-number">3.3.</span> <span class="nav-text">数据库号段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8FID"><span class="nav-number">3.4.</span> <span class="nav-text">Redis 实现分布式ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-UUID-%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8FID"><span class="nav-number">3.5.</span> <span class="nav-text">基于 UUID 实现分布式ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F-ID"><span class="nav-number">3.6.</span> <span class="nav-text">基于雪花算法实现分布式 ID</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%AB%E6%8F%8F-key"><span class="nav-number">4.1.</span> <span class="nav-text">扫描 key</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#KEYS"><span class="nav-number">4.1.1.</span> <span class="nav-text">KEYS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SCAN"><span class="nav-number">4.1.2.</span> <span class="nav-text">SCAN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Set-%E6%88%96-Zset-%E5%AD%98%E5%82%A8-key-%E7%9A%84%E7%B4%A2%E5%BC%95%E9%83%A8%E5%88%86"><span class="nav-number">4.1.3.</span> <span class="nav-text">使用 Set 或 Zset 存储 key 的索引部分</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -483,20 +497,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -544,7 +558,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -553,12 +567,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">645k</span>
+    <span title="站点总字数">756k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:47</span>
+    <span title="站点阅读时长">11:27</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="聚合操作操作处理多个文档并返回计算结果, 由 一个或多个处理文档的 阶段 组成  每个阶段对输入文档执行一个操作 从一个阶段输出的文档将传递到下一个阶段 一个聚合管道可以返回针对文档组的结果  字段路径, 使用 $ 前缀启用字段路径表达式访问输入文档中的字段. 管道优化, 该阶段会尝试重塑管道以提高性能, 优先使用 $match、$sort、$limit、$skip 阶段限制进入管道的文档 限制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sql-aggregate">
+<meta property="og:url" content="https://luoleiself.github.io/2022/11/5db91eb9b055/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="聚合操作操作处理多个文档并返回计算结果, 由 一个或多个处理文档的 阶段 组成  每个阶段对输入文档执行一个操作 从一个阶段输出的文档将传递到下一个阶段 一个聚合管道可以返回针对文档组的结果  字段路径, 使用 $ 前缀启用字段路径表达式访问输入文档中的字段. 管道优化, 该阶段会尝试重塑管道以提高性能, 优先使用 $match、$sort、$limit、$skip 阶段限制进入管道的文档 限制">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
+<meta property="article:modified_time" content="2025-07-02T12:35:46.097Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="sql">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/11/5db91eb9b055/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>sql-aggregate | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/5db91eb9b055/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          sql-aggregate
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-02 20:35:46" itemprop="dateModified" datetime="2025-07-02T20:35:46+08:00">2025-07-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/sql/" itemprop="url" rel="index"><span itemprop="name">sql</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>35k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>32 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h2><p>操作处理多个文档并返回计算结果, 由 一个或多个处理文档的 <code>阶段</code> 组成</p>
+<ul>
+<li>每个阶段对输入文档执行一个操作</li>
+<li>从一个阶段输出的文档将传递到下一个阶段</li>
+<li>一个聚合管道可以返回针对文档组的结果</li>
+</ul>
+<p>字段路径, 使用 <code>$</code> 前缀启用字段路径表达式访问输入文档中的字段.</p>
+<p>管道优化, 该阶段会尝试重塑管道以提高性能, 优先使用 $match、$sort、$limit、$skip 阶段限制进入管道的文档</p>
+<p>限制</p>
+<ul>
+<li>结果大小限制, 每个文档均受 MB16 BSON 文档大小的限制的约束</li>
+<li>阶段数量限制, 单个管道中允许的聚合管道阶段数量最大为 1000 个</li>
+<li>内存限制, 6.0 开始 allowDiskUseByDefault 参数控制需要 100MB 以上内存容量来执行的管道阶段是否默认会将临时文件写入磁盘</li>
+</ul>
+<p><code>db.[collectionName].aggregate()</code> 方法运行的聚合管道不会修改集合中的文档, 除非管道包含 <code>$merge</code> 或 <code>$out</code> 阶段</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  <span class="comment">// stage 1: Filter pizza order document by pizza size</span></span><br><span class="line">  &#123;<span class="attr">$match</span>: &#123;<span class="attr">size</span>: <span class="string">&#x27;medium&#x27;</span>&#125;&#125;,</span><br><span class="line">  <span class="comment">// stage 2: Group remaining document by pizza name and calcuate total quantity</span></span><br><span class="line">  &#123;<span class="attr">$group</span>: &#123;<span class="attr">_id</span>: <span class="string">&#x27;$name&#x27;</span>, <span class="attr">totalQuantity</span>: &#123;<span class="attr">$sum</span>: <span class="string">&quot;$quantity&quot;</span>&#125;&#125;&#125;,</span><br><span class="line">  <span class="comment">// stage 3: Sort document by totalQuantity in descending order</span></span><br><span class="line">  &#123;<span class="attr">$sort</span>: &#123;<span class="attr">totalQuantity</span>: -<span class="number">1</span>&#125;&#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>变量可以保存任何 BSON 类型的数据, 访问变量时需要使用 <code>$$</code> 前缀.</p>
+<h4 id="用户变量"><a href="#用户变量" class="headerlink" title="用户变量"></a>用户变量</h4><p>变量名称可包含 ASCII 字符和任意非 ASCII 字符, 必须以小写 ASCII 字符开头</p>
+<h4 id="系统变量"><a href="#系统变量" class="headerlink" title="系统变量"></a>系统变量</h4><ul>
+<li>NOW 返回当前日期时间值的变量, 为部署的所有成员返回相同的值, 并在聚合管道的所有阶段保持不变.</li>
+<li>CLUSTER_TIME 返回当前时间戳值的变量<ul>
+<li>仅适用于副本集和分片的集群</li>
+<li>为部署的所有节点返回相同的值, 并在管道的所有阶段保持不变</li>
+</ul>
+</li>
+<li>ROOT  引用根文档, 即当前正在聚合管道阶段处理的顶层文档<ul>
+<li>引用聚合管道中当前正在处理的完整文档</li>
+<li>常用于需要保留原始文档内容的场景</li>
+<li>在 $group、$project 等阶段特别有用</li>
+</ul>
+</li>
+<li>CURRENT 引用聚合管道阶段正在处理的 <code>字段路径</code> 的起始位置</li>
+<li>REMOVE  一个求值为缺失的变量, 允许排除 $addFields 和 $project 阶段的字段</li>
+<li>DESCEND $redact 表达式的允许结果之一, 返回当前文档级别的字段, 不包括嵌入式文档</li>
+<li>PRUNE $redact 表达式的允许结果之一, 排除当前文档/嵌入式文档级别的所有字段, 而不进一步检查任何已排除的字段</li>
+<li>KEEP  $redact 表达式的允许结果之一, 返回或保留此当前文档/嵌入式文档级别的所有字段, 而不进一步检查此级别的字段</li>
+<li>SEARCH_META search 查询元数据结果的变量, 在所有支持的聚合管道阶段中, 设立变量 $SEARCH_META 的字段会返回查询的元数据结果</li>
+<li>USER_ROLES  返回分配给当前用户的角色</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="聚合命令"><a href="#聚合命令" class="headerlink" title="聚合命令"></a>聚合命令</h3><ul>
+<li>aggregate 使用管道执行聚合任务</li>
+<li>count 计算集合或视图中的文档数量</li>
+<li>distinct 显示在集合或视图中为指定键找到的非重复值</li>
+<li>mapReduce 为大型数据集执行 map-reduce 聚合任务</li>
+</ul>
+<p>单一目的的聚合方法</p>
+<ul>
+<li>db.[collectionName].estimatedDocumentCount()  返回集合或视图中文档的近似数量</li>
+<li>db.[collectionName].count() 返回集合或视图中文档的数量</li>
+<li>db.[collectionName].distinct()  返回具有指定字段的不同值的文档数组</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 统计 ord_dt 晚于指定日期的文档数量</span></span><br><span class="line">db.<span class="property">orders</span>.<span class="title function_">count</span>( &#123; <span class="attr">ord_dt</span>: &#123; <span class="attr">$gt</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;01/01/2012&#x27;</span>) &#125; &#125; );</span><br><span class="line"><span class="comment">// 功能同上, 使用索引返回计数</span></span><br><span class="line">db.<span class="property">orders</span>.<span class="title function_">find</span>( &#123; <span class="attr">ord_dt</span>: &#123; <span class="attr">$gt</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;01/01/2012&#x27;</span>) &#125; &#125; ).<span class="title function_">count</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回所有文档中字段 dept 不同的值</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">distinct</span>( <span class="string">&quot;dept&quot;</span> );</span><br></pre></td></tr></table></figure>
+
+<h3 id="阶段"><a href="#阶段" class="headerlink" title="阶段"></a>阶段</h3><p>文档按顺序通过聚合管道阶段</p>
+<ul>
+<li>$addFields 为文档添加新字段</li>
+<li>$bucket 根据指定的表达式和存储桶边界将传入的文档分为多个组, 并为每个组输出一个文档<ul>
+<li>groupBy 对文档进行分组的表达式</li>
+<li>boundaries 边界,基于指定每个存储桶边界的 groupBy 表达式的值</li>
+<li>default 指定附加存储桶 _id 的字面量</li>
+<li>output 一份文档, 指定除 _id 字段之外要包含在输出文档中的字段</li>
+</ul>
+</li>
+<li>$bucketAuto 根据指定的表达式, 将接收到的文档归类到特定数量的组中, 自动确定存储桶的边界,以尝试将文档均匀地分配到指定数量的存储桶中<ul>
+<li>buckets 整型, 一个 32 位正整数, 用于指定将输入文档按组分到存储桶的数量</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// artists</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 1, &quot;last_name&quot; : &quot;Bernard&quot;, &quot;first_name&quot; : &quot;Emil&quot;, &quot;year_born&quot; : 1868, &quot;year_died&quot; : 1941, &quot;nationality&quot; : &quot;France&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 2, &quot;last_name&quot; : &quot;Rippl-Ronai&quot;, &quot;first_name&quot; : &quot;Joszef&quot;, &quot;year_born&quot; : 1861, &quot;year_died&quot; : 1927, &quot;nationality&quot; : &quot;Hungary&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 3, &quot;last_name&quot; : &quot;Ostroumova&quot;, &quot;first_name&quot; : &quot;Anna&quot;, &quot;year_born&quot; : 1871, &quot;year_died&quot; : 1955, &quot;nationality&quot; : &quot;Russia&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 4, &quot;last_name&quot; : &quot;Van Gogh&quot;, &quot;first_name&quot; : &quot;Vincent&quot;, &quot;year_born&quot; : 1853, &quot;year_died&quot; : 1890, &quot;nationality&quot; : &quot;Holland&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 5, &quot;last_name&quot; : &quot;Maurer&quot;, &quot;first_name&quot; : &quot;Alfred&quot;, &quot;year_born&quot; : 1868, &quot;year_died&quot; : 1932, &quot;nationality&quot; : &quot;USA&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 6, &quot;last_name&quot; : &quot;Munch&quot;, &quot;first_name&quot; : &quot;Edvard&quot;, &quot;year_born&quot; : 1863, &quot;year_died&quot; : 1944, &quot;nationality&quot; : &quot;Norway&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 7, &quot;last_name&quot; : &quot;Redon&quot;, &quot;first_name&quot; : &quot;Odilon&quot;, &quot;year_born&quot; : 1840, &quot;year_died&quot; : 1916, &quot;nationality&quot; : &quot;France&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 8, &quot;last_name&quot; : &quot;Diriks&quot;, &quot;first_name&quot; : &quot;Edvard&quot;, &quot;year_born&quot; : 1855, &quot;year_died&quot; : 1930, &quot;nationality&quot; : &quot;Norway&quot; &#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">db.<span class="property">artists</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123; <span class="attr">$bucket</span>: &#123;</span><br><span class="line">      <span class="attr">groupBy</span>: <span class="string">&#x27;$year_born&#x27;</span>,  <span class="comment">// Field to group by</span></span><br><span class="line">      <span class="attr">boundaries</span>: [<span class="number">1840</span>, <span class="number">1858</span>, <span class="number">1860</span>, <span class="number">1870</span>, <span class="number">1880</span>], <span class="comment">// Boundaries for the buckets</span></span><br><span class="line">      <span class="attr">default</span>: <span class="string">&#x27;Other&#x27;</span>,   <span class="comment">// Bucket ID for documents which do not fail into a bucket</span></span><br><span class="line">      <span class="attr">output</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;count&#x27;</span>: &#123;<span class="attr">$sum</span>: <span class="number">1</span>&#125;,</span><br><span class="line">        <span class="string">&#x27;artists&#x27;</span>: &#123;</span><br><span class="line">          <span class="attr">$push</span>: &#123;</span><br><span class="line">            <span class="string">&#x27;name&#x27;</span>: &#123;<span class="attr">$concat</span>: [<span class="string">&#x27;$first_name&#x27;</span>, <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;$last_name&#x27;</span>]&#125;,</span><br><span class="line">            <span class="string">&#x27;year_born&#x27;</span>: <span class="string">&#x27;$year_born&#x27;</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$match</span>: &#123;<span class="attr">count</span>: &#123;<span class="attr">$gt</span>: <span class="number">3</span>&#125;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output:</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 1860, &quot;count&quot; : 4, &quot;artists&quot; :</span></span><br><span class="line"><span class="comment">//   [</span></span><br><span class="line"><span class="comment">//     &#123; &quot;name&quot; : &quot;Emil Bernard&quot;, &quot;year_born&quot; : 1868 &#125;,</span></span><br><span class="line"><span class="comment">//     &#123; &quot;name&quot; : &quot;Joszef Rippl-Ronai&quot;, &quot;year_born&quot; : 1861 &#125;,</span></span><br><span class="line"><span class="comment">//     &#123; &quot;name&quot; : &quot;Alfred Maurer&quot;, &quot;year_born&quot; : 1868 &#125;,</span></span><br><span class="line"><span class="comment">//     &#123; &quot;name&quot; : &quot;Edvard Munch&quot;, &quot;year_born&quot; : 1863 &#125;</span></span><br><span class="line"><span class="comment">//   ]</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">$bucketAuto</span>: &#123;</span><br><span class="line">    <span class="attr">groupBy</span>: &lt;expression&gt;,</span><br><span class="line">    <span class="attr">buckets</span>: &lt;<span class="built_in">number</span>&gt;,</span><br><span class="line">    <span class="attr">output</span>: &#123;</span><br><span class="line">      &lt;output1&gt;: &#123; &lt;$accumulator expression&gt; &#125;,</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attr">granularity</span>: &lt;<span class="built_in">string</span>&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$changeStream  返回集合、数据库或整个集群上的变更流游标, 必须是聚合管道中的 <strong>第一阶段</strong></li>
+<li>$collStats  返回有关集合或视图的统计信息, 必须是聚合管道中的 <strong>第一阶段</strong></li>
+<li>$count  将文档传递到下一阶段, 该阶段包含输入到该阶段的文档数的计数</li>
+<li>$densify  在文档序列中创建新文档, 其中缺少字段中的某些值</li>
+<li>$documents  从输入表达式返回字面文档<ul>
+<li>只能在数据库级聚合管道中使用</li>
+<li>必须是聚合管道中的 <strong>第一阶段</strong></li>
+</ul>
+</li>
+<li>$facet  在单个阶段内处理同一组输入文档上的多个聚合管道, 每个子管道在输出文档中都有自己的字段, 其结果存储为文档数组</li>
+<li>$fill 填充文档中的 null 和缺失的字段值<ul>
+<li>sortBy 指定每个分区内用于对文档进行排序的字段, 使用与 $sort 阶段相同的语法</li>
+<li>output 指定一个对象, 其中包含要填充缺失值的每个字段</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dailySales</span></span><br><span class="line"><span class="comment">// [</span></span><br><span class="line"><span class="comment">//   &#123;</span></span><br><span class="line"><span class="comment">//     &quot;date&quot;: ISODate(&quot;2022-02-02&quot;),</span></span><br><span class="line"><span class="comment">//     &quot;bootsSold&quot;: 10,</span></span><br><span class="line"><span class="comment">//     &quot;sandalsSold&quot;: 20,</span></span><br><span class="line"><span class="comment">//     &quot;sneakersSold&quot;: 12</span></span><br><span class="line"><span class="comment">//   &#125;,</span></span><br><span class="line"><span class="comment">//   &#123;</span></span><br><span class="line"><span class="comment">//     &quot;date&quot;: ISODate(&quot;2022-02-03&quot;),</span></span><br><span class="line"><span class="comment">//     &quot;bootsSold&quot;: 7,</span></span><br><span class="line"><span class="comment">//     &quot;sneakersSold&quot;: 18</span></span><br><span class="line"><span class="comment">//   &#125;,</span></span><br><span class="line"><span class="comment">//   &#123;</span></span><br><span class="line"><span class="comment">//     &quot;date&quot;: ISODate(&quot;2022-02-04&quot;),</span></span><br><span class="line"><span class="comment">//     &quot;sneakersSold&quot;: 5</span></span><br><span class="line"><span class="comment">//   &#125;</span></span><br><span class="line"><span class="comment">// ]</span></span><br><span class="line"><span class="comment">// 将每天销售中缺少的鞋款的销售数量设置为 0</span></span><br><span class="line">db.<span class="property">dailySales</span>.<span class="title function_">aggregate</span>( [&#123;</span><br><span class="line">  <span class="attr">$fill</span>: &#123;</span><br><span class="line">    <span class="attr">output</span>: &#123;</span><br><span class="line">      <span class="string">&quot;bootsSold&quot;</span>: &#123; <span class="attr">value</span>: <span class="number">0</span> &#125;,</span><br><span class="line">      <span class="string">&quot;sandalsSold&quot;</span>: &#123; <span class="attr">value</span>: <span class="number">0</span> &#125;,</span><br><span class="line">      <span class="string">&quot;sneakersSold&quot;</span>: &#123; <span class="attr">value</span>: <span class="number">0</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;]);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$geoNear  根据与地理空间点的接近程度返回有序的文档流</li>
+<li>$graphLookup  对集合执行递归搜索, 并提供按照递归深度和查询筛选器限制搜索的选项</li>
+<li>$group  按指定的标识符表达式对输入文档进行分组，并将累加器表达式（如果指定）应用于每个群组, 不会对其输出文档进行排序<ul>
+<li>_id 指定群组标识符表达式, 如果指定的 _id 值为空值或任何其他常量值, $group 阶段将返回聚合所有输入文档值的单个文档</li>
+<li>field 可选, 使用累加器操作符进行计算</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$group</span>: &#123;</span><br><span class="line">      <span class="attr">_id</span>: &lt;expression&gt;， <span class="comment">// Group key</span></span><br><span class="line">      &lt;field1&gt;: &#123; &lt;accumulator1&gt;: &lt;expression1&gt; &#125;,</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$indexStats 返回集合中每个索引使用情况的统计信息, 此阶段采用一个空文档, 不需要配置项</li>
+<li>$limit  将未修改的前 n 个文档传递到管道的下一阶段，其中 n 为指定的限制</li>
+<li>$lookup 对同一数据库中的集合执行<code>左外连接</code>, 以过滤外部集合中的文档进行处理<ul>
+<li>from 在同一数据库中指定待连接到本地集合的外部集合</li>
+<li>localField 指定执行等值匹配时本地文档的字段, 如果输入文档不包含 localField 则被视为 null 值</li>
+<li>foreignField 指定外部文档的 foreignField 对本地文档的 localField 执行等值匹配, 如果外部文档不包含 foreignField 值, 则使用 null 进行匹配</li>
+<li>let 指定在管道阶段中使用的变量, 使用变量表达式访问本地集合文档中的字段, 这些文档输入到 pipeline</li>
+<li>pipeline 指定在 <code>外部集合</code> 上运行的管道, 返回外部集合的文档, 如果返回所有文档, 指定一个空的管道: []<ul>
+<li>不能包含 $merge 或 $out 阶段.</li>
+<li>无法访问输入文档中的字段, 可以使用 let 选项定义文档字段的变量, 然后在 pipeline 阶段引用这些变量.</li>
+</ul>
+</li>
+<li>as 指定要添加到输入文档中的新数组字段的名称, 新数组字段包含来自 from 集合的匹配文档, 如果指定名称已存在将被重写</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// orders</span></span><br><span class="line"><span class="comment">[</span></span><br><span class="line"><span class="comment">  &#123; _id: 1, item: &quot;almonds&quot;, price: 12, ordered: 2 &#125;,</span></span><br><span class="line"><span class="comment">  &#123; _id: 2, item: &quot;pecans&quot;, price: 20, ordered: 1 &#125;,</span></span><br><span class="line"><span class="comment">  &#123; _id: 3, item: &quot;cookies&quot;, price: 10, ordered: 60 &#125;</span></span><br><span class="line"><span class="comment">] </span></span><br><span class="line"><span class="comment">// warehouses</span></span><br><span class="line"><span class="comment">[</span></span><br><span class="line"><span class="comment">  &#123; _id: 1, stock_item: &quot;almonds&quot;, warehouse: &quot;A&quot;, instock: 120 &#125;,</span></span><br><span class="line"><span class="comment">  &#123; _id: 2, stock_item: &quot;pecans&quot;, warehouse: &quot;A&quot;, instock: 80 &#125;,</span></span><br><span class="line"><span class="comment">  &#123; _id: 3, stock_item: &quot;almonds&quot;, warehouse: &quot;B&quot;, instock: 60 &#125;,</span></span><br><span class="line"><span class="comment">  &#123; _id: 4, stock_item: &quot;cookies&quot;, warehouse: &quot;B&quot;, instock: 40 &#125;,</span></span><br><span class="line"><span class="comment">  &#123; _id: 5, stock_item: &quot;cookies&quot;, warehouse: &quot;A&quot;, instock: 80 &#125;</span></span><br><span class="line"><span class="comment">]</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$lookup</span>: &#123;</span><br><span class="line">      <span class="attr">from</span>: <span class="string">&#x27;warehouses&#x27;</span>,</span><br><span class="line">      <span class="attr">localField</span>: <span class="string">&#x27;item&#x27;</span>,</span><br><span class="line">      <span class="attr">foreignField</span>: <span class="string">&#x27;stock_item&#x27;</span>,</span><br><span class="line">      <span class="attr">let</span>: &#123; <span class="attr">order_qty</span>: <span class="string">&#x27;$ordered&#x27;</span> &#125;,</span><br><span class="line">      <span class="attr">pipeline</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">$match</span>: &#123;</span><br><span class="line">            <span class="attr">$expr</span>: [ &#123; <span class="attr">$gte</span>: [<span class="string">&#x27;$instock&#x27;</span>, <span class="string">&#x27;$$order_qty&#x27;</span>] &#125; ]</span><br><span class="line">          &#125; </span><br><span class="line">        &#125;,</span><br><span class="line">        &#123; <span class="attr">$project</span>: &#123; <span class="attr">stock_item</span>: <span class="number">0</span>， <span class="attr">_id</span>: <span class="number">0</span> &#125; &#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">as</span>: <span class="string">&#x27;stockdata&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output: localField 和 foreignField 不包含的则作为 null 值执行匹配</span></span><br><span class="line"><span class="comment">// &#123;</span></span><br><span class="line"><span class="comment">//   _id: 1,</span></span><br><span class="line"><span class="comment">//   item: &#x27;almonds&#x27;,</span></span><br><span class="line"><span class="comment">//   price: 12,</span></span><br><span class="line"><span class="comment">//   ordered: 2,</span></span><br><span class="line"><span class="comment">//   stockdata: [</span></span><br><span class="line"><span class="comment">//     &#123; warehouse: &#x27;A&#x27;, instock: 120 &#125;,</span></span><br><span class="line"><span class="comment">//     &#123; warehouse: &#x27;B&#x27;, instock: 60 &#125;</span></span><br><span class="line"><span class="comment">//   ]</span></span><br><span class="line"><span class="comment">// &#125;,</span></span><br><span class="line"><span class="comment">// &#123;</span></span><br><span class="line"><span class="comment">//   _id: 2,</span></span><br><span class="line"><span class="comment">//   item: &#x27;pecans&#x27;,</span></span><br><span class="line"><span class="comment">//   price: 20,</span></span><br><span class="line"><span class="comment">//   ordered: 1,</span></span><br><span class="line"><span class="comment">//   stockdata: [ &#123; warehouse: &#x27;A&#x27;, instock: 80 &#125; ]</span></span><br><span class="line"><span class="comment">// &#125;,</span></span><br><span class="line"><span class="comment">// &#123;</span></span><br><span class="line"><span class="comment">//   _id: 3,</span></span><br><span class="line"><span class="comment">//   item: &#x27;cookies&#x27;,</span></span><br><span class="line"><span class="comment">//   price: 10,</span></span><br><span class="line"><span class="comment">//   ordered: 60,</span></span><br><span class="line"><span class="comment">//   stockdata: [ &#123; warehouse: &#x27;A&#x27;, instock: 80 &#125; ]</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br><span class="line"><span class="string">``</span><span class="string">`  </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">- $match  筛选文档流以仅允许匹配的文档将未修改的文档传入下一管道阶段</span></span><br><span class="line"><span class="string">- $merge  将 aggregation pipeline 的结果文档写入集合, 必须是聚合管道中的 **最后一阶段**</span></span><br><span class="line"><span class="string">- $out  将 aggregation pipeline 的结果文档写入集合, 必须是聚合管道中的 **最后一阶段**</span></span><br><span class="line"><span class="string">- $planCacheStats 返回集合的计划缓存的信息, 必须是聚合管道中的 **第一阶段**</span></span><br><span class="line"><span class="string">  - allHosts  配置聚合阶段如何以分片集群中的节点为目标</span></span><br><span class="line"><span class="string">- $project  重塑流中的文档至管道中的下个阶段，指定的字段可以是文档中已有字段或新计算的字段. 例如添加新的字段或删除现有字段</span></span><br><span class="line"><span class="string">- $redact 根据存储在文档本身中的信息, 限制整个文档被输出或者文档中的内容被输出</span></span><br><span class="line"><span class="string">  - $$DESCEND  返回当前文档级别的字段, 不包括嵌入式文档</span></span><br><span class="line"><span class="string">  - $$PRUNE  排除当前文档/嵌入式文档级别的所有字段, 而不进一步检查任何已排除的字段</span></span><br><span class="line"><span class="string">  - $$KEEP  返回或保留此当前文档/嵌入式文档级别的所有字段, 而不进一步检查此级别的字段</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span>ts</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// forecasts</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  _id: 1,</span></span><br><span class="line"><span class="comment">  title: &quot;123 Department Report&quot;,</span></span><br><span class="line"><span class="comment">  tags: [ &quot;G&quot;, &quot;STLW&quot; ],</span></span><br><span class="line"><span class="comment">  year: 2014,</span></span><br><span class="line"><span class="comment">  subsections: [</span></span><br><span class="line"><span class="comment">    &#123;</span></span><br><span class="line"><span class="comment">      subtitle: &quot;Section 1: Overview&quot;,</span></span><br><span class="line"><span class="comment">      tags: [ &quot;SI&quot;, &quot;G&quot; ],</span></span><br><span class="line"><span class="comment">      content:  &quot;Section 1: This is the content of section 1.&quot;</span></span><br><span class="line"><span class="comment">    &#125;,</span></span><br><span class="line"><span class="comment">    &#123;</span></span><br><span class="line"><span class="comment">      subtitle: &quot;Section 2: Analysis&quot;,</span></span><br><span class="line"><span class="comment">      tags: [ &quot;STLW&quot; ],</span></span><br><span class="line"><span class="comment">      content: &quot;Section 2: This is the content of section 2.&quot;</span></span><br><span class="line"><span class="comment">    &#125;,</span></span><br><span class="line"><span class="comment">    &#123;</span></span><br><span class="line"><span class="comment">      subtitle: &quot;Section 3: Budgeting&quot;,</span></span><br><span class="line"><span class="comment">      tags: [ &quot;TK&quot; ],</span></span><br><span class="line"><span class="comment">      content: &#123;</span></span><br><span class="line"><span class="comment">        text: &quot;Section 3: This is the content of section 3.&quot;,</span></span><br><span class="line"><span class="comment">        tags: [ &quot;HCS&quot; ]</span></span><br><span class="line"><span class="comment">      &#125;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">  ]</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">var</span> userAccess = [ <span class="string">&quot;STLW&quot;</span>, <span class="string">&quot;G&quot;</span> ];</span><br><span class="line">db.<span class="property">forecasts</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123; <span class="attr">$match</span>: &#123;<span class="attr">year</span>: <span class="number">2014</span>&#125; &#125;,</span><br><span class="line">  &#123; <span class="attr">$redact</span>: &#123;</span><br><span class="line">      <span class="attr">$cond</span>: &#123;</span><br><span class="line">        <span class="attr">if</span>: &#123;<span class="attr">$gt</span>: [&#123;<span class="attr">$size</span>: &#123;<span class="attr">$setIntersection</span>: [<span class="string">&#x27;$tags&#x27;</span>, userAccess]&#125;&#125;, <span class="number">0</span>]&#125;,</span><br><span class="line">        <span class="attr">then</span>: <span class="string">&#x27;$$DESCEND&#x27;</span>,</span><br><span class="line">        <span class="attr">else</span>: <span class="string">&#x27;$$PRUNE&#x27;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output: 查看带有标签 STLW 或 G 的信息</span></span><br><span class="line"><span class="comment">// &#123;</span></span><br><span class="line"><span class="comment">//   &quot;_id&quot; : 1,</span></span><br><span class="line"><span class="comment">//   &quot;title&quot; : &quot;123 Department Report&quot;,</span></span><br><span class="line"><span class="comment">//   &quot;tags&quot; : [ &quot;G&quot;, &quot;STLW&quot; ],</span></span><br><span class="line"><span class="comment">//   &quot;year&quot; : 2014,</span></span><br><span class="line"><span class="comment">//   &quot;subsections&quot; : [</span></span><br><span class="line"><span class="comment">//     &#123;</span></span><br><span class="line"><span class="comment">//       &quot;subtitle&quot; : &quot;Section 1: Overview&quot;,</span></span><br><span class="line"><span class="comment">//       &quot;tags&quot; : [ &quot;SI&quot;, &quot;G&quot; ],</span></span><br><span class="line"><span class="comment">//       &quot;content&quot; : &quot;Section 1: This is the content of section 1.&quot;</span></span><br><span class="line"><span class="comment">//     &#125;,</span></span><br><span class="line"><span class="comment">//     &#123;</span></span><br><span class="line"><span class="comment">//       &quot;subtitle&quot; : &quot;Section 2: Analysis&quot;,</span></span><br><span class="line"><span class="comment">//       &quot;tags&quot; : [ &quot;STLW&quot; ],</span></span><br><span class="line"><span class="comment">//       &quot;content&quot; : &quot;Section 2: This is the content of section 2.&quot;</span></span><br><span class="line"><span class="comment">//     &#125;</span></span><br><span class="line"><span class="comment">//   ]</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$replaceRoot 将输入文档替换为指定文档, 该操作会替换输入文档中的所有现有字段, 包括 _id 字段</li>
+<li>$replaceWith 将输入文档替换为指定文档, 该操作会替换输入文档中的所有现有字段, 包括 _id 字段</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">$replaceRoot</span>: &#123; <span class="attr">newRoot</span>: &lt;replacementDocument&gt;&#125;&#125; <span class="comment">// 如果 replacementDocument 不是文档或者解析为缺失的文档, 则报错并失败</span></span><br><span class="line">&#123;<span class="attr">$replaceWith</span>: &lt;replacementDocument&gt;&#125; <span class="comment">// 如果 replacementDocument 不是文档或者解析为缺失的文档, 则报错并失败</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// students</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  &quot;_id&quot; : 1,</span></span><br><span class="line"><span class="comment">  &quot;grades&quot; : [</span></span><br><span class="line"><span class="comment">    &#123; &quot;test&quot;: 1, &quot;grade&quot; : 80, &quot;mean&quot; : 75, &quot;std&quot; : 6 &#125;,</span></span><br><span class="line"><span class="comment">    &#123; &quot;test&quot;: 2, &quot;grade&quot; : 85, &quot;mean&quot; : 90, &quot;std&quot; : 4 &#125;,</span></span><br><span class="line"><span class="comment">    &#123; &quot;test&quot;: 3, &quot;grade&quot; : 95, &quot;mean&quot; : 85, &quot;std&quot; : 6 &#125;</span></span><br><span class="line"><span class="comment">  ]</span></span><br><span class="line"><span class="comment">&#125;,</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">  &quot;_id&quot; : 2,</span></span><br><span class="line"><span class="comment">  &quot;grades&quot; : [</span></span><br><span class="line"><span class="comment">    &#123; &quot;test&quot;: 1, &quot;grade&quot; : 90, &quot;mean&quot; : 75, &quot;std&quot; : 6 &#125;,</span></span><br><span class="line"><span class="comment">    &#123; &quot;test&quot;: 2, &quot;grade&quot; : 87, &quot;mean&quot; : 90, &quot;std&quot; : 3 &#125;,</span></span><br><span class="line"><span class="comment">    &#123; &quot;test&quot;: 3, &quot;grade&quot; : 91, &quot;mean&quot; : 85, &quot;std&quot; : 4 &#125;</span></span><br><span class="line"><span class="comment">  ]</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">db.<span class="property">students</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;<span class="attr">$unwind</span>: <span class="string">&#x27;$grades&#x27;</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">$match</span>: &#123;<span class="string">&#x27;grades.grade&#x27;</span>: &#123;<span class="attr">$gte</span>: <span class="number">90</span>&#125;&#125;&#125;,</span><br><span class="line">  &#123;<span class="attr">$replaceRoot</span>: &#123;<span class="attr">newRoot</span>: <span class="string">&#x27;$grades&#x27;</span>&#125;&#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output: 将 grade 字段的值大于等于 90 的嵌入式文档提升到顶层</span></span><br><span class="line">&#123; <span class="string">&quot;test&quot;</span> : <span class="number">3</span>, <span class="string">&quot;grade&quot;</span> : <span class="number">95</span>, <span class="string">&quot;mean&quot;</span> : <span class="number">85</span>, <span class="string">&quot;std&quot;</span> : <span class="number">6</span> &#125;</span><br><span class="line">&#123; <span class="string">&quot;test&quot;</span> : <span class="number">1</span>, <span class="string">&quot;grade&quot;</span> : <span class="number">90</span>, <span class="string">&quot;mean&quot;</span> : <span class="number">75</span>, <span class="string">&quot;std&quot;</span> : <span class="number">6</span> &#125;</span><br><span class="line">&#123; <span class="string">&quot;test&quot;</span> : <span class="number">3</span>, <span class="string">&quot;grade&quot;</span> : <span class="number">91</span>, <span class="string">&quot;mean&quot;</span> : <span class="number">85</span>, <span class="string">&quot;std&quot;</span> : <span class="number">4</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$sample 从输入文档中随机选择指定数量的文档<ul>
+<li>size 随机选择文档的数量</li>
+</ul>
+</li>
+<li>$set  为文档添加新字段, 与 $project 类似</li>
+<li>$skip 跳过前 n 个文档，其中 n 是指定的跳过编号，并将未修改的剩余文档传递到管道的下一阶段</li>
+<li>$sort 按指定的排序键对文档流重新排序。仅顺序会改变，而文档则保持不变</li>
+<li>$sortByCount  根据指定表达式的值对传入文档进行分组，然后计算每个不同群组中的文档数量</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$sort</span>: &#123; &lt;field1&gt;: &lt;sort order&gt;, &lt;field2&gt;: &lt;sort order&gt; ... &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$unionWith 将两个集合合并为一个结果集<ul>
+<li>coll 如果省略 pipeline 则为必传</li>
+<li>pipeline  应用于输入文档聚合管道</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$unionWith</span>: &#123; <span class="attr">coll</span>: <span class="string">&quot;&lt;collection&gt;&quot;</span>, <span class="attr">pipeline</span>: [ &lt;stage1&gt;, ... ] &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$unset  从文档中删除/排除字段, $unset 是删除字段的 $project 阶段的别名</li>
+<li>$unwind 解构输入文档中的数组字段, 以便为数组中的每个元素输出文档, 并用该元素替换该数组字段的值, 忽略无法转换成 <code>单元素数组</code> 的文档<ul>
+<li>path  数组字段的字段路径</li>
+<li>includeArrayIndex  可选, 新字段的名称, 用于保存该元素的数组索引, 名称不能以 <code>$</code> 开头</li>
+<li>preserveNullAndEmptyArrays  可选, 默认为 false<ul>
+<li>如果为 true, 如果 path 为 null、缺失或空, $unwind 会输出文档</li>
+<li>如果为 false, 如果 path 为 null、缺失或空, $unwind 不会输出文档</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">$unwind</span>: &#123;</span><br><span class="line">    <span class="attr">path</span>: &lt;field path&gt;,</span><br><span class="line">    includeArrayIndex: &lt;string&gt;,</span><br><span class="line">    preserveNullAndEmptyArrays: &lt;boolean&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">// inventory</span><br><span class="line">&#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;ABC1&quot;, sizes: [ &quot;S&quot;, &quot;M&quot;, &quot;L&quot;] &#125;</span><br><span class="line">*/</span><br><span class="line">db.inventory.aggregate([&#123;$unwind: &#123;path: &#x27;$sizes&#x27;, includeArrayIndex: &#x27;arrayIndex&#x27;&#125; &#125;]);</span><br><span class="line">// output:</span><br><span class="line">// &#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;ABC1&quot;, &quot;sizes&quot; : &quot;S&quot;, arrayIndex: NumberLong(0) &#125;</span><br><span class="line">// &#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;ABC1&quot;, &quot;sizes&quot; : &quot;M&quot;, arrayIndex: NumberLong(1) &#125;</span><br><span class="line">// &#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;ABC1&quot;, &quot;sizes&quot; : &quot;L&quot;, arrayIndex: NumberLong(2) &#125;</span><br><span class="line"></span><br><span class="line">// 数据结构</span><br><span class="line">/* </span><br><span class="line">[&#123;</span><br><span class="line">  _id: string,</span><br><span class="line">  name: string,</span><br><span class="line">  modules: [&#123;</span><br><span class="line">    name: string,</span><br><span class="line">    nodeId: string,</span><br><span class="line">    flowNodeType: string,</span><br><span class="line">    inputs: [&#123;</span><br><span class="line">      key: string,</span><br><span class="line">      value: string,</span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;]</span><br><span class="line">&#125;]</span><br><span class="line">*/</span><br><span class="line">[</span><br><span class="line">  &#123; $match: &#123; type: &quot;simple&quot; &#125; &#125;, // 过滤 type 为 simple 的文档</span><br><span class="line">  &#123;</span><br><span class="line">    $unwind: &#123;</span><br><span class="line">      path: &quot;$modules&quot;, // 解构 modules 数组, 为数组中的每个元素输出文档,并用该元素替换该字段的值, </span><br><span class="line">      includeArrayIndex: &quot;m&quot;, // 添加 m 字段标识当前元素所在的下标</span><br><span class="line">      preserveNullAndEmptyArrays: true</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123; $match: &#123; &#x27;modules.flowNodeType&#x27;: &#x27;chatNode&#x27; &#125; &#125;, // 过滤 modules.flowNodeType 为 chatNode 的文档</span><br><span class="line">  &#123;</span><br><span class="line">    $addFields: &#123; // 添加字段</span><br><span class="line">      inputsSize: &#123; $size: &quot;$modules.inputs&quot; &#125;, // 值为 modules.inputs 数组的大小</span><br><span class="line">      inputsValues: &#123;</span><br><span class="line">        $arrayToObject: &#123; // 将键值对数组转换为对象</span><br><span class="line">          $map: &#123; // 遍历 modules.inputs 的每一项, 并返回每一项的 key 属性的值和 value 属性的值组成的数组</span><br><span class="line">            input: &quot;$modules.inputs&quot;,</span><br><span class="line">            as: &quot;item&quot;,</span><br><span class="line">            in: [&quot;$$item.key&quot;, &quot;$$item.value&quot;]</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h3><ul>
+<li>$add 将数字或者日期相加, 如果其中一个参数是日期, 则其他参数被视为添加到日期的毫秒数</li>
+<li>$sum 计算并返回数字值的总和，忽略非数值</li>
+<li>$avg 返回数值的平均值, 忽略非数值</li>
+<li>$multiply 将数字相乘并返回结果</li>
+<li>$divide 返回第一个数字除以第二个数字的结果</li>
+<li>$mod 返回第一个数字除以第二个数字的余数</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// sales</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;abc&quot;, &quot;price&quot; : 10, &quot;fee&quot;: 2, &quot;quantity&quot; : 2, &quot;date&quot; : ISODate(&quot;2014-01-01T08:00:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;jkl&quot;, &quot;price&quot; : 20, &quot;fee&quot;: 1, &quot;quantity&quot; : 1, &quot;date&quot; : ISODate(&quot;2014-02-03T09:00:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 3, &quot;item&quot; : &quot;xyz&quot;, &quot;price&quot; : 5, &quot;fee&quot;: 0, &quot;quantity&quot; : 5, &quot;date&quot; : ISODate(&quot;2014-02-03T09:05:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 4, &quot;item&quot; : &quot;abc&quot;, &quot;price&quot; : 10, &quot;fee&quot;: 3, &quot;quantity&quot; : 10, &quot;date&quot; : ISODate(&quot;2014-02-15T08:00:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 5, &quot;item&quot; : &quot;xyz&quot;, &quot;price&quot; : 5, &quot;fee&quot;: 4, &quot;quantity&quot; : 10, &quot;date&quot; : ISODate(&quot;2014-02-15T09:12:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">db.<span class="property">sales</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;<span class="attr">$project</span>: &#123;<span class="attr">item</span>: <span class="number">1</span>, <span class="attr">total</span>: &#123;<span class="attr">$add</span>: [<span class="string">&#x27;$price&#x27;</span>, <span class="string">&#x27;$fee&#x27;</span>]&#125;, <span class="attr">billing_date</span>: &#123;<span class="attr">$add</span>: [<span class="string">&#x27;$date&#x27;</span>, <span class="number">3</span>*<span class="number">24</span>*<span class="number">60</span>*<span class="number">60</span>*<span class="number">1000</span>]&#125;&#125;&#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output: total = price + fee; billing_date = date + 3*24*60*60*1000</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;abc&quot;, &quot;total&quot; : 12, &quot;billing_date&quot; : ISODate(&quot;2014-01-04T08:00:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;jkl&quot;, &quot;total&quot; : 21, &quot;billing_date&quot; : ISODate(&quot;2014-02-06T09:00:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 3, &quot;item&quot; : &quot;xyz&quot;, &quot;total&quot; : 5, &quot;billing_date&quot; : ISODate(&quot;2014-02-06T09:05:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 4, &quot;item&quot; : &quot;abc&quot;, &quot;total&quot; : 13, &quot;billing_date&quot; : ISODate(&quot;2014-02-18T08:00:00Z&quot;) &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 5, &quot;item&quot; : &quot;xyz&quot;, &quot;total&quot; : 9, &quot;billing_date&quot; : ISODate(&quot;2014-02-18T09:12:00Z&quot;) &#125;</span></span><br><span class="line"></span><br><span class="line">db.<span class="property">sales</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;<span class="attr">$group</span>: &#123;<span class="attr">_id</span>: <span class="string">&#x27;$item&#x27;</span>, <span class="attr">avgAmount</span>: &#123;<span class="attr">$avg</span>: &#123;<span class="attr">$multiply</span>: [<span class="string">&#x27;$price&#x27;</span>, <span class="string">&#x27;$quantity&#x27;</span>]&#125;, <span class="attr">avgQuantity</span>: &#123;<span class="attr">$avg</span>: <span class="string">&#x27;$quantity&#x27;</span>&#125;&#125;&#125;&#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// 按 item 对文档进行分组, 以检索非重复的项值</span></span><br><span class="line"><span class="comment">// 使用 $avg 累加器来计算每组的平均金额和平均数量</span></span><br><span class="line"><span class="comment">// output: avgAmount = sum(group(price * quantity)) / groupNum; avgQuantity = sum(group(quantity)) / groupNum</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : &quot;xyz&quot;, &quot;avgAmount&quot; : 37.5, &quot;avgQuantity&quot; : 7.5 &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : &quot;jkl&quot;, &quot;avgAmount&quot; : 20, &quot;avgQuantity&quot; : 1 &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : &quot;abc&quot;, &quot;avgAmount&quot; : 60, &quot;avgQuantity&quot; : 6 &#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="数组表达式操作符"><a href="#数组表达式操作符" class="headerlink" title="数组表达式操作符"></a>数组表达式操作符</h4><ul>
+<li>$first 返回一组文档中第一个文档的表达式结果, 仅当文档按定义的顺序排列时才有意义</li>
+<li>$last 返回一组文档中最后一个文档的表达式结果, 仅当文档按指定顺序排列时才有意义</li>
+<li>$in 返回一个布尔值, 表示第一个值是否在第二个值为数组中, 不支持<code>正则表达式</code>匹配, 与 查询操作符 $in 不同</li>
+<li>$indexOfArray 搜索数组中出现的指定值, 并返回首次出现的数字索引, 如果未找到返回 -1, 如果不是一个数组或者数组不存在则返回 null<ul>
+<li>array 搜索的数组</li>
+<li>search value 搜索的值</li>
+<li>start 起始位置</li>
+<li>end 结束位置</li>
+</ul>
+</li>
+<li>$arrayElemAt 返回位于指定数组索引处的元素，如果索引越界不会返回结果, 如果数组不存在返回 null</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123; $in: [ &lt;expression&gt;, &lt;array expression&gt; ] &#125; 聚合操作符 $in</span></span><br><span class="line">&#123; <span class="attr">$in</span>: [ <span class="number">2</span>, [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ] ] &#125; <span class="comment">// true</span></span><br><span class="line">&#123; <span class="attr">$in</span>: [<span class="string">&#x27;abc&#x27;</span>, [<span class="string">&#x27;xyz&#x27;</span>, <span class="string">&#x27;abc&#x27;</span>]]&#125; <span class="comment">// true</span></span><br><span class="line">&#123; <span class="attr">$in</span>: [ [ <span class="string">&quot;a&quot;</span> ], [ <span class="string">&quot;a&quot;</span> ] ] &#125; <span class="comment">// false</span></span><br><span class="line">&#123; <span class="attr">$in</span>: [ [ <span class="string">&quot;a&quot;</span> ], [ [ <span class="string">&quot;a&quot;</span> ] ] ] &#125; <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="string">&quot;a&quot;</span>, <span class="string">&quot;abc&quot;</span> ], <span class="string">&quot;a&quot;</span> ] &#125;  <span class="comment">// 0</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="string">&quot;a&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;de&quot;</span>, [<span class="string">&quot;de&quot;</span>] ], [<span class="string">&quot;de&quot;</span>] ] &#125; <span class="comment">// 3</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="number">1</span>, <span class="number">2</span> ], <span class="number">5</span> ] &#125;  <span class="comment">// -1</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], [<span class="number">1</span>, <span class="number">2</span>] ] &#125;  <span class="comment">// -1</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="number">10</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">8</span>, <span class="number">9</span> ], <span class="number">9</span>, <span class="number">3</span> ] &#125; <span class="comment">// 4</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="string">&quot;a&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;b&quot;</span> ], <span class="string">&quot;b&quot;</span>, <span class="number">0</span>, <span class="number">1</span> ] &#125; <span class="comment">// -1</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="string">&quot;a&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;b&quot;</span> ], <span class="string">&quot;b&quot;</span>, <span class="number">1</span>, <span class="number">0</span> ] &#125; <span class="comment">// -1</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="string">&quot;a&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;b&quot;</span> ], <span class="string">&quot;b&quot;</span>, <span class="number">20</span> ] &#125; <span class="comment">// -1</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ [ <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">null</span> ], <span class="literal">null</span> ] &#125; <span class="comment">// 0</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ <span class="literal">null</span>, <span class="string">&quot;foo&quot;</span> ] &#125;  <span class="comment">// null</span></span><br><span class="line">&#123; <span class="attr">$indexOfArray</span>: [ <span class="string">&quot;foo&quot;</span>, <span class="string">&quot;foo&quot;</span> ] &#125; <span class="comment">// 错误</span></span><br><span class="line"></span><br><span class="line">&#123; <span class="attr">$arrayElemAt</span>: [ [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], <span class="number">0</span> ] &#125;  <span class="comment">// 1</span></span><br><span class="line">&#123; <span class="attr">$arrayElemAt</span>: [ [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], -<span class="number">2</span> ] &#125; <span class="comment">// 2</span></span><br><span class="line">&#123; <span class="attr">$arrayElemAt</span>: [ [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], <span class="number">15</span> ] &#125; <span class="comment">// 无返回值, 下标越界</span></span><br><span class="line">&#123; <span class="attr">$arrayElemAt</span>: [ <span class="string">&quot;$undefinedField&quot;</span>, <span class="number">0</span> ] &#125;  <span class="comment">// null, 第一个参数解析为未定义的数组</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$isArray 判断操作数是否为数组, 返回一个布尔值</li>
+<li>$reverseArray 接受数组表达式作为参数, 并返回其中的元素按倒序排列的数组</li>
+<li>$size 如果数组字段达到指定大小, 则选择文档</li>
+<li>$arrayToObject 将数组转换为单个文档<ul>
+<li>数组必须是由两个元素组成的数组</li>
+<li>包含 k 和 v 字段的对象组成的数组</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// inventory</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;ABC1&quot;,  dimensions: [ &#123; &quot;k&quot;: &quot;l&quot;, &quot;v&quot;: 25&#125; , &#123; &quot;k&quot;: &quot;w&quot;, &quot;v&quot;: 10 &#125;, &#123; &quot;k&quot;: &quot;uom&quot;, &quot;v&quot;: &quot;cm&quot; &#125; ] &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;ABC2&quot;,  dimensions: [ [ &quot;l&quot;, 50 ], [ &quot;w&quot;,  25 ], [ &quot;uom&quot;, &quot;cm&quot; ] ] &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 3, &quot;item&quot; : &quot;ABC3&quot;,  dimensions: [ [ &quot;l&quot;, 25 ], [ &quot;l&quot;,  &quot;cm&quot; ], [ &quot;l&quot;, 50 ] ] &#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;<span class="attr">$project</span>: &#123;<span class="attr">item</span>: <span class="number">1</span>, <span class="attr">$arrayToObject</span>: <span class="string">&#x27;$dimensions&#x27;</span>&#125;&#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output:</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;ABC1&quot;, &quot;dimensions&quot; : &#123; &quot;l&quot; : 25, &quot;w&quot; : 10, &quot;uom&quot; : &quot;cm&quot; &#125; &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;ABC2&quot;, &quot;dimensions&quot; : &#123; &quot;l&quot; : 50, &quot;w&quot; : 25, &quot;uom&quot; : &quot;cm&quot; &#125; &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 3, &quot;item&quot; : &quot;ABC3&quot;, &quot;dimensions&quot; : &#123; &quot;l&quot; : 50 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$filter 根据指定条件选择要返回的数组的子集, 返回一个数组，其中仅包含与条件匹配的元素。返回的元素按原始顺序排列<ul>
+<li>input 输入的数组</li>
+<li>as 每个元素的变量名</li>
+<li>cond 可解析为布尔值的表达式, 它可用于确定输出数组中是否应包含某一元素.</li>
+<li>limit 限制 $filter 返回的匹配大量元素的数量</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 语法</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">$filter</span>: &#123;</span><br><span class="line">    <span class="attr">input</span>: &lt;array&gt;,</span><br><span class="line">    <span class="attr">as</span>: &lt;<span class="built_in">string</span>&gt;,</span><br><span class="line">    <span class="attr">cond</span>: &lt;expression&gt;,</span><br><span class="line">    <span class="attr">limit</span>: <span class="language-xml"><span class="tag">&lt;<span class="name">number</span> <span class="attr">expression</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  &#125;</span></span><br><span class="line"><span class="language-xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// db.sales.insertMany([</span></span><br><span class="line"><span class="comment">//   &#123;</span></span><br><span class="line"><span class="comment">//     _id: 0,</span></span><br><span class="line"><span class="comment">//     items: [</span></span><br><span class="line"><span class="comment">//       &#123; item_id: 43, quantity: 2, price: 10, name: &quot;pen&quot; &#125;,</span></span><br><span class="line"><span class="comment">//       &#123; item_id: 2, quantity: 1, price: 240, name: &quot;briefcase&quot; &#125;</span></span><br><span class="line"><span class="comment">//     ]</span></span><br><span class="line"><span class="comment">//   &#125;,</span></span><br><span class="line"><span class="comment">//   &#123;</span></span><br><span class="line"><span class="comment">//     _id: 1,</span></span><br><span class="line"><span class="comment">//     items: [</span></span><br><span class="line"><span class="comment">//       &#123; item_id: 23, quantity: 3, price: 110, name: &quot;notebook&quot; &#125;,</span></span><br><span class="line"><span class="comment">//       &#123; item_id: 103, quantity: 4, price: 5, name: &quot;pen&quot; &#125;,</span></span><br><span class="line"><span class="comment">//       &#123; item_id: 38, quantity: 1, price: 300, name: &quot;printer&quot; &#125;</span></span><br><span class="line"><span class="comment">//     ]</span></span><br><span class="line"><span class="comment">//   &#125;,</span></span><br><span class="line"><span class="comment">//   &#123;</span></span><br><span class="line"><span class="comment">//     _id: 2,</span></span><br><span class="line"><span class="comment">//     items: [</span></span><br><span class="line"><span class="comment">//       &#123; item_id: 4, quantity: 1, price: 23, name: &quot;paper&quot; &#125;</span></span><br><span class="line"><span class="comment">//     ]</span></span><br><span class="line"><span class="comment">//   &#125;</span></span><br><span class="line"><span class="comment">// ]);</span></span><br><span class="line"></span><br><span class="line">db.<span class="property">sales</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$project</span>: &#123;</span><br><span class="line">      <span class="attr">items</span>: &#123;</span><br><span class="line">        <span class="attr">$filter</span>: &#123;</span><br><span class="line">          <span class="attr">input</span>: <span class="string">&quot;$items&quot;</span>,</span><br><span class="line">          <span class="attr">as</span>: <span class="string">&quot;item&quot;</span>,</span><br><span class="line">          <span class="attr">cond</span>: &#123; <span class="attr">$gte</span>: [ <span class="string">&quot;$$item.price&quot;</span>, <span class="number">100</span> ] &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// output</span></span><br><span class="line"><span class="comment">// [</span></span><br><span class="line"><span class="comment">//   &#123;</span></span><br><span class="line"><span class="comment">//     _id: 0,</span></span><br><span class="line"><span class="comment">//     items: [ &#123; item_id: 2, quantity: 1, price: 240, name: &#x27;briefcase&#x27; &#125; ]</span></span><br><span class="line"><span class="comment">//   &#125;, &#123;</span></span><br><span class="line"><span class="comment">//     _id: 1,</span></span><br><span class="line"><span class="comment">//     items: [</span></span><br><span class="line"><span class="comment">//       &#123; item_id: 23, quantity: 3, price: 110, name: &#x27;notebook&#x27; &#125;,</span></span><br><span class="line"><span class="comment">//       &#123; item_id: 38, quantity: 1, price: 300, name: &#x27;printer&#x27; &#125;</span></span><br><span class="line"><span class="comment">//     ]</span></span><br><span class="line"><span class="comment">//   &#125;,</span></span><br><span class="line"><span class="comment">//   &#123; _id: 2, items: [] &#125;</span></span><br><span class="line"><span class="comment">// ]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$map 对数组中的每个项目应用表达式，并返回包含已应用结果的数组<ul>
+<li>input 解析为数组的表达式</li>
+<li>as  可选, 代表 input 数组中每个元素的变量名称</li>
+<li>in  应用于 input 数组中每个元素的表达式, 该表达式单独引用带有 as 中指定的变量名称的每个元素</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$map</span>: &#123; <span class="attr">input</span>: &lt;expression&gt;, <span class="attr">as</span>: &lt;<span class="built_in">string</span>&gt;, <span class="attr">in</span>: &lt;expression&gt; &#125; &#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">$map</span>: &#123;</span><br><span class="line">    <span class="attr">input</span>: <span class="string">&#x27;$pubStat&#x27;</span>,</span><br><span class="line">    <span class="attr">as</span>: <span class="string">&#x27;item&#x27;</span>,</span><br><span class="line">    <span class="attr">in</span>: &#123;</span><br><span class="line">      <span class="attr">$and</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">$or</span>: [</span><br><span class="line">            &#123; <span class="attr">$eq</span>: [<span class="string">&#x27;$$item.auditStatus&#x27;</span>, <span class="string">&#x27;success&#x27;</span>] &#125;,</span><br><span class="line">            &#123; <span class="attr">$eq</span>: [<span class="string">&#x27;$$item.auditStatus&#x27;</span>, <span class="string">&#x27;faile&#x27;</span>] &#125;</span><br><span class="line">          ]</span><br><span class="line">        &#125;, &#123;</span><br><span class="line">          <span class="attr">$eq</span>: [<span class="string">&#x27;$$item.visibilityType&#x27;</span>, <span class="number">2</span>]</span><br><span class="line">        &#125;,</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$range 返回一个数组，其元素是生成的数字序列<ul>
+<li>start 开始</li>
+<li>end 结束</li>
+<li>step  步长</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$range</span>: [ &lt;start&gt;, &lt;end&gt;, <span class="language-xml"><span class="tag">&lt;<span class="name">non-zero</span> <span class="attr">step</span>&gt;</span> ] &#125;</span></span><br><span class="line"><span class="language-xml">&#123; $range: [ 0, 10, 2 ] &#125;  // [ 0, 2, 4, 6, 8 ]</span></span><br><span class="line"><span class="language-xml">&#123; $range: [ 10, 0, -2 ] &#125; // [ 10, 8, 6, 4, 2 ]</span></span><br><span class="line"><span class="language-xml">&#123; $range: [ 0, 10, -2 ] &#125; // [ ]</span></span><br><span class="line"><span class="language-xml">&#123; $range: [ 0, 5 ] &#125;  // [ 0, 1, 2, 3, 4 ]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$reduce 将表达式应用于数组中的每个元素，并将它们组合成一个值<ul>
+<li>input 解析为数组的表达式</li>
+<li>initialValue  在 in 之前设置的初始累积 value, 将应用于 input 数组的第一个元素</li>
+<li>in  一个有效的表达式, $reduce 将按从左到右的顺序应用于 input 数组中的每个元素</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">$reduce</span>: &#123;</span><br><span class="line">    <span class="attr">input</span>: &lt;array&gt;,</span><br><span class="line">    <span class="attr">initialValue</span>: &lt;expression&gt;,</span><br><span class="line">    <span class="attr">in</span>: &lt;expression&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">$reduce</span>: &#123;</span><br><span class="line">    <span class="attr">input</span>: [<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>],</span><br><span class="line">    <span class="attr">initialValue</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="attr">in</span>: &#123; $concat : [<span class="string">&quot;$$value&quot;</span>, <span class="string">&quot;$$this&quot;</span>] &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// &quot;abc&quot;</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">$reduce</span>: &#123;</span><br><span class="line">    <span class="attr">input</span>: [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span> ],</span><br><span class="line">    <span class="attr">initialValue</span>: &#123; <span class="attr">sum</span>: <span class="number">5</span>, <span class="attr">product</span>: <span class="number">2</span> &#125;,</span><br><span class="line">    <span class="attr">in</span>: &#123;</span><br><span class="line">      <span class="attr">sum</span>: &#123; $add : [<span class="string">&quot;$$value.sum&quot;</span>, <span class="string">&quot;$$this&quot;</span>] &#125;,</span><br><span class="line">      <span class="attr">product</span>: &#123; <span class="attr">$multiply</span>: [ <span class="string">&quot;$$value.product&quot;</span>, <span class="string">&quot;$$this&quot;</span> ] &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// &#123; &quot;sum&quot; : 15, &quot;product&quot; : 48 &#125;</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">$reduce</span>: &#123;</span><br><span class="line">    <span class="attr">input</span>: [ [ <span class="number">3</span>, <span class="number">4</span> ], [ <span class="number">5</span>, <span class="number">6</span> ] ],</span><br><span class="line">    <span class="attr">initialValue</span>: [ <span class="number">1</span>, <span class="number">2</span> ],</span><br><span class="line">    <span class="attr">in</span>: &#123; $concatArrays : [<span class="string">&quot;$$value&quot;</span>, <span class="string">&quot;$$this&quot;</span>] &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// [ 1, 2, 3, 4, 5, 6 ]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$slice 返回数组的子集<ul>
+<li>array 解析为数组的表达式</li>
+<li>position  解析为整数的有效表达式, 指定截取的位置</li>
+<li>n 解析为整数的有效表达式, 指定返回元素的个数</li>
+</ul>
+</li>
+<li>$sortArray 对数组的元素进行排序<ul>
+<li>input 待排序的数组</li>
+<li>sortBy  指定排序的文档或布尔值</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$slice</span>: [ &lt;array&gt;, &lt;position&gt;, &lt;n&gt; ] &#125;</span><br><span class="line">&#123; <span class="attr">$slice</span>: [ [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], <span class="number">1</span>, <span class="number">1</span> ] &#125;  <span class="comment">//[ 2 ]</span></span><br><span class="line">&#123; <span class="attr">$slice</span>: [ [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], -<span class="number">2</span> ] &#125; <span class="comment">// [ 2, 3 ]</span></span><br><span class="line">&#123; <span class="attr">$slice</span>: [ [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], <span class="number">15</span>, <span class="number">2</span> ] &#125;  <span class="comment">// [  ]</span></span><br><span class="line">&#123; <span class="attr">$slice</span>: [ [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], -<span class="number">15</span>, <span class="number">2</span> ] &#125; <span class="comment">// [ 1, 2 ]</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">$sortArray</span>: &#123;</span><br><span class="line">    <span class="attr">input</span>: &lt;array&gt;,</span><br><span class="line">    <span class="attr">sortBy</span>: <span class="language-xml"><span class="tag">&lt;<span class="name">sort</span> <span class="attr">spec</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  &#125;</span></span><br><span class="line"><span class="language-xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$zip 将两个数组进行合并, 将 <code>[ [ 1, 2, 3 ], [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ] ]</code> 转化为 <code>[ [ 1, &quot;a&quot; ], [ 2, &quot;b&quot; ], [ 3, &quot;c&quot; ] ]</code></li>
+</ul>
+<h4 id="条件表达式操作符"><a href="#条件表达式操作符" class="headerlink" title="条件表达式操作符"></a>条件表达式操作符</h4><ul>
+<li>$cond 一种三目运算符, 它可用于计算一个表达式, 并根据结果返回另外两个表达式之一的值</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$cond</span>: &#123; <span class="attr">if</span>: &lt;<span class="built_in">boolean</span>-expression&gt;, <span class="attr">then</span>: &lt;<span class="literal">true</span>-<span class="keyword">case</span>&gt;, <span class="attr">else</span>: &lt;<span class="literal">false</span>-<span class="keyword">case</span>&gt; &#125; &#125;</span><br><span class="line">&#123; <span class="attr">$cond</span>: [ &lt;<span class="built_in">boolean</span>-expression&gt;, &lt;<span class="literal">true</span>-<span class="keyword">case</span>&gt;, &lt;<span class="literal">false</span>-<span class="keyword">case</span>&gt; ] &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$ifNull 返回第一个表达式的非空结果; 或者, 如果第一个表达式生成空结果, 则返回第二个表达式的结果</li>
+<li>$switch 对一系列 case 表达式求值<ul>
+<li>branches  控制分支文档的数组, 每个分支均为一个包含以下字段的文档<ul>
+<li>case  解析为 boolean 的任何有效表达式</li>
+<li>then  任何有效表达式</li>
+</ul>
+</li>
+<li>default 在没有分支 case 表达式评估为 true 的情况下所采用的路径</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$switch</span>: &#123;</span><br><span class="line">    <span class="attr">branches</span>: [</span><br><span class="line">      &#123;<span class="attr">case</span>: &#123;<span class="attr">$eq</span>: [<span class="number">0</span>, <span class="number">5</span>]&#125;, <span class="attr">then</span>: <span class="string">&#x27;equals&#x27;</span>&#125;,</span><br><span class="line">      &#123;<span class="attr">case</span>: &#123;<span class="attr">$gt</span>: [<span class="number">0</span>, <span class="number">5</span>]&#125;, <span class="attr">then</span>: <span class="string">&#x27;greater than&#x27;</span>&#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">default</span>: <span class="string">&#x27;not match&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="自定义聚合表达式操作"><a href="#自定义聚合表达式操作" class="headerlink" title="自定义聚合表达式操作"></a>自定义聚合表达式操作</h4><ul>
+<li>$accumulator 定义自定义累加器</li>
+<li>$function 定义自定义函数</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">$accumulator</span>: &#123;</span><br><span class="line">    <span class="attr">init</span>: &lt;code&gt;,</span><br><span class="line">    <span class="attr">initArgs</span>: &lt;array expression&gt;,        // Optional</span><br><span class="line">    accumulate: &lt;code&gt;,</span><br><span class="line">    accumulateArgs: &lt;array expression&gt;,</span><br><span class="line">    merge: &lt;code&gt;,</span><br><span class="line">    finalize: &lt;code&gt;,                    // Optional</span><br><span class="line">    lang: &lt;string&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  $function: &#123;</span><br><span class="line">    body: &lt;code&gt;,</span><br><span class="line">    args: &lt;array expression&gt;,</span><br><span class="line">    lang: &quot;js&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">/* </span><br><span class="line">&#123; $function:</span><br><span class="line">  &#123;</span><br><span class="line">    body: function(name) &#123;</span><br><span class="line">      return hex_md5(name) == &quot;15b0a220baa16331e8d80e15367677ad&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    args: [ &quot;$name&quot; ],</span><br><span class="line">    lang: &quot;js&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+
+<h4 id="日期表达式操作符"><a href="#日期表达式操作符" class="headerlink" title="日期表达式操作符"></a><a target="_blank" rel="noopener" href="https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/">日期表达式操作符</a></h4><ul>
+<li><p>$dateAdd 向日期对象添加多个时间单位</p>
+</li>
+<li><p>$dateDiff 返回两个日期之间的差值</p>
+</li>
+<li><p>$dateFromString 将日期/时间字符串转换为日期对象</p>
+</li>
+<li><p>$dayOfMonth 返回日期中的某月的一天</p>
+</li>
+<li><p>$hour 返回日期中的小时部分</p>
+</li>
+<li><p>$minute 返回日期的分钟数</p>
+</li>
+<li><p>$month 返回日期的月份</p>
+</li>
+<li><p>$second 返回日期的秒数</p>
+</li>
+<li><p>$week 返回日期的周数</p>
+</li>
+<li><p>$year 返回日期的年份</p>
+</li>
+<li><p>$toDate 将数值转换为日期</p>
+</li>
+<li><p>$literal 返回一个值而不进行解析, 用于聚合管道可解释为表达式的值</p>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// inventory</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;napkins&quot;, price: &quot;$2.50&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;coffee&quot;, price: &quot;1&quot; &#125;,</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 3, &quot;item&quot; : &quot;soap&quot;, price: &quot;$1&quot; &#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;<span class="attr">$project</span>: &#123;<span class="attr">costsOneDollar</span>: &#123;<span class="attr">$eq</span>: [<span class="string">&#x27;$price&#x27;</span>, &#123;<span class="attr">$literal</span>: <span class="string">&#x27;$1&#x27;</span>&#125;]&#125;&#125;&#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output: 判断 price 字段的值是否等于字符串 $1</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 1, &quot;costsOneDollar&quot; : false &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 2, &quot;costsOneDollar&quot; : false &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 3, &quot;costsOneDollar&quot; : true &#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="对象表达式操作符"><a href="#对象表达式操作符" class="headerlink" title="对象表达式操作符"></a>对象表达式操作符</h4><ul>
+<li>$mergeObjects 将多个文档合并为一个文档, 后面的文档会覆盖前面文档的同名字段, 非文档的参数将会忽略</li>
+<li>$setField 添加、更新或删除文档中的指定字段</li>
+<li>$objectToArray 将文档转换为数组, 返回的数组中的每个元素都是一个包含两个字段 k 和 v 的文档</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// orders</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;abc&quot;, &quot;price&quot; : 12, &quot;ordered&quot; : 2 &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;jkl&quot;, &quot;price&quot; : 20, &quot;ordered&quot; : 1 &#125;</span></span><br><span class="line"><span class="comment">// items</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;abc&quot;, description: &quot;product 1&quot;, &quot;instock&quot; : 120 &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;def&quot;, description: &quot;product 2&quot;, &quot;instock&quot; : 80 &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 3, &quot;item&quot; : &quot;jkl&quot;, description: &quot;product 3&quot;, &quot;instock&quot; : 60 &#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;<span class="attr">$lookup</span>: &#123;<span class="attr">from</span>: <span class="string">&#x27;items&#x27;</span>, <span class="attr">localField</span>: <span class="string">&#x27;item&#x27;</span>, <span class="attr">foreignField</span>: <span class="string">&#x27;item&#x27;</span>, <span class="attr">as</span>: <span class="string">&#x27;fromItems&#x27;</span>&#125;&#125;,</span><br><span class="line">  &#123;<span class="attr">$replaceRoot</span>: &#123;<span class="attr">newRoot</span>: &#123;<span class="attr">$mergeObjects</span>: [&#123;<span class="attr">$arrayElemAt</span>: [<span class="string">&#x27;$fromItems&#x27;</span>, <span class="number">0</span>]&#125;, <span class="string">&#x27;$$ROOT&#x27;</span>]&#125;&#125;&#125;,</span><br><span class="line">  &#123;<span class="attr">$project</span>: &#123;<span class="attr">fromItems</span>: <span class="number">0</span>&#125;&#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output: 按照 item 字段连接两个集合, 使用 replaceRoot 中的 mergeObjects 合并来自 items 和 orders 中的连接文档</span></span><br><span class="line"><span class="comment">// &#123;</span></span><br><span class="line"><span class="comment">//   _id: 1,</span></span><br><span class="line"><span class="comment">//   item: &#x27;abc&#x27;,</span></span><br><span class="line"><span class="comment">//   description: &#x27;product 1&#x27;,</span></span><br><span class="line"><span class="comment">//   instock: 120,</span></span><br><span class="line"><span class="comment">//   price: 12,</span></span><br><span class="line"><span class="comment">//   ordered: 2</span></span><br><span class="line"><span class="comment">// &#125;,</span></span><br><span class="line"><span class="comment">// &#123;</span></span><br><span class="line"><span class="comment">//   _id: 2,</span></span><br><span class="line"><span class="comment">//   item: &#x27;jkl&#x27;,</span></span><br><span class="line"><span class="comment">//   description: &#x27;product 3&#x27;,</span></span><br><span class="line"><span class="comment">//   instock: 60,</span></span><br><span class="line"><span class="comment">//   price: 20,</span></span><br><span class="line"><span class="comment">//   ordered: 1</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment">// inventory</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;ABC1&quot;,  dimensions: &#123; l: 25, w: 10, uom: &quot;cm&quot; &#125; &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;ABC2&quot;,  dimensions: &#123; l: 50, w: 25, uom: &quot;cm&quot; &#125; &#125;</span></span><br><span class="line"><span class="comment">&#123; &quot;_id&quot; : 3, &quot;item&quot; : &quot;XYZ1&quot;,  dimensions: &#123; l: 70, w: 75, uom: &quot;cm&quot; &#125; &#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;<span class="attr">$project</span>: &#123;<span class="attr">item</span>: <span class="number">1</span>, <span class="attr">dimensions</span>: &#123;<span class="attr">$objectToArray</span>: <span class="string">&#x27;$dimensions&#x27;</span>&#125;&#125;&#125;</span><br><span class="line">]);</span><br><span class="line"><span class="comment">// output:</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 1, &quot;item&quot; : &quot;ABC1&quot;, &quot;dimensions&quot; : [ &#123; &quot;k&quot; : &quot;l&quot;, &quot;v&quot; : 25 &#125;, &#123; &quot;k&quot; : &quot;w&quot;, &quot;v&quot; : 10 &#125;, &#123; &quot;k&quot; : &quot;uom&quot;, &quot;v&quot; : &quot;cm&quot; &#125; ] &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 2, &quot;item&quot; : &quot;ABC2&quot;, &quot;dimensions&quot; : [ &#123; &quot;k&quot; : &quot;l&quot;, &quot;v&quot; : 50 &#125;, &#123; &quot;k&quot; : &quot;w&quot;, &quot;v&quot; : 25 &#125;, &#123; &quot;k&quot; : &quot;uom&quot;, &quot;v&quot; : &quot;cm&quot; &#125; ] &#125;</span></span><br><span class="line"><span class="comment">// &#123; &quot;_id&quot; : 3, &quot;item&quot; : &quot;XYZ1&quot;, &quot;dimensions&quot; : [ &#123; &quot;k&quot; : &quot;l&quot;, &quot;v&quot; : 70 &#125;, &#123; &quot;k&quot; : &quot;w&quot;, &quot;v&quot; : 75 &#125;, &#123; &quot;k&quot; : &quot;uom&quot;, &quot;v&quot; : &quot;cm&quot; &#125; ] &#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="集合表达式操作符"><a href="#集合表达式操作符" class="headerlink" title="集合表达式操作符"></a>集合表达式操作符</h4><ul>
+<li>$allElementsTrue  如果集合中没有元素计算结果为 false, 则返回 true 否则返回 false</li>
+<li>$anyElementTrue  如果集合中的任何元素计算结果为 true, 则返回 true 否则返回 false</li>
+<li>$setDifference  取两个集并返回一个包含仅存在于第一个集中的元素的数组, 即对第二个集取相对于第一个集的相对补集, 计算第二个集合的补集, 忽略重复项和顺序并且不会递归嵌套数组</li>
+<li>$setEquals  比较两个或多个数组, 如果具有相同的不同元素则返回 true, 否则返回 false, 忽略重复项和顺序并且不会递归嵌套数组</li>
+<li>$setIsSubset  比较两个数组, 当第一个数组是第二个数组的子集时返回 true, 否则返回 false, 忽略重复项和顺序并且不会递归嵌套数组</li>
+<li>$setIntersection  接收两个或多个数组, 并返回一个数组, 其中包含出现在每个输入数组中的元素, 计算交集, 忽略重复项和顺序并且不会递归嵌套数组</li>
+<li>$setUnion 接受两个或多个数组, 并返回一个数组, 其中包含出现在每个输入数组中的元素, 计算并集, 忽略重复项和顺序并且不会递归嵌套数组</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123; $allElementsTrue: [ &lt;expression&gt; ] &#125;</span></span><br><span class="line">&#123; <span class="attr">$allElementsTrue</span>: [ [ <span class="literal">true</span>, <span class="number">1</span>, <span class="string">&quot;someString&quot;</span> ] ] &#125; <span class="comment">// true</span></span><br><span class="line">&#123; <span class="attr">$allElementsTrue</span>: [ [ [ <span class="literal">false</span> ] ] ] &#125; <span class="comment">// true</span></span><br><span class="line">&#123; <span class="attr">$allElementsTrue</span>: [ [ ] ] &#125; <span class="comment">// true</span></span><br><span class="line">&#123; <span class="attr">$allElementsTrue</span>: [ [ <span class="literal">null</span>, <span class="literal">false</span>, <span class="number">0</span> ] ] &#125; <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// &#123; $anyElementTrue: [ &lt;expression&gt; ] &#125;</span></span><br><span class="line">&#123; <span class="attr">$anyElementTrue</span>: [ [ <span class="literal">true</span>, <span class="literal">false</span> ] ] &#125; <span class="comment">// true</span></span><br><span class="line">&#123; <span class="attr">$anyElementTrue</span>: [ [ [ <span class="literal">false</span> ] ] ] &#125; <span class="comment">// true</span></span><br><span class="line">&#123; <span class="attr">$anyElementTrue</span>: [ [ <span class="literal">null</span>, <span class="literal">false</span>, <span class="number">0</span> ] ] &#125; <span class="comment">// false</span></span><br><span class="line">&#123; <span class="attr">$anyElementTrue</span>: [ [ ] ] &#125; <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">&#123;<span class="attr">$setDifference</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>], [<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>]]&#125; <span class="comment">// []</span></span><br><span class="line">&#123;<span class="attr">$setDifference</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;c&#x27;</span>], [[<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>]]]&#125; <span class="comment">// [&#x27;c&#x27;]</span></span><br><span class="line"></span><br><span class="line">&#123;<span class="attr">$setEquals</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>], [<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>]]&#125; <span class="comment">// true</span></span><br><span class="line">&#123;<span class="attr">$setEquals</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>], [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>]]]&#125;  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">&#123;<span class="attr">$setIsSubset</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>], [<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>]]&#125;  <span class="comment">// true</span></span><br><span class="line">&#123;<span class="attr">$setIsSubset</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>], [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>]]]&#125;  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">&#123;<span class="attr">$setIntersection</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>], [<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>]]&#125; <span class="comment">// [&#x27;b&#x27;, &#x27;a&#x27;]</span></span><br><span class="line">&#123;<span class="attr">$setIntersection</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>], [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>]]]&#125; <span class="comment">// []</span></span><br><span class="line"></span><br><span class="line">&#123;<span class="attr">$setUnion</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>], [<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;a&#x27;</span>]]&#125; <span class="comment">// [&#x27;b&#x27;, &#x27;a&#x27;]</span></span><br><span class="line">&#123;<span class="attr">$setUnion</span>: [[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>], [[<span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;a&#x27;</span>]]]&#125;  <span class="comment">// [&#x27;a&#x27;, &#x27;b&#x27;, [&#x27;a&#x27;, &#x27;b&#x27;]]</span></span><br><span class="line"></span><br><span class="line">db.<span class="property">collection</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$match</span>: &#123;</span><br><span class="line">      <span class="attr">$expr</span>: &#123;</span><br><span class="line">        <span class="attr">$anyElementTrue</span>: &#123;</span><br><span class="line">          <span class="attr">$map</span>: &#123;</span><br><span class="line">            <span class="attr">input</span>: <span class="string">&quot;$arrayField&quot;</span>,</span><br><span class="line">            <span class="attr">as</span>: <span class="string">&quot;item&quot;</span>,</span><br><span class="line">            <span class="attr">in</span>: &#123; <span class="comment">// 条件表达式</span></span><br><span class="line">              <span class="attr">$and</span>: [</span><br><span class="line">                &#123; <span class="attr">$gt</span>: [<span class="string">&quot;$$item.price&quot;</span>, <span class="number">100</span>] &#125;, </span><br><span class="line">                &#123; <span class="attr">$lt</span>: [<span class="string">&quot;$$item.price&quot;</span>, <span class="number">1000</span>] &#125;</span><br><span class="line">              ] </span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<h4 id="字符串表达式操作符"><a href="#字符串表达式操作符" class="headerlink" title="字符串表达式操作符"></a>字符串表达式操作符</h4><ul>
+<li>$concat 连接任意数量的字符串</li>
+<li>$dateToString 以格式化字符串的形式返回日期</li>
+<li>$indexOfBytes 在字符串中搜索子串出现的位置, 并返回第一次出现的索引, 未找到则返回 -1<ul>
+<li>string 字符串值</li>
+<li>substring 子串</li>
+<li>start 起始位置</li>
+<li>end 结束位置</li>
+</ul>
+</li>
+<li>$indexOfCP  在字符串中搜索子串出现的位置, 并返回第一次出现时的 UTF-8 码位索引, 未找到则返回 -1</li>
+<li>$ltrim  删除字符串开头和结尾的空白或指定字符</li>
+<li>$rtrim</li>
+<li>$trim</li>
+<li>$regexFind  将正则表达式应用于字符串, 并返回第一个匹配子字符串的信息.</li>
+<li>$regexFindAll 将正则表达式应用于字符串, 并返回有关所有匹配字符串的信息</li>
+<li>$regexMatch 将正则表达式应用于字符串并返回一个布尔值, 表示是否已找到匹配项</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123; $regexFind: &#123; input: &lt;expression&gt; , regex: &lt;expression&gt;, options: &lt;expression&gt; &#125; &#125;</span></span><br><span class="line"></span><br><span class="line">db.<span class="property">restaurants</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$addFields</span>: &#123;</span><br><span class="line">      <span class="attr">resultObject</span>: &#123; <span class="attr">$regexFind</span>: &#123; <span class="attr">input</span>: <span class="string">&quot;$category&quot;</span>, <span class="attr">regex</span>: <span class="regexp">/cafe/</span>, <span class="attr">options</span>: <span class="string">&#x27;im&#x27;</span> &#125; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$replaceOne 替换给定输入中匹配字符串的第一个实例</li>
+<li>$replaceAll 替换给定输入中匹配字符串的所有实例</li>
+<li>$split  根据给定字符串拆分子字符串并返回子字符串数组</li>
+<li>$toLower  将字符串转换成小写</li>
+<li>$toUpper  将字符串转换成大写</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$split</span>: [ <span class="string">&quot;June-15-2013&quot;</span>, <span class="string">&quot;-&quot;</span> ] &#125; <span class="comment">// [ &quot;June&quot;, &quot;15&quot;, &quot;2013&quot; ]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="类型表达式操作符"><a href="#类型表达式操作符" class="headerlink" title="类型表达式操作符"></a>类型表达式操作符</h4><ul>
+<li>$type 返回字段的 BSON 数据类型</li>
+<li>$toUUID 将字符串转换为 UUID</li>
+<li>$toObjectId 将值转换为 ObjectId</li>
+<li>$convert 将值转换为指定类型<ul>
+<li>input 任意有效的表达式</li>
+<li>to 指定将 input 表达式转换为的类型，可以为字符串/对象格式<ul>
+<li>type 任何有效表达式, double-&gt;1, string-&gt;2, binData-&gt;5, objectId-&gt;7, bool-&gt;8, date-&gt;9, int-&gt;16, long-&gt;18, decimal-&gt;19</li>
+<li>subType 指定要转换到的 binData 子类型</li>
+</ul>
+</li>
+<li>format 指定输入或输出的 binData 格式<ul>
+<li>base64</li>
+<li>base64Url</li>
+<li>utf8</li>
+<li>hex</li>
+<li>uuid</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="分组结果合并原始文档"><a href="#分组结果合并原始文档" class="headerlink" title="分组结果合并原始文档"></a>分组结果合并原始文档</h4><ul>
+<li>使用 <code>$mergeObjects</code> 合并字段</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">  <span class="attr">$group</span>: &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="string">&#x27;$groupField&#x27;</span>,</span><br><span class="line">    <span class="attr">count</span>: &#123;<span class="attr">$sum</span>: <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="comment">// 合并所有原始文档的字段</span></span><br><span class="line">    <span class="attr">mergedDoc</span>: &#123;<span class="attr">$mergeObjects</span>: <span class="string">&#x27;$$ROOT&#x27;</span>&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">$project</span>: &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">count</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="comment">// 展开合并后的文档</span></span><br><span class="line">    <span class="comment">// otherField1: &#x27;$mergedDoc.field1&#x27;,</span></span><br><span class="line">    <span class="comment">// otherField2: &#x27;$mergedDoc.field2&#x27;,</span></span><br><span class="line">    <span class="comment">// 保留整个合并文档</span></span><br><span class="line">    <span class="attr">originalDoc</span>: <span class="string">&#x27;$mergedDoc&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 <code>$first</code> 或 <code>$last</code> 保留特定字段</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">  <span class="attr">$group</span>: &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="string">&#x27;$groupField&#x27;</span>,</span><br><span class="line">    <span class="attr">count</span>: &#123;<span class="attr">$sum</span>: <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="comment">// 保留每个分组中第一个文档的特定字段</span></span><br><span class="line">    <span class="comment">// field1: &#123;$first: &#x27;$field1&#x27;&#125;,</span></span><br><span class="line">    <span class="comment">// field2: &#123;$first: &#x27;$field2&#x27;&#125;,</span></span><br><span class="line">    <span class="comment">// 保留整个文档</span></span><br><span class="line">    <span class="attr">originalDoc</span>: &#123;<span class="attr">$first</span>: <span class="string">&#x27;$$ROOT&#x27;</span>&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 <code>$addFields</code> 或 <code>$project</code> 重组数据</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">  <span class="attr">$group</span>: &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="string">&#x27;$groupField&#x27;</span>,</span><br><span class="line">    <span class="attr">count</span>: &#123;<span class="attr">$sum</span>: <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="attr">docs</span>: &#123;<span class="attr">$push</span>: <span class="string">&#x27;$$ROOT&#x27;</span>&#125;, <span class="comment">// 将分组内的所有文档存入数组</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">$unwind</span>: <span class="string">&#x27;$docs&#x27;</span>, <span class="comment">// 展开文档数组</span></span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">$addFields</span>: &#123;</span><br><span class="line">    <span class="comment">// 将分组统计结果与原文档字段合并</span></span><br><span class="line">    <span class="string">&#x27;docs.count&#x27;</span>: <span class="string">&#x27;$count&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;docs.groupId&#x27;</span>: <span class="string">&#x27;$_id&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">$replaceRoot</span>: &#123;</span><br><span class="line">    <span class="attr">newRoot</span>: <span class="string">&#x27;$docs&#x27;</span>, <span class="comment">// 将 docs 提升为根文档</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 <code>$lookup</code> 自连接</li>
+<li>使用 <code>$set</code> 简化操作</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">  <span class="attr">$group</span>: &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="string">&#x27;$groupField&#x27;</span>,</span><br><span class="line">    <span class="attr">count</span>: &#123;<span class="attr">$sum</span>: <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="attr">firstDoc</span>: &#123;<span class="attr">$first</span>: <span class="string">&#x27;$$ROOT&#x27;</span>&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">$set</span>: &#123;</span><br><span class="line">    <span class="string">&#x27;firstDoc.count&#x27;</span>: <span class="string">&#x27;$count&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;firstDoc.groupId&#x27;</span>: <span class="string">&#x27;$_id&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">$replaceRoot</span>: &#123;</span><br><span class="line">    <span class="attr">newRoot</span>: <span class="string">&#x27;$firstDoc&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>将一个订单集合, 按客户ID分组统计订单数量和总金额, 同时保留客户信息</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([&#123;</span><br><span class="line">  <span class="attr">$group</span>: &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="string">&#x27;$customId&#x27;</span>,</span><br><span class="line">    <span class="attr">orderCount</span>: &#123;<span class="attr">$sum</span>: <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="attr">totalAmount</span>: &#123;<span class="attr">$sum</span>: <span class="string">&#x27;$amount&#x27;</span>&#125;,</span><br><span class="line">    <span class="attr">customerInfo</span>: &#123;</span><br><span class="line">      <span class="attr">$first</span>: &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;$customerName&#x27;</span>,</span><br><span class="line">        <span class="attr">email</span>: <span class="string">&#x27;$customerEmail&#x27;</span>,</span><br><span class="line">        <span class="attr">joinDate</span>: <span class="string">&#x27;$customerJoinDate&#x27;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="attr">$project</span>: &#123;</span><br><span class="line">    <span class="attr">customerId</span>: <span class="string">&#x27;$_id&#x27;</span>,</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">orderCount</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">totalAmount</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;$customerInfo.name&#x27;</span>,</span><br><span class="line">    <span class="attr">email</span>: <span class="string">&#x27;$customerInfo.email&#x27;</span>,</span><br><span class="line">    <span class="attr">joinDate</span>: <span class="string">&#x27;$customerInfo.joinDate&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;])</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\c32a91c061ac\" rel="bookmark">sql</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/11/5db91eb9b055/" title="sql-aggregate">https://luoleiself.github.io/2022/11/5db91eb9b055/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sql/" rel="tag"># sql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/bbb1955164c4/" rel="prev" title="Editor">
+      <i class="fa fa-chevron-left"></i> Editor
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/c32a91c061ac/" rel="next" title="sql">
+      sql <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">聚合操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.1.</span> <span class="nav-text">用户变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">系统变量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E5%91%BD%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">聚合命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5"><span class="nav-number">1.3.</span> <span class="nav-text">阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.4.</span> <span class="nav-text">操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.4.1.</span> <span class="nav-text">数组表达式操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.4.2.</span> <span class="nav-text">条件表达式操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%81%9A%E5%90%88%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.3.</span> <span class="nav-text">自定义聚合表达式操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.4.4.</span> <span class="nav-text">日期表达式操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.4.5.</span> <span class="nav-text">对象表达式操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.4.6.</span> <span class="nav-text">集合表达式操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.4.7.</span> <span class="nav-text">字符串表达式操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.4.8.</span> <span class="nav-text">类型表达式操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E7%BB%93%E6%9E%9C%E5%90%88%E5%B9%B6%E5%8E%9F%E5%A7%8B%E6%96%87%E6%A1%A3"><span class="nav-number">1.4.9.</span> <span class="nav-text">分组结果合并原始文档</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">756k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

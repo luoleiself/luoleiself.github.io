@@ -204,6 +204,122 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2025/11/7818789f5584/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/11/7818789f5584/" class="post-title-link" itemprop="url">popover</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-11-12 17:32:32 / 修改时间：18:17:22" itemprop="dateCreated datePublished" datetime="2025-11-12T17:32:32+08:00">2025-11-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebAPI/" itemprop="url" rel="index"><span itemprop="name">WebAPI</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="popover"><a href="#popover" class="headerlink" title="popover"></a>popover</h2><p>用来指定一个元素为弹出框元素, 弹出框元素通过 <code>display: none</code> 被隐藏，直到通过调用/控制元素(即带有 popovertarget 属性的 button 或者 <code>type=&quot;button&quot;</code> 的 input) 或 <code>HTMLElement.showPopover()</code> 调用打开。</p>
+<p>当打开时，弹出框元素将出现在所有其他元素之上，即在顶层上，并且不会受到父元素的 position 或 overflow 样式的影响。</p>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li><p>popover  指定元素为弹框出框元素</p>
+<ul>
+<li>auto, 默认值, 可以在弹出框之外的区域进行选择或(Esc 键), 以达到 轻触关闭 的目的</li>
+<li>manual, 手动模式, 不能 轻触关闭 或自动关闭, 必须通过声明式的 button 或 js 控制</li>
+<li>hint, 提示模式, 在弹出框显示时不会自动关闭自动型弹出框, 但会关闭其他提示型弹出框, 并且会对关闭请求做出响应</li>
+</ul>
+</li>
+<li><p>popovertarget 指定控制弹出框元素的 id，在 button 或 <code>type=&quot;button&quot;</code> 的 input 元素上使用</p>
+</li>
+<li><p>popovertargetaction 指定弹出框元素的行为</p>
+<ul>
+<li>toggle, 默认值, 切换弹出框</li>
+<li>hide, 隐藏弹出框</li>
+<li>show, 显示弹出框</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">popovertarget</span>=<span class="string">&quot;myPopover&quot;</span> <span class="attr">popovertargetaction</span>=<span class="string">&quot;show&quot;</span>&gt;</span></span><br><span class="line">  Show Popover</span><br><span class="line"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">popovertarget</span>=<span class="string">&quot;myPopover&quot;</span> <span class="attr">popovertargetaction</span>=<span class="string">&quot;hide&quot;</span>&gt;</span></span><br><span class="line">  Hide Popover</span><br><span class="line"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;myPopover&quot;</span> <span class="attr">popover</span>&gt;</span>popover content<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>手动控制弹出框</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">popovertarget</span>=<span class="string">&quot;my-popover&quot;</span> <span class="attr">popovertargetaction</span>=<span class="string">&quot;toggle&quot;</span>&gt;</span>Toggle Popover<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;my-popover&quot;</span> <span class="attr">popover</span>=<span class="string">&quot;manual&quot;</span>&gt;</span>Popover content<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ul>
+<li>HTMLElement.showPopover() 手动打开弹出框</li>
+<li>HTMLElement.hidePopover() 手动关闭弹出框</li>
+<li>HTMLElement.togglePopover() 手动切换弹出框</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/11/7818789f5584/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2024/08/aa27b9262e74/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -227,10 +343,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-08-09 15:20:07 / 修改时间：12:50:22" itemprop="dateCreated datePublished" datetime="2024-08-09T15:20:07+08:00">2024-08-09</time>
+              <time title="创建时间：2024-08-09 15:20:07" itemprop="dateCreated datePublished" datetime="2024-08-09T15:20:07+08:00">2024-08-09</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-26 11:43:25" itemprop="dateModified" datetime="2025-04-26T11:43:25+08:00">2025-04-26</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -246,7 +368,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>463</span>
+              <span>708</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,7 +391,7 @@
 <li>port1 只读属性</li>
 <li>port2 只读属性</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> channel = <span class="keyword">new</span> <span class="title class_">MessageChannel</span>();</span><br><span class="line"><span class="keyword">const</span> para = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;p&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ifr = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;iframe&quot;</span>);</span><br><span class="line"></span><br><span class="line">ifr.<span class="title function_">addEventListener</span>(<span class="string">&quot;load&quot;</span>, iframeLoaded, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">iframeLoaded</span>(<span class="params"></span>) &#123;</span><br><span class="line">  ifr.<span class="property">otherWindow</span>.<span class="title function_">postMessage</span>(<span class="string">&quot;来自主页的问候！&quot;</span>, <span class="string">&quot;*&quot;</span>, [channel.<span class="property">port2</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">channel.<span class="property">port1</span>.<span class="property">onmessage</span> = <span class="keyword">function</span>(<span class="params">e</span>) &#123;</span><br><span class="line">  para.<span class="property">innerHTML</span> = e.<span class="property">data</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> channel = <span class="keyword">new</span> <span class="title class_">MessageChannel</span>();</span><br><span class="line"><span class="keyword">const</span> output = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.output&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> iframe = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;iframe&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理 port1 收到的消息</span></span><br><span class="line">channel.<span class="property">port1</span>.<span class="property">onmessage</span> = <span class="keyword">function</span>(<span class="params">e</span>) &#123;</span><br><span class="line">  output.<span class="property">innerHTML</span> = e.<span class="property">data</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">iframe.<span class="title function_">addEventListener</span>(<span class="string">&quot;load&quot;</span>, iframeLoaded, <span class="literal">false</span>);</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">iframeLoaded</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 把 port2 传给 iframe</span></span><br><span class="line">  iframe.<span class="property">contentWindow</span>.<span class="title function_">postMessage</span>(<span class="string">&#x27;Hello from the main page!&#x27;</span>, <span class="string">&#x27;*&#x27;</span>, [channel.<span class="property">port2</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 iframe 中...</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;message&#x27;</span>, <span class="function">(<span class="params">evt</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> messagePort = evt.<span class="property">ports</span>?.[<span class="number">0</span>];</span><br><span class="line">  messagePort.<span class="title function_">postMessage</span>(<span class="string">&#x27;Hello from the iframe!&#x27;</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -320,7 +442,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-21 21:00:10" itemprop="dateModified" datetime="2025-03-21T21:00:10+08:00">2025-03-21</time>
+                <time title="修改时间：2025-06-07 16:16:34" itemprop="dateModified" datetime="2025-06-07T16:16:34+08:00">2025-06-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -337,7 +459,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>2k</span>
+              <span>2.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -418,7 +540,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-12-30 17:10:37" itemprop="dateModified" datetime="2024-12-30T17:10:37+08:00">2024-12-30</time>
+                <time title="修改时间：2025-06-07 16:13:20" itemprop="dateModified" datetime="2025-06-07T16:13:20+08:00">2025-06-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -435,7 +557,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>5.4k</span>
+              <span>5.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -484,27 +606,27 @@
 <li>grid-row-gap</li>
 </ul>
 </li>
-<li><p>place-items</p>
-<ul>
-<li>align-items</li>
-<li>justify-items</li>
-</ul>
-</li>
-<li><p>place-content</p>
-<ul>
-<li>align-content</li>
-<li>justify-content</li>
-</ul>
-</li>
 <li><p>grid-area</p>
 <ul>
 <li>grid-row</li>
 <li>grid-column</li>
 </ul>
 </li>
-<li><p>align-self</p>
+<li><p>place-content 简写属性</p>
+<ul>
+<li>align-content 设置 flex 布局和 grid 布局交叉轴上内容项之间和周围分配空间</li>
+<li>justify-content 设置 flex 布局和 grid 布局主轴上的对齐方式</li>
+</ul>
 </li>
-<li><p>justify-self</p>
+<li><p>place-items 简写属性</p>
+<ul>
+<li>align-items 设置所有子元素在交叉轴上的对齐方式</li>
+<li>justify-items 设置所有盒中的项目沿适当轴线对齐到每个盒子</li>
+</ul>
+</li>
+<li><p>align-self  设置子元素在交叉轴上的对齐方式, 覆盖 align-items 的值</p>
+</li>
+<li><p>justify-self  设置单个盒子在其布局容器适当轴中的对齐方式</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/05/7356f3e0fe44/#more" rel="contents">
@@ -663,7 +785,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-02-06 11:07:32" itemprop="dateModified" datetime="2025-02-06T11:07:32+08:00">2025-02-06</time>
+                <time title="修改时间：2025-09-01 15:39:12" itemprop="dateModified" datetime="2025-09-01T15:39:12+08:00">2025-09-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -680,13 +802,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>4.2k</span>
+              <span>5.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>4 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -704,15 +826,31 @@
 <blockquote>
 <p>当使用 HTTP/2 时, 最大并发 HTTP 流的数量是由服务器和客户端协商的(默认为 100)</p>
 </blockquote>
+<p>Server-Sent Events 服务器发送事件</p>
 <p>Web 内容与服务器发送事件通信的接口, 通信方向是单向的, 数据消息只能从服务器发送到客户端. 如果接收消息中有一个 event 字段, 触发的事件与 event 字段的值相同, 如果不存在 event 字段, 则将触发通用的 message 事件</p>
 <ul>
-<li>url, 表示远程资源的位置</li>
-<li>configuration, 可选, 一个对象<ul>
+<li><p>url, 表示远程资源的位置</p>
+</li>
+<li><p>configuration, 可选, 一个对象</p>
+<ul>
 <li>withCredentials, 标识 CORS 是否包含凭据, 默认为 false</li>
 </ul>
 </li>
+<li><p>不支持恢复连接, 连接中断后无法从 端点 继续, 只能重新开始新的连接, 之前的上下文可能会丢失</p>
+</li>
+<li><p>要求服务器保持高可用的长连接, 服务器必须一直保持一个稳定、不中断的 SSE 长连接, 否则通信就中断</p>
+</li>
+<li><p>服务器只能通过 SSE 发送消息, 服务器无法在已有的请求之外, 主动的发消息给客户端, 除了通过专门的 /sse 通道</p>
+</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sse = <span class="keyword">new</span> <span class="title class_">EventSource</span>(url, configuration);</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 没有 event 字段时触发</span></span><br><span class="line"><span class="comment"> * event: message</span></span><br><span class="line"><span class="comment"> * data: user data</span></span><br><span class="line"><span class="comment"> * id: someid</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="property">onmessage</span> = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(e);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 触发 notice 事件回调</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * event: notice</span></span><br><span class="line"><span class="comment"> * data: useful data</span></span><br><span class="line"><span class="comment"> * id: someid</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="title function_">addEventListener</span>(<span class="string">&#x27;notice&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(evt);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="消息格式"><a href="#消息格式" class="headerlink" title="消息格式"></a>消息格式</h3><p>数据以 <code>文本流(text/event-stream)</code> 的形式从服务器发送到客户端, 每一行数据都必须以 <code>换行符(\n)</code> 结束, 每条消息以两个 <code>换行符(\n\n)</code> 结束</p>
+<ul>
+<li>event 自定义事件类型(可选), 不使用默认触发 message</li>
+<li>id 消息 ID, 用于断线重连定位</li>
+<li>retry 重连间隔(毫秒)</li>
+<li>data 数据内容</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sse = <span class="keyword">new</span> <span class="title class_">EventSource</span>(url, configuration);</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 没有 event 字段时触发</span></span><br><span class="line"><span class="comment"> * event: message</span></span><br><span class="line"><span class="comment"> * id: someid</span></span><br><span class="line"><span class="comment"> * data: user data</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="property">onmessage</span> = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(e);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 触发 notice 事件回调</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * event: notice</span></span><br><span class="line"><span class="comment"> * id: someid</span></span><br><span class="line"><span class="comment"> * data: useful data</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">sse.<span class="title function_">addEventListener</span>(<span class="string">&#x27;notice&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(evt);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/02/9e4187fea759/#more" rel="contents">
@@ -770,7 +908,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-21 21:01:56" itemprop="dateModified" datetime="2024-11-21T21:01:56+08:00">2024-11-21</time>
+                <time title="修改时间：2025-11-12 18:17:17" itemprop="dateModified" datetime="2025-11-12T18:17:17+08:00">2025-11-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1163,115 +1301,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2023/04/628a49166594/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/04/628a49166594/" class="post-title-link" itemprop="url">Stream</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-04-12 15:52:05" itemprop="dateCreated datePublished" datetime="2023-04-12T15:52:05+08:00">2023-04-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-26 22:00:47" itemprop="dateModified" datetime="2024-07-26T22:00:47+08:00">2024-07-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WebAPI/" itemprop="url" rel="index"><span itemprop="name">WebAPI</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>14k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>13 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="可读流"><a href="#可读流" class="headerlink" title="可读流"></a>可读流</h2><h3 id="ReadableStream"><a href="#ReadableStream" class="headerlink" title="ReadableStream"></a>ReadableStream</h3><p>创建并从给定的 Handler 返回一个可读流对象</p>
-<h4 id="RS-构造方法"><a href="#RS-构造方法" class="headerlink" title="RS 构造方法"></a>RS 构造方法</h4><p>创建并从给定的处理程序返回一个可读的流对象</p>
-<h5 id="可读流配置项"><a href="#可读流配置项" class="headerlink" title="可读流配置项"></a>可读流配置项</h5><p><code>underlyingSource</code> 可选的定义可读流的行为方式的配置项</p>
-<ul>
-<li>start(controller) 由开发人员定义, 当流对象被创建时立刻调用, 执行其他任何必须的设置流功能, 如果过程是异步的则返回一个 Promise<ul>
-<li>controller 根据 <code>type=&#39;bytes&#39;</code> 属性传递的 <code>ReadableStreamDefaultController</code> 或 <code>ReadableByteStreamController</code> 控制器实例</li>
-</ul>
-</li>
-<li>pull(controller) 由开发人员定义, 当流的内部队列不满时, 会重复调用这个方法, 直到队列补满</li>
-<li>cancel(reason) 由开发人员定义, 当该流被取消时调用</li>
-<li>type 控制正在处理的可读类型的流, 默认 <code>ReadableStreamDefaultController</code>, <code>type=&#39;bytes&#39;</code> 表示 <code>ReadableByteStreamController</code></li>
-<li>autoAllocateChunkSize 开启流自动分配缓冲区, 使用正整数设置</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/04/628a49166594/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1339,20 +1372,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1400,7 +1433,7 @@
 <div class="copyright">
   
   &copy; 2020 – 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1409,12 +1442,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">645k</span>
+    <span title="站点总字数">756k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9:47</span>
+    <span title="站点阅读时长">11:27</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

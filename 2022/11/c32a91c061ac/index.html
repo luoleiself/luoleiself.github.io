@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="事务隔离级别mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改 12345678910SET [GLOBAL|SESSION] TRANSACTION ISOLATION LEVEL &lt;level&gt;;-- 全局设置SET GLOBAL TRANSACTION ISOLATION LEVEL REPEATABLE READ;-- 当前会话设置SET SESS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sql">
+<meta property="og:url" content="https://luoleiself.github.io/2022/11/c32a91c061ac/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="事务隔离级别mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改 12345678910SET [GLOBAL|SESSION] TRANSACTION ISOLATION LEVEL &lt;level&gt;;-- 全局设置SET GLOBAL TRANSACTION ISOLATION LEVEL REPEATABLE READ;-- 当前会话设置SET SESS">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
+<meta property="article:modified_time" content="2025-10-20T09:51:42.830Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="sql">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/11/c32a91c061ac/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>sql | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/c32a91c061ac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          sql
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-10-20 17:51:42" itemprop="dateModified" datetime="2025-10-20T17:51:42+08:00">2025-10-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/sql/" itemprop="url" rel="index"><span itemprop="name">sql</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><p>mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> [<span class="keyword">GLOBAL</span><span class="operator">|</span>SESSION] TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 全局设置</span></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 当前会话设置</span></span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务开始时设置</span></span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="读未提交-Read-Uncommitted"><a href="#读未提交-Read-Uncommitted" class="headerlink" title="读未提交(Read Uncommitted)"></a>读未提交(Read Uncommitted)</h3><p>最低级别的隔离, 允许一个事务读取另一个事务尚未提交的数据, 通常不推荐使用此级别, 除非对数据一致性要求非常低的场景</p>
+<p>问题:</p>
+<ul>
+<li>脏读(Dirty Read), 一个事务可以读取到另一个事务未提交的数据, 如果该事务回滚, 则会导致数据不一致</li>
+<li>不可重复读(Non-repeatable Read), 在一个事务中多次读取同一数据可能会得到不同的结果</li>
+<li>幻读(Phantom Read), 在一个事务中执行相同的查询可能会返回不同的行集, 因为其他事务插入了新的行</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 事务 A</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">UPDATE</span> accounts <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">-</span> <span class="number">100</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 暂时不提交</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 B</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;</span><br><span class="line"><span class="keyword">SELECT</span> balance <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 可能读取到 900 (脏读)</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h3 id="读已提交-Read-Committed"><a href="#读已提交-Read-Committed" class="headerlink" title="读已提交(Read Committed)"></a>读已提交(Read Committed)</h3><p>一个事务只能读取另一个事务已经提交的数据, 避免的 <code>脏读</code> 问题, 适用于大多数需要避免 <code>脏读</code> 的应用场景</p>
+<p>问题:</p>
+<ul>
+<li>不可重复读(Non-repeatable Read), 在一个事务中多次读取同一数据可能会得到不同的结果, 因为其他事务可能在这期间更新并提交了数据</li>
+<li>幻读(Phantom Read), 在一个事务中执行相同的查询可能会返回不同的行集, 因为其他事务插入了新的行</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 事务 A</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">UPDATE</span> accounts <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">-</span> <span class="number">100</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 B</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL READ COMMITTED;</span><br><span class="line"><span class="keyword">SELECT</span> balance <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 读取到 900 (避免脏读)</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="可重复读-Repeatable-Read"><a href="#可重复读-Repeatable-Read" class="headerlink" title="可重复读(Repeatable Read)"></a>可重复读(Repeatable Read)</h3><p>mysql 默认隔离级别, 它确保在一个事务中多次读取同一数据时, 结果是一致的, 即使其他事务在此期间修改并提交了数据</p>
+<p>避免了 <code>脏读</code> 和 <code>不可重复读</code> 问题,</p>
+<p>实现机制: InnoDB 存储引擎通过多版本并发控制(MVVC) 来实现这一隔离级别, 并通过锁定机制防止幻读</p>
+<p>问题:</p>
+<ul>
+<li>幻读(Phantom Read), 在一个事务中执行相同的查询可能会返回不同的行集, 因为其他事务插入了新的行</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 事务 A</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SELECT</span> balance <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>; <span class="comment">-- 读取到 1000</span></span><br><span class="line"><span class="keyword">UPDATE</span> accounts <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">-</span> <span class="number">100</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 B</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line"><span class="keyword">SELECT</span> balance <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>; <span class="comment">-- 读取到 1000（避免不可重复读）</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="串行化-Serializable"><a href="#串行化-Serializable" class="headerlink" title="串行化(Serializable)"></a>串行化(Serializable)</h3><p>最高隔离级别, 完全避免了 <code>脏读</code>, <code>不可重复读</code> 和 <code>幻读</code> 问题, 它通过强制事务串行执行来实现这一点</p>
+<p>适用于对数据一致性要求极高且并发性不是主要问题的应用场景</p>
+<p>问题:</p>
+<ul>
+<li>性能开销较大, 因为它会极大地限制并发性</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 事务 A</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL SERIALIZABLE;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> balance <span class="operator">&gt;</span> <span class="number">500</span> <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>; <span class="comment">-- 锁定符合条件的行</span></span><br><span class="line"><span class="comment">-- 执行其他操作</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 B</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL SERIALIZABLE;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> balance <span class="operator">&gt;</span> <span class="number">500</span> <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>; <span class="comment">-- 等待 事务 A 完成</span></span><br><span class="line"><span class="comment">-- 执行其他操作</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ul>
+<li><p>数据库管理系统里面一个经过排序的数据结构, 为了帮助查询变得更快</p>
+</li>
+<li><p>如果定义了主键索引则采用, 没有则使用第一个唯一索引加非空约束作为主键索引, 都没有的话定义一个新的隐藏字段包含 rowid 作为主键索引</p>
+</li>
+<li><p>聚簇索引决定了表中数据行的实际物理存储顺序</p>
+</li>
+<li><p>覆盖索引, 如果查询所需的全部列都在同一个非聚簇索引中(即所谓的覆盖索引), 则不需要再回表去读取完整的数据行.</p>
+</li>
+<li><p>联合索引, mysql 可以有效地利用最左边前缀原则来匹配查询条件, 对于联合索引 (col1, col2), 如果查询只涉及 col1, 仍然可以使用这个索引来加速搜索, 如果查询涉及到 col2 却没有 col1, 则无法有效利用此索引.</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 添加索引</span></span><br><span class="line"><span class="keyword">create</span> [<span class="keyword">unique</span><span class="operator">|</span><span class="keyword">primary</span><span class="operator">|</span>fulltext] index index_name <span class="keyword">on</span> t1(filed);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加索引</span></span><br><span class="line"><span class="keyword">alter table</span> t1 <span class="keyword">add</span> [<span class="keyword">unique</span><span class="operator">|</span><span class="keyword">primary</span><span class="operator">|</span>fulltext] index index_name(filed);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加索引</span></span><br><span class="line"><span class="keyword">create table</span> table_name (</span><br><span class="line">  id <span class="type">int</span>,</span><br><span class="line">  name <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">  index idx_name(name)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除索引</span></span><br><span class="line"><span class="keyword">drop</span> index index_name <span class="keyword">on</span> table_name;</span><br></pre></td></tr></table></figure>
+
+<h3 id="聚簇索引-主键索引"><a href="#聚簇索引-主键索引" class="headerlink" title="聚簇索引(主键索引)"></a>聚簇索引(主键索引)</h3><p>唯一约束的基础上增加非空约束, 只能创建一个</p>
+<h3 id="唯一索引"><a href="#唯一索引" class="headerlink" title="唯一索引"></a>唯一索引</h3><p>同一个表中某个列的数据不能重复, 可以为 null, 可以创建多个唯一索引</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> table_name (</span><br><span class="line">  id <span class="type">int</span>,</span><br><span class="line">  name <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">  email <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">unique</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="普通索引"><a href="#普通索引" class="headerlink" title="普通索引"></a>普通索引</h3><p>非唯一索引或简单索引, 主要用于加速对表中的数据的查询操作, 而不对列中的值增加任何唯一约束</p>
+<h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p>基于多列创建的索引, 能够提高涉及多列查询的性能</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> table_name (</span><br><span class="line">  order_id <span class="type">int</span>,</span><br><span class="line">  customer_id <span class="type">int</span>,</span><br><span class="line">  order_date <span class="type">date</span>,</span><br><span class="line">  index idx_order_customer (order_id, customer_id)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h3><p>专门用于全文搜索, 适用于大文本(TEXT, CHAR, VARCHAR), 仅支持 myisam 和 innodb 存储引擎</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> table_name (</span><br><span class="line">  id <span class="type">int</span>,</span><br><span class="line">  name <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">  email <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">unique</span>,</span><br><span class="line">  title <span class="type">varchar</span>(<span class="number">200</span>)</span><br><span class="line">  body text,</span><br><span class="line">  fulltext (title, body)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><h3 id="连接查询"><a href="#连接查询" class="headerlink" title="连接查询"></a>连接查询</h3><h4 id="内连接"><a href="#内连接" class="headerlink" title="内连接"></a>内连接</h4><ul>
+<li>相当于查询 A、B 交集部分数据</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 显式内连接</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">inner</span> <span class="keyword">join</span> t2 <span class="keyword">on</span> <span class="keyword">condition</span>;</span><br><span class="line"><span class="comment">-- 隐式内连接</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1, t2 <span class="keyword">where</span> <span class="keyword">condition</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h4><h5 id="左外连接"><a href="#左外连接" class="headerlink" title="左外连接"></a>左外连接</h5><ul>
+<li>查询<strong>左表</strong>所有数据, 以及两张表交集部分数据</li>
+<li>右表中不满足的数据填充 null</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">left</span> <span class="keyword">join</span> t2 <span class="keyword">on</span> <span class="keyword">condition</span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="右外连接"><a href="#右外连接" class="headerlink" title="右外连接"></a>右外连接</h5><ul>
+<li>查询<strong>右表</strong>所有数据, 以及两张表交集部分数据</li>
+<li>左表中不满足的数据填充 null</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">right</span> <span class="keyword">join</span> t2 <span class="keyword">on</span> <span class="keyword">condition</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h4><ul>
+<li>当前表与自身的连接查询, 自连接必须使用表别名</li>
+<li>可以是内连接查询, 也可以是外连接查询</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">as</span> a [<span class="keyword">inner</span><span class="operator">|</span><span class="keyword">left</span><span class="operator">|</span><span class="keyword">right</span>] <span class="keyword">join</span> t2 <span class="keyword">as</span> b <span class="keyword">on</span> <span class="keyword">condition</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="联合查询"><a href="#联合查询" class="headerlink" title="联合查询"></a>联合查询</h4><ul>
+<li>查询的字段类型必须保持一致</li>
+<li>把多次查询的结果合并起来, 形成一个新的结果集</li>
+<li>默认已去重(distinct), union all 不去重</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> <span class="keyword">condition</span> <span class="keyword">union</span> [<span class="keyword">all</span>] <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t2 <span class="keyword">where</span> <span class="keyword">condition</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h3><ul>
+<li>sql 查询语句内嵌套查询语句, 称为嵌套语句</li>
+</ul>
+<h4 id="标量子查询-单值子查询"><a href="#标量子查询-单值子查询" class="headerlink" title="标量子查询(单值子查询)"></a>标量子查询(单值子查询)</h4><ul>
+<li>子查询的结果为单个值</li>
+<li>=, &lt;&gt;, &gt;, &gt;=, &lt;, &lt;= 常用操作符</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id <span class="operator">=</span> (<span class="keyword">select</span> id <span class="keyword">from</span> t1 <span class="keyword">where</span> <span class="keyword">condition</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="列子查询"><a href="#列子查询" class="headerlink" title="列子查询"></a>列子查询</h4><ul>
+<li>子查询的结果为一列</li>
+<li>in, not in, any, some, all 常用操作符</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id <span class="keyword">in</span> (<span class="keyword">select</span> id <span class="keyword">from</span> t1 <span class="keyword">where</span> <span class="keyword">condition</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询销售部和市场部的所有员工信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> dept_id <span class="keyword">in</span> (<span class="keyword">select</span> id <span class="keyword">from</span> dept <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;销售部&#x27;</span> <span class="keyword">or</span> name <span class="operator">=</span> <span class="string">&#x27;市场部&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询比财务部所有人工资都高的员工信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> salary <span class="operator">&gt;</span> <span class="keyword">all</span> (<span class="keyword">select</span> salary <span class="keyword">from</span> emp <span class="keyword">where</span> dept_id <span class="operator">=</span> (<span class="keyword">select</span> id <span class="keyword">from</span> dept <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;财务部&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询比研发部其中任意一人工资高的员工信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> salary <span class="operator">&gt;</span> <span class="keyword">any</span> (<span class="keyword">select</span> salary <span class="keyword">from</span> emp <span class="keyword">where</span> dept_id <span class="operator">=</span> (<span class="keyword">select</span> id <span class="keyword">from</span> dept <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;研发部&#x27;</span>)); </span><br></pre></td></tr></table></figure>
+
+<h4 id="行子查询"><a href="#行子查询" class="headerlink" title="行子查询"></a>行子查询</h4><ul>
+<li>子查询的结果为一行(可以是多列)</li>
+<li>=, &lt;&gt;, in, not in 常用操作符</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询与张三的薪资及直属领导相同的员工信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> (salary,managerid) <span class="operator">=</span> (<span class="keyword">select</span> salary,managerid <span class="keyword">from</span> emp <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;张三&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询与张三不在同一部门的员工信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> dept_id <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> dept_id <span class="keyword">from</span> emp <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;张三&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="表子查询"><a href="#表子查询" class="headerlink" title="表子查询"></a>表子查询</h4><ul>
+<li>子查询的结果为多行多列</li>
+<li>in 常用操作符</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询所有的部门信息, 并统计部门的员工人数</span></span><br><span class="line"><span class="keyword">select</span> d.id,d.name,(<span class="keyword">select</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">from</span> emp <span class="keyword">as</span> e <span class="keyword">where</span> e.dept_id <span class="operator">=</span> d.id) <span class="keyword">as</span> <span class="string">&#x27;人数&#x27;</span> <span class="keyword">from</span> dept <span class="keyword">as</span> d;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询与张三, 李四的职位和薪资相同的员工信息</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> (salary,jobs) <span class="keyword">in</span> (<span class="keyword">select</span> salary,jobs <span class="keyword">from</span> emp <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;张三&#x27;</span> <span class="keyword">or</span> name <span class="operator">=</span> <span class="string">&#x27;李四&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询入职日期是 2006-01-01 之后的员工信息, 及其部门信息</span></span><br><span class="line"><span class="keyword">select</span> e.<span class="operator">*</span>,d.<span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> entrydate <span class="operator">&gt;</span> <span class="string">&#x27;2006-01-01&#x27;</span>) <span class="keyword">as</span> e <span class="keyword">left</span> <span class="keyword">join</span> dept <span class="keyword">as</span> d <span class="keyword">on</span> e.dept_id <span class="operator">=</span> d.id;</span><br></pre></td></tr></table></figure>
+
+<h3 id="聚合查询"><a href="#聚合查询" class="headerlink" title="聚合查询"></a>聚合查询</h3><ul>
+<li>单一聚合</li>
+<li>聚合管道</li>
+<li>mapReduce  MongoDB 5.0 开始废弃, 使用聚合管道代替</li>
+</ul>
+<p>通常使用 group by 子句和聚合函数</p>
+<ul>
+<li>sum()</li>
+<li>avg()</li>
+<li>max()</li>
+<li>min()</li>
+<li>count()</li>
+</ul>
+<h2 id="mongosh"><a href="#mongosh" class="headerlink" title="mongosh"></a>mongosh</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">version()  # 显示版本号</span><br><span class="line">.exit    # 退出</span><br><span class="line">quit     # 退出</span><br><span class="line"></span><br><span class="line">show logs # 显示日志</span><br><span class="line">show users</span><br><span class="line">show roles</span><br><span class="line"></span><br><span class="line">sleep() 程序睡眠时长, 默认单位毫秒</span><br><span class="line">load()  # 加载指定 js 文件代码到当前的终端下</span><br><span class="line">passwordPrompt() # 输入指定用户的密码</span><br><span class="line">print() # 输出指定内容</span><br><span class="line"></span><br><span class="line">it # 查看更多结果</span><br><span class="line"></span><br><span class="line">cls # 清屏, 类似于 console.log()</span><br></pre></td></tr></table></figure>
+
+<h3 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h3><ul>
+<li>db.createUser() 创建用户并指定用户的数据库或者集合访问权限</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="title function_">createUser</span>(&#123;</span><br><span class="line">  <span class="attr">user</span>: <span class="string">&quot;&lt;name&gt;&quot;</span>, </span><br><span class="line">  <span class="attr">pwd</span>: <span class="string">&#x27;&#x27;</span>, </span><br><span class="line">  <span class="attr">customData</span>: &#123;&#125;,</span><br><span class="line">  <span class="attr">roles</span>: [</span><br><span class="line">    &#123;<span class="attr">role</span>: <span class="string">&quot;dbAdmin&quot;</span>, <span class="attr">db</span>: <span class="string">&#x27;test&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="attr">role</span>: <span class="string">&#x27;dbOwner&#x27;</span>, <span class="attr">db</span>: <span class="string">&#x27;admin&#x27;</span>&#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;, writeConcernConf);</span><br></pre></td></tr></table></figure>
+
+<h3 id="database"><a href="#database" class="headerlink" title="database"></a>database</h3><ul>
+<li><p>db.help() 返回当前数据库对象上常用方法的文本信息</p>
+</li>
+<li><p>db.hello() 返回当前数据库对象的基础信息</p>
+</li>
+<li><p>db.stats() 返回当前数据库对象的使用统计信息</p>
+</li>
+<li><p>db.version() 返回当前 mongod 或 mongos 实例的版本号</p>
+</li>
+<li><p>db.getName() 返回当前数据库对象的名称</p>
+</li>
+<li><p>db.dropDatabase() 删除当前数据库和关联的数据文件</p>
+</li>
+<li><p>db.shutdownServer() 安全的关闭当前 mongod 或 mongos 进程</p>
+</li>
+<li><p>db.getSiblingDB() 返回当前数据库同级指定名称的数据库</p>
+</li>
+<li><p>db.createCollection() 在当前数据库对象上创建集合, 第二个可选参数可以配置 固定集 的大小</p>
+</li>
+<li><p>db.getCollection() 获取指定名称的集合</p>
+</li>
+<li><p>db.serverStatus() 查看数据库状态</p>
+</li>
+<li><p>db.auth() 用户认证</p>
+</li>
+</ul>
+<h4 id="备份和恢复"><a href="#备份和恢复" class="headerlink" title="备份和恢复"></a>备份和恢复</h4><ul>
+<li>-h, --host  连接的数据库(端口号)</li>
+<li>--port 数据库端口号</li>
+<li>-u, --username  使用用户名认证</li>
+<li>-p, --password  使用密码认证</li>
+<li>-d, --db  选择数据库</li>
+<li>-c，--collection  选择集合</li>
+<li>--uri   数据库连接字符串格式</li>
+</ul>
+<p>mongodump</p>
+<ul>
+<li>-o, --out  存储目录, 默认使用 dump</li>
+<li>--gzip  使用 gzip 压缩归档文件</li>
+<li>--archive  设置归档文件名</li>
+<li>--excludeCollection  排除指定的集合</li>
+<li>--excludeCollectionsWithPrefix  排除指定前缀的集合</li>
+<li>-j, --numParallelCollections  指定并行执行备份的集合数量</li>
+</ul>
+<p>mongorestore</p>
+<ul>
+<li>--archive  使用归档文件</li>
+<li>--gzip  使用 gzip 解压归档文件</li>
+<li>--dir 恢复备份文件的目录</li>
+<li>--drop  恢复备份之前是否删除集合数据</li>
+<li>--noIndexRestore  不恢复索引</li>
+<li>--noOptionsRestore  不恢复集合的配置项</li>
+<li>--stopOnError   插入文档失败时停止, 默认情况下, mongorestore 尝试文档验证和重复 key 的错误</li>
+<li>--preserveUUID  保持原集合中的 UUIDs, 默认为 false</li>
+</ul>
+<p>mongoexport</p>
+<ul>
+<li>-f, --fields=&lt;fields&gt;[,&lt;fields&gt;]*   导出的数据字段</li>
+<li>--fieldFile  导出的数据字段的文件, 每个字段一行</li>
+<li>--type  指定导出文件的格式, json(默认) | csv | tsv</li>
+<li>-o, --out  导出的文件名</li>
+<li>--jsonArray  导出一个 JSON 数组每个对象一行</li>
+<li>--pretty  导出一个人类阅读友好的 JSON 格式</li>
+<li>--noHeaderLine  导出 CSV 文件不使用字段名作为首行</li>
+<li>-q, --query  查询条件, JSON 字符串格式</li>
+<li>--queryFile  查询条件的文件</li>
+<li>--skip  指定导出文档的起始位置</li>
+<li>--limit  指定导出文档的数量</li>
+<li>--sort  排序条件, JSON 字符串格式</li>
+<li>--assertExists  如果集合不存在则导出失败  </li>
+</ul>
+<p>mongoimport</p>
+<ul>
+<li>-f, --fields=&lt;fields&gt;[,&lt;fields&gt;]*   导出的数据字段</li>
+<li>--fieldFile  导入的数据字段的文件, 每个字段一行</li>
+<li>--file  导入的数据文件</li>
+<li>--jsonArray  将导入文件作为 JSON 数组</li>
+<li>--type  导入文件的格式, json(默认) | csv | tsv</li>
+<li>--headerline  使用第一行作为列字段, 仅 CSV, TSV 支持</li>
+<li>--ignoreBlanks   忽略空行, 仅 CSV, TSV 支持</li>
+<li>--drop  插入文档之前是否删除集合数据</li>
+<li>--mode  导入模式, insert(默认)|upsert|merge|delete,</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 备份</span></span><br><span class="line">mongodump -h 127.0.0.1:27017 -d <span class="built_in">test</span> -o ~/test</span><br><span class="line"><span class="comment"># 恢复备份</span></span><br><span class="line">mongorestore -h 127.0.0.1:27017 -d <span class="built_in">test</span> --<span class="built_in">dir</span> ~/test --drop</span><br><span class="line"><span class="comment"># 导出数据</span></span><br><span class="line">mongoexport -h 127.0.0.1:27017 -d <span class="built_in">test</span> -o ~/test.json --<span class="built_in">type</span> json --jsonArray --query <span class="string">&#x27;&#123;age: &#123;$gt: 18&#125;&#125;&#x27;</span> --<span class="built_in">limit</span> 100</span><br><span class="line"><span class="comment"># 导入数据</span></span><br><span class="line">mongoimport -h 127.0.0.1:27017 -d <span class="built_in">test</span> --file ~/test.json --<span class="built_in">type</span> json --drop --mode upsert</span><br></pre></td></tr></table></figure>
+
+<h3 id="collection"><a href="#collection" class="headerlink" title="collection"></a>collection</h3><ul>
+<li><p>db.[collectionName].stats() 返回当前集合的使用统计信息</p>
+</li>
+<li><p>db.[collectionName].getName() 返回当前集合的名称</p>
+</li>
+<li><p>db.[collectionName].getDB() 返回当前集合所在的数据库名称</p>
+</li>
+<li><p>db.[collectionName].drop() 删除当前的集合</p>
+</li>
+<li><p>db.[collectionName].renameCollection() 重命名当前集合</p>
+</li>
+<li><p>db.[collectionName].createIndex() 在当前集合中创建索引</p>
+</li>
+<li><p>db.[collectionName].getIndexes() 获取当前集合的索引</p>
+</li>
+<li><p>db.[collectionName].countDocuments() 获取当前集合中的文档的数量</p>
+</li>
+</ul>
+<h4 id="indexs"><a href="#indexs" class="headerlink" title="indexs"></a>indexs</h4><p>一个经过排序的特殊的数据结构, 提高查询效率</p>
+<ul>
+<li>getIndexs() 查看索引</li>
+<li>createIndex() 创建索引, 索引名称必须是唯一的, 不能重命名已有的索引名称</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.<span class="title function_">createIndex</span>(&#123; &lt;field&gt;: &lt;value&gt; &#125;, &#123; <span class="attr">name</span>: <span class="string">&quot;&lt;indexName&gt;&quot;</span>, <span class="attr">unique</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>dropIndex() 删除指定索引</li>
+<li>dropIndexes() 批量删除索引, 不指定索引名则删除 _id 索引之外的所有索引</li>
+</ul>
+<h3 id="document"><a href="#document" class="headerlink" title="document"></a>document</h3><ul>
+<li>ObjectId  12个字节组成的对象标识符, 4 个字节的时间戳秒数, 5 个字节的进程随机数, 3 个字节的递增计数器<ul>
+<li>hexadecimal 可选。新对象标识符的 24 个字符十六进制字符串值。</li>
+<li>integer 可选。整数值（以秒为单位）被添加到 Unix 纪元 以创建新的时间戳。</li>
+<li>ObjectId().getTimestamp() 以日期形式返回对象的时间戳部分</li>
+<li>ObjectId().toString() 以十六进制字符串形式返回对象标识符</li>
+<li>ObjectId.createFromBase64(&lt;base64String&gt; [, &lt;subType&gt;]) 根据 base64 值创建对象标识符</li>
+<li>ObjectId.createFromHexString(&lt;hexadecimalString&gt;) 根据十六进制值创建对象标识符</li>
+</ul>
+</li>
+<li>String  字符串, utf-8 编码</li>
+<li>Integer 数值</li>
+<li>Double  双精度类型, 用于存储浮点数</li>
+<li>Boolean 布尔类型</li>
+<li>Arrays  数组类型</li>
+<li>TimeStamp 时间戳, 用于记录文档的创建和更新时间, 默认 ISODate()</li>
+<li>Date  日期类型, 以 UNIX 时间格式存储当前日期或时间</li>
+<li>Object  对象</li>
+<li>Null  空值</li>
+<li>Binary Data 二进制数据</li>
+<li>Symbol  符号</li>
+<li>Code  js 代码</li>
+<li>Regular Expression  正则表达式</li>
+</ul>
+<h3 id="operator"><a href="#operator" class="headerlink" title="operator"></a>operator</h3><h4 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h4><p>比较查询</p>
+<ul>
+<li>$eq 匹配等于指定值的值</li>
+<li>$gt 匹配大于指定值的值</li>
+<li>$gte 匹配大于等于指定值的值</li>
+<li>$lt 匹配小于指定值的值</li>
+<li>$lte 匹配小于等于指定值的值</li>
+<li>$ne 匹配所有不等于指定值的值</li>
+<li>$nin 不匹配数组中指定值的任何值</li>
+<li>$in 匹配字段值等于指定数组中任何值的文档, 支持使用<code>正则表达式</code>匹配, 与 聚合操作符 $in 不同</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123; field: &#123; $in: [&lt;value1&gt;, &lt;value2&gt;, ... &lt;valueN&gt; ] &#125; &#125; // 查询操作符 $in</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">find</span>( &#123; <span class="attr">quantity</span>: &#123; <span class="attr">$in</span>: [ <span class="number">5</span>, <span class="number">15</span> ] &#125; &#125;, &#123; <span class="attr">_id</span>: <span class="number">0</span> &#125; );</span><br><span class="line"><span class="comment">// output: 查询 inventory 集合中 quantity 字段的值为 5 或 15 的所有文档</span></span><br></pre></td></tr></table></figure>
+
+<p>逻辑查询</p>
+<ul>
+<li>$and 使用逻辑 AND 连接查询子句将返回与两个子句的条件匹配的所有文档</li>
+<li>$not 反转查询谓词的效果, 并返回与查询谓词 不匹配 的文档</li>
+<li>$nor 使用逻辑 NOR 连接查询子句会返回无法匹配这两个子句的所有文档</li>
+<li>$or 使用逻辑 OR 连接多个查询子句会返回符合任一子句条件的所有文档</li>
+<li>$exists 匹配具有指定字段的文档</li>
+<li>$type 如果字段为指定类型, 则选择文档</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询 price 不等于 1.99 并且 qty 不小于 20 并且 sale 不等于 true 的所有文档</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">find</span>(&#123;<span class="attr">$nor</span>: [&#123;<span class="attr">price</span>: <span class="number">1.99</span>&#125;, &#123;<span class="attr">qty</span>: &#123;<span class="attr">$lt</span>: <span class="number">20</span>&#125;&#125;, &#123;<span class="attr">sale</span>: <span class="literal">true</span>&#125;]&#125;);</span><br><span class="line"><span class="comment">// 查询 quantity 小于 20 或者 price 等于 10 的所有文档</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">find</span>(&#123;<span class="attr">$or</span>: [&#123;<span class="attr">quantity</span>: &#123;<span class="attr">$gt</span>: <span class="number">20</span>&#125; &#125;, &#123;<span class="attr">price</span>: <span class="number">10</span>&#125;]&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查询 qty 字段存在并且值 不等于 5 或 15 的所有文档</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">find</span>(&#123;<span class="attr">qty</span>: &#123;<span class="attr">$exists</span>: <span class="literal">true</span>, <span class="attr">$nin</span>: [<span class="number">5</span>, <span class="number">15</span>]&#125;&#125;);</span><br><span class="line"><span class="comment">// 查询 readings 字段为数组(空或非空)的所有文档</span></span><br><span class="line">db.<span class="property">sensorReading</span>.<span class="title function_">find</span>(&#123;<span class="attr">readings</span>: &#123;<span class="attr">$type</span>: <span class="string">&#x27;array&#x27;</span>&#125;&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>评估查询</p>
+<ul>
+<li>$expr 允许在查询语言中使用聚合表达式</li>
+<li>$jsonSchema 根据给定的 JSON 模式验证文档</li>
+<li>$mod  对字段值执行模运算, 并选择具有指定结果的文档, 当传递的数组元素不是两个时将会报错</li>
+<li>$regex  选择值匹配指定正则表达式的文档</li>
+<li>$text  执行文档搜索</li>
+<li>$where  匹配满足 javascript 表达式的文档</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123; name: &#123; $regex: /acme.*corp/i, $nin: [ &#x27;acmeblahcorp&#x27; ] &#125; &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 查询 spent 金额超过 budget 的所有文档</span></span><br><span class="line">db.<span class="property">monthlyBudget</span>.<span class="title function_">find</span>(&#123;<span class="attr">$expr</span>: &#123; <span class="attr">$gt</span>: [ <span class="string">&quot;$spent&quot;</span> , <span class="string">&quot;$budget&quot;</span> ] &#125;&#125;);</span><br><span class="line"><span class="comment">// 查询 qty 字段的值 模 4 等于 0 的所有文档</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">find</span>(&#123;<span class="attr">qty</span>: &#123; <span class="attr">$mod</span>: [ <span class="number">4</span>, <span class="number">0</span> ] &#125;&#125;);</span><br><span class="line"><span class="comment">// 查询 name 的值等于 MD5 哈希值的所有文档</span></span><br><span class="line">db.<span class="property">players</span>.<span class="title function_">find</span>(&#123;<span class="attr">$where</span>: <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> (<span class="title function_">hex_md5</span>(<span class="variable language_">this</span>.<span class="property">name</span>) == <span class="string">&quot;9b53e667f30cd329dca1ec9e6a83e994&quot;</span>)</span><br><span class="line">&#125;&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>地理空间</p>
+<ul>
+<li>$geoIntersects 选择与 GeoJSON 几何图形相交的几何图形</li>
+<li>$geoWithin  选择在边界 GeoJSON 几何图形内的几何图形</li>
+<li>$near 返回接近某个点的地理空间对象, 需要地理空间索引</li>
+<li>$nearSphere  返回与球面上的某个点接近的地理空间对象, 需要地理空间索引</li>
+</ul>
+<p>数组查询</p>
+<ul>
+<li>$all  匹配包含查询中指定的所有元素的数组</li>
+<li>$elemMatch 如果数组字段中的元素与所有指定的 $elemMatch 条件均匹配, 则选择文档</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询 tags 字段值至少包含 appliance, school, book 的文档</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">find</span>(&#123;<span class="attr">tags</span>: &#123; <span class="attr">$all</span>: [ <span class="string">&quot;appliance&quot;</span>, <span class="string">&quot;school&quot;</span>, <span class="string">&quot;book&quot;</span> ]&#125;&#125;);</span><br><span class="line"><span class="comment">// 查询 results 数组中至少包含一个 product 等于 xyz 且 score 大于或等于 8 的元素的文档</span></span><br><span class="line">db.<span class="property">survey</span>.<span class="title function_">find</span>(&#123;<span class="attr">results</span>: &#123; <span class="attr">$elemMatch</span>: &#123; <span class="attr">product</span>: <span class="string">&quot;xyz&quot;</span>, <span class="attr">score</span>: &#123; <span class="attr">$gte</span>: <span class="number">8</span> &#125; &#125;&#125;&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>按位查询</p>
+<ul>
+<li>$bitsAllClear 匹配数字或二进制值，其中一组片段位置均包含值 0</li>
+<li>$bitsAllSet 匹配数字或二进制值，其中一组片段位置均包含值 1</li>
+<li>$bitsAnyClear 匹配数字或二进制值，其中一组位位置中的任何 位的值为 0</li>
+<li>$bitsAnySet 匹配数字或二进制值，其中一组位位置中的任何 位的值为 1</li>
+</ul>
+<p>投影操作符</p>
+<ul>
+<li>$ 对数组中与查询条件匹配的第一个元素进行投影</li>
+<li>$elemMatch  对数组中与指定 $elemMatch 条件匹配的第一个元素进行投影</li>
+<li>$meta 预测在 $text 操作中分配的文件分数</li>
+<li>$slice  限制从数组中投影的元素数量。支持跳过切片和对切片进行数量限制</li>
+</ul>
+<p>其他操作符</p>
+<ul>
+<li>$rand 生成介于 0 和 1 之间的随机浮点数</li>
+<li>$natural  可通过 sort() 或 hint() 方法提供的特殊提示，可用于强制执行正向或反向集合扫描</li>
+</ul>
+<h4 id="update"><a href="#update" class="headerlink" title="update"></a>update</h4><p>字段</p>
+<ul>
+<li>$currentDate  将字段的值设置为当前日期，可以是日期或时间戳。</li>
+<li>$inc  将字段的值按指定量递增。</li>
+<li>$min  仅当指定值小于现有字段值时才更新字段。</li>
+<li>$max  仅当指定值大于现有字段值时才更新字段。</li>
+<li>$mul  将字段的值乘以指定量。</li>
+<li>$rename 重命名字段。</li>
+<li>$set  设置文档中字段的值。</li>
+<li>$setOnInsert  如果某一更新操作导致插入文档，则设置字段的值。对修改现有文档的更新操作没有影响。</li>
+<li>$unset  从文档中删除指定的字段。</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">users</span>.<span class="title function_">updateOne</span>(&#123;<span class="attr">name</span>: <span class="string">&#x27;laoli&#x27;</span>&#125;， &#123;<span class="attr">$inc</span>: &#123;<span class="attr">age</span>: <span class="number">10</span>&#125;&#125;); <span class="comment">// 将名字为 laoli 的文档的 age 增加 10</span></span><br><span class="line"></span><br><span class="line">db.<span class="property">users</span>.<span class="title function_">updateMany</span>(&#123;<span class="attr">city</span>: &#123;<span class="attr">$in</span>: [<span class="string">&#x27;beijing&#x27;</span>]&#125;&#125;, &#123;<span class="attr">$set</span>: &#123;<span class="attr">city</span>: <span class="string">&#x27;shanghai&#x27;</span>&#125;&#125;); <span class="comment">// 将城市为 beijing 的文档的 city 设置为 shanghai</span></span><br><span class="line"></span><br><span class="line">db.<span class="property">users</span>.<span class="title function_">updateMany</span>(&#123;<span class="attr">name</span>: <span class="string">&#x27;laoli&#x27;</span>&#125;， &#123;<span class="attr">$rename</span>: [<span class="string">&#x27;lve&#x27;</span>, <span class="string">&#x27;love&#x27;</span>]&#125;); <span class="comment">// 将名字为 laoli 的文档的 lve 重命名为 love</span></span><br></pre></td></tr></table></figure>
+
+<p>其他操作符</p>
+<ul>
+<li>$bit 对整数值执行按位 AND、OR、XOR 更新</li>
+</ul>
+<h5 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h5><p>操作符</p>
+<ul>
+<li>$ 充当占位符，用于更新与查询条件匹配的第一个元素</li>
+<li>$[] 充当占位符，以更新数组中与查询条件匹配的文档中的所有元素</li>
+<li>$[&lt;identifier&gt;] 充当占位符，以更新与查询条件匹配的文档中所有符合 arrayFilters 条件的元素</li>
+<li>$addToSet 仅向数组中添加尚不存在于该数组的元素, 配合 $each 批量添加元素</li>
+<li>$pop  删除数组的第一项或最后一项，-1 第一个，1 最后一个</li>
+<li>$pull 删除与指定查询匹配的所有数组元素</li>
+<li>$push 向数组添加一项, 配合 $each 批量添加元素</li>
+<li>$pullAll  从数组中删除所有匹配值</li>
+</ul>
+<p>修饰符</p>
+<ul>
+<li>$each 修改 $push 和 $addToSet 运算符，以在数组更新时追加多个项目</li>
+<li>$position 修改 $push 运算符，以指定在数组中添加元素的位置</li>
+<li>$slice  修改 $push 运算符以限制更新后数组的大小, 负数表示从数组尾部开始截取, 正数表示从数组头部开始截取</li>
+<li>$sort 修改 $push 运算符，以对存储在数组中的文档重新排序</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">users</span>.<span class="title function_">updateOne</span>(&#123;<span class="attr">name</span>: <span class="string">&#x27;laoli&#x27;</span>&#125;, &#123;<span class="attr">$push</span>: &#123;<span class="attr">lve</span>: <span class="string">&#x27;TV&#x27;</span>&#125;&#125;); <span class="comment">// 将名字为 laoli 的文档的 lve 数组添加 TV</span></span><br><span class="line"></span><br><span class="line">db.<span class="property">users</span>.<span class="title function_">updateMany</span>(&#123;<span class="attr">age</span>: &#123;<span class="attr">$gte</span>: <span class="number">35</span>&#125;&#125;, &#123;<span class="attr">$addToSet</span>: &#123;<span class="attr">lve</span>: &#123;<span class="attr">$each</span>: [<span class="string">&#x27;code&#x27;</span>, <span class="string">&#x27;football&#x27;</span>]&#125;&#125;&#125;); <span class="comment">// 将年龄 大于等于 35 岁的文档的 lve 增加 code 和 football</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="批量写入"><a href="#批量写入" class="headerlink" title="批量写入"></a>批量写入</h3><p>通过更少的数据库调用来执行多个写入操作</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  [ <span class="string">&#x27;deleteMany&#x27;</span> =&gt; [ $filter ] ],</span><br><span class="line">  [ <span class="string">&#x27;deleteOne&#x27;</span>  =&gt; [ $filter ] ],</span><br><span class="line">  [ <span class="string">&#x27;insertOne&#x27;</span>  =&gt; [ $document ] ],</span><br><span class="line">  [ <span class="string">&#x27;replaceOne&#x27;</span> =&gt; [ $filter, $replacement, $options ] ],</span><br><span class="line">  [ <span class="string">&#x27;updateMany&#x27;</span> =&gt; [ $filter, $update, $options ] ],</span><br><span class="line">  [ <span class="string">&#x27;updateOne&#x27;</span>  =&gt; [ $filter, $update, $options ] ],</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h2 id="副本集"><a href="#副本集" class="headerlink" title="副本集"></a>副本集</h2><h2 id="分片集"><a href="#分片集" class="headerlink" title="分片集"></a>分片集</h2>
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\5db91eb9b055\" rel="bookmark">sql-aggregate</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/11/c32a91c061ac/" title="sql">https://luoleiself.github.io/2022/11/c32a91c061ac/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sql/" rel="tag"># sql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/5db91eb9b055/" rel="prev" title="sql-aggregate">
+      <i class="fa fa-chevron-left"></i> sql-aggregate
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/819f95816ecc/" rel="next" title="Redis">
+      Redis <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">事务隔离级别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E6%9C%AA%E6%8F%90%E4%BA%A4-Read-Uncommitted"><span class="nav-number">1.1.</span> <span class="nav-text">读未提交(Read Uncommitted)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4-Read-Committed"><span class="nav-number">1.2.</span> <span class="nav-text">读已提交(Read Committed)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB-Repeatable-Read"><span class="nav-number">1.3.</span> <span class="nav-text">可重复读(Repeatable Read)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B2%E8%A1%8C%E5%8C%96-Serializable"><span class="nav-number">1.4.</span> <span class="nav-text">串行化(Serializable)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95"><span class="nav-number">2.</span> <span class="nav-text">索引</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95-%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95"><span class="nav-number">2.1.</span> <span class="nav-text">聚簇索引(主键索引)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95"><span class="nav-number">2.2.</span> <span class="nav-text">唯一索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95"><span class="nav-number">2.3.</span> <span class="nav-text">普通索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95"><span class="nav-number">2.4.</span> <span class="nav-text">联合索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95"><span class="nav-number">2.5.</span> <span class="nav-text">全文索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.</span> <span class="nav-text">多表查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.1.</span> <span class="nav-text">连接查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.1.1.</span> <span class="nav-text">内连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.1.2.</span> <span class="nav-text">外连接</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B7%A6%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">左外连接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%B3%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">右外连接</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.1.3.</span> <span class="nav-text">自连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.1.4.</span> <span class="nav-text">联合查询</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.</span> <span class="nav-text">子查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E9%87%8F%E5%AD%90%E6%9F%A5%E8%AF%A2-%E5%8D%95%E5%80%BC%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.1.</span> <span class="nav-text">标量子查询(单值子查询)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%97%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.2.</span> <span class="nav-text">列子查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%8C%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.3.</span> <span class="nav-text">行子查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.4.</span> <span class="nav-text">表子查询</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.3.</span> <span class="nav-text">聚合查询</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mongosh"><span class="nav-number">4.</span> <span class="nav-text">mongosh</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7"><span class="nav-number">4.1.</span> <span class="nav-text">用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#database"><span class="nav-number">4.2.</span> <span class="nav-text">database</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E5%92%8C%E6%81%A2%E5%A4%8D"><span class="nav-number">4.2.1.</span> <span class="nav-text">备份和恢复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#collection"><span class="nav-number">4.3.</span> <span class="nav-text">collection</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#indexs"><span class="nav-number">4.3.1.</span> <span class="nav-text">indexs</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#document"><span class="nav-number">4.4.</span> <span class="nav-text">document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#operator"><span class="nav-number">4.5.</span> <span class="nav-text">operator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.5.1.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#update"><span class="nav-number">4.5.2.</span> <span class="nav-text">update</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E7%BB%84"><span class="nav-number">4.5.2.1.</span> <span class="nav-text">数组</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E5%86%99%E5%85%A5"><span class="nav-number">4.6.</span> <span class="nav-text">批量写入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC%E9%9B%86"><span class="nav-number">5.</span> <span class="nav-text">副本集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86"><span class="nav-number">6.</span> <span class="nav-text">分片集</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">756k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

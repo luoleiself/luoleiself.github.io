@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"luoleiself.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Redis 函数 Redis 7.0 支持  Redis 函数是临时脚本的进化步骤, 函数提供与脚本相同的核心功能但却是数据库的一流软件工件 Redis 将函数作为数据库的一个组成部分进行管理, 并通过数据持久化和复制确保它们的可用性. 由于函数是数据库的一部分, 因此在使用前声明, 因此应用程序不需要在运行时加载它们, 也不必冒事务中止的风险. 使用函数的应用程序仅依赖于它们的 API, 而不依">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-Lua">
+<meta property="og:url" content="https://luoleiself.github.io/2022/11/08b1664c9566/index.html">
+<meta property="og:site_name" content="luoleiself&#39;s blog">
+<meta property="og:description" content="Redis 函数 Redis 7.0 支持  Redis 函数是临时脚本的进化步骤, 函数提供与脚本相同的核心功能但却是数据库的一流软件工件 Redis 将函数作为数据库的一个组成部分进行管理, 并通过数据持久化和复制确保它们的可用性. 由于函数是数据库的一部分, 因此在使用前声明, 因此应用程序不需要在运行时加载它们, 也不必冒事务中止的风险. 使用函数的应用程序仅依赖于它们的 API, 而不依">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
+<meta property="article:modified_time" content="2026-01-21T01:47:04.380Z">
+<meta property="article:author" content="luoleiself">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://luoleiself.github.io/2022/11/08b1664c9566/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Redis-Lua | luoleiself's blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5fa63b434a4b3e74b6258584372c74c0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="luoleiself's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">luoleiself's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/luoleiself" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/08b1664c9566/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis-Lua
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-01-21 09:47:04" itemprop="dateModified" datetime="2026-01-21T09:47:04+08:00">2026-01-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>21k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>19 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Redis-函数"><a href="#Redis-函数" class="headerlink" title="Redis 函数"></a>Redis 函数</h2><blockquote>
+<p>Redis 7.0 支持</p>
+</blockquote>
+<p>Redis 函数是临时脚本的进化步骤, 函数提供与脚本相同的核心功能但却是数据库的一流软件工件</p>
+<p>Redis 将函数作为数据库的一个组成部分进行管理, 并通过数据持久化和复制确保它们的可用性. 由于函数是数据库的一部分, 因此在使用前声明, 因此应用程序不需要在运行时加载它们, 也不必冒事务中止的风险. 使用函数的应用程序仅依赖于它们的 API, 而不依赖于数据库中的嵌入式脚本逻辑</p>
+<p>Redis 函数可以将 Lua 的所有可用功能用于临时脚本, 唯一例外的是 Redis Lua 脚本调试器</p>
+<p>Redis 函数还通过启用代码共享来简化开发, 每个函数都属于一个库, 任何给定的库都可以包含多个函数, 库的内容是不可变的, 并且不允许对其功能进行选择性更新. 取而代之的是, 库作为一个整体进行更新, 在一个操作中将它们的所有功能一起更新. 这允许从同一库中的其他函数调用函数, 或者通过使用库内部方法中的公共代码在函数之间共享代码, 这些函数也可以采用语言本机参数</p>
+<p>Redis 函数也被持久化到 AOF 文件中, 并从主服务器复制到副本服务器, 因此它们与数据一样可以持久化</p>
+<p>Redis 函数的执行是原子的, 函数的执行在其整个时间内阻止所有服务器活动, 类似于事务的语义, 已执行函数的阻塞语义始终适用于所有连接的客户端, 因为运行一个函数会阻塞 Redis 服务器</p>
+<ul>
+<li>函数都属于一个库, 任何给定的库都可以包含多个函数</li>
+<li>库的内容是不可变的, 并且不允许选择性地更新其函数, 只能将库作为一个整体进行更新</li>
+</ul>
+<h3 id="函数命令"><a href="#函数命令" class="headerlink" title="函数命令"></a>函数命令</h3><ul>
+<li>FUNCTION help 显示 FUNCTION 的帮助信息</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; FUNCTION <span class="built_in">help</span></span><br><span class="line"> 1) FUNCTION &lt;subcommand&gt; [&lt;arg&gt; [value] [opt] ...]. Subcommands are:</span><br><span class="line"> 2) LOAD [REPLACE] &lt;FUNCTION CODE&gt;</span><br><span class="line"> 3)     Create a new library with the given library name and code.</span><br><span class="line"> 4) DELETE &lt;LIBRARY NAME&gt;</span><br><span class="line"> 5)     Delete the given library.</span><br><span class="line"> 6) LIST [LIBRARYNAME PATTERN] [WITHCODE]</span><br><span class="line"> 7)     Return general information on all the libraries:</span><br><span class="line"> 8)     * Library name</span><br><span class="line"> 9)     * The engine used to run the Library</span><br><span class="line">10)     * Library description</span><br><span class="line">11)     * Functions list</span><br><span class="line">12)     * Library code (<span class="keyword">if</span> WITHCODE is given)</span><br><span class="line">13)     It also possible to get only <span class="keyword">function</span> that matches a pattern using LIBRARYNAME argument.</span><br><span class="line">14) STATS</span><br><span class="line">15)     Return information about the current <span class="keyword">function</span> running:</span><br><span class="line">16)     * Function name</span><br><span class="line">17)     * Command used to run the <span class="keyword">function</span></span><br><span class="line">18)     * Duration <span class="keyword">in</span> MS that the <span class="keyword">function</span> is running</span><br><span class="line">19)     If no <span class="keyword">function</span> is running, <span class="built_in">return</span> nil</span><br><span class="line">20)     In addition, returns a list of available engines.</span><br><span class="line">21) KILL</span><br><span class="line">22)     Kill the current running <span class="keyword">function</span>.</span><br><span class="line">23) FLUSH [ASYNC|SYNC]</span><br><span class="line">24)     Delete all the libraries.</span><br><span class="line">25)     When called without the optional mode argument, the behavior is determined by the</span><br><span class="line">26)     lazyfree-lazy-user-flush configuration directive. Valid modes are:</span><br><span class="line">27)     * ASYNC: Asynchronously flush the libraries.</span><br><span class="line">28)     * SYNC: Synchronously flush the libraries.</span><br><span class="line">29) DUMP</span><br><span class="line">30)     Return a serialized payload representing the current libraries, can be restored using FUNCTION RESTORE <span class="built_in">command</span></span><br><span class="line">31) RESTORE &lt;PAYLOAD&gt; [FLUSH|APPEND|REPLACE]</span><br><span class="line">32)     Restore the libraries represented by the given payload, it is possible to give a restore policy to</span><br><span class="line">33)     control how to handle existing libraries (default APPEND):</span><br><span class="line">34)     * FLUSH: delete all existing libraries.</span><br><span class="line">35)     * APPEND: appends the restored libraries to the existing libraries. On collision, abort.</span><br><span class="line">36)     * REPLACE: appends the restored libraries to the existing libraries, On collision, replace the old</span><br><span class="line">37)       libraries with the new libraries (notice that even on this option there is a chance of failure</span><br><span class="line">38)       <span class="keyword">in</span> <span class="keyword">case</span> of <span class="built_in">functions</span> name collision with another library).</span><br><span class="line">39) HELP</span><br><span class="line">40)     Prints this <span class="built_in">help</span>.</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<ul>
+<li>FUNCTION DELETE 删除指定的库</li>
+<li>FUNCTION LIST 查看所有库和函数</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; FUNCTION LIST</span><br><span class="line">1) 1) <span class="string">&quot;library_name&quot;</span></span><br><span class="line">   2) <span class="string">&quot;mylib&quot;</span></span><br><span class="line">   3) <span class="string">&quot;engine&quot;</span></span><br><span class="line">   4) <span class="string">&quot;LUA&quot;</span></span><br><span class="line">   5) <span class="string">&quot;functions&quot;</span></span><br><span class="line">   6) 1) 1) <span class="string">&quot;name&quot;</span></span><br><span class="line">         2) <span class="string">&quot;knockknock&quot;</span></span><br><span class="line">         3) <span class="string">&quot;description&quot;</span></span><br><span class="line">         4) (nil)</span><br><span class="line">         5) <span class="string">&quot;flags&quot;</span></span><br><span class="line">         6) (empty array)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>加载库和函数</li>
+</ul>
+<p>每个 Redis 函数都属于一个加载到 Redis 的库, 使用命令 <code>FUNCTION LOAD</code> 将库加载到数据库, 库必须以 shebang 语句开头 <code>#!&lt;engine name&gt; name=&lt;library name&gt;</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 加载一个空库</span></span><br><span class="line">127.0.0.1:6379&gt; FUNCTION LOAD <span class="string">&quot;#!lua name=mylib\n&quot;</span></span><br><span class="line">(error) ERR No <span class="built_in">functions</span> registered</span><br></pre></td></tr></table></figure>
+
+<h3 id="注册调用"><a href="#注册调用" class="headerlink" title="注册调用"></a>注册调用</h3><p><em id="redis.register_function"></em> <!-- markdownlint-disable-line --></p>
+<p>注册</p>
+<ul>
+<li>redis.register_function(name, callback, flags, description) 注册函数<ul>
+<li>name 注册的函数名</li>
+<li>callback 注册的函数</li>
+<li>flags<ul>
+<li>no-writes 标识脚本只能读取但不能写入</li>
+<li>allow-oom 标识允许脚本在服务器内存不足(OOM)时执行</li>
+<li>allow-stable</li>
+<li>no-cluster 标识脚本在 Redis 集群模式下返回错误, 防止对集群中的节点执行脚本</li>
+<li>allow-cross-slot-keys 允许脚本从多个 slot 访问密钥</li>
+</ul>
+</li>
+<li>description 函数描述</li>
+</ul>
+</li>
+</ul>
+<p>调用</p>
+<ul>
+<li>FCALL function numkeys [key [key …]] [arg [arg …]] 调用注册的函数</li>
+<li>FCALL_RO function numkeys [key [key …]] [arg [arg …]] 调用注册的只读函数</li>
+</ul>
+<h4 id="Redis-命令行注册调用"><a href="#Redis-命令行注册调用" class="headerlink" title="Redis 命令行注册调用"></a>Redis 命令行注册调用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式1</span></span><br><span class="line">127.0.0.1:6379&gt; FUNCTION LOAD <span class="string">&quot;#!lua name=mylib\nredis.register_function&#123;function_name=&#x27;noop&#x27;, callback=function() end, flags=&#123; &#x27;no-writes&#x27; &#125;, description=&#x27;Does nothing&#x27;&#125;&quot;</span></span><br><span class="line"><span class="comment"># 方式2</span></span><br><span class="line">127.0.0.1:6379&gt; FUNCTION LOAD <span class="string">&quot;#!lua name=mylib\nredis.register_function(&#x27;knockknock&#x27;, function() return &#x27;Who\\&#x27;s there?&#x27; end)&quot;</span></span><br><span class="line"><span class="string">&quot;mylib&quot;</span></span><br><span class="line"><span class="comment"># 调用</span></span><br><span class="line">127.0.0.1:6379&gt; FCALL knockknock 0</span><br><span class="line"><span class="string">&quot;Who&#x27;s there?&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Lua-脚本文件注册调用"><a href="#Lua-脚本文件注册调用" class="headerlink" title="Lua 脚本文件注册调用"></a>Lua 脚本文件注册调用</h4><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">#!lua name=mylib</span><br><span class="line"><span class="comment">--方式1</span></span><br><span class="line"><span class="comment">--[[redis.register_function&#123;</span></span><br><span class="line"><span class="comment">  function_name=&#x27;knockknock&#x27;,</span></span><br><span class="line"><span class="comment">  callback=function() return &#x27;Who\&#x27;s there?&#x27; end,</span></span><br><span class="line"><span class="comment">  flags=&#123; &#125;,</span></span><br><span class="line"><span class="comment">  description=&#x27;Does nothing&#x27;</span></span><br><span class="line"><span class="comment">&#125;]]</span><span class="comment">--</span></span><br><span class="line"><span class="comment">--方式2</span></span><br><span class="line"><span class="comment">--[[redis.register_function(</span></span><br><span class="line"><span class="comment">   &#x27;knockknock&#x27;,</span></span><br><span class="line"><span class="comment">   function() return &#x27;Who\&#x27;s there?&#x27; end</span></span><br><span class="line"><span class="comment">)]]</span><span class="comment">--</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">knockknock</span><span class="params">()</span></span></span><br><span class="line">   <span class="keyword">return</span> <span class="string">&#x27;Who\&#x27;s there?&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">my_hset</span><span class="params">(keys, args)</span></span></span><br><span class="line">   <span class="keyword">local</span> key = keys[<span class="number">1</span>]</span><br><span class="line">   <span class="comment">-- 调用 redis 命令 TIME 获取当前时间戳</span></span><br><span class="line">   <span class="keyword">local</span> <span class="built_in">time</span> = redis.call(<span class="string">&#x27;TIME&#x27;</span>)[<span class="number">1</span>]</span><br><span class="line">   <span class="keyword">return</span> redis.call(<span class="string">&#x27;HSET&#x27;</span>,key, <span class="string">&#x27;_last_modified_&#x27;</span>, <span class="built_in">time</span>, <span class="built_in">unpack</span>(args))</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">my_hgetall</span><span class="params">(keys, args)</span></span></span><br><span class="line">   <span class="comment">-- 使用 resp3 协议进行请求应答</span></span><br><span class="line">   redis.setresp(<span class="number">3</span>)</span><br><span class="line">   <span class="keyword">local</span> key = keys[<span class="number">1</span>]</span><br><span class="line">   <span class="keyword">local</span> res = redis.call(<span class="string">&#x27;HGETALL&#x27;</span>, key)</span><br><span class="line">   res[<span class="string">&#x27;map&#x27;</span>][<span class="string">&#x27;_last_modified_&#x27;</span>] = <span class="literal">nil</span></span><br><span class="line">   <span class="keyword">return</span> res</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">redis.register_function(<span class="string">&#x27;knockknock&#x27;</span>, knockknock)</span><br><span class="line">redis.register_function(<span class="string">&#x27;my_hset&#x27;</span>, my_hset)</span><br><span class="line">redis.register_function(<span class="string">&#x27;my_hgetall&#x27;</span>, my_hgetall)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 注册 FCALL_RO 执行的函数</span></span><br><span class="line">redis.register_function&#123;</span><br><span class="line">   function_name=<span class="string">&#x27;my_hgetall_ro&#x27;</span>,</span><br><span class="line">   callback=my_hgetall,</span><br><span class="line">   flags=&#123;<span class="string">&#x27;no-writes&#x27;</span>&#125;</span><br><span class="line">   description=<span class="string">&#x27;read-only hash getall command&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">[root@centos7 workspace]# <span class="built_in">cat</span> mylib.lua | redis-cli -x FUNCTION LOAD REPLACE</span><br><span class="line"><span class="string">&quot;mylib&quot;</span></span><br><span class="line"><span class="comment"># 调用注册函数</span></span><br><span class="line">127.0.0.1:6379&gt; FCALL my_hset 1 <span class="built_in">hash</span>:zhang name <span class="string">&quot;zhangsan&quot;</span> age 18 addr <span class="string">&quot;beijing&quot;</span></span><br><span class="line">(<span class="built_in">integer</span>) 4</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;hash:zhang&quot;</span></span><br><span class="line">2) <span class="string">&quot;bit:zhang&quot;</span></span><br><span class="line">3) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">4) <span class="string">&quot;name&quot;</span></span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; FCALL my_hgetall 1 <span class="built_in">hash</span>:zhang</span><br><span class="line">1) <span class="string">&quot;age&quot;</span></span><br><span class="line">2) <span class="string">&quot;18&quot;</span></span><br><span class="line">3) <span class="string">&quot;addr&quot;</span></span><br><span class="line">4) <span class="string">&quot;beijing&quot;</span></span><br><span class="line">5) <span class="string">&quot;name&quot;</span></span><br><span class="line">6) <span class="string">&quot;zhangsan&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># FCALL 调用只读函数 my_hgetall_ro</span></span><br><span class="line">127.0.0.1:6379&gt; FCALL my_hgetall_ro 1 <span class="built_in">hash</span>:zhang</span><br><span class="line">1) <span class="string">&quot;age&quot;</span></span><br><span class="line">2) <span class="string">&quot;18&quot;</span></span><br><span class="line">3) <span class="string">&quot;addr&quot;</span></span><br><span class="line">4) <span class="string">&quot;beijing&quot;</span></span><br><span class="line">5) <span class="string">&quot;name&quot;</span></span><br><span class="line">6) <span class="string">&quot;zhangsan&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># FCALL_RO 调用普通函数 my_hgetall</span></span><br><span class="line">127.0.0.1:6379&gt; FCALL_RO my_hgetall 1 <span class="built_in">hash</span>:zhang</span><br><span class="line">(error) ERR Can not execute a script with write flag using *_ro <span class="built_in">command</span>.</span><br><span class="line"><span class="comment"># FCALL_RO 调用只读函数 my_hgetall_ro</span></span><br><span class="line">127.0.0.1:6379&gt; FCALL_RO my_hgetall_ro 1 <span class="built_in">hash</span>:zhang</span><br><span class="line">1) <span class="string">&quot;age&quot;</span></span><br><span class="line">2) <span class="string">&quot;18&quot;</span></span><br><span class="line">3) <span class="string">&quot;addr&quot;</span></span><br><span class="line">4) <span class="string">&quot;beijing&quot;</span></span><br><span class="line">5) <span class="string">&quot;name&quot;</span></span><br><span class="line">6) <span class="string">&quot;zhangsan&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Lua-脚本"><a href="#Lua-脚本" class="headerlink" title="Lua 脚本"></a>Lua 脚本</h2><p>Redis 允许在服务器上上传和执行 Lua 脚本, 脚本可以采用编程控制结构并在执行时使用大部分命令来访问数据库, 因为脚本在服务器中执行, 所以从脚本中读取和写入数据非常高效.</p>
+<p>Redis 保证脚本的原子执行, 在执行脚本时, 所有服务器活动在其整个运行期间都被阻止.</p>
+<p>Lua 允许在 Redis 中运行部分应用程序逻辑, 这样的脚本可以跨多个键执行条件更新, 可能以原子方式组合几种不同的数据类型</p>
+<p>Lua 脚本由嵌入式执行引擎在 Redis 中执行, 尽管服务器执行它们, 但 EVAL 脚本被视为客户端应用程序的一部分, 这就是它们没有命名、版本化或持久化的原因. 因此, 如果所有脚本丢失, 应用程序可能需要随时重新加载</p>
+<ul>
+<li>不能在 lua 脚本中声明全局变量, 只能使用 local 声明局部变量, 否则将执行报错</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;name=10; return name&quot;</span> 0   <span class="comment"># 声明全局变量执行报错</span></span><br><span class="line">(error) ERR user_script:1: Attempt to modify a <span class="built_in">readonly</span> table script: be32aff3876f2170bc8f0e19998edc94924341e1, on @user_script:1.</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;local name=10; return name&quot;</span> 0   <span class="comment"># local 声明局部变量正常执行</span></span><br><span class="line">(<span class="built_in">integer</span>) 10</span><br></pre></td></tr></table></figure>
+
+<h3 id="脚本命令"><a href="#脚本命令" class="headerlink" title="脚本命令"></a>脚本命令</h3><blockquote>
+<p><strong>脚本参数化</strong> 为了确保在独立部署和集群部署中正确执行脚本, 脚本访问的所有键名都必须作为输入键参数显式提供</p>
+</blockquote>
+<ul>
+<li><p>EVAL script numkeys key [key …] arg [arg …] 执行 Lua 脚本</p>
+<ul>
+<li>script 要执行的脚本语句</li>
+<li>numkeys 指定后续的参数有几个 key</li>
+<li>key 要操作的键的数量, 在 Lua 脚本中通过 <code>KEYS[1]</code>, <code>KEYS[2]</code> 获取</li>
+<li>arg 参数, 在 Lua 脚本中通过 <code>ARGV[1]</code>, <code>ARGV[2]</code> 获取</li>
+</ul>
+</li>
+<li><p>EVALSHA sha1 numkeys key [key …] arg [arg …] 使用缓存 Lua 脚本的 sha 执行脚本(SCRIPT LOAD 命令缓存脚本)</p>
+</li>
+<li><p>EVAL_RO script numkeys [key [key …]] [arg [arg …]] 只读版本的 EVAL 命令, Redis 7.0 支持</p>
+</li>
+<li><p>EVALSHA_RO sha1 numkeys [key [key …]] [arg [arg …]] 只读版本的 EVALSHA 命令, Redis 7.0 支持</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return 10&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 10</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return ARGV[1]&quot;</span> 0 100</span><br><span class="line"><span class="string">&quot;100&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return &#123;ARGV[1], ARGV[2]&#125;&quot;</span> 0 100 101</span><br><span class="line">1) <span class="string">&quot;100&quot;</span></span><br><span class="line">2) <span class="string">&quot;101&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return &#123;KEYS[1], KEYS[2], ARGV[1], ARGV[2], ARGV[3]&#125;&quot;</span> 2 name age v1 v2</span><br><span class="line">1) <span class="string">&quot;name&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;v1&quot;</span></span><br><span class="line">4) <span class="string">&quot;v2&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return &#123;1, 2, &#123; 3, &#x27;hello world&#x27; &#125; &#125;&quot;</span> 0</span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">2) (<span class="built_in">integer</span>) 2</span><br><span class="line">3) 1) (<span class="built_in">integer</span>) 3</span><br><span class="line">   2) <span class="string">&quot;hello world&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>每次执行脚本都需要重新加载一遍脚本代码, 浪费资源, 使用 <a href="#scriptcache">脚本缓存</a></p>
+<h3 id="lua-脚本中的-redis-实例"><a href="#lua-脚本中的-redis-实例" class="headerlink" title="lua 脚本中的 redis 实例"></a>lua 脚本中的 redis 实例</h3><p>redis 单例实例, 使脚本能够与运行它的 Redis 服务器进行交互</p>
+<p>全局变量</p>
+<ul>
+<li>KEYS 获取脚本声明的键参数, 下标从 1 开始</li>
+<li>ARGV 获取脚本声明的键参数剩余的参数, 下标从 1 开始</li>
+</ul>
+<p><em id="redis.call"></em> <!-- markdownlint-disable-line --></p>
+<ul>
+<li>redis.call(command [, arg…]) 执行 redis 命令并返回结果, 如果遇到错误时直接返回给客户端</li>
+<li>redis.pcall(command [, arg…]) 执行 redis 命令并返回结果, 如果遇到错误时将返回给脚本的执行上下文</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; GET name</span><br><span class="line"><span class="string">&quot;hello world&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return redis.call(&#x27;SET&#x27;, KEYS[1], ARGV[1])&quot;</span> 1 name <span class="string">&quot;hello redis&quot;</span></span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; GET name</span><br><span class="line"><span class="string">&quot;hello redis&quot;</span></span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; get user:100:score</span><br><span class="line"><span class="string">&quot;60&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;if redis.call(&#x27;EXISTS&#x27;, KEYS[1]) == 1 then return redis.call(&#x27;INCRBY&#x27;, KEYS[1], ARGV[1]) else return nil end&quot;</span> 1 user:100:score 10</span><br><span class="line">(<span class="built_in">integer</span>) 70</span><br><span class="line">127.0.0.1:6379&gt; get user:100:score</span><br><span class="line"><span class="string">&quot;70&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>分布式接口限流，每秒钟限制接口的最大请求次数</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> key = KEYS[<span class="number">1</span>]</span><br><span class="line"><span class="keyword">local</span> limit = <span class="built_in">tonumber</span>(ARGV[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">local</span> expire_time = <span class="built_in">tonumber</span>(ARGV[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> current = redis.call(<span class="string">&#x27;GET&#x27;</span>, key)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> current <span class="keyword">and</span> <span class="built_in">tonumber</span>(current) &gt;= limit <span class="keyword">then</span></span><br><span class="line">  <span class="comment">-- 超出限制</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">current = redis.call(<span class="string">&#x27;INCR&#x27;</span>, key)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">tonumber</span>(current) == <span class="number">1</span> <span class="keyword">then</span></span><br><span class="line">  <span class="comment">-- 第一次访问, 设置过期时间</span></span><br><span class="line">  redis.call(<span class="string">&#x27;EXPIRE&#x27;</span>, key, expire_time)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 允许访问</span></span><br><span class="line"><span class="keyword">return</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># key: rate:limit:192.168.1.1</span></span><br><span class="line"><span class="comment"># limit: 5 次</span></span><br><span class="line"><span class="comment"># expire: 100 秒</span></span><br><span class="line">[root@centos7 workspace]# <span class="built_in">cat</span> rate_limit.lua | redis-cli -x SCRIPT LOAD</span><br><span class="line"><span class="string">&quot;688faba01b26f6e54969ba7b9d0ce340b4c298c0&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; SCRIPT EXISTS 688faba01b26f6e54969ba7b9d0ce340b4c298c0</span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:<span class="built_in">limit</span>:192.168.1.1 5 100</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:<span class="built_in">limit</span>:192.168.1.1 5 100</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:<span class="built_in">limit</span>:192.168.1.1 5 100</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:<span class="built_in">limit</span>:192.168.1.1 5 100</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:<span class="built_in">limit</span>:192.168.1.1 5 100</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVALSHA 688faba01b26f6e54969ba7b9d0ce340b4c298c0 1 rate:<span class="built_in">limit</span>:192.168.1.1 5 100</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; GET rate:<span class="built_in">limit</span>:192.168.1.1</span><br><span class="line"><span class="string">&quot;5&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; TTL rate:<span class="built_in">limit</span>:192.168.1.1</span><br><span class="line">(<span class="built_in">integer</span>) 66</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>redis.error_reply(x) 辅助函数, 返回一个错误信息</li>
+<li>redis.status_reply(x) 辅助函数, 可以修改 Redis 命令的默认返回值 OK</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 返回错误信息</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return redis.error_reply(&#x27;ERR This is a special error&#x27;)&quot;</span> 0</span><br><span class="line">(error) ERR This is a special error</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改默认返回值</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return &#123; ok = &#x27;TICK&#x27; &#125;&quot;</span> 0</span><br><span class="line"><span class="string">&quot;TICK&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return redis.status_reply(&#x27;TOCK&#x27;)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;TOCK&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>redis.sha1hex(x) 返回单个字符串参数的 SHA1 十六进制摘要信息</li>
+<li>redis.log(level, message) 写入 Redis 服务器日志<ul>
+<li>redis.LOG_DEBUG 日志级别</li>
+<li>redis.LOG_VERBOSE 日志级别</li>
+<li>redis.LOG_NOTICE 日志级别</li>
+<li>redis.LOG_WARNING 日志级别</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return redis.sha1hex(&#x27;&#x27;)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;da39a3ee5e6b40d3255bfef95601890afd80709&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return redis.log(redis.LOG_WARNING, &#x27;Something is terribly wrong&#x27;)&quot;</span> 0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>redis.setresp(x) 设置执行脚本和服务器之间的请求应答协议, 默认值 2. Redis 6.0 支持</p>
+</li>
+<li><p>redis.set_repl(x)</p>
+</li>
+<li><p>redis.replicate_commands()</p>
+</li>
+<li><p>redis.breakpoint() 在使用 Redis Lua 调试器时触发断点</p>
+</li>
+<li><p>redis.debug(x) 在 Redis Lua 调试器控制台中打印其参数</p>
+</li>
+<li><p>redis.acl_check_cmd(command [,arg…]) 用于检查运行脚本的当前用户是否具有使用给定参数执行给定命令的 ACL 权限, 返回值布尔类型. Redis 7.0 支持</p>
+</li>
+<li><p><a href="#redis.register_function">redis.register_function(name, callback, flags, description)</a> Redis 7.0 支持</p>
+</li>
+<li><p>redis.REDIS_VERSION 以字符串形式返回当前 Redis 服务器版本, 格式 MM.mm.PP. Redis 7.0 支持</p>
+</li>
+<li><p>redis.REDIS_VERSION_NUM 以数字形式返回当前 Redis 服务器版本, 格式为十进制值. Redis 7.0 支持</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return redis.REDIS_VERSION&quot;</span> 0</span><br><span class="line"><span class="string">&quot;7.0.5&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return redis.REDIS_VERSION_NUM&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 458757</span><br></pre></td></tr></table></figure>
+
+<h3 id="脚本缓存"><a href="#脚本缓存" class="headerlink" title="脚本缓存  "></a><strong>脚本缓存</strong> <em id="scriptcache"></em> <!-- markdownlint-disable-line --></h3><p>存储在服务器的脚本专用缓存中, 缓存内容由脚本的 SHA1 摘要作为缓存中的唯一标识</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SCRIPT <span class="built_in">help</span> <span class="comment"># 脚本帮助命令</span></span><br><span class="line"> 1) SCRIPT &lt;subcommand&gt; [&lt;arg&gt; [value] [opt] ...]. Subcommands are:</span><br><span class="line"> 2) DEBUG (YES|SYNC|NO)</span><br><span class="line"> 3)     Set the debug mode <span class="keyword">for</span> subsequent scripts executed.</span><br><span class="line"> 4) EXISTS &lt;sha1&gt; [&lt;sha1&gt; ...]</span><br><span class="line"> 5)     Return information about the existence of the scripts <span class="keyword">in</span> the script cache.</span><br><span class="line"> 6) FLUSH [ASYNC|SYNC]</span><br><span class="line"> 7)     Flush the Lua scripts cache. Very dangerous on replicas.</span><br><span class="line"> 8)     When called without the optional mode argument, the behavior is determined by the</span><br><span class="line"> 9)     lazyfree-lazy-user-flush configuration directive. Valid modes are:</span><br><span class="line">10)     * ASYNC: Asynchronously flush the scripts cache.</span><br><span class="line">11)     * SYNC: Synchronously flush the scripts cache.</span><br><span class="line">12) KILL</span><br><span class="line">13)     Kill the currently executing Lua script.</span><br><span class="line">14) LOAD &lt;script&gt;</span><br><span class="line">15)     Load a script into the scripts cache without executing it.</span><br><span class="line">16) HELP</span><br><span class="line">17)     Prints this <span class="built_in">help</span>.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SCRIPT FLUSH 从脚本缓存中移除所有脚本, 返回 ok</li>
+<li>SCRIPT KILL 杀死系统当前正在运行的 Lua 脚本(又名慢脚本)</li>
+<li>SCRIPT DEBUG 设置脚本内执行时的模式</li>
+<li>SCRIPT LOAD &lt;script&gt; 将脚本加载到服务器缓存中, 并不立即执行</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加 Lua 缓存脚本</span></span><br><span class="line">127.0.0.1:6379&gt; SCRIPT LOAD <span class="string">&quot;return redis.call(&#x27;GET&#x27;, KEYS[1])&quot;</span></span><br><span class="line"><span class="string">&quot;d3c21d0c2b9ca22f82737626a27bcaf5d288f99f&quot;</span></span><br><span class="line"><span class="comment"># 使用 EVALSHA 执行缓存脚本</span></span><br><span class="line">127.0.0.1:6379&gt; EVALSHA d3c21d0c2b9ca22f82737626a27bcaf5d288f99f 1 name</span><br><span class="line"><span class="string">&quot;hello redis&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SCRIPT EXISTS &lt;script&gt; [script …] 查看缓存中是否存在 sha 对应的脚本, 1 表示存在, 0 表示不存在</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SCRIPT EXISTS d3c21d0c2b9ca22f82737626a27bcaf5d288f99f</span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; SCRIPT EXISTS d3c21d0c2b9ca22f82737626a27bcaf5d288f99g</span><br><span class="line">1) (<span class="built_in">integer</span>) 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="脚本复制"><a href="#脚本复制" class="headerlink" title="脚本复制"></a>脚本复制</h3><p>一般在集群部署环境下, Redis 确保脚本执行的所有写操作也被发送到副本以保持一致性, 脚本复制有两种概念</p>
+<ul>
+<li>逐字复制: master 将脚本的源代码发送到 slave, 然后 slave 执行脚本并写入效果.<ul>
+<li>在短脚本生成许多命令的情况下, 可以节省资源, 但意味着 slave 会重做 master 完成的相同工作而浪费资源</li>
+</ul>
+</li>
+<li>效果复制: 仅复制脚本的数据修改命令, slave 然后执行命令而不执行任何脚本, 从 redis 5.0 开始为默认模式</li>
+</ul>
+<p>脚本效果复制 —— 复制命令</p>
+<p>在这种模式下，在执行 Lua 脚本的同时, Redis 会收集 Lua 脚本引擎执行的所有实际修改数据集的命令, 当脚本执行完成时, 脚本生成的命令序列被包装到一个 <strong>事务</strong> 中并发送到副本和 AOF</p>
+<h3 id="Lua-API"><a href="#Lua-API" class="headerlink" title="Lua API"></a>Lua API</h3><ul>
+<li>使用未声明为本地的变量和函数会引起 Redis 的报错</li>
+<li>沙盒执行上下文不支持使用导入的 Lua 模块</li>
+</ul>
+<h3 id="数据类型转换"><a href="#数据类型转换" class="headerlink" title="数据类型转换"></a>数据类型转换</h3><h4 id="RESP2"><a href="#RESP2" class="headerlink" title="RESP2"></a>RESP2</h4><ul>
+<li>RESP2 -&gt; Lua<ul>
+<li>RESP2 整数 -&gt; Lua 数</li>
+<li>RESP2 批量字符串 -&gt; Lua 字符串</li>
+<li>RESP2 数组 -&gt; Lua 表(可能嵌套额其他 Redis 数据类型)</li>
+<li>RESP2 状态 -&gt; 包含状态字符串的单个 ok 字段的 Lua 表</li>
+<li>RESP2 错误 -&gt; 包含错误字符串的单个 err 字段的 Lua 表</li>
+<li>RESP 空批量|空多批量 -&gt; Lua false 布尔类型</li>
+</ul>
+</li>
+<li>Lua -&gt; RESP2<ul>
+<li>Lua 数字 -&gt; RESP2 整数(数字转为整数, 舍去小数部分)</li>
+<li>Lua 字符串 -&gt; RESP 批量字符串</li>
+<li>Lua 表(索引, 非关联数组) -&gt; RESP2 数组(在表中遇到第一个 nil 时截断)</li>
+<li>带有单个 ok 字段的 Lua 表 -&gt; RESP2 状态</li>
+<li>带有单个 err 字段的 Lua 表 -&gt; RESP2 错误</li>
+<li>Lua false 布尔类型 -&gt; RESP2 空批量</li>
+<li>Lua true 布尔类型 -&gt; RESP2 整数 1</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return &#123;1, 2, &#123;3, &#x27;hello world&#x27;&#125;, &#x27;bar&#x27;&#125;&quot;</span> 0</span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">2) (<span class="built_in">integer</span>) 2</span><br><span class="line">3) 1) (<span class="built_in">integer</span>) 3</span><br><span class="line">   2) <span class="string">&quot;hello world&quot;</span></span><br><span class="line">4) <span class="string">&quot;bar&quot;</span></span><br><span class="line"><span class="comment"># 忽略表中的 键、数值的小数部分，nil 处截断</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return &#123;1, 2, 3.33, somekey = &#x27;somevalue&#x27;, &#x27;foo&#x27;, nil, &#x27;bar&#x27;&#125;&quot;</span> 0</span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">2) (<span class="built_in">integer</span>) 2</span><br><span class="line">3) (<span class="built_in">integer</span>) 3</span><br><span class="line">4) <span class="string">&quot;foo&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="RESP3"><a href="#RESP3" class="headerlink" title="RESP3"></a>RESP3</h4><blockquote>
+<p>一旦 Redis 的回复采用 RESP3 协议, 所有 RESP2 到 Lua 的转换规则都适用, 并添加以下内容</p>
+</blockquote>
+<ul>
+<li>RESP3 -&gt; Lua<ul>
+<li>RESP3 map -&gt; 带有单个映射字段的 Lua 表, 其中包含表示映射字段和值的 Lua 表</li>
+<li>RESP3 set -&gt; 具有单个集合字段的 Lua 表</li>
+<li>RESP3 null -&gt; Lua nil</li>
+<li>RESP3 true -&gt; Lua true 布尔类型</li>
+<li>RESP3 false -&gt; Lua false 布尔类型</li>
+<li>RESP3 浮点数 -&gt; 带有一个浮点数字段的 Lua 表</li>
+<li>RESP3 大数字 -&gt; 带有单个大数字字段的 Lua 表. Redis 7.0 支持</li>
+<li>RESP3 逐句逐字字符串 -&gt; Lua 表, 其中包含单个 verbatim_string 字段的 Lua 表, 其中包含两个字段 string 和 format,分别表示 verbatim string 和它的格式. Redis 7.0 支持</li>
+</ul>
+</li>
+<li>Lua -&gt; RESP3<ul>
+<li>Lua Boolean -&gt; RESP3 Boolean</li>
+<li>将单个映射字段设置为关联 Lua 表的 Lua 表 -&gt; RESP3 map</li>
+<li>将单个集合字段设置为关联 Lua 表的 Lua 表 -&gt; RESP3 set, 值可以为任何值, 都会被丢弃</li>
+<li>带有单个浮点数字段的 Lua 表到关联的 Lua 表 -&gt; RESP3 浮点数</li>
+<li>Lua nil -&gt; RESP3 null</li>
+</ul>
+</li>
+</ul>
+<h3 id="外部库"><a href="#外部库" class="headerlink" title="外部库"></a>外部库</h3><h4 id="struct"><a href="#struct" class="headerlink" title="struct"></a>struct</h4><ul>
+<li>struct.pack(x) 返回一个结构编码的字符串, 接收一个结构格式字符串作为第一个参数, 后面是要编码的值</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;bb&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x01\x02&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;BB&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x01\x02&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;B&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x01&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;xB&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x00\x01&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;xBx&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x00\x01\x00&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;xBxx&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x00\x01\x00\x00&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;xBxxH&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x00\x01\x00\x00\x02\x00&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;BxxH&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x01\x00\x00\x02\x00&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;Bxxh&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x01\x00\x00\x02\x00&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;BxxB&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x01\x00\x00\x02&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.pack(&#x27;Bxxl&#x27;, 1, 2)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x01\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>struct.unpack(x) 返回结构的解码值, 接收一个结构格式字符串作为第一个参数, 然后是编码结构的字符串</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return &#123;struct.unpack(&#x27;BxxH&#x27;, ARGV[1])&#125;&quot;</span> 0 <span class="string">&quot;\x01\x00\x00\x02\x00&quot;</span></span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">2) (<span class="built_in">integer</span>) 2</span><br><span class="line">3) (<span class="built_in">integer</span>) 6</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return &#123;struct.unpack(&#x27;BB&#x27;, ARGV[1])&#125;&quot;</span> 0 <span class="string">&quot;\x01\x02&quot;</span></span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">2) (<span class="built_in">integer</span>) 2</span><br><span class="line">3) (<span class="built_in">integer</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>struct.size(x) 返回结构的大小(以字节为单位), 接收结构格式字符串作为唯一参数</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.size(&#x27;b&#x27;)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.size(&#x27;B&#x27;)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.size(&#x27;h&#x27;)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 2</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.size(&#x27;H&#x27;)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 2</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.size(&#x27;l&#x27;)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 8</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return struct.size(&#x27;L&#x27;)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 8</span><br></pre></td></tr></table></figure>
+
+<h5 id="结构格式"><a href="#结构格式" class="headerlink" title="结构格式"></a>结构格式</h5><ul>
+<li>&gt; 大端</li>
+<li>&lt; 小端</li>
+<li>![num] 结盟</li>
+<li>x 填充</li>
+<li>b/B 有/无符号字节</li>
+<li>h/H 有/无符号短</li>
+<li>l/L 有/无符号长</li>
+<li>T 大小</li>
+<li>i/In 大小为 n 的有/无符号整数(默认为 int 的大小)</li>
+<li>cn n 个字符的序列, 打包时, n ==0 表示整个字符串, 解包时, n == 0 表示使用先前读取的数字作为字符串的长度</li>
+<li>s 零终止字符串</li>
+<li>f float</li>
+<li>d double</li>
+<li>(space) 忽略</li>
+</ul>
+<h4 id="cjson"><a href="#cjson" class="headerlink" title="cjson"></a>cjson</h4><p>cjson 库提供了来自 Lua 的快速 JSON 编码和解码</p>
+<ul>
+<li>cjson.encode(x) 返回作为其参数提供的 Lua 数据类型的 JSON 编码字符串</li>
+<li>cjson.decode(x) 从作为其参数提供的 JSON 编码字符串返回 Lua 数据类型</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return cjson.encode(&#123; 1, 2, &#x27;foo&#x27;, &#x27;bar&#x27; &#125;)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;[1,2,\&quot;foo\&quot;,\&quot;bar\&quot;]&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return cjson.encode(&#123; 1, 2, 3.33, &#x27;foo&#x27;, &#x27;bar&#x27; &#125;)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;[1,2,3.33,\&quot;foo\&quot;,\&quot;bar\&quot;]&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return cjson.encode(&#123; [&#x27;foo&#x27;] = &#x27;bar&#x27; &#125;)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;&#123;\&quot;foo\&quot;:\&quot;bar\&quot;&#125;&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return cjson.encode(&#123; [&#x27;foo&#x27;] = &#x27;bar&#x27;, [&#x27;fov&#x27;] = &#x27;baz&#x27; &#125;)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;&#123;\&quot;fov\&quot;:\&quot;baz\&quot;,\&quot;foo\&quot;:\&quot;bar\&quot;&#125;&quot;</span></span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return cjson.decode(ARGV[1])[4]&quot;</span> 0 <span class="string">&quot;[1,2,3.33,\&quot;foo\&quot;,\&quot;bar\&quot;]&quot;</span></span><br><span class="line"><span class="string">&quot;foo&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return cjson.decode(ARGV[1])[&#x27;fov&#x27;]&quot;</span> 0 <span class="string">&quot;&#123;\&quot;fov\&quot;:\&quot;baz\&quot;,\&quot;foo\&quot;:\&quot;bar\&quot;&#125;&quot;</span></span><br><span class="line"><span class="string">&quot;baz&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="cmsgpack"><a href="#cmsgpack" class="headerlink" title="cmsgpack"></a>cmsgpack</h4><p>cmsgpack 库提供了来自 Lua 的快速 MessagePack 编码和解码</p>
+<ul>
+<li>cmsgpack.pack(x) 返回作为参数给出的 Lua 数据类型的压缩字符串编码</li>
+<li>cmsgpack.unpack(x) 返回解码其输入字符串参数的解压缩值</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return cmsgpack.pack(&#123;&#x27;foo&#x27;, &#x27;bar&#x27;, &#x27;baz&#x27;, &#x27;hello&#x27;&#125;)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;\x94\xa3foo\xa3bar\xa3baz\xa5hello&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return cmsgpack.unpack(ARGV[1])&quot;</span> 0 <span class="string">&quot;\x94\xa3foo\xa3bar\xa3baz\xa5hello&quot;</span></span><br><span class="line">1) <span class="string">&quot;foo&quot;</span></span><br><span class="line">2) <span class="string">&quot;bar&quot;</span></span><br><span class="line">3) <span class="string">&quot;baz&quot;</span></span><br><span class="line">4) <span class="string">&quot;hello&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="bit"><a href="#bit" class="headerlink" title="bit"></a>bit</h4><p>bit 提供对数字的按位运算</p>
+<ul>
+<li>bit.tobit(x)` 将数字格式化为位运算的数值范围并返回</li>
+<li>bit.tohex(x [, n]) 将第一个参数转换为十六进制并返回, 第二个参数的绝对值控制返回值的数量</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.tobit(1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.tohex(422342)&quot;</span> 0</span><br><span class="line"><span class="string">&quot;000671cd&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>bit.bnot(x) 返回其参数的按位非运算</li>
+<li>bit.bor(x1 [, x2…]) 返回其所有参数的按位或运算</li>
+<li>bit.band(x1 [, x2…]) 返回其所有参数的按位与运算</li>
+<li>bit.bxor(x1 [, x2…]) 返回其所有参数的按位异或运算</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 0000 1100 12</span></span><br><span class="line"><span class="comment">#         !</span></span><br><span class="line"><span class="comment"># 1111 0011 -13</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.bnot(12)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) -13</span><br><span class="line"><span class="comment"># 0010 0000 32</span></span><br><span class="line"><span class="comment">#         !</span></span><br><span class="line"><span class="comment"># 1101 1111 -33</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.bnot(32)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) -33</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.bor(1,2,4,8,16,32,64)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 127</span><br><span class="line"></span><br><span class="line"><span class="comment"># 0100 1010 74</span></span><br><span class="line"><span class="comment"># 0000 1100 12</span></span><br><span class="line"><span class="comment">#         &amp;</span></span><br><span class="line"><span class="comment"># 0000 1000 8</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.band(12, 74)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 8</span><br><span class="line"></span><br><span class="line"><span class="comment"># 0100 1010 74</span></span><br><span class="line"><span class="comment"># 0000 1100 12</span></span><br><span class="line"><span class="comment">#         ^</span></span><br><span class="line"><span class="comment"># 0100 0110 70</span></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.bxor(12, 74)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 70</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>bit.lshift(x, n) 返回第一个参数按位左移 n 位的结果</li>
+<li>bit.rshift(x, n) 返回第一个参数按位右移 n 位的结果</li>
+<li>bit.arshift(x, n) 返回第一个参数按位<strong>算术右移</strong> n 位的结果, 不改变符号位的移位操作</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.lshift(1, 3)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 8</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.lshift(2, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 4</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.lshift(3, 2)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 12</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.rshift(1, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.rshift(2, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.rshift(3, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.arshift(10, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 5</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.arshift(128, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 64</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.rshift(-12, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 2147483642</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.arshift(-12, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) -6</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>bit.rol(x, n) 按第二个参数给定的位数返回其第一个参数的按位左旋转</li>
+<li>bit.ror(x, n) 按第二个参数给定的位数返回其第一个参数的按位右旋转</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.rol(12, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 24</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.rol(12, 2)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 48</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.rol(12, 6)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 768</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.ror(12, 1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 6</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.ror(12, 4)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) -1073741824</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.ror(12, 6)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 805306368</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>bit.bswap(x) 交换其参数的字节并返回它, 可用于将小端 32 位数字转换位大端 32 位数字, 反之亦然</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.bswap(1)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 16777216</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.bswap(2)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 33554432</span><br><span class="line">127.0.0.1:6379&gt; EVAL <span class="string">&quot;return bit.bswap(12)&quot;</span> 0</span><br><span class="line">(<span class="built_in">integer</span>) 201326592</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\d53dbf627f77\" rel="bookmark">Redis-Cluster</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\3f42dc25499d\" rel="bookmark">Redis-List</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\4c5a8bb1e1ca\" rel="bookmark">Redis-Other-Structs</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\46691d911248\" rel="bookmark">Redis-app</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\02c91f48b138\" rel="bookmark">Redis-PubSub</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>luoleiself
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://luoleiself.github.io/2022/11/08b1664c9566/" title="Redis-Lua">https://luoleiself.github.io/2022/11/08b1664c9566/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/4c5a8bb1e1ca/" rel="prev" title="Redis-Other-Structs">
+      <i class="fa fa-chevron-left"></i> Redis-Other-Structs
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/3f42dc25499d/" rel="next" title="Redis-List">
+      Redis-List <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">Redis 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%91%BD%E4%BB%A4"><span class="nav-number">1.1.</span> <span class="nav-text">函数命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E8%B0%83%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">注册调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B3%A8%E5%86%8C%E8%B0%83%E7%94%A8"><span class="nav-number">1.2.1.</span> <span class="nav-text">Redis 命令行注册调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lua-%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6%E6%B3%A8%E5%86%8C%E8%B0%83%E7%94%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text">Lua 脚本文件注册调用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-%E8%84%9A%E6%9C%AC"><span class="nav-number">2.</span> <span class="nav-text">Lua 脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">2.1.</span> <span class="nav-text">脚本命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lua-%E8%84%9A%E6%9C%AC%E4%B8%AD%E7%9A%84-redis-%E5%AE%9E%E4%BE%8B"><span class="nav-number">2.2.</span> <span class="nav-text">lua 脚本中的 redis 实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E7%BC%93%E5%AD%98"><span class="nav-number">2.3.</span> <span class="nav-text">脚本缓存  </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%A4%8D%E5%88%B6"><span class="nav-number">2.4.</span> <span class="nav-text">脚本复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lua-API"><span class="nav-number">2.5.</span> <span class="nav-text">Lua API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.6.</span> <span class="nav-text">数据类型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RESP2"><span class="nav-number">2.6.1.</span> <span class="nav-text">RESP2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RESP3"><span class="nav-number">2.6.2.</span> <span class="nav-text">RESP3</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E5%BA%93"><span class="nav-number">2.7.</span> <span class="nav-text">外部库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#struct"><span class="nav-number">2.7.1.</span> <span class="nav-text">struct</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.7.1.1.</span> <span class="nav-text">结构格式</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cjson"><span class="nav-number">2.7.2.</span> <span class="nav-text">cjson</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cmsgpack"><span class="nav-number">2.7.3.</span> <span class="nav-text">cmsgpack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bit"><span class="nav-number">2.7.4.</span> <span class="nav-text">bit</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="luoleiself"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">luoleiself</p>
+  <div class="site-description" itemprop="description">努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/luoleiself" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;luoleiself" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:luoleiself@163.com" title="E-Mail → mailto:luoleiself@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://developer.mozilla.org/zh-CN/" title="https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;" rel="noopener" target="_blank">MDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">luoleiself</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">756k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:27</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><!-- canvas-nest -->
+<!-- modify source/_data/footer.swig -->
+<!-- modify _config.next.yml -> custom_file_path:footer -->
+<!--
+<script color="0,0,255" opacity="0.7" zIndex="-1" count="200" src="//cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script> 
+-->
+<style>
+.highlight-container ::selection {
+  color: #fc7237
+};
+</style>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
