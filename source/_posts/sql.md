@@ -350,6 +350,60 @@ it # 查看更多结果
 cls # 清屏, 类似于 console.log()
 ```
 
+### 链接字符串
+
+`mongodb://[username:password@]host1[:port1][,host2[:port2],...][/database][?options]`
+
+认证
+
+- authSource=admin 认证数据库，默认使用连接字符串中指定的database
+- authMechanism=SCRAM-SHA-1 使用 SCRAM-SHA-256, MONGODB-X509, PLAIN, GSSAPI等
+
+连接
+
+- maxPoolSize=50  连接池最大连接数，默认100
+- cminPoolSize=10  连接池最小连接数，默认0
+- maxIdleTimeMS=30000 连接最大空闲时间（毫秒），默认无限制
+- waitQueueTimeoutMS=120000 连接等待超时时间（毫秒），默认120秒
+- connectTimeoutMS=10000  连接建立超时时间，默认30秒
+
+读写操作
+
+- readPreference=primary  primary|primaryPreferred|secondary|secondaryPreferred|nearest, 默认primary
+- readPreferenceTags=dc:nyc,rack:1  标签集，用于更精细的读取控制
+- writeConcern=1  写入确认级别：0(不确认),1(主节点确认),majority(大多数节点确认)或数字表示确认节点数
+- wtimeoutMS=5000 写入超时时间（毫秒）
+- journal=true  是否等待日志写入，默认false
+
+副本集/分片集群
+
+- replicaSet=myReplicaSet 副本集名称
+- readConcernLevel=local  local|majority|available|linearizable|snapshot
+- directConnection=true 是否直连单个节点，默认false（自动发现）
+- shardOptions=xxx  分片集群相关选项
+
+TSL/SSL 安全
+
+- tls=true  启用TLS，同ssl=true
+- tlsCAFile=/path/to/ca.pem CA证书文件路径
+- tlsCertificateKeyFile=/path/to/client.pem 客户端证书文件
+- tlsAllowInvalidCertificates=true  允许自签名证书（仅测试环境使用）
+- tlsAllowInvalidHostnames=true 允许主机名不匹配（仅测试环境使用）
+
+超时和重试
+
+- socketTimeoutMS=0 Socket操作超时，默认0（不超时）
+- serverSelectionTimeoutMS=30000  服务器选择超时，默认30秒
+- heartbeatFrequencyMS=10000  心跳频率，默认10秒
+- retryWrites=true  是否重试写入，默认true
+- retryReads=true 是否重试读取，默认true
+- maxStalenessSeconds=90  最大陈旧时间（秒），用于readPreference
+
+压缩
+
+- compressors=zlib  snappy|zlib|zstd，可多个用逗号分隔：snappy,zlib
+- zlibCompressionLevel=6  zlib压缩级别 1-9，默认6
+
 ### 用户
 
 - db.createUser() 创建用户并指定用户的数据库或者集合访问权限
