@@ -975,28 +975,38 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
   - \-\-cluster-master-id \<id\> # 添加到指定节点 ID
 - redis-cli \-\-cluster del-node \<host:port\> \<node_id\> # 删除集群节点
   - \-\-cluster-yes # 自动确认
-
 - redis-cli \-\-cluster replicate \<host:port\> \<node_id\>  # 设置主节点的副本
 
-- redis-cli \-\-cluster reshard \<host:port\> # 手动重新分配节点槽位
-  - \-\-cluster-from \<arg\> # 已有节点 id, 多个 id 之间使用半角逗号分隔
-  - \-\-cluster-to \<arg\> # 新节点 id
-  - \-\-cluster-slots \<arg\> # 新节点的 hash 槽数量
-
+- redis-cli \-\-cluster reshard \<host:port\>   # 手动重新分配节点槽位
+  - \-\-cluster-from \<node-id\> # 已有节点 id, 多个 id 之间使用半角逗号分隔
+  - \-\-cluster-to \<node-id\>   # 新节点 id
+  - \-\-cluster-slots \<num-of-slots\> # 新节点的 hash 槽数量
 - redis-cli \-\-cluster rebalance \<host:port\> # 自动重新分配节点
-  - \-\-cluster-weight \<node1=w1...nodeN=wN\> # 分配节点权重
-  - \-\-cluster-timeout \<arg\> # 节点超时时间
-  - \-\-cluster-threshold \<arg\> # 节点阈值
+  - \-\-cluster-weight \<node1=w1\> ... \<nodeN=wN\>  # 分配节点权重
+  - \-\-cluster-timeout \<timeout\> # 节点超时时间
+  - \-\-cluster-threshold \<threshold\>   # 节点阈值
   - \-\-cluster-use-empty-masters
 
-- redis-cli \-\-cluster failover    # 手动故障转移
+- redis-cli \-\-cluster setslot \<slot-stat\>...\<slot-end\> node \<node-id\> \<host:port\> # 设置槽位范围到指定节点
 
-- redis-cli \-\-cluster import host:port # 导入指定节点
-  - \-\-cluster-from \<arg\> # 从指定 id
+   ```bash
+   redis-cli --cluster setslot 0-500 node abc123... 127.0.0.1:6379
+   ```
+
+- redis-cli \-\-cluster failover [force|takeover]    # 手动故障转移
+  - force   # 不再跟主节点进行确认直接发起投票选举进行故障转移, 可能会丢失主节点接收的写操作, 绕过部分检测
+  - takeover   # 直接进行故障转移强制更新配置纪元替换主节点, 极有可能丢失数据, 完全绕过检测
+- redis-cli \-\-cluster nodes \<host:port\>  # 查看节点信息
+- redis-cli \-\-cluster slots \<host:port\>  # 查看节点槽位信息
+- redis-cli \-\-cluster info \<host:port\>   # 查看指定节点信息
+- redis-cli \-\-cluster check \<host:port\>  # 检查指定节点
+
+- redis-cli \-\-cluster fix \<host:port\> # 修复节点槽位
+  - \-\-cluster-rebalance  # 重新自动平衡
+- redis-cli \-\-cluster import \<host:port\> # 导入指定节点
+  - \-\-cluster-from \<external-host:external-port\>  # 从指定 id
   - \-\-cluster-from-user \<arg\> # 指定用户名
   - \-\-cluster-from-pass \<arg\> # 指定密码
-- redis-cli \-\-cluster info \<host:port\> # 查看指定节点信息
-- redis-cli \-\-cluster check \<host:port\> # 检查指定节点
 - redis-cli \-\-cluster call \<host:port\> \<command\> [args...] # 集群节点执行指定命令
   - \-\-cluster-only-masters 所有主节点
   - \-\-cluster-only-replicas 所有副本节点
@@ -1013,6 +1023,8 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 
 #### 集群命令
 
+**以下命令可以使用 `redis-cli` 命令连接服务器时执行**
+
 - CLUSTER HELP 在 Redis 命令行中查看所有集群操作命令
 
 ```bash
@@ -1024,9 +1036,12 @@ Redis 集群中的每个 node 负责分摊这 16384 个 slot 中的一部分, �
 - CLUSTER REPLICAS \<node-id\> 列出指定节点的所有副本节点的信息, 功能和 CLUSTER NODES 类似
 - CLUSTER NODES
 - CLUSTER REPLICATE \<node-id\> 配置当前节点为指定主节点的从节点
-- CLUSTER KEYSLOT \<somekey\> 计算指定 key 所在的 hash 槽
+- CLUSTER KEYSLOT \<key\> 计算指定 key 所在的 hash 槽
 - CLUSTER COUNTKEYSINSLOT \<slot\> 统计集群中 hash 槽中存储的 key 的数量
+- CLUSTER GETKEYSINSLOT \<slot\> \<count\>  获取当前节点槽位中的键的 count 数量
 - CLUSTER FAILOVER 手动启动集群故障转移操作, 此命令只能发送给集群从节点
+  - FORCE   不再跟主节点进行确认直接发起投票选举进行故障转移, 可能会丢失主节点接收的写操作, 绕过部分检测
+  - TAKEOVER   直接进行故障转移强制更新配置纪元替换主节点, 极有可能丢失数据, 完全绕过检测
 - CLUSTER FLUSHSLOTS 清空当前节点的所有插槽
 - CLUSTER MIGRATION  管理槽位迁移
 
