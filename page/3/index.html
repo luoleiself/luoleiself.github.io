@@ -204,7 +204,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/3bfcb546cd4a/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/46691d911248/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -218,7 +218,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/3bfcb546cd4a/" class="post-title-link" itemprop="url">Redis-Set-Zset</a>
+            <a href="/2022/11/46691d911248/" class="post-title-link" itemprop="url">Redis-app</a>
         </h2>
 
         <div class="post-meta">
@@ -235,7 +235,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-14 09:02:34" itemprop="dateModified" datetime="2026-01-14T09:02:34+08:00">2026-01-14</time>
+                <time title="修改时间：2025-08-31 23:10:41" itemprop="dateModified" datetime="2025-08-31T23:10:41+08:00">2025-08-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,13 +256,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>28k</span>
+              <span>2.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>26 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -274,31 +274,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Sets-命令"><a href="#Sets-命令" class="headerlink" title="Sets 命令"></a>Sets 命令</h2><p>Set 是无序不重复的集合, 集合成员是唯一的, 集合对象的编码可以是 intset 或者 hashtable, 集合是通过哈希表实现的, 最大的成员数为 2^32-1(40 多亿)个成员.</p>
-<p>Set: 键名: key, 键类型: set, 键值: string</p>
-<p>Set 类型的底层数据结构是由<strong>哈希表</strong>或<strong>整数集合</strong>实现的</p>
-<ul>
-<li>如果集合中的元素都是整数且元素个数小于 512 个, Redis 使用<strong>整数集合</strong>作为底层数据结构</li>
-<li>如果集合中的元素不满足上面条件, Redis 使用<strong>哈希表</strong>作为底层数据结构</li>
+          <h2 id="缓存穿透、击穿、雪崩"><a href="#缓存穿透、击穿、雪崩" class="headerlink" title="缓存穿透、击穿、雪崩"></a>缓存穿透、击穿、雪崩</h2><h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃</p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
+<li>接口层增加校验, 如用户鉴权校验、id 做基础校验、 id &lt;= 0 的直接拦截</li>
+<li>从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击</li>
+<li>布隆过滤器, 类似于一个 hash set, 用于快速判断某个元素是否存在于集合中, 其典型的应用场景就是快速判断一个 key 是否存在于某容器, 不存在就直接返回. 布隆过滤器的关键就在于 hash 算法和容器大小</li>
 </ul>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置底层数据结构存储数量限制</span></span><br><span class="line"><span class="string">set-max-intset-entries</span> <span class="number">512</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="成员操作"><a href="#成员操作" class="headerlink" title="成员操作"></a>成员操作</h3><ul>
-<li><p>SADD key member [member …] 向集合中添加多个成员并返回添加成功的数量, 0 表示有重复成员</p>
-</li>
-<li><p>SCARD key 获取集合成员的数量, 集合为空或者不存在返回 0</p>
-</li>
-<li><p>SMEMBERS key 获取集合中所有的成员, 集合为空或者不存在返回 (empty array)</p>
-</li>
+<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期), 在高并发下对同一 key 的操作. 如果在缓存中没有获取到数据, 又同时在数据库中获取到数据, 引起数据库压力过大.</p>
+<h4 id="解决办法-1"><a href="#解决办法-1" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
+<li>设置热点数据永不过期</li>
+<li>接口限流与熔断、降级, 重要的接口一定要做好限流策略, 防止用户恶意刷接口, 同时要降级准备, 当接口中的某些服务不可用时, 进行熔断, 失败快速返回机制</li>
+<li>加互斥锁</li>
 </ul>
-<h4 id="是否包含成员"><a href="#是否包含成员" class="headerlink" title="是否包含成员"></a>是否包含成员</h4><ul>
-<li>SISMEMBER key member 判断 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在</li>
-<li>SMISMEMBER key member [member …] 批量判断多个 member 是不是集合的成员, 1 是, 0 不是或者集合为空或者不存在, Redis 6.2.0 支持</li>
+<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>缓存雪崩是指缓存中数据大批量到过期时间, 而查询数据量巨大, 引起数据库压力过大甚至崩溃. 和缓存击穿不同的是, 缓存击穿指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查不到从而查询数据库</p>
+<h4 id="解决办法-2"><a href="#解决办法-2" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
+<li>缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生</li>
+<li>如果缓存数据库是分布式部署, 将热点数据均匀分布在不同的缓存数据库中</li>
+<li>设置热点数据永不过期</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *  <span class="comment"># 查看当前数据库中的 key</span></span><br><span class="line">(empty array)</span><br><span class="line"><span class="comment"># 空集合判断是否包含成员</span></span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello hehe</span><br><span class="line">1) (<span class="built_in">integer</span>) 0</span><br><span class="line">2) (<span class="built_in">integer</span>) 0</span><br><span class="line"><span class="comment"># 向 myset 添加成员</span></span><br><span class="line">127.0.0.1:6379&gt; SADD myset hello world hehe haha gg</span><br><span class="line">(<span class="built_in">integer</span>)</span><br><span class="line"><span class="comment"># 判断 myset 是否包含成员</span></span><br><span class="line">127.0.0.1:6379&gt; SMISMEMBER myset hello yy hehe</span><br><span class="line">1) (<span class="built_in">integer</span>) 1</span><br><span class="line">2) (<span class="built_in">integer</span>) 0</span><br><span class="line">3) (<span class="built_in">integer</span>) 1</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/11/3bfcb546cd4a/#more" rel="contents">
+              <a class="btn" href="/2022/11/46691d911248/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -322,7 +318,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/819f95816ecc/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/80b3dfc88923/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -336,7 +332,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/819f95816ecc/" class="post-title-link" itemprop="url">Redis</a>
+            <a href="/2022/11/80b3dfc88923/" class="post-title-link" itemprop="url">Redis-String-Hash</a>
         </h2>
 
         <div class="post-meta">
@@ -353,7 +349,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-31 16:58:24" itemprop="dateModified" datetime="2025-12-31T16:58:24+08:00">2025-12-31</time>
+                <time title="修改时间：2025-12-29 14:50:55" itemprop="dateModified" datetime="2025-12-29T14:50:55+08:00">2025-12-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -374,13 +370,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>20k</span>
+              <span>6.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>18 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -392,118 +388,58 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API, Redis 能读的速度是 11 万次/s，写的速度是 8.1 万次/s<br>Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能</p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p><img src="/images/redis-1.jpg" alt="redis-1"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/819f95816ecc/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/c32a91c061ac/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/c32a91c061ac/" class="post-title-link" itemprop="url">sql</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-10-20 17:51:42" itemprop="dateModified" datetime="2025-10-20T17:51:42+08:00">2025-10-20</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/sql/" itemprop="url" rel="index"><span itemprop="name">sql</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>13k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>12 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><p>mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> [<span class="keyword">GLOBAL</span><span class="operator">|</span>SESSION] TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 全局设置</span></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 当前会话设置</span></span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务开始时设置</span></span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="读未提交-Read-Uncommitted"><a href="#读未提交-Read-Uncommitted" class="headerlink" title="读未提交(Read Uncommitted)"></a>读未提交(Read Uncommitted)</h3><p>最低级别的隔离, 允许一个事务读取另一个事务尚未提交的数据, 通常不推荐使用此级别, 除非对数据一致性要求非常低的场景</p>
-<p>问题:</p>
+          <h2 id="Strings-命令"><a href="#Strings-命令" class="headerlink" title="Strings 命令"></a>Strings 命令</h2><p>字符串是基础的 key-value 类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 <strong>512MB</strong>.</p>
+<p>String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic String)</p>
+<blockquote>
+<p>因为 C 语言的字符串并不记录自身长度, 所以获取长度的复杂度为 O(n), SDS 结构里用 len 属性记录字符串长度, 所有复杂度为 O(1)</p>
+</blockquote>
+<h3 id="设置值"><a href="#设置值" class="headerlink" title="设置值"></a>设置值</h3><ul>
+<li><p>SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]</p>
+<p>为 key 设置字符串的值, 执行成功返回 ok, 每次更新 key 的值时会自动清除过期时间</p>
 <ul>
-<li>脏读(Dirty Read), 一个事务可以读取到另一个事务未提交的数据, 如果该事务回滚, 则会导致数据不一致</li>
-<li>不可重复读(Non-repeatable Read), 在一个事务中多次读取同一数据可能会得到不同的结果</li>
-<li>幻读(Phantom Read), 在一个事务中执行相同的查询可能会返回不同的行集, 因为其他事务插入了新的行</li>
+<li>NX 仅当 key 不存在时设置</li>
+<li>XX 仅当 key 存在时设置</li>
+<li>EX 过期时间, 单位秒</li>
+<li>PX 过期时间, 单位毫秒</li>
+<li>EXAT 过期时间戳, 单位秒</li>
+<li>PXAT 过期时间戳, 单位毫秒</li>
+<li>KEEPTTL 保留 key 关联的生存时间</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 事务 A</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">UPDATE</span> accounts <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">-</span> <span class="number">100</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 暂时不提交</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 B</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;</span><br><span class="line"><span class="keyword">SELECT</span> balance <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 可能读取到 900 (脏读)</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SET age 18</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; EXPIRE age 100</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 98</span><br><span class="line">127.0.0.1:6379&gt; SET age 20</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) -1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 KEEPTTL 保留 key 关联的生存时间</span></span><br><span class="line">127.0.0.1:6379&gt; SET age 18 EX 100</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 98</span><br><span class="line">127.0.0.1:6379&gt; SET age 20 KEEPTTL</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; GET age</span><br><span class="line"><span class="string">&quot;20&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 79</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;name&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;name&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 <code>SET</code> 并返回追加内容的长度</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; APPEND age 1</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; GET age</span><br><span class="line"><span class="string">&quot;181&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; APPEND addr beijing</span><br><span class="line">(<span class="built_in">integer</span>) 7</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;addr&quot;</span></span><br><span class="line">4) <span class="string">&quot;name&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; APPEND a hello</span><br><span class="line">(<span class="built_in">integer</span>) 5</span><br><span class="line">127.0.0.1:6379&gt; APPEND b gg</span><br><span class="line">(<span class="built_in">integer</span>) 2</span><br></pre></td></tr></table></figure>
+
+<h4 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h4><ul>
+<li>SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok</li>
+<li>PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SETEX addr 20 beijing</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; PSETEX addr 20000 beijing</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<h4 id="批量设置值"><a href="#批量设置值" class="headerlink" title="批量设置值"></a>批量设置值</h4><ul>
+<li>MSET key value [key value …] 批量设置 key 的值</li>
+<li>MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;age&quot;</span></span><br><span class="line">2) <span class="string">&quot;name&quot;</span></span><br><span class="line">3) <span class="string">&quot;hash:zhang&quot;</span></span><br><span class="line"><span class="comment"># 当且仅当所有 key 都不存在时设置成功返回 1</span></span><br><span class="line">127.0.0.1:6379&gt; MSETNX name zhangsan age 18 addr beijing</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>SETRANGE key offset value</p>
+<p>覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SETRANG name 1 xyz</span><br><span class="line">(<span class="built_in">integer</span>) 8</span><br><span class="line">127.0.0.1:6379&gt; GET name</span><br><span class="line"><span class="string">&quot;axyz1234&quot;</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/11/c32a91c061ac/#more" rel="contents">
+              <a class="btn" href="/2022/11/80b3dfc88923/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -640,6 +576,113 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/5db91eb9b055/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/c32a91c061ac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/c32a91c061ac/" class="post-title-link" itemprop="url">sql</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-01-25 19:38:16" itemprop="dateModified" datetime="2026-01-25T19:38:16+08:00">2026-01-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/sql/" itemprop="url" rel="index"><span itemprop="name">sql</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><p>mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> [<span class="keyword">GLOBAL</span><span class="operator">|</span>SESSION] TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 全局设置</span></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 当前会话设置</span></span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务开始时设置</span></span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="读未提交-Read-Uncommitted"><a href="#读未提交-Read-Uncommitted" class="headerlink" title="读未提交(Read Uncommitted)"></a>读未提交(Read Uncommitted)</h3><p>最低级别的隔离, 允许一个事务读取另一个事务尚未提交的数据, 通常不推荐使用此级别, 除非对数据一致性要求非常低的场景</p>
+<p>问题:</p>
+<ul>
+<li>脏读(Dirty Read), 一个事务可以读取到另一个事务未提交的数据, 如果该事务回滚, 则会导致数据不一致</li>
+<li>不可重复读(Non-repeatable Read), 在一个事务中多次读取同一数据可能会得到不同的结果</li>
+<li>幻读(Phantom Read), 在一个事务中执行相同的查询可能会返回不同的行集, 因为其他事务插入了新的行</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 事务 A</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">UPDATE</span> accounts <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">-</span> <span class="number">100</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 暂时不提交</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 B</span></span><br><span class="line"><span class="keyword">START</span> TRANSACTION;</span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;</span><br><span class="line"><span class="keyword">SELECT</span> balance <span class="keyword">FROM</span> accounts <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 可能读取到 900 (脏读)</span></span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/c32a91c061ac/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1750,12 +1793,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">756k</span>
+    <span title="站点总字数">758k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:27</span>
+    <span title="站点阅读时长">11:29</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

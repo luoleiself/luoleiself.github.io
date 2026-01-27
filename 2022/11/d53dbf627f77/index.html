@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-2.png">
 <meta property="og:image" content="https://luoleiself.github.io/images/redis-3.png">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2026-01-06T01:59:10.216Z">
+<meta property="article:modified_time" content="2026-01-27T03:28:00.800Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -241,7 +241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-06 09:59:10" itemprop="dateModified" datetime="2026-01-06T09:59:10+08:00">2026-01-06</time>
+                <time title="修改时间：2026-01-27 11:28:00" itemprop="dateModified" datetime="2026-01-27T11:28:00+08:00">2026-01-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -262,13 +262,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>37k</span>
+              <span>38k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>34 分钟</span>
+              <span>35 分钟</span>
             </span>
 
         </div>
@@ -531,33 +531,48 @@
 </li>
 <li><p>redis-cli --cluster replicate &lt;host:port&gt; &lt;node_id&gt;  # 设置主节点的副本</p>
 </li>
-<li><p>redis-cli --cluster reshard &lt;host:port&gt; # 手动重新分配节点槽位</p>
+<li><p>redis-cli --cluster reshard &lt;host:port&gt;   # 手动重新分配节点槽位</p>
 <ul>
-<li>--cluster-from &lt;arg&gt; # 已有节点 id, 多个 id 之间使用半角逗号分隔</li>
-<li>--cluster-to &lt;arg&gt; # 新节点 id</li>
-<li>--cluster-slots &lt;arg&gt; # 新节点的 hash 槽数量</li>
+<li>--cluster-from &lt;node-id&gt; # 已有节点 id, 多个 id 之间使用半角逗号分隔</li>
+<li>--cluster-to &lt;node-id&gt;   # 新节点 id</li>
+<li>--cluster-slots &lt;num-of-slots&gt; # 新节点的 hash 槽数量</li>
 </ul>
 </li>
 <li><p>redis-cli --cluster rebalance &lt;host:port&gt; # 自动重新分配节点</p>
 <ul>
-<li>--cluster-weight &lt;node1=w1…nodeN=wN&gt; # 分配节点权重</li>
-<li>--cluster-timeout &lt;arg&gt; # 节点超时时间</li>
-<li>--cluster-threshold &lt;arg&gt; # 节点阈值</li>
+<li>--cluster-weight &lt;node1=w1&gt; … &lt;nodeN=wN&gt;  # 分配节点权重</li>
+<li>--cluster-timeout &lt;timeout&gt; # 节点超时时间</li>
+<li>--cluster-threshold &lt;threshold&gt;   # 节点阈值</li>
 <li>--cluster-use-empty-masters</li>
 </ul>
 </li>
-<li><p>redis-cli --cluster failover    # 手动故障转移</p>
-</li>
-<li><p>redis-cli --cluster import host:port # 导入指定节点</p>
+<li><p>redis-cli --cluster setslot &lt;slot-stat&gt;…&lt;slot-end&gt; node &lt;node-id&gt; &lt;host:port&gt; # 设置槽位范围到指定节点</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli --cluster setslot 0-500 node abc123... 127.0.0.1:6379</span><br></pre></td></tr></table></figure></li>
+<li><p>redis-cli --cluster failover [force|takeover]    # 手动故障转移</p>
 <ul>
-<li>--cluster-from &lt;arg&gt; # 从指定 id</li>
+<li>force   # 不再跟主节点进行确认直接发起投票选举进行故障转移, 可能会丢失主节点接收的写操作, 绕过部分检测</li>
+<li>takeover   # 直接进行故障转移强制更新配置纪元替换主节点, 极有可能丢失数据, 完全绕过检测</li>
+</ul>
+</li>
+<li><p>redis-cli --cluster nodes &lt;host:port&gt;  # 查看节点信息</p>
+</li>
+<li><p>redis-cli --cluster slots &lt;host:port&gt;  # 查看节点槽位信息</p>
+</li>
+<li><p>redis-cli --cluster info &lt;host:port&gt;   # 查看指定节点信息</p>
+</li>
+<li><p>redis-cli --cluster check &lt;host:port&gt;  # 检查指定节点</p>
+</li>
+<li><p>redis-cli --cluster fix &lt;host:port&gt; # 修复节点槽位</p>
+<ul>
+<li>--cluster-rebalance  # 重新自动平衡</li>
+</ul>
+</li>
+<li><p>redis-cli --cluster import &lt;host:port&gt; # 导入指定节点</p>
+<ul>
+<li>--cluster-from &lt;external-host:external-port&gt;  # 从指定 id</li>
 <li>--cluster-from-user &lt;arg&gt; # 指定用户名</li>
 <li>--cluster-from-pass &lt;arg&gt; # 指定密码</li>
 </ul>
-</li>
-<li><p>redis-cli --cluster info &lt;host:port&gt; # 查看指定节点信息</p>
-</li>
-<li><p>redis-cli --cluster check &lt;host:port&gt; # 检查指定节点</p>
 </li>
 <li><p>redis-cli --cluster call &lt;host:port&gt; &lt;command&gt; [args…] # 集群节点执行指定命令</p>
 <ul>
@@ -570,7 +585,8 @@
 <li><p>redis-cli --cluster backup host:port backup_directory # 备份节点数据到指定目录</p>
 </li>
 </ul>
-<h3 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h3><h4 id="集群命令"><a href="#集群命令" class="headerlink" title="集群命令"></a>集群命令</h4><ul>
+<h3 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h3><h4 id="集群命令"><a href="#集群命令" class="headerlink" title="集群命令"></a>集群命令</h4><p><strong>以下命令可以使用 <code>redis-cli</code> 命令连接服务器时执行</strong></p>
+<ul>
 <li>CLUSTER HELP 在 Redis 命令行中查看所有集群操作命令</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6380&gt; CLUSTER HELP</span><br></pre></td></tr></table></figure>
@@ -581,9 +597,14 @@
 <li>CLUSTER REPLICAS &lt;node-id&gt; 列出指定节点的所有副本节点的信息, 功能和 CLUSTER NODES 类似</li>
 <li>CLUSTER NODES</li>
 <li>CLUSTER REPLICATE &lt;node-id&gt; 配置当前节点为指定主节点的从节点</li>
-<li>CLUSTER KEYSLOT &lt;somekey&gt; 计算指定 key 所在的 hash 槽</li>
+<li>CLUSTER KEYSLOT &lt;key&gt; 计算指定 key 所在的 hash 槽</li>
 <li>CLUSTER COUNTKEYSINSLOT &lt;slot&gt; 统计集群中 hash 槽中存储的 key 的数量</li>
-<li>CLUSTER FAILOVER 手动启动集群故障转移操作, 此命令只能发送给集群从节点</li>
+<li>CLUSTER GETKEYSINSLOT &lt;slot&gt; &lt;count&gt;  获取当前节点槽位中的键的 count 数量</li>
+<li>CLUSTER FAILOVER 手动启动集群故障转移操作, 此命令只能发送给集群从节点<ul>
+<li>FORCE   不再跟主节点进行确认直接发起投票选举进行故障转移, 可能会丢失主节点接收的写操作, 绕过部分检测</li>
+<li>TAKEOVER   直接进行故障转移强制更新配置纪元替换主节点, 极有可能丢失数据, 完全绕过检测</li>
+</ul>
+</li>
 <li>CLUSTER FLUSHSLOTS 清空当前节点的所有插槽</li>
 <li>CLUSTER MIGRATION  管理槽位迁移</li>
 </ul>
@@ -661,16 +682,16 @@
       <div class="popular-posts-title"><a href="\2022\11\3f42dc25499d\" rel="bookmark">Redis-List</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\11\08b1664c9566\" rel="bookmark">Redis-Lua</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\11\4c5a8bb1e1ca\" rel="bookmark">Redis-Other-Structs</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\2022\11\46691d911248\" rel="bookmark">Redis-app</a></div>
+      <div class="popular-posts-title"><a href="\2022\11\08b1664c9566\" rel="bookmark">Redis-Lua</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\2022\11\02c91f48b138\" rel="bookmark">Redis-PubSub</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\2022\11\3bfcb546cd4a\" rel="bookmark">Redis-Set-Zset</a></div>
     </li>
   </ul>
 
@@ -854,12 +875,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">756k</span>
+    <span title="站点总字数">758k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:27</span>
+    <span title="站点阅读时长">11:29</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
