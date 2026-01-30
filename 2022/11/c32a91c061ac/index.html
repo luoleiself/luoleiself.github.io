@@ -28,7 +28,7 @@
 <meta property="og:description" content="事务隔离级别mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改 12345678910SET [GLOBAL|SESSION] TRANSACTION ISOLATION LEVEL &lt;level&gt;;-- 全局设置SET GLOBAL TRANSACTION ISOLATION LEVEL REPEATABLE READ;-- 当前会话设置SET SESS">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-09T10:03:19.000Z">
-<meta property="article:modified_time" content="2026-01-25T11:38:16.130Z">
+<meta property="article:modified_time" content="2026-01-30T03:43:57.841Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="sql">
 <meta name="twitter:card" content="summary">
@@ -238,7 +238,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-25 19:38:16" itemprop="dateModified" datetime="2026-01-25T19:38:16+08:00">2026-01-25</time>
+                <time title="修改时间：2026-01-30 11:43:57" itemprop="dateModified" datetime="2026-01-30T11:43:57+08:00">2026-01-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,7 +259,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>14k</span>
+              <span>15k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -670,6 +670,8 @@
 <li>$meta 预测在 $text 操作中分配的文件分数</li>
 <li>$slice  限制从数组中投影的元素数量。支持跳过切片和对切片进行数量限制</li>
 </ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 $ 投影 compass</span></span><br><span class="line"><span class="comment">// filter:  &#123; &#x27;audioList.id&#x27;: &#x27;abc&#x27; &#125; 等价于 &#123; audioList: &#123; $elemMatch: &#123; id: &#x27;audio123&#x27; &#125; &#125; &#125;</span></span><br><span class="line"><span class="comment">// project: &#123; &#x27;audioList.$&#x27;: 1 &#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用聚合过滤嵌套数组中多条数据只保留 id 为 audio123 的一条数据</span></span><br><span class="line">db.<span class="property">inventory</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  <span class="comment">// 1. 匹配文档</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$match</span>: &#123;</span><br><span class="line">      <span class="string">&quot;audioList.id&quot;</span>: <span class="string">&quot;audio123&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 2. 筛选数组元素</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">$addFields</span>: &#123;</span><br><span class="line">      <span class="attr">audioList</span>: &#123;</span><br><span class="line">        <span class="attr">$filter</span>: &#123;</span><br><span class="line">          <span class="attr">input</span>: <span class="string">&quot;$audioList&quot;</span>,</span><br><span class="line">          <span class="attr">as</span>: <span class="string">&quot;audio&quot;</span>,</span><br><span class="line">          <span class="attr">cond</span>: &#123; <span class="attr">$eq</span>: [<span class="string">&quot;$$audio.id&quot;</span>, <span class="string">&quot;audio123&quot;</span>] &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
 <p>其他操作符</p>
 <ul>
 <li>$rand 生成介于 0 和 1 之间的随机浮点数</li>
@@ -759,12 +761,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/05/bbb1955164c4/" rel="prev" title="Editor">
-      <i class="fa fa-chevron-left"></i> Editor
+    <a href="/2022/11/5db91eb9b055/" rel="prev" title="sql-aggregate">
+      <i class="fa fa-chevron-left"></i> sql-aggregate
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/11/5db91eb9b055/" rel="next" title="sql-aggregate">
-      sql-aggregate <i class="fa fa-chevron-right"></i>
+    <a href="/2022/11/819f95816ecc/" rel="next" title="Redis">
+      Redis <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -910,12 +912,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">758k</span>
+    <span title="站点总字数">760k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:29</span>
+    <span title="站点阅读时长">11:31</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

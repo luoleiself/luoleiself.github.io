@@ -204,120 +204,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/46691d911248/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/46691d911248/" class="post-title-link" itemprop="url">Redis-app</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-08-31 23:10:41" itemprop="dateModified" datetime="2025-08-31T23:10:41+08:00">2025-08-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>2.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="缓存穿透、击穿、雪崩"><a href="#缓存穿透、击穿、雪崩" class="headerlink" title="缓存穿透、击穿、雪崩"></a>缓存穿透、击穿、雪崩</h2><h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃</p>
-<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>接口层增加校验, 如用户鉴权校验、id 做基础校验、 id &lt;= 0 的直接拦截</li>
-<li>从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击</li>
-<li>布隆过滤器, 类似于一个 hash set, 用于快速判断某个元素是否存在于集合中, 其典型的应用场景就是快速判断一个 key 是否存在于某容器, 不存在就直接返回. 布隆过滤器的关键就在于 hash 算法和容器大小</li>
-</ul>
-<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期), 在高并发下对同一 key 的操作. 如果在缓存中没有获取到数据, 又同时在数据库中获取到数据, 引起数据库压力过大.</p>
-<h4 id="解决办法-1"><a href="#解决办法-1" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>设置热点数据永不过期</li>
-<li>接口限流与熔断、降级, 重要的接口一定要做好限流策略, 防止用户恶意刷接口, 同时要降级准备, 当接口中的某些服务不可用时, 进行熔断, 失败快速返回机制</li>
-<li>加互斥锁</li>
-</ul>
-<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>缓存雪崩是指缓存中数据大批量到过期时间, 而查询数据量巨大, 引起数据库压力过大甚至崩溃. 和缓存击穿不同的是, 缓存击穿指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查不到从而查询数据库</p>
-<h4 id="解决办法-2"><a href="#解决办法-2" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生</li>
-<li>如果缓存数据库是分布式部署, 将热点数据均匀分布在不同的缓存数据库中</li>
-<li>设置热点数据永不过期</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/46691d911248/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/80b3dfc88923/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -463,7 +349,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/5db91eb9b055/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/819f95816ecc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -477,7 +363,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/5db91eb9b055/" class="post-title-link" itemprop="url">sql-aggregate</a>
+            <a href="/2022/11/819f95816ecc/" class="post-title-link" itemprop="url">Redis</a>
         </h2>
 
         <div class="post-meta">
@@ -494,7 +380,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-02 20:35:46" itemprop="dateModified" datetime="2025-07-02T20:35:46+08:00">2025-07-02</time>
+                <time title="修改时间：2025-12-31 16:58:24" itemprop="dateModified" datetime="2025-12-31T16:58:24+08:00">2025-12-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -506,7 +392,7 @@
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/sql/" itemprop="url" rel="index"><span itemprop="name">sql</span></a>
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
                 </span>
             </span>
 
@@ -515,13 +401,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>35k</span>
+              <span>20k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>32 分钟</span>
+              <span>18 分钟</span>
             </span>
 
         </div>
@@ -533,49 +419,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h2><p>操作处理多个文档并返回计算结果, 由 一个或多个处理文档的 <code>阶段</code> 组成</p>
-<ul>
-<li>每个阶段对输入文档执行一个操作</li>
-<li>从一个阶段输出的文档将传递到下一个阶段</li>
-<li>一个聚合管道可以返回针对文档组的结果</li>
-</ul>
-<p>字段路径, 使用 <code>$</code> 前缀启用字段路径表达式访问输入文档中的字段.</p>
-<p>管道优化, 该阶段会尝试重塑管道以提高性能, 优先使用 $match、$sort、$limit、$skip 阶段限制进入管道的文档</p>
-<p>限制</p>
-<ul>
-<li>结果大小限制, 每个文档均受 MB16 BSON 文档大小的限制的约束</li>
-<li>阶段数量限制, 单个管道中允许的聚合管道阶段数量最大为 1000 个</li>
-<li>内存限制, 6.0 开始 allowDiskUseByDefault 参数控制需要 100MB 以上内存容量来执行的管道阶段是否默认会将临时文件写入磁盘</li>
-</ul>
-<p><code>db.[collectionName].aggregate()</code> 方法运行的聚合管道不会修改集合中的文档, 除非管道包含 <code>$merge</code> 或 <code>$out</code> 阶段</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  <span class="comment">// stage 1: Filter pizza order document by pizza size</span></span><br><span class="line">  &#123;<span class="attr">$match</span>: &#123;<span class="attr">size</span>: <span class="string">&#x27;medium&#x27;</span>&#125;&#125;,</span><br><span class="line">  <span class="comment">// stage 2: Group remaining document by pizza name and calcuate total quantity</span></span><br><span class="line">  &#123;<span class="attr">$group</span>: &#123;<span class="attr">_id</span>: <span class="string">&#x27;$name&#x27;</span>, <span class="attr">totalQuantity</span>: &#123;<span class="attr">$sum</span>: <span class="string">&quot;$quantity&quot;</span>&#125;&#125;&#125;,</span><br><span class="line">  <span class="comment">// stage 3: Sort document by totalQuantity in descending order</span></span><br><span class="line">  &#123;<span class="attr">$sort</span>: &#123;<span class="attr">totalQuantity</span>: -<span class="number">1</span>&#125;&#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
-
-<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>变量可以保存任何 BSON 类型的数据, 访问变量时需要使用 <code>$$</code> 前缀.</p>
-<h4 id="用户变量"><a href="#用户变量" class="headerlink" title="用户变量"></a>用户变量</h4><p>变量名称可包含 ASCII 字符和任意非 ASCII 字符, 必须以小写 ASCII 字符开头</p>
-<h4 id="系统变量"><a href="#系统变量" class="headerlink" title="系统变量"></a>系统变量</h4><ul>
-<li>NOW 返回当前日期时间值的变量, 为部署的所有成员返回相同的值, 并在聚合管道的所有阶段保持不变.</li>
-<li>CLUSTER_TIME 返回当前时间戳值的变量<ul>
-<li>仅适用于副本集和分片的集群</li>
-<li>为部署的所有节点返回相同的值, 并在管道的所有阶段保持不变</li>
-</ul>
-</li>
-<li>ROOT  引用根文档, 即当前正在聚合管道阶段处理的顶层文档<ul>
-<li>引用聚合管道中当前正在处理的完整文档</li>
-<li>常用于需要保留原始文档内容的场景</li>
-<li>在 $group、$project 等阶段特别有用</li>
-</ul>
-</li>
-<li>CURRENT 引用聚合管道阶段正在处理的 <code>字段路径</code> 的起始位置</li>
-<li>REMOVE  一个求值为缺失的变量, 允许排除 $addFields 和 $project 阶段的字段</li>
-<li>DESCEND $redact 表达式的允许结果之一, 返回当前文档级别的字段, 不包括嵌入式文档</li>
-<li>PRUNE $redact 表达式的允许结果之一, 排除当前文档/嵌入式文档级别的所有字段, 而不进一步检查任何已排除的字段</li>
-<li>KEEP  $redact 表达式的允许结果之一, 返回或保留此当前文档/嵌入式文档级别的所有字段, 而不进一步检查此级别的字段</li>
-<li>SEARCH_META search 查询元数据结果的变量, 在所有支持的聚合管道阶段中, 设立变量 $SEARCH_META 的字段会返回查询的元数据结果</li>
-<li>USER_ROLES  返回分配给当前用户的角色</li>
-</ul>
+          <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API, Redis 能读的速度是 11 万次/s，写的速度是 8.1 万次/s<br>Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p><img src="/images/redis-1.jpg" alt="redis-1"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/11/5db91eb9b055/#more" rel="contents">
+              <a class="btn" href="/2022/11/819f95816ecc/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -630,7 +478,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-25 19:38:16" itemprop="dateModified" datetime="2026-01-25T19:38:16+08:00">2026-01-25</time>
+                <time title="修改时间：2026-01-30 11:43:57" itemprop="dateModified" datetime="2026-01-30T11:43:57+08:00">2026-01-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -651,7 +499,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>14k</span>
+              <span>15k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -683,6 +531,142 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/c32a91c061ac/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/5db91eb9b055/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/5db91eb9b055/" class="post-title-link" itemprop="url">sql-aggregate</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-01-30 13:49:56" itemprop="dateModified" datetime="2026-01-30T13:49:56+08:00">2026-01-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/sql/" itemprop="url" rel="index"><span itemprop="name">sql</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>36k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>33 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h2><p>操作处理多个文档并返回计算结果, 由 一个或多个处理文档的 <code>阶段</code> 组成</p>
+<ul>
+<li>每个阶段对输入文档执行一个操作</li>
+<li>从一个阶段输出的文档将传递到下一个阶段</li>
+<li>一个聚合管道可以返回针对文档组的结果</li>
+</ul>
+<p><strong>字段路径</strong>, 使用 <code>$</code> 前缀启用字段路径表达式访问输入文档中的字段.</p>
+<p>管道优化, 该阶段会尝试重塑管道以提高性能, 优先使用 $match、$sort、$limit、$skip 阶段限制进入管道的文档</p>
+<p>限制</p>
+<ul>
+<li>结果大小限制, 每个文档均受 MB16 BSON 文档大小的限制的约束</li>
+<li>阶段数量限制, 单个管道中允许的聚合管道阶段数量最大为 1000 个</li>
+<li>内存限制, 6.0 开始 allowDiskUseByDefault 参数控制需要 100MB 以上内存容量来执行的管道阶段是否默认会将临时文件写入磁盘</li>
+</ul>
+<p><code>db.[collectionName].aggregate()</code> 方法运行的聚合管道不会修改集合中的文档, 除非管道包含 <code>$merge</code> 或 <code>$out</code> 阶段</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  <span class="comment">// stage 1: Filter pizza order document by pizza size</span></span><br><span class="line">  &#123;<span class="attr">$match</span>: &#123;<span class="attr">size</span>: <span class="string">&#x27;medium&#x27;</span>&#125;&#125;,</span><br><span class="line">  <span class="comment">// stage 2: Group remaining document by pizza name and calcuate total quantity</span></span><br><span class="line">  &#123;<span class="attr">$group</span>: &#123;<span class="attr">_id</span>: <span class="string">&#x27;$name&#x27;</span>, <span class="attr">totalQuantity</span>: &#123;<span class="attr">$sum</span>: <span class="string">&quot;$quantity&quot;</span>&#125;&#125;&#125;,</span><br><span class="line">  <span class="comment">// stage 3: Sort document by totalQuantity in descending order</span></span><br><span class="line">  &#123;<span class="attr">$sort</span>: &#123;<span class="attr">totalQuantity</span>: -<span class="number">1</span>&#125;&#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>变量可以保存任何 BSON 类型的数据, 访问变量时需要使用 <code>$$</code> 前缀.</p>
+<h4 id="用户变量"><a href="#用户变量" class="headerlink" title="用户变量"></a>用户变量</h4><p>变量名称可包含 ASCII 字符和任意非 ASCII 字符, 必须以小写 ASCII 字符开头</p>
+<h4 id="系统变量"><a href="#系统变量" class="headerlink" title="系统变量"></a>系统变量</h4><ul>
+<li>NOW 返回当前日期时间值的变量, 为部署的所有成员返回相同的值, 并在聚合管道的所有阶段保持不变.</li>
+<li>CLUSTER_TIME 返回当前时间戳值的变量<ul>
+<li>仅适用于副本集和分片的集群</li>
+<li>为部署的所有节点返回相同的值, 并在管道的所有阶段保持不变</li>
+</ul>
+</li>
+<li>ROOT  引用根文档, 即当前正在聚合管道阶段处理的顶层文档<ul>
+<li>引用聚合管道中当前正在处理的完整文档</li>
+<li>常用于需要保留原始文档内容的场景</li>
+<li>在 $group、$project 等阶段特别有用</li>
+</ul>
+</li>
+<li>CURRENT 引用聚合管道阶段正在处理的 <code>字段路径</code> 的起始位置</li>
+<li>REMOVE  一个求值为缺失的变量, 允许排除 $addFields 和 $project 阶段的字段</li>
+<li>DESCEND $redact 表达式的允许结果之一, 返回当前文档级别的字段, 不包括嵌入式文档</li>
+<li>PRUNE $redact 表达式的允许结果之一, 排除当前文档/嵌入式文档级别的所有字段, 而不进一步检查任何已排除的字段</li>
+<li>KEEP  $redact 表达式的允许结果之一, 返回或保留此当前文档/嵌入式文档级别的所有字段, 而不进一步检查此级别的字段</li>
+<li>SEARCH_META search 查询元数据结果的变量, 在所有支持的聚合管道阶段中, 设立变量 $SEARCH_META 的字段会返回查询的元数据结果</li>
+<li>USER_ROLES  返回分配给当前用户的角色</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/5db91eb9b055/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1793,12 +1777,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">758k</span>
+    <span title="站点总字数">760k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:29</span>
+    <span title="站点阅读时长">11:31</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

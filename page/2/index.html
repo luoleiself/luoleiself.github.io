@@ -527,126 +527,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/d53dbf627f77/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/d53dbf627f77/" class="post-title-link" itemprop="url">Redis-Cluster</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-27 11:28:00" itemprop="dateModified" datetime="2026-01-27T11:28:00+08:00">2026-01-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>38k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>35 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p>将一台 Redis 服务器的数据,复制到其他的 Redis 服务器. 前者称为主节点(Master/Leader),后者称为从节点(Slave/Follower), 数据的复制是单向的！只能由主节点复制到从节点(主节点以写为主、从节点以读为主)—— 读写分离.<br>===每台 Redis 服务器都是主节点===<br>一个主节点可以有 0 个或者多个从节点, 但每个从节点只能有一个主节点</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; INFO replication <span class="comment"># 当前副本的信息</span></span><br><span class="line"><span class="comment"># Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:e49c9c650c72cd6e3f369365808da6de6efd3825</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:0</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:0</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:0</span><br><span class="line">repl_backlog_histlen:0</span><br></pre></td></tr></table></figure>
-
-<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ul>
-<li>数据冗余: 主从复制实现了数据的热备份, 是持久化之外的一种数据冗余的方式</li>
-<li>故障恢复: 当主节点故障时, 从节点可以暂时替代主节点提供服务, 是一种服务冗余的方式</li>
-<li>负载均衡: 在主从复制的基础上, 配合读写分离, 由主节点进行写操作, 从节点进行读操作, 分担节点的负载; 尤其是在多读少写的场景下, 通过多个从节点分担负载, 提高并发量</li>
-<li>高可用(集群)基石: 主从复制还是哨兵和集群能够实施的基础</li>
-</ul>
-<h3 id="复制原理"><a href="#复制原理" class="headerlink" title="复制原理"></a>复制原理</h3><blockquote>
-<p>Redis 2.8 以上使用 PSYNC 命令完成同步</p>
-</blockquote>
-<ol>
-<li>从节点向主节点发送 <code>PSYNC</code> 命令, 如果从节点是首次连接主节点时会触发一次全量复制</li>
-<li>接到 <code>PSYNC</code> 命令的主节点会调用 <code>BGSAVE</code> 命令 fork 一个新线程创建 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令</li>
-<li>当 RDB 文件生成完毕后, 主节点向所有从节点发送 RDB 文件, 并在发送期间继续记录被执行的写命令</li>
-<li>从节点接收到 RDB 文件后丢弃所有旧数据并载入这个文件</li>
-<li>主节点将缓冲区记录的所有写命令发送给从节点执行</li>
-<li>如果从节点断开连接后重连, 主节点仅将部分缺失的数据同步给从节点</li>
-</ol>
-<ul>
-<li>全量复制: 从节点接收到数据库文件后, 将其全部加载到内存中</li>
-<li>增量复制: 主节点将新的所有收集到的修改命令依次传给从节点, 完成同步</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/d53dbf627f77/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/3f42dc25499d/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -760,7 +640,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/d53dbf627f77/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -774,7 +654,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/4c5a8bb1e1ca/" class="post-title-link" itemprop="url">Redis-Other-Structs</a>
+            <a href="/2022/11/d53dbf627f77/" class="post-title-link" itemprop="url">Redis-Cluster</a>
         </h2>
 
         <div class="post-meta">
@@ -791,7 +671,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-16 11:07:06" itemprop="dateModified" datetime="2025-12-16T11:07:06+08:00">2025-12-16</time>
+                <time title="修改时间：2026-01-27 11:28:00" itemprop="dateModified" datetime="2026-01-27T11:28:00+08:00">2026-01-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -812,13 +692,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>14k</span>
+              <span>38k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>13 分钟</span>
+              <span>35 分钟</span>
             </span>
 
         </div>
@@ -830,20 +710,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量或者体积非常大时, 计算基数所需的空间总是固定的、并且是很小的. 每个 HyperLogLog 键只需要花费 12KB 内存, 就可以计算接近 2^64 个不同元素的基数, 并产生标准误差接近于 0.81% 的近似值, 因为 HyperLogLog 只会根据输入元素来计算基数, 而不会储存输入元素本身</p>
-<blockquote>
-<p>比如数据集 {1, 3, 5, 7, 5, 7, 8}, 那么这个数据集的基数集为 {1, 3, 5 ,7, 8}, 基数(不重复元素)为 5. 基数估计就是在误差可接受的范围内，快速计算基数</p>
-</blockquote>
-<ul>
-<li><p>PFADD key [element [element …]] 添加元素</p>
-</li>
-<li><p>PFCOUNT key [key …] 根据 key 计算基数并返回, 0 表示 key 不存在</p>
-</li>
+          <h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p>将一台 Redis 服务器的数据,复制到其他的 Redis 服务器. 前者称为主节点(Master/Leader),后者称为从节点(Slave/Follower), 数据的复制是单向的！只能由主节点复制到从节点(主节点以写为主、从节点以读为主)—— 读写分离.<br>===每台 Redis 服务器都是主节点===<br>一个主节点可以有 0 个或者多个从节点, 但每个从节点只能有一个主节点</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; INFO replication <span class="comment"># 当前副本的信息</span></span><br><span class="line"><span class="comment"># Replication</span></span><br><span class="line">role:master</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_failover_state:no-failover</span><br><span class="line">master_replid:e49c9c650c72cd6e3f369365808da6de6efd3825</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:0</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:0</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:0</span><br><span class="line">repl_backlog_histlen:0</span><br></pre></td></tr></table></figure>
+
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ul>
+<li>数据冗余: 主从复制实现了数据的热备份, 是持久化之外的一种数据冗余的方式</li>
+<li>故障恢复: 当主节点故障时, 从节点可以暂时替代主节点提供服务, 是一种服务冗余的方式</li>
+<li>负载均衡: 在主从复制的基础上, 配合读写分离, 由主节点进行写操作, 从节点进行读操作, 分担节点的负载; 尤其是在多读少写的场景下, 通过多个从节点分担负载, 提高并发量</li>
+<li>高可用(集群)基石: 主从复制还是哨兵和集群能够实施的基础</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PFADD hll foo bar zap</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; PFADD hll zap zap zap</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; PFADD hll foo bar</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT hll</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; PFADD other-hll 1 2 3</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT hll other-hll</span><br><span class="line">(<span class="built_in">integer</span>) 6</span><br></pre></td></tr></table></figure>
+<h3 id="复制原理"><a href="#复制原理" class="headerlink" title="复制原理"></a>复制原理</h3><blockquote>
+<p>Redis 2.8 以上使用 PSYNC 命令完成同步</p>
+</blockquote>
+<ol>
+<li>从节点向主节点发送 <code>PSYNC</code> 命令, 如果从节点是首次连接主节点时会触发一次全量复制</li>
+<li>接到 <code>PSYNC</code> 命令的主节点会调用 <code>BGSAVE</code> 命令 fork 一个新线程创建 RDB 文件, 并使用缓冲区记录接下来执行的所有写命令</li>
+<li>当 RDB 文件生成完毕后, 主节点向所有从节点发送 RDB 文件, 并在发送期间继续记录被执行的写命令</li>
+<li>从节点接收到 RDB 文件后丢弃所有旧数据并载入这个文件</li>
+<li>主节点将缓冲区记录的所有写命令发送给从节点执行</li>
+<li>如果从节点断开连接后重连, 主节点仅将部分缺失的数据同步给从节点</li>
+</ol>
+<ul>
+<li>全量复制: 从节点接收到数据库文件后, 将其全部加载到内存中</li>
+<li>增量复制: 主节点将新的所有收集到的修改命令依次传给从节点, 完成同步</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/11/4c5a8bb1e1ca/#more" rel="contents">
+              <a class="btn" href="/2022/11/d53dbf627f77/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -980,6 +873,113 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/4c5a8bb1e1ca/" class="post-title-link" itemprop="url">Redis-Other-Structs</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-16 11:07:06" itemprop="dateModified" datetime="2025-12-16T11:07:06+08:00">2025-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量或者体积非常大时, 计算基数所需的空间总是固定的、并且是很小的. 每个 HyperLogLog 键只需要花费 12KB 内存, 就可以计算接近 2^64 个不同元素的基数, 并产生标准误差接近于 0.81% 的近似值, 因为 HyperLogLog 只会根据输入元素来计算基数, 而不会储存输入元素本身</p>
+<blockquote>
+<p>比如数据集 {1, 3, 5, 7, 5, 7, 8}, 那么这个数据集的基数集为 {1, 3, 5 ,7, 8}, 基数(不重复元素)为 5. 基数估计就是在误差可接受的范围内，快速计算基数</p>
+</blockquote>
+<ul>
+<li><p>PFADD key [element [element …]] 添加元素</p>
+</li>
+<li><p>PFCOUNT key [key …] 根据 key 计算基数并返回, 0 表示 key 不存在</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PFADD hll foo bar zap</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; PFADD hll zap zap zap</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; PFADD hll foo bar</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT hll</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; PFADD other-hll 1 2 3</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT hll other-hll</span><br><span class="line">(<span class="built_in">integer</span>) 6</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/4c5a8bb1e1ca/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/02c91f48b138/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1066,6 +1066,120 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/02c91f48b138/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/46691d911248/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/46691d911248/" class="post-title-link" itemprop="url">Redis-app</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-08-31 23:10:41" itemprop="dateModified" datetime="2025-08-31T23:10:41+08:00">2025-08-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="缓存穿透、击穿、雪崩"><a href="#缓存穿透、击穿、雪崩" class="headerlink" title="缓存穿透、击穿、雪崩"></a>缓存穿透、击穿、雪崩</h2><h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃</p>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
+<li>接口层增加校验, 如用户鉴权校验、id 做基础校验、 id &lt;= 0 的直接拦截</li>
+<li>从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击</li>
+<li>布隆过滤器, 类似于一个 hash set, 用于快速判断某个元素是否存在于集合中, 其典型的应用场景就是快速判断一个 key 是否存在于某容器, 不存在就直接返回. 布隆过滤器的关键就在于 hash 算法和容器大小</li>
+</ul>
+<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期), 在高并发下对同一 key 的操作. 如果在缓存中没有获取到数据, 又同时在数据库中获取到数据, 引起数据库压力过大.</p>
+<h4 id="解决办法-1"><a href="#解决办法-1" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
+<li>设置热点数据永不过期</li>
+<li>接口限流与熔断、降级, 重要的接口一定要做好限流策略, 防止用户恶意刷接口, 同时要降级准备, 当接口中的某些服务不可用时, 进行熔断, 失败快速返回机制</li>
+<li>加互斥锁</li>
+</ul>
+<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>缓存雪崩是指缓存中数据大批量到过期时间, 而查询数据量巨大, 引起数据库压力过大甚至崩溃. 和缓存击穿不同的是, 缓存击穿指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查不到从而查询数据库</p>
+<h4 id="解决办法-2"><a href="#解决办法-2" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
+<li>缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生</li>
+<li>如果缓存数据库是分布式部署, 将热点数据均匀分布在不同的缓存数据库中</li>
+<li>设置热点数据永不过期</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/46691d911248/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1184,104 +1298,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/3bfcb546cd4a/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/819f95816ecc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/819f95816ecc/" class="post-title-link" itemprop="url">Redis</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-31 16:58:24" itemprop="dateModified" datetime="2025-12-31T16:58:24+08:00">2025-12-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>20k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>18 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Remote Dictionary Server 即远程字典服务, 是一个开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API, Redis 能读的速度是 11 万次/s，写的速度是 8.1 万次/s<br>Redis 通常被称为数据结构服务器, 因为它的核心数据类型包括字符串、列表、字典（或哈希）、集合和排序集合等大多编程语言都支持的数据类型. 高版本版的 Redis 还添加了计算基数、地理定位和流处理等高级功能</p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p><img src="/images/redis-1.jpg" alt="redis-1"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/819f95816ecc/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1442,12 +1458,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">758k</span>
+    <span title="站点总字数">760k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:29</span>
+    <span title="站点阅读时长">11:31</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
