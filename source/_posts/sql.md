@@ -654,6 +654,35 @@ db.survey.find({results: { $elemMatch: { product: "xyz", score: { $gte: 8 } }}})
 - $meta 预测在 $text 操作中分配的文件分数
 - $slice  限制从数组中投影的元素数量。支持跳过切片和对切片进行数量限制
 
+```typescript
+// 使用 $ 投影 compass
+// filter:  { 'audioList.id': 'abc' } 等价于 { audioList: { $elemMatch: { id: 'audio123' } } }
+// project: { 'audioList.$': 1 }
+
+
+// 使用聚合过滤嵌套数组中多条数据只保留 id 为 audio123 的一条数据
+db.inventory.aggregate([
+  // 1. 匹配文档
+  {
+    $match: {
+      "audioList.id": "audio123"
+    }
+  },
+  // 2. 筛选数组元素
+  {
+    $addFields: {
+      audioList: {
+        $filter: {
+          input: "$audioList",
+          as: "audio",
+          cond: { $eq: ["$$audio.id", "audio123"] }
+        }
+      }
+    }
+  }
+])
+```
+
 其他操作符
 
 - $rand 生成介于 0 和 1 之间的随机浮点数

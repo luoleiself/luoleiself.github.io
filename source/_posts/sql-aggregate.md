@@ -15,7 +15,7 @@ tags:
 - 从一个阶段输出的文档将传递到下一个阶段
 - 一个聚合管道可以返回针对文档组的结果
 
-字段路径, 使用 `$` 前缀启用字段路径表达式访问输入文档中的字段.
+**字段路径**, 使用 `$` 前缀启用字段路径表达式访问输入文档中的字段.
 
 管道优化, 该阶段会尝试重塑管道以提高性能, 优先使用 $match、$sort、$limit、$skip 阶段限制进入管道的文档
 
@@ -160,6 +160,26 @@ db.artists.aggregate([
 - $changeStream  返回集合、数据库或整个集群上的变更流游标, 必须是聚合管道中的 **第一阶段**
 - $collStats  返回有关集合或视图的统计信息, 必须是聚合管道中的 **第一阶段**
 - $count  将文档传递到下一阶段, 该阶段包含输入到该阶段的文档数的计数
+
+```ts
+db.scores.insertMany([
+  { "_id" : 1, "subject" : "History", "score" : 88 },
+  { "_id" : 2, "subject" : "History", "score" : 92 },
+  { "_id" : 3, "subject" : "History", "score" : 97 },
+  { "_id" : 4, "subject" : "History", "score" : 71 },
+  { "_id" : 5, "subject" : "History", "score" : 79 },
+  { "_id" : 6, "subject" : "History", "score" : 83 }
+]);
+// 使用 $match 阶段排除 score 值小于或等于 80 的文档, 以便将 score 大于 80 的文档传递到下一个阶段
+// $count 阶段回返回聚合管道中剩余文档的计数, 并将改值分配给名为 passing_scores 的字段
+db.scores.aggregate([
+  { $match: { score: { $gt: 80 } } },
+  { $count: "passing_scores" }
+]);
+// output: 输出结果
+{ 'passing_scores': 4 }
+```
+
 - $densify  在文档序列中创建新文档, 其中缺少字段中的某些值
 - $documents  从输入表达式返回字面文档
   - 只能在数据库级聚合管道中使用
@@ -299,6 +319,7 @@ db.orders.aggregate([
 - $planCacheStats 返回集合的计划缓存的信息, 必须是聚合管道中的 **第一阶段**
   - allHosts  配置聚合阶段如何以分片集群中的节点为目标
 - $project  重塑流中的文档至管道中的下个阶段，指定的字段可以是文档中已有字段或新计算的字段. 例如添加新的字段或删除现有字段
+
 - $redact 根据存储在文档本身中的信息, 限制整个文档被输出或者文档中的内容被输出
   - $$DESCEND  返回当前文档级别的字段, 不包括嵌入式文档
   - $$PRUNE  排除当前文档/嵌入式文档级别的所有字段, 而不进一步检查任何已排除的字段
