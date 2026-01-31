@@ -406,7 +406,28 @@ export  function proxy (req: NextRequest) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: ['/middleware', '/api/:path*'],
+  matcher: [
+    '/api/:path*',
+    '/chat/:path*',
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)'
+  ],
+}
+// 或者
+export const config = {
+  matcher: [
+    {
+      source: '/api/:path*',
+      locale: false, // 忽略语言
+      has: [ // 指定特殊的匹配条件
+        { type: 'header', key: 'Authorization', value: 'Bearer Token' },
+        { type: 'query', key: 'userId', value: '123' },
+        { type: 'cookie', key: 'token', value: 'test'}
+      ],
+      missing: [ // 指定特殊的匹配条件, 当缺少指定的 cookie 时
+        { type: 'cookie', key: 'token', value: 'active' }
+      ]
+    }
+  ]
 }
 ```
 
