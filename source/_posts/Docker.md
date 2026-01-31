@@ -10,6 +10,22 @@ tags:
 
 ## 敲黑板
 
+### docker
+
+客户端/服务器架构
+
+- 所有的容器操作都需要通过 dockerd 守护进程中转到 OCI(容器运行时)执行, dockerd 一旦崩溃, 所有依赖 dockerd 的容器都会失控, dockerd 会持续占用系统资源.
+- docker 默认以 root 用户运行 dockerd, 如果容器逃逸, 攻击者可以直接获取主机的 root 权限，风险极高.
+
+### podman
+
+无守护进程架构
+
+- 容器操作采用直接调用 OCI(容器运行时) 的模式, 每个容器操作都是独立的进程, 互不依赖. 无单点故障, 资源占用更低.
+- Rootless 原生, 基于 linux 的用户命名空间、挂载命名空间等原生能力, 实现无需 root 权限的容器运行. 普通用户可直接创建和管理容器, 容器内的 `根用户` 仅映射到主机的普通用户.
+
+### 安装
+
 - Package docker-ce is not available, but is referred to by another package.
 
   如果提示未发现可用的 docker-ce 包时,检查系统镜像源是否正确(如果不能翻墙时, 使用国内的镜像源修改 /etc/apt/source.list)
