@@ -204,6 +204,130 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/5ad505cb0ced/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/5ad505cb0ced/" class="post-title-link" itemprop="url">React-Redux.md</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-15 15:37:49" itemprop="dateCreated datePublished" datetime="2022-02-15T15:37:49+08:00">2022-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-23 00:20:29" itemprop="dateModified" datetime="2025-03-23T00:20:29+08:00">2025-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ES/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>18k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>17 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>官方推荐使用封装了 Redux 核心的 @reduxjs/toolkit(RTK) 包, 包含了构建 Redux 应用所必须的 API 方法和常用依赖, 简化了大部分 Redux 任务, 阻止了常见错误, 并让编写 Redux 应用程序变得更容易</p>
+<!-- 
+- dispatch 只能处理同步的 action
+
+- createStore  创建一个 Redux 存储实例
+- combineReducers 将多个 reducer 函数合并成为一个更大的 reducer
+- applyMiddleware 将多个中间件组合成一个 store 增强器
+- compose 将多个 store 增强器合并成一个单一的 store 增强器 
+-->
+
+<h3 id="reduxjs-toolkit-query"><a href="#reduxjs-toolkit-query" class="headerlink" title="@reduxjs/toolkit/query"></a><a href="#RTK-Query">@reduxjs/toolkit/query</a></h3><p>独立可选的入口, 允许定义端点(REST, GraphQL或任何异步函数)并生成 reducer 和中间件来完整管理数据获取, 加载状态更新和结果缓存, 还可以自动生成 React Hooks, 可用于组件获取数据</p>
+<h3 id="reduxjs-toolkit-RTK"><a href="#reduxjs-toolkit-RTK" class="headerlink" title="@reduxjs/toolkit(RTK)"></a>@reduxjs/toolkit(RTK)</h3><ul>
+<li>通过单一清晰的函数调用简化 store 设置, 同时保留完全配置 store 选项的能力</li>
+<li>消除意外的 mutations</li>
+<li>消除手写任何 actionCreator 或 actionType 的需求</li>
+<li>消除编写容易出错的手动不可变更新逻辑的需求, createSlice 使用 <code>Immer</code> 库来编写 reducer, 可以直接修改 state 状态而不需要使用解构语法</li>
+<li>允许将相关的代码放在一个文件中, 而不是分布在多个独立文件中</li>
+<li>提供优秀的 TypeScript 支持, 其 API 被设计成很好的安全性, 同时减少代码中需要定义的类型数量</li>
+<li>RTK Query 可以消除编写任何 thunk, reducer, actionCreator 或者副作用狗子来管理数据获取和跟踪加载状态的需求</li>
+</ul>
+<h4 id="configureStore"><a href="#configureStore" class="headerlink" title="configureStore"></a>configureStore</h4><p>特点</p>
+<ul>
+<li>slice reducers 自动传递给 combineReducers</li>
+<li>自动添加了 <code>redux-thunk</code> 中间件</li>
+<li>添加了 Devtools 中间件来捕获更多意外的变更</li>
+<li>自动设置了 Redux Devtools Extension</li>
+<li>中间件和 Devtools 增强器被组合在一起添加到了 store 中</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/5ad505cb0ced/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/0eb429a8209b/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -292,151 +416,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/02/0eb429a8209b/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/02/f3581d54a2fe/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/f3581d54a2fe/" class="post-title-link" itemprop="url">React-Nextjs.md</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-15 15:37:49" itemprop="dateCreated datePublished" datetime="2022-02-15T15:37:49+08:00">2022-02-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-20 18:51:48" itemprop="dateModified" datetime="2026-01-20T18:51:48+08:00">2026-01-20</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ES/" itemprop="url" rel="index"><span itemprop="name">ES</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ES/React/" itemprop="url" rel="index"><span itemprop="name">React</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>32k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>29 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>RSC(React Server Component)<br>ISR(Incremental Static Regeneration)</p>
-<h2 id="React-Server-Component"><a href="#React-Server-Component" class="headerlink" title="React Server Component"></a>React Server Component</h2><p><code>异步组件</code> 是服务器组件的一个新特性, 允许在渲染中 <code>await</code>.</p>
-<p>RSC 是一种新型的组件, 它在打包之前在独立于客户端应用程序或 SSR 服务器的环境中提前渲染, 在 next.js 中, 渲染工作进一步按路由段划分, 以实现流式和部分渲染</p>
-<ul>
-<li>数据获取, 将数据获取移动到更靠近数据源的服务器上, 可以减少获取渲染所需数据的时间以及客户端需要发出的请求数量来提高性能</li>
-<li>安全性, 在服务器上保留敏感数据和逻辑, 例如 token 和 API keys, 而不会将它们暴露给客户端</li>
-<li>缓存, 通过在服务器上渲染, 结果可以被缓存并在后续请求和跨用户中重用, 减少每个请求的渲染和数据获取量</li>
-<li>性能, 减少所需的客户端 javascript 的数量, 对于弱网环境或设备较弱的用户来说需要下载、解析和执行的客户端 javascript 较少</li>
-<li>初始化页面加载和首次内容绘制(FCP), 在服务器上生成 HTML, 允许用户立即查看页面而无需等客户端下载、解析和执行渲染页面所需要的 javascript</li>
-<li>SEO 和 社交网络共享(SNS), 渲染的 HTML 可供搜索引擎机器人用来检索页面, 社交网络机器人可用于为页面生成社交卡预览</li>
-<li>流式传输, 服务器组件允许将渲染工作分成块, 并在准备就绪时将其流式传输到客户端. 这允许用户提前查看页面的部分内容, 而无需等待整个页面在服务器上渲染</li>
-</ul>
-<p>渲染策略</p>
-<ul>
-<li>Static Rendering, 路由在构建时渲染, 或在数据重新验证后在后台渲染, 结果被缓存. 以优化用户和服务器请求之间共享渲染的结果</li>
-<li>Dynamic Redering, 在请求时渲染路由, 针对个性化的数据或只有在请求时才知道的信息</li>
-<li>Streaming, 从服务器逐步渲染 UI, 并在准备就绪时流式传输给客户端, 允许用户在整个内容完整渲染之前立即看到页面的部分内容.<br>有助于提高初始化页面加载性能, 以及依赖于较慢数据获取的 UI. 可以使用 Suspense 组件和 loading.tsx 开启</li>
-</ul>
-<p>渲染流程:</p>
-<ol>
-<li>按单个路由段和 Suspense Boundaries 拆分块</li>
-<li>每个块使用 RSC Payload 和 客户端组件 JavaScript 指令渲染 HTML, 然后返回给客户端</li>
-<li>客户端立即显示路由的快速非交互式页面预览, 这仅适用于初始化页面加载</li>
-<li>RSC Payload 用于协调客户端和 RSC 树并更新 DOM, JavaScript 指令用于 hydrate 客户端组件并使应用程序具有交互性</li>
-</ol>
-<h3 id="RSC-Payload"><a href="#RSC-Payload" class="headerlink" title="RSC Payload"></a>RSC Payload</h3><p>渲染 RSC 树的紧凑二进制表示形式, 包含</p>
-<ul>
-<li>RSC 的渲染结果</li>
-<li>客户端组件应渲染的占位符及其 JavaScript 文件的引用</li>
-<li>从 RSC 传递给客户端组件的任何信息</li>
-</ul>
-<h3 id="Server-Function"><a href="#Server-Function" class="headerlink" title="Server Function"></a>Server Function</h3><p>是一个在服务器上执行的异步函数, 它们可以在服务器和客户端组件之间调用, 以处理 Next.js 应用程序中的表单和提交和数据突变</p>
-<p>当使用 ‘use server’ 指令定义服务器函数时, 将自动创建一个指向服务器函数的引用, 并将该引用传递给客户端组件. 当在客户端组件调用该函数时, React 向服务器发送一个请求来执行该函数, 并返回结果</p>
-<ul>
-<li>不限于 &lt;form&gt;, 可以从 Event Handlers、useEffect、第三方库和其他表单元素 &lt;button&gt; 调用</li>
-<li>与 Next.js cache 和 revalidate 集成, 当调用一个 action 时, Next.js 可以在单个服务器往返中返回更新的 UI 和新数据</li>
-<li>使用 HTTP 的 POST 方法调用</li>
-<li>接收的参数 和 返回值 必须可由 React 序列化</li>
-<li>可以在应用程序的任何地方重复使用</li>
-<li>从其使用的 layout 和 page 继承 运行时</li>
-<li>从其使用的 layout 和 page 继承路由段设置, 包含 maxDuration 等字段</li>
-</ul>
-<p>为什么使用 POST</p>
-<ul>
-<li>幂等性：POST 用于创建/修改数据，支持非幂等操作</li>
-<li>请求体：POST 可以携带复杂的序列化数据</li>
-<li>语义正确：Server Functions 通常执行有副作用的操作</li>
-</ul>
-<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/invoices/page.tsx</span></span><br><span class="line"><span class="string">&#x27;use client&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span>, &#123; useActionState &#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; createInvoice &#125; <span class="keyword">from</span> <span class="string">&#x27;./action&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">type</span> <span class="title class_">InitialStateType</span> = &#123; <span class="attr">message</span>: <span class="built_in">string</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">initialState</span>: <span class="title class_">InitialStateType</span> = &#123; <span class="attr">message</span>: <span class="string">&#x27;&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="title function_">Page</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> [state, formAction, pending] = <span class="title function_">useActionState</span>(createInvoice, initialState)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&#123;formAction&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;customerId&quot;</span> <span class="attr">className</span>=<span class="string">&#x27;border-1 border-blue-300 rounded-2xl py-2 px-4 my-4&#x27;</span> <span class="attr">placeholder</span>=<span class="string">&#x27;customer id&#x27;</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">p</span> <span class="attr">className</span>=<span class="string">&#x27;text-red-500 text-xl&#x27;</span>&gt;</span>&#123;state?.message&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;amount&quot;</span> <span class="attr">className</span>=<span class="string">&#x27;border-1 border-blue-300 rounded-2xl py-2 px-4 my-4&#x27;</span> <span class="attr">placeholder</span>=<span class="string">&#x27;amount&#x27;</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;checkbox&quot;</span> <span class="attr">name</span>=<span class="string">&quot;status&quot;</span> <span class="attr">className</span>=<span class="string">&#x27;w-4 h-6 border-blue-300 border-1 rounded-2xl&#x27;</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">disabled</span>=<span class="string">&#123;pending&#125;</span> <span class="attr">className</span>=<span class="string">&#x27;border-1 border-blue-300 rounded-2xl py-2 px-4 text-2xl text-gray-600 enabled:hover:border-blue-700 enabled:hover:text-white cursor-pointer&#x27;</span>&gt;</span>Submit<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">br</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// app/invoices/action.ts</span></span><br><span class="line"><span class="string">&#x27;use server&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; redirect &#125; <span class="keyword">from</span> <span class="string">&quot;next/navigation&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">InitialStateType</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;./page&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">createInvoice</span>(<span class="params"><span class="attr">prevState</span>: <span class="title class_">InitialStateType</span>, <span class="attr">formData</span>: <span class="title class_">FormData</span></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> customerId = formData.<span class="title function_">get</span>(<span class="string">&#x27;customerId&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> amount = formData.<span class="title function_">get</span>(<span class="string">&#x27;amount&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> status = formData.<span class="title function_">get</span>(<span class="string">&#x27;status&#x27;</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(customerId, amount, status);</span><br><span class="line">  <span class="comment">// mutate data</span></span><br><span class="line">  <span class="comment">// revaliate cache</span></span><br><span class="line">  <span class="keyword">await</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> <span class="built_in">setTimeout</span>(resolve, <span class="number">3000</span>));</span><br><span class="line">  <span class="comment">// 如果 customerId 不符合条件则返回提示信息</span></span><br><span class="line">  <span class="keyword">if</span> (!customerId || <span class="title class_">Number</span>(customerId) &gt; <span class="number">100</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; ...prevState, <span class="attr">message</span>: <span class="string">&#x27;Please enter a valid customer ID&#x27;</span> &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">redirect</span>(<span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/f3581d54a2fe/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -611,7 +590,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-20 18:54:43" itemprop="dateModified" datetime="2026-01-20T18:54:43+08:00">2026-01-20</time>
+                <time title="修改时间：2026-02-01 13:49:32" itemprop="dateModified" datetime="2026-02-01T13:49:32+08:00">2026-02-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1609,12 +1588,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">760k</span>
+    <span title="站点总字数">761k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:31</span>
+    <span title="站点阅读时长">11:32</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

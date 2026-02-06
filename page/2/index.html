@@ -527,119 +527,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/3f42dc25499d/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="luoleiself">
-      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="luoleiself's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/3f42dc25499d/" class="post-title-link" itemprop="url">Redis-List</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-09-19 15:48:57" itemprop="dateModified" datetime="2024-09-19T15:48:57+08:00">2024-09-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Lists-命令"><a href="#Lists-命令" class="headerlink" title="Lists 命令"></a>Lists 命令</h3><blockquote>
-<p>Redis 3.2 之后, List 数据类型底层使用 quickList 代替双向链表和压缩列表</p>
-</blockquote>
-<p>List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.</p>
-<p>List 类型的底层数据结构是由<strong>双向链表</strong>或<strong>压缩列表</strong>实现的</p>
-<ul>
-<li>如果列表元素的个数小于 512 个,列表每个元素值都小于 64B 时, Redis 使用<strong>压缩列表</strong>作为底层数据结构</li>
-<li>如果列表元素不满足上面的条件, Redis 使用<strong>双向链表</strong>作为底层数据结构</li>
-</ul>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置底层数据结构存储数量限制</span></span><br><span class="line"><span class="string">hash-max-listpack-entries</span> <span class="number">512</span></span><br><span class="line"><span class="string">hash-max-listpack-value</span> <span class="number">64</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h4><p>LPUSH 和 LPUSHX 命令将多个元素<strong>逆序</strong>插入到列表头部</p>
-<ul>
-<li>LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建</li>
-<li>LPUSHX key element [element …] 批量添加多个元素到<strong>已存在</strong>的列表头部并返回列表的长度, 列表为空或者不存在返回 0</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; LPUSH list:zhang name1 name2 name3</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; LPUSHX list:zhang name1 name4 name5 name6</span><br><span class="line">(<span class="built_in">integer</span>) 7</span><br><span class="line">127.0.0.1:6379&gt; LPUSH list:zhang name1 name4 name5 name6</span><br><span class="line">(<span class="built_in">integer</span>) 11</span><br><span class="line"></span><br><span class="line"><span class="comment"># LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部</span></span><br><span class="line">127.0.0.1:6379&gt; LRANGE list:zhang 0 11</span><br><span class="line"> 1) <span class="string">&quot;name6&quot;</span></span><br><span class="line"> 2) <span class="string">&quot;name5&quot;</span></span><br><span class="line"> 3) <span class="string">&quot;name4&quot;</span></span><br><span class="line"> 4) <span class="string">&quot;name1&quot;</span></span><br><span class="line"> 5) <span class="string">&quot;name6&quot;</span></span><br><span class="line"> 6) <span class="string">&quot;name5&quot;</span></span><br><span class="line"> 7) <span class="string">&quot;name4&quot;</span></span><br><span class="line"> 8) <span class="string">&quot;name1&quot;</span></span><br><span class="line"> 9) <span class="string">&quot;name3&quot;</span></span><br><span class="line">10) <span class="string">&quot;name2&quot;</span></span><br><span class="line">11) <span class="string">&quot;name1&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># LPUSHX 对空列表或不存在的列表不进行操作</span></span><br><span class="line">127.0.0.1:6379&gt; LPUSHX list:zhang:1 name1 name2 name3</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;list:zhang&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;name&quot;</span></span><br><span class="line">4) <span class="string">&quot;hash:zhang&quot;</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/3f42dc25499d/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/d53dbf627f77/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -873,7 +760,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/3f42dc25499d/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -887,7 +774,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/4c5a8bb1e1ca/" class="post-title-link" itemprop="url">Redis-Other-Structs</a>
+            <a href="/2022/11/3f42dc25499d/" class="post-title-link" itemprop="url">Redis-List</a>
         </h2>
 
         <div class="post-meta">
@@ -904,7 +791,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-16 11:07:06" itemprop="dateModified" datetime="2025-12-16T11:07:06+08:00">2025-12-16</time>
+                <time title="修改时间：2024-09-19 15:48:57" itemprop="dateModified" datetime="2024-09-19T15:48:57+08:00">2024-09-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -925,13 +812,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>14k</span>
+              <span>9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>13 分钟</span>
+              <span>8 分钟</span>
             </span>
 
         </div>
@@ -943,20 +830,26 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量或者体积非常大时, 计算基数所需的空间总是固定的、并且是很小的. 每个 HyperLogLog 键只需要花费 12KB 内存, 就可以计算接近 2^64 个不同元素的基数, 并产生标准误差接近于 0.81% 的近似值, 因为 HyperLogLog 只会根据输入元素来计算基数, 而不会储存输入元素本身</p>
-<blockquote>
-<p>比如数据集 {1, 3, 5, 7, 5, 7, 8}, 那么这个数据集的基数集为 {1, 3, 5 ,7, 8}, 基数(不重复元素)为 5. 基数估计就是在误差可接受的范围内，快速计算基数</p>
+          <h3 id="Lists-命令"><a href="#Lists-命令" class="headerlink" title="Lists 命令"></a>Lists 命令</h3><blockquote>
+<p>Redis 3.2 之后, List 数据类型底层使用 quickList 代替双向链表和压缩列表</p>
 </blockquote>
+<p>List 是一个有序重复的双向链表, 按照添加的顺序排序, 可以添加一个元素到列表的头部(左边)、尾部(右边), 一个列表最多可以包含 2^32-1(40 多亿) 个元素.</p>
+<p>List 类型的底层数据结构是由<strong>双向链表</strong>或<strong>压缩列表</strong>实现的</p>
 <ul>
-<li><p>PFADD key [element [element …]] 添加元素</p>
-</li>
-<li><p>PFCOUNT key [key …] 根据 key 计算基数并返回, 0 表示 key 不存在</p>
-</li>
+<li>如果列表元素的个数小于 512 个,列表每个元素值都小于 64B 时, Redis 使用<strong>压缩列表</strong>作为底层数据结构</li>
+<li>如果列表元素不满足上面的条件, Redis 使用<strong>双向链表</strong>作为底层数据结构</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PFADD hll foo bar zap</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; PFADD hll zap zap zap</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; PFADD hll foo bar</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT hll</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; PFADD other-hll 1 2 3</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT hll other-hll</span><br><span class="line">(<span class="built_in">integer</span>) 6</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置底层数据结构存储数量限制</span></span><br><span class="line"><span class="string">hash-max-listpack-entries</span> <span class="number">512</span></span><br><span class="line"><span class="string">hash-max-listpack-value</span> <span class="number">64</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h4><p>LPUSH 和 LPUSHX 命令将多个元素<strong>逆序</strong>插入到列表头部</p>
+<ul>
+<li>LPUSH key element [element …] 批量添加多个元素到列表头部并返回列表的长度, 列表为空或者不存在新建</li>
+<li>LPUSHX key element [element …] 批量添加多个元素到<strong>已存在</strong>的列表头部并返回列表的长度, 列表为空或者不存在返回 0</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; LPUSH list:zhang name1 name2 name3</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; LPUSHX list:zhang name1 name4 name5 name6</span><br><span class="line">(<span class="built_in">integer</span>) 7</span><br><span class="line">127.0.0.1:6379&gt; LPUSH list:zhang name1 name4 name5 name6</span><br><span class="line">(<span class="built_in">integer</span>) 11</span><br><span class="line"></span><br><span class="line"><span class="comment"># LPUSH 和 LPUSHX 命令将多个元素**逆序**插入到列表头部</span></span><br><span class="line">127.0.0.1:6379&gt; LRANGE list:zhang 0 11</span><br><span class="line"> 1) <span class="string">&quot;name6&quot;</span></span><br><span class="line"> 2) <span class="string">&quot;name5&quot;</span></span><br><span class="line"> 3) <span class="string">&quot;name4&quot;</span></span><br><span class="line"> 4) <span class="string">&quot;name1&quot;</span></span><br><span class="line"> 5) <span class="string">&quot;name6&quot;</span></span><br><span class="line"> 6) <span class="string">&quot;name5&quot;</span></span><br><span class="line"> 7) <span class="string">&quot;name4&quot;</span></span><br><span class="line"> 8) <span class="string">&quot;name1&quot;</span></span><br><span class="line"> 9) <span class="string">&quot;name3&quot;</span></span><br><span class="line">10) <span class="string">&quot;name2&quot;</span></span><br><span class="line">11) <span class="string">&quot;name1&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># LPUSHX 对空列表或不存在的列表不进行操作</span></span><br><span class="line">127.0.0.1:6379&gt; LPUSHX list:zhang:1 name1 name2 name3</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;list:zhang&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;name&quot;</span></span><br><span class="line">4) <span class="string">&quot;hash:zhang&quot;</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/11/4c5a8bb1e1ca/#more" rel="contents">
+              <a class="btn" href="/2022/11/3f42dc25499d/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1089,7 +982,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/46691d911248/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/4c5a8bb1e1ca/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -1103,7 +996,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/46691d911248/" class="post-title-link" itemprop="url">Redis-app</a>
+            <a href="/2022/11/4c5a8bb1e1ca/" class="post-title-link" itemprop="url">Redis-Other-Structs</a>
         </h2>
 
         <div class="post-meta">
@@ -1120,7 +1013,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-08-31 23:10:41" itemprop="dateModified" datetime="2025-08-31T23:10:41+08:00">2025-08-31</time>
+                <time title="修改时间：2025-12-16 11:07:06" itemprop="dateModified" datetime="2025-12-16T11:07:06+08:00">2025-12-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1141,13 +1034,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>2.8k</span>
+              <span>14k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>3 分钟</span>
+              <span>13 分钟</span>
             </span>
 
         </div>
@@ -1159,27 +1052,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="缓存穿透、击穿、雪崩"><a href="#缓存穿透、击穿、雪崩" class="headerlink" title="缓存穿透、击穿、雪崩"></a>缓存穿透、击穿、雪崩</h2><h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃</p>
-<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>接口层增加校验, 如用户鉴权校验、id 做基础校验、 id &lt;= 0 的直接拦截</li>
-<li>从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击</li>
-<li>布隆过滤器, 类似于一个 hash set, 用于快速判断某个元素是否存在于集合中, 其典型的应用场景就是快速判断一个 key 是否存在于某容器, 不存在就直接返回. 布隆过滤器的关键就在于 hash 算法和容器大小</li>
+          <h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>HyperLogLog 是用来做基数统计的算法, 优点是在输入元素的数量或者体积非常大时, 计算基数所需的空间总是固定的、并且是很小的. 每个 HyperLogLog 键只需要花费 12KB 内存, 就可以计算接近 2^64 个不同元素的基数, 并产生标准误差接近于 0.81% 的近似值, 因为 HyperLogLog 只会根据输入元素来计算基数, 而不会储存输入元素本身</p>
+<blockquote>
+<p>比如数据集 {1, 3, 5, 7, 5, 7, 8}, 那么这个数据集的基数集为 {1, 3, 5 ,7, 8}, 基数(不重复元素)为 5. 基数估计就是在误差可接受的范围内，快速计算基数</p>
+</blockquote>
+<ul>
+<li><p>PFADD key [element [element …]] 添加元素</p>
+</li>
+<li><p>PFCOUNT key [key …] 根据 key 计算基数并返回, 0 表示 key 不存在</p>
+</li>
 </ul>
-<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期), 在高并发下对同一 key 的操作. 如果在缓存中没有获取到数据, 又同时在数据库中获取到数据, 引起数据库压力过大.</p>
-<h4 id="解决办法-1"><a href="#解决办法-1" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>设置热点数据永不过期</li>
-<li>接口限流与熔断、降级, 重要的接口一定要做好限流策略, 防止用户恶意刷接口, 同时要降级准备, 当接口中的某些服务不可用时, 进行熔断, 失败快速返回机制</li>
-<li>加互斥锁</li>
-</ul>
-<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>缓存雪崩是指缓存中数据大批量到过期时间, 而查询数据量巨大, 引起数据库压力过大甚至崩溃. 和缓存击穿不同的是, 缓存击穿指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查不到从而查询数据库</p>
-<h4 id="解决办法-2"><a href="#解决办法-2" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生</li>
-<li>如果缓存数据库是分布式部署, 将热点数据均匀分布在不同的缓存数据库中</li>
-<li>设置热点数据永不过期</li>
-</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PFADD hll foo bar zap</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; PFADD hll zap zap zap</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; PFADD hll foo bar</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT hll</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; PFADD other-hll 1 2 3</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT hll other-hll</span><br><span class="line">(<span class="built_in">integer</span>) 6</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/11/46691d911248/#more" rel="contents">
+              <a class="btn" href="/2022/11/4c5a8bb1e1ca/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1298,6 +1184,151 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/3bfcb546cd4a/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/80b3dfc88923/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="luoleiself">
+      <meta itemprop="description" content="努力的往前飞, 再累也无所谓, 黑夜过后的光芒有多美...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="luoleiself's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/80b3dfc88923/" class="post-title-link" itemprop="url">Redis-String-Hash</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-09 18:03:19" itemprop="dateCreated datePublished" datetime="2022-11-09T18:03:19+08:00">2022-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-29 14:50:55" itemprop="dateModified" datetime="2025-12-29T14:50:55+08:00">2025-12-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index"><span itemprop="name">server</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>6.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Strings-命令"><a href="#Strings-命令" class="headerlink" title="Strings 命令"></a>Strings 命令</h2><p>字符串是基础的 key-value 类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 <strong>512MB</strong>.</p>
+<p>String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic String)</p>
+<blockquote>
+<p>因为 C 语言的字符串并不记录自身长度, 所以获取长度的复杂度为 O(n), SDS 结构里用 len 属性记录字符串长度, 所有复杂度为 O(1)</p>
+</blockquote>
+<h3 id="设置值"><a href="#设置值" class="headerlink" title="设置值"></a>设置值</h3><ul>
+<li><p>SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]</p>
+<p>为 key 设置字符串的值, 执行成功返回 ok, 每次更新 key 的值时会自动清除过期时间</p>
+<ul>
+<li>NX 仅当 key 不存在时设置</li>
+<li>XX 仅当 key 存在时设置</li>
+<li>EX 过期时间, 单位秒</li>
+<li>PX 过期时间, 单位毫秒</li>
+<li>EXAT 过期时间戳, 单位秒</li>
+<li>PXAT 过期时间戳, 单位毫秒</li>
+<li>KEEPTTL 保留 key 关联的生存时间</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SET age 18</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; EXPIRE age 100</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 98</span><br><span class="line">127.0.0.1:6379&gt; SET age 20</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) -1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 KEEPTTL 保留 key 关联的生存时间</span></span><br><span class="line">127.0.0.1:6379&gt; SET age 18 EX 100</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 98</span><br><span class="line">127.0.0.1:6379&gt; SET age 20 KEEPTTL</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; GET age</span><br><span class="line"><span class="string">&quot;20&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 79</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;name&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;name&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 <code>SET</code> 并返回追加内容的长度</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; APPEND age 1</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; GET age</span><br><span class="line"><span class="string">&quot;181&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; APPEND addr beijing</span><br><span class="line">(<span class="built_in">integer</span>) 7</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;addr&quot;</span></span><br><span class="line">4) <span class="string">&quot;name&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; APPEND a hello</span><br><span class="line">(<span class="built_in">integer</span>) 5</span><br><span class="line">127.0.0.1:6379&gt; APPEND b gg</span><br><span class="line">(<span class="built_in">integer</span>) 2</span><br></pre></td></tr></table></figure>
+
+<h4 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h4><ul>
+<li>SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok</li>
+<li>PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SETEX addr 20 beijing</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; PSETEX addr 20000 beijing</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<h4 id="批量设置值"><a href="#批量设置值" class="headerlink" title="批量设置值"></a>批量设置值</h4><ul>
+<li>MSET key value [key value …] 批量设置 key 的值</li>
+<li>MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;age&quot;</span></span><br><span class="line">2) <span class="string">&quot;name&quot;</span></span><br><span class="line">3) <span class="string">&quot;hash:zhang&quot;</span></span><br><span class="line"><span class="comment"># 当且仅当所有 key 都不存在时设置成功返回 1</span></span><br><span class="line">127.0.0.1:6379&gt; MSETNX name zhangsan age 18 addr beijing</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>SETRANGE key offset value</p>
+<p>覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SETRANG name 1 xyz</span><br><span class="line">(<span class="built_in">integer</span>) 8</span><br><span class="line">127.0.0.1:6379&gt; GET name</span><br><span class="line"><span class="string">&quot;axyz1234&quot;</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/80b3dfc88923/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1458,12 +1489,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">760k</span>
+    <span title="站点总字数">761k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:31</span>
+    <span title="站点阅读时长">11:32</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->

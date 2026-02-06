@@ -28,7 +28,7 @@
 <meta property="og:description" content="RSC(React Server Component)ISR(Incremental Static Regeneration) React Server Component异步组件 是服务器组件的一个新特性, 允许在渲染中 await. RSC 是一种新型的组件, 它在打包之前在独立于客户端应用程序或 SSR 服务器的环境中提前渲染, 在 next.js 中, 渲染工作进一步按路由段划分, 以实现">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-02-15T07:37:49.000Z">
-<meta property="article:modified_time" content="2026-01-20T10:51:48.181Z">
+<meta property="article:modified_time" content="2026-01-31T14:01:34.146Z">
 <meta property="article:author" content="luoleiself">
 <meta property="article:tag" content="js">
 <meta property="article:tag" content="jsx">
@@ -240,7 +240,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-20 18:51:48" itemprop="dateModified" datetime="2026-01-20T18:51:48+08:00">2026-01-20</time>
+                <time title="修改时间：2026-01-31 22:01:34" itemprop="dateModified" datetime="2026-01-31T22:01:34+08:00">2026-01-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -261,13 +261,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>32k</span>
+              <span>33k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>29 分钟</span>
+              <span>30 分钟</span>
             </span>
 
         </div>
@@ -460,7 +460,7 @@
 </li>
 <li>proxy.ts Next.js 16 之后代替 middleware.ts, 功能保持不变, 以更好地反映其用途</li>
 </ul>
-<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">NextRequest</span>, <span class="title class_">NextResponse</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;next/server&#x27;</span></span><br><span class="line"><span class="keyword">export</span>  <span class="keyword">function</span> <span class="title function_">proxy</span> (<span class="params"><span class="attr">req</span>: <span class="title class_">NextRequest</span></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="title class_">NextResponse</span>.<span class="title function_">next</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> config = &#123;</span><br><span class="line">  <span class="attr">matcher</span>: [<span class="string">&#x27;/middleware&#x27;</span>, <span class="string">&#x27;/api/:path*&#x27;</span>],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">NextRequest</span>, <span class="title class_">NextResponse</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;next/server&#x27;</span></span><br><span class="line"><span class="keyword">export</span>  <span class="keyword">function</span> <span class="title function_">proxy</span> (<span class="params"><span class="attr">req</span>: <span class="title class_">NextRequest</span></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="title class_">NextResponse</span>.<span class="title function_">next</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> config = &#123;</span><br><span class="line">  <span class="attr">matcher</span>: [</span><br><span class="line">    <span class="string">&#x27;/api/:path*&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/chat/:path*&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)&#x27;</span></span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> config = &#123;</span><br><span class="line">  <span class="attr">matcher</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">source</span>: <span class="string">&#x27;/api/:path*&#x27;</span>,</span><br><span class="line">      <span class="attr">locale</span>: <span class="literal">false</span>, <span class="comment">// 忽略语言</span></span><br><span class="line">      <span class="attr">has</span>: [ <span class="comment">// 指定特殊的匹配条件</span></span><br><span class="line">        &#123; <span class="attr">type</span>: <span class="string">&#x27;header&#x27;</span>, <span class="attr">key</span>: <span class="string">&#x27;Authorization&#x27;</span>, <span class="attr">value</span>: <span class="string">&#x27;Bearer Token&#x27;</span> &#125;,</span><br><span class="line">        &#123; <span class="attr">type</span>: <span class="string">&#x27;query&#x27;</span>, <span class="attr">key</span>: <span class="string">&#x27;userId&#x27;</span>, <span class="attr">value</span>: <span class="string">&#x27;123&#x27;</span> &#125;,</span><br><span class="line">        &#123; <span class="attr">type</span>: <span class="string">&#x27;cookie&#x27;</span>, <span class="attr">key</span>: <span class="string">&#x27;token&#x27;</span>, <span class="attr">value</span>: <span class="string">&#x27;test&#x27;</span>&#125;</span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">missing</span>: [ <span class="comment">// 指定特殊的匹配条件, 当缺少指定的 cookie 时</span></span><br><span class="line">        &#123; <span class="attr">type</span>: <span class="string">&#x27;cookie&#x27;</span>, <span class="attr">key</span>: <span class="string">&#x27;token&#x27;</span>, <span class="attr">value</span>: <span class="string">&#x27;active&#x27;</span> &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>instrumentation.ts 使用代码将可观察工具集成到应用程序中, 能够跟踪性能和行为, 并在生产中调试问题<ul>
@@ -884,12 +884,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/02/373c196b66d1/" rel="prev" title="React-Tailwind.md">
-      <i class="fa fa-chevron-left"></i> React-Tailwind.md
+    <a href="/2022/02/5ad505cb0ced/" rel="prev" title="React-Redux.md">
+      <i class="fa fa-chevron-left"></i> React-Redux.md
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/02/0eb429a8209b/" rel="next" title="React-Router.md">
-      React-Router.md <i class="fa fa-chevron-right"></i>
+    <a href="/2022/02/18f2de6d45f9/" rel="next" title="JSUtils">
+      JSUtils <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -1035,12 +1035,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">760k</span>
+    <span title="站点总字数">761k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:31</span>
+    <span title="站点阅读时长">11:32</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
