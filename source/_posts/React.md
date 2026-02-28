@@ -2032,7 +2032,8 @@ function App(){
 
 根据组件的 props 记忆化组件渲染, 并且其重新渲染逻辑是非常昂贵的, 使用 memo 优化才有意义
 
-- 记忆化只与从父组件传递给组件的 props 有关, 即使组件已被记忆化, 当其使用的 context 发生变化时, 仍将重新渲染
+- 记忆化只与从父组件传递给组件的 props 有关, 即使组件已被记忆化, `当其 自身的状态 或 使用的 context 发生变化时, 仍将重新渲染`
+
 - componennt 要进行缓存的组件, memo 不会修改该组件, 而是返回一个新的、记忆化的组件, 接受任何有效的 React 组件, 包含函数式组件和 [forwardRef](#forwardRef) 组件
 - arePropsEqual 该函数接收两个参数, 组件的上一个 props 和新的 props 进行比较
   - 新的 props 和旧的 props 具有相同的输出时返回 true
