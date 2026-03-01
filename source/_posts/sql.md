@@ -758,3 +758,143 @@ db.users.updateMany({age: {$gte: 35}}, {$addToSet: {lve: {$each: ['code', 'footb
 ## 副本集
 
 ## 分片集
+
+## mongoose
+
+### SchemaTypes
+
+- String
+- Number
+- Boolean
+- Array
+- Buffer
+- Date
+- ObjectId
+- Mixed, 可以保存任意值
+- UUID
+- BigInt
+- Double
+- Int32
+
+直接声明某种类型, 或者赋值一个含有 type 属性的对象
+
+```ts
+const schema1 = new Schema({
+  test: String
+});
+const schema2 = new Schema({
+  test: { type: String, lowercase: true}
+});
+```
+
+#### 选项
+
+##### 通用选项
+
+- required, 布尔值或函数, 如果值为真, 为此属性添加 required 验证器
+- default, 任何值或函数, 设置此属性的默认值
+- select, 布尔值, 指定 query 的默认 projections
+- validate, 函数, 添加属性自定义验证器
+- get, 函数, 使用 Object.defineProperty() 定义自定义 getter
+- set, 函数, 使用 Object.defineProperty() 定义自定义 setter
+- alias, 字符串, 设置属性别名
+- transform, 函数, 当转换为 JSON 字符串时调用, `Document#toJSON()` 和 `JSON.stringify()`
+
+```ts
+const numberSchema = new Schema({
+  integerOnly: {
+    type: Number,
+    get: v => Math.round(v),
+    set: v => Math.round(v),
+    alias: 'i',
+  }
+});
+const Number = mongoose.Model('Number', numberSchema);
+const num = new Number();
+num.integerOnly = 2.001;
+num.integerOnly; // 2
+num.i; // 2
+num.i = 3.001;
+num.integerOnly; // 3
+num.i; // 3
+
+// 自定义验证器
+new Schema({
+  phone: {
+    type: String,
+    validate: {
+      validator: (v) => {
+        return /\d{3}-\d{3}-\d{4}/.test(v);
+      },
+      message: '{VALUE} is not a valid phone number',
+    },
+    required: [true, 'User phone number required']
+  }
+});
+```
+
+##### 索引选项
+
+- index, 布尔值, 是否对这个属性创建索引
+- unique, 布尔值, 是否对这个属性创建唯一索引
+- sparse, 布尔值, 是否对这个属性创建稀疏索引
+
+```ts
+const schema2 = new Schema({
+  test: {
+    type: String,
+    index: true,
+    unique: true,
+  }
+});
+```
+
+##### 字符串选项
+
+- lowercase, 布尔值, 是否在保存前对此值调用 .toLowerCase()
+- uppercase, 布尔值, 是否在保存前对此值调用 .toUpperCase()
+- trim, 布尔值, 是否在保存前对此值调用 .trim()
+- match, 正则表达式, 创建验证器检查属性是否匹配给定正则表达式
+- enum, 数组, 创建验证器检查属性是否包含于给定数组
+- minlength, 数值, 创建验证器检查属性是否大于该值
+- maxlength, 数值, 创建验证器检查属性是否小于该值
+
+##### 数值选项
+
+- min, 数值, 创建验证器检查属性是否大于或等于该值
+- max, 数值, 创建验证器检查属性是否小于或等于该值
+- enum, 数组, 创建验证器检查属性是否包含于给定数组
+
+##### 日期选项
+
+- min, Date, 创建验证器检查属性是否大于该值
+- max, Date, 创建验证器检查属性是否小于该值
+- expires, 数值或字符串, 创建以秒为单位的生存时间
+
+### 验证器
+
+验证器定义于 SchemaType, 是一个中间件, 默认作为 pre('save') 钩子注册在 schema 上
+
+- 手动验证 `doc.validate(callback)` 或 `doc.validateSync()`
+- 不对未定义的值进行验证, 唯一例外是 required 验证器
+- 验证是异步递归的
+
+```ts
+const schema = new Schema({
+  name: { type: String, required: true }
+});
+const Cat = mongoose.model('Cat', schema);
+
+const cat = new Cat();
+cat.save(function(error) {
+  assert.equal(error.errors['name'].message, 'Path \'name\' is required');
+  error = cat.validateSync();
+  assert.equal(error.errors['name'].message, 'Path \'name\' is required');
+});
+```
+
+#### 内建验证器
+
+- required 验证器
+- 字符串选项的 enum, match, maxlength, minlength 验证器
+- 数值选项的 min 和 max 验证器
