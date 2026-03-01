@@ -759,7 +759,7 @@ db.users.updateMany({age: {$gte: 35}}, {$addToSet: {lve: {$each: ['code', 'footb
 
 ## 分片集
 
-## mongoose
+## Mongoose
 
 ### SchemaTypes
 
@@ -793,7 +793,7 @@ const schema2 = new Schema({
 
 - required, 布尔值或函数, 如果值为真, 为此属性添加 required 验证器
 - default, 任何值或函数, 设置此属性的默认值
-- select, 布尔值, 指定 query 的默认 projections
+- select, 布尔值, 指定查询时返回的默认 projections
 - validate, 函数, 添加属性自定义验证器
 - get, 函数, 使用 Object.defineProperty() 定义自定义 getter
 - set, 函数, 使用 Object.defineProperty() 定义自定义 setter
@@ -871,7 +871,7 @@ const schema2 = new Schema({
 - max, Date, 创建验证器检查属性是否小于该值
 - expires, 数值或字符串, 创建以秒为单位的生存时间
 
-### 验证器
+#### 验证器
 
 验证器定义于 SchemaType, 是一个中间件, 默认作为 pre('save') 钩子注册在 schema 上
 
@@ -893,8 +893,58 @@ cat.save(function(error) {
 });
 ```
 
-#### 内建验证器
+##### 内建验证器
 
 - required 验证器
 - 字符串选项的 enum, match, maxlength, minlength 验证器
 - 数值选项的 min 和 max 验证器
+
+### SchemaOptions
+
+- audoIndex: boolean, 默认为 null, 使用数据连接自带的 autoIndex 选项
+- autoCreate: boolean, 默认为 null, 使用数据库连接自带的 autoCreate 选项
+- capped: boolean/number/Object, 默认为 false, 设置集合的大小上限
+- collection: string, 没有默认值, 指定集合名称, 默认使用模型名称作为集合名称
+- id: boolean, 默认为 true, 虚拟 id 指向文档的 _id
+- _id: boolean, 默认为 true, 缺失无法更新文档
+- minimize: boolean, 默认为 true 不保存空对象, 当手动调用时控制 `document#toObject` 的行为
+- readConcern: Object, 默认为 null, 设置所有查询的读关注
+- writeConcern: Object, 默认为 null, 设置写关注
+- strict: boolean, 默认为 true, 不能保存 Schema 中没有声明的属性
+- typeKey: string, 默认为 `type`, 设置属性类型的键
+- validateBeforeSave: boolean, 默认为 true, 保存之前验证
+- versionKey: string/Object, 默认为 '__v'
+- timestamps: boolean/Object, 默认为 false, 如果为 true，Mongoose 将添加 `createAt` 和 `updateAt` 属性到 Schema 中并维护它们
+- lean: boolean, 默认为 false, 如果为 true, 则所有的查询都使用 lean 将结果转换为普通 JavaScript 对象
+- selectPopulatedPaths: boolean, 默认为 true, 设置在查询时是否返回此属性
+
+```ts
+const schema = new Schema({
+  name: { $type: String, select: false }
+}, {
+  autoIndex: false, // 禁用自动创建索引
+  autoCreate: false, // 禁用自动创建集合
+  collaction: 'data', // 指定集合名称
+  typeKey: '$type'
+})
+```
+
+### 查询方法
+
+#### select
+
+指定查询时返回的结果中的字段, 参数接收 string/array/object
+
+```ts
+// include a and b, exclude other fields
+query.select('a b');
+// Equivalent syntaxes:
+query.select(['a', 'b']);
+query.select({ a: 1, b: 1 });
+
+// exclude c and d, include other fields
+query.select('-c -d');
+
+// Use `+` to override schema-level `select: false` without making the
+query.select('+name');
+```
