@@ -12,9 +12,10 @@ Author: luolei
 Date: 2024-06-01
 '''
 
+import random
 print('hello world')
 
-name="luolei"
+name = "luolei"
 age = 12
 print(f'my name is {name}, and I am {age} years old')
 
@@ -52,7 +53,6 @@ print(F"""my salary is {salary:.2f}, my tel is {tel}""")
 #     print("你还未成年")
 
 # print('----------')
-import random
 # num = random.randint(1, 10)
 # guess_num = int(input("请输入一个 1-10 以内的数字: "))
 # if guess_num == num:
@@ -62,6 +62,21 @@ import random
 #         print('你猜的数字太大了')
 #     else:
 #         print('你猜的数字太小了')
+print('--------------')
+
+letters = 'abcdefghijklmnopqrstuvwxyz'
+for x in letters:
+    print(f'{x}', end='\t')
+print()
+for x in range(97, 123):    # 临时变量, 外层可以访问到, 不建议在外层访问
+    print(f'{x}={chr(x)}', end='\t')    # chr 获取 unicode 码对应的字符
+print()
+print(x)    # 能访问到循环语句内声明的变量
+for x in range(65, 91):
+    print(f'{x}={chr(x)}', end='\t')
+print(x)    # 能访问到循环语句内声明的变量
+print(ord('一'))    # ord 获取字符的 unicode 码
+print('--------------')
 
 print('-----random guess-----')
 random_num = random.randint(1, 100)
@@ -72,28 +87,3 @@ while loop <= 100:
         print(f'Python 克星找到了, 它是 {random_num}')
         break
     loop += 1
-
-print('-----9 * 9-----')
-i = 1
-while i <= 9:
-    j = 1
-    while j <= i:
-        print(f'{j} * {i} = {j * i}', end='\t')
-        j += 1
-    print()
-    i += 1
-
-print('--------------')
-letters = 'abcdefghijklmnopqrstuvwxyz'
-for x in letters:
-    print(f'{x}', end='\t')
-print()
-for x in range(97, 123):
-    print(f'{x}={chr(x)}', end='\t')
-print()
-for x in range(65, 91):
-    print(f'{x}={chr(x)}', end='\t')
-print()
-
-print('--------------')
-print(ord('一'))    # 获取字符的 unicode 码

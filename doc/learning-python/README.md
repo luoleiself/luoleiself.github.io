@@ -1,6 +1,7 @@
 
 项目结构
 
+```python
 my_project/
 ├── .venv/                 # 虚拟环境目录 (通常跟随项目)
 │   ├── bin/               # (Linux/macOS) 可执行文件
@@ -13,20 +14,9 @@ my_project/
 ├── uv.lock                # 依赖的精确锁定文件 (由 uv 自动维护)
 ├── requirements.txt       # (可选) 传统的依赖列表文件
 |—— 项目源代码
+```
 
 ## 数据类型
-
-```python
-# 单行注释
-
-'''
-多行字符串/注释, 如果多行字符串有变量引用则作为字符串, 否则作为多行注释
-'''
-
-"""
-多行字符串/注释, 如果多行字符串有变量引用则作为字符串, 否则作为多行注释
-"""
-```
 
 - int
 - float
@@ -38,7 +28,15 @@ my_project/
 - dict
 
 ```python
-print("hello world")
+# 单行注释
+
+'''
+多行字符串/注释, 如果多行字符串有变量引用则作为字符串, 否则作为多行注释
+'''
+
+"""
+多行字符串/注释, 如果多行字符串有变量引用则作为字符串, 否则作为多行注释
+"""
 ```
 
 - `整型和布尔值混合转换为整型`
@@ -67,249 +65,51 @@ print("hello world")
 1.0
 ```
 
-### 字符串
+### 整数
 
-`只读的字符序列`
-
-- [] 获取字符, 下标越界将报错
+range 是`惰性求值`的，不会一次性占用大量内存
 
 ```python
->>> letters = 'abcdefg' 
->>> letters[0]
-'a'
->>> letters[-1]
-'g'
->>> letters[-2]
-'f'
->>> letters[10]  
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-IndexError: string index out of range
->>> letters[-100]
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-IndexError: string index out of range
+# 立即返回，几乎不占内存
+big_range = range(1000000)
+# 创建包含 100 万个元素的列表，占用大量内存
+big_list = list(range(1000000))
 ```
 
-- `分片`获取子串, [strat:end:step], 含头不含尾, start 和 end 越界不会报错
-  - start, 起始索引, 包含, 默认为字符串开始
-  - end, 结束索引, 不包含, 默认为字符串结束
-  - step, 步长绝对值，默认为 1, 每隔指定数量的`绝对值`的字符取一次
-    - 如果为 -1, `反向提取子串`
+- range() 生成数字序列，返回一个可迭代对象, 不能直接使用, 需要`配合其他函数或语句`才能获取值
+  - 只有 1 个参数时生成 0 到 arg 的数字序列
+  - start, 开始，包含
+  - end, 结束，不包含
+  - step，步长绝对值，默认为 1
+    - 如果为 -1, `反向生成数字序列`
 
 ```python
-'''
-  a  b  c  d  e  f  g
-  0  1  2  3  4  5  6  正索引
- -7 -6 -5 -4 -3 -2 -1  负索引
-'''
+>>> range(4)  # 直接使用不会输出结果
+range(0, 4)
+>>> print(range(4)) # 直接使用不会输出结果
+range(0, 4)
 
->>> letters = 'abcdefg'
->>> letters[:]
-'abcdefg'
->>> letters[-8:-2]  # start 超出起始位置使用默认值
-'abcde'
->>> letters[-8:10]  # end 超出结束位置使用默认值
-'abcdefg'
->>> letters[3:-2] # 含头不含尾
-'de'
->>> letters[8:12] # 下标越界提取为空串
-''
->>> letters[8:-2] # 下标越界提取为空串
-''
-# 指定步长
->>> letters[::3]  # 每隔 3 个字符取一次
-'adg'
->>> letters[-5:-2:2]  # 每隔 2 个字符取一次
-'ce'
->>> letters[-5:-5:2]
-''
+>>> num = range(4)
+>>> print(num[2])
+2
+>>> list(range(4))
+[0, 1, 2, 3]
+>>> list(range(1, 4)) 
+[1, 2, 3]
+>>> list(range(1, 4, 2))
+[1, 3]
+>>> tuple(range(4))
+(0, 1, 2, 3)
+>>> tuple(range(1, 4))
+(1, 2, 3)
+>>> tuple(range(1, 4, 2))
+(1, 3)
 
->>> letters[::-1] # 反向提取字符串
-'gfedcba'
->>> letters[6:1:-1]
-'gfedc'
->>> letters[6:1:-2] # 反向每隔 2 个字符取一次
-'gec'
->>> letters[-3:1:-2]
-'ec'
-```
-
-- strip() 移除字符串两端的空白字符('', '\t', '\n')
-
-```python
->>> t1 = '\n\t\na\n\tb\n\t\n'
->>> t1.strip()
-'a\n\tb'
->>> t1.lstrip()
-'a\n\tb\n\t\n'
->>> t1.rstrip()
-'\n\t\na\n\tb'
-```
-
-- find() 和 index(), 查找子串出现的下标, find 未找到返回 -1, index 未找到报错
-
-```python
->>> t1.find('a'， 3)  # 指定开始查找位置
-3
->>> t1.rfind('a', 3)  # 指定开始查找位置  
-3
->>> t1.index('a', 3)  # 指定开始查找位置
-3
->>> t1.rindex('a', 3) # 指定开始查找位置
-3
-
->>> t1.find('aa')
--1
->>> t1.rfind('aa')
--1
->>> t1.index('aa')
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-ValueError: substring not found
->>> t1.rindex('aa')
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-ValueError: substring not found
-```
-
-- 对齐字符串(center, ljust, rjust), 在指定的空间范围内对齐, 如果空间范围小于字符串长度则返回原值
-
-```python
->>> s = 'a duck goes into bar...'
->>> len(s)
-23
->>> s.center(5) # 对齐空间范围小于字符串长度返回原值
-'a duck goes into bar...'
->>> s2 = s.center(40) # 居中对齐
->>> s2
-'        a duck goes into bar...         '
->>> len(s2)
-40
->>> s.ljust(40) # 左对齐
-'a duck goes into bar...                 '
->>> s.rjust(40) # 右对齐
-'                 a duck goes into bar...'
-```
-
-#### 字符串拼接
-
-- 字符串字面量拼接，`只能是字符串字面量`
-
-```python
->>> name = 'python'
->>> 'hello' name
-  File "<stdin>", line 1
-    'hello' name
-            ^^^^
-SyntaxError: invalid syntax
-
->>> 'hello' "world"
-'helloworld'
->>> 'hello' "world" '''你好''' """python"""
-'helloworld你好python'
->>> '''hello'''"world" """你好""" 'python'
-'helloworld你好python'
-```
-
-- 使用 * 重复字符串，`只能是字符串类型和整型`
-
-```python
->>> """hello"""*2
-'hellohello'
->>> num = 3
->>> 'hello' * num
-'hellohellohello'
-
->>> 2 * 'hello'
-'hellohello'
-
->>> 'hello' * 2.
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: can't multiply sequence by non-int of type 'float'
-```
-
-- 使用 + 拼接的值 `只能是字符串类型`, 其他类型需要先转换为字符串
-
-```python
->>> 'hello' + 1
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: can only concatenate str (not "int") to str
->>> 'hello' + 1.2
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: can only concatenate str (not "float") to str
->>> 'hello' + True
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: can only concatenate str (not "bool") to str
-
-name = "luolei"
-message = "hello " + name
-print(message)
-```
-
-- 使用 % 占位符, 需要考虑浮点数的精度问题
-
-```python
-# 字符串拼接, 占位符 %,  %s 是字符串占位符，%d 是整数占位符，%f 是浮点数占位符
-name = "luolei"
-message = "hello %s" % name
-print(message)
-
-salary = 5000
-tel = 13112345678
-message = "my salary is %.2f, my tel is %d" % (salary, tel)
-print(message)
-```
-
-- 使用 format 方法
-
-```python
-# 字符串拼接, format方法
-message = "my salary is {:.2f}, my tel is {}".format(salary, tel)
-print(message)
-```
-
-- 使用 f-string, f"{占位符}", 不需要考虑浮点数的精度问题
-
-```python
-# 字符串拼接, f-string, 精度控制可选
-message = f"my salary is {salary:.2f}, my tel is {tel}"
-print(message)
-print(F"""my salary is {salary:.2f}, my tel is {tel}""")
-
-age = 18
->>> print(f'''age: {age}''')
-age: 18
->>> print(f"""age: {age}""")
-age: 18
->>> print(F"""age: {age}""")
-age: 18
->>> print(F'''age: {age}''')
-age: 18
-```
-
-- 使用 join 方法拼接字符串, 拼接的元素只能是字符串类型
-
-```python
->>> t = ['get gloves,get mask.give cat vitamins,call ambulance', 'get glove', 'get mak']
->>> t2 = '--gg,gg--'
->>> t2.join(t)
-'get gloves,get mask.give cat vitamins,call ambulance--gg,gg--get glove--gg,gg--get mak'
->>> t3 = t2.join(t)
->>> t3.split(t2)
-['get gloves,get mask.give cat vitamins,call ambulance', 'get glove', 'get mak']
-
->>> t4 = [1, 2, 3, True]
->>> type(t4)
-<class 'list'>
->>> ','.join(t4)
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: sequence item 0: expected str instance, int found
+# 反向生成数字序列
+>>> list(range(4, -2, -1))
+[4, 3, 2, 1, 0, -1]
+>>> list(range(4, -2, -2))
+[4, 2, 0]
 ```
 
 ### 内置函数
@@ -447,7 +247,7 @@ True
 
 #### chr()/ord()
 
-转换 unicode 码对应的字符串
+转换 unicode 码对应的字符
 
 ```python
 >>> chr(97)
