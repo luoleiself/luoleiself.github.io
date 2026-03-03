@@ -1,0 +1,3 @@
+- internal-demo 内部包 demo
+- detect-content-type 使用 http 包获取文件类型
+- go-work 工作空间
