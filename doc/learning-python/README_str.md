@@ -1,6 +1,6 @@
 ## 字符串
 
-`只读的字符序列`
+只读的字符序列
 
 - [ ] 获取字符, 下标越界会报错
 
@@ -12,17 +12,17 @@
 'g'
 >>> letters[-2]
 'f'
->>> letters[10]  
+>>> letters[10]  # 下标越界报错
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 IndexError: string index out of range
->>> letters[-100]
+>>> letters[-100] # 下标越界报错
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 IndexError: string index out of range
 ```
 
-- `分片`获取子串, [strat:end:step], 含头不含尾, start 和 end 越界不会报错
+- `切片`获取并返回新字符串, [strat:end:step], 含头不含尾, start 和 end 越界不会报错
   - start, 起始索引, 包含, 默认为字符串开始
   - end, 结束索引, 不包含, 默认为字符串结束
   - step, 步长绝对值，默认为 1, 每隔指定数量的`绝对值`的字符取一次
@@ -83,6 +83,7 @@ IndexError: string index out of range
 - find() 和 index(), 查找子串出现的下标, find 未找到返回 -1, index 未找到报错
 
 ```python
+>>> t1 = '\n\t\na\n\tb\n\t\n'
 >>> t1.find('a'， 3)  # 指定开始查找位置
 3
 >>> t1.rfind('a', 3)  # 指定开始查找位置  
@@ -127,6 +128,8 @@ ValueError: substring not found
 
 ### 字符串拼接
 
+`*` 和 `+` 拼接字符串返回新的字符串
+
 #### 字符串字面量拼接
 
 只能是`字符串字面量`
@@ -149,7 +152,7 @@ SyntaxError: invalid syntax
 
 #### * 重复字符串
 
-只能是`字符串类型和整型`, 不区分书写顺序
+重复数量只能是整型, 不区分书写顺序
 
 ```python
 >>> """hello"""*2
@@ -191,6 +194,8 @@ print(message)
 ```
 
 #### % 占位符
+
+> 老版本语法, python 3 兼容
 
 % 出现在字符串内的数量和字符串末尾的 % 之后的数据项的数量必须相同
 
@@ -286,6 +291,8 @@ tel = 13112345678
 
 #### '{}'.format
 
+> python 2.7 和 python 3 支持
+
 ```python
 >>> thing = 'woodchuck'
 >>> '{}'.format(thing)
@@ -345,7 +352,9 @@ ValueError: Invalid format specifier '##^10s' for object of type 'str'
 
 #### f-string
 
-不需要考虑浮点数的精度问题, python 3.6 以上支持
+> python 3.6 以上支持
+
+不需要考虑浮点数的精度问题
 
 ```python
 # 字符串拼接, f-string, 精度控制可选

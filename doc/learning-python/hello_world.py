@@ -71,10 +71,10 @@ print()
 for x in range(97, 123):    # 临时变量, 外层可以访问到, 不建议在外层访问
     print(f'{x}={chr(x)}', end='\t')    # chr 获取 unicode 码对应的字符
 print()
-print(x)    # 能访问到循环语句内声明的变量
+# print(x)    # 能访问到循环语句内声明的变量
 for x in range(65, 91):
     print(f'{x}={chr(x)}', end='\t')
-print(x)    # 能访问到循环语句内声明的变量
+# print(x)    # 能访问到循环语句内声明的变量
 print(ord('一'))    # ord 获取字符的 unicode 码
 print('--------------')
 
@@ -87,3 +87,19 @@ while loop <= 100:
         print(f'Python 克星找到了, 它是 {random_num}')
         break
     loop += 1
+
+print('--------------')
+
+# 定义加法函数
+def add(a: int, b: int) -> int:
+    '''
+    @method add 函数求和
+    @param a: int
+    @param b: int
+    @return int
+    '''
+    return a + b
+
+
+result = add(1, 3)
+print(f'result: {result}')

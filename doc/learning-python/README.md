@@ -18,11 +18,12 @@ my_project/
 
 ## 数据类型
 
-- int
-- float
-- bool, 底层使用整数 1, 0 表示 True, False
-- str
-- tuple
+- int, 不可变类型
+- float, 不可变类型
+- complex, 不可变类型
+- bool, 不可变类型, 底层使用整数 1, 0 表示 True, False
+- str, 不可变类型
+- tuple, 不可变类型
 - list
 - set
 - dict
@@ -112,7 +113,100 @@ range(0, 4)
 [4, 2, 0]
 ```
 
+## 推导式
+
+推导式(Comprehensions) 是 python 中的一种简洁、高效的创建序列的语法结构，允许用一行代码从一个`可迭代对象`生成新的列表、字典、集合或生成器, 通常比传统的 for 循环更简洁
+
+- 列表推导式
+
+基本语法: [expression for item in iterable if condition]
+
+```python
+# 生成 0-9 的平方
+>>> squares = [x**2 for x in range(10)]
+>>> squares
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+# 只保留偶数
+>>> evens = [x for x in range(20) if x % 2 == 0]
+>>> evens
+[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+
+>>> numbers = [number-1 for number in range(1, 6)]
+>>> numbers
+[0, 1, 2, 3, 4]
+# 带判断条件推导式
+>>> numbers = [number for number in range(1, 6) if number % 2 == 1]  
+>>> numbers
+[1, 3, 5]
+
+# 嵌套推导式
+>>> rows = range(1, 4)                                             
+>>> cols = range(1, 3) 
+>>> cells = [(row, col) for row in rows for col in cols]
+>>> cells
+[(1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (3, 2)]
+```
+
+- 字典推导式
+
+基本语法: {key_expression: value_expression for item in iterable if condition}
+
+```python
+# 创建数字及平方的映射
+>>> squares_dict = {x: x**2 for x in range(5)}
+>>> squares_dict
+{0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
+# 统计名字长度
+>>> names = ['alice', 'tom', 'jerry', 'bob']     
+>>> name_length = {name: len(name) for name in names}
+>>> name_length
+{'alice': 5, 'tom': 3, 'jerry': 5, 'bob': 3}
+```
+
+- 集合推导式
+
+基本语法：{expression for item in iterable if condition}
+
+```python
+>>> numbers = [1, 2, 3, 4, 5, 6]
+>>> numbers
+[1, 2, 3, 4, 5, 6]
+>>> square_set = {x**2 for x in numbers}
+>>> square_set
+{1, 4, 36, 9, 16, 25}
+```
+
+- 生成器推导式
+
+基本语法：(expression for item in iterable if condition)
+
+```python
+>>> gen = (x**2 for x in range(5))
+>>> next(gen)
+0
+>>> next(gen)
+1
+>>> next(gen)
+4
+>>> next(gen)
+9
+>>> next(gen)
+16
+```
+
 ### 内置函数
+
+#### tuple()
+
+创建或转换其他类型为元组, 参数为空或`可迭代对象`
+
+#### list()
+
+创建或转换其他类型为列表, 参数为空或`可迭代对象`
+
+#### dict()
+
+创建或转换其他类型为字典, 参数为空, `具名参数`, `包含双项序列的任意序列`
 
 #### int()
 
@@ -266,4 +360,32 @@ True
 26834
 >>> chr(26834)
 '棒'
+```
+
+#### id() 获取变量引用的对象的 id
+
+```python
+>>> n = 1
+>>> id(n)
+140726623005112
+>>> m = n
+>>> id(m)
+140726623005112
+>>> n = 2
+>>> id(n)
+140726623005144
+>>> id(m)
+140726623005112
+
+>>> names = ['alice', 'tom', 'jerry']
+>>> id(names)
+2970721128832
+>>> names_lst = names
+>>> id(names_lst)
+2970721128832
+>>> names.append('bob')
+>>> names
+['alice', 'tom', 'jerry', 'bob']
+>>> names_lst
+['alice', 'tom', 'jerry', 'bob']
 ```
