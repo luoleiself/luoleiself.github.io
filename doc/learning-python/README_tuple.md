@@ -1,9 +1,9 @@
 ## 元组
 
-不可变的重复的任意数据类型的序列
+不可变的有序重复的任意数据类型的序列
 
 - 使用 `,` 定义元组
-- 使用 `( )` 定义元组, 当小括号只有一个元素时, `尾逗号不能省略`
+- 使用 `( )` 定义元组, 当只有一个元素时, `尾逗号不能省略`
 - 使用 `tuple()` 内置函数创建或转换其他类型为元组, 参数为空或`可迭代对象`
 
 ```python
@@ -14,7 +14,8 @@
 >>> marx_tuple = 'Gloves', True, False, 3.1415, True
 >>> marx_tuple
 ('Gloves', True, False, 3.1415, True)
->>> marx_tuple = ('Gloves') # 省略尾逗号变成普通的赋值操作
+# 省略尾逗号变成普通的赋值操作
+>>> marx_tuple = ('Gloves')
 >>> marx_tuple
 'Gloves'
 >>> type(marx_tuple)
@@ -169,6 +170,25 @@ TypeError: bad operand type for unary +: 'tuple'
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: can only concatenate tuple (not "int") to tuple
+```
+
+### 查找
+
+- index() 查找第一个符合的偏移并返回下标, 未找到会报错
+  - val, 要查找的值
+  - start, 开始位置, 默认为列表开始位置
+  - end, 结束位置, 默认为列表结束位置
+
+```python
+>>> te = 1, 2, 3, 4
+>>> te
+(1, 2, 3, 4)
+>>> te.index(2, 1, 3)
+1
+>>> te.index(2, 2, 3)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: tuple.index(x): x not in tuple
 ```
 
 ### 删除元组

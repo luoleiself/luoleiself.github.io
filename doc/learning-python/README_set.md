@@ -1,6 +1,10 @@
 ## 集合
 
-可变的无序不重复的任意数据类型的序列
+> 可哈希: 对象有一个固定的哈希值(通过 hash() 函数获取), 在整个生命周期中不会改变, python 用这个 hash 值来快速查找、比较对象
+
+集合内部实现基于哈希表
+
+可变的无序不重复的`可哈希`的任意类型的容器
 
 - 使用 `{ }` 定义集合
 - 使用 `set()` 内置函数创建或转换其他类型为集合, 参数为空或`可迭代对象`
@@ -32,6 +36,11 @@ set()
 {'B', 'b', 'c', 'a'}
 >>> set({'a': 'A', 'b': 'B', 'c': 'C'}) # 将 dict 的键转换为集合
 {'b', 'c', 'a'}
+
+>>> s = set(['a', 'b', ['c', 'd']]) # 嵌套 list 不可哈希, 报错
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unhashable type: 'list'
 >>> set(123)  # 参数必须是可迭代对象
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
@@ -79,6 +88,7 @@ True
 ### 修改集合
 
 - add() 添加元素, 修改原集合, 返回 None
+  - 参数必须符合`可哈希`
 
 ```python
 >>> s = {1, 2, 3}
@@ -93,10 +103,26 @@ True
 >>> s.add(4)   
 >>> s
 {1, 2, 3, 4, 'A'}
+>>> s.add(('hello', 'world')) # 添加 tuple
+>>> s
+{1, 2, 3, 4, ('hello', 'world'), 'A'}
+
+>>> s.add(['python', 'god'])  # 参数不能为 list, 不可哈希
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unhashable type: 'list'
+>>> s.add({'a': 'A'}) # 参数不能为 dict, 不可哈希
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unhashable type: 'dict'
+>>> s.add({True, False})  # 参数不能为 set, 不可哈希
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unhashable type: 'set'
 ```
 
 - update() 添加元素, 修改原集合, 返回 None
-  - 参数必须是`可迭代对象`, 忽略重复的值
+  - 参数必须符合 `set()` 创建集合的参数格式, 忽略重复值
 
 ```python
 >>> s = set()
@@ -140,8 +166,26 @@ Traceback (most recent call last):
 NameError: name 's' is not defined
 ```
 
+- discard() 删除集合中的元素, 返回 None
+  - val, 值不存在也不会报错
+
+```python
+>>> s = {1, 2, 3, 'A'}
+>>> s 
+{1, 2, 3, 'A'}
+>>> s.discard(5) 
+>>> s
+{1, 2, 3, 'A'}
+>>> s.discard(2)
+>>> s
+{1, 3, 'A'}
+
+# 空集合删除不存在的元素不会报错
+>>> set().discard(5)
+```
+
 - remove() 删除集合中的元素, 返回 None
-  - 如果值不存在会报错
+  - val，如果值不存在会报错
 
 ```python
 >>> s = {1, 2, 3, 4, 5}
@@ -152,6 +196,7 @@ NameError: name 's' is not defined
 >>> s.remove(2)
 >>> s
 {1, 3, 4, 5}
+
 >>> s.remove(10)  # 值不存在报错
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
@@ -227,6 +272,29 @@ Traceback (most recent call last):
 TypeError: 'int' object is not iterable
 ```
 
+- `&=` 运算符修改原集合
+- intersection_update() 修改原集合, 只保留交集元素
+
+```python
+# &= 修改原集合
+>>> s1 = {1, 2}
+>>> s2 = {2, 3}
+>>> s1 &= s2
+>>> s1
+{2}
+>>> s2
+{2, 3}
+
+# intersection_update() 修改原集合
+>>> s1 = {1, 2}
+>>> s2 = {2, 3}
+>>> s1.intersection_update(s2)
+>>> s1
+{2}
+>>> s2
+{2, 3}
+```
+
 #### 并集
 
 存在于任意集合中的元素
@@ -255,6 +323,19 @@ TypeError: 'int' object is not iterable
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: 'int' object is not iterable
+```
+
+- `|=` 运算符修改原集合
+
+```python
+# |= 修改原集合
+>>> s1 = {1, 2}
+>>> s2 = {2, 3}
+>>> s1 |= s2
+>>> s1
+{1, 2, 3}
+>>> s2
+{2, 3}
 ```
 
 #### 差集
@@ -287,9 +368,32 @@ Traceback (most recent call last):
 TypeError: 'int' object is not iterable
 ```
 
+- `-=` 运算符修改原集合
+- difference_update() 修改原集合, 只保留差集元素
+
+```python
+# -= 修改原集合
+>>> s1 = {1, 2}
+>>> s2 = {2, 3} 
+>>> s1 -= s2
+>>> s1
+{1}
+>>> s2
+{2, 3}
+
+# difference_update() 修改原集合
+>>> s1 = {1, 2}
+>>> s2 = {2, 3}
+>>> s1.difference_update(s2)
+>>> s1
+{1}
+>>> s2
+{2, 3}
+```
+
 #### 异或集
 
-元素仅在两个集合中出现一次
+元素仅在两个集合中出现一次, 并集减去交集
 
 - `^` 运算符返回新集合
 - symmetric_difference() 返回新集合
@@ -303,7 +407,6 @@ TypeError: 'int' object is not iterable
 >>> s2
 {2, 3}
 
-
 # symmetric_difference() 取异或集
 >>> s1.symmetric_difference(s2)
 {1, 3}
@@ -316,6 +419,29 @@ TypeError: 'int' object is not iterable
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: 'int' object is not iterable
+```
+
+- `^=` 运算符修改原集合
+- symmetric_difference_update() 修改原集合, 只保留异或集
+
+```python
+# ^= 修改原集合
+>>> s1 = {1, 2}
+>>> s2 = {2, 3}
+>>> s1 ^= s2
+>>> s1
+{1, 3}
+>>> s2
+{2, 3}
+
+# symmetric_difference_update() 修改原集合
+>>> s1 = {1, 2}   
+>>> s2 = {2, 3}
+>>> s1.symmetric_difference_update(s2)
+>>> s1
+{1, 3}
+>>> s2
+{2, 3}
 ```
 
 #### 子集
