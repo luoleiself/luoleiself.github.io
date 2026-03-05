@@ -140,7 +140,7 @@ TypeError: must assign iterable to extended slice
 
 #### + 拼接列表
 
-- `+` 右侧必须是列表类型
+- `+` 必须是列表类型
 
 ```python
 >>> a = [1, 2]
@@ -151,11 +151,11 @@ TypeError: must assign iterable to extended slice
 >>> a
 [1, 2]
 
->>> a + 1 # + 右侧必须是列表类型
+>>> a + 1 # + 必须是列表类型
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: can only concatenate list (not "int") to list
->>> a + 'False' # + 右侧必须是列表类型
+>>> a + 'False' # + 必须是列表类型
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: can only concatenate list (not "str") to list
@@ -164,7 +164,7 @@ TypeError: can only concatenate list (not "str") to list
 #### extend() 拼接列表
 
 - 修改原列表, 返回 None
-- 参数必须是`可迭代对象`
+- 参数必须符合 `list()` 创建列表的参数格式
 
 ```python
 >>> a = [1,2]
@@ -220,13 +220,19 @@ TypeError: 'bool' object is not iterable
 [1, 2, 'h', 'world', ['python', 'god']]
 >>> print(a.append(10)) # 返回 None
 None
+>>> a.append(('hello', 'world')) # 追加 tuple
+>>> a
+[1, 2, 'h', 'world', ['python', 'god'], ('hello', 'world')]
+>>> a.append({'a': 'A'})  # 追加 dict
+>>> a
+[1, 2, 'h', 'world', ['python', 'god'], ('hello', 'world'), {'a' : 'A'}]
 ```
 
 #### insert() 插入元素
 
 - 修改原列表, 返回 None
   - index, 指定偏移索引, 超出列表范围则按列表起始或结束位置
-  - val，插入的值
+  - val，插入的值, 可以为任意类型
 
 ```python
 >>> a = [1, 2, 3, 4, 5]
@@ -244,11 +250,11 @@ None
 >>> a.insert(-10, 'd')  # 偏移索引超过起始位置按照起始位置
 >>> a
 ['d', 1, 'a', 2, 'b', 3, 4, 5, 'c']
->>> a.insert(1, ['f', 'g']) # 插入 列表
+>>> a.insert(1, ['f', 'g']) # 插入 list
 >>> a
 ['d', ['f', 'g'], 1, 'a', 2, 'b', 3, 4, 5, 'c']
 
->>> print(a.insert(1, ('hello', 'python'))) # 返回 None, 插入 tuple
+>>> print(a.insert(1, ('hello', 'python'))) # 插入 tuple
 None
 >>> a
 ['d', ('hello', 'python'), ['f', 'g'], 1, 'a', 2, 'b', 3, 4, 5, 'c']
@@ -318,7 +324,7 @@ NameError: name 'a' is not defined
 ```
 
 - remove() 按值删除第一个符合条件的列表项，返回 None
-  - 如果值不存在会报错
+  - val, 如果值不存在会报错
 
 ```python
 >>> a = [1, 3, 2, 3, 4, 3, 5]   

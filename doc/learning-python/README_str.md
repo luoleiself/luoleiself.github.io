@@ -1,6 +1,6 @@
 ## 字符串
 
-只读的字符序列
+不可变的字符序列
 
 - [ ] 获取字符, 下标越界会报错
 
@@ -69,6 +69,7 @@ IndexError: string index out of range
 ### 函数
 
 - strip() 移除字符串两端的空白字符('', '\t', '\n')
+  - chars, 移除两端的指定字符, 默认为空白字符
 
 ```python
 >>> t1 = '\n\t\na\n\tb\n\t\n'
@@ -78,6 +79,14 @@ IndexError: string index out of range
 'a\n\tb\n\t\n'
 >>> t1.rstrip()
 '\n\t\na\n\tb'
+
+# 移除字符串两端的指定字符
+>>> '12 hello world 21'.strip('12') # 移除两端的字符
+' hello world '
+>>> '12 hello world 21'.lstrip('12')  # 移除左侧的字符
+' hello world 21'
+>>> '12 hello world 21'.rstrip('12')  # 移除右侧的字符
+'12 hello world '
 ```
 
 - find() 和 index(), 查找子串出现的下标, find 未找到返回 -1, index 未找到报错

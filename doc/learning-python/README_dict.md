@@ -1,6 +1,8 @@
 ## 字典
 
-可变的键值对的序列, 键只能是不可变类型
+字典内部实现基于哈希表
+
+可变的键值对的容器, 键只能是不可变类型
 
 - 使用 `{ }` 定义字典
 - 使用 `dict()` 内置函数创建或转换其他类型为字典, 参数为空, `具名参数`, `包含双项序列的任意序列`
@@ -57,24 +59,46 @@ SyntaxError: expression cannot contain assignment, perhaps you meant "=="?
 ['ab', 'cd', 'ef']
 >>> dict(los)
 {'a': 'b', 'c': 'd', 'e': 'f'}
->>> los = ['ab', 'cd', 'efg'] # 字符串超过数量报错
->>> dict(los)
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-ValueError: dictionary update sequence element #2 has length 3; 2 is required
 # 双字母字符串元组
 >>> los = ('ab', 'cd', 'ef')
 >>> los
 ('ab', 'cd', 'ef')
 >>> dict(los)
 {'a': 'b', 'c': 'd', 'e': 'f'}
->>> los = ('ab', 'cd', 'efg') # 字符串超过数量报错
->>> los
-('ab', 'cd', 'efg')
->>> dict(los)
+
+>>> dt = dict({['a', 'b']: 'AB'}) # 键只能是不可变类型
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unhashable type: 'list'
+>>> dict(['ab', 'cd', 'efg']) # 字符串超过数量报错 
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 ValueError: dictionary update sequence element #2 has length 3; 2 is required
+>>> dict(('ab', 'cd', 'efg',))  # 字符串超过数量报错
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: dictionary update sequence element #2 has length 3; 2 is required
+```
+
+### 字典比较
+
+支持 `==`, `!=`
+
+```python
+>>> a = {1: 1, 2: 2, 3: 3}
+>>> b = {3: 3, 1: 1, 2: 2}
+>>> a == b
+True
+>>> a != b
+False
+>>> a <= b  # 不支持大小比较
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: '<=' not supported between instances of 'dict' and 'dict'
+>>> a > b   # 不支持大小比较
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: '>' not supported between instances of 'dict' and 'dict'
 ```
 
 ### 获取
@@ -132,25 +156,26 @@ python 3 中 `keys()`, `values()`, `items()` 方法返回的是可迭代视图, 
 [('first', 'First'), ('second', 'Second'), ('third', 'Third')]
 ```
 
-### 字典比较
-
-支持 `==`, `!=`
+- fromkeys() 根据传入的迭代器和值创建并返回一个新的字典
+  - key, 键迭代器
+  - val, 不传默认为 None
 
 ```python
->>> a = {1: 1, 2: 2, 3: 3}
->>> b = {3: 3, 1: 1, 2: 2}
->>> a == b
-True
->>> a != b
-False
->>> a <= b  # 不支持大小比较
+>>> dict.fromkeys(('a', 'b', 1))  # 不传值默认为 None     
+{'a': None, 'b': None, 1: None}
+>>> dict.fromkeys(['a', 'b', 1], 'good')  # 根据 list 的值生成 dict
+{'a': 'good', 'b': 'good', 1: 'good'}
+>>> dict.fromkeys(('a', 'b', 1), 'good')  # 根据 tuple 的值生成 dict
+{'a': 'good', 'b': 'good', 1: 'good'}
+>>> dict.fromkeys({'a', 'b', 1}, 'good')  # 根据 list 的值生成 dict
+{1: 'good', 'a': 'good', 'b': 'good'}
+>>> dict.fromkeys({'a': 'A', 'b': 'B', 1: '1'}, 'good') # 根据 dict 的键生成 dict
+{'a': 'good', 'b': 'good', 1: 'good'}
+
+>>> dict.fromkeys(123, True)  # 必须是可迭代对象
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-TypeError: '<=' not supported between instances of 'dict' and 'dict'
->>> a > b   # 不支持大小比较
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: '>' not supported between instances of 'dict' and 'dict'
+TypeError: 'int' object is not iterable
 ```
 
 ### 合并字典
@@ -165,11 +190,38 @@ TypeError: '>' not supported between instances of 'dict' and 'dict'
 ```
 
 - update() 合并字典, 修改原字典, 返回 None, 同名键按照传入的键覆盖原键
+  - 参数必须符合 `dict()` 创建字典的参数格式
 
 ```python
 >>> first.update(second)
 >>> first
 {'a': 'A', 'b': 'BB', 'c': 'C'}
+>>> dt.update(first='F')  # 具名参数
+>>> dt
+{'a': 'A', 'b': 'BB', 'c' : 'C', 'first': 'F'}
+>>> dt.pop('first') # 删除键
+'F'
+>>> first.update([('g', 'G')])  # 元组列表
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G'}
+>>> first.update((['h', 'H'],)) # 列表元组
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H'}
+>>> first.update(['xy'])  # 双字母字符串列表
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H', 'x': 'y'}
+>>> first.update(('uV',)) # 双字母字符串元组
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H', 'x': 'y', 'u': 'V'}
+
+>>> first.update([1, 2])  # 参数必须是包含双项序列的任意序列
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: cannot convert dictionary update sequence element #0 to a sequence
+>>> first.update(123) # 参数必须是包含双项序列的任意序列
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'int' object is not iterable
 ```
 
 ### 删除
@@ -206,14 +258,40 @@ NameError: name 'dt' is not defined
 {'a': 'A', 'b': 'BB'}
 >>> first.pop('d', 'Not found') # 键不存在时返回传入的默认值
 'Not found'
->>> first.pop('d')  # 键不存在时且没有传入默认值, 报错
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-KeyError: 'd'
 >>> first.pop('b', 'Not found') # 返回删除的字典项
 'BB'
 >>> first
 {'a': 'A'}
+
+>>> first.pop('d')  # 键不存在时且没有传入默认值, 报错
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'd'
+```
+
+- popitem() 随机删除字典中的键值对并返回 元组 类型
+  - 字典为空会报错
+
+```python
+>>> first = {'a':'A', 'b':'B', ('a', 'b', 'c'): 'abc'}          
+>>> first
+{'a': 'A', 'b': 'B', ('a', 'b', 'c'): 'abc'}
+>>> first.popitem()
+(('a', 'b', 'c'), 'abc')
+>>> first
+{'a': 'A', 'b': 'B'}
+>>> first.popitem()
+('b', 'B')
+>>> first
+{'a': 'A'}
+>>> first.popitem()
+('a', 'A')
+>>> first
+{}
+>>> first.popitem() # 字典为空会报错
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'popitem(): dictionary is empty'
 ```
 
 - clear() 清空字典, 返回 None

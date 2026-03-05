@@ -16,6 +16,55 @@ my_project/
 |—— 项目源代码
 ```
 
+序列: 连续的可用下标访问的数据存储结构, 字符串，元组，列表, 可使用`切片`进行操作
+
+## 关键字
+
+- global, 用于在任何函数内部声明变量为全局变量
+- nonlocal, 只能用于在嵌套函数中声明一个来自外层函数的变量, 既不是当前函数的变量也不是全局变量
+
+```python
+# 全局变量声明 global
+count = 0
+total = 100
+name = "Python"
+
+def update_stats():
+    global count, total  # 可以同时声明多个全局变量
+    count += 1
+    total -= 10
+    name = "Java"  # 如果没有 global name，这是局部变量
+
+update_stats()
+print(f"count: {count}")   # 输出: count: 1
+print(f"total: {total}")   # 输出: total: 90
+print(f"name: {name}")     # 输出: name: Python（没变）
+
+# 外层变量声明 nonlocal
+def level1():
+    x = 1
+    
+    def level2():
+        x = 2  # level2 的局部变量
+        
+        def level3():
+            nonlocal x  # 指向 level2 的 x，不是 level1 的 x
+            x = 3
+            print(f"level3: {x}")
+        
+        level3()
+        print(f"level2: {x}")
+    
+    level2()
+    print(f"level1: {x}")
+
+level1()
+# 输出:
+# level3: 3
+# level2: 3  (被 level3 修改了)
+# level1: 1  (没变)
+```
+
 ## 数据类型
 
 - int, 不可变类型
@@ -350,6 +399,15 @@ False
 'True'
 >>> str(False)
 'False'
+
+>>> str([1, 2, 3, 4]) # list 转换为字符串
+'[1, 2, 3, 4]'
+>>> str(('a', 'b',))  # tuple 转换为字符串
+"('a', 'b')"
+>>> str({1, 2, 3, 4}) # set 转换为字符串
+'{1, 2, 3, 4}'
+>>> str({'a': 'A', 'b': 'B'}) # dict 转换为字符串
+"{'a': 'A', 'b': 'B'}"
 ```
 
 #### chr()/ord()
@@ -373,6 +431,36 @@ False
 26834
 >>> chr(26834)
 '棒'
+```
+
+#### max()/min()
+
+获取容器中的最大值或最小值
+
+- 字典获取所有键中的最大/最小值
+
+```python
+>>> max('abcdefg')
+'g'
+>>> max([1, 2, 3, 4, 5])
+5
+>>> max((1, 2, 3, 4, 5，))
+5
+>>> max({1, 2, 3, 4, 5})
+5
+>>> max({'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D'})
+'d'
+
+>>> min('abcdefg')
+'a'
+>>> min([1, 2, 3, 4, 5])
+1
+>>> min((1, 2, 3, 4, 5,))
+1
+>>> min({1, 2, 3, 4, 5}) 
+1
+>>> min({'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D'})
+'a'
 ```
 
 #### id() 获取变量引用的对象的 id
