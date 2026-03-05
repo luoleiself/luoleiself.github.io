@@ -8,14 +8,19 @@
 
 ```python
 # 使用 {} 定义字典
+>>> dt = {} # 定义空字典
+>>> dt
+{}
+>>> type(dt)
+<class 'dict'>
 >>> acme = {1: 1, 'name': 'python', 'flag': True}
 >>> acme
 {1: 1, 'name': 'python', 'flag': True}
-# 定义空字典
->>> acme = dict()
+
+# 创建或转换
+>>> acme = dict() # 定义空字典
 >>> acme
 {}
-
 # 使用具名参数定义字典, 具名参数必须是合法的变量名称
 >>> name_dict = dict(first = 'First', second = 'Second')
 >>> name_dict
@@ -129,7 +134,7 @@ python 3 中 `keys()`, `values()`, `items()` 方法返回的是可迭代视图, 
 
 ### 字典比较
 
-只支持相等比较
+支持 `==`, `!=`
 
 ```python
 >>> a = {1: 1, 2: 2, 3: 3}
@@ -159,7 +164,7 @@ TypeError: '>' not supported between instances of 'dict' and 'dict'
 {'a': 'A', 'b': 'BB', 'c': 'C'}
 ```
 
-- `update()` 合并字典, 修改原字典, 同名键按照传入的键覆盖原键
+- update() 合并字典, 修改原字典, 返回 None, 同名键按照传入的键覆盖原键
 
 ```python
 >>> first.update(second)
@@ -169,9 +174,9 @@ TypeError: '>' not supported between instances of 'dict' and 'dict'
 
 ### 删除
 
-- del 删除字典键, `key 不存在时会报错`
+- del 删除字典或字典键, `key 不存在时会报错`
 
-> del 是 python 语句, 并非列表方法
+> del 是 python 语句, 并非集合方法
 
 ```python
 >>> del first['c']
@@ -181,10 +186,19 @@ TypeError: '>' not supported between instances of 'dict' and 'dict'
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 KeyError: 'd'
+
+>>> dt = {1: 'a', 2: 'b', 3: 'c'}
+>>> type(dt)
+<class 'dict'>
+>>> del dt  # 删除字典
+>>> dt
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'dt' is not defined
 ```
 
-- `pop()` 按 key 删除字典并返回删除的字典项
-  - key, 要删除的键
+- pop() 按 key 删除字典并返回删除的字典项
+  - key, 要删除的键, 如果键不存在且没有传入默认值会报错
   - default, 可选, 默认为 None, 如果键不存在则返回该值
 
 ```python
@@ -202,7 +216,7 @@ KeyError: 'd'
 {'a': 'A'}
 ```
 
-- `clear()` 清空字典, 返回 None
+- clear() 清空字典, 返回 None
 
 ```python
 >>> first

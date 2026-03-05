@@ -1,6 +1,6 @@
 ## 元组
 
-只读的任意数据类型的序列
+不可变的重复的任意数据类型的序列
 
 - 使用 `,` 定义元组
 - 使用 `( )` 定义元组, 当小括号只有一个元素时, `尾逗号不能省略`
@@ -21,6 +21,11 @@
 <class 'str'>
 
 # 使用 () 定义元组
+>>> te = () # 定义空元组
+>>> te
+()
+>>> type(te)
+<class 'tuple'>
 >>> marx_tuple = ('Gloves', 'Sheep', 'Wolves')
 >>> type(marx_tuple)
 <class 'tuple'>
@@ -32,8 +37,8 @@
 >>> len(marx_tuple)
 1
 
-# 创建空的元组
->>> tuple()
+# 创建或转换
+>>> tuple() # 定义空元组
 ()
 >>> tuple('hello')  # 将 str 转换为元组
 ('h', 'e', 'l', 'l', 'o')
@@ -85,7 +90,7 @@ IndexError: tuple index out of range
 (1.1, False)
 ```
 
-- 借助元组交换变量的值
+### 借助元组交换变量的值
 
 ```python
 >>> first = 'one'
@@ -99,6 +104,8 @@ IndexError: tuple index out of range
 
 ### 元组比较
 
+支持 `==`, `!=`, `<`, `<=`, `>`, `>=`
+
 ```python
 >>> a = (1,2) 
 >>> b = (3,4) 
@@ -108,9 +115,6 @@ False
 True
 >>> a >= b
 False
->>> a += b
->>> a
-(1, 2, 3, 4)
 ```
 
 ### 元组拼接
@@ -143,6 +147,12 @@ Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: unsupported operand type(s) for +: 'int' and 'tuple'
 
+>>> a = (1, 2)
+>>> b = (3, 4)
+>>> a += b
+>>> a
+(1, 2, 3, 4)
+
 >>> 'gloves', + 1
 ('gloves', 1)
 >>> 'gloves', 'sheep', + 1, 2, 3  # + 左右表示形式一致
@@ -159,4 +169,21 @@ TypeError: bad operand type for unary +: 'tuple'
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: can only concatenate tuple (not "int") to tuple
+```
+
+### 删除元组
+
+- del 删除元组
+
+> del 是 python 语句
+
+```python
+>>> te = (1, 2,3,4,)
+>>> te
+(1, 2, 3, 4)
+>>> del te  # 删除元组
+>>> te
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'te' is not defined
 ```

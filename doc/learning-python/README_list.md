@@ -1,19 +1,24 @@
 ## 列表
 
-可变的任意数据类型的序列
+可变的有序重复的任意数据类型的序列
 
 - 使用 `[ ]` 定义列表
 - 使用 `list()` 内置函数创建或转换其他类型为列表, 参数为空或`可迭代对象`
 
 ```python
 # 使用 [ ] 定义列表
+>>> lt = [] # 定义空列表
+>>> lt
+[]
+>>> type(lt)
+<class 'list'>
 >>> weekdays = ['Monday', 'TuesDay', 'Wednesday', 'Thursday', 'Friday']
 >>> weekdays
 ['Monday', 'TuesDay', 'Wednesday', 'Thursday', 'Friday']
 >>> len(weekdays)
 5
 
-# 创建
+# 创建或转换
 >>> empty_list = list() # 定义空列表
 >>> empty_list
 []
@@ -67,6 +72,8 @@ IndexError: list index out of range
 ```
 
 ### 列表比较
+
+支持 `==`, `!=`, `<`, `<=`, `>`, `>=`
 
 ```python
 >>> a = [1, 2]
@@ -250,6 +257,9 @@ None
 ### 查找
 
 - index() 查找第一个符合的偏移并返回下标, 未找到会报错
+  - val, 要查找的值
+  - start, 开始位置, 默认为列表开始位置
+  - end, 结束位置, 默认为列表结束位置
 
 ```python
 >>> a = [1, 2, 3, 4, 5]
@@ -257,6 +267,12 @@ None
 0
 >>> a.index(4)
 3
+>>> a.index(2, 0, 3)
+1
+>>> a.index(2, 0, 1)  # 在区间内未找到会报错
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: 2 is not in list
 
 >>> a.index(10) # 未找到报错
 Traceback (most recent call last):
@@ -270,7 +286,7 @@ ValueError: -10 is not in list
 
 ### 删除
 
-- del 删除列表元素, 下标越界会报错
+- del 删除列表或列表中元素, 下标越界会报错
 
 > del 是 python 语句, 并非列表方法
 
@@ -293,9 +309,16 @@ IndexError: list assignment index out of range
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 IndexError: list assignment index out of range
+
+>>> del a # 删除列表
+>>> a
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'a' is not defined
 ```
 
 - remove() 按值删除第一个符合条件的列表项，返回 None
+  - 如果值不存在会报错
 
 ```python
 >>> a = [1, 3, 2, 3, 4, 3, 5]   
@@ -305,10 +328,15 @@ IndexError: list assignment index out of range
 
 >>> print(a.remove(3))  # 返回 None
 None
+
+>>> a.remove(10)  # 值不存在会报错
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: list.remove(x): x not in list
 ```
 
-- pop() 按下标删除并返回删除的列表项, 下标越界会报错
-  - index, 元素偏移索引
+- pop() 按下标删除并返回删除的列表项
+  - index, 元素偏移索引, 下标越界会报错
 
 ```python
 >>> a = [1, 2, 3, 4, 5] 
