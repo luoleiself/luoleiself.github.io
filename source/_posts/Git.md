@@ -409,6 +409,30 @@ git switch [options] \<branch-name\> [\<start-point\>]
 - \-\-quit: 放弃合并
 - \-\-skip: 重启合并跳过当前的修改
 
+选项
+
+- pick(p) 使用该 commit, 不修改
+- reword(r) 使用该 commit, 但修改注释信息
+- edit(e) 使用该 commit, 但停下来修改(内容), 然后重新提交
+- squash(s) 将该 commit 合并到前一个 commit 中, 包含注释信息
+- fixup(f)  类似于 squash, 但丢弃该 commit 的注释信息
+- drop(d) 删除该 commit
+
+- exec(x) 执行 shell 命令
+- break(b)  在此停止 rebase
+- label(l)  为当前 HEAD 打标签
+- reset(t)  重置 HEAD 到指定表亲啊
+- merge(m)  创建 merge commit
+
+```bash
+pick -> 保留
+reword -> 改注释
+edit -> 改内容
+squash -> 合并(保留注释)
+fixup -> 合并(丢弃注释)
+drop  -> 删除
+```
+
 #### 合并多个 commit
 
 git rebase -i HEAD~n  # 交互式合并从当前 commit 开始的 n 个commit

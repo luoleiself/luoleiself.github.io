@@ -4,9 +4,10 @@
 
 - 使用 `[ ]` 定义列表
 - 使用 `list()` 内置函数创建或转换其他类型为列表, 参数为空或`可迭代对象`
+- 使用 `[* ]` 解构`可迭代对象`为列表
 
 ```python
-# 使用 [ ] 定义列表
+# [ ] 定义列表
 >>> lt = [] # 定义空列表
 >>> lt
 []
@@ -18,7 +19,7 @@
 >>> len(weekdays)
 5
 
-# 创建或转换
+# list() 创建或转换
 >>> empty_list = list() # 定义空列表
 >>> empty_list
 []
@@ -36,6 +37,24 @@
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: 'int' object is not iterable
+
+# * 解构为列表
+>>> [*'hello']  # 解构 str
+['h', 'e', 'l', 'l', 'o']
+>>> [*range(1, 9, 2)] # 解构数字序列
+[1, 3, 5, 7]
+>>> [*[1, 2, 3]]  # 解构 list
+[1, 2, 3]
+>>> [*([1, 2], [3, 4])] # 解构 tuple
+[[1, 2], [3, 4]]
+>>> [*{'a', 'b', 'c'}]  # 解构 set
+['a', 'b', 'c']
+>>> [*{'a': 'A', 'b': 'B', 'c': 'C'}] # 解构 dict 的键
+['a', 'b', 'c']
+>>> [*123]  # 必须是可迭代对象
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: Value after * must be an iterable, not int
 ```
 
 - [ ] 获取元素, 下标越界会报错

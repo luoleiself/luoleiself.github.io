@@ -5,9 +5,10 @@
 - 使用 `,` 定义元组
 - 使用 `( )` 定义元组, 当只有一个元素时, `尾逗号不能省略`
 - 使用 `tuple()` 内置函数创建或转换其他类型为元组, 参数为空或`可迭代对象`
+- 使用 `(* )` 解构`可迭代对象`为元组
 
 ```python
-# 使用 , 定义元组, 只有一个元素时不能省略尾逗号
+# , 定义元组, 只有一个元素时不能省略尾逗号
 >>> marx_tulpe = 'Gloves',
 >>> type(marx_tuple)      
 <class 'tuple'>
@@ -21,7 +22,7 @@
 >>> type(marx_tuple)
 <class 'str'>
 
-# 使用 () 定义元组
+# () 定义元组, 只有一个元素时不能省略尾逗号
 >>> te = () # 定义空元组
 >>> te
 ()
@@ -38,7 +39,7 @@
 >>> len(marx_tuple)
 1
 
-# 创建或转换
+# tuple() 创建或转换
 >>> tuple() # 定义空元组
 ()
 >>> tuple('hello')  # 将 str 转换为元组
@@ -55,6 +56,24 @@
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: 'int' object is not iterable
+
+# * 解构为元组
+>>> (*'hello',) # 解构 str
+('h', 'e', 'l', 'l', 'o')
+>>> (*range(4, 10, 2),) # 解构数字序列        
+(4, 6, 8)
+>>> (*[('a', 'A'), ('b', 'B')],)  # 解构 list
+(('a', 'A'), ('b', 'B'))
+>>> (*(True, False, 3.14),) # 解构 tuple
+(True, False, 3.14)
+>>> (*{'a', 'b', 'c'},) # 解构 set
+('a', 'b', 'c')
+>>> (*{'a': 'A', 'b': 'B', 'c': 'C'},)  # 解构 dict 的键
+('a', 'b', 'c')
+>>> (*123,) # 必须是可迭代对象
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: Value after * must be an iterable, not int
 ```
 
 - [ ] 获取元素, 下标越界会报错

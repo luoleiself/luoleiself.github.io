@@ -9,7 +9,7 @@
   - 具名参数必须是合法的变量名称
 
 ```python
-# 使用 {} 定义字典
+# {} 定义字典
 >>> dt = {} # 定义空字典
 >>> dt
 {}
@@ -19,7 +19,7 @@
 >>> acme
 {1: 1, 'name': 'python', 'flag': True}
 
-# 创建或转换
+# dict() 创建或转换
 >>> acme = dict() # 定义空字典
 >>> acme
 {}
@@ -101,6 +101,52 @@ Traceback (most recent call last):
 TypeError: '>' not supported between instances of 'dict' and 'dict'
 ```
 
+### 合并字典
+
+- `**` 浅复制合并多个字典并返回新字典, 同名键按照后面覆盖前面
+
+```python
+>>> first = {'a': 'A', 'b': 'B'}
+>>> second = {'b': 'BB', 'c': 'C'}
+>>> {**first, **second} # 同名键后面优先级高
+{'a': 'A', 'b': 'BB', 'c': 'C'}
+```
+
+- update() 合并字典, 修改原字典, 返回 None, 同名键按照传入的键覆盖原键
+  - 参数必须符合 `dict()` 创建字典的参数格式
+
+```python
+>>> first.update(second)
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C'}
+>>> dt.update(first='F')  # 具名参数
+>>> dt
+{'a': 'A', 'b': 'BB', 'c' : 'C', 'first': 'F'}
+>>> dt.pop('first') # 删除键
+'F'
+>>> first.update([('g', 'G')])  # 元组列表
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G'}
+>>> first.update((['h', 'H'],)) # 列表元组
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H'}
+>>> first.update(['xy'])  # 双字母字符串列表
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H', 'x': 'y'}
+>>> first.update(('uV',)) # 双字母字符串元组
+>>> first
+{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H', 'x': 'y', 'u': 'V'}
+
+>>> first.update([1, 2])  # 参数必须是包含双项序列的任意序列
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: cannot convert dictionary update sequence element #0 to a sequence
+>>> first.update(123) # 参数必须是包含双项序列的任意序列
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'int' object is not iterable
+```
+
 ### 获取
 
 - 使用 [key] 获取字典项, `key 不存在时会报错` , 可使用 in 检查 key 是否存在
@@ -173,52 +219,6 @@ python 3 中 `keys()`, `values()`, `items()` 方法返回的是可迭代视图, 
 {'a': 'good', 'b': 'good', 1: 'good'}
 
 >>> dict.fromkeys(123, True)  # 必须是可迭代对象
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: 'int' object is not iterable
-```
-
-### 合并字典
-
-- `**` 浅复制合并多个字典并返回新字典, 同名键按照后面覆盖前面
-
-```python
->>> first = {'a': 'A', 'b': 'B'}
->>> second = {'b': 'BB', 'c': 'C'}
->>> {**first, **second} # 同名键后面优先级高
-{'a': 'A', 'b': 'BB', 'c': 'C'}
-```
-
-- update() 合并字典, 修改原字典, 返回 None, 同名键按照传入的键覆盖原键
-  - 参数必须符合 `dict()` 创建字典的参数格式
-
-```python
->>> first.update(second)
->>> first
-{'a': 'A', 'b': 'BB', 'c': 'C'}
->>> dt.update(first='F')  # 具名参数
->>> dt
-{'a': 'A', 'b': 'BB', 'c' : 'C', 'first': 'F'}
->>> dt.pop('first') # 删除键
-'F'
->>> first.update([('g', 'G')])  # 元组列表
->>> first
-{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G'}
->>> first.update((['h', 'H'],)) # 列表元组
->>> first
-{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H'}
->>> first.update(['xy'])  # 双字母字符串列表
->>> first
-{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H', 'x': 'y'}
->>> first.update(('uV',)) # 双字母字符串元组
->>> first
-{'a': 'A', 'b': 'BB', 'c': 'C', 'g': 'G', 'h': 'H', 'x': 'y', 'u': 'V'}
-
->>> first.update([1, 2])  # 参数必须是包含双项序列的任意序列
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: cannot convert dictionary update sequence element #0 to a sequence
->>> first.update(123) # 参数必须是包含双项序列的任意序列
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: 'int' object is not iterable
