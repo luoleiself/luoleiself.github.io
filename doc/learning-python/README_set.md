@@ -8,9 +8,10 @@
 
 - 使用 `{ }` 定义集合
 - 使用 `set()` 内置函数创建或转换其他类型为集合, 参数为空或`可迭代对象`
+- 使用 `{* }` 解构`可迭代对象`为集合
 
 ```python
-# 使用 { } 定义集合, 元素不能为空, 否则定义为字典
+# { } 定义集合, 元素不能为空, 否则定义为字典
 >>> s = {1, 2, 3, '1', 2, 'A'}
 >>> s
 {1, 2, 3, 'A', '1'}
@@ -20,7 +21,7 @@
 >>> type(s)
 <class 'dict'>
 
-# 创建或转换
+# set() 创建或转换
 >>> s = set() # 定义空集合, 只能使用 set() 函数定义空集合, 因为 { } 被字典占用了
 >>> s   
 set()
@@ -45,6 +46,28 @@ TypeError: unhashable type: 'list'
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: 'int' object is not iterable
+
+# * 解构为集合
+>>> {*'hello'}  # 解构 str
+{'e', 'h', 'l', 'o'}
+>>> {*range(3, 15, 5)}  # 解构数字序列
+{8, 3, 13}
+>>> {*[4, 5, 6]}  # 解构 list
+{4, 5, 6}
+>>> {*((1, 2), (3, 4))} # 解构 tuple
+{(1, 2), (3, 4)}
+>>> {*{'a', 'b', 'c'}}  # 解构 set
+{'a', 'b', 'c'}
+>>> {*{'a': 'A', 'b': 'B', 'c': 'C'}} # 解构 dict 的键
+{'b', 'a', 'c'}
+>>> {*123}  # 必须是可迭代对象                      
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'int' object is not iterable
+>>> {*([1, 2], [3, 4])} # 值必须为不可变类型(可哈希)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unhashable type: 'list'
 ```
 
 - 使用 `frozenset()` 创建不可变集合, 参数为空或`可迭代对象`
@@ -121,7 +144,7 @@ Traceback (most recent call last):
 TypeError: unhashable type: 'set'
 ```
 
-- update() 添加元素, 修改原集合, 返回 None
+- update() 合并集合, 修改原集合, 返回 None
   - 参数必须符合 `set()` 创建集合的参数格式, 忽略重复值
 
 ```python
@@ -173,7 +196,7 @@ NameError: name 's' is not defined
 >>> s = {1, 2, 3, 'A'}
 >>> s 
 {1, 2, 3, 'A'}
->>> s.discard(5) 
+>>> s.discard(5) # 值不存在也不报错
 >>> s
 {1, 2, 3, 'A'}
 >>> s.discard(2)
@@ -326,6 +349,7 @@ TypeError: 'int' object is not iterable
 ```
 
 - `|=` 运算符修改原集合
+- update() 修改原集合
 
 ```python
 # |= 修改原集合
