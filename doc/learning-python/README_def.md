@@ -113,6 +113,16 @@ SyntaxError: can't use starred expression here
 SyntaxError: invalid syntax
 ```
 
+### 生成器
+
+生成器是一个 python 序列生成对象, 无需一次性在内存中创建可能会很长的序列
+
+- 生成器是动态生成值, 迭代器只能遍历一次
+
+### 装饰器
+
+装饰器是一种函数，接受一个函数作为输入并返回另一个函数
+
 ### 文档注释
 
 函数体的顶部定义的多行字符串被 `__doc__` 内部函数解析
