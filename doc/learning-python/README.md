@@ -16,9 +16,9 @@ my_project/
 |—— 项目源代码
 ```
 
-序列: 连续的可用下标访问的数据存储结构, 字符串，元组，列表, 可使用`切片`进行操作
-
-`*` | `**`: 在数据存储结构中使用时, 解构 `可迭代对象`
+- 序列: 连续的可用下标访问的数据存储结构, 字符串，元组，列表, 可使用`切片`进行操作
+- `*` | `**`: 在数据存储结构中使用时, 解构 `可迭代对象`
+- `__` 双下划线起止的名称保留给 python 内部使用
 
 ## 关键字
 
@@ -68,6 +68,8 @@ level1()
 ```
 
 - lambda, 定义匿名函数, 不能复用, `lambda 执行参数: 函数体(一行代码)`
+- pass, 空操作占位符, 避免语法错误
+- rasie, 抛出异常
 
 ## 数据类型
 
@@ -247,25 +249,82 @@ range(0, 4)
 16
 ```
 
-### 内置函数
+## 异常
 
-#### tuple()
+所有的异常类都是 Exception 的子类
+
+```python
+try:
+    # 可能发生错误的代码
+except (NameError, ZeroDivisionError) as z:
+    # 捕获未定义的变量或除以 0 的错误 
+# except: # 等价于下一行的写法
+except Exception as e:
+    # 捕获所有错误后执行的代码
+else:
+    # 没有发生错误执行的代码
+finally:
+    # 最后总是会执行的代码
+```
+
+## 模块
+
+一个 python 文件, 可以包含 类，函数, 变量等
+
+`[from 模块名] import [模块 | 类 | 变量 | 函数 | *] [as 别名]`
+
+## 包
+
+分类管理多个模块
+
+- `__init__.py` 文件定义目录为 python 包而不是普通的目录
+- `__all__` 内置变量控制 `import *` 的导入行为
+
+```python
+# __init__.py
+# 控制包级别 from package_name import * 的导入行为
+__all__ = ['func_1']
+
+def func_1():
+    pass
+
+def func_2():   # 不在 __all__ 中, 不允许被导入
+    pass
+```
+
+## 内置变量
+
+- `__name__` 用于判断当前模块是被直接运行还是被导入, 直接运行时为 `__main__` 否则值为所在的模块名
+- `__all__` 是一个列表, 用于定义当使用 `from module_name import *` 时, 哪些名称可以被导入
+  - 在 `__init__.py` 文件中使用限制包级的导入行为
+  - 在 模块中 使用时限制模块的导入行为
+- `__file__` 当前文件的路径
+- `__doc__` 文档字符串
+- `__package__` 包名
+- `__dict__` 对象的属性字典
+- `__slots__` 限制属性(内存优化)
+- `__version__` 版本号
+- `__author__`  作者
+
+## 内置函数
+
+### tuple()
 
 创建或转换其他类型为元组, 参数为空或`可迭代对象`
 
-#### list()
+### list()
 
 创建或转换其他类型为列表, 参数为空或`可迭代对象`
 
-#### dict()
+### dict()
 
 创建或转换其他类型为字典, 参数为空, `具名参数`, `包含双项序列的任意序列`
 
-#### set()
+### set()
 
 创建或转换其他类型为集合, 参数为空或`可迭代对象`
 
-#### int()
+### int()
 
 将任意值转换成整型化值, 参数必须是字符串或者真实的数值
 
@@ -275,24 +334,7 @@ range(0, 4)
   - 布尔值 True 转为 1, False 转为 0
 - 第二个参数为进制数位
 
-```python
->>> int(1.)
-1
->>> int(1.8)
-1
->>> int(1_0_0)
-100
->>> int("+1_0")
-10
->>> int(1e10)
-10000000000
->>> int(True)
-1
->>> int(False)
-0
-```
-
-#### float()
+### float()
 
 将任意值转换为浮点化值, 参数必须是字符串或者真实的数值
 
@@ -300,40 +342,7 @@ range(0, 4)
 - 参数为字符串的浮点数表示形式，支持科学计数格式
 - 布尔值 True 转为 1.0, False 转为 0.0
 
-```python
->>> float(1)
-1.0
->>> float(1.)
-1.0
->>> float('1')
-1.0
->>> float('1.')
-1.0
->>> float('+1')
-1.0
->>> float('-1')
--1.0
->>> float('+1.')
-1.0
->>> float('-1.')
--1.0
->>> float('+1.0')
-1.0
->>> float('-1.0')
--1.0
->>> float('-1.0_0')
--1.0
->>> float('-1_0.0_0')
--10.0
->>> float('1.e10')
-10000000000.0
->>> float(True)
-1.0
->>> float(False)
-0.0
-```
-
-#### bool()
+### bool()
 
 将任意值转为布尔值
 
@@ -378,7 +387,7 @@ False
 False
 ```
 
-#### str()
+### str()
 
 将任意值转换为字符串
 
@@ -414,7 +423,7 @@ False
 "{'a': 'A', 'b': 'B'}"
 ```
 
-#### chr()/ord()
+### chr()/ord()
 
 转换 unicode 码对应的字符
 
@@ -437,7 +446,7 @@ False
 '棒'
 ```
 
-#### max()/min()
+### max()/min()
 
 获取容器中的最大值或最小值
 
@@ -467,7 +476,7 @@ False
 'a'
 ```
 
-#### id() 获取变量引用的对象的 id
+### id() 获取变量引用的对象的 id
 
 ```python
 >>> n = 1
@@ -493,4 +502,17 @@ False
 ['alice', 'tom', 'jerry', 'bob']
 >>> names_lst
 ['alice', 'tom', 'jerry', 'bob']
+```
+
+### locals() 返回函数内部的内容目录
+
+- 在全局作用域内使用时获取的结果和 `globals()` 相同
+
+### globals() 返回当前全局作用域的内容目录
+
+- `__name__` 属性在只有当前文件直接运行时, `__name__` 属性值才会是 `__main__`，否则被作为模块导入时, 属性值为模块名
+
+```python
+>>> print(globals()) 
+{'__name__': '__main__', '__doc__': None, '__package__': None, '__loader__': <_frozen_importlib_external.SourceFileLoader object at 0x0000014B4D70BE00>, '__spec__': None, '__annotations__': {}, '__builtins__': <module 'builtins' (built-in)>, 'platform': <module 'platform' from 'D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\Lib\\platform.py'>, 'sys': <module 'sys' (built-in)>, 'original_ps1': '>>> ', 'is_wsl': False, 'REPLHooks': <class '__main__.REPLHooks'>, 'get_last_command': <function get_last_command at 0x0000014B4D9C36A0>, 'PS1': <class '__main__.PS1'>, 'name': 'global variable', 'new_func': <function new_func at 0x0000014B4D9E20C0>, 'animal': 'wom', 'change_and_print_global': <function change_and_print_global at 0x0000014B4DA05EE0>, 'change_global': <function change_global at 0x0000014B4DA05D00>}
 ```

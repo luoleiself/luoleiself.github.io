@@ -1,5 +1,24 @@
 ## 函数
 
+```python
+>>> print(locals()) # locals 不在函数内使用时作用同 globals
+{'__name__': '__main__', '__doc__': None, '__package__': None, '__loader__': <_frozen_importlib_external.SourceFileLoader object at 0x000002754662BE00>, '__spec__': None, '__annotations__': {}, '__builtins__': <module 'builtins' (built-in)>, 'platform': <module 'platform' from 'D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\Lib\\platform.py'>, 'sys': <module 'sys' (built-in)>, 'original_ps1': '>>> ', 'is_wsl': False, 'REPLHooks': <class '__main__.REPLHooks'>, 'get_last_command': <function get_last_command at 0x00000275468E36A0>, 'PS1': <class '__main__.PS1'>}
+
+>>> animal = 'fruitbat'
+>>> def change_and_print_global():
+...     print('inside change_and_print_globa', animal)  # 访问未定义的变量报错
+...     animal = 'wombat'
+...     print('after the change', animal)
+... 
+>>> change_and_print_global()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 2, in change_and_print_global
+UnboundLocalError: cannot access local variable 'animal' where it is not associated with a value
+```
+
+### 参数
+
 参数定义顺序: 位置参数 > 默认参数 > *args > 关键字参数 > **kwargs
 
 ```python
@@ -55,7 +74,7 @@ Traceback (most recent call last):
 TypeError: func_6() takes 1 positional argument but 2 positional arguments (and 1 keyword-only argument) were given
 ```
 
-### 可变参数
+#### 可变参数
 
 只能用在 `函数定义` 或 `函数调用`, 单独作为语句使用时报错
 
@@ -125,4 +144,22 @@ SyntaxError: invalid syntax
 
 ### 文档注释
 
-函数体的顶部定义的多行字符串被 `__doc__` 内部函数解析
+函数体的顶部定义的多行字符串
+
+## 类
+
+- `__init__` 非必需的对象初始化方法, 如果定义了初始化方法和参数, 则必须传入参数否则报错
+
+```python
+>>> class Cat():
+...     def __init__(self, name):
+...             self.name = name
+... 
+>>> another_cat = Cat('green miao') # 如果定义了初始化方法和参数则必须传入
+>>> another_cat.name
+'green miao'
+>>> a_cat = Cat()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: Cat.__init__() missing 1 required positional argument: 'name'
+```
