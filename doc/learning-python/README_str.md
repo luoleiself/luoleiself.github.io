@@ -66,6 +66,18 @@ IndexError: string index out of range
 'ec'
 ```
 
+### 解构赋值
+
+```python
+>>> a, b, *k = 'hello'
+>>> a
+'h'
+>>> b
+'e'
+>>> k
+['l', 'l', 'o']
+```
+
 ### 函数
 
 - strip() 移除字符串两端的空白字符('', '\t', '\n')

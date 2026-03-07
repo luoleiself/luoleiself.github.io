@@ -80,6 +80,19 @@ Traceback (most recent call last):
 ValueError: dictionary update sequence element #2 has length 3; 2 is required
 ```
 
+### 解构赋值
+
+```python
+# 解构 dict 的键
+>>> a, b, *k = {30: 'AA', 40: 'BB', 50: 'CC'}  
+>>> a
+30
+>>> b
+40
+>>> k
+[50]
+```
+
 ### 字典比较
 
 支持 `==`, `!=`

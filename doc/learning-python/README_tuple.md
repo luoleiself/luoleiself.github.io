@@ -110,16 +110,25 @@ IndexError: tuple index out of range
 (1.1, False)
 ```
 
-### 借助元组交换变量的值
+### 解构赋值
 
 ```python
 >>> first = 'one'
 >>> second = 'two'
->>> first, second = second, first # 借助元组交换变量的值
+>>> first, second = second, first # 交换变量的值
 >>> first
 'two'
 >>> second
 'one'
+
+# 解构赋值
+>>> a, b, *k = ('a', 'c', 'e', 'g', 'i')
+>>> a
+'a'
+>>> b
+'c'
+>>> k
+['e', 'g', 'i']
 ```
 
 ### 元组比较
