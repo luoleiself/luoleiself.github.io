@@ -90,6 +90,27 @@ IndexError: list index out of range
 ['Monday', 'TuesDay', 'Wednesday', 'Thursday', 'Friday']
 ```
 
+### 解构赋值
+
+```python
+>>> a = 1
+>>> b = 2
+>>> a, b = [b, a] # 交换变量的值
+>>> a
+2
+>>> b
+1
+
+# 解构赋值
+>>> a, b, *k = [1, 2, 3, 4, 5]
+>>> a
+1
+>>> b
+2
+>>> k
+[3, 4, 5]
+```
+
 ### 列表比较
 
 支持 `==`, `!=`, `<`, `<=`, `>`, `>=`

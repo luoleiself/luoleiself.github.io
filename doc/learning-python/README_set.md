@@ -89,6 +89,18 @@ Traceback (most recent call last):
 AttributeError: 'frozenset' object has no attribute 'add'
 ```
 
+### 解构赋值
+
+```python
+>>> a, b, *k = {'A', 'B', 'C', 'D'}
+>>> a
+'A'
+>>> b
+'B'
+>>> k
+['D', 'C']
+```
+
 ### 集合比较
 
 支持 `==`, `!=`, `<`, `<=`, `>`, `>=`
