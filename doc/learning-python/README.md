@@ -256,7 +256,7 @@ range(0, 4)
 ```python
 try:
     # 可能发生错误的代码
-except (NameError, ZeroDivisionError) as z:
+except (NameError, ZeroDivisionError) e:
     # 捕获未定义的变量或除以 0 的错误 
 # except: # 等价于下一行的写法
 except Exception as e:
@@ -290,9 +290,13 @@ def func_1():
 
 def func_2():   # 不在 __all__ 中, 不允许被导入
     pass
+
+# my_module1.py
+# 控制模块级别的 import * 导入行为
+__all__ = ['name']
 ```
 
-## 内置变量
+## 内置属性
 
 - `__name__` 用于判断当前模块是被直接运行还是被导入, 直接运行时为 `__main__` 否则值为所在的模块名
 - `__all__` 是一个列表, 用于定义当使用 `from module_name import *` 时, 哪些名称可以被导入
@@ -515,4 +519,30 @@ False
 ```python
 >>> print(globals()) 
 {'__name__': '__main__', '__doc__': None, '__package__': None, '__loader__': <_frozen_importlib_external.SourceFileLoader object at 0x0000014B4D70BE00>, '__spec__': None, '__annotations__': {}, '__builtins__': <module 'builtins' (built-in)>, 'platform': <module 'platform' from 'D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\Lib\\platform.py'>, 'sys': <module 'sys' (built-in)>, 'original_ps1': '>>> ', 'is_wsl': False, 'REPLHooks': <class '__main__.REPLHooks'>, 'get_last_command': <function get_last_command at 0x0000014B4D9C36A0>, 'PS1': <class '__main__.PS1'>, 'name': 'global variable', 'new_func': <function new_func at 0x0000014B4D9E20C0>, 'animal': 'wom', 'change_and_print_global': <function change_and_print_global at 0x0000014B4DA05EE0>, 'change_global': <function change_global at 0x0000014B4DA05D00>}
+```
+
+### property()
+
+用于创建和管理类的属性, 允许将方法当作属性访问, 从而实现对属性的控制
+
+`property(fget=None, fset=None, fdel=None, doc=None)`
+
+```python
+class Person:
+    def __init__(self, name, age):
+        # 如果知道了 hidden_name 和 hidden_age, 仍然可以直接操作它们
+        self.hidden_name = name
+        self.hidden_age = age
+
+    # def 定义 name 和 age 的 getter 和 setter 方法
+
+    # property 内置函数将方法当作属性访问
+    name = property(get_name, set_name)
+    age = property(get_age, set_age)
+    
+
+p = Person('xiaoming', 19)
+print(f'p.name {p.name} p.age {p.age}')
+# 仍然可以访问到隐藏的属性
+print(f'p.hidden_name {p.hidden_name} p.hidden_age {p.hidden_age}')
 ```

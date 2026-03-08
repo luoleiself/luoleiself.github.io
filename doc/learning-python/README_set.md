@@ -92,13 +92,14 @@ AttributeError: 'frozenset' object has no attribute 'add'
 ### 解构赋值
 
 ```python
->>> a, b, *k = {'A', 'B', 'C', 'D'}
+# 集合的无序性无法得到预想的结果
+>>> a, b, *k  = {'a', '1', 'B', 'A'}
 >>> a
-'A'
+'1'
 >>> b
 'B'
 >>> k
-['D', 'C']
+['a', 'A']
 ```
 
 ### 集合比较
