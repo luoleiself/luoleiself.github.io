@@ -148,7 +148,10 @@ SyntaxError: invalid syntax
 
 ## 类
 
-- `__init__` 非必需的对象初始化方法, 如果定义了初始化方法和参数, 则必须传入参数否则报错
+- `__init__` 非必需的初始化方法, 第一个参数为 self 实例本身
+  - 如果定义了初始化方法和参数, 则必须传入参数否则报错
+  - 如果子类没有定义初始化方法, python 自动调用父类的初始化方法完成属性绑定
+  - 如果实例化未定义初始化方法的子类时, 参数必须符合父类初始化方法参数的要求
 
 ```python
 >>> class Cat():
@@ -162,4 +165,234 @@ SyntaxError: invalid syntax
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: Cat.__init__() missing 1 required positional argument: 'name'
+
+# 继承 - 初始化
+class Quote:
+    def __init__(self, person, words):
+        self.person = person
+        self.words = words
+
+    def who(self):
+        return self.person
+
+    def says(self):
+        return self.words+'.'
+
+
+class QuestionQuote(Quote):
+    def says(self):
+        return self.words+'?'
+
+
+class ExclamationQuote(Quote):
+    def says(self):
+        return self.words+'!'
+
+
+# 实例化未定义初始化方法的子类时, 参数必须符合父类初始化方法参数的要求
+class SubQuestionQuote(QuestionQuote):
+    def says(self):
+        return self.words+'??'
+
+
+def who_says(obj):
+    print(f'{obj.who()} says: {obj.says()}')
+
+
+hunter = Quote('Elmer Fudd', 'I\'m hunting wabbits')
+# 如果子类没有定义初始化方法, python 自动调用父类的初始化方法完成属性绑定
+hunter1 = QuestionQuote('Bugs Bunny', 'What\'s up, doc')
+hunter2 = ExclamationQuote('Daffy Duck', 'It\'s rabbit season')
+who_says(hunter)
+who_says(hunter1)
+who_says(hunter2)
+print('-----------')
+# TypeError: Quote.__init__() takes 3 positional arguments but 4 were given
+hunter3 = SubQuestionQuote('Daffy Duck', 'It\'s rabbit season', 'good')
+who_says(hunter3)
 ```
+
+### 内置方法(魔术方法)
+
+比较魔术方法
+
+- `__str__` 自定义返回实例的结果, 默认输出实例的内存地址
+- `__lt__` 自定义实例的 < 比较, 返回 bool
+- `__le__` 自定义实例的 <= 比较, 返回 bool
+- `__gt__` 自定义实例的 >比较, 返回 bool
+- `__ge__` 自定义实例的 >= 比较, 返回 bool
+- `__eq__`  自定义实例的 == 比较, 返回 bool
+- `__ne__`  自定义实例的 != 比较, 返回 bool
+
+数学运算魔术方法
+
+- `__add__` 自定义实例的加法运算
+- `__sub__` 自定义实例的减法运算
+- `__mul__` 自定义实例的乘法运算
+- `__floordiv__`  自定义实例的整除运算
+- `__truediv__` 自定义实例的除法运算
+- `__mod__` 自定义实例的取模运算
+- `__pow__` 自定义实例的幂运算
+
+- `__str__` 自定义实例的 print 函数的输出结果
+- `__repr__`  自定义实例的回显
+- `__len__` 自定义实例的获取长度
+
+```python
+class Word:
+    def __init__(self, text):
+        self.text = text
+
+    def __eq__(self, other):
+        return self.text.lower() == other.text.lower()
+
+    def __str__(self):
+        return f'python forever: {self.text}'
+
+    def __repr__(self):
+        return 'Word("' + self.text + '")'
+
+    def __mul__(self, other):
+        return self.text * other.text
+
+
+first = Word('hello')
+first # 调用 __repr__ 内置方法
+print(first)  # 调用 __str__ 内置方法
+second = Word('HELLO')
+print(f'first == second {first == second}') # 比较两个实例
+
+n1 = Word(4)
+n2 = Word(5)
+print(f'n1 * n2 {n1 * n2}') # 计算两个实例的乘法
+```
+
+### 私有属性
+
+python 没有私有属性
+
+- 使用 getter 和 setter, 仍然可以操作隐藏属性
+
+```python
+def get_name(self):
+    return self.hidden_name
+  
+def set_name(self, value):
+    self.hidden_name = value
+```
+
+- 使用内置函数 property() 允许将方法当作属性访问
+- 使用装饰器 @property
+
+```python
+# 使用 property 内置函数
+class Person:
+    # ...
+    name = property(get_name, set_name)
+
+# 使用装饰器
+@property
+def name(self):
+    return self.hidden_name
+
+@name.setter
+def name(self, value):
+    self.hidden_name = value
+
+# 只读属性
+@property
+def diameter(self):
+    return 2 * self.radius
+```
+
+- 使用 `__` 起始定义内置属性, python 将内置属性增加 `__类名` 的前缀绑定到实例上
+  - 单下划线开始的属性和方法名约定私有, 但实际上是公开的, 子类可以重写
+  - 双下划线开始的属性和方法名私有实现, 不想被子类意外重写
+
+```python
+class Duck:
+    def __init__(self, name):
+        self.__name = name
+    
+    @property
+    def name(self):
+      return self.__name
+
+    @name.setter
+    def name(self, value)
+      self.__name = value
+
+# 实例化后内置属性 __name 将变为 __Duck__name 绑定到实例上
+```
+
+### 类属性, 类方法和静态方法
+
+- 类属性(成员属性)可以被继承, 修改类属性后只会影响实例未修改过的同名属性和新创建的实例
+  - 实例修改和类同名的属性将覆盖类属性
+
+```python
+class Fruit:
+    color = 'red'  # 类属性，所有实例共享
+
+banana = Fruit()
+print(f'Fruit.color {Fruit.color}')  # red
+print(f'banana.color {banana.color}')  # red
+print('---------')
+print(f'修改 Fruit.color = "yellow"')
+Fruit.color = 'yellow'
+print(f'Fruit.color {Fruit.color}')  # yellow
+print(f'banana.color {banana.color}')  # yellow, 实例会修改过的同名属性也会变化
+print('---------')
+print(f'修改 banana.color = "green"')
+banana.color = 'green'
+print(f'Fruit.color {Fruit.color}')  # yellow
+print(f'banana.color {banana.color}')  # green
+print('---------')
+print(f'修改 Fruit.color = "blue"')
+Fruit.color = 'blue'
+print(f'Fruit.color {Fruit.color}')  # blue
+print(f'banana.color {banana.color}')  # green
+print('---------')
+orange = Fruit()
+print(f'Fruit.color {Fruit.color}')  # blue
+print(f'orange.color {orange.color}')  # blue
+```
+
+- 类方法(成员方法)，使用 @classmethod 装饰器, 方法的第一个参数为类本身 cls, 所有实例共享
+- 静态方法，使用 @staticmethod 装饰器, 不需要 self 和 cls 参数, 不需要实例化可以直接调用
+
+```python
+# 类方法
+class A():
+    count = 0
+    def __init__(self):
+        A.count += 1
+
+    # 类方法, 所有实例共享
+    @classmethod
+    def toString(cls):
+        print(f'class A has {cls.count} instances...')
+
+class AA(A):
+    pass
+
+a = A()
+b = A()
+aa = AA()
+AA.toString()
+
+# 静态方法
+class C:
+    @staticmethod
+    def go_home():
+        print(f'class c static method go_home...')
+
+
+C.go_home() # 不需要实例化直接调用
+```
+
+### 多继承
+
+- 访问自己不存在的属性或方法时, 优先使用最先继承的父类的属性和方法
+
+### 多态

@@ -1,3 +1,4 @@
+# 生成器函数，返回一个生成器对象
 def my_gen(start=0, end=100, step=1):
     while start < end:
         yield start
@@ -43,7 +44,13 @@ def my_decorator(func):
 # 定义装饰器
 def my_decorator_2(func):
     def new_func(*args, **kwargs):
+        print('my_decorator_2 before called.')
+        print(f'my_decorator_2 Running func name: {func.__name__}')
+        print(f'my_decorator_2 Positional arguments: {args}')
+        print(f'my_decorator_2 Keyword arguments: {kwargs}')
         result = func(*args, **kwargs)
+        print(f'my_decorator_2 Result: {result}')
+        print('my_decorator_2 after called.')
         return result * result
     return new_func
 
