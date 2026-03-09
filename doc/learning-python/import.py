@@ -1,3 +1,7 @@
+import sys
+for path in sys.path:
+    print(f' {path}')
+
 # # 导入方式1: import 导入包下的模块
 # import my_package.my_module1
 # import my_package.my_module2

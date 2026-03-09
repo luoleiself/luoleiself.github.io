@@ -189,7 +189,6 @@ class ExclamationQuote(Quote):
         return self.words+'!'
 
 
-# 实例化未定义初始化方法的子类时, 参数必须符合父类初始化方法参数的要求
 class SubQuestionQuote(QuestionQuote):
     def says(self):
         return self.words+'??'
@@ -208,7 +207,7 @@ who_says(hunter1)
 who_says(hunter2)
 print('-----------')
 # TypeError: Quote.__init__() takes 3 positional arguments but 4 were given
-hunter3 = SubQuestionQuote('Daffy Duck', 'It\'s rabbit season', 'good')
+hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom', 'good')
 who_says(hunter3)
 ```
 
@@ -306,8 +305,8 @@ def diameter(self):
 ```
 
 - 使用 `__` 起始定义内置属性, python 将内置属性增加 `_类名` 的前缀绑定到实例上
-  - 单下划线开始的属性和方法名约定私有, 但实际上是公开的, 子类可以重写
-  - 双下划线开始的属性和方法名私有实现, 不想被子类意外重写
+  - 单下划线开始的属性和方法约定私有, 但实际上是公开的, 子类可以重写
+  - 双下划线开始的属性和方法名称修饰, 真正私有, 不想被子类意外重写
   - 双下划线起止的属性和方法内置(魔术), 不要自己创建
 
 ```python
