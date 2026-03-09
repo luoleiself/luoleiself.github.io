@@ -43,8 +43,9 @@ def my_decorator(func):
 
 # 定义装饰器
 def my_decorator_2(func):
-    def new_func(*args, **kwargs):
+    def new_func(name, *args, **kwargs):
         print('my_decorator_2 before called.')
+        print(f'my_decorator_2 name: {name}')
         print(f'my_decorator_2 Running func name: {func.__name__}')
         print(f'my_decorator_2 Positional arguments: {args}')
         print(f'my_decorator_2 Keyword arguments: {kwargs}')
@@ -55,10 +56,10 @@ def my_decorator_2(func):
     return new_func
 
 
-@my_decorator_2
 @my_decorator
+@my_decorator_2
 def add_ints(a, b):
     return a + b
 
 
-print(f'add_ints(3, 5) result: {add_ints(3, 5)}')
+print(f'add_ints(3, 5) result: {add_ints("zhangsan",3, 5)}')

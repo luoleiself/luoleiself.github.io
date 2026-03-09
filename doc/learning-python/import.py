@@ -13,6 +13,7 @@
 # my_m2.info_print2()
 
 # 导入方式3: from ... import ... 导入包下的模块
+from design_mode.singleton import *  # 模块内的 __all__ 控制模块 import * 的行为
 from my_package import my_module1, my_module2
 # 使用时: 模块名.函数名
 my_module1.info_print1()
@@ -40,3 +41,11 @@ my_module2.info_print2()
 # 在 my_module1 模块中添加 __all__ 内置变量控制模块 import * 的行为
 # from my_package.my_module1 import *
 # info_print1()   # NameError: name 'info_print1' is not defined
+
+print('---------------------------------------------------')
+# 模块中 __all__ 列表中没有添加 StrTools 类
+# s = StrTools()    # NameError: name 'StrTools' is not defined. Did you mean: 'str_tools'?
+s1 = str_tools
+s2 = str_tools
+print(f's1 {s1}')
+print(f's2 {s2}')
