@@ -186,7 +186,6 @@ class ExclamationQuote(Quote):
         return self.words+'!'
 
 
-# 实例化未定义初始化方法的子类时, 参数必须符合父类初始化方法参数的要求
 class SubQuestionQuote(QuestionQuote):
     def says(self):
         return self.words+'??'
@@ -203,8 +202,13 @@ hunter2 = ExclamationQuote('Daffy Duck', 'It\'s rabbit season')
 who_says(hunter)
 who_says(hunter1)
 who_says(hunter2)
+hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom')
+who_says(hunter3)
 print('-----------')
 # TypeError: Quote.__init__() takes 3 positional arguments but 4 were given
-# hunter3 = SubQuestionQuote('Daffy Duck', 'It\'s rabbit season', 'good')
+# hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom', 'good')
+# who_says(hunter3)
+# TypeError: Quote.__init__() missing 2 required positional arguments: 'person' and 'words'
+# hunter3 = SubQuestionQuote()
 # who_says(hunter3)
 print('---------------------------')
