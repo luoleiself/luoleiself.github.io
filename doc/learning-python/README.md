@@ -253,6 +253,8 @@ range(0, 4)
 
 所有的异常类都是 Exception 的子类
 
+- 使用 raise 抛出异常
+
 ```python
 try:
     # 可能发生错误的代码

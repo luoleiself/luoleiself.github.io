@@ -205,6 +205,6 @@ who_says(hunter1)
 who_says(hunter2)
 print('-----------')
 # TypeError: Quote.__init__() takes 3 positional arguments but 4 were given
-hunter3 = SubQuestionQuote('Daffy Duck', 'It\'s rabbit season', 'good')
-who_says(hunter3)
+# hunter3 = SubQuestionQuote('Daffy Duck', 'It\'s rabbit season', 'good')
+# who_says(hunter3)
 print('---------------------------')

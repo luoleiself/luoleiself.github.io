@@ -23,6 +23,21 @@ else:  # for 循环没有执行 break, 则执行 else 块
     print('No x found')
 print('----------------------------')
 
+
+# fibonacci 数列 0 1 1 2 3 5 8 13 21 34 55 89 ...
+def fibonacci(n):
+    a, b = 0, 1
+    while n > 0:
+        a, b = b, a+b
+        print(f'{a} ', end=' ')
+        n -= 1
+    print()
+    return a
+
+
+print(f'fibonacci(10) {fibonacci(10)}')
+print('----------------------------')
+
 print('try 如果没有发生异常，则执行 else 块')
 try:
     print(1 / 0)
@@ -41,7 +56,7 @@ except FileNotFoundError as e:
     print('文件未找到:', e)
 else:
     print('文件打开成功')
-    txt = fr.read()
+    txt = fr.readline()
     print(f'读取的内容：\n{txt}')
 finally:
     print('总是会执行')
