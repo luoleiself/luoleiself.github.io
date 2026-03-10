@@ -1,4 +1,20 @@
+## 内置属性(魔术属性)
+
+- `__name__` 用于判断当前模块是被直接运行还是被导入, 直接运行时为 `__main__` 否则值为所在的模块名
+- `__all__` 是一个列表, 用于定义当使用 `from module_name import *` 时, 哪些名称可以被导入
+  - 在 `__init__.py` 文件中使用限制包级的导入行为
+  - 在 模块中 使用时限制模块的导入行为
+- `__file__` 当前文件的路径
+- `__doc__` 文档字符串
+- `__package__` 包名
+- `__dict__` 对象的属性字典
+- `__slots__` 限制属性(内存优化)
+- `__version__` 版本号
+- `__author__`  作者
+
 ## 内置函数
+
+由 python 解释器提供, 不需要导入直接使用
 
 ### 类型转换
 
@@ -444,6 +460,12 @@ print(issubclass(Dog, Animal))     # True
 #### dir()
 
 列出属性和方法
+
+```python
+>>> lt = [1, 2, 3, 4]
+>>> dir(lt)
+['__add__', '__class__', '__class_getitem__', '__contains__', '__delattr__', '__delitem__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getstate__', '__gt__', '__hash__', '__iadd__', '__imul__', '__init__', '__init_subclass__', '__iter__', '__le__', '__len__', '__lt__', '__mul__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__reversed__', '__rmul__', '__setattr__', '__setitem__', '__sizeof__', '__str__', '__subclasshook__', 'append', 'clear', 'copy', 'count', 'extend', 'index', 'insert', 'pop', 'remove', 'reverse', 'sort']
+```
 
 #### help()
 

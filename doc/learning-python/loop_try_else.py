@@ -55,10 +55,28 @@ try:
 except FileNotFoundError as e:
     print('文件未找到:', e)
 else:
-    print('文件打开成功')
+    print('else: 文件打开成功')
     txt = fr.readline()
     print(f'读取的内容：\n{txt}')
 finally:
     print('总是会执行')
     fr.close()
+print('----------------------------')
+
+
+# 自定义异常类
+class MyError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return f'MyError: {self.value}'
+
+
+try:
+    raise MyError('my error')
+except MyError as e:
+    print(f'自定义异常 {e}')
+else:
+    print('没有发生错误执行的代码')
 print('----------------------------')

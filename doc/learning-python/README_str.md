@@ -78,6 +78,37 @@ IndexError: string index out of range
 ['l', 'l', 'o']
 ```
 
+### 字符串前缀
+
+- f'', 格式化字符串, 3.6+ 支持
+- b'', 字节字符串, 表示字节类型
+- r'', 原始字符串, 忽略转义字符
+- u'', Unicode 字符串
+- fr'', 原始格式化字符串
+- rb'', 原始字节字符串
+
+```python
+f'保留两位小数: {pi:.2f}'
+
+# 字节字符串
+>>> text = 'hello'
+>>> bytes_str = b'hello'
+>>> print(type(text))
+<class 'str'>
+>>> print(type(bytes_str))
+<class 'bytes'>
+>>> text[0] 
+'h'
+>>> bytes_str[0]
+104
+
+# 原始字符串
+>>> print(r'hello\nworld')
+hello\nworld
+>>> len(r'hello\nworld')
+12
+```
+
 ### 函数
 
 - strip() 移除字符串两端的空白字符('', '\t', '\n')
