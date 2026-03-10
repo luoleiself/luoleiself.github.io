@@ -90,9 +90,8 @@ while loop <= 100:
 
 print('--------------')
 
+
 # 定义加法函数
-
-
 def add(a: int, b: int) -> int:
     '''
     @method add 函数求和

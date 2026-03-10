@@ -121,51 +121,60 @@ level1()
 1.0
 ```
 
-### 整数
+## 迭代器
 
-range() 是`惰性求值`的，不会一次性占用大量内存
+可迭代对象实现了 `__iter__` 方法, 但不是迭代器
 
 ```python
-# 立即返回，几乎不占内存
-big_range = range(1000000)
-# 创建包含 100 万个元素的列表，占用大量内存
-big_list = list(range(1000000))
+my_list = [1, 2, 3]  # 列表是可迭代对象，但不是迭代器
+print(hasattr(my_list, '__iter__'))    # True
+print(hasattr(my_list, '__next__'))    # False
+# 获取迭代器
+list_iterator = iter(my_list)
+print(hasattr(list_iterator, '__iter__'))  # True
+print(hasattr(list_iterator, '__next__'))  # True
 ```
 
-- range() 生成数字序列，返回一个可迭代对象, 不能直接使用, 需要`配合其他函数或语句`才能获取值
-  - 只有 1 个参数时生成 0 到 arg 的数字序列
-  - start, 开始，包含
-  - end, 结束，不包含
-  - step，步长绝对值，默认为 1
-    - 如果为 -1, `反向生成数字序列`
+- 迭代器, 是一个可记忆遍历位置的对象, 实现了迭代器协议(`__iter__` 和 `__next__` 方法)
+- 生成器, 是一种特殊的迭代器, 使用 yield 关键字创建, 可以暂停和恢复执行
 
 ```python
->>> range(4)  # 直接使用不会输出结果
-range(0, 4)
->>> print(range(4)) # 直接使用不会输出结果
-range(0, 4)
+# 自定义迭代器
+class CountDown:
+    """倒计时迭代器"""
+    def __init__(self, start):
+        self.current = start
+    
+    def __iter__(self):
+        return self  # 返回迭代器本身
+    
+    def __next__(self):
+        if self.current <= 0:
+            raise StopIteration  # 结束迭代
+        value = self.current
+        self.current -= 1
+        return value
 
->>> num = range(4)
->>> print(num[2])
-2
->>> list(range(4))
-[0, 1, 2, 3]
->>> list(range(1, 4)) 
-[1, 2, 3]
->>> list(range(1, 4, 2))
-[1, 3]
->>> tuple(range(4))
-(0, 1, 2, 3)
->>> tuple(range(1, 4))
-(1, 2, 3)
->>> tuple(range(1, 4, 2))
-(1, 3)
+# 使用自定义迭代器
+counter = CountDown(5)
+for num in counter:
+    print(num, end=' ')  # 输出: 5 4 3 2 1
 
-# 反向生成数字序列
->>> list(range(4, -2, -1))
-[4, 3, 2, 1, 0, -1]
->>> list(range(4, -2, -2))
-[4, 2, 0]
+# 生成器
+def countdown_gen(n):
+    """生成器版本的倒计时"""
+    print(f"开始倒计时 from {n}")
+    while n > 0:
+        yield n  # 暂停，返回 n
+        n -= 1
+    print("倒计时结束！")
+
+# 创建生成器对象
+gen = countdown_gen(5)
+print(type(gen))  # <class 'generator'>
+# 使用
+for num in gen:
+    print(num, end=' ')  # 5 4 3 2 1
 ```
 
 ## 推导式
