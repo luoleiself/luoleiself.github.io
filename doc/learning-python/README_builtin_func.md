@@ -235,7 +235,50 @@ False
 
 #### range()
 
-生成数字序列
+生成数字序列, 返回一个`可迭代对象`, 不能直接使用, 需要`配合其他函数或语句`才能获取值
+
+- range() 是`惰性求值`的，不会一次性占用大量内存
+  - 只有 1 个参数时生成 0 到 arg 的数字序列
+  - start, 开始，包含
+  - end, 结束，不包含
+  - step，步长绝对值，默认为 1
+    - 如果为 -1, `反向生成数字序列`
+
+```python
+# 立即返回，几乎不占内存
+big_range = range(1000000)
+# 创建包含 100 万个元素的列表，占用大量内存
+big_list = list(range(1000000))
+```
+
+```python
+>>> range(4)  # 直接使用不会输出结果
+range(0, 4)
+>>> print(range(4)) # 直接使用不会输出结果
+range(0, 4)
+
+>>> num = range(4)
+>>> print(num[2])
+2
+>>> list(range(4))
+[0, 1, 2, 3]
+>>> list(range(1, 4)) 
+[1, 2, 3]
+>>> list(range(1, 4, 2))
+[1, 3]
+>>> tuple(range(4))
+(0, 1, 2, 3)
+>>> tuple(range(1, 4))
+(1, 2, 3)
+>>> tuple(range(1, 4, 2))
+(1, 3)
+
+# 反向生成数字序列
+>>> list(range(4, -2, -1))
+[4, 3, 2, 1, 0, -1]
+>>> list(range(4, -2, -2))
+[4, 2, 0]
+```
 
 #### enumerate()
 
@@ -274,7 +317,7 @@ print(list(zip(names, ages, cities)))  # 以最短的为准
 
 #### map()
 
-映射函数
+映射函数返回结果为迭代器对象, 需要使用 list() 转换为列表
 
 ```python
 squared = list(map(lambda x: x**2, [1, 2, 3, 4]))
@@ -287,7 +330,7 @@ print(result)  # [11, 22, 33]
 
 #### filter()
 
-过滤序列
+过滤序列返回结果为迭代器对象, 需要使用 list() 转换为列表
 
 ```python
 # 过滤出偶数
@@ -318,7 +361,7 @@ print(sorted(words, key=str.lower))  # 忽略大小写
 
 #### reversed()
 
-反转
+反转返回结果为反向迭代器对象, 需要使用 list() 转换为列表
 
 ```python
 print(list(reversed([1, 2, 3, 4])))  # [4, 3, 2, 1]
@@ -452,13 +495,61 @@ exec("x = 10; y = 20; print(x + y)")  # 30
 
 #### callable()
 
+返回对象是否可调用, 判断对象是否有 `__call__` 方法
+
+```python
+>>> class A:
+...     pass
+... 
+>>> a = A()    
+>>> callable(a) # 判断 a 是否可调用
+False
+>>> a() # 不能调用, 报错
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'A' object is not callable
+
+# 定义 __call__ 方法
+>>> class B:
+...     def __call__(self):
+...             print(f'has __call__ method...')
+... 
+>>> b = B();   
+>>> callable(b)
+True
+>>> b()
+has __call__ method...
+```
+
 #### vars()
 
 返回模块、类、实例或任何其他具有 `__dict__` 属性的对象的 `__dict__` 属性
 
+#### iter()
+
+从`可迭代对象`返回一个迭代器对象
+
+```python
+>>> g = iter([1, 2, 3, 4])
+>>> g
+<list_iterator object at 0x0000023107888BE0>
+>>> next(g) # 使用 next 获取迭代器对象的下一个值
+1
+>>> for i in g: # 使用 for 遍历迭代器
+...     print(i)
+... 
+2
+3
+4
+>>> next(g) # 迭代器结束触发异常
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+StopIteration
+```
+
 #### next()
 
-获取生成器的值
+获取迭代器的下一个值, 如果传入了默认值则在迭代器结束之后返回该默认值, 否则将触发 StopIteration 异常
 
 ```python
 >>> gen = (x for x in range(10)) # 生成器推导式
@@ -466,6 +557,13 @@ exec("x = 10; y = 20; print(x + y)")  # 30
 0
 >>> next(gen)
 1
+... # 更多操作
+>>> next(gen)   # 迭代器结束后再次获取没有默认值则触发异常
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+StopIteration
+>>> next(gen, 'default value')  # 返回默认值
+'default value'
 ```
 
 #### locals() 返回函数内部的内容目录

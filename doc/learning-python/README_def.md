@@ -132,12 +132,6 @@ SyntaxError: can't use starred expression here
 SyntaxError: invalid syntax
 ```
 
-### 生成器
-
-生成器是一个 python 序列生成对象, 无需一次性在内存中创建可能会很长的序列
-
-- 生成器是动态生成值, 迭代器只能遍历一次
-
 ### 装饰器
 
 装饰器是一种函数，接受一个函数作为输入并返回另一个函数
@@ -236,6 +230,12 @@ who_says(hunter3)
 - `__str__` 自定义实例的 print 函数的输出结果
 - `__repr__`  自定义实例的回显
 - `__len__` 自定义实例的获取长度
+
+其他方法
+
+- `__call__` 自定义实例支持函数调用方式
+- `__iter__` 自定义实例返回迭代器对象
+- `__next__`  自定义实例返回下一个值
 
 ```python
 class Word:
@@ -394,5 +394,29 @@ C.go_home() # 不需要实例化直接调用
 ### 多继承
 
 - 访问自己不存在的属性或方法时, 优先使用最先继承的父类的属性和方法
+  - 搜索过程从左往右搜索 `__mro__` 列表, 按顺序优先匹配
+
+```python
+class NFCPhone:
+    name = 'NFCPhone'
+
+    def call_phone(self):
+        print(f'NFCPhone {self.name} is calling...')
+
+
+class Phone:
+    name = 'phone'
+
+    def call_phone(self):
+        print(f'Phone {self.name} is calling...')
+
+
+class IPhone(Phone, NFCPhone):
+    pass
+
+p = IPhone()
+p.call_phone()  # Phone phone is calling...
+print(f'p name {p.name}')   # p name phone
+```
 
 ### 多态

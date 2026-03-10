@@ -7,6 +7,7 @@
 - 使用 `{ }` 定义字典
 - 使用 `dict()` 内置函数创建或转换其他类型为字典, 参数为空, `具名参数`, `包含双项序列的任意序列`
   - 具名参数必须是合法的变量名称
+- 使用 `{** }` 解构字典
 
 ```python
 # {} 定义字典
@@ -78,6 +79,11 @@ ValueError: dictionary update sequence element #2 has length 3; 2 is required
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 ValueError: dictionary update sequence element #2 has length 3; 2 is required
+
+# ** 解构字典
+>>> dt = {'a': 'A', 'b': 'B', 'c': 'C'}
+>>> {'1': 1, **dt}
+{'1': 1, 'a': 'A', 'b': 'B', 'c': 'C'}
 ```
 
 ### 解构赋值
@@ -184,6 +190,27 @@ False
 None
 >>> print(name_dict.get('forth', 'Not found'))  # 未找到返回指定的值
 Not found
+```
+
+- setdefault() 获取字典项, 如果键存在则返回字典项, 不存在则添加键并返回添加的值
+  - key, 要获取/添加的键
+  - default, 可选, 默认为 None, 如果键不存在则添加此值
+
+```python
+>>> dt = {'a': 'A', 'b': 'B'} 
+>>> dt
+{'a': 'A', 'b': 'B'}
+>>> dt.setdefault('a')  # 键存在则返回对应的值
+'A'
+>>> dt.setdefault('a', 1) # 键存在则返回对应的值, 默认值不会影响已存在的键
+'A'
+>>> dt.setdefault('c')   # 添加键, 未提供默认值则使用 None
+>>> dt
+{'a': 'A', 'b': 'B', 'c': None}
+>>> dt.setdefault('d', 'D') # 添加键, 提供默认值并返回默认值
+'D'
+>>> dt
+{'a': 'A', 'b': 'B', 'c': None, 'd': 'D'}
 ```
 
 python 3 中 `keys()`, `values()`, `items()` 方法返回的是可迭代视图, 使用 `list()` 转换为列表

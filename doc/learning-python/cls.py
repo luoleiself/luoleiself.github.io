@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+
 # 装饰器 @property, 只读属性
 class Circle:
     def __init__(self, radius):
@@ -10,8 +13,11 @@ class Circle:
 
 c = Circle(5)
 print(f'c.radius {c.radius} c.diameter {c.diameter}')
-# AttributeError: property 'diameter' of 'Circle' object has no setter
-# c.diameter = 10   # 只读属性
+try:
+    # AttributeError: property 'diameter' of 'Circle' object has no setter
+    c.diameter = 10   # 只读属性
+except AttributeError as e:
+    print(f'只能属性不能修改: {e}')
 print('---------------------------')
 
 
@@ -64,7 +70,7 @@ print(f'first == second {first == second}')
 
 n1 = Word(4)
 n2 = Word(5)
-print(f'n1 * n2 {n1 * n2}')
+print(f'实例 n1 * 实例 n2 = {n1 * n2}')
 print('---------------------------')
 
 
@@ -73,6 +79,7 @@ class Fruit:
     color = 'red'  # 类属性，所有实例继承
 
 
+print('类属性, 所有实例继承, 实例同名属性会覆盖类属性')
 banana = Fruit()
 print(f'Fruit.color {Fruit.color}')  # red
 print(f'banana.color {banana.color}')  # red
@@ -107,7 +114,7 @@ class A():
 
     # 类方法, 所有实例共享
     @classmethod
-    def toString(cls):
+    def count_func(cls):
         print(f'class A has {cls.count} instances...')
 
 
@@ -115,26 +122,62 @@ class AA(A):
     pass
 
 
+print('类方法, 实例和类都可以调用')
 a = A()
-a.toString()
+a.count_func()
 b = A()
-b.toString()
+b.count_func()
 aa = AA()
-aa.toString()
-AA.toString()
+aa.count_func()
+AA.count_func()
 print('---------------------------')
 
 
 # 静态方法, 不需要实例化直接调用
-class C:
+class Animal:
+    @classmethod
+    def class_func(cls):
+        print(f'1. @classmethod of class {cls.__name__}')
+
     @staticmethod
-    def go_home():
-        print(f'class c static method go_home...')
+    def static_func():
+        print(f'1. @staticmethod of class Animal')
+
+    def breathe(self):
+        print(f'Animal instancemethod breathe...')
 
 
-c = C()
-c.go_home()
-C.go_home()
+class Dog(Animal):
+    @classmethod
+    def class_func(cls):
+        super().static_func()
+        Animal.static_func()
+
+        super().class_func()
+        Animal.class_func()
+        print(f'2. @classmethod of class {cls.__name__}')
+
+    def breathe(self):
+        # 使用 super() 或 类名直接调用类静态方法
+        super().static_func()
+        Animal.static_func()
+
+        super().class_func()
+        Animal.class_func()
+        print(f'Dog instancemethod breathe...')
+
+
+print('静态方法, 实例方法内调用静态方法和类方法')
+d = Dog()
+d.breathe()
+print('--------')
+print('静态方法, 实例调用类方法, 类方法调用静态方法')
+d = Dog()
+d.class_func()
+print('--------')
+print('静态方法, 实例直接调用静态方法')
+d = Dog()
+d.static_func()
 print('---------------------------')
 
 
@@ -157,6 +200,7 @@ class IPhone(Phone, NFCPhone):
     pass
 
 
+print('多继承, 访问自己没有的属性或方法时, 优先使用最先继承的父类的属性和方法')
 p = IPhone()
 p.call_phone()  # Phone phone is calling...
 print(f'p name {p.name}')   # p name phone
@@ -195,6 +239,7 @@ def who_says(obj):
     print(f'{obj.who()} says: {obj.says()}')
 
 
+print('多态性:')
 hunter = Quote('Elmer Fudd', 'I\'m hunting wabbits')
 # 如果子类没有定义初始化方法, python 自动调用父类的初始化方法完成属性绑定
 hunter1 = QuestionQuote('Bugs Bunny', 'What\'s up, doc')
@@ -205,10 +250,24 @@ who_says(hunter2)
 hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom')
 who_says(hunter3)
 print('-----------')
+# 实例化时, 参数必须符合初始化方法的参数要求
 # TypeError: Quote.__init__() takes 3 positional arguments but 4 were given
 # hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom', 'good')
 # who_says(hunter3)
 # TypeError: Quote.__init__() missing 2 required positional arguments: 'person' and 'words'
 # hunter3 = SubQuestionQuote()
 # who_says(hunter3)
+print('---------------------------')
+
+
+# 数据类
+@dataclass
+class DataClass:
+    name: str
+    age: int
+    height: float
+
+
+dc = DataClass('Tom', 18, 1.75)
+print(f'数据类: {dc} 类型为 {type(dc)}')
 print('---------------------------')
