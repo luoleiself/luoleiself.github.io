@@ -1,3 +1,14 @@
+print('------位运算符------')
+x = 5
+y = 1
+print(f'x = {x} {x:#06b}, y = {y} {y:#06b}')
+print(f'x & y = {(x & y)} {(x & y):#6b}')
+print(f'x | y = {x | y} {(x | y):#6b}')
+print(f'~x = {~x} {(~x):#6b}')
+print(f'x ^ y = {x ^ y} {(x ^ y):#6b}')
+print(f'x << 1 = {x << 1} {(x << 1):#6b}')
+print(f'x >> 1 = {x >> 1} {(x >> 1):#6b}')
+
 print('------转换为字符串------')
 print(f'int 转换为字符串: {str(123)}')
 print(f'float 转换为字符串: {str(123.456)}')

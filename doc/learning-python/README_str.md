@@ -377,11 +377,15 @@ tel = 13112345678
 
 - 起始冒号
 - 填充字符，默认为 ''
-- 对齐字符: < 表示左对齐, > 表示右对齐, ^ 表示居中对齐
+- 对齐字符: < 表示左对齐, > 表示右对齐(默认), ^ 表示居中对齐
 - 数字符号, 表示只在负数前面添加负号
+- 进制符号: #, 输出进制前缀
+  - 如果使用对齐字符, 进制符号必须在对齐字符之后, 在对齐字符之前则为填充字符
+  - 如果使用填充符号，进制符号必须在填充符号之前, 否则填充字符不生效
 - 最小字段宽度
 - . 字符, 分隔最小字段宽度和最大字符数
 - 最大字符数
+- 分组符号 , 或 _, 仅支持数字整数部分
 - 转换类型字符
 
 ```python
@@ -393,13 +397,79 @@ tel = 13112345678
 # 居中对齐
 >>> 'The {:^10s} is at the {:^10s}'.format('wraith', 'window')
 'The   wraith   is at the   window  '
-# 填充字符 !
+# 填充字符
 >>> 'The {:!^10s} is at the {:^10s}'.format('wraith', 'window') 
 'The !!wraith!! is at the   window  '
 >>> 'The {:##^10s} is at the {:^10s}'.format('wraith', 'window')
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 ValueError: Invalid format specifier '##^10s' for object of type 'str'
+
+# 分组符号仅支持数字整数部分
+>>> x = 1000000000
+>>> f'{x = :15}'
+'x =      1000000000'
+>>> f'{x = :15_}'
+'x =   1_000_000_000'
+>>> f'{x = :15,}'
+'x =   1,000,000,000'
+>>> f'{x = :15b}'
+'x = 111011100110101100101000000000'
+>>> f'{x = :15_b}'
+'x = 11_1011_1001_1010_1100_1010_0000_0000'
+>>> f'{x = :15_o}'
+'x =    73_4654_5000'
+>>> f'{x = :15_x}'
+'x =       3b9a_ca00'
+>>> f'{x = :15,x}'
+>>> f'{x = :15,b}'  # 分组符号 , 支持数字输出
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: Cannot specify ',' with 'b'.
+>>> f'{x = :15,o}'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: Cannot specify ',' with 'o'.
+>>> f'{x = :15,x}'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: Cannot specify ',' with 'x'.
+# 仅支持整数部分分组
+>>> x = 10000000.12398913
+>>> f'{x = :15,}'
+'x = 10,000,000.12398913'
+>>> f'{x = :15_}'
+'x = 10_000_000.12398913'
+
+# 进制转换
+# 在对齐字符之前为填充字符
+>>> 'x = {:#^10b}'.format(10)
+'x = ###1010###'
+>>> 'x = {:#^10o}'.format(10)
+'x = ####12####'
+>>> 'x = {:#^10x}'.format(10)
+'x = ####a#####'
+# 对齐字符控制填充字符
+>>> 'x = {:^#010x}'.format(10)
+'x = 0000xa0000'
+# 对齐字符之前的填充字符
+>>> 'x = {:9^#014b}'.format(10)
+'x = 99990b10109999'
+# 没有对齐字符的填充字符
+>>> 'x = {:#014b}'.format(10)
+'x = 0b000000001010'
+
+# 显示进制前缀
+>>> 'x = {:10b}'.format(100)
+'x =    1100100'
+>>> 'x = {:#10b}'.format(100) # 显示二进制带前缀 0b
+'x =  0b1100100'
+>>> 'x = {:+#10b}'.format(100)
+'x = +0b1100100'
+>>> 'x = {:#10o}'.format(100) # 显示八进制带前缀 0o
+'x =      0o144'
+>>> 'x = {:#10x}'.format(100) # 显示十六进制带前缀 0x
+'x =       0x64'
 ```
 
 #### f-string
@@ -443,6 +513,18 @@ age: 18
 >>> place = 'lake'
 >>> f'The {thing:>10s} is in the {place:!^10s}'
 'The  woodchuck is in the !!!lake!!!'
+
+# 显示进制前缀
+>>> f'{x = :^+10}'
+'x =    +100   '
+>>> f'{x = :^+10b}' 
+'x =  +1100100 '
+>>> f'{x = :^+#10b}'  # 居中显示二进制带符号带前缀 0b
+'x = +0b1100100'
+>>> f'{x = :^+#10o}'  # 居中显示八进制带符号带前缀 0o
+'x =   +0o144  '
+>>> f'{x = :^+#10x}'  # 居中显示十六进制带符号带前缀 0x
+'x =   +0x64   '
 ```
 
 #### join 方法拼接字符串
