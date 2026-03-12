@@ -178,6 +178,131 @@ ValueError: substring not found
 '                 a duck goes into bar...'
 ```
 
+- isalpha() 判断字符串中的所有字符都是字母
+- isalnum() 判断字符中的所有字符都是字母或数字
+
+```python
+# isalpha() 只支持字母, 不包含数字字符和其他特殊字符
+>>> 'hello'.isalpha()
+True
+>>> 'hello world'.isalpha()
+False
+>>> 'abc以'.isalpha()
+True
+>>> '123以'.isalpha()
+False
+>>> 'abc千Ⅵ'.isalpha()
+False
+>>> 'abc千①'.isalpha()
+False
+
+# isalnum() 只支持字母和数字, 不包含其他特殊字符
+>>> 'hello'.isalnum()
+True
+>>> 'hello world'.isalnum()
+False
+>>> 'hello123'.isalnum()
+True
+>>> 'hello123以'.isalnum()
+True
+>>> 'hello123@#$'.isalnum()
+False
+>>> 'abc千①'.isalnum()
+True
+>>> 'abc千Ⅵ'.isalnum()
+True
+```
+
+#### 数字字符比较
+
+- isdecimal() 十进制数字, 最严格
+
+```python
+# isdecimal() 只支持是无符号整数, 其他任何符号都为 False
+>>> '123'.isdecimal()
+True
+>>> '0'.isdecimal()
+True
+>>> '01234'.isdecimal()
+True
+>>> '123 '.isdecimal()
+False
+>>> '12.3'.isdecimal() 
+False
+>>> '-123'.isdecimal() 
+False
+>>> '-12.3'.isdecimal()
+False
+>>> '123abc'.isdecimal()
+False
+>>> '²'.isdecimal() # 上标数字
+False
+>>> '①'.isdecimal() # 带圈数字
+False
+>>> '三'.isdecimal()  # 汉字数字
+False
+```
+
+- isdigit() 十进制数字 + 其他数字字符， 中等
+
+```python
+# isdigit() 只支持无符号整数 和 特殊数字字符(不包含汉字数字, 罗马数字等), 其他任何符号都为 False
+>>> '123'.isdigit()
+True
+>>> '0'.isdigit()
+True
+>>> '01234'.isdigit()
+True
+>>> '123 '.isdigit() 
+False
+>>> '12.3'.isdigit()
+False
+>>> '-123'.isdigit() 
+False
+>>> '-12.3'.isdigit()
+False
+>>> '123abc'.isdigit() 
+False
+>>> '²'.isdigit() # 上标数字
+True
+>>> '①'.isdigit() # 带圈数字
+True
+>>> '三'.isdigit()  # 汉字数字
+False
+>>> 'Ⅵ'.isdigit()  # 罗马数字
+False
+```
+
+- isnumeric() 原有数字字符 + 数字符号, 最宽松
+
+```python
+# isnumeric() 只支持无符号整数 和 数字符号(包含汉字数字、罗马数字等), 其他任何符号都为 False
+>>> '123'.isnumeric()
+True
+>>> '0'.isnumeric()
+True
+>>> '01234'.isnumeric()
+True
+>>> '-123'.isnumeric()
+False
+>>> '-12.3'.isnumeric()
+False
+>>> '123abc'.isnumeric()
+False
+>>> '²'.isnumeric() # 上标数字   
+True
+>>> '①'.isnumeric() # 带圈数字
+True
+>>> '三'.isnumeric()  # 汉字数字
+True
+>>> '捌'.isnumeric()  # 汉字数字
+True
+>>> '千'.isnumeric()  # 汉字数字
+True
+>>> 'Ⅵ'.isnumeric() # 罗马数字
+True
+```
+
 ### 字符串拼接
 
 `*` 和 `+` 拼接字符串返回新的字符串
