@@ -141,7 +141,7 @@ False
 
 #### chr()/ord()
 
-转换 unicode 码对应的字符
+转换单个 unicode 码对应的字符
 
 ```python
 >>> chr(97)
