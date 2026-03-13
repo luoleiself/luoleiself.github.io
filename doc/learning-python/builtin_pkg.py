@@ -1,3 +1,6 @@
+import csv
+import pathlib
+from urllib import parse
 import shutil
 from datetime import datetime as dt, timezone, timedelta, MAXYEAR, MINYEAR, UTC
 import glob
@@ -22,6 +25,11 @@ print(f'sys.intern("hello") {sys.intern("hello")}')
 print('---------------')
 
 print('os 模块')
+uname_res = os.uname_result
+print(f'uname_res {uname_res.sysname} {uname_res.release} {uname_res.version} {uname_res.machine} {uname_res.nodename}')
+print(f'os.uname_result {os.uname_result}')
+print(f'os.getlogin() {os.getlogin()}')
+os.system('git status')  # 在 shell 中执行命令
 print(f'os.getcwd() {os.getcwd()}')
 print(f'os.name {os.name}')
 print(f'os.getpid() {os.getpid()}')
@@ -51,6 +59,15 @@ print(f'os.path.isabs("test.txt") {os.path.isabs("test.txt")}')
 print(f'os.path.isdir(__file__) {os.path.isdir(__file__)}')
 print(f'os.path.islink(__file__) {os.path.islink(__file__)}')
 print(f'os.path.ismount(__file__) {os.path.ismount(__file__)}')
+print('---------------')
+
+print('pathlib 模块: 基于对象的文件路径')
+p = pathlib.Path(__file__)
+print(f'p {p} {p.name} {p.stem} {p.suffix} {p.parent} {p.absolute()}')
+print(f'p.exists() {p.exists()}')
+print(f'p.home() {p.home()}')
+print(f'p.is_file() {p.is_file()}')
+print(f'p.is_dir() {p.is_dir()}')
 print('---------------')
 
 print('stat 模块')
@@ -100,6 +117,56 @@ print('shutil 模块: 高级文件操作')
 # shutil.move(__file__, __file__ + '.move') # 移动文件
 # print(
 #     f'shutil.copy(__file__, __file__ + \'.copy\') {shutil.copy(__file__, __file__ + ".copy")}')
+print('----------------------------------------------')
+
+print('csv 模块: 读写 csv 文件')
+print(f'csv.reader(f) 创建一个 csv 读取迭代器')
+print(f'csv.writer(f) 创建一个 csv 写入对象')
+print(f'    csv_out.writerow(row) 写入一行')
+print(f'    csv_out.writerows(rows) 写入多行')
+print(f'csv.list_dialects() 列出所有方言 {csv.list_dialects()}')
+print(f'csv.field_size_limit() 输出字段大小限制 {csv.field_size_limit()}')  # 输出字段大小限制
+print(f'csv.QUOTE_ALL 输出字段所有内容 {csv.QUOTE_ALL}')  # 输出字段所有内容
+print(f'csv.QUOTE_MINIMAL 输出字段最小内容 {csv.QUOTE_MINIMAL}')  # 输出字段最小内容
+print('---------------')
+print('读写多项序列的列表')
+csv_data = [['a', 'b', 'c'], (1, 2, 3), (4, 5, 6)]
+print(f'csv_data = {csv_data}')
+with open('test_1.csv', 'wt', newline='') as csvfile:
+    csv_out = csv.writer(csvfile, strict=True)
+    csv_out.writerow(['col 1', 'col 2', 'col 3'])  # 写入一行
+    csv_out.writerows(csv_data)  # 写入多行
+
+with open('test_1.csv', 'rt', newline='') as csvfile:
+    csv_input = csv.reader(csvfile, strict=True)
+    # 迭代读取结果
+    for row in csv_input:
+        print(f'row = {row}')
+print('---------------')
+print('读写字典列表')
+print(f'csv.DictReader(f) 创建一个 csv 字典读取迭代器')
+print(f'    csv_input.fieldnames 输出列名')
+print(f'csv.DictWriter(f, fieldnames) 创建一个 csv 字典写入对象')
+print(f'    csv_out.writeheader() 写入列名 fieldnames')
+print(f'    csv_out.writerow(dict) 写入一行')
+print(f'    csv_out.writerows(dict_list) 写入多行')
+with open('test_2.csv', 'wt', newline='') as csvfile:
+    # fieldnames 指定列名
+    fieldnames = ['col 1', 'col 2', 'col 3']
+    csv_out = csv.DictWriter(csvfile, fieldnames=fieldnames, strict=True)
+    csv_out.writeheader()   # 写入列名
+    csv_out.writerow({'col 1': 'a', 'col 2': 'b', 'col 3': 'c'})  # 写入一行
+    csv_out.writerows([
+        {'col 1': 1, 'col 2': 2, 'col 3': 3},
+        {'col 1': 4, 'col 2': 5, 'col 3': 6},
+    ])  # 写入多行
+with open('test_2.csv', 'rt', newline='') as csvfile:
+    csv_input = csv.DictReader(csvfile, strict=True)
+    print(f'csv_input.fieldnames {csv_input.fieldnames}')
+    for row in csv_input:
+        print(
+            f'row["col 1"] {row["col 1"]}, row["col 2"] {row["col 2"]}, row["col 3"] {row["col 3"]}')
+
 print('----------------------------------------------')
 
 print('logging 模块')
@@ -302,4 +369,35 @@ print('---------')
 # 相对时间
 past_time = time.time() - 3600
 print(tf.get_relative_time(past_time))  # 1小时前
+print('------------------------------------')
+
+print('urllib 包')
+print('编码和解码')
+encode_param = parse.quote("中国")
+print(f'parse.quote(中国) {encode_param}')
+print(f'parse.unquote({encode_param}) {parse.unquote(encode_param)}')
+print('------------')
+
+url = 'https://www.bilibili.com/video/BV1rpWjevEip?spm_id_from=333.788.player.switch&vd_source=f70e6b2f23318ff77f33a2e2ba2f1224&p=89'
+# unwrap_url = parse.unwrap('https://www.bilibili.com/video/BV1rpWjevEip?spm_id_from=333.788.player.switch&vd_source=f70e6b2f23318ff77f33a2e2ba2f1224&p=89')
+# print(f'parse.unwrap(https://www.bilibili.com/video/BV1rpWjevEip?spm_id_from=333.788.player.switch&vd_source=f70e6b2f23318ff77f33a2e2ba2f1224&p=89) {unwrap_url}')
+
+encode_url = parse.urlencode({'a': ('A', 'AA', 'AAA'), 'b': 'B', 'c': 'D'})
+print(
+    f'parse.urlencode({{"a": ("A", "AA", "AAA"), "b": "B", "c": "D"}}) {encode_url}')
+
+print('------------')
+parsed_url = parse.urlparse(url)
+print(f'解析 url 返回 ParseResult: parse.urlparse(url) {parsed_url}')
+parsed_query_dict = parse.parse_qs(parsed_url.query)
+print(f'parse.parse_qs(query) {parsed_query_dict}')
+parsed_query_list = parse.parse_qsl(parsed_url.query)
+print(f'parse.parse_qsl(query) {parsed_query_list}')
+print(f'回解析: parse.urlunparse(parsed_url) {parse.urlunparse(parsed_url)}')
+print('------------')
+
+splited_url = parse.urlsplit(url)
+print(f'解析 url 返回 SplitResult: parse.urlsplit(url) {splited_url}')
+print(f'splited_url.query {splited_url.query}')
+print(f'回解析: parse.urlunsplit(splited_url) {parse.urlunsplit(splited_url)}')
 print('------------------------------------')
