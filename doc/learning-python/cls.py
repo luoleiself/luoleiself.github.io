@@ -44,7 +44,7 @@ print(f'd.name {d.name}')
 print('---------------------------')
 
 
-# 实例的内置方法(魔术方法)
+# 实例的内置方法(魔法方法)
 class Word:
     def __init__(self, text):
         self.text = text
@@ -87,7 +87,7 @@ print('---------')
 print(f'修改 Fruit.color = "yellow"')
 Fruit.color = 'yellow'
 print(f'Fruit.color {Fruit.color}')  # yellow
-print(f'banana.color {banana.color}')  # yellow, 实例会修改过的同名属性也会变化
+print(f'banana.color {banana.color}')  # yellow, 实例未修改过的同名属性也会变化
 print('---------')
 print(f'修改 banana.color = "green"')
 banana.color = 'green'
@@ -204,6 +204,36 @@ print('多继承, 访问自己没有的属性或方法时, 优先使用最先继
 p = IPhone()
 p.call_phone()  # Phone phone is calling...
 print(f'p name {p.name}')   # p name phone
+print('--------')
+
+
+class A:
+    def __init__(self, name):
+        print('class A __init__...')
+
+
+class B(A):
+    def __init__(self, name):
+        print('class B __init__...')
+        super().__init__(name)
+
+
+class C(A):
+    def __init__(self, name):
+        print('class C __init__...')
+        super().__init__(name)
+
+
+class D(B, C):
+    def __init__(self, name):
+        print('class D __init__...')
+        super().__init__(name)
+
+
+# 多继承, 按 MRO(method resolution order) 方法解析顺序查找方法或属性的规则
+# D.__mro__ (<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>)
+print(f'D.__mro__ {D.__mro__}')
+d = D('Tom')  # D -> B -> C -> A -> object
 print('---------------------------')
 
 

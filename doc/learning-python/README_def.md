@@ -205,9 +205,13 @@ hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom', 'good')
 who_says(hunter3)
 ```
 
-### 内置方法(魔术方法)
+### 自省
 
-比较魔术方法
+通过一定的机制查询到对象的内部解构
+
+### 内置方法(魔法方法)
+
+比较魔法方法
 
 - `__str__` 自定义返回实例的结果, 默认输出实例的内存地址
 - `__lt__` 自定义实例的 < 比较, 返回 bool
@@ -217,7 +221,7 @@ who_says(hunter3)
 - `__eq__`  自定义实例的 == 比较, 返回 bool
 - `__ne__`  自定义实例的 != 比较, 返回 bool
 
-数学运算魔术方法
+数学运算魔法方法
 
 - `__add__` 自定义实例的加法运算
 - `__sub__` 自定义实例的减法运算
@@ -230,6 +234,11 @@ who_says(hunter3)
 - `__str__` 自定义实例的 print 函数的输出结果
 - `__repr__`  自定义实例的回显
 - `__len__` 自定义实例的获取长度
+
+上下文管理器
+
+- `__enter__` with 语句绑定这个方法返回的结果到 as 子句中指定的目标
+- `__exit__`  退出与此对象相关的运行时上下文
 
 其他方法
 
@@ -307,7 +316,7 @@ def diameter(self):
 - 使用 `__` 起始定义内置属性, python 将内置属性增加 `_类名` 的前缀绑定到实例上
   - 单下划线开始的属性和方法约定私有, 但实际上是公开的, 子类可以重写
   - 双下划线开始的属性和方法名称修饰, 真正私有, 不想被子类意外重写
-  - 双下划线起止的属性和方法内置(魔术), 不要自己创建
+  - 双下划线起止的属性和方法内置(魔法), 不要自己创建
 
 ```python
 class Duck:
@@ -341,7 +350,7 @@ print('---------')
 print(f'修改 Fruit.color = "yellow"')
 Fruit.color = 'yellow'
 print(f'Fruit.color {Fruit.color}')  # yellow
-print(f'banana.color {banana.color}')  # yellow, 实例会修改过的同名属性也会变化
+print(f'banana.color {banana.color}')  # yellow, 实例未修改过的同名属性也会变化
 print('---------')
 print(f'修改 banana.color = "green"')
 banana.color = 'green'

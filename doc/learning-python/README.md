@@ -19,6 +19,27 @@ my_project/
 - 序列: 连续的可用下标访问的数据存储结构, 字符串，元组，列表, 可使用`切片`进行操作
 - `*` | `**`: 在数据存储结构中使用时, 解构 `可迭代对象`
 - `__` 双下划线起止的名称保留给 python 内部使用
+- `==`, is, isinstance 运算符和函数,
+  - `==` 比较值是否相等, 列表和元组必须有序, 集合无序
+  - is 比较内存地址是否是同一个对象, 常用 None 检查
+  - isinstance 类型检查, 检查对象是否是某个类或其子类的实例
+
+```python
+# == 比较值是否相等, 小整数缓存
+# python 会缓存 -5 到 256 的整数
+>>> a = 5
+>>> b = 5
+>>> a == b
+True
+>>> a is b  # 小整数缓存
+True
+>>> a = 1000
+>>> b = 1000
+>>> a == b
+True
+>>> a is b
+False
+```
 
 ## 关键字
 
@@ -119,6 +140,21 @@ level1()
 2.0
 >>> 1.0 + False
 1.0
+```
+
+### 整数
+
+- 小整数缓存（Python 会缓存 -5 到 256 的整数）
+
+```python
+>>> a = 5
+>>> b = 5
+>>> a is b
+True
+>>> c = 1000
+>>> d = 1000
+>>> c is d
+False
 ```
 
 ## 迭代器
@@ -276,6 +312,43 @@ else:
     # 没有发生错误执行的代码
 finally:
     # 最后总是会执行的代码
+```
+
+## 上下文管理器
+
+实现 `__enter__` 和 `__exit__` 魔法方法
+
+```python
+>>> class Sample:
+...     def __enter__(self):
+...             print('__enter__...')
+...             return self
+...     def __exit__(self, exec_type, exec_val, traceback):
+...             print('__exit__...')
+...     def do_something(self):
+...             print('doing')
+... 
+>>> with Sample() as s:
+...     s.do_something()
+... 
+__enter__...
+doing
+__exit__...
+
+# 使用装饰器和生成器
+>>> import contextlib
+>>> @contextlib.contextmanager
+... def f_open(file_name):
+...     print('start...')   # acquire resource
+...     yield {}
+...     print('end...') # release resource
+... 
+>>> with f_open('hello world') as f_o:
+...     print('with start...')
+...                           
+start...
+with start...
+end..
 ```
 
 ## 模块
