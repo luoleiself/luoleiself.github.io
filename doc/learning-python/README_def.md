@@ -142,7 +142,39 @@ SyntaxError: invalid syntax
 
 ## 类
 
-- `__init__` 非必需的初始化方法, 第一个参数为 self 实例本身
+- `__new__` 创建并返回一个新的实例, 第一个参数为 cls 类本身
+  - 必须返回实例, 如果不返回实例则不会调用 `__init__` 方法
+  - 在 `__init__` 方法执行之前调用
+
+```python
+class Animal:
+    _instance = None
+
+    # 先调用
+    # 实现单例模式
+    def __new__(cls, *args, **kwargs):
+        print('Animal __new__...')
+        if cls._instance is None:
+            print('创建唯一实例')
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    # 初始化实例
+    def __init__(self, *args, **kwargs):
+        print('Animal __init__...')
+        self.args = args
+        self.kwargs = kwargs
+
+
+ani = Animal(1, 2, 3, x=10, y=20)
+print(f'ani = {ani}')
+# Animal __new__...
+# Animal __init__...
+# ani = <__main__.Animal object at 0x0000023215769D90>
+```
+
+- `__init__` 非必需的初始化实例属性的方法, 第一个参数为 self 实例本身
+  - 没有返回值或者返回 None
   - 如果定义了初始化方法和参数, 则必须传入参数否则报错
   - 如果子类没有定义初始化方法, python 自动调用父类的初始化方法完成属性绑定
   - 如果实例化未定义初始化方法的子类时, 参数必须符合父类初始化方法参数的要求
@@ -235,6 +267,29 @@ who_says(hunter3)
 - `__repr__`  自定义实例的回显
 - `__len__` 自定义实例的获取长度
 
+数据描述符的优先级最高, 给实例的不存在的属性赋值时不会直接存入实例的 `__dict__` 中
+
+- `__get__`
+- `__set__`
+- `__delete__`
+
+```python
+class IntField:
+    def __get__(self, instance, owner):
+        return self.value
+    def __set__(self, instance, value):
+        if not isinstance(value, numbers.Integral):
+            raise ValueError('int value need')
+        if value < 0:
+            raise ValueError('positive value need')
+        self.value = value
+    def __delete__(self, instance):
+        pass
+
+class User:
+    age = IntField()  # 数据描述符
+```
+
 上下文管理器
 
 - `__enter__` with 语句绑定这个方法返回的结果到 as 子句中指定的目标
@@ -273,6 +328,46 @@ print(f'first == second {first == second}') # 比较两个实例
 n1 = Word(4)
 n2 = Word(5)
 print(f'n1 * n2 {n1 * n2}') # 计算两个实例的乘法
+```
+
+- `__getattr__` 未找到属性时调用此方法
+- `__getattribute__` 每次访问属性时都调用此方法, 优先级高于前者
+
+```python
+# __getattr__ 和 __getattribute__
+class User:
+    def __init__(self, name, info={}):
+        self.name = name
+        self.info = info
+
+    # 未找到属性时调用此方法
+    def __getattr__(self, item):
+        return self.info[item]
+
+
+print('__getattr__: 未找到属性时调用此方法')
+u1 = User('Tom', {'age': 18, 'sex': 'male'})
+print(f'u1.name {u1.name}') # u1.name Tom
+print(f'u1.age {u1.age}') # u1.age 18
+print(f'u1.sex {u1.sex}') # u1.sex male
+print('---------')
+
+
+class User2:
+    def __init__(self, name, info={}):
+        self.name = name
+        self.info = info
+
+    # 每次访问属性时都调用此方法
+    def __getattribute__(self, item):
+        return 'hello world'
+
+
+print('__getattribute__: 每次访问属性时都调用此方法')
+u2 = User2('Jerry', {'age': 20, 'sex': 'female'})
+print(f'u2.name {u2.name}') # u2.name hello world
+print(f'u2.age {u2.age}') # u2.age  hello world
+print(f'u2.sex {u2.sex}') # u2.sex  hello world
 ```
 
 ### 私有属性

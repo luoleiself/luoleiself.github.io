@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import select
 
 
 # 装饰器 @property, 只读属性
@@ -71,6 +72,71 @@ print(f'first == second {first == second}')
 n1 = Word(4)
 n2 = Word(5)
 print(f'实例 n1 * 实例 n2 = {n1 * n2}')
+print('---------------------------')
+
+
+# __new__ 内置魔法方法，创建新实例
+class Animal:
+    _instance = None
+
+    # 先调用
+    # 实现单例模式
+    def __new__(cls, *args, **kwargs):
+        print('Animal __new__...')
+        if cls._instance is None:
+            print('创建唯一实例')
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    # 初始化实例
+    def __init__(self, *args, **kwargs):
+        print('Animal __init__...')
+        self.args = args
+        self.kwargs = kwargs
+
+
+ani = Animal(1, 2, 3, x=10, y=20)
+print(f'ani = {ani}')
+# Animal __new__...
+# Animal __init__...
+# ani = <__main__.Animal object at 0x0000023215769D90>
+print('---------------------------')
+
+
+# __getattr__ 和 __getattribute__
+class User:
+    def __init__(self, name, info={}):
+        self.name = name
+        self.info = info
+
+    # 未找到属性时调用此方法
+    def __getattr__(self, item):
+        return self.info[item]
+
+
+print('__getattr__: 未找到属性时调用此方法')
+u1 = User('Tom', {'age': 18, 'sex': 'male'})
+print(f'u1.name {u1.name}')
+print(f'u1.age {u1.age}')
+print(f'u1.sex {u1.sex}')
+print('---------')
+
+
+class User2:
+    def __init__(self, name, info={}):
+        self.name = name
+        self.info = info
+
+    # 每次访问属性时都调用此方法
+    def __getattribute__(self, item):
+        return 'hello world'
+
+
+print('__getattribute__: 每次访问属性时都调用此方法')
+u2 = User2('Jerry', {'age': 20, 'sex': 'female'})
+print(f'u2.name {u2.name}')
+print(f'u2.age {u2.age}')
+print(f'u2.sex {u2.sex}')
 print('---------------------------')
 
 
