@@ -7,6 +7,39 @@ tags:
   - sql
 ---
 
+## 范式
+
+键: 数据库中由一个或多个属性组成
+超键: 在关系中能唯一标识记录的属性集称为关系模式的超键
+候选键: 不包含多余属性的超键
+主键: 被作为记录标识的候选键
+
+```sql
+-- 超键: {学号} {身份证号} 或者 {学号} {性别} 或者 {身份证号} {年龄} 的组合属性集可以确定唯一一条记录
+-- 候选键: {学号} 或者 {身份证号} 可以是候选键
+-- 主键: {学号} 候选键作为主键
+```
+
+- 1NF: 数据库表中的每一列的字段都是不可再分的, 原子性
+- 2NF: 数据库表中不存在非关键字段对任意候选关键字段的部分函数依赖(指存在着组合关键字中的某一关键字决定非关键字的情况)
+  - 部分函数依赖：没有包含在主键中的列必须完全依赖于主键, 而不能只依赖于主键的一部分
+- 3NF: 数据库表中不存在非关键字段对任意候选关键字段的传递函数依赖
+  - 传递函数依赖: 非主键列必须直接依赖于主键列，不能存在非主键列依赖于非主键列的情况
+- BCNF: 数据库表中不存在任何关键字段对任意候选关键字段(组合关键字)的传递函数依赖
+
+```sql
+/*
+2NF:
+例如 订单明细表(orderDetail): orderId, productId, productName, unitPrice, discount, quantity; 主键为 (orderId, productId). 一个订单可以包含多个商品.
+discount, quantity 完全依赖主键, 而 unitPrice, productName 只依赖于 productId, 不符合 2NF.
+将 unitPrice, productName 和 productId 拆分为单独的表消除原订单明细表 unitPrice, productName 多次重复的情况
+3NF:
+例如 订单表(order): orderId, orderDate, customerId, customerName, customerAddr, customerCity; 主键为 orderId
+customerName, customerAddr, customerCity 直接依赖 customerId(非主键列), 通过传递才依赖主键, 所以不符合 3NF.
+将 customerName, customerAddr, customerCity 拆分为单独的表达到满足 3NF.
+*/
+```
+
 ## 事务隔离级别
 
 mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改

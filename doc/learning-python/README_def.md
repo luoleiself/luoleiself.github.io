@@ -295,6 +295,39 @@ class User:
 - `__enter__` with 语句绑定这个方法返回的结果到 as 子句中指定的目标
 - `__exit__`  退出与此对象相关的运行时上下文
 
+```python
+>>> class Sample:
+...     def __enter__(self):
+...             print('__enter__...')
+...             return self
+...     def __exit__(self, exec_type, exec_val, traceback):
+...             print('__exit__...')
+...     def do_something(self):
+...             print('doing')
+... 
+>>> with Sample() as s:
+...     s.do_something()
+... 
+__enter__...
+doing
+__exit__...
+
+# 使用装饰器和生成器
+>>> import contextlib
+>>> @contextlib.contextmanager
+... def f_open(file_name):
+...     print('start...')   # acquire resource
+...     yield {}
+...     print('end...') # release resource
+... 
+>>> with f_open('hello world') as f_o:
+...     print('with start...')
+...                           
+start...
+with start...
+end..
+```
+
 其他方法
 
 - `__call__` 自定义实例支持函数调用方式
@@ -524,3 +557,25 @@ print(f'p name {p.name}')   # p name phone
 ```
 
 ### 多态
+
+## 元类
+
+metaclass 是创建类的类, 元类定义了类的行为
+
+```python
+def __init__(self, name):
+    self.name = name
+
+def greet(self):
+    return f'Hello, I\'m {self.name}'
+
+# type 创建 Person 类
+Person = type('Person', (), {
+    'species': 'human',
+    '__init__': __init__,
+    'greet': greet
+})
+
+p2 = Person('Tom')
+p2.greet()
+```

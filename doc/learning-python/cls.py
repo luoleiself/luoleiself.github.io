@@ -367,3 +367,70 @@ class DataClass:
 dc = DataClass('Tom', 18, 1.75)
 print(f'数据类: {dc} 类型为 {type(dc)}')
 print('---------------------------')
+
+
+# 定义一个元类（继承自 type）
+class MyMeta(type):
+    """自定义元类"""
+
+    def __new__(cls, name, bases, attrs):
+        print(f"元类 __new__ 被调用")
+        print(f"  创建类: {name}")
+        print(f"  基类: {bases}")
+        print(f"  属性: {list(attrs.keys())}")
+
+        # 可以修改类的属性
+        attrs['created_by'] = 'MyMeta'
+        attrs['version'] = '1.0'
+
+        return super().__new__(cls, name, bases, attrs)
+
+    def __init__(cls, name, bases, attrs):
+        print(f"元类 __init__ 被调用")
+        print(f"  初始化类: {name}")
+        super().__init__(name, bases, attrs)
+
+
+# 使用元类
+class MyClass(metaclass=MyMeta):
+    x = 10
+
+    def hello(self):
+        return "Hello"
+
+
+print(f"MyClass.created_by: {MyClass.created_by}")  # MyMeta
+print(f"MyClass.version: {MyClass.version}")
+print('-----------')
+
+
+class SingletonMeta(type):
+    """单例元类"""
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            print(f"创建 {cls.__name__} 的第一个实例")
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        else:
+            print(f"返回 {cls.__name__} 的已有实例")
+        return cls._instances[cls]
+
+
+class Database(metaclass=SingletonMeta):
+    def __init__(self):
+        self.connection = None
+        print("Database.__init__ 被调用")
+
+    def connect(self):
+        if not self.connection:
+            self.connection = "Connected"
+        return self.connection
+
+
+# 测试
+db1 = Database()
+db2 = Database()
+print(f"db1 is db2: {db1 is db2}")  # True
+print(f"db1.connect(): {db1.connect()}")
+print('---------------------------')

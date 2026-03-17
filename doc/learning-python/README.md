@@ -318,39 +318,6 @@ finally:
 
 实现 `__enter__` 和 `__exit__` 魔法方法
 
-```python
->>> class Sample:
-...     def __enter__(self):
-...             print('__enter__...')
-...             return self
-...     def __exit__(self, exec_type, exec_val, traceback):
-...             print('__exit__...')
-...     def do_something(self):
-...             print('doing')
-... 
->>> with Sample() as s:
-...     s.do_something()
-... 
-__enter__...
-doing
-__exit__...
-
-# 使用装饰器和生成器
->>> import contextlib
->>> @contextlib.contextmanager
-... def f_open(file_name):
-...     print('start...')   # acquire resource
-...     yield {}
-...     print('end...') # release resource
-... 
->>> with f_open('hello world') as f_o:
-...     print('with start...')
-...                           
-start...
-with start...
-end..
-```
-
 ## 模块
 
 一个 python 文件, 可以包含 类，函数, 变量等
