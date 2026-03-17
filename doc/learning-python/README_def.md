@@ -241,9 +241,63 @@ who_says(hunter3)
 
 通过一定的机制查询到对象的内部解构
 
+### 内置属性(魔法属性)
+
+- `__name__` 用于判断当前模块是被直接运行还是被导入, 直接运行时为 `__main__` 否则值为所在的模块名
+- `__all__` 是一个列表, 用于定义当使用 `from module_name import *` 时, 哪些名称可以被导入
+  - 在 `__init__.py` 文件中使用限制包级的导入行为
+  - 在 模块中 使用时限制模块的导入行为
+- `__file__` 当前文件的路径
+- `__doc__` 文档字符串
+- `__package__` 包名
+- `__slots__` 限制属性(内存优化)
+- `__version__` 版本号
+- `__author__`  作者
+- `__dict__` 存储对象的命名空间
+  - 实例: 实例对象自身的属性, 不包含类属性、方法，可读写
+  - 类: 类属性、方法、装饰器描述符等, 不能直接修改
+  - 模块: 模块中定义的所有名称(变量, 函数， 类, 导入的模块等)
+
+```python
+# __dict__ 存储对象的命名空间
+class Person:
+    species = 'Human'
+
+    def __init__(self, name):
+        self.name = name
+
+    @property
+    def new_name(self):
+        return self.name
+
+    @classmethod
+    def cls_method(cls):
+        print(f'class Person method...')
+
+    @staticmethod
+    def static_method():
+        print(f'static method...')
+
+    def say_hello(self):
+        print(f'{self.name} say hello!')
+
+
+p = Person('Jerry')
+print(f'p.__dict__ {p.__dict__}') # 实例自身的属性
+p.say_hello()
+print(f'Person.__dict__ {Person.__dict__}') # 类属性、方法、装饰器描述符等
+print(f'moduleName.__dict__ {select.__dict__}') # 模块中定义的所有名称
+print('------------------')
+
+p.__dict__ {'name': 'Jerry'}
+Jerry say hello!
+Person.__dict__ {'__module__': '__main__', 'species': 'Human', '__init__': <function Person.__init__ at 0x000001BC44D95120>, 'new_name': <property object at 0x000001BC44D98540>, 'cls_method': <classmethod(<function Person.cls_method at 0x000001BC44D95260>)>, 'static_method': <staticmethod(<function Person.static_method at 0x000001BC44D95300>)>, 'say_hello': <function Person.say_hello at 0x000001BC44D953A0>, '__dict__': <attribute '__dict__' of 'Person' objects>, '__weakref__': <attribute '__weakref__' of 'Person' objects>, '__doc__': None}
+moduleName.__dict__ {'__name__': 'select', '__doc__': 'This module supports asynchronous I/O on multiple file descriptors.\n\n*** IMPORTANT NOTICE ***\nOn Windows, only sockets are supported; on Unix, all file descriptors.', '__package__': '', '__loader__': <_frozen_importlib_external.ExtensionFileLoader object at 0x000001989F2D7260>, '__spec__': ModuleSpec(name='select', loader=<_frozen_importlib_external.ExtensionFileLoader object at 0x000001989F2D7260>, origin='D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\DLLs\\select.pyd'), 'select': <built-in function select>, '__file__': 'D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\DLLs\\select.pyd', 'error': <class 'OSError'>}
+```
+
 ### 内置方法(魔法方法)
 
-比较魔法方法
+比较方法
 
 - `__str__` 自定义返回实例的结果, 默认输出实例的内存地址
 - `__lt__` 自定义实例的 < 比较, 返回 bool
@@ -253,7 +307,7 @@ who_says(hunter3)
 - `__eq__`  自定义实例的 == 比较, 返回 bool
 - `__ne__`  自定义实例的 != 比较, 返回 bool
 
-数学运算魔法方法
+数学运算方法
 
 - `__add__` 自定义实例的加法运算
 - `__sub__` 自定义实例的减法运算
@@ -266,6 +320,35 @@ who_says(hunter3)
 - `__str__` 自定义实例的 print 函数的输出结果
 - `__repr__`  自定义实例的回显
 - `__len__` 自定义实例的获取长度
+
+```python
+class Word:
+    def __init__(self, text):
+        self.text = text
+
+    def __eq__(self, other):
+        return self.text.lower() == other.text.lower()
+
+    def __str__(self):
+        return f'python forever: {self.text}'
+
+    def __repr__(self):
+        return 'Word("' + self.text + '")'
+
+    def __mul__(self, other):
+        return self.text * other.text
+
+
+first = Word('hello')
+first # 调用 __repr__ 内置方法
+print(first)  # 调用 __str__ 内置方法
+second = Word('HELLO')
+print(f'first == second {first == second}') # 比较两个实例
+
+n1 = Word(4)
+n2 = Word(5)
+print(f'n1 * n2 {n1 * n2}') # 计算两个实例的乘法
+```
 
 数据描述符的优先级最高, 给实例的不存在的属性赋值时不会直接存入实例的 `__dict__` 中
 
@@ -328,43 +411,32 @@ with start...
 end..
 ```
 
-其他方法
+迭代器方法
 
-- `__call__` 自定义实例支持函数调用方式
 - `__iter__` 自定义实例返回迭代器对象
 - `__next__`  自定义实例返回下一个值
+- `__getitem__` 用于支持对象通过索引或键进行访问, obj\[key\] 或 obj\[index\]
+  - 如果未实现 `__iter__` 方法时, 解释器将尝试通过此方法从索引 0 开始依次获取元素进行迭代
+  - 使用切片时, 需要判断 key 是否为 slice 类型
 
 ```python
-class Word:
-    def __init__(self, text):
-        self.text = text
+# 支持切片
+class MyList:
+    def __init__(self, data):
+        self.data = data
+    
+    def __getitem__(self, key):
+        # 判断 key 是否是切片类型
+        if isinstance(key, slice):
+            return [self.data[i] for i in range(*key.indices(len(self.data)))]
+        return self.data[key]
 
-    def __eq__(self, other):
-        return self.text.lower() == other.text.lower()
-
-    def __str__(self):
-        return f'python forever: {self.text}'
-
-    def __repr__(self):
-        return 'Word("' + self.text + '")'
-
-    def __mul__(self, other):
-        return self.text * other.text
-
-
-first = Word('hello')
-first # 调用 __repr__ 内置方法
-print(first)  # 调用 __str__ 内置方法
-second = Word('HELLO')
-print(f'first == second {first == second}') # 比较两个实例
-
-n1 = Word(4)
-n2 = Word(5)
-print(f'n1 * n2 {n1 * n2}') # 计算两个实例的乘法
+a = MyList([1, 2, 3, 4])
+print(a[1:3])   # [2, 3]
 ```
 
 - `__getattr__` 未找到属性时调用此方法
-- `__getattribute__` 每次访问属性时都调用此方法, 优先级高于前者
+- `__getattribute__` 每次访问属性时都调用此方法, 优先级高于 `__getattr__`
 
 ```python
 # __getattr__ 和 __getattribute__
@@ -402,6 +474,10 @@ print(f'u2.name {u2.name}') # u2.name hello world
 print(f'u2.age {u2.age}') # u2.age  hello world
 print(f'u2.sex {u2.sex}') # u2.sex  hello world
 ```
+
+其他方法
+
+- `__call__` 自定义实例支持函数调用方式
 
 ### 私有属性
 
