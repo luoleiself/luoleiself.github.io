@@ -12,6 +12,7 @@
   - 浮点数则截断整数部分
   - 参数如果是字符串, 只能由 `数字, +, -, _` 组成
   - 布尔值 True 转为 1, False 转为 0
+  - 可以为其他进制数字符串形式
 - 第二个参数为进制数位
 
 #### float()
@@ -59,6 +60,8 @@ False
 >>> bool(1e0)
 True
 
+>>> bool('')  # 空字符串转为 False
+False
 >>> bool({})  # 空字典转换为 False
 False
 >>> bool(set()) # 空集合转换为 False
@@ -148,33 +151,88 @@ False
 '棒'
 ```
 
+#### bytearray()
+
+创建或转换为一个新的字节数组, 表示 0 <= x <= 256 范围内的可变整数序列
+
+- 如果传入字符串, 需要指定编码格式
+- 如果传入整数, 创建空字节填充的指定大小的字节数组
+- 如果传入符合缓冲区接口的对象, 将使用该对象的只读缓冲区来初始化字节数组
+- 如果传入可迭代对象, 则必须符合 0 <= x <= 256 范围内的整数的可迭代对象
+- 如果没有参数, 将创建一个大小为 0 的数组
+
+```python
+>>> s = 'hello 中国, 你好!' 
+>>> s
+'hello 中国, 你好!'
+# bytearray() 创建可变整数序列
+>>> bytearray() # 创建空字节数组
+bytearray(b'')
+>>> bytearray(s)  # 字符串必须指定编码格式
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: string argument without an encoding
+>>> ba = bytearray(s, 'utf-8')
+>>> ba
+bytearray(b'hello \xe4\xb8\xad\xe5\x9b\xbd, \xe4\xbd\xa0\xe5\xa5\xbd!')
+>>> bytearray(['a', 2, 3, 4]) # 可迭代对象必须是符合条件的整数
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'str' object cannot be interpreted as an integer
+>>> bytearray([1, 2, 3, 4])  
+bytearray(b'\x01\x02\x03\x04')
+>>> bay = bytearray(10)  # 可变整数序列
+>>> bay
+bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+>>> bay[1] = 250
+>>> bay
+bytearray(b'\x00\xfa\x00\x00\x00\x00\x00\x00\x00\x00')
+
+>>> ba.decode('utf-8')  # 字节数组解码为字符串
+'hello 中国, 你好!'
+```
+
+#### bytes()
+
+创建或转换为一个新的表示 0 <= x <= 256 范围内的不可变整数序列
+
+- 参数和 bytearray() 相同
+
+```python
+# bytes() 创建不可变整数序列
+>>> bytes(s, 'utf-8') # 字符串必须指定编码格式
+b'hello \xe4\xb8\xad\xe5\x9b\xbd, \xe4\xbd\xa0\xe5\xa5\xbd!'
+>>> bytes(10) # 创建指定大小的不可变整数序列
+b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+>>> bytes([1, 2, 3, 4])
+b'\x01\x02\x03\x04'
+>>> bytes(10)[1] = 12 # 不可变整数序列     
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'bytes' object does not support item assignment
+
+>>> bytes(s, 'utf-8').decode('utf-8')
+'hello 中国, 你好!'
+```
+
 #### 其他转换
 
-##### bin()
+##### bin()/oct()/hex()
 
-将数字转换二进制字符串, 带进制前置符
+将数字转换二进制/八进制/十六进制字符串, 带进制前置符
 
 ```python
+# 数字转换为二进制, 带进制前置符
 >>> bin(100)
 '0b1100100'
->>> bin(1)  
+>>> bin(1)
 '0b1'
-```
 
-##### oct()
-
-将数字转换八进制字符串, 带进制前置符
-
-```python
+# 数字转换为八进制, 带进制前置符
 >>> oct(73)
 '0o111'
-```
 
-##### hex()
-
-将数字转换为十六进制字符串, 带进制前置符
-
-```python
+# 数字转换为十六进制, 带进制前置符
 >>> hex(255)
 '0xff'
 ```
@@ -188,6 +246,9 @@ False
 "'\\u4e2d'"
 >>> ascii('hello中')
 "'hello\\u4e2d'"
+
+>>> repr('hello 中')          
+"'hello 中'"
 ```
 
 ##### format()
@@ -245,6 +306,19 @@ False
 
 四舍五入
 
+- 0.5 和 -0.5 都为 0
+
+```python
+>>> round(0.5)
+0
+>>> round(-0.5)
+0
+>>> round(-0.6)
+-1
+>>> round(0.6)
+1
+```
+
 ##### divmod()
 
 返回商和余数的元组
@@ -252,6 +326,8 @@ False
 #### 数值计算
 
 ##### sum()
+
+计算`可迭代对象`中的元素的累和, start 不能为字符串
 
 ##### max()/min()
 
@@ -348,7 +424,7 @@ range(0, 4)
 
 #### zip()
 
-并行迭代
+并行迭代, 以最短的为准
 
 ```python
 names = ['Alice', 'Bob', 'Charlie']
@@ -397,7 +473,7 @@ print(filtered)  # [1, 2, 3, 4]
 
 #### sorted()
 
-排序
+排序`可迭代对象`返回一个新列表
 
 ```python
 # 基本排序
@@ -415,6 +491,8 @@ print(sorted(words, key=str.lower))  # 忽略大小写
 
 反转返回结果为反向迭代器对象, 需要使用 list() 转换为列表
 
+- 参数为可反转对象或支持 len 和 getitem的对象
+
 ```python
 print(list(reversed([1, 2, 3, 4])))  # [4, 3, 2, 1]
 ```
@@ -423,29 +501,89 @@ print(list(reversed([1, 2, 3, 4])))  # [4, 3, 2, 1]
 
 #### all()/any()
 
-逻辑判断
+逻辑判断`可迭代对象`
+
+all()
+
+- 如果可迭代对象的所有元素调用 `bool()` 都为 True, 则返回 True
+- 如果可迭代对象为空, 则返回 True
+
+any()
+
+- 如果可迭代对象的任意元素调用 `bool()` 为 True, 则返回 True
+- 如果可迭代对象为空, 则返回 False
 
 ```python
+# all() 和 any() 接收可迭代对象
+>>> all(123)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'int' object is not iterable
+>>> any(123)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'int' object is not iterable
+
 # all() - 所有元素都为真
 print(all([True, True, True]))    # True
 print(all([True, False, True]))   # False
 print(all([1, 2, 3, 4]))          # True
 print(all([1, 0, 3, 4]))          # False
+# 可迭代对象为空, 返回 True
+print(all(''))                # True
+print(all(list()))            # True  
+print(all(tuple()))           # True
+print(all(set()))             # True
+print(all(dict()))            # True
+print(all(bytes()))           # True
+print(all(bytearray()))       # True
 
 # any() - 至少一个元素为真
 print(any([False, False, True]))  # True
 print(any([False, False, False])) # False
 print(any([0, 0, 1, 0]))          # True
 print(any([]))                    # False（空列表返回 False）
+# 可迭代对象为空, 返回 False
+print(any(''))              # False
+print(any(list()))          # False
+print(any(tuple()))         # False
+print(any(set()))           # False
+print(any(dict()))          # False
+print(any(bytearray()))     # False
+print(any(bytes()))         # False
 ```
 
 ### 输入输出
 
 #### print()/input()
 
+在标准输出/输入中写入或读取一行
+
 ### 对象和属性操作
 
+#### object()
+
+所有类的最终基类, 创建并返回一个新的无任何属性的对象, 不接收任何参数
+
+- 没有 `__dict__` 魔法属性, 无法为新的实例添加属性
+
+```python
+>>> no = object(1)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: object() takes no arguments
+>>> no = object()
+>>> no.name = 'hello'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'object' object has no attribute 'name'
+```
+
 #### type()
+
+#### super()
+
+返回一个代理对象, 该对象将方法调用委托给类型的谷类或同级类
 
 #### isinstance()/issubclass()
 
@@ -458,7 +596,9 @@ print(isinstance([], (list, tuple))) # True
 # issubclass() - 检查子类
 class Animal: pass
 class Dog(Animal): pass
-print(issubclass(Dog, Animal))     # True
+class Cat(Animal): pass
+print(issubclass(Dog, Animal))  # True
+print(issubclass(Dog, Cat))     # False
 ```
 
 #### id() 获取变量引用的对象的 id
@@ -543,9 +683,13 @@ exec("x = 10; y = 20; print(x + y)")  # 30
 
 #### compile()
 
+将源代码编译为代码或 AST 对象, 代码对象可以通过 `exec()` 或 `eval()` 执行, 源可以是字符串、字节字符串或 AST 对象
+
 ### 高级函数
 
 #### len()
+
+返回对象的长度, 参数支持序列(str, list, tuple, range, bytes)或集合(dict, set, forzenset)
 
 #### open()
 
@@ -582,6 +726,30 @@ has __call__ method...
 #### vars()
 
 返回模块、类、实例或任何其他具有 `__dict__` 属性的对象的 `__dict__` 属性
+
+```python
+>>> class Dog:
+...     name = 'DD'
+...     def __init__(self, n, a): 
+...             self.n = n
+...             self.a = a
+... 
+>>> dog = Dog('Tom', 19)
+>>> vars(dog)
+{'n': 'Tom', 'a': 19}
+```
+
+#### slice()
+
+返回一个切片对象, 表示由范围(start, end, step)指定的索引集, start 和 step 参数默认为 None
+
+- 使用切片语法时也会生成切片对象
+
+```python
+s = slice(1, 10, 3)
+print(f's = {s} dir(s) {dir(s)}')
+print(f's.start {s.start} s.stop {s.stop} s.step {s.step}')
+```
 
 #### iter()
 

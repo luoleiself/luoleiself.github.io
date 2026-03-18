@@ -104,3 +104,4 @@ def add(a: int, b: int) -> int:
 
 result = add(1, 3)
 print(f'result: {result}')
+print('--------------')

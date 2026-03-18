@@ -609,6 +609,9 @@ C.go_home() # 不需要实例化直接调用
 - 访问自己不存在的属性或方法时, 优先使用最先继承的父类的属性和方法
   - 搜索过程从左往右搜索 `__mro__` 列表, 按顺序优先匹配
 
+`D.__mro__ (<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>)`
+`D -> B -> C -> A -> object`
+
 ```python
 class NFCPhone:
     name = 'NFCPhone'
