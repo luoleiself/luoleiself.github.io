@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>3.x-teleport</title>
+  <script src="https://unpkg.com/vue@next"></script>
+  <style>
+    .modal {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, .5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      width: 300px;
+      height: 300px;
+      padding: 5px;
+    }
+
+    #endofbody {
+      width: 430px;
+      height: 200px;
+      border: 1px solid #aaa;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app1">
+    <h3>Tooltips with Vue 3 Teleport</h3>
+    <modal-button></modal-button>
+  </div>
+  <hr />
+  <div id="app2"></div>
+  <fieldset id="endofbody">
+    <legend>endofbody</legend>
+  </fieldset>
+</body>
+<script type="module">
+  console.log('Vue@3.0.11', 'vue-router@4.0.6', 'vuex@4.0.0');
+  /******************************************************************************/
+  const { createApp, ref, toRefs, defineComponent, onBeforeMount, onMounted } = Vue;
+  const app1 = createApp({
+    setup() {
+      const name = ref('Hello world');
+      return { name }
+    }
+  });
+  app1.component('modal-button', {
+    template: `
+      <button @click="modalOpen = true">
+          Open full screen modal!
+      </button>
+      <teleport to="body">
+        <div v-show="modalOpen" class="modal">
+          <div>
+            I'm a modal! 
+           <button @click="modalOpen = false">Close</button>
+          </div>
+        </div>
+      </teleport>`,
+    setup() {
+      const modalOpen = ref(false)
+      return { modalOpen }
+    }
+  });
+  app1.mount('#app1');
+  /**************************************************************************/
+  const app2 = createApp({
+    setup() {
+      return {}
+    },
+    template: `
+        <h1>Root instance</h1>
+        <parent-component />
+      `
+  });
+  app2.component('parent-component', {
+    setup() {
+      console.log('parent-component setup...');
+      onBeforeMount(() => {
+        console.log('parent-component onBeforeMount...');
+      });
+      onMounted(() => {
+        console.log('parent-component onMounted...');
+      });
+    },
+    template: `
+        <h2>This is a parent component</h2>
+        <teleport to="#endofbody">
+          <child-component name="John" />
+        </teleport>
+      `
+  });
+  app2.component('child-component', {
+    props: ['name'],
+    setup() {
+      console.log('child-component setup...');
+      onBeforeMount(() => {
+        console.log('child-component onBeforeMount...');
+      });
+      onMounted(() => {
+        console.log('child-component onMounted...');
+      });
+      return {}
+    },
+    template: `
+        <div>this is a child component, teleport to #endofBody <br/> Hello, {{ name }} --- this props name from parent component</div>
+      `
+  });
+  app2.mount('#app2');
+</script>
+
+</html>

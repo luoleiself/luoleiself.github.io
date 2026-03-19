@@ -12,6 +12,8 @@ Author: luolei
 Date: 2024-06-01
 '''
 
+import sys
+import os
 import random
 print('hello world')
 
@@ -105,3 +107,11 @@ def add(a: int, b: int) -> int:
 result = add(1, 3)
 print(f'result: {result}')
 print('--------------')
+
+# 获取环境变量和命令行参数
+# uv run --env-file .env .\hello_world.py 'helloworld' 'hellochina'
+print(f'os.environ: {os.environ}')
+print(f'os.environ["TOKEN"]: {os.environ["TOKEN"]}')
+print(f'sys.argv: {sys.argv}')
+print(f'sys.orig_argv: {sys.orig_argv}')
+print(f'sys.api_version: {sys.api_version}')

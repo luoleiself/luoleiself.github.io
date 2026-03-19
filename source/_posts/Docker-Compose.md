@@ -32,6 +32,8 @@ docker compose -f -p -c --env-file .env.development up [service_name]
 # 以下的命令不带服务名称则默认对所有服务执行相同操作
 ```
 
+<!-- more -->
+
 ### 参数
 
 - \-\-all-resources 引入所有的资源, 即使未被服务使用
@@ -266,7 +268,7 @@ services:
       labels:
         com.example.description: 'This label will appear on the web server' # 服务元数据
       mode: replicated # 服务运行模式, global | replicaated(default) | replicated-job | global-job
-      replicas: 6 # 实例
+      replicas: 6 # 实例, 如果 scale 和 deploy.replicas 同时存在则必须保持一致
       restart_policy: # 服务重启策略, 如果缺失, compose 会使用服务 restart 项
         condition: on-failure
         delay: 5s
@@ -315,7 +317,6 @@ services:
       - my-web-network
     links:    # 定义网络连接另一个服务的容器
       - db:mysql   # 可以直接使用 服务名, 或者使用 服务名:别名 方式
-    scale: 6  # 设置容器数量, 如果 scale 和 deploy.replicas 同时存在则必须保持一致
     profiles: # 指定启动时的 profile
       - 'db'
 
@@ -369,6 +370,9 @@ secrets: # 针对敏感数据的配置
 - 使用卷名方式挂载数据卷, 需要在 `一级配置项` 中声明, compose 会自动创建以项目名为前缀的卷名, 如果不需要卷名前缀, 则使用 `external: true` 指定卷名, 但是需要手动创建该卷名
 
 ### 多实例 Web 应用
+
+- 无状态服务, 单次请求不依赖本实例之前保存的数据, 每次请求可被任意实例处理, 如 webAPI、Nginx、静态资源服务、消息队列消费者
+- 有状态服务, 实例会保存数据, 后续请求需要依赖这些数据, 如 Mysql、Redis、Mongodb
 
 ```yaml
 # compose.yaml
@@ -471,10 +475,7 @@ services:
       - /var/lib/redis/redis.conf:/usr/local/etc/redis/redis.conf
     networks:
       - my-app-network
-#   deploy:
-#     replicas: 3
-#       labels:
-#         com.myapp.redis.description: 'This label will appear on the redis server'
+
   mysql:
     image: mysql:latest
     container_name: mysql-container
@@ -489,6 +490,7 @@ services:
       - /var/lib/mysql:/var/lib/mysql
     networks:
       - my-app-network
+
   mongodb:
 #   mongodb 6.0 以上 docker 镜像不再包含 mongo shell 工具. 只包含 mongod 数据库服务器
 #   手动下载 mongosh 工具, 或者使用 mongodb 6.0 之前的版本

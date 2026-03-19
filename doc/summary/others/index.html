@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test</title>
+</head>
+<style>
+  .card-content-wrap {
+    width: 1000px;
+    height: 500px;
+    border: 1px solid blue;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .card-content-wrap .left {
+    flex-shrink: 0;
+    width: 308px;
+    margin-right: 16px;
+    border: 1px solid red;
+  }
+
+  .card-content-wrap .right {
+    flex: 1;
+    border: 1px solid green;
+    /* overflow: hidden; */
+    min-width: 0;
+    overflow: auto;
+  }
+</style>
+
+<body>
+  <div>
+    <code id="c1"></code>
+    <code id="c2"></code>
+    <code id="c3"></code>
+    <code id="c4"></code>
+  </div>
+  <script src="./quillFormat.js"></script>
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <div class="card-content-wrap">
+    <div class="left">左边元素固定 308px--------------------</div>
+    <div class="right">
+      右侧元素 flex: 1;
+      <div style="width: 920px;border: 1px #ff2d2d solid;">子元素较大, 导致左侧固定元素被挤压</div>
+      解决办法 1: 给 .right 元素添加 overflow: hidden, 如果需要滚动条不太合适
+      <br />
+      解决办法 2: 给 .right 元素添加 width: 0; 或 min-width: 0; 配合 overflow: auto; 滚动显示内容
+      <br />
+    </div>
+  </div>
+</body>
+
+</html>

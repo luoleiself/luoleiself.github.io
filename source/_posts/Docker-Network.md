@@ -197,6 +197,8 @@ ping: centos02: Name or service not known
 
 ### 自定义网络模式 <em id="zidingyiwangluomoshi"></em> <!-- markdownlint-disable-line -->
 
+> 本质上, 同一网络内 Docker 内置的 DNS 服务器, 把服务名解析成容器 IP
+
 - ls 显示所有网络模式状态
 - create 创建网络模式
 - inspect 查看指定网络模式的信息

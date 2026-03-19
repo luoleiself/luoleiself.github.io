@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM Selection</title>
+  <style>
+    .highlight {
+      border: 2px solid red !important;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+
+    .selection-box {
+      position: absolute;
+      border: 1px dashed blue;
+      pointer-events: none;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box" style="width: 100px; height: 100px; background: lightblue; margin: 20px;">Box 1</div>
+  <div class="box" style="width: 100px; height: 100px; background: lightgreen; margin: 20px;">Box 2</div>
+  <div class="box nested" style="width: 200px; height: 200px; background: lightcoral; margin: 20px;">
+    <div class="box" style="width: 50px; height: 50px; background: lightyellow; margin: 75px;">Nested Box</div>
+  </div>
+  <div id="selection-box" class="selection-box"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const selectionBox = document.getElementById('selection-box');
+      let startX, startY, isSelecting = false;
+
+      document.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        startY = e.clientY;
+        selectionBox.style.display = 'block';
+        selectionBox.style.left = `${startX}px`;
+        selectionBox.style.top = `${startY}px`;
+        selectionBox.style.width = '0px';
+        selectionBox.style.height = '0px';
+        isSelecting = true;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (isSelecting) {
+          const x = Math.min(startX, e.clientX);
+          const y = Math.min(startY, e.clientY);
+          const width = Math.abs(startX - e.clientX);
+          const height = Math.abs(startY - e.clientY);
+          selectionBox.style.left = `${x}px`;
+          selectionBox.style.top = `${y}px`;
+          selectionBox.style.width = `${width}px`;
+          selectionBox.style.height = `${height}px`;
+
+          highlightSelectedElements(x, y, width, height);
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        isSelecting = false;
+        // Optionally, you can clear the highlights after mouseup
+        // clearHighlights();
+        selectionBox.style.display = 'none';
+        logSelectedElements();
+      });
+
+      function highlightSelectedElements(x, y, width, height) {
+        const boxes = document.querySelectorAll('.box');
+        boxes.forEach(box => {
+          const rect = box.getBoundingClientRect();
+          const inSelection = (
+            rect.left >= x &&
+            rect.right <= x + width &&
+            rect.top >= y &&
+            rect.bottom <= y + height
+          );
+          if (inSelection) {
+            box.classList.add('highlight');
+          } else {
+            box.classList.remove('highlight');
+          }
+        });
+      }
+
+      function logSelectedElements() {
+        const selectedElements = document.querySelectorAll('.box.highlight');
+        // const selectedArray = selectedElements;
+        console.log('Selected Elements:', selectedElements);
+      }
+
+      // Optionally, clear highlights when starting a new selection
+      function clearHighlights() {
+        const boxes = document.querySelectorAll('.box.highlight');
+        boxes.forEach(box => box.classList.remove('highlight'));
+      }
+    });
+  </script>
+</body>
+
+</html>

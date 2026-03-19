@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>3.x-createApp</title>
+  <script src="https://unpkg.com/vue@next"></script>
+  <style>
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+      padding: 0;
+    }
+
+    p {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>app1</h1>
+  <p>createApp 第二个参数为 props 初始值, 如果未定义 props 选项接收,则自动合并为 attrs</p>
+  <div id="app1">{{name}}</div>
+  <hr />
+  <h1>app2</h1>
+  <div id="app2"></div>
+  <hr />
+  <h1>app3</h1>
+  <div id="app3">
+    <count-component />
+  </div>
+</body>
+<script type="module">
+  console.log('Vue@3.0.11', 'vue-router@4.0.6', 'vuex@4.0.0');
+  /******************************************************************************/
+  const { createApp, ref, toRefs, h, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, getCurrentInstance } = Vue;
+  const app1 = createApp({
+    props: ['username'],
+    setup(props, ctx) {
+      console.log('app1 setup...');
+      onBeforeMount(() => {
+        console.log('app1 onBeforeMount...');
+      });
+      onMounted(() => {
+        console.log('app1 onMounted...');
+      });
+
+      const name = ref('Hello World');
+      return { name }
+    },
+    render() {
+      return h('div', {}, [
+        h('h2', {}, 'Hello world'),
+        h('textarea', { rows: 20, cols: 80 },
+          `
+<div id="app1">{{name}}</div>
+const { createApp, ref, toRefs, h, onBeforeMount, onMounted } = Vue;
+app1 = createApp({
+  props: ['username'],
+  setup(props, ctx) {
+    console.log('app1 setup...');
+    onBeforeMount(() => {
+      console.log('app1 onBeforeMount...');
+    });
+    onMounted(() => {
+      console.log('app1 onMounted...');
+    });
+
+    const name = ref('Hello World');
+    return { name }
+  },
+}, { username: 'Vue 3.x' }).mount('#app1');
+`
+        )
+      ])
+    }
+  }, { username: 'Vue 3.x' }).mount('#app1');
+  /***************************************************************************/
+  const app2 = createApp({
+    setup(props, ctx) {
+      console.log('app2 setup...');
+      onBeforeMount(() => {
+        console.log('app2 onBeforeMount...');
+      });
+      onMounted(() => {
+        console.log('app2 onMounted...');
+      });
+      return {}
+    },
+    beforeCreate() {
+      console.log('app2 beforeCreate...');
+    },
+    created() {
+      console.log('app2 created...');
+    },
+    render() {
+      // 使用返回 null 的函数将渲染一个注释
+      return h('div', {}, [
+        h(null, {}, [' Annotation start ']),
+        h('h2', {}, ['How to use global API h']),
+        h('p', {}, 'This is a label p, it contain description...'),
+        h(null, {}, [' Annotation end ']),
+        h('textarea', { rows: 30, cols: 80 },
+          `
+const { createApp, ref, toRefs, h, onBeforeMount, onMounted } = Vue;
+const app2 = createApp({
+  setup(props, ctx) {
+    console.log('setup...');
+    onBeforeMount(() => {
+      console.log('app2 onBeforeMount...');
+    });
+    onMounted(() => {
+      console.log('app2 onMounted...');
+    });
+    return {}
+  },
+  beforeCreate() {
+    console.log('app2 beforeCreate...');
+  },
+  created() {
+    console.log('app2 created...');
+  },
+  render() {
+    // 使用返回 null 的函数将渲染一个注释
+    return h('div', {}, [
+      h(null, {}, [' Annotation start ']),
+      h('h2', {}, ['How to use global API h']),
+      h('p', {}, 'This is a label p, it contain description...'),
+      h(null, {}, [' Annotation end '])
+    ])
+  }
+}).mount('#app2');
+`
+        )
+      ])
+    }
+  }).mount('#app2');
+  /***************************************************************************/
+  const app3 = createApp({
+    setup(props, ctx) {
+      console.log('app3 setup...');
+      onBeforeMount(() => {
+        console.log('app3 onBeforeMount...');
+      });
+      onMounted(() => {
+        console.log('app3 onMounted...');
+      });
+      onBeforeUnmount(() => {
+        console.log('app3 onBeforeUnmount...');
+      });
+      onUnmounted(() => {
+        console.log('app3 onUnmounted...');
+      })
+      return {}
+    },
+    beforeCreate() {
+      console.log('app3 beforeCreate...');
+    },
+    created() {
+      console.log('app3 created...');
+    },
+    beforeMount() {
+      console.log('app3 beforeMount...')
+    },
+    mounted() {
+      console.log('app3 mounted...');
+    },
+    beforeDestroy() {
+      console.log('app3 beforeDestroy...');
+    },
+    destroyed() {
+      console.log('app3 destroyed...');
+    },
+    components: {
+      'count-component': {
+        setup() {
+          console.log('app3 components CountComponent setup...');
+
+          onBeforeMount(() => {
+            console.log('app3 components CountComponent onBeforeMount...');
+          });
+
+          onMounted(() => {
+            console.log('app3 components CountComponent onMounted...');
+          });
+
+          onBeforeUnmount(() => {
+            console.log('app3 components CountComponent onBeforeUnmount...');
+          });
+
+          onUnmounted(() => {
+            console.log('app3 components CountComponent onUnmounted...');
+          });
+
+          const instance = getCurrentInstance(); // 获取当前组件实例
+          console.log('app3 components CountComponent getCurrentInstance... ', instance);
+
+          let count = ref(0)
+          const increment = () => {
+            console.log(count);
+            count.value++;
+          }
+          const decrement = () => {
+            console.log(count);
+            count.value--;
+          }
+          return { count, increment, decrement }
+        },
+        beforeCreate() {
+          console.log('app3 components CountComponent beforeCreate...');
+        },
+        created() {
+          console.log('app3 components CountComponent created...');
+        },
+        beforeMount() {
+          console.log('app3 components CountComponent beforeMount...');
+        },
+        mounted() {
+          console.log('app3 components CountComponent mounted...');
+        },
+        beforeDestroy() {
+          console.log('app3 components CountComponent beforeDestroy...');
+        },
+        destroyed() {
+          console.log('app3 components CountComponent destroyed...');
+        },
+        template: `<h2>components, setup, getCurrentInstance</h2><span>{{count}}</span> <button v-on:click="increment">Count++</button> <button v-on:click="decrement">Count--</button>`
+      }
+    }
+  })
+  app3.mount('#app3');
+  setTimeout(() => {
+    app3.unmount();
+  }, 5000)
+
+</script>
+
+</html>

@@ -24,18 +24,22 @@ else:  # for 循环没有执行 break, 则执行 else 块
 print('----------------------------')
 
 
+# 使用生成器对象获取 fibonacci 数列
 # fibonacci 数列 0 1 1 2 3 5 8 13 21 34 55 89 ...
 def fibonacci(n):
     a, b = 0, 1
     while n > 0:
+        yield a
         a, b = b, a+b
-        print(f'{a} ', end=' ')
         n -= 1
     print()
     return a
 
 
-print(f'fibonacci(10) {fibonacci(10)}')
+fi = fibonacci(10)
+print(f'生成器对象获取 fibonacci(5):')
+for v in fibonacci(10):
+    print(f'generator get fibonacci: {v}')
 print('----------------------------')
 
 print('try 如果没有发生异常，则执行 else 块')

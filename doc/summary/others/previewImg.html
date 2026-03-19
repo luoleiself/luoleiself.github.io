@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.js"></script>
+  <style>
+    img {
+      width: 150px;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="//www.baidu.com">
+    <img src="https://t7.baidu.com/it/u=4162611394,4275913936&fm=193&f=GIF" alt="" />
+  </a>
+  <img src="https://t7.baidu.com/it/u=4162611394,4275913936&fm=193&f=GIF" alt="" />
+  <img src="https://t7.baidu.com/it/u=4162611394,4275913936&fm=193&f=GIF" alt="" />
+  <img src="https://t7.baidu.com/it/u=4162611394,4275913936&fm=193&f=GIF" alt="" />
+
+  <div id="rangeBox" contenteditable="true" style="width: 800px;height: 200px; border:1px solid #ddd;">
+    0123456789<em>abcdefg</em><em>hijklmnopqrstuvwxyz</em><span>ABCDEFG</span><b>HIJKLMNOPQRSTUVWXYZ</b>
+  </div>
+  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum veniam eveniet, aspernatur aperiam voluptatibus, a
+    quam nihil consectetur dignissimos dolores atque aut voluptate velit, suscipit ipsam ipsum autem mollitia culpa.</p>
+  <script>
+    $(function () {
+      var selection = window.getSelection();
+      console.log(selection);
+      $('#rangeBox').on('keyup', function (evt) {
+        console.log(evt);
+        var range = selection.getRangeAt(0);
+        var i = document.createElement('i');
+        i.innerHTML = 'hello world';
+        range.insertNode(i);
+        // range.collapse();
+        // range.setStart(range.endContainer, range.endOffset + 1)
+        selection.collapseToEnd();
+        console.log(range);
+
+        navigator.clipboard.writeText('hello world').then(res => {
+          console.log(res)
+          navigator.clipboard.readText().then(res => {
+            console.log(res)
+            document.querySelectorAll('p')[0].innerText = res;
+          }).catch(err => {
+            console.log(err)
+          })
+        }).catch(err => {
+          console.log(err)
+        })
+      });
+
+      $('#rangeBox')[0].addEventListener('paste', function (evt) {
+        console.log(evt);
+        let paste = (evt.clipboardData || window.clipboardData).getData('text');
+        console.log(paste);
+
+      });
+      // navigator.clipboard
+      navigator.permissions.query({ name: 'clipboard-read' }).then(permissionStatus => {
+        console.log(permissionStatus);
+        permissionStatus.onchange = () => {
+          console.log('permissionStatus.state has been changed ', permissionStatus.state);
+        }
+      }).catch(err => { console.log(err) });
+
+      // navigator.geolocation
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        console.log(pos);
+      }, function (err) {
+        console.log(err);
+      }, {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      });
+
+      // navigator.connection
+      console.log(navigator.connection);
+      navigator.connection.onchange = function (evt) {
+        console.log(evt);
+      }
+
+    });
+  </script>
+
+</body>
+<script>
+  window.onload = function () {
+    var $img = document.querySelectorAll('img');
+
+    // window.addEventListener('')
+
+  };
+
+  document.addEventListener('DOMContentLoaded', function (evt) {
+    console.log('DOMContentLoaded');
+  });
+
+</script>
+
+</html>

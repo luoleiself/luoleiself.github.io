@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Components</title>
+  <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+  <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+  <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="demo.css">
+</head>
+
+<body>
+  <h2>1.创建组件构造器:Vue.extend();接收一个对象参数</h2>
+  <pre>
+  	// 创建一个组件构造器:字符串模板方式
+	  var myComponent = Vue.extend({
+	    template: '&lt;div&gt;This is my first component!&lt;/div&gt;'
+	  })
+    // 创建组件有三种方法:
+      1. 使用字符串模板创建:缺点,js代码和字符串模板的高耦合性,维护不方便
+        eg: template: '&lt;div&gt;This is my first component!&lt;/div&gt;';
+      2. 使用script标签创建:text/x-template属性指示浏览该内容非js脚本文件,不需要解析执行
+        eg: &lt;script type="text/x-template" id="myComponent"&gt;
+              &lt;div&gt; 组件中的内容 &lt;/div&gt;
+            &lt;/script&gt;
+            Vue.extend({template:"#myComponent"});
+      3. 使用template标签创建:
+        eg: &lt;template id="myComponent"&gt;
+              &lt;div&gt; 组件中的内容 &lt;/div&gt;
+            &lt;/template&gt;
+            Vue.extend({template:"#myComponent"}); 
+  </pre>
+  <h2>2.注册组件:Vue.component();需要提供2个参数:第1个参数时组件的标签,第2个参数是组件构造器</h2>
+  <pre>
+  	// 注册组件，并指定组件的标签，组件的HTML标签为&lt;my-component&gt;
+  	Vue.component('my-component', myComponent);
+    // 注册组件分为全局组件和局部组件
+      1. 全局组件
+        // Vue.extend({template:"#myComponent"});
+        Vue.component("my-component",{template:"#myComponent"});
+      2. 局部组件
+        var child = Vue.extend({template:"#myComponent"});
+        var parent = Vue.extend({
+          template:"#myComponent",
+          components:{
+            "child-component":child
+          }
+        });
+        Vue.component("parent-component",parent);
+  </pre>
+  <h2>3.使用组件:new Vue();组件应该挂载到某个Vue实例下,否则它不会生效</h2>
+  <pre>
+  	// 使用组件
+	  new Vue({
+	    el: '#app'
+	  });
+    // 在Vue实例内部进行局部组件的构造和注册
+      var vm = new Vue({
+        el:"#app",
+        data:{},
+        components:{
+          "parent-component":{template:"#myComponent"}
+          "child-component":child
+        }
+      })
+  </pre>
+  <h2>示例:</h2>
+  <div id="app">
+    <!-- 3. #app是Vue实例挂载的元素，应该在挂载元素范围内使用组件-->
+    <my-component></my-component>
+  </div>
+  <h2>父子组件使用:</h2>
+  <div id="app1">
+    <parent-component></parent-component>
+  </div>
+</body>
+<script>
+  // 1.创建一个组件构造器
+  var myComponent = Vue.extend({
+      template: '<div>This is my first component!</div>'
+    })
+    // 2.注册组件，并指定组件的标签，组件的HTML标签为<my-component>
+  Vue.component('my-component', myComponent);
+  // 使用组件
+  var vue1 = new Vue({
+    el: '#app',
+    components: {}
+  });
+
+  var Child = Vue.extend({
+    template: '<><p>This is a child component!</p>'
+  })
+  var Parent = Vue.extend({
+    // 在Parent组件内使用<child-component>标签
+    template: '<div>This is a Parent component,<child-component></child-component></div>',
+    components: {
+      // 局部注册Child组件，该组件只能在Parent组件内使用
+      'child-component': Child
+    }
+  })
+  // 全局注册Parent组件
+  Vue.component('parent-component', Parent)
+  var vue2 = new Vue({
+    el: '#app1'
+  })
+</script>
+
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>html2Canvas</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="http://asserts.xcarimg.com/resource/other/haibao/js/html2canvas.min.js"></script>
+  <style>
+    img {
+      margin: 10px;
+    }
+
+    button {
+      display: inline-block;
+      width: 100px;
+      height: 40px;
+      line-height: 20px;
+      margin: 0 20px 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div>
+      <h2>html2Canvas</h2>
+      <button onclick="btnClick()">Click Me</button>
+      <button onclick="btnClick2()">图片转base64</button>
+      <input type="file" onchange="inputChange()" placeholder="图片转base64" style="display: none;" />
+    </div>
+    <textarea rows="12" cols="100" readonly>
+      // 调用方法
+      // 第一个参数支持Object, Function, String, DOM等多种类型, 此处仅为演示用对象传入
+      renderDom2Canvas({ 
+        title: '雷克萨斯UX 2019款 260h F SPORT全驱版 国VI', // 车型名称
+        price1: '价格', // 第一个显示价格
+        price2: '价格2', // 第二个显示价格
+      }, function ({ base64, file }, download) { 
+        // 转换完成回调函数, 参数为 base64 图片, file 文件对象, download 下载图片方法
+        // download(); // 调用此方法可保存图片到本地
+        $('body').append('<img src="' + base64 + '" alt=""/>');
+      });
+    </textarea>
+  </div>
+</body>
+<script>
+  // 示例
+  function btnClick() {
+    var price1 = (Math.random() * 1000).toFixed(2) + '—' + (Math.random() * 10000).toFixed(2) + '万';
+    var price2 = (Math.random() * 1000).toFixed(2) + '—' + (Math.random() * 10000).toFixed(2) + '万';
+    renderDom2Canvas({ title: '阿尔法·罗密欧-Giulia-2020款Giulia-280HP VIRTU限量版', price1, price2 }, function ({ base64, file }, download) {
+      console.log(typeof download, '\r\n', base64, file);
+      // download();
+      $('body').append('<img src="' + base64 + '" alt=""/>');
+    });
+  }
+  // 图片对象转base64
+  function btnClick2() {
+    $('input[type="file"]').click();
+  }
+  function inputChange() {
+    var file = $('input[type="file"]')[0].files[0];
+    if (Math.random() * 10 < 6) {
+      file = "://search.sogoucdn.com/pic/pc/static/img/sprite_bigImg.3de1f96.png";
+    }
+    console.log(file, typeof file);
+    file2DataURL(file).then(function (res) {
+      $('body').append('<img title="图片对象或者图片链接转Base64" src="' + res + '" alt="图片对象或者图片链接转Base64" style="width: 150px;height: auto;"/>');
+    });
+  }
+  // 图片对象或者图片链接转 Base64
+  /**
+   * @method  file2DataURL 图片对象或图片链接转 Base64
+   * @param {String|File} arg 图片对象或者图片链接
+   * @return {Promise}  返回 Promise 的 then 方法接收图片 Base64 编码字符串
+   */
+  function file2DataURL(arg) {
+    var isImgUrl = /((https?)?:)?\/\/.*?\.(jpg|jpeg|bmp|png|webp|gif)/i.test(arg);
+    var isFile =
+      arg != null && typeof arg == 'object' && /image\/\w+/.test(arg.type);
+
+    if (!isFile && !isImgUrl) {
+      return new Error('arg 参数不是一个图片对象或者图片链接...');
+    }
+
+    if (isImgUrl) {
+      var mime = 'image/' + arg.match(/\.(jpg|jpeg|bmp|png|webp|gif)/i)[1];
+      var canvas = document.createElement('canvas');
+      var img = document.createElement('img');
+      img.src = arg.includes('http')
+        ? arg
+        : arg.includes('://')
+          ? 'https' + arg
+          : 'https:' + arg;
+      img.crossOrigin = 'anonymous';
+
+      return new Promise(function (resolve, reject) {
+        img.onload = function () {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+          var dataURL = canvas.toDataURL(mime);
+          resolve(dataURL);
+        };
+        img.onerror = function (err) {
+          reject(err);
+        };
+      });
+    }
+
+    if (typeof FileReader == 'undefined') {
+      return new Error('浏览器不支持 FileReader API, 请先升级浏览器...');
+    }
+    var reader = new FileReader();
+    var p = new Promise(function (resolve, reject) {
+      reader.onload = function (e) {
+        resolve(e.currentTarget.result);
+      };
+      reader.onerror = function (e) {
+        reject(e);
+      };
+    });
+    reader.readAsDataURL(arg);
+    return p;
+  }
+</script>
+<script>
+  ; (function () {
+    /**
+     * @description 默认配置对象, 最下面有返回，可以不使用该对象
+     * @object o 内置配置对象,
+     * @property html 数据源
+     * @property canvasParams html2Canvas配置参数
+     * @property type 转换的图片类型, 默认为 png
+     * @property quality 图片压缩比例 默认 0.92
+     * @method render 内置渲染模板，生成数据源
+     */
+    var o = {
+      html: '',
+      canvasParams: {
+        allowTaint: true,
+        backgroundColor: "null",
+        useCORS: true
+      },
+      imgConf: {
+        type: 'jpg',
+        quality: 0.92,
+      },
+      render: function (params) {
+        var title = params.title,
+          price1 = params.price1,
+          price2 = params.price2,
+          tpl = '<style>.capture_content {width: 305px;padding: 20px 20px 24px 20px;border-radius: 2px;box-sizing: border-box;background: rgba(24, 24, 24, 0.5);overflow: hidden;font-family: Arial, Helvetica, sans-serif;}' +
+            '.capture_content .title,.capture_content .price1,.capture_content .price2,.capture_content .capture_btn {margin: 0;padding: 0}' +
+            '.capture_content .title {line-height: 22px;font-size: 20px;font-weight: 500;color: #fff;max-height: 44px;overflow: hidden;}' +
+            '.capture_content .price1 {height: 40px;line-height: 40px;margin-bottom: 4px;color: #FF8214;font-size: 28px;font-weight: 500;overflow: hidden;word-break: break-all;}' +
+            '.capture_content .price2 {height: 25px;line-height: 25px;margin-bottom: 12px;color: #fff;font-size: 18px;font-weight: 400;text-decoration: line-through;overflow: hidden;word-break: break-all;}' +
+            '.capture_content .capture_btn {background: #1DA1F2;height: 38px;line-height: 38px;border-radius: 1px;text-align: center;font-size: 16px;font-weight: 400;color: #fff;}</style>' +
+            '<div class="capture_content"><h4 class="title">' + (title ? title : '此处标题为测试文本') + '</h4><h5 class="price1">' +
+            (price1 ? price1 : '9999.99-9999.99万') + '</h5><h6 class="price2">' +
+            (price2 ? price2 : '9999.99-9999.99万') + '</h6><p class="capture_btn">询底价</p></div>';
+        this.html = tpl;
+        return tpl;
+      }
+    }
+    /**
+     * @description 使用 canvas 将 Dom 转换为图片
+     * @method renderDom2Canvas 
+     * @param params: 渲染的数据,可以是对象, 方法，字符串, DOM
+     *  如果为DOM对象，
+     *  如果为对象，则使用默认模板渲染，对象属性包括 title, price1, price2
+     *  如果为方法，则调用后使用该方法返回值作为数据源
+     *  如果为其他类型，则使用该值作为数据源
+     * @param callback: 转换完成的回调函数，参数为图片 base64 
+     */
+    window.renderDom2Canvas = function (params, callback) {
+      if (typeof html2canvas !== 'function') {
+        throw new Error('html2canvas is not a function...');
+      }
+
+      var isDOM = false, $selector = null; // 默认模板选择器
+
+      // params 为非 null 对象
+      if (params !== null && typeof params === 'object') {
+        // params 可能是 dom 对象或者 jquery 对象
+        if (params instanceof Element || params[0] instanceof Element) {
+          o.html = params;
+          isDOM = true; // 如果当前对象为 DOM
+        } else {
+          o.render(params); // 普通对象渲染(询底价模板)
+        }
+        // params 为一个有返回值的方法
+      } else if (typeof params === "function") {
+        o.html = params() || '此方法没有返回值';
+      } else {
+        o.html = params;
+      }
+
+      if (isDOM) {
+        $selector = o.html.toString().indexOf('Element') !== -1 ? o.html : o.html[0];
+      } else {
+        // 非 dom 时则使用默认容器
+        $('[data-capture=capture]').length === 0
+          ? $('body').append('<div data-capture=capture style="position:absolute;top:-99999px;">' + o.html + '</div>')
+          : $('[data-capture=capture]').html(o.html);
+        $selector = $('[data-capture=capture]')[0];
+      }
+
+      // DOM 转图片方法
+      html2canvas($selector, o.canvasParams).then(function (canvas) {
+        var ext = '', base64 = '', filename = '', file = '', quality = 0.92;
+
+        o.imgConf.type = o.imgConf.type === 'jpg' ? 'jpeg' : o.imgConf.type;
+
+        if (o.imgConf.type === 'jpeg' || o.imgConf.type === 'webp') {
+          ext = o.imgConf.type === 'webp' ? '.webp' : '.jpg';
+          if (o.imgConf.quality >= 0 && o.imgConf.quality <= 1) {
+            quality = o.imgConf.quality;
+          }
+          base64 = canvas.toDataURL('image/' + o.imgConf.type, quality);
+        } else {
+          base64 = canvas.toDataURL('image/png');
+          ext = '.png';
+        }
+        filename = Date.now() + ext; // 文件名
+        file = dataURL2File(base64, filename); // base64 转为 File 对象
+        typeof callback === 'function' && callback({ base64: base64, file: file }, download.bind(null, base64, filename));
+        !isDOM && $('[data-capture=capture]').remove(); // 移除模板
+      });
+    }
+    // 下载图片
+    function download(base64, filename) {
+      var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+      var event = document.createEvent('MouseEvents');
+      save_link.href = base64;
+      save_link.download = filename;
+      event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      save_link.dispatchEvent(event);
+    }
+    //将base64转换为文件
+    function dataURL2File(dataUrl, filename) {
+      var arr = dataUrl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, { type: mime });
+    }
+    return o;
+  })();
+</script>
+
+</html>

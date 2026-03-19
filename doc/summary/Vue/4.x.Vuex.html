@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vuex 4.x</title>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://unpkg.com/vue-router@next"></script>
+  <script src="https://unpkg.com/vuex@next"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h2>Vuex</h2>
+    <p>
+      {{count}} -- {{name}}
+    </p>
+    <button @click="increment">Click Me</button>
+  </div>
+</body>
+<script>
+  console.log('Vue@3.0.11', 'vue-router@4.0.6', 'vuex@4.0.0');
+  /******************************************************************************/
+  
+  const { createApp, h, ref, computed, watchEffect, onBeforeMount, onMounted, onBeforeUpdate, onUpdated } = Vue;
+  const { createRouter, createWebHashHistory } = VueRouter;
+  const { createStore, useStore, mapState } = Vuex;
+
+  console.log(Vuex);
+  /********************************************************************/
+  const store = createStore({
+    state() {
+      return { count: 0, name: 'Hello World' }
+    },
+    getters: {},
+    mutations: {
+      ['COUNT_ADD'](state, payload) {
+        state.count = payload;
+      }
+    },
+    actions: {}
+  });
+  const app = createApp({
+    setup(props, { attrs, emit, slots }) {
+      console.log('app setup...');
+      const store = useStore();
+
+      const count = computed({
+        set: val => {
+          console.log('computed hooks set count by store... ', val);
+          store.commit('COUNT_ADD', val)
+        },
+        get: () => {
+          let count = store.state.count;
+          console.log('computed hooks get count... ', count);
+          return count
+        }
+      });
+      const name = computed(() => store.state.name);
+
+      onBeforeMount(function () {
+        console.log('onBeforeMount... ', this);
+      });
+
+      onMounted(() => {
+        console.log('onMounted... ', this);
+      });
+
+      onBeforeUpdate(() => {
+        console.log('onBeforeUpdate... ', this);
+      });
+
+      onUpdated(function () {
+        console.log('onUpdated... ', this);
+      });
+
+      watchEffect(() => {
+        console.log('watchEffect... ', count.value, name.value);
+      }, { flush: 'post' });
+
+      const increment = () => {
+        count.value += 1;
+      }
+
+      return { name, count, increment };
+    },
+    beforeMount() {
+      console.log('beforeMount... ', this.$store);
+    },
+  }).use(store).mount('#app');
+</script>
+
+</html>

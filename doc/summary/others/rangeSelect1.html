@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selection Box Example</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+    }
+
+    .item {
+      width: 100px;
+      height: 100px;
+      margin: 10px;
+      background-color: lightblue;
+      display: inline-block;
+      text-align: center;
+      line-height: 100px;
+    }
+
+    .selectable {
+      /* 可选中的元素 */
+      cursor: pointer;
+    }
+
+    .selected {
+      outline: 2px solid red;
+      /* 使用outline避免影响布局 */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      /* 添加阴影效果 */
+    }
+
+    #selection-box {
+      position: absolute;
+      border: 2px dashed blue;
+      pointer-events: none;
+      /* Allows mouse events to pass through */
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="container">
+    <!-- 假设只有带有.selectable类的元素是可选的 -->
+    <div class="item selectable">Item 1</div>
+    <div class="item">Item 2</div>
+    <div class="item selectable">Item 3</div>
+    <!-- ... 更多项目 ... -->
+  </div>
+  <div id="selection-box"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const container = document.getElementById('container');
+      const selectionBox = document.getElementById('selection-box');
+
+      // 创建一些示例项目，其中一部分是可选的
+      for (let i = 4; i <= 20; i++) {
+        const item = document.createElement('div');
+        item.className = 'item';
+        if (i % 2 === 0) item.classList.add('selectable'); // 每隔一个项目是可以选择的
+        item.textContent = `Item ${i}`;
+        container.appendChild(item);
+      }
+
+      let startX, startY, isSelecting = false;
+
+      function getSelectableElements() {
+        return Array.from(container.querySelectorAll('.selectable')).map(element => ({
+          element,
+          rect: element.getBoundingClientRect()
+        }));
+      }
+
+      function clearSelection() {
+        getSelectableElements().forEach(({ element }) => element.classList.remove('selected'));
+      }
+
+      function updateSelectionAndHighlight(x, y) {
+        const endX = x;
+        const endY = y;
+        const width = Math.abs(endX - startX);
+        const height = Math.abs(endY - startY);
+
+        selectionBox.style.left = Math.min(startX, endX) + 'px';
+        selectionBox.style.top = Math.min(startY, endY) + 'px';
+        selectionBox.style.width = width + 'px';
+        selectionBox.style.height = height + 'px';
+
+        const selRect = selectionBox.getBoundingClientRect();
+        clearSelection();
+
+        const selectedElements = [];
+        getSelectableElements().forEach(({ element, rect }) => {
+          // Check if the item's bounding box is completely inside the selection box's bounding box
+          const isFullyInside =
+            rect.right <= selRect.right &&
+            rect.left >= selRect.left &&
+            rect.bottom <= selRect.bottom &&
+            rect.top >= selRect.top;
+
+          if (isFullyInside) {
+            element.classList.add('selected');
+            selectedElements.push(element);
+          }
+        });
+
+        // 输出当前选中的DOM对象
+        console.log('Selected DOM elements:', selectedElements);
+      }
+
+      container.addEventListener('mousedown', function (event) {
+        if (event.button === 0) { // Left mouse button
+          startX = event.clientX;
+          startY = event.clientY;
+          isSelecting = true;
+          selectionBox.style.display = 'block';
+          updateSelectionAndHighlight(event.clientX, event.clientY);
+        }
+      });
+
+      document.addEventListener('mousemove', function (event) {
+        if (isSelecting) {
+          updateSelectionAndHighlight(event.clientX, event.clientY);
+        }
+      });
+
+      document.addEventListener('mouseup', function (event) {
+        if (isSelecting && event.button === 0) {
+          isSelecting = false;
+          selectionBox.style.display = 'none';
+
+          // 获取最终选中的DOM元素
+          const finalSelectedElements = Array.from(container.querySelectorAll('.selectable.selected'));
+          console.log('Final Selected DOM elements:', finalSelectedElements);
+
+          // 如果需要进一步处理选中的元素，可以在这里添加逻辑
+        }
+      });
+
+      // 确保在页面卸载时清除选择状态
+      window.addEventListener('beforeunload', clearSelection);
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>3.x-directive</title>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://unpkg.com/vuex@next"></script>
+  <script src="https://unpkg.com/vue-router@next"></script>
+  <style>
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    Hello World
+    <br />
+    <input v-focus />
+    <div v-my-directive>v-my-directive</div>
+    <div v-my-directive:title.foo="title">v-my-directive:title.foo="title"</div>
+    <button @click="changeTheme">Change Theme by directive</button>
+    <div v-my-directive:theme.sync="theme">v-my-directive:theme.sync="theme"</div>
+    <button @click="unloadComponent">{{msg}}</button> {{isShowChild}}
+    <hello-world v-if="isShowChild" v-my-directive />
+  </div>
+  <hr>
+  <div id="app2">
+    <my-element :test.prop="'hello my-element'"></my-element>
+  </div>
+</body>
+<script>
+  /******************************************************************************/
+  const { createApp, ref, defineComponent } = Vue;
+
+  const app = createApp({
+    setup(props, { attrs, emit, slots }) {
+      console.log('app setup...');
+
+      const title = ref(Math.random().toString(16).toUpperCase().substr(2));
+      const theme = ref('black');
+      const isShowChild = ref(true);
+      const msg = ref('unmount component and directive');
+
+      const changeTheme = () => {
+        theme.value = theme.value === 'black' ? 'normal' : 'black';
+      }
+      const unloadComponent = () => {
+        isShowChild.value = !isShowChild.value;
+        msg.value = isShowChild.value ? 'unmount component and directive' : 'mount component and directive'
+      }
+
+      return { title, theme, isShowChild, msg, changeTheme, unloadComponent }
+    },
+    components: {
+      'hello-world': defineComponent({
+        setup(props, { attrs, emit, slots }) {
+          console.log('HelloWorld component setup...');
+          return {};
+        },
+        template: `<div>Child component and directive</div>`
+      })
+    },
+    directives: {
+      focus: {
+        mounted(el, binding, vnode, prevNode) {
+          el.focus();
+          console.log('Regist local directive mounted...', el, binding, vnode, prevNode);
+        }
+      }
+    }
+  });
+  app.directive('my-directive', {
+    created(el, binding, vnode, prevNode) {
+      /**
+       * el: 指令绑定的 DOM 元素
+       * vnode: 指令绑定的 DOM 元素的虚拟节点
+       * prevNode: 上一个虚拟节点, 仅在 beforeUpdate 和 updated 中可用
+       * binding: {dir, instance, modifiers, oldValue, value, arg}
+       *  dir: {Object} 注册指令时的配置项
+       *  instance: {Proxy} 使用指令的组件实例
+       *  arg: {undefined} 指令的参数
+       *  modifiers: {Object} 包含修饰符的对象, 修饰符的值为 true
+       *  value: {undefined} 指令的值
+       *  oldValue: {undefined} 指令的老值, 在 beforeUpdate 和 updated 中可用
+       */
+      console.log('regist app directive created...', el, binding, vnode);
+      const { arg, modifiers, value } = binding;
+      switch (arg) {
+        case 'title':
+          if (value) {
+            el.title = value;
+            el.innerHTML = `Hello, this is v-my-directive directive, the key of the parameter is title, the value of the modifiers foo is true, the value of parameter title from component <strong>${value}</strong>`;
+          }
+          break;
+        case 'theme':
+          if (value && value.toLowerCase() === 'black') {
+            el.style.width = '500px';
+            el.style.border = '1px solid #0088ff';
+            el.style.margin = '10px 0';
+            el.style.padding = '5px';
+            el.style.backgroundColor = '#000';
+            el.style.color = 'red';
+            el.style.fontSize = '18px';
+          } else {
+            el.style.width = 'auto';
+            el.style.border = '1px solid #aaa';
+            el.style.margin = '10px 0';
+            el.style.padding = '5px';
+            el.style.backgroundColor = '#fff';
+            el.style.color = '#0088ff';
+            el.style.fontSize = '22px';
+          }
+          break;
+      }
+    },
+    beforeMount(el, binding, vnode, prevNode) {
+      console.log('regist app directive beforeMount...', el, binding, vnode);
+    },
+    mounted(el, binding, vnode, prevNode) {
+      console.log('regist app directive mounted...', el, binding, vnode);
+    },
+    beforeUpdate(el, binding, vnode, prevNode) {
+      console.log('regist app directive beforeUpdate...', el, binding, vnode, prevNode);
+      const { arg, modifiers, value, oldValue } = binding;
+      if (arg && arg.toLowerCase() === 'theme') {
+        if (value && value.toLowerCase() == 'black') {
+          el.style.width = '500px';
+          el.style.border = '1px solid #0088ff';
+          el.style.margin = '10px 0';
+          el.style.padding = '5px';
+          el.style.backgroundColor = '#000';
+          el.style.color = 'red';
+          el.style.fontSize = '18px';
+        } else {
+          el.style.width = 'auto';
+          el.style.border = '1px solid #aaa';
+          el.style.margin = '10px 0';
+          el.style.padding = '5px';
+          el.style.backgroundColor = '#fff';
+          el.style.color = '#0088ff';
+          el.style.fontSize = '22px';
+        }
+      }
+    },
+    updated(el, binding, vnode, prevNode) {
+      console.log('regist app directive updated...', el, binding, vnode, prevNode);
+    },
+    beforeUnmount(el, binding, vnode, prevNode) {
+      console.log('regist app directive beforeUnmount...', el, binding, vnode);
+      const { arg, modifiers, value } = binding;
+      console.log(`arg ${arg} modifiers ${JSON.stringify(modifiers)} value ${value}`);
+    },
+    unmounted(el, binding, vnode, prevNode) {
+      console.log('regist app directive unmounted...', el, binding, vnode);
+    }
+  });
+  app.mount('#app');
+  /******************************************************************************/
+  console.log('------------------');
+  const app2 = createApp({
+    components: {
+      'my-element': {
+        props: ['test'],
+        setup(props, { attrs, slots, emit }) {
+          console.log('使用 .prop 修饰符，会从组件选项 props 中移除, 以 .[attr] 形式出现在组件 attrs 参数中并且不会显示在 DOM 上');
+          console.log('使用 .attr 修饰符，会从组件选项 props 中移除, 以 ^[attr] 形式出现在组件 attrs 参数中并且会显示在 DOM 上')
+          console.log('my-element setup... props ', props, 'attrs ', attrs);
+          return {}
+        },
+        template: '<p>子组件的内容</p>'
+      }
+    }
+  });
+  app2.mount('#app2');
+</script>
+
+</html>

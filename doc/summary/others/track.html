@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <canvas id="canvas" width="800" height="50" style="display:block;margin: 20px auto 0;"></canvas>
+  <input type="file" id="file">
+</body>
+<script>
+  const canvas = document.getElementById('canvas')
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+  const file = document.getElementById('file')
+
+  file.addEventListener('change', e => {
+    const reader = new FileReader()
+
+    reader.onload = function (e) {
+      audioCtx.decodeAudioData(e.target.result, buffer => {
+        let dataArray = buffer.getChannelData(0);
+        drawRectWaveForm(dataArray)
+      })
+    }
+    reader.readAsArrayBuffer(e.target.files[0])
+  })
+
+  function drawRectWaveForm(arr) {
+    const ctx = canvas.getContext('2d')
+    const width = canvas.width;
+    const height = canvas.height;
+    ctx.clearRect(0, 0, width, height)
+
+    const barWidth = 2;    // 每个矩形的宽度
+    const gap = 1;         // 每个矩形之间的间隔
+    const step = Math.ceil(arr.length / (width / (barWidth + gap))); // 采样步长
+    let x = 0;
+
+    for (let i = 0; i < arr.length; i += step) {
+      const v = arr[i] * 0.5; // 适当缩放波形高度
+      const y = (height / 2) + (v * height / 2);
+      const h = Math.abs(v * height); // 矩形高度
+
+      ctx.fillStyle = 'rgb(0, 0, 255)';
+      ctx.fillRect(x, height / 2 - h / 2, barWidth, h);
+
+      x += barWidth + gap;
+    }
+  }
+</script>
+
+</html>
