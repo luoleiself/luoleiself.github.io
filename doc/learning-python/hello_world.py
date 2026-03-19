@@ -15,24 +15,8 @@ Date: 2024-06-01
 import sys
 import os
 import random
-print('hello world')
 
-name = "luolei"
-age = 12
-print(f'my name is {name}, and I am {age} years old')
-
-print('----------')
-
-# 字符串拼接, 加号 +
-message = "hello " + name
-print(message)
-
-# 字符串拼接, 占位符 %,  %s 是字符串占位符，%d 是整数占位符，%f 是浮点数占位符
 # 需要考虑浮点数的精度问题
-name = "luolei"
-message = "hello %s" % name
-print(message)
-
 salary = 5000
 tel = 13112345678
 message = "my salary is %.2f, my tel is %d" % (salary, tel)
@@ -46,24 +30,6 @@ print(message)
 message = f"my salary is {salary:.2f}, my tel is {tel}"
 print(message)
 print(F"""my salary is {salary:.2f}, my tel is {tel}""")
-
-# print('----------')
-# age = int(input("请输入你的年龄: "))
-# if age >= 18:
-#     print("你已经成年了，可以独立生活了。")
-# else:
-#     print("你还未成年")
-
-# print('----------')
-# num = random.randint(1, 10)
-# guess_num = int(input("请输入一个 1-10 以内的数字: "))
-# if guess_num == num:
-#     print('恭喜你，猜对了!!')
-# else:
-#     if guess_num > num:
-#         print('你猜的数字太大了')
-#     else:
-#         print('你猜的数字太小了')
 print('--------------')
 
 letters = 'abcdefghijklmnopqrstuvwxyz'
@@ -89,23 +55,6 @@ while loop <= 100:
         print(f'Python 克星找到了, 它是 {random_num}')
         break
     loop += 1
-
-print('--------------')
-
-
-# 定义加法函数
-def add(a: int, b: int) -> int:
-    '''
-    @method add 函数求和
-    @param a: int
-    @param b: int
-    @return int
-    '''
-    return a + b
-
-
-result = add(1, 3)
-print(f'result: {result}')
 print('--------------')
 
 # 获取环境变量和命令行参数
@@ -115,3 +64,4 @@ print(f'os.environ["TOKEN"]: {os.environ["TOKEN"]}')
 print(f'sys.argv: {sys.argv}')
 print(f'sys.orig_argv: {sys.orig_argv}')
 print(f'sys.api_version: {sys.api_version}')
+print('--------------')
