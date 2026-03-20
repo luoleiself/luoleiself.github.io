@@ -1,3 +1,4 @@
+import random
 import threading
 from collections import Counter, deque, namedtuple
 from queue import Queue
@@ -52,28 +53,57 @@ print('------------------------------------')
 print('Queue: 当队列缓冲满时则阻塞等待取出元素, 当队列为空时则阻塞等待加入元素')
 print(f'Queue: 使用 while 遍历获取队列元素')
 thread = threading.current_thread()
-q = Queue(4)
+q = Queue(maxsize=4)
 print(f'{thread.name} q 类型 {type(q)} q.qsize() {q.qsize()} q.maxsize {q.maxsize}')
 print(f'{thread.name} q.full() {q.full()} q.empty() {q.empty()} ')
 
 
-def thread_get_from_queue(q: Queue):
+# 哨兵：生产线程结束后每个消费者各放一个，收到则退出（勿用 empty() 判断，多线程不可靠）
+_QUEUE_SENTINEL = object()
+
+
+def thread_put_to_queue(q: Queue, num_workers: int):
     thread = threading.current_thread()
     print(f'{thread.name} q.qsize() {q.qsize()}')
+    for i in range(1, 30):
+        q.put(i)
+        print(f'\033[0;42m{thread.name}\033[0m q.put({i})')
+    for _ in range(num_workers):
+        q.put(_QUEUE_SENTINEL)
+        print(f'\033[0;42m{thread.name}\033[0m q.put(SENTINEL 结束信号)')
+
+
+def thread_get_from_queue(q: Queue):
+    thread = threading.current_thread()
+    frontend_color = random.randint(30, 37)
+    print(f'\033[0;{frontend_color}m{thread.name}\033[0m q.qsize() {q.qsize()}')
     while True:
-        time.sleep(0.5)  # 线程休眠 0.5 秒
+        time.sleep(0.3)  # 线程休眠 0.3 秒
         v = q.get()
-        print(f'{thread.name} q.get() {v} q.qsize() {q.qsize()}')
-        if q.empty():
+        if v is _QUEUE_SENTINEL:
+            q.task_done()
+            print(
+                f'\033[0;{frontend_color}m{thread.name}\033[0m 收到结束信号，退出')
             break
+        print(f'\033[0;{frontend_color}m{thread.name}\033[0m q.get() {v}')
+        q.task_done()
 
 
-thread_get = threading.Thread(target=thread_get_from_queue, args=(q,))
-thread_get.start()
-
-for i in range(1, 20):
-    q.put(i)
-    print(f'{thread.name} q.put({i}) q.qsize() {q.qsize()}')
-
-thread_get.join()
+NUM_GET_THREADS = 3
+thread_put = threading.Thread(
+    target=thread_put_to_queue,
+    name='thread_put',
+    args=(q, NUM_GET_THREADS),
+)
+thread_put.start()
+thread_get_list: list[threading.Thread] = []
+for i in range(1, NUM_GET_THREADS + 1):
+    thread_get = threading.Thread(
+        target=thread_get_from_queue, args=(q,), name=f'thread_get_{i}'
+    )
+    thread_get_list.append(thread_get)
+    thread_get.start()
+q.join()  # 等待所有 put 对应的 task_done（含哨兵）
+for t in thread_get_list:
+    t.join()
 print('------------------------------------')
