@@ -136,6 +136,25 @@ SyntaxError: invalid syntax
 
 装饰器是一种函数，接受一个函数作为输入并返回另一个函数
 
+- @functools.wraps(func) 在闭包函数上添加装饰器, 保留被装饰函数的元信息
+
+```python
+def my_decorator(func):
+
+    @functools.wraps(func)  # 保留被装饰函数的元信息
+    def new_func(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return result
+    return new_func
+
+@my_decorator
+def add_int(a, b):
+    return a + b
+
+# 输出 add_int 的函数名, 没有 wraps 装饰器将输出 new_func
+print(f'add_int.__name__ {add_int.__name__}')
+```
+
 ### 文档注释
 
 函数体的顶部定义的多行字符串

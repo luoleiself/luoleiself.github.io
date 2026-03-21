@@ -182,7 +182,7 @@ class CountDown:
         self.current = start
     
     def __iter__(self):
-        return self  # 返回迭代器本身
+        return self  # 返回迭代器对象
     
     def __next__(self):
         if self.current <= 0:

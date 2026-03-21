@@ -86,8 +86,8 @@ local_from_iso_string = dt.fromisoformat(iso_string).astimezone()
 print(f'local_from_iso_string: {local_from_iso_string}')
 print('----------')
 print('timedelta 模块')
-delta = timedelta(days=1, seconds=2, microseconds=3,
-                  milliseconds=4, minutes=5, hours=6, weeks=7)
+delta = timedelta(days=1, hours=6, minutes=5, seconds=2,
+                  milliseconds=4, microseconds=3)
 print(f'delta {delta} delta.max {delta.max} delta.min {delta.min}')
 print(
     f'delta.days {delta.days} delta.seconds {delta.seconds} delta.microseconds {delta.microseconds}')

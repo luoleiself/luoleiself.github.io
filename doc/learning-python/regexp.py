@@ -1,6 +1,6 @@
 import re
 
-text = "Hello, my email addresses are foo@example.com and bar@example.com."
+text = "Hello, my email addresses are foo@example.com and bar@example.com. baz@example.com"
 
 print(f'text = {text}')
 # 匹配开头是否符合, 不在内容中查找
@@ -28,7 +28,7 @@ print('---------')
 reg = re.compile("com")
 print(f'reg {reg} {type(reg)}')
 # 全局查找所有符合条件的内容
-print(f're.findall(reg, text) {re.findall(reg, text)}')  # ['com', 'com']
+print(f'reg.findall(text) {reg.findall(text)}')  # ['com', 'com']
 print('---------')
 
 # 返回一个匹配结果的迭代器
@@ -42,12 +42,12 @@ print('---------')
 print(f're.split("com", text) {re.split("com", text)}')
 print('---------')
 
-# 替换字符串, count 替换次数
-result = re.sub("com", "xxx", text, count=1)
-print(f're.sub("com", "xxx", text) {result}')
+# 替换字符串, count 最大替换次数, 返回替换后的字符串
+result = re.sub("com", "xxx", text, count=2)
+print(f're.sub("com", "xxx", text, count=2) {result}')
 print('---------')
 
-# 替换字符串, 返回元组包含替换后的字符串和替换的次数
+# 替换字符串, 返回元组包含替换后的字符串和成功替换的总数
 result = re.subn("com", "xxx", text)
 print(f're.subn("com", "xxx", text) {result}')
 print('---------')

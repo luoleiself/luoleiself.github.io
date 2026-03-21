@@ -1,4 +1,6 @@
 from collections.abc import Iterator
+import functools
+
 print('迭代器: 自定义迭代器')
 
 
@@ -60,6 +62,26 @@ def my_gen2():
 gen2 = my_gen2()
 print(next(gen2))
 gen2.send(10)
+print('------------------')
+
+
+# 生成器生成质数
+def prime_gen():
+    i = 2
+    yield i
+    while True:
+        i += 1
+        for j in range(2, i):
+            if i % j == 0:
+                break
+        else:  # 循环正常结束, 没有 break
+            yield i
+
+
+for i in prime_gen():
+    print(f'质数: {i}')
+    if i > 100:
+        break
 print('----------------------------------')
 
 
@@ -78,6 +100,7 @@ print('----装饰器----')
 
 # 定义装饰器
 def my_decorator(func):
+    @functools.wraps(func)  # 保留被装饰函数的元信息
     def new_func(*args, **kwargs):
         print('my_decorator before called.')
         print(f'Running func name: {func.__name__}')
@@ -92,6 +115,7 @@ def my_decorator(func):
 
 # 定义装饰器
 def my_decorator_2(func):
+    @functools.wraps(func)  # 保留被装饰函数的元信息
     def new_func(name, *args, **kwargs):
         print('my_decorator_2 before called.')
         print(f'my_decorator_2 name: {name}')
@@ -112,3 +136,5 @@ def add_ints(a, b):
 
 
 print(f'add_ints(3, 5) result: {add_ints("zhangsan", 3, 5)}')
+print(
+    f'@functools.wraps(add_ints) 保留被装饰函数的元信息 add_ints.__name__ {add_ints.__name__}')
