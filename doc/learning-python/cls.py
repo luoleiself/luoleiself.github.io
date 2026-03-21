@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-import select
-
 
 # 装饰器 @property, 只读属性
+
+
 class Circle:
     def __init__(self, radius):
         self.radius = radius
@@ -433,4 +433,49 @@ db1 = Database()
 db2 = Database()
 print(f"db1 is db2: {db1 is db2}")  # True
 print(f"db1.connect(): {db1.connect()}")
+print('---------------------------')
+
+print('函数创建类')
+
+
+# 函数创建类
+def UpperMetaClass(class_name, class_bases, class_attrs):
+    # 字典推导式将类属性非下划线开头的转换为大写
+    new_attrs = dict((key, value) if key.startswith('_') else (
+        key.upper(), value) for key, value in class_attrs.items())
+    return type(class_name, class_bases, new_attrs)
+
+
+class Person(object, metaclass=UpperMetaClass):
+    name = 'Tom'
+    _age = 18
+
+
+print(f'hasattr(Person, name): {hasattr(Person, "name")}')  # False
+print(f'hasattr(Person, "NAME"): {hasattr(Person, "NAME")}')    # True
+print(f'hasattr(Person, "_AGE"): {hasattr(Person, "_AGE")}')    # False
+print(f'hasattr(Person, "_age"): {hasattr(Person, "_age")}')  # True
+print('----------')
+
+print('元类创建类')
+
+
+# 元类创建类
+class UpperMetaClass(type):
+    def __new__(cls, class_name, class_bases, class_attrs):
+        # 字典推导式将类属性非下划线开头的转换为大写
+        new_attrs = dict((key, value) if key.startswith('_') else (
+            key.upper(), value) for key, value in class_attrs.items())
+        return super().__new__(cls, class_name, class_bases, new_attrs)
+
+
+class Person1(metaclass=UpperMetaClass):
+    name = 'Tom'
+    _age = 18
+
+
+print(f'hasattr(Person1, name): {hasattr(Person1, "name")}')  # False
+print(f'hasattr(Person1, "NAME"): {hasattr(Person1, "NAME")}')    # True
+print(f'hasattr(Person1, "_AGE"): {hasattr(Person1, "_AGE")}')    # False
+print(f'hasattr(Person1, "_age"): {hasattr(Person1, "_age")}')  # True
 print('---------------------------')

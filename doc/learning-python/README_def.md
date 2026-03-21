@@ -262,7 +262,8 @@ who_says(hunter3)
 
 ### 内置属性(魔法属性)
 
-- `__name__` 用于判断当前模块是被直接运行还是被导入, 直接运行时为 `__main__` 否则值为所在的模块名
+- `__name__` 标识函数、模块、包的名称
+  - 直接运行文件时为 `__main__` 否则值为所在的模块名
 - `__all__` 是一个列表, 用于定义当使用 `from module_name import *` 时, 哪些名称可以被导入
   - 在 `__init__.py` 文件中使用限制包级的导入行为
   - 在 模块中 使用时限制模块的导入行为
@@ -272,6 +273,7 @@ who_says(hunter3)
 - `__slots__` 限制属性(内存优化)
 - `__version__` 版本号
 - `__author__`  作者
+
 - `__dict__` 存储对象的命名空间
   - 实例: 实例对象自身的属性, 不包含类属性、方法，可读写
   - 类: 类属性、方法、装饰器描述符等, 不能直接修改
@@ -312,6 +314,26 @@ p.__dict__ {'name': 'Jerry'}
 Jerry say hello!
 Person.__dict__ {'__module__': '__main__', 'species': 'Human', '__init__': <function Person.__init__ at 0x000001BC44D95120>, 'new_name': <property object at 0x000001BC44D98540>, 'cls_method': <classmethod(<function Person.cls_method at 0x000001BC44D95260>)>, 'static_method': <staticmethod(<function Person.static_method at 0x000001BC44D95300>)>, 'say_hello': <function Person.say_hello at 0x000001BC44D953A0>, '__dict__': <attribute '__dict__' of 'Person' objects>, '__weakref__': <attribute '__weakref__' of 'Person' objects>, '__doc__': None}
 moduleName.__dict__ {'__name__': 'select', '__doc__': 'This module supports asynchronous I/O on multiple file descriptors.\n\n*** IMPORTANT NOTICE ***\nOn Windows, only sockets are supported; on Unix, all file descriptors.', '__package__': '', '__loader__': <_frozen_importlib_external.ExtensionFileLoader object at 0x000001989F2D7260>, '__spec__': ModuleSpec(name='select', loader=<_frozen_importlib_external.ExtensionFileLoader object at 0x000001989F2D7260>, origin='D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\DLLs\\select.pyd'), 'select': <built-in function select>, '__file__': 'D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\DLLs\\select.pyd', 'error': <class 'OSError'>}
+```
+
+- `__class__` 标识创建实例对象的类
+- `__bases__` 标识类对象继承的父类
+
+```python
+>>> class Person:
+...     pass
+...
+>>> p = Person()
+>>> p.__class__
+<class '__main__.Person'>
+>>> p.__bases__ # 实例对象没有 __bases__ 属性
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'Person' object has no attribute '__bases__'. Did you mean: '__class__'?
+>>> Person.__class__
+<class 'type'>
+>>> Person.__bases__
+(<class 'object'>,)
 ```
 
 ### 内置方法(魔法方法)
@@ -676,4 +698,29 @@ Person = type('Person', (), {
 
 p2 = Person('Tom')
 p2.greet()
+print('---------------')
+# 函数创建类
+def UpperMetaClass(class_name, class_bases, class_attrs):
+    # 字典推导式将类属性非下划线开头的转换为大写
+    new_attrs = dict((key, value) if key.startswith('_') else (
+        key.upper(), value) for key, value in class_attrs.items())
+    return type(class_name, class_bases, new_attrs)
+
+# 元类创建类
+class UpperMetaClass(type):
+    def __new__(cls, class_name, class_bases, class_attrs):
+        # 字典推导式将类属性非下划线开头的转换为大写
+        new_attrs = dict((key, value) if key.startswith('_') else (
+            key.upper(), value) for key, value in class_attrs.items())
+        return super().__new__(cls, class_name, class_bases, new_attrs)
+
+class Person(object, metaclass=UpperMetaClass):
+    name = 'Tom'
+    _age = 18
+
+
+print(f'hasattr(Person, name): {hasattr(Person, "name")}')  # False
+print(f'hasattr(Person, "NAME"): {hasattr(Person, "NAME")}')    # True
+print(f'hasattr(Person, "_AGE"): {hasattr(Person, "_AGE")}')    # False
+print(f'hasattr(Person, "_age"): {hasattr(Person, "_age")}')  # True
 ```
