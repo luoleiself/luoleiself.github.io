@@ -9,6 +9,7 @@ shutdown_flag = False
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(('127.0.0.1', 65432))
 
+
 def signal_handler(signum, frame):
     """处理 Ctrl+C (SIGINT) 和 kill (SIGTERM) 信号，先发送结束消息再退出"""
     global shutdown_flag

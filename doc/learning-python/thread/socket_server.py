@@ -96,7 +96,8 @@ while not shutdown_flag:
     try:
         sock, addr = server.accept()
         print(f'新客户端连接: {addr}')
-        t = threading.Thread(target=handle_client, args=(sock, addr), daemon=True)
+        t = threading.Thread(target=handle_client,
+                             args=(sock, addr), daemon=True)
         t.start()
     except OSError:
         if shutdown_flag:

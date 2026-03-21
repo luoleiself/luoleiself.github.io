@@ -48,6 +48,21 @@ for i in ranger:
 for i in ranger:
     print(f'2 for {i}')
 
+print('------------------')
+
+
+def my_gen2():
+    inp = yield 'hehe'
+    print(f'yield input {inp}')
+    yield 250
+
+
+gen2 = my_gen2()
+print(next(gen2))
+gen2.send(10)
+print('----------------------------------')
+
+
 # 生成器推导式
 genobj = (pair for pair in zip(('a', 'b'), ('A', 'B')))
 print(f'生成器推导式的类型 {type(genobj)}')  # <class 'generator'>
