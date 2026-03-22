@@ -11,23 +11,20 @@ def process_cube(x: int) -> int:
 
 if __name__ == '__main__':
     print('ThreadPoolExecutor: 线程池执行器, executor.submit() 提交任务返回 Future 对象')
-    thread_executor = ThreadPoolExecutor(
-        max_workers=5, thread_name_prefix='my_thread')
-
-    future1 = thread_executor.submit(lambda x: x ** 2, 4)
-    future2 = thread_executor.submit(lambda x: x ** 2, 5)
-    future3 = thread_executor.submit(lambda x: x ** 2, 6)
-    future4 = thread_executor.submit(lambda x: x ** 2, 7)
-    future5 = thread_executor.submit(lambda x: x ** 2, 8)
     print('as_completed(): 返回迭代器对象，等待所有线程完成并返回结果')
     print('future.result(): 返回线程执行结果')
-    for future in as_completed([future1, future2, future3, future4, future5]):
-        print(f'future.result(): {future.result()}')
-    print('---------')
+    with ThreadPoolExecutor(max_workers=5, thread_name_prefix='my_thread') as thread_executor:
+        futures = []
+        for i in range(4, 9):
+            future = thread_executor.submit(lambda x: x ** 2, i)
+            futures.append(future)
+        for future in as_completed(futures):
+            print(f'future.result(): {future.result()}')
+        print('---------')
 
-    print('executor.map(): 返回迭代器对象，提交任务并等待所有线程完成并返回结果')
-    for data in thread_executor.map(lambda x: x ** 2, range(4, 9)):
-        print(f'data: {data}')
+        print('executor.map(): 返回迭代器对象，提交任务并等待所有线程完成并返回结果')
+        for data in thread_executor.map(lambda x: x ** 2, range(4, 9)):
+            print(f'data: {data}')
     print('----------------------------')
 
     print('ProcessPoolExecutor: 进程池执行器, executor.submit() 提交任务返回 Future 对象')
