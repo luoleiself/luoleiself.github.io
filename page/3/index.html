@@ -204,7 +204,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/46691d911248/">
+    <link itemprop="mainEntityOfPage" href="https://luoleiself.github.io/2022/11/80b3dfc88923/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -218,7 +218,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/46691d911248/" class="post-title-link" itemprop="url">Redis-app</a>
+            <a href="/2022/11/80b3dfc88923/" class="post-title-link" itemprop="url">Redis-String-Hash</a>
         </h2>
 
         <div class="post-meta">
@@ -235,7 +235,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-08-31 23:10:41" itemprop="dateModified" datetime="2025-08-31T23:10:41+08:00">2025-08-31</time>
+                <time title="修改时间：2025-12-29 14:50:55" itemprop="dateModified" datetime="2025-12-29T14:50:55+08:00">2025-12-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,13 +256,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>2.8k</span>
+              <span>6.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>3 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -274,27 +274,58 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="缓存穿透、击穿、雪崩"><a href="#缓存穿透、击穿、雪崩" class="headerlink" title="缓存穿透、击穿、雪崩"></a>缓存穿透、击穿、雪崩</h2><h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>缓存穿透是指缓存和数据库中都没有的数据, 在高并发下对不存在的 key 的操作. 由于缓存是不命中时被动写的, 并且出于容错考虑, 如果存储层查不到数据则不写入缓存, 这将导致这个不存在的数据每次请求都要到存储层去查询, 失去的缓存的意义. 在流量大时, 可能引起数据库崩溃. 或者有人利用不存在的 key 频繁攻击应用, 可能会引起应用的崩溃</p>
-<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>接口层增加校验, 如用户鉴权校验、id 做基础校验、 id &lt;= 0 的直接拦截</li>
-<li>从缓存取不到的数据, 在数据库中也取不到时,可以将 key-value 写为 key-null, 缓存有效时间设置短点, 这样可以防止攻击用户反复用同一个 key 暴力攻击</li>
-<li>布隆过滤器, 类似于一个 hash set, 用于快速判断某个元素是否存在于集合中, 其典型的应用场景就是快速判断一个 key 是否存在于某容器, 不存在就直接返回. 布隆过滤器的关键就在于 hash 算法和容器大小</li>
+          <h2 id="Strings-命令"><a href="#Strings-命令" class="headerlink" title="Strings 命令"></a>Strings 命令</h2><p>字符串是基础的 key-value 类型, 存储字节序列, 包括文本、序列化对象和二进制数组, 一个 key 对应一个 value, value 可以是字符串、整数或浮点数, value 最多可以是 <strong>512MB</strong>.</p>
+<p>String 类型的底层的数据结构实现主要是 int 和 SDS(Simple Dynamic String)</p>
+<blockquote>
+<p>因为 C 语言的字符串并不记录自身长度, 所以获取长度的复杂度为 O(n), SDS 结构里用 len 属性记录字符串长度, 所有复杂度为 O(1)</p>
+</blockquote>
+<h3 id="设置值"><a href="#设置值" class="headerlink" title="设置值"></a>设置值</h3><ul>
+<li><p>SET key value [NX|XX] [GET] [EX seconds|PX milliseconds|EXAT unix-time-seconds|PXAT unix-time-milliseconds|KEEPTTL]</p>
+<p>为 key 设置字符串的值, 执行成功返回 ok, 每次更新 key 的值时会自动清除过期时间</p>
+<ul>
+<li>NX 仅当 key 不存在时设置</li>
+<li>XX 仅当 key 存在时设置</li>
+<li>EX 过期时间, 单位秒</li>
+<li>PX 过期时间, 单位毫秒</li>
+<li>EXAT 过期时间戳, 单位秒</li>
+<li>PXAT 过期时间戳, 单位毫秒</li>
+<li>KEEPTTL 保留 key 关联的生存时间</li>
 </ul>
-<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>缓存击穿是指缓存中没有但数据库中有的数据(一般是缓存时间到期), 在高并发下对同一 key 的操作. 如果在缓存中没有获取到数据, 又同时在数据库中获取到数据, 引起数据库压力过大.</p>
-<h4 id="解决办法-1"><a href="#解决办法-1" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>设置热点数据永不过期</li>
-<li>接口限流与熔断、降级, 重要的接口一定要做好限流策略, 防止用户恶意刷接口, 同时要降级准备, 当接口中的某些服务不可用时, 进行熔断, 失败快速返回机制</li>
-<li>加互斥锁</li>
+</li>
 </ul>
-<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>缓存雪崩是指缓存中数据大批量到过期时间, 而查询数据量巨大, 引起数据库压力过大甚至崩溃. 和缓存击穿不同的是, 缓存击穿指并发查询同一条数据, 缓存雪崩是不同数据都过期了, 很多数据都查不到从而查询数据库</p>
-<h4 id="解决办法-2"><a href="#解决办法-2" class="headerlink" title="解决办法 "></a>解决办法 <!-- markdownlint-disable-line --></h4><ul>
-<li>缓存数据的过期时间设置随机, 防止同一时间大量数据过期现象发生</li>
-<li>如果缓存数据库是分布式部署, 将热点数据均匀分布在不同的缓存数据库中</li>
-<li>设置热点数据永不过期</li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SET age 18</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; EXPIRE age 100</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 98</span><br><span class="line">127.0.0.1:6379&gt; SET age 20</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) -1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 KEEPTTL 保留 key 关联的生存时间</span></span><br><span class="line">127.0.0.1:6379&gt; SET age 18 EX 100</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 98</span><br><span class="line">127.0.0.1:6379&gt; SET age 20 KEEPTTL</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; GET age</span><br><span class="line"><span class="string">&quot;20&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; TTL age</span><br><span class="line">(<span class="built_in">integer</span>) 79</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SETNX key value 当 key 不存在时设置指定 key 的值, 返回值 1 成功, 0 失败</li>
 </ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;name&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; SETNX age 18</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;name&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>APPEND key value 在指定 key 末尾(如果为字符串)追加内容, key 不存在同 <code>SET</code> 并返回追加内容的长度</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; APPEND age 1</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; GET age</span><br><span class="line"><span class="string">&quot;181&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; APPEND addr beijing</span><br><span class="line">(<span class="built_in">integer</span>) 7</span><br><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;xiaoming&quot;</span></span><br><span class="line">2) <span class="string">&quot;age&quot;</span></span><br><span class="line">3) <span class="string">&quot;addr&quot;</span></span><br><span class="line">4) <span class="string">&quot;name&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; APPEND a hello</span><br><span class="line">(<span class="built_in">integer</span>) 5</span><br><span class="line">127.0.0.1:6379&gt; APPEND b gg</span><br><span class="line">(<span class="built_in">integer</span>) 2</span><br></pre></td></tr></table></figure>
+
+<h4 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h4><ul>
+<li>SETEX key seconds value 设置 key 的值并设置过期时间(单位秒), 返回 ok</li>
+<li>PSETEX key milliseconds value 设置 key 的值的值并设置过期时间(单位毫秒), 返回 ok</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SETEX addr 20 beijing</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; PSETEX addr 20000 beijing</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<h4 id="批量设置值"><a href="#批量设置值" class="headerlink" title="批量设置值"></a>批量设置值</h4><ul>
+<li>MSET key value [key value …] 批量设置 key 的值</li>
+<li>MSETNX key value [key value …] 批量设置 key 的值且当所有的 key 不存在时, 返回值 1 成功, 0 失败</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; KEYS *</span><br><span class="line">1) <span class="string">&quot;age&quot;</span></span><br><span class="line">2) <span class="string">&quot;name&quot;</span></span><br><span class="line">3) <span class="string">&quot;hash:zhang&quot;</span></span><br><span class="line"><span class="comment"># 当且仅当所有 key 都不存在时设置成功返回 1</span></span><br><span class="line">127.0.0.1:6379&gt; MSETNX name zhangsan age 18 addr beijing</span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>SETRANGE key offset value</p>
+<p>覆盖指定 key 的从指定偏移量开始的字符串的一部分, 返回修改后字符串长度, key 不存在则新建</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; SETRANG name 1 xyz</span><br><span class="line">(<span class="built_in">integer</span>) 8</span><br><span class="line">127.0.0.1:6379&gt; GET name</span><br><span class="line"><span class="string">&quot;axyz1234&quot;</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/11/46691d911248/#more" rel="contents">
+              <a class="btn" href="/2022/11/80b3dfc88923/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -447,7 +478,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-01-31 15:02:07" itemprop="dateModified" datetime="2026-01-31T15:02:07+08:00">2026-01-31</time>
+                <time title="修改时间：2026-03-21 22:56:40" itemprop="dateModified" datetime="2026-03-21T22:56:40+08:00">2026-03-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -468,13 +499,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>15k</span>
+              <span>19k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>13 分钟</span>
+              <span>18 分钟</span>
             </span>
 
         </div>
@@ -486,7 +517,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><p>mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改</p>
+          <h2 id="范式"><a href="#范式" class="headerlink" title="范式"></a>范式</h2><p>键: 数据库中由一个或多个属性组成<br>超键: 在关系中能唯一标识记录的属性集称为关系模式的超键<br>候选键: 不包含多余属性的超键<br>主键: 被作为记录标识的候选键</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 超键: &#123;学号&#125; &#123;身份证号&#125; 或者 &#123;学号&#125; &#123;性别&#125; 或者 &#123;身份证号&#125; &#123;年龄&#125; 的组合属性集可以确定唯一一条记录</span></span><br><span class="line"><span class="comment">-- 候选键: &#123;学号&#125; 或者 &#123;身份证号&#125; 可以是候选键</span></span><br><span class="line"><span class="comment">-- 主键: &#123;学号&#125; 候选键作为主键</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>1NF: 数据库表中的每一列的字段都是不可再分的, 原子性</li>
+<li>2NF: 数据库表中不存在非关键字段对任意候选关键字段的部分函数依赖(指存在着组合关键字中的某一关键字决定非关键字的情况)<ul>
+<li>部分函数依赖：没有包含在主键中的列必须完全依赖于主键, 而不能只依赖于主键的一部分</li>
+</ul>
+</li>
+<li>3NF: 数据库表中不存在非关键字段对任意候选关键字段的传递函数依赖<ul>
+<li>传递函数依赖: 非主键列必须直接依赖于主键列，不能存在非主键列依赖于非主键列的情况</li>
+</ul>
+</li>
+<li>BCNF: 数据库表中不存在任何关键字段对任意候选关键字段(组合关键字)的传递函数依赖</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">2NF:</span></span><br><span class="line"><span class="comment">例如 订单明细表(orderDetail): orderId, productId, productName, unitPrice, discount, quantity; 主键为 (orderId, productId). 一个订单可以包含多个商品.</span></span><br><span class="line"><span class="comment">discount, quantity 完全依赖主键, 而 unitPrice, productName 只依赖于 productId, 不符合 2NF.</span></span><br><span class="line"><span class="comment">将 unitPrice, productName 和 productId 拆分为单独的表消除原订单明细表 unitPrice, productName 多次重复的情况</span></span><br><span class="line"><span class="comment">3NF:</span></span><br><span class="line"><span class="comment">例如 订单表(order): orderId, orderDate, customerId, customerName, customerAddr, customerCity; 主键为 orderId</span></span><br><span class="line"><span class="comment">customerName, customerAddr, customerCity 直接依赖 customerId(非主键列), 通过传递才依赖主键, 所以不符合 3NF.</span></span><br><span class="line"><span class="comment">将 customerName, customerAddr, customerCity 拆分为单独的表达到满足 3NF.</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h2><p>mysql 事务隔离级别定义了一个事务在多大程度上能够看到其他并发事务所做的修改</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> [<span class="keyword">GLOBAL</span><span class="operator">|</span>SESSION] TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 全局设置</span></span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 当前会话设置</span></span><br><span class="line"><span class="keyword">SET</span> SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务开始时设置</span></span><br><span class="line"><span class="keyword">SET</span> TRANSACTION ISOLATION LEVEL <span class="operator">&lt;</span>level<span class="operator">&gt;</span>;</span><br></pre></td></tr></table></figure>
 
 <h3 id="读未提交-Read-Uncommitted"><a href="#读未提交-Read-Uncommitted" class="headerlink" title="读未提交(Read Uncommitted)"></a>读未提交(Read Uncommitted)</h3><p>最低级别的隔离, 允许一个事务读取另一个事务尚未提交的数据, 通常不推荐使用此级别, 除非对数据一致性要求非常低的场景</p>
@@ -1174,7 +1222,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-12 20:48:20" itemprop="dateModified" datetime="2025-12-12T20:48:20+08:00">2025-12-12</time>
+                <time title="修改时间：2026-03-21 22:56:41" itemprop="dateModified" datetime="2026-03-21T22:56:41+08:00">2026-03-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1228,235 +1276,14 @@
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">$&#123;VAR:-default&#125;</span>   <span class="string">如果</span> <span class="string">变量名</span> <span class="string">对应的环境变量未设置或为空,</span> <span class="string">则使用</span> <span class="string">默认值,</span> <span class="string">否则使用环境变量的值</span> </span><br><span class="line"><span class="string">$&#123;VAR-default&#125;</span>    <span class="string">仅当</span> <span class="string">变量名</span> <span class="string">对应的环境变量</span> <span class="string">完全未定义</span> <span class="string">时才用默认值(为空时不会替换)</span></span><br><span class="line"><span class="string">$&#123;VAR:?error&#125;</span>     <span class="string">严格模式,</span> <span class="string">如果</span> <span class="string">变量名</span> <span class="string">对应的环境变量</span> <span class="string">未设置/为空,</span> <span class="string">则报错并显示错误信息</span> <span class="string">error</span></span><br><span class="line"><span class="string">$&#123;VAR:+alternate&#125;</span> <span class="string">反向逻辑,</span> <span class="string">如果</span> <span class="string">变量名</span> <span class="string">已设置且非空,</span> <span class="string">则使用</span> <span class="string">alternate</span> <span class="string">值</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动指定服务, 不加参数则默认启动所有服务</span></span><br><span class="line">docker compose -f -p -c --env-file .env.development up [service_name]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以下的命令不带服务名称则默认对所有服务执行相同操作</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
-<li><p>--all-resources 引入所有的资源, 即使未被服务使用</p>
-</li>
-<li><p>-f, --file stringArray 指定配置文件</p>
-</li>
-<li><p>-p, --project-name string 指定项目名称</p>
-</li>
-<li><p>--project-directory string 指定项目工作目录</p>
-</li>
-<li><p>-c, --context 指定上下文环境名称</p>
-</li>
-<li><p>--env-file stringArray 指定环境变量配置文件</p>
-</li>
-<li><p>--parallel 设置并行</p>
-</li>
-<li><p>--compatibility 运行 compose 兼容模式</p>
-</li>
-<li><p>--profile 启用指定的服务, web 服务默认启动</p>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose --profile db up -d <span class="comment"># 只启动 db, web 服务</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
-<li><p>attach 连接运行服务的标准输入输出</p>
-</li>
-<li><p>build 构建服务</p>
-</li>
-<li><p>commit 从服务容器创建一个新的镜像</p>
-<ul>
-<li>-a, --author 作者</li>
-<li>-m, --message string 提交信息</li>
-<li>-c, --change list 应用 Dockerfile 指令创建镜像</li>
-<li>--index int 指定如果有多个副本的服务的容器</li>
-<li>-p, --pause 提交过程中是否中断容器运行, 默认为 true</li>
-</ul>
-</li>
-<li><p>config 解析验证 compose.yaml 配置文件</p>
-<ul>
-<li><p>--environment 打印环境变量的插值</p>
-</li>
-<li><p>--format string 格式化输出, 值可选 yaml(default) | json</p>
-</li>
-<li><p>--images 输出镜像名称</p>
-</li>
-<li><p>--hash  输出服务的配置 hash, 一个一行</p>
-</li>
-<li><p>--profiles  输出指定的服务名, 一个一行</p>
-</li>
-<li><p>-o, --output string 保存到指定文件中, 默认是标准输出流</p>
-</li>
-<li><p>-q, --quiet 仅验证配置项, 不输出任何信息</p>
-</li>
-<li><p>--services 输出服务名称</p>
-</li>
-<li><p>--volumes  输出数据卷名称</p>
-</li>
-</ul>
-</li>
-<li><p>cp 在容器和本地文件系统之间拷贝文件</p>
-</li>
-<li><p>events 接收一个来自容器的真实的事件</p>
-</li>
-<li><p>export 导出容器文件系统为归档文件</p>
-</li>
-<li><p>images 列出创建容器的镜像</p>
-</li>
-<li><p>start 启动服务</p>
-</li>
-<li><p>restart 重启服务</p>
-</li>
-<li><p>wait 阻塞直到所有的服务容器停止</p>
-</li>
-<li><p>stop 停止服务</p>
-</li>
-<li><p>kill 强制停止容器</p>
-</li>
-<li><p>pause 暂停服务</p>
-</li>
-<li><p>unpasue 取消暂停服务</p>
-</li>
-<li><p>rm 移除已经停止的容器, 默认情况下附加到容器上的匿名数据卷不会被移除</p>
-<ul>
-<li>-f, --force 不询问确认操作直接移除</li>
-<li>-s, --stop 在移除之前停止容器</li>
-<li>-v, --volumes 移除所有附加到容器上的匿名数据卷</li>
-</ul>
-</li>
-<li><p>down 停止并移除容器, 网络</p>
-<ul>
-<li>--rmi string 移除服务使用的镜像</li>
-<li>-t, --timeout int 延迟关机的时长秒</li>
-<li>-v, --volumes 移除在 compose.yaml 中 volumes 顶层指令中声明的具名和匿名数据卷</li>
-</ul>
-</li>
-<li><p>logs 查看服务输出日志</p>
-<ul>
-<li>-f, --follow  监听日志输出</li>
-<li>--index int  指定哪个容器执行命令, 如果服务有多个副本时</li>
-<li>-n, --tail  输出容器日志的最后几行</li>
-<li>--since  显示指定时间开始的日志</li>
-<li>--until  显示截止到指定时间的日志</li>
-</ul>
-</li>
-<li><p>stats 查看容器资源的使用情况</p>
-</li>
-<li><p>ls 列出正在运行的 compose 项目</p>
-</li>
-<li><p>port 查看公共端口绑定信息</p>
-<ul>
-<li>--index int 指定如果有多个副本的服务的容器</li>
-<li>--protocol string  指定协议, tcp(default) | udp</li>
-</ul>
-</li>
-<li><p>ps 查看所有容器</p>
-<ul>
-<li>-a, --all 列出所有容器</li>
-<li>-f, --filter &lt;FILTER_TYPE&gt;=&lt;VALUE&gt; 根据指定条件过滤服务容器</li>
-<li>--format string 使用自定义模板格式化输出, table(default) | table TEMPLATE | json | TEMPLATE</li>
-<li>--services 显示服务名称</li>
-<li>--status stringArray 通过状态过滤服务, [paused | restarting | removing | running | dead | created | exited]</li>
-</ul>
-</li>
-<li><p>pull 拉取服务镜像</p>
-</li>
-<li><p>push 推送服务镜像</p>
-</li>
-<li><p>top 显示运行的进程信息</p>
-</li>
-<li><p>exec 在运行的容器中执行命令</p>
-<ul>
-<li>-d, --detach  后台运行命令</li>
-<li>-e, --env stringArray 设置环境变量</li>
-<li>--index int  指定哪个容器执行命令, 如果服务有多个副本时</li>
-<li>-T, --no-TTY  不分配伪 TTY, 默认每次执行命令时都分配 TTY</li>
-<li>-w, --workdir string 设置本次命令的工作目录</li>
-</ul>
-</li>
-<li><p>run 在服务上运行一次性命令</p>
-<ul>
-<li>--build 启动容器之前构建镜像</li>
-<li>-d, --detach</li>
-<li>-i, --interactive 交互式运行</li>
-<li>-e, --env stringArray 设置环境变量</li>
-<li>-l, --label stringArray 添加或覆盖 label</li>
-<li>-P, --service-ports 运行命令所有服务的端口都能映射到宿主机</li>
-<li>--name  给容器定义名字</li>
-<li>--pull  运行之前拉取镜像</li>
-<li>-p, --publish stringArray 发布容器的端口到宿主机</li>
-<li>--rm 当容器退出时自动移除</li>
-<li>-v, --volume stringArray 挂载数据卷</li>
-<li>-w, --workdir string 设置容器内的工作目录</li>
-</ul>
-</li>
-<li><p>scale 调整服务</p>
-<ul>
-<li>--no-deps 不启动关联的服务</li>
-</ul>
-</li>
-<li><p>version 查看版本信息</p>
-</li>
-<li><p>watch 监听文件系统更新时服务容器重构/重启的构建上下文</p>
-</li>
-<li><p>create 为服务创建容器</p>
-<ul>
-<li>--build 启动容器之前构建镜像</li>
-<li>--no-build 不构建镜像即使镜像不存在</li>
-<li>--force-recreate 即使配置项或镜像没有改变也要重新创建容器</li>
-<li>--no-recreate 如果容器存在则不创建新的容器</li>
-<li>--pull 创建之前拉取镜像</li>
-<li>--scale scale 调整服务实例数量, 并覆盖 <code>compose.yaml</code> 配置文件中的 scale 配置</li>
-</ul>
-</li>
-<li><p>up 创建服务并启动容器</p>
-<ul>
-<li><p>-d, --detach 后台运行容器</p>
-</li>
-<li><p>--attach 连接服务的输出</p>
-</li>
-<li><p>--no-attach 不连接服务的输出</p>
-</li>
-<li><p>--build 启动容器之前构建镜像</p>
-</li>
-<li><p>--no-build 不构建镜像即使镜像不存在</p>
-</li>
-<li><p>--no-start 创建服务之后不启动它</p>
-</li>
-<li><p>--no-deps 不启动关联的服务</p>
-</li>
-<li><p>--pull 启动之前拉取镜像</p>
-</li>
-<li><p>--scale scale 调整服务实例数量, 覆盖 <code>compose.yaml</code> 配置文件中的 scale 配置</p>
-</li>
-<li><p>--no-log-prefix 打印日志时不适用前缀</p>
-</li>
-<li><p>--no-recreate 如果容器存在则不创建新的容器</p>
-</li>
-<li><p>-y 非交互式运行命令, 所有的提示都回答 yes</p>
-</li>
-<li><p>-t, --timeout int 延迟关闭容器</p>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# docker compose up service_id <span class="comment"># 启动指定服务</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整指定服务实例数量, 先去掉 compose.yaml/docker-compose.yaml 配置文件 service 指定的端口, 在单机中会出现端口占用问题</span></span><br><span class="line">[root@localhost ~]# docker compose up --scale web=5 -d</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><ul>
-<li>使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器</li>
-</ul>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># compose.yaml/docker-compose.yaml</span></span><br><span class="line"><span class="attr">version:</span> <span class="number">3.9</span>   <span class="comment"># 版本, obsolete(已过时)</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">myapp</span> <span class="comment"># 定义默认的项目名称, 将以环境变量 $&#123;COMPOSE_PROJECT_NAME&#125; 的方式公开</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">web:</span>   <span class="comment"># 服务名称</span></span><br><span class="line">    <span class="attr">annotations:</span> <span class="comment"># 容器声明, 可以是 arr 或 map</span></span><br><span class="line">      <span class="attr">com.example.foo:</span> <span class="string">bar</span></span><br><span class="line">      <span class="comment"># - com.example.foo=bar</span></span><br><span class="line">    <span class="attr">attach:</span> <span class="literal">false</span> <span class="comment"># 设置为 false 时不会主动收集服务日志, 默认为 false, v2.20.0 以上支持</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">&#x27;./web&#x27;</span>  <span class="comment"># 指定构建 web 服务的镜像的上下文环境目录</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span>  <span class="comment"># 指定构建镜像的配置文件名称</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&#x27;bundle&#x27;</span>, <span class="string">&#x27;exec&#x27;</span>, <span class="string">&#x27;thin&#x27;</span>, <span class="string">&#x27;-p&#x27;</span>, <span class="string">&#x27;3000&#x27;</span>]  <span class="comment"># 覆盖镜像配置文件(Dockerfile)中的CMD指令</span></span><br><span class="line">    <span class="attr">ports:</span> <span class="comment"># 端口映射</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;5000:5000&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;0.0.0.0:80:80/tcp&#x27;</span> <span class="comment"># 指定 ip 地址和协议, 或修改 /etc/docker/daemon.json 配置项&quot;ipv6&quot;:false</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">target:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">host_ip:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">        <span class="attr">published:</span> <span class="number">8080</span></span><br><span class="line">        <span class="attr">protocol:</span> <span class="string">tcp</span></span><br><span class="line">        <span class="attr">mode:</span> <span class="string">host</span></span><br><span class="line">    <span class="attr">privileged:</span> <span class="literal">true</span>   <span class="comment"># 配置容器目录权限</span></span><br><span class="line">    <span class="attr">read_only:</span> <span class="literal">true</span>    <span class="comment"># 开启容器文件系统只读模式</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span>    <span class="comment"># 定义容器重启模式 &quot;no&quot; | always | on-failure | unless-stopped</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">my-web</span>  <span class="comment"># 容器名称, 使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器</span></span><br><span class="line">    <span class="attr">env_file:</span> <span class="string">.env</span> <span class="comment"># 环境变量配置文件</span></span><br><span class="line">    <span class="attr">environment:</span>  <span class="comment"># 设置容器内环境变量</span></span><br><span class="line">      <span class="attr">RACK_ENV:</span> <span class="string">development</span></span><br><span class="line">      <span class="attr">SHOW:</span> <span class="string">&#x27;true&#x27;</span></span><br><span class="line">      <span class="attr">USER_INPUT:</span></span><br><span class="line">    <span class="attr">entrypoint:</span>   <span class="comment"># 覆盖镜像配置文件(Dockerfile)中的 ENTRYPOINT 指令</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">php</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">-d</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">vendor/bin/phpunit</span></span><br><span class="line">    <span class="attr">external_links:</span>   <span class="comment"># 将服务容器连接到 compose 应用管理以外的服务, 作用同 links</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">redis</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">database:mysql</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">database:postgresql</span></span><br><span class="line">    <span class="attr">extra_hosts:</span>  <span class="comment"># 添加主机 ip 映射关系到容器网络接口配置中(/etc/hosts)</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;somehost:162.242.195.82&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;otherhost:50.31.209.229&#x27;</span></span><br><span class="line">    <span class="attr">volumes:</span> <span class="comment"># 挂载数据卷</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">volume</span></span><br><span class="line">        <span class="attr">source:</span> <span class="string">db-data</span></span><br><span class="line">        <span class="attr">target:</span> <span class="string">/data</span></span><br><span class="line">        <span class="attr">read_only:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">volume:</span></span><br><span class="line">          <span class="attr">nocopy:</span> <span class="literal">true</span></span><br><span class="line">          <span class="attr">subpath:</span> <span class="string">sub</span></span><br><span class="line">        <span class="attr">tempfs:</span></span><br><span class="line">          <span class="attr">size:</span> <span class="number">1024</span></span><br><span class="line">          <span class="attr">mode:</span> <span class="number">755</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">bind</span></span><br><span class="line">        <span class="attr">source:</span> <span class="string">/home/workspace</span></span><br><span class="line">        <span class="attr">target:</span> <span class="string">/home/workVolume</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/home/workspace:/var/workspace</span>  <span class="comment"># 定义指定路径数据卷</span></span><br><span class="line">    <span class="attr">tmpfs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/run</span>  <span class="comment"># 挂载容器内临时文件系统</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/tmp</span></span><br><span class="line">    <span class="attr">volumes_from:</span>     <span class="comment"># 挂载共享数据卷</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">service_name</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">service_name:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">container:container_name</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">container:container_name:rw</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">&quot;host|none|service:[service name]&quot;</span> <span class="comment"># 设置服务容器的网络模式</span></span><br><span class="line">    <span class="attr">networks:</span>  <span class="comment"># 自定义网络模式</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-web-network</span></span><br><span class="line">    <span class="attr">platform:</span> <span class="string">linux/amd64</span> <span class="comment"># 设置服务容器运行的目标平台</span></span><br><span class="line">    <span class="comment"># 当前服务启动的依赖优先于当前服务启动</span></span><br><span class="line">    <span class="comment"># 当前服务关闭优先于当前服务的依赖关闭</span></span><br><span class="line">    <span class="attr">depends_on:</span>  <span class="comment"># 服务启动依赖, </span></span><br><span class="line">      <span class="attr">db:</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">service_healthy</span></span><br><span class="line">        <span class="attr">restart:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">redis:</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">service_healthy</span></span><br><span class="line">      <span class="comment"># - db</span></span><br><span class="line">      <span class="comment"># - redis</span></span><br><span class="line">    <span class="attr">deploy:</span>  <span class="comment"># 部署</span></span><br><span class="line">      <span class="comment"># 外部客户端连接服务的方式</span></span><br><span class="line">      <span class="comment"># vip(Virtual IP) 为服务分配虚拟 IP, 客户端使用虚拟 IP 连接</span></span><br><span class="line">      <span class="comment"># dnsrr 平台配置 dns 条目, 使用服务名称查询 IP 地址列表连接</span></span><br><span class="line">      <span class="attr">endpoint_mode:</span> <span class="string">vip</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">com.example.description:</span> <span class="string">&#x27;This label will appear on the web server&#x27;</span> <span class="comment"># 服务元数据</span></span><br><span class="line">      <span class="attr">mode:</span> <span class="string">replicated</span> <span class="comment"># 服务运行模式, global | replicaated(default) | replicated-job | global-job</span></span><br><span class="line">      <span class="attr">replicas:</span> <span class="number">6</span> <span class="comment"># 实例</span></span><br><span class="line">      <span class="attr">restart_policy:</span> <span class="comment"># 服务重启策略, 如果缺失, compose 会使用服务 restart 项</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">on-failure</span></span><br><span class="line">        <span class="attr">delay:</span> <span class="string">5s</span></span><br><span class="line">        <span class="attr">max_attempts:</span> <span class="number">3</span></span><br><span class="line">        <span class="attr">window:</span> <span class="string">120s</span></span><br><span class="line">      <span class="attr">rollback_config:</span> <span class="comment"># 服务回滚设置</span></span><br><span class="line">      <span class="attr">update_config:</span> <span class="comment"># 服务升级设置</span></span><br><span class="line">        <span class="attr">parallelism:</span> <span class="number">2</span></span><br><span class="line">        <span class="attr">delay:</span> <span class="string">10s</span></span><br><span class="line">        <span class="attr">order:</span> <span class="string">stop-first</span></span><br><span class="line">    <span class="attr">dns:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span>  <span class="comment"># 自定义网络的 DNS 服务器</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span> <span class="string">common.yml</span>   <span class="comment"># 当前配置中扩展另一个服务</span></span><br><span class="line">    <span class="attr">labels:</span>    <span class="comment"># 添加容器元数据</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;com.example.description=Accounting webapp&#x27;</span></span><br><span class="line">    <span class="attr">develop:</span> <span class="comment"># 定义开发模式容器同步</span></span><br><span class="line">      <span class="attr">devices:</span></span><br><span class="line">      <span class="attr">dns:</span></span><br><span class="line">      <span class="attr">dns_opt:</span></span><br><span class="line">      <span class="attr">dns_search:</span></span><br><span class="line">    <span class="attr">healthcheck:</span> <span class="comment"># 服务健康检查</span></span><br><span class="line">      <span class="attr">test:</span> [<span class="string">&quot;CMD&quot;</span>, <span class="string">&quot;curl&quot;</span>, <span class="string">&quot;-f&quot;</span>, <span class="string">&quot;http://localhost&quot;</span>]</span><br><span class="line">      <span class="attr">interval:</span> <span class="string">1m30s</span></span><br><span class="line">      <span class="attr">timeout:</span> <span class="string">10s</span></span><br><span class="line">      <span class="attr">retries:</span> <span class="number">3</span></span><br><span class="line">      <span class="attr">start_period:</span> <span class="string">40s</span></span><br><span class="line">      <span class="attr">start_interval:</span> <span class="string">5s</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">redis:</span> <span class="comment"># 服务名称 </span></span><br><span class="line">    <span class="comment"># 当同时使用 image 和 build 指令构建时, 将按照 pull_policy 的定义进行构建, </span></span><br><span class="line">    <span class="comment"># 如果未定义 pull_policy 时, Compose 会尝试先拉取镜像, 如果在镜像仓库或缓存中找不到镜像时从源构建</span></span><br><span class="line">    <span class="attr">pull_policy:</span> <span class="string">always</span>   <span class="comment"># Compose 总是从镜像仓库拉取镜像</span></span><br><span class="line">                 <span class="string">never</span>    <span class="comment"># Compose 不会从镜像仓库拉取镜像而是依赖缓存中的镜像, 如果缓存中不存在则报告错误</span></span><br><span class="line">                 <span class="string">missing</span>  <span class="comment"># 默认选项, Compose 仅当缓存中镜像不可用时从镜像仓库拉取</span></span><br><span class="line">                 <span class="string">build</span>    <span class="comment"># Compose 构建镜像如果镜像已经存在则重新构建</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">cpuset:</span> <span class="string">&#x27;0,2,4,6&#x27;</span> <span class="comment"># 绑定 cpu</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">redis</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">/redis.Dockerfile</span></span><br><span class="line">    <span class="attr">volumes:</span>   <span class="comment"># 挂载数据卷</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/home/workspace</span>   <span class="comment"># 定义匿名数据卷</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db-data:/var/lib/redis</span>  <span class="comment"># 挂载公共数据卷 db-data</span></span><br><span class="line">    <span class="attr">networks:</span>   <span class="comment"># 自定义网络模式</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-web-network</span></span><br><span class="line">    <span class="attr">links:</span>    <span class="comment"># 定义网络连接另一个服务的容器</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db:mysql</span>   <span class="comment"># 可以直接使用 服务名, 或者使用 服务名:别名 方式</span></span><br><span class="line">    <span class="attr">scale:</span> <span class="number">6</span>  <span class="comment"># 设置容器数量, 如果 scale 和 deploy.replicas 同时存在则必须保持一致</span></span><br><span class="line">    <span class="attr">profiles:</span> <span class="comment"># 指定启动时的 profile</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;db&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;3306:3306&#x27;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="number">123456</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">test</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">test</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">test123</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db-data:/var/lib/mysql</span>   <span class="comment"># 挂载公共数据卷 db-data</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-web-network</span></span><br><span class="line">    <span class="attr">profiles:</span> <span class="comment"># 指定启动时的 profile</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 跨服务共享数据卷定义到顶层指令 volumes</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">db-data:</span>   <span class="comment"># 声明卷名, compose 自动创建该卷名并会添加项目名前缀</span></span><br><span class="line">  <span class="attr">data:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">&#x27;my-app-data&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">front-tier:</span></span><br><span class="line">  <span class="attr">back-tier:</span></span><br><span class="line">  <span class="attr">backend:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">custom-driver</span></span><br><span class="line">  <span class="attr">my-web-network:</span>   <span class="comment"># 声明自定义网络模式, compose 自动创建该网络并会添加项目名前缀</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myapp-network</span> <span class="comment"># 定义网络名称, 在 docker network 列表中显示</span></span><br><span class="line">    <span class="attr">attachable:</span> <span class="literal">true</span>  <span class="comment"># 允许独立的容器连接到此网络</span></span><br><span class="line">    <span class="attr">enable_ipv6:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">external:</span> <span class="literal">true</span>  <span class="comment"># 指定此网络的生命周期在应用程序的生命周期之外进行维护, Compose 不会尝试创建这些网络, 如果不存在则返回错误</span></span><br><span class="line"><span class="attr">configs:</span> <span class="comment"># 允许服务调整其行为而无须重新构建 docker 镜像</span></span><br><span class="line">  <span class="attr">http_config:</span></span><br><span class="line">    <span class="attr">file:</span> <span class="string">./httpd.conf</span></span><br><span class="line"><span class="attr">secrets:</span> <span class="comment"># 针对敏感数据的配置</span></span><br><span class="line">  <span class="attr">server-certificate:</span></span><br><span class="line">    <span class="attr">file:</span> <span class="string">./server.cert</span></span><br><span class="line">  <span class="attr">token:</span></span><br><span class="line">    <span class="attr">environment:</span> <span class="string">&#x27;OAUTH_TOKEN&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="volumes"><a href="#volumes" class="headerlink" title="volumes"></a>volumes</h4><ul>
-<li><p>使用路径方式挂载数据卷</p>
-</li>
-<li><p>使用卷名方式挂载数据卷, 需要在 <code>一级配置项</code> 中声明, compose 会自动创建以项目名为前缀的卷名, 如果不需要卷名前缀, 则使用 <code>external: true</code> 指定卷名, 但是需要手动创建该卷名</p>
-</li>
-</ul>
-<h3 id="多实例-Web-应用"><a href="#多实例-Web-应用" class="headerlink" title="多实例 Web 应用"></a>多实例 Web 应用</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># compose.yaml</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">myapp</span></span><br><span class="line"><span class="attr">service:</span></span><br><span class="line">  <span class="attr">nginx:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:latest</span></span><br><span class="line">    <span class="attr">port:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;80:80&#x27;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./nginx.conf:/etc/nginx/nginx.conf</span>  <span class="comment"># 自定义 nginx 配置文件</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">web</span></span><br><span class="line">    <span class="attr">network:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">webnet</span></span><br><span class="line">  <span class="attr">web:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">web</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">./my-web-app.Dockerfile</span></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">replicas:</span> <span class="number">3</span> <span class="comment"># 启动 3 个 web 实例</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ENV=production</span></span><br><span class="line">    <span class="attr">network:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">webnet</span></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">webnet:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br></pre></td></tr></table></figure>
-
-<p>nginx</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># nginx.conf</span><br><span class="line">http &#123;</span><br><span class="line">  upstream web_backend &#123;</span><br><span class="line">    server web:80;</span><br><span class="line">    server web:80;</span><br><span class="line">    server web:80;</span><br><span class="line">  &#125;</span><br><span class="line">  server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    location / &#123;</span><br><span class="line">      proxy_pass http://web_backend;</span><br><span class="line"></span><br><span class="line">      proxy_set_header Host $host;</span><br><span class="line">      proxy_set_header X-Reap-IP $remote_addr;</span><br><span class="line">      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>web 应用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hello_world</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Hello, World!&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>, port=<span class="number">80</span>)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># my-web-app.Dockerfile</span></span><br><span class="line"><span class="comment"># 使用官方 Python 镜像作为基础镜像</span></span><br><span class="line"><span class="keyword">FROM</span> python:<span class="number">3.9</span>-slim</span><br><span class="line"><span class="comment"># 设置工作目录</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制依赖文件并安装依赖</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> requirements.txt .</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> pip install --no-cache-dir -r requirements.txt</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制应用代码</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . .</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;python&quot;</span>, <span class="string">&quot;app.py&quot;</span>]</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="docker-compose-数据库"><a href="#docker-compose-数据库" class="headerlink" title="docker compose 数据库"></a>docker compose 数据库</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">myapp</span> <span class="comment"># $&#123;COMPOSE_PROJECT_NAME&#125; 以环境变量形式访问项目名称</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis:7</span></span><br><span class="line"><span class="comment">#   使用副本不能指定容器名称, Compose 自动使用 应用名称-服务名称-数字 形式命名容器</span></span><br><span class="line"><span class="comment">#   container_name: redis-container</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;6379:6379&#x27;</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&#x27;redis-server&#x27;</span>, <span class="string">&#x27;--appendonly yes&#x27;</span>, <span class="string">&#x27;--logfile /data/redis.log&#x27;</span>]</span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/redis:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/redis/redis.conf:/usr/local/etc/redis/redis.conf</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-app-network</span></span><br><span class="line"><span class="comment">#   deploy:</span></span><br><span class="line"><span class="comment">#     replicas: 3</span></span><br><span class="line"><span class="comment">#       labels:</span></span><br><span class="line"><span class="comment">#         com.myapp.redis.description: &#x27;This label will appear on the redis server&#x27;</span></span><br><span class="line">  <span class="attr">mysql:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mysql-container</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;3306:3306&#x27;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="number">123456</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">test</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">test</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">test123</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/mysql:/var/lib/mysql</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-app-network</span></span><br><span class="line">  <span class="attr">mongodb:</span></span><br><span class="line"><span class="comment">#   mongodb 6.0 以上 docker 镜像不再包含 mongo shell 工具. 只包含 mongod 数据库服务器</span></span><br><span class="line"><span class="comment">#   手动下载 mongosh 工具, 或者使用 mongodb 6.0 之前的版本</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mongo:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">mongodb-container</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;27017:27017&#x27;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MONGO_INITDB_ROOT_USERNAME:</span> <span class="string">root</span></span><br><span class="line">      <span class="attr">MONGO_INITDB_ROOT_PASSWORD:</span> <span class="number">123456</span></span><br><span class="line">      <span class="attr">MONGODB_BIND_IP:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&#x27;mongod&#x27;</span>, <span class="string">&#x27;--logpath&#x27;</span>, <span class="string">&#x27;/var/log/mongodb/mongod.log&#x27;</span>]</span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/mongodb:/data/db</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/lib/mongodb/logs:/var/log/mongodb</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">my-app-network</span></span><br><span class="line"><span class="comment">#   挂载临时文件系统添加初始化脚本安装 mongosh</span></span><br><span class="line">    <span class="attr">tmpfs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/tmp</span></span><br><span class="line"><span class="comment">#   首次创建容器需要先执行 entrypoint 命令安装 mongosh, 然后再注释 entrypoint</span></span><br><span class="line"><span class="comment">#   entrypoint: [&#x27;/bin/sh&#x27;, &#x27;-c&#x27;, &#x27;apt-get update &amp;&amp; apt-get install -y wget &amp;&amp; wget -qO- https://downloads.mongodb.com/compass/mongosh-1.5.4-linux-x64.tgz | tar -xz -C /usr/local/bin --strip-components 1 mongosh-1.5.4-linux-x64/bin/mongosh &amp;&amp; exec docker-entrypoint.sh $$MONGO_INITDB_ROOT_USERNAME $$MONGO_INITDB_ROOT_PASSWORD&#x27;]</span></span><br><span class="line"><span class="comment"># sqllite:</span></span><br><span class="line"><span class="comment">#   image: sqllite3:latest</span></span><br><span class="line"><span class="comment">#   command: [&#x27;sqllite3&#x27;, &#x27;/data/database.db&#x27;] # 启动 sqllite 并指向数据库文件</span></span><br><span class="line"><span class="comment">#   volumes:</span></span><br><span class="line"><span class="comment">#     - /var/lib/sqllite:/data</span></span><br><span class="line"><span class="comment">#   networks:</span></span><br><span class="line"><span class="comment">#     - my-app-network</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">db-data:</span></span><br><span class="line">    <span class="attr">labels:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;com.myapp.volumes.description=share data vaolume&#x27;</span></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">my-app-network:</span></span><br><span class="line">    <span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myapp-network</span> <span class="comment"># 定义网络名称, 在 docker network 列表中显示</span></span><br><span class="line">    <span class="attr">attachable:</span> <span class="literal">true</span>  <span class="comment"># 允许独立的容器连接到此网络</span></span><br><span class="line">    <span class="attr">enable_ipv6:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/04/6b29e5e9f372/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1746,12 +1573,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">762k</span>
+    <span title="站点总字数">767k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:33</span>
+    <span title="站点阅读时长">11:38</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div><!-- canvas-nest -->
