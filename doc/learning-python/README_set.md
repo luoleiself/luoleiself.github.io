@@ -276,6 +276,21 @@ set()
 >>> s2 = {2, 3}
 ```
 
+#### 集合是否相交
+
+- isdisjoint() 返回 bool, 判断两个集合的交集是否为空集合
+
+```python
+>>> s1 = {1, 2}
+>>> s2 = {3, 4}
+>>> s1.isdisjoint(s2)
+True
+>>> s1.isdisjoint({1, 3, 5})
+False
+>>> s1.isdisjoint(set())
+True
+```
+
 #### 交集
 
 同时出现在两个集合中的元素

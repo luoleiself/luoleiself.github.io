@@ -304,7 +304,7 @@ Traceback (most recent call last):
 NameError: name 'dt' is not defined
 ```
 
-- pop() 按 key 删除字典并返回删除的字典项
+- pop() 按 key 删除字典键值对并返回删除的值
   - key, 要删除的键, 如果键不存在且没有传入默认值会报错
   - default, 可选, 默认为 None, 如果键不存在则返回该值
 
