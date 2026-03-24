@@ -246,60 +246,66 @@ d = Dog()
 d.static_func()
 print('---------------------------')
 
-
-# 多继承, 访问自己没有的属性或方法时, 优先使用最先继承的父类的属性和方法
-class NFCPhone:
-    name = 'NFCPhone'
-
-    def call_phone(self):
-        print(f'NFCPhone {self.name} is calling...')
-
-
-class Phone:
-    name = 'phone'
-
-    def call_phone(self):
-        print(f'Phone {self.name} is calling...')
+print(r'''
+多继承, 访问自己没有的属性或方法时, 优先使用最先继承的父类的属性和方法
+按 MRO(method resolution order) 方法解析顺序查找方法或属性的规则
+''')
+print('--------')
+print('菱形继承:')
 
 
-class IPhone(Phone, NFCPhone):
+class D:
+    name = 'cls_D'
+
+
+class B(D):
+    # name = 'cls_B'
     pass
 
 
-print('多继承, 访问自己没有的属性或方法时, 优先使用最先继承的父类的属性和方法')
-p = IPhone()
-p.call_phone()  # Phone phone is calling...
-print(f'p name {p.name}')   # p name phone
+class C(D):
+    name = 'cls_C'
+
+
+class A(B, C):
+    # name = 'cls_A'
+    pass
+
+
+a = A()
+print(f'a.name {a.name}\nA.__mro__ {A.__mro__}')
+# a.name cls_C
+# A.__mro__ (<class '__main__.A'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.D'>, <class 'object'>)
 print('--------')
+print('树形继承:')
 
 
-class A:
-    def __init__(self, name):
-        print('class A __init__...')
+class E:
+    name = 'cls_E'
 
 
-class B(A):
-    def __init__(self, name):
-        print('class B __init__...')
-        super().__init__(name)
+class D:
+    name = 'cls_D'
 
 
-class C(A):
-    def __init__(self, name):
-        print('class C __init__...')
-        super().__init__(name)
+class B(D):
+    # name = 'cls_B'
+    pass
 
 
-class D(B, C):
-    def __init__(self, name):
-        print('class D __init__...')
-        super().__init__(name)
+class C(E):
+    name = 'cls_C'
 
 
-# 多继承, 按 MRO(method resolution order) 方法解析顺序查找方法或属性的规则
-# D.__mro__ (<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>)
-print(f'D.__mro__ {D.__mro__}')
-d = D('Tom')  # D -> B -> C -> A -> object
+class A(B, C):
+    # name = 'cls_A'
+    pass
+
+
+a = A()
+print(f'a.name {a.name}\nA.__mro__ {A.__mro__}')
+# a.name cls_D
+# A.__mro__ (<class '__main__.A'>, <class '__main__.B'>, <class '__main__.D'>, <class '__main__.C'>, <class '__main__.E'>, <class 'object'>)
 print('---------------------------')
 
 

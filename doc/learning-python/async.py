@@ -83,6 +83,7 @@ print('-------------')
 
 print(r'''
 直接 await 协程对象不会调度协程只是让出执行权, 需要包装成任务对象才会被调度
+下面代码会按顺序输出结果 1, 2, 3, 4
 
 async def main():
     ret1 = await foo()
@@ -212,6 +213,12 @@ async def main():
     async for item in gather_async_iter():
         print(item)
 
+    # 使用 aiter 获取异步迭代器
+    # async_iter = aiter(gather_async_iter())
+    # 使用 anext 获取异步迭代器的下一个值
+    # ret = await anext(gather_async_iter())
+    # print(ret)
+
 asyncio.run(main())
 print('---------------------------------')
 
@@ -231,12 +238,73 @@ asyncio.run(main())
 
 async def main():
     async with asyncio.Lock() as lock:
-        start = time.time()
+        start = time.perf_counter()
         print('async with lock 1...')
         await asyncio.sleep(2)
         print('async with lock 2...')
-        end = time.time()
+        end = time.perf_counter()
         print(f'cost time: {end - start}')
+
+asyncio.run(main())
+print('---------------------------------')
+
+print(r'''
+asyncio 调度任务时, 根据任务被添加到任务列表的顺序来调度, 跟 await 等待的顺序无关
+''')
+
+
+async def foo1():
+    print('foo1 step 1...')  # 4
+    await asyncio.sleep(1)
+    print('foo1 step 2...')  # 8
+    return 'foo1'
+
+
+async def bar1():
+    print('bar1 step 1...')  # 5
+    await asyncio.sleep(0.5)
+    print('bar1 step 2...')  # 6
+    return 'bar1'
+
+
+async def main():
+    print('添加 foo1 任务...')  # 1
+    task1 = asyncio.create_task(foo1())
+    print('添加 bar1 任务...')  # 2
+    task2 = asyncio.create_task(bar1())
+    print('等待 bar1 任务...应该先输出 bar1, 实际执行时输出的是 foo1')  # 3
+    # 等待 bar1 任务时, 应该先执行 task2, 实际执行时先执行 foo1 任务
+    ret2 = await task2
+    print('等待 foo1 任务...')  # 7
+    ret1 = await task1
+    print('任务完成', ret2, ret1)  # 9
+
+asyncio.run(main())
+print('---------------------------------')
+
+
+print(r'''
+asyncio.Queue 是一个异步队列, 用于生产者-消费者模型
+''')
+queue = asyncio.Queue(maxsize=5)
+
+
+async def producer():
+    for i in range(10):
+        await queue.put(i)
+        await asyncio.sleep(0.5)
+        print(f'\033[0;34mproduced\033[0m {i}')
+
+
+async def consumer():
+    for _ in range(10):
+        item = await queue.get()
+        await asyncio.sleep(1)
+        print(f'\033[0;32mconsumed\033[0m {item}')
+
+
+async def main():
+    await asyncio.gather(producer(), consumer())
 
 asyncio.run(main())
 print('---------------------------------')

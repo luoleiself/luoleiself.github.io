@@ -12,9 +12,9 @@ Author: luolei
 Date: 2024-06-01
 '''
 
+import os
 import random
 import sys
-import os
 
 # 需要考虑浮点数的精度问题
 salary = 5000

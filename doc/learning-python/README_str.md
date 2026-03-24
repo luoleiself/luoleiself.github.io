@@ -22,9 +22,9 @@ Traceback (most recent call last):
 IndexError: string index out of range
 ```
 
-- `切片`获取并返回新字符串, [strat:end:step], 含头不含尾, start 和 end 越界不会报错
+- `切片`获取并返回新字符串, [strat:stop:step], 含头不含尾, start 和 stop 越界不会报错
   - start, 起始索引, 包含, 默认为字符串开始
-  - end, 结束索引, 不包含, 默认为字符串结束
+  - stop, 结束索引, 不包含, 默认为字符串结束
   - step, 步长绝对值，默认为 1, 每隔指定数量的`绝对值`的字符取一次
     - 如果为 -1, `反向提取子串`
 
@@ -40,7 +40,7 @@ IndexError: string index out of range
 'abcdefg'
 >>> letters[-8:-2]  # start 超出起始位置使用默认值
 'abcde'
->>> letters[-8:10]  # end 超出结束位置使用默认值
+>>> letters[-8:10]  # stop 超出结束位置使用默认值
 'abcdefg'
 >>> letters[3:-2] # 含头不含尾
 'de'

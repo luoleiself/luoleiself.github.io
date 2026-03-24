@@ -205,7 +205,7 @@ TypeError: can only concatenate tuple (not "int") to tuple
 - index() 查找第一个符合的偏移并返回下标, 未找到会报错
   - val, 要查找的值
   - start, 开始位置, 默认为列表开始位置
-  - end, 结束位置, 默认为列表结束位置
+  - stop, 结束位置, 默认为列表结束位置
 
 ```python
 >>> te = 1, 2, 3, 4

@@ -471,6 +471,7 @@ class MyList:
     def __getitem__(self, key):
         # 判断 key 是否是切片类型
         if isinstance(key, slice):
+            # indices 根据给定的长度, 计算切片边界并返回 start, end, step 元组
             return [self.data[i] for i in range(*key.indices(len(self.data)))]
         return self.data[key]
 
@@ -517,6 +518,13 @@ print(f'u2.name {u2.name}') # u2.name hello world
 print(f'u2.age {u2.age}') # u2.age  hello world
 print(f'u2.sex {u2.sex}') # u2.sex  hello world
 ```
+
+协程方法
+
+- `__aiter__` 异步可迭代对象
+- `__anext__` 异步迭代器对象  
+- `__aenter__` 绑定异步上下文中返回的结果到 as 子句中指定的目标
+- `__aexit__` 退出与此对象相关的运行时异步上下文
 
 其他方法
 
@@ -647,35 +655,68 @@ class C:
 C.go_home() # 不需要实例化直接调用
 ```
 
-### 多继承
+## 多继承
 
 - 访问自己不存在的属性或方法时, 优先使用最先继承的父类的属性和方法
   - 搜索过程从左往右搜索 `__mro__` 列表, 按顺序优先匹配
 
-`D.__mro__ (<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>)`
-`D -> B -> C -> A -> object`
+菱形继承: A -> B -> C -> D
 
 ```python
-class NFCPhone:
-    name = 'NFCPhone'
-
-    def call_phone(self):
-        print(f'NFCPhone {self.name} is calling...')
+class D:
+    name = 'cls_D'
 
 
-class Phone:
-    name = 'phone'
-
-    def call_phone(self):
-        print(f'Phone {self.name} is calling...')
-
-
-class IPhone(Phone, NFCPhone):
+class B(D):
+    # name = 'cls_B'
     pass
 
-p = IPhone()
-p.call_phone()  # Phone phone is calling...
-print(f'p name {p.name}')   # p name phone
+
+class C(D):
+    name = 'cls_C'
+
+
+class A(B, C):
+    # name = 'cls_A'
+    pass
+
+
+a = A()
+print(f'a.name {a.name}\nA.__mro__ {A.__mro__}')
+# a.name cls_C
+# A.__mro__ (<class '__main__.A'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.D'>, <class 'object'>)
+```
+
+树形继承: A -> B -> D
+           -> C -> E
+
+```python
+class E:
+    name = 'cls_E'
+
+
+class D:
+    name = 'cls_D'
+
+
+class B(D):
+    # name = 'cls_B'
+    pass
+
+
+class C(E):
+    name = 'cls_C'
+
+
+class A(B, C):
+    # name = 'cls_A'
+    pass
+
+
+a = A()
+print(f'a.name {a.name}\nA.__mro__ {A.__mro__}')
+# a.name cls_D
+# A.__mro__ (<class '__main__.A'>, <class '__main__.B'>, <class '__main__.D'>, <class '__main__.C'>, <class '__main__.E'>, <class 'object'>)
 ```
 
 ### 多态

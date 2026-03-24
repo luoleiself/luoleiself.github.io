@@ -368,7 +368,7 @@ TypeError: 'bytes' object does not support item assignment
 - range() 是`惰性求值`的，不会一次性占用大量内存
   - 只有 1 个参数时生成 0 到 arg 的数字序列
   - start, 开始，包含
-  - end, 结束，不包含
+  - stop, 结束，不包含
   - step，步长绝对值，默认为 1
     - 如果为 -1, `反向生成数字序列`
 
@@ -741,14 +741,32 @@ has __call__ method...
 
 #### slice()
 
-返回一个切片对象, 表示由范围(start, end, step)指定的索引集, start 和 step 参数默认为 None
+返回一个切片对象, 表示由范围(start, stop, step)指定的索引集, start 和 step 参数默认为 None
 
 - 使用切片语法时也会生成切片对象
 
 ```python
-s = slice(1, 10, 3)
-print(f's = {s} dir(s) {dir(s)}')
-print(f's.start {s.start} s.stop {s.stop} s.step {s.step}')
+# 传入 stop
+>>> s = slice(5)
+>>> s.start
+>>> s.stop
+5
+>>> s.step
+>>> s
+slice(None, 5, None)
+>>> s.indices(3)  # 根据给定的长度, 计算切片边界并返回索引集
+(0, 3, 1)
+
+# 传入 start, stop, step
+>>> s = slice(3, 10, 4)
+>>> s
+slice(3, 10, 4)
+>>> s.indices(20) # 根据给定的长度, 计算切片边界并返回索引集
+(3, 10, 4)
+>>> s.indices(2)  # 根据给定的长度, 计算切片边界并返回索引集
+(2, 2, 4)
+>>> s.indices(8)  # 根据给定的长度, 计算切片边界并返回索引集
+(3, 8, 4)
 ```
 
 #### iter()
