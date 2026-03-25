@@ -184,9 +184,9 @@ TypeError: 'int' object is not iterable
 ### 获取
 
 - 使用 [key] 获取字典项, `key 不存在时会报错` , 可使用 in 检查 key 是否存在
-- 使用 get() 获取字典项
+- 使用 get() 获取字典键对应的值
   - key, 要获取的键
-  - default, 可选, 默认为 None, 如果键不存在则返回该值
+  - default, 可选, 默认值 None, 如果键不存在则返回该值
 
 ```python
 >>> name_dict = dict(first = 'First', second = 'Second', third = 'Third')
@@ -207,9 +207,9 @@ None
 Not found
 ```
 
-- setdefault() 获取字典项, 如果键存在则返回字典项, 不存在则添加键并返回添加的值
+- setdefault() 获取字典键对应的值, 如果键存在则返回键对应的值, 不存在则添加键值并返回添加的值
   - key, 要获取/添加的键
-  - default, 可选, 默认为 None, 如果键不存在则添加此值
+  - default, 可选, 默认值 None, 如果键不存在则添加此值
 
 ```python
 >>> dt = {'a': 'A', 'b': 'B'} 
@@ -305,8 +305,8 @@ NameError: name 'dt' is not defined
 ```
 
 - pop() 按 key 删除字典键值对并返回删除的值
-  - key, 要删除的键, 如果键不存在且没有传入默认值会报错
-  - default, 可选, 默认为 None, 如果键不存在则返回该值
+  - key, 要删除的键
+  - default, 可选, 如果键不存在则返回该值，如果未传入该值则报错
 
 ```python
 >>> first
