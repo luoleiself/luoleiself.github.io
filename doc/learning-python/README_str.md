@@ -66,7 +66,9 @@ IndexError: string index out of range
 'ec'
 ```
 
-### 解构赋值
+### 字符串解构
+
+- 字符串解构赋值给变量, 未匹配到变量的值将保存到列表中
 
 ```python
 >>> a, b, *k = 'hello'
@@ -76,6 +78,18 @@ IndexError: string index out of range
 'e'
 >>> k
 ['l', 'l', 'o']
+```
+
+- 字符串解构为其它类型
+
+```python
+>>> s = 'hello'
+>>> (*s, 'h', 1)  # 解构为元组
+('h', 'e', 'l', 'l', 'o', 'h', 1)
+>>> [*s, 'h', 1]  # 解构为列表
+['h', 'e', 'l', 'l', 'o', 'h', 1]
+>>> {*s, 'h', 1}  # 解构为集合
+{'e', 1, 'l', 'h', 'o'}
 ```
 
 ### 字符串前缀

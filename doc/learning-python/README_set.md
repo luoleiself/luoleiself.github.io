@@ -89,7 +89,10 @@ Traceback (most recent call last):
 AttributeError: 'frozenset' object has no attribute 'add'
 ```
 
-### 解构赋值
+### 集合解构
+
+- 集合解构赋值给变量, 未匹配到变量的值将保存到列表中
+  - 集合的无序性无法得到预想的结果
 
 ```python
 # 集合的无序性无法得到预想的结果
@@ -100,6 +103,18 @@ AttributeError: 'frozenset' object has no attribute 'add'
 'B'
 >>> k
 ['a', 'A']
+```
+
+- 集合解构为其它类型
+
+```python
+>>> st = {'a', 'b', 'c'}
+>>> (*st, 'a', 1) # 解构为元组
+('a', 'c', 'b', 'a', 1)
+>>> [*st, 'a', 1] # 解构为列表
+['a', 'c', 'b', 'a', 1]
+>>> {*st, 'a', 1} # 解构为集合
+{1, 'a', 'c', 'b'}
 ```
 
 ### 集合比较

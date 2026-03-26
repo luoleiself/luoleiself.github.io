@@ -90,7 +90,9 @@ IndexError: list index out of range
 ['Monday', 'TuesDay', 'Wednesday', 'Thursday', 'Friday']
 ```
 
-### 解构赋值
+### 列表解构
+
+- 交换变量的值
 
 ```python
 >>> a = 1
@@ -100,8 +102,11 @@ IndexError: list index out of range
 2
 >>> b
 1
+```
 
-# 解构赋值
+- 列表解构赋值给变量, 未匹配到变量的值将保存到列表中
+
+```python
 >>> a, b, *k = [1, 2, 3, 4, 5]
 >>> a
 1
@@ -109,6 +114,18 @@ IndexError: list index out of range
 2
 >>> k
 [3, 4, 5]
+```
+
+- 列表解构为其它类型
+
+```python
+>>> lt = ['a', 'b', 'c']
+>>> (*lt, 'a', 1) # 解构为元组
+('a', 'b', 'c', 'a', 1)
+>>> [*lt, 'a', 1] # 解构为列表
+['a', 'b', 'c', 'a', 1]
+>>> {*lt, 'a', 1} # 解构为集合
+{1, 'a', 'c', 'b'}
 ```
 
 ### 列表比较

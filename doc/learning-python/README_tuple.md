@@ -110,7 +110,9 @@ IndexError: tuple index out of range
 (1.1, False)
 ```
 
-### 解构赋值
+### 元组解构
+
+- 交换变量的值
 
 ```python
 >>> first = 'one'
@@ -120,8 +122,11 @@ IndexError: tuple index out of range
 'two'
 >>> second
 'one'
+```
 
-# 解构赋值
+- 元组解构赋值给变量, 未匹配到变量的值将保存到列表中
+
+```python
 >>> a, b, *k = ('a', 'c', 'e', 'g', 'i')
 >>> a
 'a'
@@ -129,6 +134,18 @@ IndexError: tuple index out of range
 'c'
 >>> k
 ['e', 'g', 'i']
+```
+
+- 元组解构为其它类型
+
+```python
+>>> te = ('a', 'b', 'c')
+>>> (*te, 1, 2) # 解构为元组
+('a', 'b', 'c', 1, 2)
+>>> [*te, 1, 2] # 解构为列表
+['a', 'b', 'c', 1, 2]
+>>> {*te, 1, 2} # 解构为集合
+{'c', 1, 2, 'b', 'a'}
 ```
 
 ### 元组比较
