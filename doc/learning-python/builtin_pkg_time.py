@@ -9,15 +9,64 @@ datetime 包的主要对象
     |- timedelta: 表示时间间隔的类
     |- tzinfo: 表示时区信息的抽象类
         |- timezone: 表示时区的类
+
+time.strftime() 格式化指令
+%a  周工作日的缩写, time.strftime('%a')   'Thu'
+%A  周工作的全名, time.strftime('%A')   'Thursday'
+%b  月份的缩写, time.strftime('%b') 'Mar'
+%B  月份的全名, time.strftime('%B')   'March'
+
+%y  年份的后两位, time.strftime('%y')   '26'
+%Y  年份的完整形式, time.strftime('%Y')   '2026'
+%z  时区偏移量, time.strftime('%z') '+0800'
+%Z  时区名称, time.strftime('%Z') '中国标准时间'
+%m  月份,   time.strftime('%m')   '03'
+%d  一个月中的第几天, time.strftime('%d') '26'
+%H  二十四小时制的小时, time.strftime('%H')   '13'
+%I  12小时制的小时, time.strftime('%I')   '01'
+%M  分钟,   time.strftime('%M') '44'
+%S  秒,   time.strftime('%S')   '08'
+
+%c  本地化的日期和时间表示, time.strftime('%c')   'Thu Mar 26 13:39:26 2026'
+
+%x  本地化的日期表示, time.strftime('%x')   '03/26/26'
+%X  本地化的时间表示, time.strftime('%X')   '13:48:48'
+%p  上午或下午, time.strftime('%p') 'PM'
+
+%j  一年的第几天, time.strftime('%j')   '085'
+%U  一年中第几周, 周日为一周的开始, time.strftime('%U')   '12'
+%u  周几, 周一从 1 开始, time.strftime('%u')   '4'
+%W  一年中第几周, 周一为一周的开始, time.strftime('%W')   '12'
+
+%G  ISO8601 格式的年份, time.strftime('%G') '2026'
+%V  ISO8601 格式的周数, time.strftime('%V') '13'
+%%  %字面量,    time.strftime('%%')   '%'
 '''
 
 print('time:')
 print(f'time.tzname: {time.tzname}')
 print(f'time.timezone: {time.timezone}')
-print(f'time.time_ns(): {time.time_ns()}')
 
 t3 = time.monotonic()
-print(f'秒 time.monotonic() {t3}')
+print(f'单调时钟秒 time.monotonic() {t3}')
+
+t_monotoic_ns = time.monotonic_ns()
+print(f'单调时钟纳秒 time.monotonic_ns() {t_monotoic_ns}')
+
+t_ns = time.time_ns()
+print(f'纪元时间整数纳秒: time.time_ns() {t_ns}')
+
+t_thread_time = time.thread_time()
+print(f'线程时钟秒 time.thread_time() {t_thread_time}')
+
+t_thread_time_ns = time.thread_time_ns()
+print(f'线程时钟纳秒 time.thread_time_ns() {t_thread_time_ns}')
+
+t_process_time = time.process_time()
+print(f'进程时钟秒 time.process_time() {t_process_time}')
+
+t_process_time_ns = time.process_time_ns()
+print(f'进程时钟纳秒 time.process_time_ns() {t_process_time_ns}')
 
 # 1. 当前时间秒
 ts = time.time()

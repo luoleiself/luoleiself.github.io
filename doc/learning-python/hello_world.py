@@ -65,4 +65,5 @@ if os.environ.get('TOKEN'):
 print(f'sys.argv: {sys.argv}')
 print(f'sys.orig_argv: {sys.orig_argv}')
 print(f'sys.api_version: {sys.api_version}')
+print(f'sys.version: {sys.version}')
 print('--------------')
