@@ -13,7 +13,7 @@
   - 参数如果是字符串, 只能由 `数字, +, -, _` 组成
   - 布尔值 True 转为 1, False 转为 0
   - 可以为其他进制数字符串形式
-- 第二个参数为进制数位
+- 第二个参数为当前值的进制数位
 
 #### float()
 
@@ -253,15 +253,20 @@ TypeError: 'bytes' object does not support item assignment
 
 ##### format()
 
+> 内部调用 type(vale).__format__(value, format_spec)
+
+将一个值转换为由第二个参数控制的 `字符串格式` 表示,
+如果 type(value) 不支持 __format__ 方法, format_spec 为空返回 str(value)
+
 - value, 转换的值
 - format_spec, 格式化标识, 默认转换为字符串
-
-将一个值转换为由第二个参数控制的 格式化 表示形式
 
 ```python
 # 格式化为字符串, 等价于调用 str(value)
 >>> format(100)
 '100'
+>>> format(1.2)     
+'1.2'
 >>> format(True)
 'True'
 >>> format([])

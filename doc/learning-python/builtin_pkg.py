@@ -9,6 +9,19 @@ import sys
 import os
 import logging
 import time
+import string
+
+print('string 模块')
+print(f'string.ascii_letters {string.ascii_letters}')
+print(f'string.ascii_lowercase {string.ascii_lowercase}')
+print(f'string.ascii_uppercase {string.ascii_uppercase}')
+print(f'string.digits {string.digits}')
+print(f'string.octdigits {string.octdigits}')
+print(f'string.hexdigits {string.hexdigits}')
+print(f'string.punctuation {string.punctuation}')
+print(f'string.printable {string.printable}')
+print(f'string.whitespace {string.whitespace}')
+print('---------------')
 
 print('sys 模块')
 print(f'sys.version {sys.version}')

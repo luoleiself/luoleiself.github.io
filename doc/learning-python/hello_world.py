@@ -66,4 +66,9 @@ print(f'sys.argv: {sys.argv}')
 print(f'sys.orig_argv: {sys.orig_argv}')
 print(f'sys.api_version: {sys.api_version}')
 print(f'sys.version: {sys.version}')
+
+lt = [i for i in range(10000)]
+print(f'列表推导式内存大小: sys.getsizeof(lt): {sys.getsizeof(lt)}')
+lt_gen = (i for i in range(10000))
+print(f'生成器内存大小: sys.getsizeof(lt_gen): {sys.getsizeof(lt_gen)}')
 print('--------------')
