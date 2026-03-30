@@ -1,39 +1,31 @@
 import sqlite3
 from flask import current_app, g
 from datetime import datetime
-import click
 
 
 def get_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
-    return g.db
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect('./database.db')
+        db.row_factory = sqlite3.Row
+    return db
 
 
 def close_db(e=None):
-    db = g.pop('db', None)
-
+    db = getattr(g, '_database', None)
     if db is not None:
         db.close()
 
 
 def init_app(app):
-    db = get_db()
-    app.tear_down_appcontext(close_db)
-    app.cli.add_command(init_db_command)
+    print('init_db...')
+    app.teardown_appcontext(close_db)
+    with app.app_context():
+        db = get_db()
+        with app.open_resource('schema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
 
-    with current_app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf-8'))
-
-
-@click.command('init-db')
-def init_db_command():
-    get_db()
-    click.echo('Initialized the database.')
+        db.commit()
 
 
 sqlite3.register_converter(

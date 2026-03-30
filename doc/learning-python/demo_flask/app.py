@@ -1,15 +1,21 @@
 from markupsafe import escape
 from flask import Flask, url_for, request, render_template, make_response, redirect, session, flash, \
-    get_flashed_messages, render_template_string
+    get_flashed_messages, render_template_string, g
 import string
 
-import auth
-import blog
-import comment
+from demo_flask.login import login
+from demo_flask import blog
+from demo_flask import comment
+from demo_flask import db
 
 '''
 Flask: WSGI 应用, 一个 Flask 应用就是一个 Flask 类的实例, 内置 http 服务器
     Flask 自动添加一个 static 视图(函数), 用于提供静态文件, 如 /static/style.css
+
+应用上下文: 在整个应用生命周期中存在
+请求上下文: 在每个请求生命周期中存在
+current_app: 是一个线程安全的代理对象, 指向当前处理请求的 Flask 应用实例, 可以在没有直接访问应用对象的地方使用应用配置和资源
+g: 一个线程安全的请求级别的全局对象, 用于在同一请求的多个函数之间共享数据, 在每个请求开始时创建, 请求结束时销毁
 
 动态路由参数 <type:variable_name>, 可指定类型 int, float, path, uuid, 默认为 string
 url_for() 函数用于构建指定函数的 url, 如 url_for('user_id', name='Tome', age=18) => /user/18?name=Tome
@@ -46,6 +52,8 @@ request 请求对象, 包含了 headers, method, cookies, args, form, files, jso
 蓝图: blueprint 是一种组织一组相关视图及其它代码的方式, 与把视图及其它代码直接注册到应用的方式不同,
     蓝图是把它们注册到蓝图, 然后在把蓝图注册到应用.
     蓝图实例的名称作为视图函数的端点前缀, 蓝图的名称不修改 url, 只修改端点
+    url_for('login.static', filename='login.css')    # 解析自定义的资源目录
+    
 端点(endpoint): 内部用于反向生成 URL 的标识符, 每个视图函数默认使用函数名作为 endpoint, 也可以自定义
     @app.route('/user/<name>', endpoint='user_profile')
     def show_user(name):
@@ -86,22 +94,22 @@ request 请求对象, 包含了 headers, method, cookies, args, form, files, jso
     PERMANENT_SESSION_LIFETIME: 永久会话的生命周期
     SERVER_NAME: 服务器的主机名和端口
     APPLICATION_ROOT: 应用的根路径
+    EXPLAIN_TEMPLATE_LOADING: 是否启用输出 render_template 渲染模板文件时的查找路径
 
 特殊对象和函数:
     app.config  应用全局配置
-    app.test_request_context() 用于创建一个测试请求上下文
-    app.teardown_request() 用于注册一个在请求结束时执行的函数
-    app.register_blueprint() 用于注册蓝图
-    app.before_request()
+    app.test_request_context() 用于创建一个测试请求上下文器
+    app.app_context() 创建一个应用上下文管理器
+    app.register_blueprint() 注册蓝图
+    app.add_url_rule() 注册路由
 
-    g: 特殊全局对象, 独立于每一个请求, 在处理请求过程中可以用于存储可能多个函数都会用到的数据
-    current_app: 当前应用的代理对象, 可以在应用上下文中使用
-
-特殊装饰器:
+装饰器:
+    @app.before_request  # 在所有请求之前执行
+    @app.after_request(response)  # 在所有请求之后执行
+    @app.teardown_request   # 在退出请求情境时执行, 即使发生未处理的异常也会执行
+    @app.teardown_appcontext    # 在退出应用情境时执行, 即使发生未处理的异常也会执行
     @app.endpoint('index')  # 关联端点名称 index 和 URL, 覆盖外层相同路由
     @app.errorhandler(404)  # 注册错误处理函数
-    @app.before_request  # 在所有请求之前执行
-    @app.after_request  # 在所有请求之后执行
     @app.template_filter    # 自定义模板过滤器
     @app.context_processor  # 自定义环境处理器
 '''
@@ -122,13 +130,12 @@ def my_filter(value):
 环境处理器: 在模板渲染前运行, 自动将新的变量引入模板变量中
 @app.context_processor
 def context_processor():
-    return dict(name='variable', flag='Flask')
+    return dict(diy_name='variable', diy_flag='Flask')
 '''
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = string.ascii_letters + \
-    string.digits + string.punctuation
-app.config['DATABASE'] = './db.sqlite'
+                           string.digits + string.punctuation
 
 
 @app.route('/', methods=('GET',))
@@ -136,10 +143,12 @@ def index():
     app.logger.info('index')
     return 'Hello, World!'
 
+
 @app.route('/hi')
 def hi():
     app.logger.warning('hi hi hi')
     return render_template_string('render_template_string request.method: {{method}}', method=request.method)
+
 
 @app.route('/user/<username>', methods=('GET', 'POST'))
 def user(username):
@@ -179,7 +188,7 @@ def template(name):
     res.headers['Access-Control-Allow-Methods'] = '*'
     res.headers['Access-Control-Allow-Headers'] = '*'
     res.set_cookie('name', 'Flask', path='/',
-                   max_age=7*24*60*60)
+                   max_age=7 * 24 * 60 * 60)
     print(f'request.method: {request.method}')
     print(f'request.cookies: {request.cookies}')
     print(f'request.args: {request.args}')
@@ -203,19 +212,10 @@ def mine():
     flash('From /mine')
     flash('From /mine again')
     # 重定向
-    return redirect(url_for('login'))
+    return redirect(url_for('login.register'))
 
 
-@app.route('/login')
-def login():
-    # 中止请求处理
-    # abort(401)
-    # 获取上一个请求闪现的消息
-    msg = get_flashed_messages()
-    print('msg', msg)
-    return '401 Unauthorized {}'.format(msg), 401
-
-
+# 注册错误处理函数
 @app.errorhandler(404)
 def handle_404(error):
     print('error', error)
@@ -228,22 +228,35 @@ def my_filter(value):
     return value.upper()
 
 
-# 在所有请求之前执行
+# 注册环境处理器
+@app.context_processor
+def context_processor():
+    return dict(diy_name='hello flask', diy_flag='wadaxi')
+
+
+# 在所有请求之前执行, 如果有返回值则不再调用视图函数
 @app.before_request
 def before_request():
-    print('before_request', request.method, request.path)
+    print('app before request...')
 
 
+# 在所有请求之后执行, 返回 response
 @app.after_request
 def after_request(response):
-    print('after_request', request.method, request.path)
+    print('app after request...')
     return response
 
 
+# 在退出请求情境时执行, 忽略未处理的异常
 @app.teardown_request
-def tear_down_request(response):
-    print('teardown_request', request.method, request.path)
-    return response
+def teardown_request(exception):
+    print('app teardown request...')
+
+
+# 在退出应用情境时执行, 忽略未处理的异常
+@app.teardown_appcontext
+def teardown_appcontext(exception):
+    print('app teardown appcontext...')
 
 
 class User:
@@ -251,42 +264,48 @@ class User:
     age = 18
 
 
-if __name__ == '__main__':
-    # 注册蓝图
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(blog.bp)
-    # 使用 @bp.endpoint('index') 装饰器, 关联端点名称 index 和 URL
-    # url_for('index') 或 url_for('blog.index') 都会有效
-    # app.add_url_rule('/', endpoint='index')
+print('__name__', __name__)
+# 注册蓝图
+app.register_blueprint(login.bp)
+app.register_blueprint(blog.bp)
+# 使用 @bp.endpoint('index') 装饰器, 关联端点名称 index 和 URL
+# url_for('index') 或 url_for('blog.index') 都会有效
+# app.add_url_rule('/', endpoint='index')
 
-    app.register_blueprint(comment.bp)
-    # as_view() 第一个参数是用于 url_for 的指向视图的名称
-    # 剩余参数在创建类时传递
-    app.add_url_rule(
-        '/comment/<int:id>',
-        view_func=comment.Comment.as_view('comment', User, 'comment.html')
-    )
+app.register_blueprint(comment.bp)
+# as_view() 第一个参数是用于 url_for 的指向视图的名称
+# 剩余参数在创建类时传递
+app.add_url_rule(
+    '/comment/<int:id>',
+    view_func=comment.Comment.as_view('comment', User, 'comment.html')
+)
 
-    # 测试请求上下文
-    with app.test_request_context():
-        """测试请求上下文"""
-        print('--------------')
-        print(url_for('index'))
-        print(url_for('hi', name='Flask', age=18,
-                      addr='Shanghai', email='flask@example.com'))
-        print(url_for('user', username='Flask', age=18, addr='Beijing'))
-        print(url_for('user_id', name='Jerry', user_id=18))
-        print('--------------')
-        print('蓝图自定义 endpoint 生成 URL', url_for('blog.create_blog',
-              name='hash', topic='new', tags=('hehe', 'haha')))
-        print('--------------')
 
-    # 测试指定请求
-    with app.test_request_context('/hi'):
-        print('test request hi...', request.method, request.path, request.args)
-        assert request.method == 'GET'
+# 测试请求上下文
+with app.test_request_context():
+    """测试请求上下文"""
+    print('--------------')
+    print(url_for('index'))
+    print(url_for('hi', name='Flask', age=18,
+                  addr='Shanghai', email='flask@example.com'))
+    print(url_for('user', username='Flask', age=18, addr='Beijing'))
+    print(url_for('user_id', name='Jerry', user_id=18))
+    print('--------------')
+    print('蓝图自定义 endpoint 生成 URL', url_for('blog.create_blog',
+                                                  username='hash', topic='new', tags=('hehe', 'haha')))
+    print('--------------')
 
-    app.run(debug=True)
 
-    import db
+# 测试指定请求
+with app.test_request_context('/hi'):
+    print('test request hi...', request.method, request.path, request.args)
+    assert request.method == 'GET'
+
+
+# 应用上下文
+with app.app_context():
+    g.test_name = 'hello flask test'
     db.init_app(app)
+
+if __name__ == '__main__':
+    app.run(debug=True)

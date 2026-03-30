@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
 {% block header %}
-{% include "header.html" %}
+    {% include "header.html" %}
 {% endblock header %}
 
 {% block content %}
-<h3>hello Template {{ name|upper }} with template_filter</h3>
-<br />
-<ul>
-    {% for i in range(5) %}
-    <li>{{ i }}</li>
-    {% endfor %}
-</ul>
+    <h3>template_filter: hello Template {{ name|upper }}</h3>
+    <h3>context_processor: diy_name: {{ diy_name }} diy_flag: {{ diy_flag }}</h3>
+    <br/>
+    <ul>
+        {% for i in range(5) %}
+            <li>{{ i }}</li>
+        {% endfor %}
+    </ul>
 {% endblock content %}

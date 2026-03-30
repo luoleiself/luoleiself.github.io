@@ -1,18 +1,34 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, current_app, g
 
-bp = Blueprint('blog', __name__, url_defaults={'username': 'wanglaowu'})
+from demo_flask.db import get_db
+
+bp = Blueprint('blog', __name__)
 
 
 @bp.route('/')
 @bp.endpoint('index')   # 关联端点和路由
 def index():
-    return render_template('blog.html')
+    print('g.test_name', getattr(g, 'test_name', None))
+    db = get_db()
+    cursor = db.cursor()
+    result = cursor.execute('select * from users')
+    user = result.fetchall()
+    print('user', user)
+    return render_template('blog.html', user=user)
 
 
 # 自定义 endpoint
-@bp.route('/create', endpoint='create_blog')
+@bp.route('/create/<username>', endpoint='create_blog')
 def create(username):
-    print('create blueprint', username)
+    print('blog bp create', username)
+    # cursor = get_db().cursor()
+    # result = cursor.execute('insert into users (username, password) values (?, ?)', (username, '123456'))
+    # print('result', result)
+    # print('result.fetchall()', result.fetchall())
+    cursor = get_db().execute('insert into users ("username", "password") values (?, ?)', (username, '123456'))
+    rv = cursor.fetchall()
+    cursor.close()
+    print('rv', rv)
     return 'Create a new blog post'
 
 
@@ -33,3 +49,17 @@ def show_user(username):
 def bp_before_request():
     print('blog blueprint before request...')
     pass
+
+
+# blog 蓝图请求之后执行
+@bp.after_request
+def bp_after_request(response):
+    print('blog blueprint after request...')
+    return response
+
+
+# blog 蓝图退出请求情境时执行, 忽略未处理的异常
+@bp.teardown_request
+def bp_teardown_request(exception):
+    print('blog blueprint teardown request...')
+
