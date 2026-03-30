@@ -238,6 +238,23 @@ create table table_name (
 
 ### 连接查询
 
+```sql
+SELECT 
+    [DISTINCT] 
+    select_expr, ...
+FROM 
+    table1
+[INNER | LEFT | RIGHT | FULL OUTER | CROSS] JOIN table2
+    ON join_condition
+[INNER | LEFT | RIGHT | FULL OUTER | CROSS] JOIN table3
+    ON join_condition
+[WHERE where_condition]
+[GROUP BY col_list]
+[HAVING having_condition]
+[ORDER BY col_list]
+[LIMIT [offset,] row_count];
+```
+
 #### 内连接
 
 - 相当于查询 A、B 交集部分数据
@@ -247,6 +264,13 @@ create table table_name (
 select * from t1 inner join t2 on condition;
 -- 隐式内连接
 select * from t1, t2 where condition;
+
+-- 查询分数大于80分的学生及其班级
+SELECT s.name, s.score, c.class_name
+FROM students s
+INNER JOIN classes c ON s.class_id = c.class_id
+WHERE s.score > 80
+ORDER BY s.score DESC;
 ```
 
 #### 外连接
@@ -257,7 +281,19 @@ select * from t1, t2 where condition;
 - 右表中不满足的数据填充 null
 
 ```sql
-select * from t1 left join t2 on condition;
+select * from t1 left join t2 on condition where where_condition;
+
+-- 查询每个班级的平均分
+SELECT 
+    c.class_name,
+    COUNT(s.student_id) AS student_count,
+    AVG(s.score) AS avg_score,
+    MAX(s.score) AS max_score
+FROM classes c
+LEFT JOIN students s ON c.class_id = s.class_id
+GROUP BY c.class_id, c.class_name
+HAVING AVG(s.score) > 80
+ORDER BY avg_score DESC;
 ```
 
 ##### 右外连接
@@ -266,7 +302,15 @@ select * from t1 left join t2 on condition;
 - 左表中不满足的数据填充 null
 
 ```sql
-select * from t1 right join t2 on condition;
+select * from t1 right join t2 on condition where where_condition;
+```
+
+#### 交叉连接/笛卡尔积
+
+返回两个表的笛卡尔积(所有可能的组合)
+
+```sql
+select * from t1 as a cross join t2 as b on condition;
 ```
 
 #### 自连接
@@ -275,7 +319,7 @@ select * from t1 right join t2 on condition;
 - 可以是内连接查询, 也可以是外连接查询
 
 ```sql
- select * from t1 as a [inner|left|right] join t2 as b on condition;
+select * from t1 as a inner join t2 as b on condition;
 ```
 
 #### 联合查询

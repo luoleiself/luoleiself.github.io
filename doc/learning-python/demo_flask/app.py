@@ -13,7 +13,7 @@ Flask: WSGI 应用, 一个 Flask 应用就是一个 Flask 类的实例, 内置 h
 
 动态路由参数 <type:variable_name>, 可指定类型 int, float, path, uuid, 默认为 string
 url_for() 函数用于构建指定函数的 url, 如 url_for('user_id', name='Tome', age=18) => /user/18?name=Tome
-    第一个参数为函数名字符串表示
+    第一个参数为函数名字符串表示, 如果未定义 endpoint 则默认使用视图函数名
     剩余参数为可变关键字参数对应到 url 中的变量, 未知变量将添加到 url 中作为查询参数
 
 render_template() 使用模板文件渲染, 默认在 templates 目录下查找
