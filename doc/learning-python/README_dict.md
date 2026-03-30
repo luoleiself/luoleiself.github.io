@@ -88,18 +88,20 @@ ValueError: dictionary update sequence element #2 has length 3; 2 is required
 
 ### 字典解构
 
-- 字典的键解构赋值给变量, 未匹配到变量的键将保存到列表中
+- 字典的键解构赋值给变量, 未匹配到变量的剩余值保存为一个列表
+  - 使用 *_ 或者 *var_name 收集剩余值, 两者不能同时使用
 
 ```python
 # 解构 dict 的键
->>> dt = {'a': 'A', 'b':'B', 'c': 'C', 'd': 'D'}
->>> a, b, *k = dt
+>>> a, b, *c, d = {'a': 'A', 2: 'B', 'c': 'C', 4: 'D', 'e': 'E'}
 >>> a
 'a'
 >>> b
-'b'
->>> k
-['c', 'd']
+2
+>>> c
+['c', 4]
+>>> d
+'e'
 ```
 
 - 字典的键解构为其它类型
