@@ -1,8 +1,10 @@
-from typing import NewType, Annotated, Any, Literal, LiteralString, Never, Union, Optional, final, Final, Unpack
+from typing import TypeVar, TypeAlias, NewType, Annotated, Any, Literal, LiteralString, Never, Union, Optional, final, \
+    Final, Unpack
 from collections.abc import Callable
 
 print('''
 类型缩写: type t_name = o_type
+    TypeAlias: Predicate: TypeAlias = Callable[..., bool] 定义类型缩写, 3.12 开始废弃, 使用 type 定义
 ... 字面量, 作为参数时, 表示可接收任意参数
 Any: 任意类型
 Final: 锁定类型和值, 不能再次修改, 等价于 Literal[type]
@@ -23,8 +25,8 @@ lt_str: Vector = ['hello', 'world', 1]
 print(f'类型缩写: {lt_str} {type(lt_str)}')
 print('-----------')
 MAX_SIZE: Final = 100
-MAX_SIZE += 1   # check error
-MAX_SIZE = 'hello world'    # check error
+MAX_SIZE += 1  # check error
+MAX_SIZE = 'hello world'  # check error
 print(f'Final MAX_SIZE: {MAX_SIZE} {type(MAX_SIZE)}')
 
 type Mode = Literal['r', 'w', 'a']
@@ -90,4 +92,30 @@ print(f'Annotated var_any: {var_any} {type(var_any)}')
 var_int: Annotated[int, '''整数的描述'''] = 125
 var_int = 'hello world'  # check error
 print(f'Annotated var_int: {var_int} {type(var_int)}')
+print('---------------------------')
+
+print('''
+TypeVar: 创建类型
+T = TypeVar('T')  # Can be anything
+S = TypeVar('S', bound=str)  # Can be any subtype of str
+A = TypeVar('A', str, bytes)  # Must be exactly str or bytes
+''')
+T = TypeVar('T')  # Can be anything
+S = TypeVar('S', bound=str)  # Can be any subtype of str
+A = TypeVar('A', str, bytes)  # Must be exactly str or bytes
+
+t: T = True
+t = 'hello'
+print(f't: {t} {type(t)}')
+s: S = 'hello python'
+s = True  # check error
+print(f's: {s} {type(s)}')
+a: A = b'hello'
+a = 250  # check error
+print(f'a: {a} {type(a)}')
+print('---------------------------')
+
+print('''
+TypeVarTuple: 创建元组类型
+''')
 print('---------------------------')

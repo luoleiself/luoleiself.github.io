@@ -10,7 +10,6 @@ import os
 import logging
 import time
 import string
-import json
 
 print('string 模块')
 print(f'string.ascii_letters {string.ascii_letters}')
@@ -22,12 +21,6 @@ print(f'string.hexdigits {string.hexdigits}')
 print(f'string.punctuation {string.punctuation}')
 print(f'string.printable {string.printable}')
 print(f'string.whitespace {string.whitespace}')
-print('---------------')
-
-dt = {'a': 'A', 'c': 1, 'd': True, 'f': '张三'}
-print(f'ascii 编码 json.dumps(dt): {json.dumps(dt)}')
-print(
-    f'ascii 不编码 json.dumps(dt, ensure_ascii=False): {json.dumps(dt, ensure_ascii=False)}')
 print('---------------')
 
 print('sys 模块')
