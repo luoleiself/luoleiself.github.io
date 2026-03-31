@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 
 {% block header %}
-{% include "header.html" %}
+    {% include "header.html" %}
 {% endblock %}
 
 {% block content %}
-<h1>Blog</h1>
+    <h1>Blog</h1>
+    <h2>
+        <a href={{ url_for('blog.create_blog') }}>创建</a>
+    </h2>
     <ul>
-    {% for u in user %}
-        <li>id: {{ u.id }} name: {{ u.username }}</li>
-    {% endfor %}
+        {% for u in user %}
+            <li>id: {{ u.id }} name: {{ u.username }}</li>
+        {% endfor %}
     </ul>
 {% endblock %}

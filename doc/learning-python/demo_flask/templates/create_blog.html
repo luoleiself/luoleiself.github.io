@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block header %}
+    {% include "header.html" %}
+{% endblock %}
+
+{% block content %}
+    <h1>Blog</h1>
+    <form method="POST" action="{{ url_for('blog.create_blog') }}" enctype="multipart/form-data">
+        <label for="username">
+            username:
+            <input id="username" type="text" name="username" placeholder="username" required/>
+        </label>
+        <label for="password">
+            password:
+            <input id="password" type="text" name="password" placeholder="password" required/>
+        </label>
+        <button type="submit">创建</button>
+    </form>
+    {% if get_flashed_messages() %}
+        <p style="color: red; font-size: 18px;">{{ get_flashed_messages() }}</p>
+    {% endif %}
+{% endblock %}

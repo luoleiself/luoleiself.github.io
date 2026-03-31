@@ -237,6 +237,7 @@ def context_processor():
 # 在所有请求之前执行, 如果有返回值则不再调用视图函数
 @app.before_request
 def before_request():
+    g.test_name = 'hello flask test'
     print('app before request...')
 
 
@@ -280,7 +281,6 @@ app.add_url_rule(
     view_func=comment.Comment.as_view('comment', User, 'comment.html')
 )
 
-
 # 测试请求上下文
 with app.test_request_context():
     """测试请求上下文"""
@@ -295,16 +295,13 @@ with app.test_request_context():
                                                   username='hash', topic='new', tags=('hehe', 'haha')))
     print('--------------')
 
-
 # 测试指定请求
 with app.test_request_context('/hi'):
     print('test request hi...', request.method, request.path, request.args)
     assert request.method == 'GET'
 
-
-# 应用上下文
+# 手动创建应用上下文管理器
 with app.app_context():
-    g.test_name = 'hello flask test'
     db.init_app(app)
 
 if __name__ == '__main__':
