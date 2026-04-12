@@ -4,7 +4,13 @@ from collections import Counter, deque, namedtuple
 from queue import Queue
 import time
 
-print('具名元组: 可使用 .属性 或 下标访问')
+print('''
+具名元组: 可使用 .属性 或 下标访问
+    参数 field_names: 格式支持包含字符的序列, 或者是以空格或者逗号分割的字符串形式
+    namedtuple('Point', ['a', 'b'])
+    namedtuple('Point', 'a b')
+    namedtuple('Point', 'a, b')
+''')
 Point = namedtuple('Point', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
 p = Point(1, 2, 3, 4, 2, 3, 4, 5)
 # p.z   # 访问不存在的属性报错

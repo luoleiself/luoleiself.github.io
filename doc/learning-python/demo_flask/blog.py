@@ -12,8 +12,11 @@ def index():
     db = get_db()
     cursor = db.cursor()
     result = cursor.execute('select * from users')
-    user = result.fetchall()
-    return render_template('blog.html', user=user)
+    users = result.fetchall()
+    for user in users:
+        print(f'id: {user[0]} username: {user[1]} password: {user[2]}')
+
+    return render_template('blog.html', users=users)
 
 
 # 自定义 endpoint

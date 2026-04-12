@@ -251,7 +251,7 @@ async def main():
     except asyncio.TimeoutError:
         print('asyncio.TimeOutError: ')
     else:
-        print('all tasks completed...', task1.result(), task2.result())
+        print('all tasks completed...', task1.result())
 
 asyncio.run(main())
 ''')
@@ -265,7 +265,7 @@ async def main():
     except asyncio.TimeoutError:
         print('asyncio.TimeOutError: ')
     else:
-        print('all tasks completed...', task1.result(), task2.result())
+        print('all tasks completed...', task1.result())
 
 asyncio.run(main())
 print('-------------')

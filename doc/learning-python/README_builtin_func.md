@@ -338,6 +338,7 @@ TypeError: 'bytes' object does not support item assignment
 
 获取容器中的最大值或最小值
 
+- key=None, 可选参数, 函数的返回值作为比较的键
 - 字典获取所有键中的最大/最小值
 
 ```python
@@ -588,7 +589,7 @@ AttributeError: 'object' object has no attribute 'name'
 
 #### super()
 
-返回一个代理对象, 该对象将方法调用委托给类型的谷类或同级类
+返回一个代理对象, 该对象将方法调用委托给类型的父类或同级类
 
 #### isinstance()/issubclass()
 
