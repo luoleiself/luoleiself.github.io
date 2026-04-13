@@ -1,6 +1,6 @@
 from markupsafe import escape
 from flask import Flask, url_for, request, render_template, make_response, redirect, session, flash, \
-    get_flashed_messages, render_template_string, g
+    render_template_string, g
 import string
 
 from demo_flask.login import login
@@ -175,10 +175,10 @@ def user(username):
         '''
 
 
-@app.route('/user/<int:user_id>')
-def user_id(user_id):
+@app.route('/user/<int:uid>')
+def user_id(uid):
     """动态路由参数, 格式: <int:user_id>, 类型为 int"""
-    return f'动态路由参数, 格式为 {escape('<int:user_id>')}: {user_id}</h1>'
+    return f'动态路由参数, 格式为 {escape('<int:user_id>')}: {uid}</h1>'
 
 
 @app.route('/template/<name>')
@@ -251,12 +251,14 @@ def after_request(response):
 # 在退出请求情境时执行, 忽略未处理的异常
 @app.teardown_request
 def teardown_request(exception):
+    print('teardown_request exception', exception)
     print('app teardown request...')
 
 
 # 在退出应用情境时执行, 忽略未处理的异常
 @app.teardown_appcontext
 def teardown_appcontext(exception):
+    print('teardown_appcontext exception', exception)
     print('app teardown appcontext...')
 
 

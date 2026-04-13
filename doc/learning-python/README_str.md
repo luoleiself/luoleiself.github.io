@@ -648,6 +648,24 @@ age: 18
 >>> print(F'''age: {age}''')
 age: 18
 ```
+显式指定转换格式
+
+- !s for str()
+- !r for repr()
+- !a for ascii()
+
+```python
+>>> from fractions import Fraction
+>>> one_third = Fraction(1, 3)
+>>> one_third
+Fraction(1, 3)
+>>> f'{one_third!s} is {one_third!r}'   # !s 输出字符串, !r 输出 repr()
+'1/3 is Fraction(1, 3)'
+
+>>> string = "¡kočka 😸!"
+>>> f'{string!a}'   # 输出字符串的 ascii 编码
+"'\\xa1ko\\u010dka \\U0001f638!'"
+```
 
 - `变量名=` 输出变量名及值, python 3.8 支持
 
