@@ -139,6 +139,8 @@ SyntaxError: invalid syntax
 - @functools.wraps(func) 在闭包函数上添加装饰器, 保留被装饰函数的元信息
 
 ```python
+import functools
+
 def my_decorator(func):
 
     @functools.wraps(func)  # 保留被装饰函数的元信息

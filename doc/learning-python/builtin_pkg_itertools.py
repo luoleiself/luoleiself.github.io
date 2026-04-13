@@ -25,7 +25,7 @@ print(f'operator.or_(True, False) = {operator.or_(True, False)}')   # True
 print('-----------------------------------------')
 
 # functools 模块用于处理高阶函数, 作用于其他函数或返回其他函数的函数
-# 123
+# 120
 print(
     f'累积 返回一个结果: functools.reduce(lambda x, y: x * y, [1, 2, 3, 4, 5]) = {functools.reduce(lambda x, y: x * y, [1, 2, 3, 4, 5])}')
 print('-----------------------------------------')
