@@ -530,6 +530,15 @@ print(f'u2.sex {u2.sex}') # u2.sex  hello world
 
 - `__call__` 自定义实例支持函数调用方式
 
+- `__dir__` 不接受任何参数, 并返回一个可迭代的字符串, 表示模块上可访问的名称. 此方法将覆盖内置函数 dir() 搜索
+  - 如果对象存在 `__dir__()` 方法, 则调用此方法并且返回属性列表
+  - 如果对象不存在 `__dir__()` 方法, 则 dir() 函数会尽力从对象的 `__dict__` 属性及其类型对象中收集信息
+
+```python
+>>> dir(globals())
+['__class__', '__class_getitem__', '__contains__', '__delattr__', '__delitem__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__ior__', '__iter__', '__le__', '__len__', '__lt__', '__ne__', '__new__', '__or__', '__reduce__', '__reduce_ex__', '__repr__', '__reversed__', '__ror__', '__setattr__', '__setitem__', '__sizeof__', '__str__', '__subclasshook__', 'clear', 'copy', 'fromkeys', 'get', 'items', 'keys', 'pop', 'popitem', 'setdefault', 'update', 'values']
+```
+
 ### 私有属性
 
 python 没有私有属性
