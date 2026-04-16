@@ -159,6 +159,64 @@ SELECT * FROM accounts WHERE balance > 500 FOR UPDATE; -- 等待 事务 A 完成
 COMMIT;
 ```
 
+## 权限控制
+
+```sql
+-- 创建使用 utf8mb4 字符集的数据库
+CREATE DATABASE database_name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- 查看当前字符集设置
+SHOW VARIABLES LIKE 'character_set%';
+
+-- 设置字符集
+SET NAMES utf8mb4;
+```
+
+### 用户权限
+
+```sql
+-- 创建用户和密码
+CREATE USER 'username'@'host' IDENTIFIED BY 'password';
+
+-- 修改用户密码
+ALTER USER 'username'@'host' IDENTIFIED BY 'password';
+
+-- 删除用户
+DROP USER 'username'@'host';
+```
+
+### 操作权限
+
+```sql
+-- 完整语法模板
+GRANT 权限列表 ON 数据库名.表名 TO 'username'@'host' [IDENTIFIED BY '密码'];
+
+-- 撤销权限
+REVOKE 权限列表 ON 数据库名.表名 FROM 'username'@'host';
+
+-- 查看指定用户的权限
+SHOW GRANTS FOR 'username'@'host';
+
+-- 刷新权限缓存
+FLUSH PRIVILEGES;
+```
+
+- 权限列表, 逗号分隔的权限集合（SELECT/INSERT/UPDATE等）或 ALL PRIVILEGES
+- 数据库名.表名, 支持通配符：*.*（全局）、mydb.*（单库）、mydb.orders（单表）
+- username@host, 用户标识与访问来源 localhost，192.168.1.%，% 任意主机
+- IDENTIFIED BY, 可选参数，用户不存在时自动创建并设置密码
+
+```sql
+-- 授予本地开发用户读写权限
+GRANT SELECT, INSERT, UPDATE ON mydb.* TO 'dev_user'@'localhost' IDENTIFIED BY 'secure_password123';
+
+-- 授予内网管理员全部权限（不含GRANT权限）
+GRANT ALL PRIVILEGES ON testdb.* TO 'admin_user'@'192.168.1.%' IDENTIFIED BY 'admin@123';
+
+-- 允许任意IP的只读访问
+GRANT SELECT ON report_db.* TO 'readonly_user'@'%' IDENTIFIED BY 'readonly_pass';
+```
+
 ## 索引
 
 - 数据库管理系统里面一个经过排序的数据结构, 为了帮助查询变得更快
