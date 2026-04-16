@@ -1,14 +1,19 @@
 import uvicorn
 from fastapi import FastAPI, Path, Query, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.params import Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from starlette.responses import FileResponse, HTMLResponse, JSONResponse
 import time
+from routers import news  # 导入分组路由
 
 """
 直接安装 fastapi 不包含 standard 标准包的中扩展
 FastAPI: annotated-doc, pydantic, starlette, typing-extensions, typing-inspection
     [standard] 包含 email-validator, fastapi-cli, httpx, jinja2, pydantic-settings, python-multipart, uvicorn
+
+APIRouter: 定义模块化路由
     
 依赖注入: Depends
 
@@ -40,8 +45,8 @@ pydantic: 数据校验库, 定义包含属性的继承 BaseModel 的类, 实例�
         不是用来替代 BaseModel 的通用容器, 而是解决 整个输入就是一个值, 而非键值对集合 的场景
 """
 
-
 app = FastAPI()
+
 
 @app.get('/')
 async def index():
@@ -50,15 +55,16 @@ async def index():
 
 @app.get('/fruit/{id}', response_class=JSONResponse)
 async def get_book(
-    id: int = Path(gt=0, lt=101, title='ID',
-                   description='must be between 0 and 101'),
-    skip: int = Query(default=0, ge=0, description='must be greater than 0'),
-    limit: int = Query(default=20, ge=0, description='must be greater than 0'),
+        id: int = Path(gt=0, lt=101, title='ID',
+                       description='must be between 0 and 101'),
+        skip: int = Query(default=0, ge=0, description='must be greater than 0'),
+        limit: int = Query(default=20, ge=0, description='must be greater than 0'),
 ):
     """
     docstring
     """
     return {"id": id, "skip": skip, 'limit': limit}
+
 
 class Address(BaseModel):
     street: str
@@ -96,8 +102,8 @@ async def get_file():
 
 # 依赖注入
 async def depend_function(
-    skip: int = Query(default=0, ge=0, description='must be greater than 0'),
-    limit: int = Query(default=20, ge=0, description='must be greater than 0'),
+        skip: int = Query(default=0, ge=0, description='must be greater than 0'),
+        limit: int = Query(default=20, ge=0, description='must be greater than 0'),
 ):
     return {'skip': skip, 'limit': limit}
 
@@ -138,77 +144,24 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-# from sqlalchemy.ext.asyncio import create_async_pool_from_url, create_async_engine, async_sessionmaker, AsyncSession
-#
-# ASYNC_DATABASE_URL = 'mysql+aiomysql://root:123456@localhost:3306/test?charset=utf-8'
-#
-# async_engine = create_async_engine(
-#     ASYNC_DATABASE_URL,
-#     echo=True,
-#     pool_size=10,
-#     max_overflow=5,
-# )
-#
-# from sqlalchemy import func, DateTime, Integer, String, select
-# from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-# from datetime import datetime
-#
-#
-# class Base(DeclarativeBase):
-#     create_at: Mapped[datetime] = mapped_column(DateTime, insert_default=func.now(), default=func.now, comment='创建时间')
-#     update_at: Mapped[datetime] = mapped_column(DateTime, insert_default=func.now(), default=None, comment='更新时间')
-#
-#
-# class Book(Base):
-#     __tablename__ = 'book'
-#     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment='id')
-#     name: Mapped[str] = mapped_column(String(20), nullable=False, comment='name')
-#     author: Mapped[str] = mapped_column(String(20), nullable=False, comment='author')
-#
-#
+# 添加 CORS 中间件
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # @app.on_event('startup')
 # async def startup_event():
 #     async with async_engine.begin() as conn:
 #         await conn.run_sync(Base.metadata.create_all)
 #
 #
-# # 创建会话连接
-# AsyncSessionLocal = async_sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False)
-# # 获取会话连接
-# async def get_database():
-#     async with AsyncSessionLocal() as session:
-#         try:
-#             yield session
-#             await session.commit()
-#         except Exception:
-#             await session.rollback()
-#             raise
-#         finally:
-#             await session.close()
-#
-#
-# @app.get('/book')
-# async def get_book(session: AsyncSession = Depends(get_database)):
-#     result = await session.execute(select(Book))
-#     books = result.all()
-#     print(f'result {result} books {books}')
-#
-#     print(f'result.scalars() {result.scalars()}')
-#     print(f'result.scalar() {result.scalar()}')
-#     print(f'result.first() {result.first()}')
-#     print('-------------')
-#
-#     b = await session.get(Book, 5)
-#     print(f'await session.get(Book, 5) {b}')
-#     print('-------------')
-#
-#     result = await session.execute(select(Book).where(Book.id == 5))
-#     print(f'result {result}')
-#     print('-------------')
-#
-#     # await session.execute(select(Book).join(Book, Book.id == Book.id, isouter=True))
-#     print('-------------')
-#
+
+# 注册路由
+app.include_router(news.router)
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8000)
