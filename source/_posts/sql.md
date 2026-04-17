@@ -311,6 +311,16 @@ FROM
 [HAVING having_condition]
 [ORDER BY col_list]
 [LIMIT [offset,] row_count];
+
+/*
+employees 表结构：‌
+  id
+  name
+  department_id
+departments 表结构：‌
+  id
+  name
+*/
 ```
 
 #### 内连接
@@ -329,14 +339,19 @@ FROM students s
 INNER JOIN classes c ON s.class_id = c.class_id
 WHERE s.score > 80
 ORDER BY s.score DESC;
+
+-- 查询返回所有匹配 部门 id 的员工的名字和部门名称
+SELECT employees.name, departments.name
+FROM employees
+INNER JOIN departments
+ON employees.department_id = departments.id;
 ```
 
 #### 外连接
 
 ##### 左外连接
 
-- 查询**左表**所有数据, 以及两张表交集部分数据
-- 右表中不满足的数据填充 null
+- 查询**左表**的所有记录, 以及右表中关联字段相匹配的记录, 结果中右表没有匹配的部分填充 null
 
 ```sql
 select * from t1 left join t2 on condition where where_condition;
@@ -352,15 +367,46 @@ LEFT JOIN students s ON c.class_id = s.class_id
 GROUP BY c.class_id, c.class_name
 HAVING AVG(s.score) > 80
 ORDER BY avg_score DESC;
+
+-- 查询所有员工的信息, 如果某个员工没有部门, 则部门名称为 null
+SELECT employees.name, departments.name
+FROM employees
+LEFT JOIN departments
+ON employees.department_id = departments.id;
 ```
 
 ##### 右外连接
 
-- 查询**右表**所有数据, 以及两张表交集部分数据
-- 左表中不满足的数据填充 null
+- 查询**右表**的所有记录, 以及左表中关联字段相匹配的记录, 结果中左表没有匹配的部分填充 null
 
 ```sql
 select * from t1 right join t2 on condition where where_condition;
+
+-- 查询所有部门的信息, 如果某个部门没有员工, 则员工名称为 null
+SELECT employees.name, departments.name
+FROM employees
+RIGHT JOIN departments
+ON employees.department_id = departments.id;
+```
+
+##### 全外连接
+
+- 返回两个表中的所有记录, 当一边没有匹配时, 另一边的记录将填充 null
+- mysql 不支持 全外连接, 使用 左连接和右连接的结果做 union 操作
+
+```sql
+select * from t1 full outer join t2 on condition where where_condition;
+
+-- 使用 左连接 UNION 右连接
+SELECT employees.name, departments.name
+FROM employees
+LEFT JOIN departments
+ON employees.department_id = departments.id
+UNION
+SELECT employees.name, departments.name
+FROM employees
+RIGHT JOIN departments
+ON employees.department_id = departments.id;
 ```
 
 #### 交叉连接/笛卡尔积
