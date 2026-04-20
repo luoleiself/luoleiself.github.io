@@ -16,7 +16,7 @@ my_project/
 |—— 项目源代码
 ```
 
-- 序列: 连续的可用下标访问的数据存储结构, 字符串，元组，列表, 可使用`切片`进行操作
+- 序列: 连续的可用下标访问的数据存储结构, 字符串, 元组, 列表, 数组, 可使用`切片`进行操作
 - `*` | `**`: 在数据存储结构中使用时, 解构 `可迭代对象`
 - `__` 双下划线起止的名称保留给 python 内部使用
 - `==`, is, isinstance 运算符和函数,
@@ -155,6 +155,36 @@ True
 >>> d = 1000
 >>> c is d
 False
+```
+
+### 枚举
+
+- 一组绑定到唯一值的符号名称(成员)
+- 可以迭代以按定义顺序返回其规范(非别名)成员
+- 使用调用语法按值返回成员
+- 使用索引语法按名称返回成员
+
+```python
+from enum import Enum
+
+# class syntax
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+# functional syntax
+Color = Enum('Color', [('RED', 1), ('GREEN', 2), ('BLUE', 3)])
+print(Color['RED']) # <Color.RED: 1>
+print(Color.RED.name)   # 'RED'
+print(Color.RED.value)  # 1
+
+print(list(Color))  # [<Color.RED: 1>, <Color.GREEN: 2>, <Color.BLUE: 3>]
+print(tuple(Color)) # (<Color.RED: 1>, <Color.GREEN: 2>, <Color.BLUE: 3>)
+print(set(Color))   # {<Color.GREEN: 2>, <Color.RED: 1>, <Color.BLUE: 3>}
+
+print(Color.RED in Color)   # True
+print(Color.RED.value in Color) # True
 ```
 
 ## 迭代器

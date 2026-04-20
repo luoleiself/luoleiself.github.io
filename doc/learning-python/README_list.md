@@ -420,6 +420,7 @@ ValueError: list.remove(x): x not in list
 
 - pop() 按下标删除并返回删除的列表项
   - index, 元素偏移索引, 下标越界会报错
+  - 列表为空会报错
 
 ```python
 >>> a = [1, 2, 3, 4, 5] 

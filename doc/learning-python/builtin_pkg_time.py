@@ -235,9 +235,13 @@ past_time = time.time() - 3600
 print(tf.get_relative_time(past_time))  # 1小时前
 print('------------------------------------')
 
-
 print('''
-calendar
+calendar: 日历包
+    Calendar 日历基类
+        TextCalendar 文本格式日历类
+            LocalTextCalendar   本地文本格式日历类
+        HTMLCalendar   html 格式日历类
+            LocaleHTMLCalendar  本地 html 格式日历类
 ''')
 # 一周完整格式
 print(f'calendar.day_name {list(calendar.day_name)}')
@@ -270,8 +274,9 @@ calendar.NOVEMBER {calendar.NOVEMBER}
 calendar.DECEMBER {calendar.DECEMBER}''')
 print('---------')
 
+# 日历基类
 c = calendar.Calendar()
-print(f'calandar.Calandar() {c}') # 0
+print(f'calandar.Calandar() {c}')  # 0
 print(f'c.firstweekday {c.firstweekday}')
 # 返回周迭代器 [0, 1, 2, 3, 4, 5, 6]
 print(f'c.iterweekdays() {list(c.iterweekdays())}')
@@ -298,50 +303,75 @@ print(f'c.yeardayscalendar(2026, 4)  {c.yeardayscalendar(2026, 4)}')
 print(f'c.yeardatescalendar(2026, 4) {c.yeardatescalendar(2026, 4)}')
 print('---------')
 
-print('文本格式日历')
+print('文本格式日历, 继承 Calendar')
 txt_calendar = calendar.TextCalendar()
 print(f'txt_calendar {txt_calendar}')
 print(f'txt_calendar.getfirstweekday() {txt_calendar.getfirstweekday()}')
 print(f'txt_calendar.iterweekdays() {list(txt_calendar.iterweekdays())}')
 print(f'''
-格式化输出年日历
+文本格式输出:
+指定年日历
 txt_calendar.formatyear(2026)
-格式化输出指定月份日历
+指定月份日历
 txt_calendar.formatmonth(2026, 8)
 {txt_calendar.formatmonth(2026, 8)}
 
-# 格式化输出右对齐日期
+# 右对齐日期
 # txt_calendar.formatday(12, 6, 38)
 
-# 格式化输出一周的头部标识
+# 一周的头部标识
 # txt_calendar.formatweekheader(9)
 {txt_calendar.formatweekheader(9)}
 
-# 格式化输出一周的日期和对应的周几
+# 一周的日期和对应的周几
 # txt_calendar.formatweek([(0,0), (0,1), (1,2), (2,3), (3, 4), (4, 5), (5, 6)], 2)
 {txt_calendar.formatweekheader(2)}
-{txt_calendar.formatweek([(0,0), (0,1), (1,2), (2,3), (3, 4), (4, 5), (5, 6)], 2)}
+{txt_calendar.formatweek([(0, 0), (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6)], 2)}
 ''')
 print('---------')
 
-print('html 格式日历')
+print('本地文本格式日历, 继承 TextCalendar')
+local_txt_calendar = calendar.LocaleTextCalendar()
+print(f'local_txt_calendar {local_txt_calendar}')
+print(f'''
+本地文本格式输出:
+指定月份日历
+local_txt_calendar = calendar.LocaleTextCalendar()
+local_txt_calendar.formatmonth(2026, 8)
+{local_txt_calendar.formatmonth(2026, 8)}
+''')
+print('---------')
+
+print('html 格式日历, 继承 Calendar')
 html_calendar = calendar.HTMLCalendar()
 print(f'html_calendar {html_calendar}')
 print(f'html_calendar.getfirstweekday() {html_calendar.getfirstweekday()}')
 print(f'html_calendar.cssclass_month {html_calendar.cssclass_month}')
 print(f'html_calendar.monthdayscalendar(2026, 4) {html_calendar.monthdayscalendar(2026, 4)}')
 print(f'''
-# html 格式输出年日历
+html 格式输出:
+指定年日历
 # html_calendar.formatyear(2026)
-# html 格式输出月日历
+指定月日历
 html_calendar.formatmonth(2026, 8)
 {html_calendar.formatmonth(2026, 8)}
 
-# html 格式输出周日历头部标识
+一周日历头部标识
 # html_calendar.formatweekheader()
 {html_calendar.formatweekheader()}
 
-# html 格式输出一天
+一天
 # html_calendar.formatday(12, 6)
 {html_calendar.formatday(12, 6)}
+''')
+print('---------')
+
+print('本地 html 格式日历, 继承 HTMLCalendar')
+local_html_calendar = calendar.LocaleHTMLCalendar()
+print(f'local_html_calendar {local_html_calendar}')
+print(f'''
+本地 html 格式输出:
+指定月份日历
+local_html_calendar.formatmonth(2026, 8)
+{local_html_calendar.formatmonth(2026, 8)}
 ''')

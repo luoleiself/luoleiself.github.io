@@ -76,6 +76,8 @@ False
 
 将任意值转换为字符串
 
+- 将 bytes 对象传递给 str() 函数时, 传入 encoding 参数表示转换为字符串
+
 ```python
 >>> str(1)
 '1'
@@ -106,6 +108,16 @@ False
 '{1, 2, 3, 4}'
 >>> str({'a': 'A', 'b': 'B'}) # dict 转换为字符串
 "{'a': 'A', 'b': 'B'}"
+
+>>> b = bytes('中国')
+>>> b
+b'\xe4\xb8\xad\xe5\x9b\xbd'
+>>> type(b)
+<class 'bytes'>
+>>> str(b)
+"b'\\xe4\\xb8\\xad\\xe5\\x9b\\xbd'"
+>>> str(b, 'utf-8') # bytes 转换为字符串指定编码格式
+'中国'
 ```
 
 #### tuple()
@@ -609,6 +621,8 @@ print(issubclass(Dog, Cat))     # False
 
 #### id() 获取变量引用的对象的 id
 
+- 返回对象的"标识". 这是一个整数, 保证此对象在其生命周期内是唯一且恒定的.
+
 ```python
 >>> n = 1
 >>> id(n)
@@ -637,7 +651,7 @@ print(issubclass(Dog, Cat))     # False
 
 #### hash()
 
-获取哈希值
+获取哈希值, 哈希值是整数. 它们用于在字典查找过程中快速比较字典键, 比较相等的数值具有相同的哈希值(即使它们是不同类型的, 如1和1.0的情况)
 
 #### dir()
 
