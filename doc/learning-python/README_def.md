@@ -424,6 +424,7 @@ class User:
   - 如果返回值可以被 `bool()` 转换为 False, 表示异常没有被处理, 程序将会中断
 
 ```python
+# 实现 __enter__ 和 __exit__ 方法
 >>> class Sample:
 ...     def __enter__(self):
 ...             print('__enter__...')
