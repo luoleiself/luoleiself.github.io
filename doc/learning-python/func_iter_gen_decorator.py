@@ -4,6 +4,7 @@ import functools
 print('迭代器: 自定义迭代器')
 
 
+# 方式1:
 # 可迭代对象: 实现 __iter__ 方法
 class Company:
     def __init__(self, employee_list):
@@ -20,6 +21,9 @@ class MyIterator(Iterator):
         self.employee = employee_list
         self.index = 0
 
+    def __iter__(self):
+        return self
+
     def __next__(self):
         try:
             emp = self.employee[self.index]
@@ -31,6 +35,64 @@ class MyIterator(Iterator):
 
 for emp in Company(['tom', 'bob', 'jane']):
     print(emp)
+
+print('------------')
+
+print('迭代器: 在类内部实现迭代器协议')
+
+
+# 方式2: 在类内部实现迭代器协议
+class Person:
+    def __init__(self, name, age, gender, address):
+        self.name = name
+        self.age = age
+        self.gender = gender
+        self.address = address
+        self.__index = 0  # 私有属性, 记录初始化状态
+        self.__attrs = ['name', 'age', 'gender', 'address']
+
+    def __iter__(self):
+        self.__index = 0  # 每次迭代对象时, 重置状态
+        return self
+
+    def __next__(self):
+        try:
+            attr = self.__attrs[self.__index]
+        except IndexError:
+            raise StopIteration
+        self.__index += 1
+        return getattr(self, attr)
+
+
+for emp in Person('tom', 18, 'male', 'beijing'):
+    print(emp)
+
+print('------------')
+
+
+# 自定义迭代器
+class CountDown:
+    """倒计时迭代器"""
+
+    def __init__(self, start):
+        self.current = start
+
+    def __iter__(self):
+        return self  # 返回迭代器对象
+
+    def __next__(self):
+        if self.current <= 0:
+            raise StopIteration  # 结束迭代
+        value = self.current
+        self.current -= 1
+        return value
+
+
+# 使用自定义迭代器
+counter = CountDown(5)
+for num in counter:
+    print(num, end=' ')  # 输出: 5 4 3 2 1
+print()
 print('----------------------------------')
 
 
@@ -84,7 +146,6 @@ for i in prime_gen():
         break
 print('----------------------------------')
 
-
 # 生成器推导式
 genobj = (pair for pair in zip(('a', 'b'), ('A', 'B')))
 print(f'生成器推导式的类型 {type(genobj)}')  # <class 'generator'>
@@ -110,6 +171,7 @@ def my_decorator(func):
         print(f'Result: {result}')
         print('my_decorator after called.')
         return result
+
     return new_func
 
 
@@ -126,6 +188,7 @@ def my_decorator_2(func):
         print(f'my_decorator_2 Result: {result}')
         print('my_decorator_2 after called.')
         return result * result
+
     return new_func
 
 

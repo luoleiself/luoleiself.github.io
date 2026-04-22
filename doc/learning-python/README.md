@@ -1,7 +1,7 @@
 
 项目结构
 
-```python
+```conf
 my_project/
 ├── .venv/                 # 虚拟环境目录 (通常跟随项目)
 │   ├── bin/               # (Linux/macOS) 可执行文件
@@ -107,10 +107,6 @@ level1()
 ```python
 # 单行注释
 
-'''
-多行字符串/注释, 如果多行字符串有变量引用则作为字符串, 否则作为多行注释
-'''
-
 """
 多行字符串/注释, 如果多行字符串有变量引用则作为字符串, 否则作为多行注释
 """
@@ -189,7 +185,7 @@ print(Color.RED.value in Color) # True
 
 ## 迭代器
 
-可迭代对象实现了 `__iter__` 方法, 但不是迭代器
+- 可迭代对象实现了 `__iter__` 方法, 但不是迭代器
 
 ```python
 my_list = [1, 2, 3]  # 列表是可迭代对象，但不是迭代器
@@ -205,27 +201,6 @@ print(hasattr(list_iterator, '__next__'))  # True
 - 生成器, 是一种特殊的迭代器, 使用 `yield` 关键字创建, 可以暂停和恢复执行
 
 ```python
-# 自定义迭代器
-class CountDown:
-    """倒计时迭代器"""
-    def __init__(self, start):
-        self.current = start
-    
-    def __iter__(self):
-        return self  # 返回迭代器对象
-    
-    def __next__(self):
-        if self.current <= 0:
-            raise StopIteration  # 结束迭代
-        value = self.current
-        self.current -= 1
-        return value
-
-# 使用自定义迭代器
-counter = CountDown(5)
-for num in counter:
-    print(num, end=' ')  # 输出: 5 4 3 2 1
-
 # 生成器函数
 def countdown_gen(n):
     """生成器版本的倒计时"""
@@ -323,6 +298,18 @@ for num in gen:
 >>> next(gen)
 16
 ```
+## 上下文管理器
+
+- 实现 `__enter__` 和 `__exit__` 魔法方法
+- 使用 contextmanager 装饰器和 yield
+
+### 异步上下文管理器
+
+- 实现 `__aenter__` 和 `__aexit__` 魔法方法
+- 使用 asynccontextmanager 装饰器 和 yield
+
+- async for 用于迭代异步可迭代对象 (实现了 `__aiter__` 的对象), 只能用在 async 协程函数中, 否则报错
+- async with 用于获取异步上下文管理器, 只能用在 async 协程函数中, 否则报错
 
 ## 异常
 
@@ -332,21 +319,18 @@ for num in gen:
 
 ```python
 try:
-    # 可能发生错误的代码
+# 可能发生错误的代码
 except (NameError, ZeroDivisionError) e:
-    # 捕获未定义的变量或除以 0 的错误 
+# 捕获未定义的变量或除以 0 的错误 
 # except: # 等价于下一行的写法
 except Exception as e:
-    # 捕获所有错误后执行的代码
+# 捕获所有错误后执行的代码
 else:
-    # 没有发生错误执行的代码
+# 没有发生错误执行的代码
 finally:
-    # 最后总是会执行的代码
+# 最后总是会执行的代码
 ```
 
-## 上下文管理器
-
-实现 `__enter__` 和 `__exit__` 魔法方法
 
 ## 模块
 
