@@ -2,7 +2,7 @@ from datetime import datetime as dt, timezone, timedelta, MAXYEAR, MINYEAR, UTC
 import time
 import calendar
 
-'''
+"""
 datetime 包的主要对象
     |- date: 表示日期的类
         |- datetime: 表示日期和时间的类
@@ -45,7 +45,7 @@ time.strftime() 格式化指令
 %G  ISO8601 格式的年份, time.strftime('%G') '2026'
 %V  ISO8601 格式的周数, time.strftime('%V') '13'
 %%  %字面量,    time.strftime('%%')   '%'
-'''
+"""
 
 print('time:')
 print(f'time.tzname: {time.tzname}')
@@ -112,7 +112,7 @@ print(f"5. 转回时间戳 time.mktime(str_ptime): {ts2}")
 
 # 验证一致性
 print(f"时间戳一致: {abs(ts - ts2) < 0.001}")
-print('---------')
+print('-' * 10)
 
 # datetime 模块
 print('datetime 包')
@@ -120,12 +120,12 @@ print('datetime 包')
 print(f'timezone.max {timezone.max} timezone.min {timezone.min}')
 print(f'timezone.tzname {timezone.tzname}')
 print(f'timezone.utc {timezone.utc} timezone.type {type(timezone.utc)}')
-print('----------')
+print('-' * 10)
 d = dt.now()
 print(f'dt.now() {d.ctime()} {d.strftime("%Y-%m-%d %H:%M:%S")}')
 print(
     f'd.isoformat() {d.isoformat()} d.astimezone() {d.astimezone(timezone.utc)} d.utcoffset() {d.utcoffset()}')
-print('----------')
+print('-' * 10)
 print(
     f'datetime.MAXYEAR {MAXYEAR} datetime.MINYEAR {MINYEAR} datetime.UTC {UTC}')
 utc_timestamp = dt.now(timezone.utc).timestamp()
@@ -137,7 +137,7 @@ local_from_utc_timestamp = dt.fromtimestamp(
 print(f'local_from_utc_timestamp: {local_from_utc_timestamp}')
 local_from_iso_string = dt.fromisoformat(iso_string).astimezone()
 print(f'local_from_iso_string: {local_from_iso_string}')
-print('----------')
+print('-' * 10)
 print('timedelta 模块')
 delta = timedelta(days=1, hours=6, minutes=5, seconds=2,
                   milliseconds=4, microseconds=3)
@@ -148,7 +148,7 @@ print(f'delta.total_seconds() {delta.total_seconds()}')
 delta += timedelta(days=1, seconds=2200,
                    microseconds=3000, minutes=50, hours=10)
 print(f'delta.__add__(timedelta(days=1)) {delta}')
-print('----------------------------------------------')
+print('-' * 30)
 
 
 class TimeFormatter:
@@ -222,18 +222,18 @@ print(tf.format_seconds(45))  # 45.0秒
 print(tf.format_seconds(125))  # 2.1分钟
 print(tf.format_seconds(7200))  # 2.0小时
 print(tf.format_seconds(90000))  # 1.0天
-print('---------')
+print('-' * 10)
 
 # 解析时间字符串
 print(tf.parse_time_string("1h30m"))  # 5400
 print(tf.parse_time_string("45m"))  # 2700
 print(tf.parse_time_string("30s"))  # 30
-print('---------')
+print('-' * 10)
 
 # 相对时间
 past_time = time.time() - 3600
 print(tf.get_relative_time(past_time))  # 1小时前
-print('------------------------------------')
+print('-' * 30)
 
 print('''
 calendar: 日历包
@@ -251,7 +251,7 @@ print(f'calendar.day_abbr {list(calendar.day_abbr)}')
 print(f'calendar.month_name {list(calendar.month_name)}')
 # 月份的缩写格式
 print(f'calendar.month_abbr {list(calendar.month_abbr)}')
-print('---------')
+print('-' * 10)
 print(f'''calendar.MONDAY {calendar.MONDAY}
 calendar.TUESDAY {calendar.TUESDAY}
 calendar.WEDNESDAY {calendar.WEDNESDAY}
@@ -259,7 +259,7 @@ calendar.THURSDAY {calendar.THURSDAY}
 calendar.FRIDAY {calendar.FRIDAY}
 calendar.SATURDAY {calendar.SATURDAY}
 calendar.SUNDAY {calendar.SUNDAY}''')
-print('---------')
+print('-' * 10)
 print(f'''calendar.JANUARY {calendar.JANUARY}
 calendar.FEBRUARY {calendar.FEBRUARY}
 calendar.MARCH {calendar.MARCH}
@@ -272,7 +272,7 @@ calendar.SEPTEMBER {calendar.SEPTEMBER}
 calendar.OCTOBER {calendar.OCTOBER}
 calendar.NOVEMBER {calendar.NOVEMBER}
 calendar.DECEMBER {calendar.DECEMBER}''')
-print('---------')
+print('-' * 10)
 
 # 日历基类
 c = calendar.Calendar()
@@ -301,7 +301,7 @@ print(f'c.monthdayscalendar(2026, 4) {c.monthdayscalendar(2026, 4)}')
 print(f'c.monthdays2calendar(2026, 4) {c.monthdays2calendar(2026, 4)}')
 print(f'c.yeardayscalendar(2026, 4)  {c.yeardayscalendar(2026, 4)}')
 print(f'c.yeardatescalendar(2026, 4) {c.yeardatescalendar(2026, 4)}')
-print('---------')
+print('-' * 10)
 
 print('文本格式日历, 继承 Calendar')
 txt_calendar = calendar.TextCalendar()
@@ -328,7 +328,7 @@ txt_calendar.formatmonth(2026, 8)
 {txt_calendar.formatweekheader(2)}
 {txt_calendar.formatweek([(0, 0), (0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6)], 2)}
 ''')
-print('---------')
+print('-' * 10)
 
 print('本地文本格式日历, 继承 TextCalendar')
 local_txt_calendar = calendar.LocaleTextCalendar()
@@ -340,7 +340,7 @@ local_txt_calendar = calendar.LocaleTextCalendar()
 local_txt_calendar.formatmonth(2026, 8)
 {local_txt_calendar.formatmonth(2026, 8)}
 ''')
-print('---------')
+print('-' * 10)
 
 print('html 格式日历, 继承 Calendar')
 html_calendar = calendar.HTMLCalendar()
@@ -364,7 +364,7 @@ html_calendar.formatmonth(2026, 8)
 # html_calendar.formatday(12, 6)
 {html_calendar.formatday(12, 6)}
 ''')
-print('---------')
+print('-' * 10)
 
 print('本地 html 格式日历, 继承 HTMLCalendar')
 local_html_calendar = calendar.LocaleHTMLCalendar()

@@ -64,7 +64,7 @@ department = Table('departments', meta_data,
                    Column('id', Integer, autoincrement=True, primary_key=True, nullable=False, comment='部门ID'),
                    Column('name', String(128), nullable=False, unique=True, comment='部门名称'))
 # 使用元表实例创建表
-# meta_data.create_all(engine)
+meta_data.create_all(engine)
 
 # 创建 sql 语句
 t = text("SELECT * FROM employee WHERE id=:user_id")

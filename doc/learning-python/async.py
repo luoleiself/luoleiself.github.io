@@ -28,9 +28,10 @@ async def bar():
     print('bar step 4')
     return 'bar'
 
+
 # 直接调用协程函数返回协程对象
 print(foo(), bar())
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 方式1: 已过时
@@ -54,7 +55,7 @@ works = [
 loop = asyncio.get_event_loop()
 loop.run_until_complete(asyncio.wait(works))
 print(works[0].result(), works[1].result())
-print('---------------------------------')
+print('-' * 30)
 
 print('使用 asyncio.run() 运行协程对象')
 print(r'''
@@ -79,8 +80,9 @@ async def main():
     ret2 = await task2
     print(ret1, ret2)
 
+
 asyncio.run(main())
-print('-------------')
+print('-' * 10)
 print(r'''
 直接 await 协程对象不会调度协程只是让出执行权, 需要包装成任务对象才会被调度
 下面代码会按顺序输出结果 1, 2, 3, 4
@@ -99,8 +101,9 @@ async def main():
     ret2 = await bar()
     print(ret1, ret2)
 
+
 asyncio.run(main())
-print('-------------')
+print('-' * 10)
 print(r'''
 asyncio 调度任务时, 根据任务被添加到任务列表的顺序来调度, 跟 await 等待的顺序无关
 ''')
@@ -132,8 +135,9 @@ async def main():
     ret1 = await task1
     print('任务完成', ret2, ret1)  # 9
 
+
 asyncio.run(main())
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 方式3:
@@ -164,8 +168,9 @@ async def main():
     for task in done:
         print(task.result())
 
+
 asyncio.run(main())
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 方式4:
@@ -185,8 +190,9 @@ async def main():
     ret = await asyncio.gather(foo(), bar())
     print(ret)
 
+
 asyncio.run(main())
-print('-------------')
+print('-' * 10)
 
 print(r'''
 方式4-1:
@@ -211,8 +217,9 @@ async def main():
     ret = await asyncio.gather(task1, task2)
     print(ret)
 
+
 asyncio.run(main())
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 方式5:
@@ -236,8 +243,9 @@ async def main():
 
     print('all tasks completed...', task1.result(), task2.result())
 
+
 asyncio.run(main())
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 方式6:
@@ -267,12 +275,13 @@ async def main():
     else:
         print('all tasks completed...', task1.result())
 
+
 asyncio.run(main())
-print('-------------')
+print('-' * 10)
 print(r'''
 asyncio.timeout_at(when) 创建超时上下文管理器, when 是一个时间戳
 ''')
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 方式7:
@@ -296,8 +305,9 @@ async def main():
         ret = await task
         print('task completed:', ret)
 
+
 asyncio.run(main())
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 方式8:
@@ -333,8 +343,9 @@ async def main():
     )
     print(f'finished main at {time.strftime("%X")}')
 
+
 asyncio.run(main())
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 asyncio.Runner() 创建事件循环上下文管理器
@@ -357,7 +368,7 @@ async def main():
 with asyncio.Runner() as runner:
     runner.run(main())
 
-print('-------------')
+print('-' * 10)
 
 print(r'''
 async with 用于获取异步上下文管理器
@@ -382,8 +393,9 @@ async def main():
         end = time.perf_counter()
         print(f'cost time: {end - start}')
 
+
 asyncio.run(main())
-print('-------------')
+print('-' * 10)
 
 print(r'''
 async for 用于迭代异步可迭代对象 (实现了 __aiter__ 的对象), 不是直接迭代协程或 gather 的返回值
@@ -420,8 +432,9 @@ async def main():
     # ret = await anext(gather_async_iter())
     # print(ret)
 
+
 asyncio.run(main())
-print('---------------------------------')
+print('-' * 30)
 
 print(r'''
 asyncio.Queue 是一个异步队列, 用于生产者-消费者模型
@@ -446,8 +459,9 @@ async def consumer():
 async def main():
     await asyncio.gather(producer(), consumer())
 
+
 asyncio.run(main())
-print('---------------------------------')
+print('-' * 30)
 
 # async def main():
 #     print('main step m1')
@@ -458,4 +472,4 @@ print('---------------------------------')
 #     print('main step m2')
 
 # asyncio.run(main())
-# print('---------------------------------')
+# print('-' * 30)

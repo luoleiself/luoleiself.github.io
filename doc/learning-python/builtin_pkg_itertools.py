@@ -6,30 +6,29 @@ import operator
 print('operator 模块导出一组与 python 内置运算符相对应的高效函数')
 # 10 + 1 == operator.add(10, 1)
 print(f'operator.add(1, 10) = {operator.add(1, 10)}')  # 11
-print(f'operator.sub(10, 1) = {operator.sub(10, 1)}')   # 9
-print(f'operator.lt(1, 10) = {operator.lt(1, 10)}')   # True
+print(f'operator.sub(10, 1) = {operator.sub(10, 1)}')  # 9
+print(f'operator.lt(1, 10) = {operator.lt(1, 10)}')  # True
 
-print(f'operator.is_not(1, 2) = {operator.is_not(1, 2)}')   # True
+print(f'operator.is_not(1, 2) = {operator.is_not(1, 2)}')  # True
 # True
 print(f'operator.contains([1, 2], 1) = {operator.contains([1, 2], 1)}')
 
 print(f'operator.lshift(5, 1) = {operator.lshift(5, 1)}')  # 10
-print(f'operator.rshift(5, 1) = {operator.rshift(5, 1)}')   # 2
+print(f'operator.rshift(5, 1) = {operator.rshift(5, 1)}')  # 2
 
 # [1, 2, 3, 'a', 'b']
 print(
     f'operator.concat([1, 2, 3], ["a", "b"]) = {operator.concat([1, 2, 3], ["a", "b"])}')
 
 print(f'operator.and(True, False) = {operator.and_(True, False)}')  # False
-print(f'operator.or_(True, False) = {operator.or_(True, False)}')   # True
-print('-----------------------------------------')
+print(f'operator.or_(True, False) = {operator.or_(True, False)}')  # True
+print('-' * 30)
 
 # functools 模块用于处理高阶函数, 作用于其他函数或返回其他函数的函数
 # 120
 print(
     f'累积 返回一个结果: functools.reduce(lambda x, y: x * y, [1, 2, 3, 4, 5]) = {functools.reduce(lambda x, y: x * y, [1, 2, 3, 4, 5])}')
-print('-----------------------------------------')
-
+print('-' * 30)
 # itertools 模块
 # [1, 3, 6, 10, 15]
 print(
@@ -60,7 +59,7 @@ for t in te:
     print(list(t))
 # ['A', 'B', 'C']
 # ['A', 'B', 'C']
-print('----------')
+print('-' * 10)
 # [(1, 2), (3, 4), (5,)]
 print(
     f'分组, 指定分组元素个数: itertools.batched([1, 2, 3, 4, 5], 2) = {list(itertools.batched([1, 2, 3, 4, 5], 2))}')
@@ -74,7 +73,7 @@ for k, v in gb:
 # 3 ['EFG']
 # 1 ['H']
 # 2 ['IJ', 'KL', 'MN', 'OP']
-print('----------')
+print('-' * 10)
 print(f'compress, filterfalse, dropwhile, takewhile')
 # [1, 3]
 print(
@@ -88,7 +87,7 @@ print(
 # [1, 4]
 print(
     f'过滤 保留符合条件的元素直到 False 结束: itertools.takewhile(lambda x: x < 5, [1, 4, 6, 3, 8]) = {list(itertools.takewhile(lambda x: x < 5, [1, 4, 6, 3, 8]))}')
-print('----------')
+print('-' * 10)
 # [2, 4]
 print(
     f'切片: itertools.isslice([1, 2, 3, 4, 5], 1, 5, 2) = {list(itertools.islice([1, 2, 3, 4, 5], 1, 5, 2))}')
@@ -98,15 +97,15 @@ print(
 # [(1, 2), (2, 3), (3, 4), (4, 5)]
 print(
     f'组对: 相邻每两个元素组成一个元组, 返回双项元组列表: itertools.pairwise([1, 2, 3, 4, 5]) = {list(itertools.pairwise([1, 2, 3, 4, 5]))}')
-print('----------')
+print('-' * 10)
 # [2, 12, 30]
 print(
     f'遍历每个双项元组列表, 对每个元组应用函数: itertools.starmap(mul, [(1, 2), (3, 4), (5, 6)]) = {list(itertools.starmap(operator.mul, [(1, 2), (3, 4), (5, 6)]))}')
-print('----------')
+print('-' * 10)
 # [(1, 4), (2, 5), (0, 6), (0, 7)]
 print(
     f'zip 遍历按最长序列对齐, 返回元组列表, 填充缺失值(默认为 None): itertools.zip_longest((1, 2), [4, 5, 6, 7], fillvalue=0) = {list(itertools.zip_longest((1, 2), [4, 5, 6, 7], fillvalue=0))}')
-print('----------')
+print('-' * 10)
 print(
     f'生成多个序列的笛卡尔积元组列表 itertools.product([1, 2, 3], [4, 5, 6, 7], ("A", "B")) = {list(itertools.product([1, 2, 3], [4, 5, 6, 7], ("A", "B")))}')
 #  [('A', 'A'), ('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'A'), ('B', 'B'), ('B', 'C'), ('B', 'D'), ('C', 'A'), ('C', 'B'), ('C', 'C'), ('C', 'D'), ('D', 'A'), ('D', 'B'), ('D', 'C'), ('D', 'D')]
@@ -121,4 +120,4 @@ print(
 # [('A', 'A'), ('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'B'), ('B', 'C'), ('B', 'D'), ('C', 'C'), ('C', 'D'), ('D', 'D')]
 print(
     f'生成多个序列的笛卡尔积元组列表 排除交换位置但保留自身笛卡尔积: itertools.combinations_with_replacement("ABCD", 2) = {list(itertools.combinations_with_replacement("ABCD", 2))}')
-print('-----------------------------------------')
+print('-' * 30)

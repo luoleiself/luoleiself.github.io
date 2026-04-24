@@ -46,7 +46,7 @@ my_module2.info_print2()
 # from my_package.my_module1 import *
 # info_print1()   # NameError: name 'info_print1' is not defined
 
-print('---------------------------------------------------')
+print('-' * 50)
 # 模块中 __all__ 列表中没有添加 StrTools 类
 # s = StrTools()    # NameError: name 'StrTools' is not defined. Did you mean: 'str_tools'?
 s1 = str_tools

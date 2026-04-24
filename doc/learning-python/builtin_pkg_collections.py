@@ -24,7 +24,7 @@ print(f'p._asdict() {dt}')
 
 p2 = Point(**dt)
 print(f'Point(**dt) {p2}')
-print('------------------------------------')
+print('-' * 30)
 
 print('计数器')
 s = 'abcabcdefgadefghihbefacdhgadedc'
@@ -37,7 +37,7 @@ print(f'c.values() {c.values()}')
 print(f'c.items() {c.items()}')
 c.update('abc')
 print(f'c.update("abc") c.most_common(5) {c.most_common(5)}')
-print('------------------------------------')
+print('-' * 30)
 
 print('双端队列:')
 print(f'未指定 maxlen 时, 队列的长度会无限增长')
@@ -48,12 +48,12 @@ print(f'右侧追加元素, 删除左侧超出队列长度的元素')
 for i in 'abc':
     d.append(i)
     print(f'd.append({i}) d {d}')
-print('------------')
+print('-' * 10)
 print(f'左侧追加元素, 删除右侧超出队列长度的元素')
 for i in 'ABC':
     d.appendleft(i)
     print(f'd.appendleft({i}) d {d}')
-print('------------------------------------')
+print('-' * 30)
 
 # 使用多线程读写队列
 print('Queue: 当队列缓冲满时则阻塞等待取出元素, 当队列为空时则阻塞等待加入元素')
@@ -112,4 +112,4 @@ for i in range(1, NUM_GET_THREADS + 1):
 q.join()  # 等待所有 put 对应的 task_done（含哨兵）
 for t in thread_get_list:
     t.join()
-print('------------------------------------')
+print('-' * 30)

@@ -50,7 +50,7 @@ unsigned_arr_h = array.array('H', [0, 65535])
 print('无符号短整型数组', unsigned_arr_h)
 print(f'切片操作: {unsigned_arr_h[::-1]}')
 
-print('----------')
+print('-' * 10)
 # 有符号的整型数组, 取值范围 -2147483648 到 2147483647
 signed_arr_i = array.array(
     'i', [-2147483648, -2147483645, 2147483645, 2147483647])
@@ -71,7 +71,7 @@ print(f'切片操作: {signed_arr_l[::-1]}')
 unsigned_arr_l = array.array('L', [0, 4294967295])
 print('无符号长整型数组', unsigned_arr_l)
 print(f'切片操作: {unsigned_arr_l[::-1]}')
-print('----------')
+print('-' * 10)
 
 # 有符号的长整型数组, 取值范围 -9223372036854775808 到 9223372036854775807
 signed_arr_q = array.array(

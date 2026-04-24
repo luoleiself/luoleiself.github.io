@@ -36,7 +36,7 @@ class MyIterator(Iterator):
 for emp in Company(['tom', 'bob', 'jane']):
     print(emp)
 
-print('------------')
+print('-' * 10)
 
 print('迭代器: 在类内部实现迭代器协议')
 
@@ -67,7 +67,7 @@ class Person:
 for emp in Person('tom', 18, 'male', 'beijing'):
     print(emp)
 
-print('------------')
+print('-' * 10)
 
 
 # 自定义迭代器
@@ -93,7 +93,7 @@ counter = CountDown(5)
 for num in counter:
     print(num, end=' ')  # 输出: 5 4 3 2 1
 print()
-print('----------------------------------')
+print('-' * 30)
 
 
 # 生成器函数，返回一个生成器对象
@@ -112,7 +112,7 @@ for i in ranger:
 for i in ranger:
     print(f'2 for {i}')
 
-print('------------------')
+print('-' * 10)
 
 
 def my_gen2():
@@ -124,7 +124,7 @@ def my_gen2():
 gen2 = my_gen2()
 print(next(gen2))
 gen2.send(10)
-print('------------------')
+print('-' * 10)
 
 
 # 生成器生成质数
@@ -144,7 +144,7 @@ for i in prime_gen():
     print(f'质数: {i}')
     if i > 100:
         break
-print('----------------------------------')
+print('-' * 30)
 
 # 生成器推导式
 genobj = (pair for pair in zip(('a', 'b'), ('A', 'B')))
@@ -152,8 +152,8 @@ print(f'生成器推导式的类型 {type(genobj)}')  # <class 'generator'>
 for i in genobj:
     print(f'生成器推导式生成的值 {i}')
 
-print('----------------------------------')
-print('----装饰器----')
+print('-' * 30)
+print(f'{"-" * 6}装饰器{"-" * 6}')
 '''
 最接近 def 函数定义的装饰器最先被调用
 '''

@@ -1,3 +1,5 @@
+import time
+
 from markupsafe import escape
 from flask import Flask, url_for, request, render_template, make_response, redirect, session, flash, \
     render_template_string, g
@@ -237,6 +239,7 @@ def context_processor():
 # 在所有请求之前执行, 如果有返回值则不再调用视图函数
 @app.before_request
 def before_request():
+    g.start_time = time.perf_counter()
     g.test_name = 'hello flask test'
     print('app before request...')
 
@@ -245,6 +248,9 @@ def before_request():
 @app.after_request
 def after_request(response):
     print('app after request...')
+    end_time = time.perf_counter()
+    start_time = g.start_time
+    print(f'request time: {end_time - start_time}')
     return response
 
 
@@ -252,14 +258,12 @@ def after_request(response):
 @app.teardown_request
 def teardown_request(exception):
     print('teardown_request exception', exception)
-    print('app teardown request...')
 
 
 # 在退出应用情境时执行, 忽略未处理的异常
 @app.teardown_appcontext
 def teardown_appcontext(exception):
     print('teardown_appcontext exception', exception)
-    print('app teardown appcontext...')
 
 
 class User:
@@ -286,16 +290,17 @@ app.add_url_rule(
 # 测试请求上下文
 with app.test_request_context():
     """测试请求上下文"""
-    print('--------------')
+    print('-' * 10)
     print(url_for('index'))
     print(url_for('hi', name='Flask', age=18,
                   addr='Shanghai', email='flask@example.com'))
     print(url_for('user', username='Flask', age=18, addr='Beijing'))
-    print(url_for('user_id', name='Jerry', user_id=18))
-    print('--------------')
-    print('蓝图自定义 endpoint 生成 URL', url_for('blog.create_blog',
+    print(url_for('user_id', name='Jerry', uid=18))
+    print('-' * 10)
+    print('蓝图 url_prefix: ', url_for('login.register'))
+    print('蓝图自定义 endpoint 生成 URL', url_for('blog.create_blog', _method='POST',
                                                   username='hash', topic='new', tags=('hehe', 'haha')))
-    print('--------------')
+    print('-' * 10)
 
 # 测试指定请求
 with app.test_request_context('/hi'):

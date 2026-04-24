@@ -4,8 +4,7 @@ from typing import Annotated
 import sqlalchemy
 from sqlalchemy import String, Integer, Index, create_engine, Column, DateTime, ForeignKey, func, select, update, \
     delete, Table
-from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, sessionmaker, Session, relationship, aliased, \
-    declarative_base
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, sessionmaker, Session, relationship, aliased
 
 """
 多对多关系, 关联表包含除 左表和右表 的外键之外的其他列时, 使用 关联对象(class) 模式.
@@ -23,8 +22,16 @@ CursorResult:   # execute 执行后返回的结果
     returns_rows:   # 是否有返回行
 """
 
-DATABASE_URL = 'mysql://appuser:appuserpassword@172.31.218.169:3306/app'
-engine = create_engine(DATABASE_URL, echo=True)
+DATABASE_URL = 'mysql://appuser:appuserpassword@172.31.218.169:3306/app?charset=utf8mb4'
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=20,
+    max_overflow=10,
+    pool_timeout=30,
+    pool_recycle=3600,
+    pool_pre_ping=True,
+    echo=True
+)
 
 # 类型声明
 primary_key = Annotated[int, mapped_column(Integer, autoincrement=True, primary_key=True, nullable=False, comment='id')]
@@ -183,12 +190,12 @@ with session_maker() as session:
     print(f'查询 部门1 下的员工, 按员工年龄降序排列, 获取前 10 条数据: {result}')
 
     # 根据 id 更新员工年龄
-    result = session.execute(update(Employee).where(Employee.id == 6).values(age=36))
+    result = session.execute(update(Employee).where(Employee.id == 6).values(age=36)).scalar_one()
     print(
         f'根据 id 更新员工年龄: result.rowcount {result.rowcount}, result.is_insert {result.is_insert}, result.returns_rows {result.returns_rows}')
 
     # 删除员工年龄大于等于 65 的员工信息
-    result = session.execute(delete(Employee).where(Employee.age >= 65))
+    result = session.execute(delete(Employee).where(Employee.age >= 65)).scalar_one()
     print(
         f'删除员工年龄大于等于 65 的员工信息: result.rowcount {result.rowcount}, result.is_insert {result.is_insert}, result.returns_rows {result.returns_rows}')
 
@@ -219,7 +226,7 @@ with session_maker() as session:
     emp = aliased(Employee, name='emp')
     dpt = aliased(Department, name='dpt')
 
-    print('------------------------------------------')
+    print('-' * 30)
     # 创建 用户 - 角色 多对多关系
     # user1 = User(name='user1')
     # user2 = User(name='user2')

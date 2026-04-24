@@ -1,4 +1,6 @@
-'''使用 else 检查 while 和 for 的 break, try 的错误'''
+"""
+使用 else 检查 while 和 for 的 break, try 的错误
+"""
 print('while 循环没有执行 break, 则执行 else 块')
 numbers = [1, 3, 5, 7, 9]
 position = 0
@@ -10,7 +12,7 @@ while position < len(numbers):
     position += 1
 else:  # while 循环没有执行 break, 则执行 else 块
     print('No even number found')
-print('----------------------------')
+print('-' * 30)
 
 print('for 循环没有执行 break, 则执行 else 块')
 word = 'thud'
@@ -21,7 +23,7 @@ for letter in word:
     print(letter)
 else:  # for 循环没有执行 break, 则执行 else 块
     print('No x found')
-print('----------------------------')
+print('-' * 30)
 
 
 # 使用生成器对象获取 fibonacci 数列
@@ -30,7 +32,7 @@ def fibonacci(n):
     a, b = 0, 1
     while n > 0:
         yield a
-        a, b = b, a+b
+        a, b = b, a + b
         n -= 1
     print()
     return a
@@ -40,7 +42,7 @@ fi = fibonacci(10)
 print(f'生成器对象获取 fibonacci(5):')
 for v in fibonacci(10):
     print(f'generator get fibonacci: {v}')
-print('----------------------------')
+print('-' * 30)
 
 print('try 如果没有发生异常，则执行 else 块')
 try:
@@ -53,7 +55,7 @@ else:
     print('没有发生错误执行的代码')
 finally:
     print('总是会执行')
-print('---------')
+print('-' * 10)
 try:
     fr = open('./uv.lock', 'r', encoding='utf-8')
 except FileNotFoundError as e:
@@ -65,7 +67,7 @@ else:
 finally:
     print('总是会执行')
     fr.close()
-print('----------------------------')
+print('-' * 30)
 
 
 # 自定义异常类
@@ -83,4 +85,4 @@ except MyError as e:
     print(f'自定义异常 {e}')
 else:
     print('没有发生错误执行的代码')
-print('----------------------------')
+print('-' * 30)

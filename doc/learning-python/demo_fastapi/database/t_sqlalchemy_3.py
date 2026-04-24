@@ -13,9 +13,12 @@ async_sessionmaker():  # 创建异步 session 会话连接
 ASYNC_DATABASE_URL = 'mysql+aiomysql://appuser:appuserpassword@172.31.218.169:3306/app'
 async_engine = create_async_engine(
     ASYNC_DATABASE_URL,
+    pool_size=20,
+    max_overflow=10,
+    pool_timeout=30,
+    pool_recycle=3600,
+    pool_pre_ping=True,
     echo=True,
-    pool_size=10,
-    max_overflow=5,
 )
 
 # 创建映射关系基类实例

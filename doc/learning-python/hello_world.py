@@ -30,23 +30,23 @@ print(message)
 message = f"my salary is {salary:.2f}, my tel is {tel}"
 print(message)
 print(F"""my salary is {salary:.2f}, my tel is {tel}""")
-print('--------------')
+print('-' * 20)
 
 letters = 'abcdefghijklmnopqrstuvwxyz'
 for x in letters:
     print(f'{x}', end='\t')
 print()
-for x in range(97, 123):    # 临时变量, 外层可以访问到, 不建议在外层访问
-    print(f'{x}={chr(x)}', end='\t')    # chr 获取 unicode 码对应的字符
+for x in range(97, 123):  # 临时变量, 外层可以访问到, 不建议在外层访问
+    print(f'{x}={chr(x)}', end='\t')  # chr 获取 unicode 码对应的字符
 print()
 # print(x)    # 能访问到循环语句内声明的变量
 for x in range(65, 91):
     print(f'{x}={chr(x)}', end='\t')
 # print(x)    # 能访问到循环语句内声明的变量
-print(ord('一'))    # ord 获取字符的 unicode 码
-print('--------------')
+print(ord('一'))  # ord 获取字符的 unicode 码
+print('-' * 20)
 
-print('-----random guess-----')
+print(f'{"-" * 6}random guess{"-" * 6}')
 random_num = random.randint(1, 100)
 loop = 1
 while loop <= 100:
@@ -55,7 +55,7 @@ while loop <= 100:
         print(f'Python 克星找到了, 它是 {random_num}')
         break
     loop += 1
-print('--------------')
+print('-' * 20)
 
 # 获取环境变量和命令行参数
 # uv run --env-file .env .\hello_world.py 'helloworld' 'hellochina'
@@ -71,4 +71,4 @@ lt = [i for i in range(10000)]
 print(f'列表推导式内存大小: sys.getsizeof(lt): {sys.getsizeof(lt)}')
 lt_gen = (i for i in range(10000))
 print(f'生成器内存大小: sys.getsizeof(lt_gen): {sys.getsizeof(lt_gen)}')
-print('--------------')
+print('-' * 20)

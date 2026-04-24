@@ -1,5 +1,17 @@
 ## 类
 
+- 实例化类时, 如果既不是数据类, 继承的父类也没有 `__init__` 方法, 传入的参数将被忽略
+- 数据类, 主要用于存储数据, 适合作为数据容器
+  - API 请求/响应
+  - 数据库表映射（轻量级）
+  - 配置参数类
+  - 函数返回的复合数据
+- 普通类, 主要定义对象行为, 属性只是辅助, 适合行为驱动的对象
+  - 业务逻辑
+  - 管理器、客户端
+  - 抽象基类、接口
+  - 有复杂生命周期的对象
+
 - `__new__` 创建并返回一个新的实例, 第一个参数为 cls 类本身
   - 必须返回实例, 如果不返回实例则不会调用 `__init__` 方法
   - 在 `__init__` 方法执行之前调用
@@ -89,7 +101,7 @@ hunter2 = ExclamationQuote('Daffy Duck', 'It\'s rabbit season')
 who_says(hunter)
 who_says(hunter1)
 who_says(hunter2)
-print('-----------')
+print('-' * 10)
 # TypeError: Quote.__init__() takes 3 positional arguments but 4 were given
 hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom', 'good')
 who_says(hunter3)
@@ -97,7 +109,7 @@ who_says(hunter3)
 
 ### 自省
 
-通过一定的机制查询到对象的内部解构
+通过一定的机制查询到对象的内部结构
 
 ### 内置属性(魔法属性)
 
@@ -147,7 +159,7 @@ print(f'p.__dict__ {p.__dict__}') # 实例自身的属性
 p.say_hello()
 print(f'Person.__dict__ {Person.__dict__}') # 类属性、方法、装饰器描述符等
 print(f'moduleName.__dict__ {select.__dict__}') # 模块中定义的所有名称
-print('------------------')
+print('-' * 10)
 
 # p.__dict__ {'name': 'Jerry'}
 # Jerry say hello!
@@ -375,7 +387,7 @@ u1 = User('Tom', {'age': 18, 'sex': 'male'})
 print(f'u1.name {u1.name}') # u1.name Tom
 print(f'u1.age {u1.age}') # u1.age 18
 print(f'u1.sex {u1.sex}') # u1.sex male
-print('---------')
+print('-' * 10)
 
 
 class User2:
@@ -542,22 +554,22 @@ class Fruit:
 banana = Fruit()
 print(f'Fruit.color {Fruit.color}')  # red
 print(f'banana.color {banana.color}')  # red
-print('---------')
+print('-' * 10)
 print(f'修改 Fruit.color = "yellow"')
 Fruit.color = 'yellow'
 print(f'Fruit.color {Fruit.color}')  # yellow
 print(f'banana.color {banana.color}')  # yellow, 实例未修改过的同名属性也会变化
-print('---------')
+print('-' * 10)
 print(f'修改 banana.color = "green"')
 banana.color = 'green'
 print(f'Fruit.color {Fruit.color}')  # yellow
 print(f'banana.color {banana.color}')  # green
-print('---------')
+print('-' * 10)
 print(f'修改 Fruit.color = "blue"')
 Fruit.color = 'blue'
 print(f'Fruit.color {Fruit.color}')  # blue
 print(f'banana.color {banana.color}')  # green
-print('---------')
+print('-' * 10)
 orange = Fruit()
 print(f'Fruit.color {Fruit.color}')  # blue
 print(f'orange.color {orange.color}')  # blue
@@ -595,6 +607,11 @@ class C:
 
 C.go_home() # 不需要实例化直接调用
 ```
+
+### 数据类
+
+- 使用 @dataclass 装饰器
+- 解释器自动生成 `__init__`、`__repr__`、`__eq__`、`__hash__` 方法
 
 ## 多继承
 
@@ -682,7 +699,7 @@ Person = type('Person', (), {
 
 p2 = Person('Tom')
 p2.greet()
-print('---------------')
+print('-' * 10)
 # 函数创建类
 def UpperMetaClass(class_name, class_bases, class_attrs):
     # 字典推导式将类属性非下划线开头的转换为大写

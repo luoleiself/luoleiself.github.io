@@ -2,15 +2,15 @@ import json
 from decimal import Decimal
 from datetime import datetime, date
 
-'''
+"""
 json 模块默认只能序列化基本类型（dict、list、str、int、float、bool、None），遇到自定义对象或特殊类型时会报错
-'''
+"""
 
 dt = {'a': 'A', 'c': 1, 'd': True, 'f': '张三'}
 print(f'ascii 编码 json.dumps(dt): {json.dumps(dt)}')
 print(
     f'ascii 不编码 json.dumps(dt, ensure_ascii=False): {json.dumps(dt, ensure_ascii=False)}')
-print('-------')
+print('-' * 10)
 print('''
 # 自定义编码类继承 json.JSONEncoder, 关键字参数 cls 传入 json.dumps
 class CustomJSONEncoder(json.JSONEncoder):
@@ -110,4 +110,4 @@ json_str = json.dumps(org_data, cls=CustomJSONEncoder)
 print(f'自定义编码类, 传入关键字参数 cls:\n {json_str}')
 json_str = json.dumps(org_data, default=customize_json)
 print(f'自定义编码函数, 传入关键字参数 default:\n {json_str}')
-print('---------------')
+print('-' * 10)

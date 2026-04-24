@@ -1,39 +1,38 @@
+import multiprocessing
 import threading
 from multiprocessing import Process
 from threading import Lock, Thread
 import time
 import os
 
-count = 0
 
+def sing(l: Lock):
+    t = threading.current_thread()  # 获取当前线程对象
+    print(f'{t.name} is running...')
+    for i in range(10):
+        with l:
+            time.sleep(0.1)
 
-def sing():
-    for _ in range(1_000_000):
-        global count
-        count += 1
-        # time.sleep(1.8)
-
-
-def dance():
-    for _ in range(1_000_000):
-        global count
-        count -= 1
-        # time.sleep(1)
+    print(f'{t.name} is end...')
 
 
 print(f'main process pid: {os.getpid()}')
-t1 = Thread(target=sing, name='SingThread')
-t2 = Thread(target=dance, name='DanceThread')
+
 # 设置线程为守护线程，主线程运行结束后会立即终止守护线程, 忽略守护线程是否执行完成
 # t1.daemon = True
 # t2.daemon = True
-t1.start()
-t2.start()
-print(t1.is_alive())
-t1.join()   # 阻塞线程直到线程终止退出或超时
-t2.join()
-print(f'{count=:>10}')
-print('--------------------------------------')
+
+lock = Lock()
+thread_list = []
+for i in range(10):
+    t = Thread(target=sing, args=(lock,))
+    t.name = f'thread-{i}'
+    t.start()
+
+for t in thread_list:
+    print(f't.name: {t.name}, t.is_alive: {t.is_alive()}')
+    t.join()  # 阻塞线程直到线程终止退出或超时
+print('-' * 30)
 
 
 # 继承 Thread 类实现多线程
@@ -50,10 +49,21 @@ class DetailHtml(Thread):
         self.lock.release()
 
 
+def f(l: Lock):
+    with l:
+        current = multiprocessing.current_process()
+        print(f'{current.name} is running...')
+
+
 if __name__ == '__main__':
     detailHtml = DetailHtml('wadaxing', Lock())
     start_time = time.time()
     detailHtml.start()
     detailHtml.join()
     print(f'cost time: {time.time() - start_time}')
-print('--------------------------------------')
+    print('-' * 20)
+
+    lock = multiprocessing.Lock()
+    p = Process(target=f, name='process-sing', args=(lock,))
+    p.start()
+    p.join()

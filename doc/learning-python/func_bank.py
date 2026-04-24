@@ -2,7 +2,7 @@ money = 500000
 
 
 def main():
-    print('---------main---------')
+    print(f'{"-" * 6}main{"-" * 6}')
     print('欢迎来到银行系统')
     print('查询余额\t[输入1]\t')
     print('存款\t\t[输入2]\t')
@@ -10,29 +10,32 @@ def main():
     print('退出\t\t[输入4]\t')
     return input('请输入您的选择: ')
 
+
 # 查询余额
 def query_balance(show_header: bool):
     if show_header:
-        print('---------查询余额---------')
+        print(f'{"-" * 6}查询余额{"-" * 6}')
     print(f'您的余额为: {money}')
+
 
 # 存款
 def saving_money(num: float):
-    print('---------存款---------')
+    print(f'{"-" * 6}存款{"-" * 6}')
     global money
     money += num
     query_balance(False)
 
+
 # 取款
 def withdraw_money(num: float):
-    print('---------取款---------')
+    print(f'{"-" * 6}取款{"-" * 6}')
     global money
     money -= num
     if money < 0:
         print('余额不足')
         return False  # 取款失败
     query_balance(False)
-    return True   # 取款成功
+    return True  # 取款成功
 
 
 while True:

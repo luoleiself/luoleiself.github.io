@@ -15,10 +15,10 @@ c = Circle(5)
 print(f'c.radius {c.radius} c.diameter {c.diameter}')
 try:
     # AttributeError: property 'diameter' of 'Circle' object has no setter
-    c.diameter = 10   # 只读属性
+    c.diameter = 10  # 只读属性
 except AttributeError as e:
     print(f'只能属性不能修改: {e}')
-print('---------------------------')
+print('-' * 27)
 
 
 # 装饰器 @property, @setter, 可读写属性
@@ -41,7 +41,7 @@ d.name = 'dk'
 print(f'd.name {d.name}')
 # AttributeError: 'Duck' object has no attribute '__name'. Did you mean: 'name'?
 # print(f'd.__name {d.__name}') # 不能直接访问内置属性
-print('---------------------------')
+print('-' * 27)
 
 
 # 实例的内置方法(魔法方法)
@@ -71,7 +71,7 @@ print(f'first == second {first == second}')
 n1 = Word(4)
 n2 = Word(5)
 print(f'实例 n1 * 实例 n2 = {n1 * n2}')
-print('---------------------------')
+print('-' * 27)
 
 
 # __new__ 内置魔法方法，创建新实例
@@ -99,7 +99,7 @@ print(f'ani = {ani}')
 # Animal __new__...
 # Animal __init__...
 # ani = <__main__.Animal object at 0x0000023215769D90>
-print('---------------------------')
+print('-' * 27)
 
 
 # __getattr__ 和 __getattribute__
@@ -118,7 +118,7 @@ u1 = User('Tom', {'age': 18, 'sex': 'male'})
 print(f'u1.name {u1.name}')
 print(f'u1.age {u1.age}')
 print(f'u1.sex {u1.sex}')
-print('---------')
+print('-' * 9)
 
 
 class User2:
@@ -136,7 +136,7 @@ u2 = User2('Jerry', {'age': 20, 'sex': 'female'})
 print(f'u2.name {u2.name}')
 print(f'u2.age {u2.age}')
 print(f'u2.sex {u2.sex}')
-print('---------------------------')
+print('-' * 27)
 
 
 # 类属性，所有实例继承
@@ -148,26 +148,26 @@ print('类属性, 所有实例继承, 实例同名属性会覆盖类属性')
 banana = Fruit()
 print(f'Fruit.color {Fruit.color}')  # red
 print(f'banana.color {banana.color}')  # red
-print('---------')
+print('-' * 9)
 print(f'修改 Fruit.color = "yellow"')
 Fruit.color = 'yellow'
 print(f'Fruit.color {Fruit.color}')  # yellow
 print(f'banana.color {banana.color}')  # yellow, 实例未修改过的同名属性也会变化
-print('---------')
+print('-' * 9)
 print(f'修改 banana.color = "green"')
 banana.color = 'green'
 print(f'Fruit.color {Fruit.color}')  # yellow
 print(f'banana.color {banana.color}')  # green
-print('---------')
+print('-' * 9)
 print(f'修改 Fruit.color = "blue"')
 Fruit.color = 'blue'
 print(f'Fruit.color {Fruit.color}')  # blue
 print(f'banana.color {banana.color}')  # green
-print('---------')
+print('-' * 9)
 orange = Fruit()
 print(f'Fruit.color {Fruit.color}')  # blue
 print(f'orange.color {orange.color}')  # blue
-print('---------------------------')
+print('-' * 27)
 
 
 # 类方法，所有实例共享
@@ -195,7 +195,7 @@ b.count_func()
 aa = AA()
 aa.count_func()
 AA.count_func()
-print('---------------------------')
+print('-' * 27)
 
 
 # 静态方法, 不需要实例化直接调用
@@ -235,21 +235,21 @@ class Dog(Animal):
 print('静态方法, 实例方法内调用静态方法和类方法')
 d = Dog()
 d.breathe()
-print('--------')
+print('-' * 8)
 print('静态方法, 实例调用类方法, 类方法调用静态方法')
 d = Dog()
 d.class_func()
-print('--------')
+print('-' * 8)
 print('静态方法, 实例直接调用静态方法')
 d = Dog()
 d.static_func()
-print('---------------------------')
+print('-' * 27)
 
 print(r'''
 多继承, 访问自己没有的属性或方法时, 优先使用最先继承的父类的属性和方法
 按 MRO(method resolution order) 方法解析顺序查找方法或属性的规则
 ''')
-print('--------')
+print('-' * 8)
 print('菱形继承:')
 
 
@@ -275,7 +275,7 @@ a = A()
 print(f'a.name {a.name}\nA.__mro__ {A.__mro__}')
 # a.name cls_C
 # A.__mro__ (<class '__main__.A'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.D'>, <class 'object'>)
-print('--------')
+print('-' * 8)
 print('树形继承:')
 
 
@@ -305,7 +305,7 @@ a = A()
 print(f'a.name {a.name}\nA.__mro__ {A.__mro__}')
 # a.name cls_D
 # A.__mro__ (<class '__main__.A'>, <class '__main__.B'>, <class '__main__.D'>, <class '__main__.C'>, <class '__main__.E'>, <class 'object'>)
-print('---------------------------')
+print('-' * 27)
 
 
 # Duck typing
@@ -318,22 +318,22 @@ class Quote:
         return self.person
 
     def says(self):
-        return self.words+'.'
+        return self.words + '.'
 
 
 class QuestionQuote(Quote):
     def says(self):
-        return self.words+'?'
+        return self.words + '?'
 
 
 class ExclamationQuote(Quote):
     def says(self):
-        return self.words+'!'
+        return self.words + '!'
 
 
 class SubQuestionQuote(QuestionQuote):
     def says(self):
-        return self.words+'??'
+        return self.words + '??'
 
 
 def who_says(obj):
@@ -350,7 +350,7 @@ who_says(hunter1)
 who_says(hunter2)
 hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom')
 who_says(hunter3)
-print('-----------')
+print('-' * 10)
 # 实例化时, 参数必须符合初始化方法的参数要求
 # TypeError: Quote.__init__() takes 3 positional arguments but 4 were given
 # hunter3 = SubQuestionQuote('Jerry', 'It\'s Tom', 'good')
@@ -358,7 +358,7 @@ print('-----------')
 # TypeError: Quote.__init__() missing 2 required positional arguments: 'person' and 'words'
 # hunter3 = SubQuestionQuote()
 # who_says(hunter3)
-print('---------------------------')
+print('-' * 27)
 
 
 # 数据类
@@ -370,8 +370,10 @@ class DataClass:
 
 
 dc = DataClass('Tom', 18, 1.75)
+print(f'hasattr(DataClass, "__init__"): {hasattr(DataClass, "__init__")}')
 print(f'数据类: {dc} 类型为 {type(dc)}')
-print('---------------------------')
+print(f'数据类属性: {dc.name} {dc.age} {dc.height}')
+print('-' * 27)
 
 
 # 定义一个元类（继承自 type）
@@ -406,7 +408,7 @@ class MyClass(metaclass=MyMeta):
 
 print(f"MyClass.created_by: {MyClass.created_by}")  # MyMeta
 print(f"MyClass.version: {MyClass.version}")
-print('-----------')
+print('-' * 10)
 
 
 class SingletonMeta(type):
@@ -438,7 +440,7 @@ db1 = Database()
 db2 = Database()
 print(f"db1 is db2: {db1 is db2}")  # True
 print(f"db1.connect(): {db1.connect()}")
-print('---------------------------')
+print('-' * 27)
 
 print('函数创建类')
 
@@ -457,10 +459,10 @@ class Person(object, metaclass=UpperMetaClass):
 
 
 print(f'hasattr(Person, name): {hasattr(Person, "name")}')  # False
-print(f'hasattr(Person, "NAME"): {hasattr(Person, "NAME")}')    # True
-print(f'hasattr(Person, "_AGE"): {hasattr(Person, "_AGE")}')    # False
+print(f'hasattr(Person, "NAME"): {hasattr(Person, "NAME")}')  # True
+print(f'hasattr(Person, "_AGE"): {hasattr(Person, "_AGE")}')  # False
 print(f'hasattr(Person, "_age"): {hasattr(Person, "_age")}')  # True
-print('----------')
+print('-' * 10)
 
 print('元类创建类')
 
@@ -480,7 +482,7 @@ class Person1(metaclass=UpperMetaClass):
 
 
 print(f'hasattr(Person1, name): {hasattr(Person1, "name")}')  # False
-print(f'hasattr(Person1, "NAME"): {hasattr(Person1, "NAME")}')    # True
-print(f'hasattr(Person1, "_AGE"): {hasattr(Person1, "_AGE")}')    # False
+print(f'hasattr(Person1, "NAME"): {hasattr(Person1, "NAME")}')  # True
+print(f'hasattr(Person1, "_AGE"): {hasattr(Person1, "_AGE")}')  # False
 print(f'hasattr(Person1, "_age"): {hasattr(Person1, "_age")}')  # True
-print('---------------------------')
+print('-' * 27)
