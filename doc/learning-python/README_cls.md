@@ -1,3 +1,10 @@
+## abc
+
+该模块提供了用于定义抽象类的基类 ABC(Abstract Base Class).
+
+- ABC, 抽象基类, 定义抽象类都继承此类.
+- @abstractmethod 抽象方法装饰器.
+
 ## 类
 
 - 实例化类时, 如果既不是数据类, 继承的父类也没有 `__init__` 方法, 传入的参数将被忽略
@@ -499,6 +506,8 @@ def set_name(self, value):
 
 - 使用内置函数 property() 允许将方法当作属性访问
 - 使用装饰器 @property
+  - @x.setter 修改属性
+  - @x.deleter 删除属性
 
 ```python
 # 使用 property 内置函数
@@ -514,6 +523,10 @@ def name(self):
 @name.setter
 def name(self, value):
     self.hidden_name = value
+
+@name.deleter
+def name(self):
+    del self.hidden_name
 
 # 只读属性
 @property

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from starlette.responses import HTMLResponse
 
-router = APIRouter(prefix="/api/news", tags=["news"])
+router = APIRouter(prefix="/news", tags=["news"])
 
 
 @router.get('/', response_class=HTMLResponse, summary="获取新闻列表", description="获取新闻列表",

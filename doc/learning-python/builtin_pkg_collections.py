@@ -1,6 +1,6 @@
 import random
 import threading
-from collections import Counter, deque, namedtuple
+from collections import Counter, deque, namedtuple, defaultdict
 from queue import Queue
 import time
 
@@ -37,6 +37,27 @@ print(f'c.values() {c.values()}')
 print(f'c.items() {c.items()}')
 c.update('abc')
 print(f'c.update("abc") c.most_common(5) {c.most_common(5)}')
+d = Counter(g=3, h=5, i=-4)
+print(f'c.subtract 之前 c: {c}')
+c.subtract(d)
+print(f'从另一个可迭代对象或映射中减去元素 c.subtract(d): {c}')
+print(f'sorted(c.elements()): {sorted(c.elements())}')
+print('-' * 30)
+
+print('defaultDict: 字典默认值, 第一个参数 default_factory 如果为 None 触发 KeyError, 否则将调用给指定键提供默认值')
+s = [('yellow', 1), ('blue', 2), ('yellow', 3), ('blue', 4), ('red', 1)]
+d = defaultdict(list)
+for k, v in s:
+    d[k].append(v)
+
+print(f'字典列表统计: {d}')
+print('-' * 10)
+s = 'mississippi'
+d = defaultdict(int)
+for k in s:
+    d[k] += 1
+
+print(f'字典数字统计: {d}')
 print('-' * 30)
 
 print('双端队列:')
@@ -62,7 +83,6 @@ thread = threading.current_thread()
 q = Queue(maxsize=4)
 print(f'{thread.name} q 类型 {type(q)} q.qsize() {q.qsize()} q.maxsize {q.maxsize}')
 print(f'{thread.name} q.full() {q.full()} q.empty() {q.empty()} ')
-
 
 # 哨兵：生产线程结束后每个消费者各放一个，收到则退出（勿用 empty() 判断，多线程不可靠）
 _QUEUE_SENTINEL = object()

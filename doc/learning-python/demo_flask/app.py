@@ -67,7 +67,7 @@ request 请求对象, 包含了 headers, method, cookies, args, form, files, jso
     url_for('blog.create_blog', name='hash', topic='new', tags=('plus', 'plug'))
 子域名(subdomain): 根据域名前缀路由到不同的(蓝图)视图函数, 实现多租户、多模块应用, 需配置 SERVER_NAME
     app.config['SERVER_NAME'] = 'api.example.com'
-    @app.route('/users', subdomain="v1")
+    @app.route('/users', subdomain="v1", url_prefix='') # 路由前缀
     def users():
         return {'data': 'API v1'}
         
