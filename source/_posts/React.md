@@ -993,12 +993,12 @@ function Page({url}){
     logVisit(visitedUrl, numberOfItems);
   });
   useEffect(() => {
+    // 使用 useEffectEvent 提取非响应式逻辑
     // Effect 内部依然是响应式的, url 变化会去调用 onVisit
     onVisit(url);
 
     // 日志 logVisit 想加入购物车数量时, 需要添加依赖项 numberOfItems
     // 如果依赖项加入 numberOfItems, 就改变了 logVisit 日志的作用
-    // 使用 useEffectEvent 提取非响应式逻辑
     // logVisit(url, numberOfItems); // 缺少依赖项 numberOfItems
   },[url]);
 

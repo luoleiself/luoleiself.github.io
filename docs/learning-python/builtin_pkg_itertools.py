@@ -1,0 +1,180 @@
+import functools
+import itertools
+import operator
+
+"""
+functools 用于高阶函数操作, 主要作用于函数或可调用对象的装饰、缓存、偏函数、比较等场景.
+    @lru_cache  函数结果缓存, 参数必须可哈希
+    @cache  无限缓存(python 3.9+), 同 lru_cache
+    partial  固定部分参数, 生成新函数
+    @wraps  保留被装饰函数的元数据
+    @singledispatch 单分派泛型函数
+    reduce  累计迭代计算
+    @total_ordering 如果实现了 __eq__ 和顺序比较的其中一个方法, 自动填充其他比较方法.
+    cmp_to_key  将旧式比较函数转为 key 函数
+    update_wrapper  手动更新包装函数元数据
+
+    # 最多缓存 128 个不同参数的结果
+    @lru_cache(maxsize=128)
+    def fib(n):
+        if n < 2:
+            return n
+        return fib(n-1) + fib(n-2)
+    print(fib(50))  # 没有缓存会计算很久
+
+    # 数据库连接
+    def db_connect(host, port, user, password, db_name):
+        print(f'Connecting to {db_name} on {host}:{port}')
+    # 预设固定值
+    dev_db = partial(db_connect, host='localhost', port=3306, user='dev')
+    prod_db = partial(db_connect, host='prod.example.com', port=3306, user='prod')
+
+    dev_db(password='dev123', db_name='dev_db')
+    prod_db(password='prod123', db_name='prod_db')
+
+    # wraps 保留函数元数据
+    def good_logger(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            print(args, kwargs)
+            return func(*args, **kwargs)
+        return wrapper
+
+    @total_ordering
+    class Student:
+        def __init__(self, name, age):
+            self.name = name
+            self.age = age
+
+        def __eq__(self, other):
+            if not isinstance(other, self):
+                return False
+            return self.age == other.age
+
+        def __lt__(self, other):
+            if not isinstance(other, self):
+                return NotImplemented
+            return self.age < other.age
+
+        # __le__, __gt__, __ge__, __ne__ 自动填充其他比较方法
+"""
+
+# operator 模块
+print('operator 模块导出一组与 python 内置运算符相对应的高效函数')
+# 10 + 1 == operator.add(10, 1)
+print(f'operator.add(1, 10) = {operator.add(1, 10)}')  # 11
+print(f'operator.sub(10, 1) = {operator.sub(10, 1)}')  # 9
+print(f'operator.lt(1, 10) = {operator.lt(1, 10)}')  # True
+
+print(f'operator.is_not(1, 2) = {operator.is_not(1, 2)}')  # True
+# True
+print(f'operator.contains([1, 2], 1) = {operator.contains([1, 2], 1)}')
+
+print(f'operator.lshift(5, 1) = {operator.lshift(5, 1)}')  # 10
+print(f'operator.rshift(5, 1) = {operator.rshift(5, 1)}')  # 2
+
+# [1, 2, 3, 'a', 'b']
+print(
+    f'operator.concat([1, 2, 3], ["a", "b"]) = {operator.concat([1, 2, 3], ["a", "b"])}')
+
+print(f'operator.and(True, False) = {operator.and_(True, False)}')  # False
+print(f'operator.or_(True, False) = {operator.or_(True, False)}')  # True
+print('-' * 30)
+
+# functools 模块用于处理高阶函数, 作用于其他函数或返回其他函数的函数
+# 120
+print(
+    f'累积 返回一个结果: functools.reduce(lambda x, y: x * y, [1, 2, 3, 4, 5]) = {functools.reduce(lambda x, y: x * y, [1, 2, 3, 4, 5])}')
+print('-' * 30)
+# itertools 模块
+# [1, 3, 6, 10, 15]
+print(
+    f'累加: itertools.accumulate([1, 2, 3, 4, 5]) = {list(itertools.accumulate([1, 2, 3, 4, 5]))}')
+# [1, 2, 6, 24, 120]
+print(
+    f'累积: itertools.accumulate([1, 2, 3, 4, 5], operator.mul) = {list(itertools.accumulate([1, 2, 3, 4, 5], operator.mul))}')
+# [1, 2, 3, [4], 5, [6]]
+print(
+    f'解构: itertools.chain([1, 2, 3], [[4], 5, [6]]) = {list(itertools.chain([1, 2, 3], [[4], 5, [6]]))}')
+# ['a', 'b', 'c', 'A', 'B', 'C', 'D']
+print(
+    f'解构: itertools.chain("abc", "ABCD") = {list(itertools.chain("abc", "ABCD"))}')
+dt = {'a': 'A', 'b': 'B', 'c': 'C'}
+# ['a', 'b', 'c']
+print(fr'解构字典的键: itertools.chain(dt) = {list(itertools.chain(dt))}')
+# [1, 1, 1]
+print(
+    f'重复 返回元素重复次数的列表: itertools.repeat(1, 3) = {list(itertools.repeat(1, 3))}')
+# [[1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3]]
+print(
+    f'重复 返回元素重复次数的列表: itertools.repeat([1, 2, 3], 4) = {list(itertools.repeat([1, 2, 3], 4))}')
+# (<itertools._tee object at 0x0000021F3B9F4140>, <itertools._tee object at 0x0000021F3B9F4780>, <itertools._tee object at 0x0000021F3B9F4240>)
+print(
+    f'重复 返回指定数量的迭代器对象元组, itertools.tee([1, 2, 3, 4, 5], 3) = {tuple(itertools.tee([1, 2, 3, 4, 5], 3))}')
+te = itertools.tee('ABC', 2)
+for t in te:
+    print(list(t))
+# ['A', 'B', 'C']
+# ['A', 'B', 'C']
+print('-' * 10)
+# [(1, 2), (3, 4), (5,)]
+print(
+    f'分组, 指定分组元素个数: itertools.batched([1, 2, 3, 4, 5], 2) = {list(itertools.batched([1, 2, 3, 4, 5], 2))}')
+
+print(f'itertools.groupby([], len) 按元素的长度分组')
+gb = itertools.groupby(
+    ['A', 'B', 'C', 'D', 'EFG', 'H', 'IJ', 'KL', 'MN', 'OP'], len)
+for k, v in gb:
+    print(k, list(v))
+# 1 ['A', 'B', 'C', 'D']
+# 3 ['EFG']
+# 1 ['H']
+# 2 ['IJ', 'KL', 'MN', 'OP']
+print('-' * 10)
+print(f'compress, filterfalse, dropwhile, takewhile')
+# [1, 3]
+print(
+    f'选择 按元素位置选择: itertools.compress([1, 2, 3, 4, 5], [1, 0, 1, 0]) = {list(itertools.compress([1, 2, 3, 4, 5], [1, 0, 1, 0]))}')
+# [6, 8]
+print(
+    f'过滤 所有符合条件的元素: itertools.filterfalse(lambda x: x < 5, [1, 4, 6, 3, 8]) = {list(itertools.filterfalse(lambda x: x < 5, [1, 4, 6, 3, 8]))}')
+# [6, 3, 8]
+print(
+    f'过滤 丢弃符合条件的元素直到 False 结束: itertools.dropwhile(lambda x: x < 5, [1, 4, 6, 3, 8]) = {list(itertools.dropwhile(lambda x: x < 5, [1, 4, 6, 3, 8]))}')
+# [1, 4]
+print(
+    f'过滤 保留符合条件的元素直到 False 结束: itertools.takewhile(lambda x: x < 5, [1, 4, 6, 3, 8]) = {list(itertools.takewhile(lambda x: x < 5, [1, 4, 6, 3, 8]))}')
+print('-' * 10)
+# [2, 4]
+print(
+    f'切片: itertools.isslice([1, 2, 3, 4, 5], 1, 5, 2) = {list(itertools.islice([1, 2, 3, 4, 5], 1, 5, 2))}')
+# ['c', 'f', 'i', 'l']
+print(
+    f'切片: itertools.isslice("abcdefghijkl", 2, None, 3) = {list(itertools.islice("abcdefghijkl", 2, None, 3))}')
+# [(1, 2), (2, 3), (3, 4), (4, 5)]
+print(
+    f'组对: 相邻每两个元素组成一个元组, 返回双项元组列表: itertools.pairwise([1, 2, 3, 4, 5]) = {list(itertools.pairwise([1, 2, 3, 4, 5]))}')
+print('-' * 10)
+# [2, 12, 30]
+print(
+    f'遍历每个双项元组列表, 对每个元组应用函数: itertools.starmap(mul, [(1, 2), (3, 4), (5, 6)]) = {list(itertools.starmap(operator.mul, [(1, 2), (3, 4), (5, 6)]))}')
+print('-' * 10)
+# [(1, 4), (2, 5), (0, 6), (0, 7)]
+print(
+    f'zip 遍历按最长序列对齐, 返回元组列表, 填充缺失值(默认为 None): itertools.zip_longest((1, 2), [4, 5, 6, 7], fillvalue=0) = {list(itertools.zip_longest((1, 2), [4, 5, 6, 7], fillvalue=0))}')
+print('-' * 10)
+print(
+    f'生成多个序列的笛卡尔积元组列表 itertools.product([1, 2, 3], [4, 5, 6, 7], ("A", "B")) = {list(itertools.product([1, 2, 3], [4, 5, 6, 7], ("A", "B")))}')
+#  [('A', 'A'), ('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'A'), ('B', 'B'), ('B', 'C'), ('B', 'D'), ('C', 'A'), ('C', 'B'), ('C', 'C'), ('C', 'D'), ('D', 'A'), ('D', 'B'), ('D', 'C'), ('D', 'D')]
+print(
+    f'生成多个序列的笛卡尔积元组列表 itertools.product("ABCD", repeat=2) = {list(itertools.product("ABCD", repeat=2))}')
+# [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'A'), ('B', 'C'), ('B', 'D'), ('C', 'A'), ('C', 'B'), ('C', 'D'), ('D', 'A'), ('D', 'B'), ('D', 'C')]
+print(
+    f'生成多个序列的笛卡尔积元组列表 排除自身笛卡尔积: itertools.permutations("ABCD", 2) = {list(itertools.permutations("ABCD", 2))}')
+# [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'C'), ('B', 'D'), ('C', 'D')]
+print(
+    f'生成多个序列的笛卡尔积元组列表 排除自身和交换位置笛卡尔积: itertools.combinations("ABCD", 2) = {list(itertools.combinations("ABCD", 2))}')
+# [('A', 'A'), ('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'B'), ('B', 'C'), ('B', 'D'), ('C', 'C'), ('C', 'D'), ('D', 'D')]
+print(
+    f'生成多个序列的笛卡尔积元组列表 排除交换位置但保留自身笛卡尔积: itertools.combinations_with_replacement("ABCD", 2) = {list(itertools.combinations_with_replacement("ABCD", 2))}')
+print('-' * 30)

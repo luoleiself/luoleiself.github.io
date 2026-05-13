@@ -154,10 +154,26 @@ export default function ViewCount({ initialViews }: { initialViews: number }) {
 
 pages router 和 app router 模式下, 组成路由段的 文件 必须包含一个默认导出的组件
 
+### pages 和 App 区别
+
+- pages router
+  - pages 目录下的任意文件路径直接映射为路由段
+  - pages/api 目录下的文件使用 文件名 映射为 api 入口, 默认导出喊出作为 route handler
+  - 路由规则仅支持基础路由, 动态路由
+  - 页面组件默认是 客户端 组件
+  - 数据获取依赖于 Next.js 专属数据获取 getServerSideProps()
+
+- App router, 严格文件命名约定
+  - app 目录下的仅 page.tsx 映射为路由段
+  - app/api 目录下使用 route.ts 映射为 api 入口, 导出请求方法作为 route handler
+  - 路由规则支持 动态路由、并行路由、分组路由、拦截路由
+  - 页面组件默认是 服务器 组件
+  - 数据获取直接使用 async 获取
+
 ### pages router <em id="pages-router"></em> <!--markdownlint-disable-line-->
 
 `pages router` 模式下, pages 目录下所有的包含默认导出 React Component 的文件都将作为路由段可用.
-  
+
 - pages 以当前目录下的 文件名 创建路由段, 目录下的 index.tsx 创建页面
   - [fileName] 动态路由, 动态路由参数使用 [useRouter](#use-router) 访问. <em id="pages-dynamic-route"></em> <!--markdownlint-disable-line-->
     - [...fileName] 截获所有动态路由参数
@@ -367,7 +383,7 @@ export const revalidate: boolean | number = false; // false | 0 | number
 export const fetchCache: string = 'auto'; // auto | default-cache | only-cache | force-cache | force-no-store | default-no-store | only-no-store
 
 // 设置运行时
-export const runtime: string = 'nodejs';  //nodejs | edge
+export const runtime: string = 'nodejs';  // nodejs | edge
 
 // 设置首选区域
 export const preferredRegion: string = 'auto'; // auto | global | home | string | string[]

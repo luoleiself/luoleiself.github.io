@@ -2102,6 +2102,15 @@ export default {
 };
 ```
 
+#### 组件通信方式
+
+- props/$emit
+- parent/children
+- provide/inject
+- attrs/listeners
+- EventBus
+- 第三方状态库
+
 ## 内置内容
 
 ### 内置指令
