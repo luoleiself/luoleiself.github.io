@@ -6,6 +6,14 @@ from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 
 """
+提示词:
+    1. 给大模型设定角色和能力
+    2. 明确核心请求和任务
+    3. 按步骤拆解复杂任务
+    4. 指定风格与语气
+    5. 明确要求输出格式
+    6. 提供输入输出的示例
+
 LangChain Agent 示例
 
 核心组件:

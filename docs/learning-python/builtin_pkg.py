@@ -59,6 +59,8 @@ print(f'os.environ {environ}')
 print(f'os.getlogin() {os.getlogin()}')
 # os.kill(os.getpid(), 9)   # 关闭当前进程
 # os.putenv(name, value)    # 添加环境变量
+os_times = os.times()
+print(f'os.times() {os_times}')
 print('-' * 20)
 
 print(f'os.path {os.path}')
