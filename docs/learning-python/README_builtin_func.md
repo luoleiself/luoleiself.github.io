@@ -489,6 +489,16 @@ filtered = list(filter(None, values))  # None 表示过滤掉假值
 print(filtered)  # [1, 2, 3, 4]
 ```
 
+#### reversed()
+
+返回结果为反向迭代器对象, 需要使用 list() 转换为列表
+
+- 参数为可反转对象或支持 len 和 getitem的对象
+
+```python
+print(list(reversed([1, 2, 3, 4])))  # [4, 3, 2, 1]
+```
+
 #### sorted()
 
 排序`可迭代对象`返回一个新列表
@@ -505,14 +515,34 @@ print(sorted(words, key=len))  # ['C++', 'Java', 'python', 'JavaScript']
 print(sorted(words, key=str.lower))  # 忽略大小写
 ```
 
-#### reversed()
+#### slice()
 
-反转返回结果为反向迭代器对象, 需要使用 list() 转换为列表
+返回一个切片对象, 表示由范围(start, stop, step)指定的索引集, start 和 step 参数默认为 None
 
-- 参数为可反转对象或支持 len 和 getitem的对象
+- 使用切片语法时也会生成切片对象
 
 ```python
-print(list(reversed([1, 2, 3, 4])))  # [4, 3, 2, 1]
+# 传入 stop
+>>> s = slice(5)
+>>> s.start
+>>> s.stop
+5
+>>> s.step
+>>> s
+slice(None, 5, None)
+>>> s.indices(3)  # 根据给定的长度, 计算切片边界并返回索引集
+(0, 3, 1)
+
+# 传入 start, stop, step
+>>> s = slice(3, 10, 4)
+>>> s
+slice(3, 10, 4)
+>>> s.indices(20) # 根据给定的长度, 计算切片边界并返回索引集
+(3, 10, 4)
+>>> s.indices(2)  # 根据给定的长度, 计算切片边界并返回索引集
+(2, 2, 4)
+>>> s.indices(8)  # 根据给定的长度, 计算切片边界并返回索引集
+(3, 8, 4)
 ```
 
 ### 逻辑判断
@@ -757,36 +787,6 @@ has __call__ method...
 >>> dog = Dog('Tom', 19)
 >>> vars(dog)
 {'n': 'Tom', 'a': 19}
-```
-
-#### slice()
-
-返回一个切片对象, 表示由范围(start, stop, step)指定的索引集, start 和 step 参数默认为 None
-
-- 使用切片语法时也会生成切片对象
-
-```python
-# 传入 stop
->>> s = slice(5)
->>> s.start
->>> s.stop
-5
->>> s.step
->>> s
-slice(None, 5, None)
->>> s.indices(3)  # 根据给定的长度, 计算切片边界并返回索引集
-(0, 3, 1)
-
-# 传入 start, stop, step
->>> s = slice(3, 10, 4)
->>> s
-slice(3, 10, 4)
->>> s.indices(20) # 根据给定的长度, 计算切片边界并返回索引集
-(3, 10, 4)
->>> s.indices(2)  # 根据给定的长度, 计算切片边界并返回索引集
-(2, 2, 4)
->>> s.indices(8)  # 根据给定的长度, 计算切片边界并返回索引集
-(3, 8, 4)
 ```
 
 #### iter()

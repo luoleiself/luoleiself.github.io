@@ -1,4 +1,3 @@
-import pathlib
 from urllib import parse
 import shutil
 import glob
@@ -61,30 +60,6 @@ print(f'os.getlogin() {os.getlogin()}')
 # os.putenv(name, value)    # 添加环境变量
 os_times = os.times()
 print(f'os.times() {os_times}')
-print('-' * 20)
-
-print(f'os.path {os.path}')
-print(
-    f'os.path.curdir {os.path.curdir} os.path.pardir {os.path.pardir} os.path.extsep {os.path.extsep}')
-print(f'os.path.basename(__file__) {os.path.basename(__file__)}')
-print(f'os.path.dirname(__file__) {os.path.dirname(__file__)}')
-print(f'os.path.abspath(__file__) {os.path.abspath(__file__)}')
-print(f'os.path.realpath(__file__) {os.path.realpath(__file__)}')
-print(f'os.path.exists(__file__) {os.path.exists(__file__)}')
-print(f'os.path.isfile(__file__) {os.path.isfile(__file__)}')
-print(f'os.path.isabs("test.txt") {os.path.isabs("test.txt")}')
-print(f'os.path.isdir(__file__) {os.path.isdir(__file__)}')
-print(f'os.path.islink(__file__) {os.path.islink(__file__)}')
-print(f'os.path.ismount(__file__) {os.path.ismount(__file__)}')
-print('-' * 20)
-
-print('pathlib 模块: 基于对象的文件路径')
-p = pathlib.Path(__file__)
-print(f'p {p} {p.name} {p.stem} {p.suffix} {p.parent} {p.absolute()}')
-print(f'p.exists() {p.exists()}')
-print(f'p.home() {p.home()}')
-print(f'p.is_file() {p.is_file()}')
-print(f'p.is_dir() {p.is_dir()}')
 print('-' * 20)
 
 print('stat 模块')

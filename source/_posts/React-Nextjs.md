@@ -158,7 +158,7 @@ pages router 和 app router 模式下, 组成路由段的 文件 必须包含一
 
 - pages router
   - pages 目录下的任意文件路径直接映射为路由段
-  - pages/api 目录下的文件使用 文件名 映射为 api 入口, 默认导出喊出作为 route handler
+  - pages/api 目录下的文件使用 文件名 映射为 api 入口, 默认导出函数作为 route handler
   - 路由规则仅支持基础路由, 动态路由
   - 页面组件默认是 客户端 组件
   - 数据获取依赖于 Next.js 专属数据获取 getServerSideProps()

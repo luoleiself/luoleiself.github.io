@@ -1533,7 +1533,7 @@ function App(){
 }
 ```
 
-#### useDeferredValue
+#### useDeferredValue <em id='useDeferredValue'></em> <!--markdownlint-disable-line-->
 
 将某个值的更新延迟到更合适的时机, 以避免不必要的渲染或阻塞主线程
 
@@ -1584,14 +1584,17 @@ function App(){
 
 #### useTransition <em id='useTransition'></em> <!--markdownlint-disable-line-->
 
-将某些 状态更新 标记为 `过渡` 状态, 允许 React 在后台处理这些更新, 而不阻塞用户界面. 通过将更新任务调整优先级来实现
+> 只能在组件或自定义 Hook 内部调用, 如果需要在其他地方启动 transition(例如从数据库), 使用独立的 [startTransition](#startTransition) 函数
+
+将某些 状态更新 标记为 transition, 允许 React 在后台处理这些更新, 而不阻塞用户界面. 通过将更新任务调整优先级来实现
 
 - isPending 是否存在待处理的 transition
-- startTransition 调用此函数将状态更新标记为 transition, 传递给此函数的函数 React 会立即执行并将在其执行期间发生的所有状态更新标记为 transition
-  - 如果在其执行期间, 尝试在 setTimeout 中执行状态更新, 这些状态更新不会被标记为 transition
-  - 只有在可以访问该状态的 set 函数时, 才能将其对应的状态更新包装为 transition
-  - 标记为 transition 的状态更新将被其状态更新打断
-  - 不能用于控制文本输入
+- startTransition 调用此函数将状态更新标记为 transition, 传递给 startTransition 的函数被称为 `Action`，任何在 startTransition 内调用的回调函数(例如作为回调的 prop)应命名为 action 或包含 Action 后缀.
+  - action, 通过调用一个或多个 set 函数来更新某些状态的函数, React 会立即调用 action, 并将 action 函数调用期间发生的所有状态更新标记为 transition, 在 action 中通过 await 等待的异步调用会被包含在 transition 中.
+  - 只有在可以访问该状态的 set 函数时, 才能将其对应的状态更新包装为 transition, 如果想启用 transition 以响应某个 prop 或自定义 Hook 值, 请尝试使用 [useDeferredValue](#useDeferredValue).
+  - 传递给 startTransition 的函数会被立即执行, 如果在其执行期间, 尝试在 setTimeout 中执行状态更新, 它们将不会被标记为 transition.
+  - 标记为 transition 的状态更新将被其他状态更新打断
+  - transition 不能用于控制文本输入
 
 ```jsx
 const [isPending, startTransition] = useTransition();
@@ -1896,6 +1899,43 @@ function App(){
 }
 ```
 
+#### Activity
+
+允许隐藏并恢复其子组件的 UI 以及内部状态, 当 Activity 边界被隐藏时, React 会使用 css 属性 display 从视觉上隐藏子组件, 同时还会销毁它们的 Effect, 并清理所有活跃的订阅.
+
+- 在隐藏期间, 子组件仍会响应新 Props 的变化而进行重新渲染, 但其优先级会低于页面上的其他内容.
+- 当边界再次变为 可见 时, React 会将子组件重新显示, 并恢复它们之前的状态, 同时重新创建它们的 Effect.
+
+props
+
+- children, 控制显示或隐藏的 UI
+- mode, 字符串值, 取值 'visible' 或 'hidden', 默认值为 'visible'.
+
+```jsx
+import { Activity } from 'react';
+
+import Sidebar from './Sidebar.js';
+
+export default function App() {
+  const [isShowingSidebar, setIsShowingSidebar] = useState(true);
+
+  return (
+    <>
+      <Activity mode={isShowingSidebar ? 'visible' : 'hidden'}>
+        <Sidebar />
+      </Activity>
+
+      <main>
+        <button onClick={() => setIsShowingSidebar(!isShowingSidebar)}>
+          Toggle sidebar
+        </button>
+        <h1>Main content</h1>
+      </main>
+    </>
+  );
+}
+```
+
 ## React API
 
 ### act
@@ -1917,6 +1957,8 @@ await act(async actFn);
 
 ```jsx
 import {cache} from 'react';
+import calculateUserMetrics from 'lib/user';
+
 const cachedFn = cache(fn);
 
 // 缓存代价昂贵的计算, 使用 cache 跳过重复工作,
@@ -2050,7 +2092,7 @@ const Greeting = memo(function Greeting({name}){
 })
 ```
 
-### startTransition
+### startTransition <em id="startTransition"></em> <!--markdownlint-disable-line-->
 
 在不阻塞 UI 的情况下更新 state
 

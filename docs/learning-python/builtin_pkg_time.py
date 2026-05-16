@@ -1,9 +1,10 @@
-from datetime import datetime as dt, timezone, timedelta, MAXYEAR, MINYEAR, UTC
+import zoneinfo
+from datetime import datetime, date, time as t, timezone, timedelta, MAXYEAR, MINYEAR, UTC
 import time
 import calendar
 
 """
-datetime 包的主要对象
+datetime 模块的主要对象
     |- date: 表示日期的类
         |- datetime: 表示日期和时间的类
     |- time: 表示时间的类
@@ -13,6 +14,7 @@ datetime 包的主要对象
 
 zoneinfo 包的 ZoneInfo 类实现了 tzinfo 抽象类,
     不直接提供时区数据, 而是从系统时区数据库或 pypi 包 tzdata 包中提取时区信息
+    zone = ZoneInfo('Asia/Urumqi')
 
 time.strftime() 格式化指令
 %a  周工作日的缩写, time.strftime('%a')   'Thu'
@@ -46,6 +48,9 @@ time.strftime() 格式化指令
 %V  ISO8601 格式的周数, time.strftime('%V') '13'
 %%  %字面量,    time.strftime('%%')   '%'
 """
+
+# 加载系统的 IANA 时区数据库
+zone_shanghai = zoneinfo.ZoneInfo('Asia/Shanghai')
 
 print('time:')
 print(f'time.tzname: {time.tzname}')
@@ -114,31 +119,85 @@ print(f"5. 转回时间戳 time.mktime(str_ptime): {ts2}")
 print(f"时间戳一致: {abs(ts - ts2) < 0.001}")
 print('-' * 10)
 
-# datetime 模块
-print('datetime 包')
+print('datetime 模块')
 # timezone 类
+print(f'timezone 类')
 print(f'timezone.max {timezone.max} timezone.min {timezone.min}')
 print(f'timezone.tzname {timezone.tzname}')
 print(f'timezone.utc {timezone.utc} timezone.type {type(timezone.utc)}')
-print('-' * 10)
-d = dt.now()
-print(f'dt.now() {d.ctime()} {d.strftime("%Y-%m-%d %H:%M:%S")}')
+print('-' * 4)
+print('创建基于 UTC 偏移量的新时区表示')
+new_timezone = timezone(-timedelta(hours=10), 'CSTT')
+now = datetime.now()
+print(f'new_timezone(-timedelta(hours=10), "CSTT") {new_timezone}')
+print(f'当前时间:  {now}')
+print(f'返回日期时间相对于新时区的时区名称: new_timezone.tzname(dt) {new_timezone.tzname(now)}')
+print(f'返回日期时间相对于新时区的偏移量: new_timezone.utcoffset(dt) {new_timezone.utcoffset(now)}')
 print(
-    f'd.isoformat() {d.isoformat()} d.astimezone() {d.astimezone(timezone.utc)} d.utcoffset() {d.utcoffset()}')
+    f'''返回日期时间相对于新时区的 UTC 时间: new_timezone.fromutc(datetime.now(new_timezone))
+    {new_timezone.fromutc(datetime.now(new_timezone))}'''
+)
 print('-' * 10)
+
+print(f'datetime 类')
+print(
+    f'''根据参数实例化 datetime(year, month, day, hour, minute, second, microsecond, tzinfo)
+    {datetime(2026, 1, 1, 1, 1, 1, 1, zone_shanghai)}'''
+)
 print(
     f'datetime.MAXYEAR {MAXYEAR} datetime.MINYEAR {MINYEAR} datetime.UTC {UTC}')
-utc_timestamp = dt.now(timezone.utc).timestamp()
-print(f'utc_timestamp: {utc_timestamp}')
-iso_string = dt.now(timezone.utc).isoformat()
-print(f'iso_string: {iso_string}')
-local_from_utc_timestamp = dt.fromtimestamp(
-    utc_timestamp, timezone.utc).astimezone()
-print(f'local_from_utc_timestamp: {local_from_utc_timestamp}')
-local_from_iso_string = dt.fromisoformat(iso_string).astimezone()
-print(f'local_from_iso_string: {local_from_iso_string}')
+print(f'类方法==>')
+print(f'获取当前本地日期时间: datetime.today() {datetime.today()}')
+now = datetime.now(zone_shanghai)
+print(f'使用 ZoneInfo 加载系统时区, datetime.now(zone_shanghai) {now}')
+print(f'解析与格里高利序数相对应的日期时间: datetime.fromordinal(2) {datetime.fromordinal(2)}')
+print(
+    f'''组合日期和时间: datetime.combine(date, time, zone_shanghai)
+    {datetime.combine(date(now.year, now.month, now.day), t(now.hour, now.minute, now.second), zone_shanghai)}'''
+)
+print(
+    f'解析时间戳(浮点数表示): datetime.fromtimestamp(timestamp, zone_shanghai) {datetime.fromtimestamp(now.timestamp(), zone_shanghai)}')
+print(
+    f'解析 ISO 8601 格式字符串: datetime.fromisoformat(date_string) {datetime.fromisoformat(now.isoformat())}')
+print(
+    f'解析 ISO 格式日历日期(self.date().isocalendar() 的逆函数) {datetime.fromisocalendar(*now.date().isocalendar())}')
+print(
+    f'解析 format 格式字符串: datetime.strptime(date_string, format) {datetime.strptime("2026-01-01 01:01:01", "%Y-%m-%d %H:%M:%S")}')
+print('-' * 4)
+
+print(f'实例方法==>')
+print(f'返回日期: now.date() {now.date()}')
+print(f'返回没有时区时间: now.time() {now.time()}')
+print(f'返回时区时间: now.timetz() {now.timetz()}')
+print(f'返回时区名称: now.tzname() {now.tzname()}')
+print(f'返回日历日期: now.isocalendar() {now.isocalendar()}')
+print(f'返回星期几(周一从 0 开始): now.weekday() {now.weekday()}')
+print(f'返回星期几(周一从 1 开始): now.isoweekday() {now.isoweekday()}')
+
+print('-' * 2)
+print(f'返回替换属性后的新日期时间: now.replace(year=2026, month=1, day=1) {now.replace(year=2026, month=1, day=1)}')
+print(f'返回指定时区的新日期时间(乌鲁木齐): now.astimezone(tz) {now.astimezone(zoneinfo.ZoneInfo('Asia/Urumqi'))}')
+print(f'返回结构化时间: now.timetuple() {now.timetuple()}')
+print(f'返回时间戳(浮点数表示): now.timestamp() {now.timestamp()}')
+print(f'返回 ISO 格式字符串: now.isoformat() {now.isoformat()}')
+print(f'返回 format 格式字符串: now.strftime("%Y-%m-%d %H:%M:%S") {now.strftime("%Y-%m-%d %H:%M:%S")}')
+print(f'返回日期时间字符串: now.ctime() {now.ctime()}')
+print('-' * 2)
+
+print(f'返回 UTC 偏移量: now.utcoffset() {now.utcoffset()}')
+print(f'返回 DST 偏移量: now.dst() {now.dst()}')
+print(f'返回格里高利序数: now.toordinal() {now.toordinal()}')
+print('-' * 2)
+
+now_2 = datetime.now(zone_shanghai)
+iso_format = now_2.isoformat()
+print(f'本地时间: {iso_format}')
+print(
+    f'本地时间 转换为 utc 时间: 日期时间字符串先转换为日期时间对象, 使用 datetime.astimezone 设置时区为 UTC, 再转换为 ISO 格式字符串')
+print(datetime.fromisoformat(iso_format).astimezone(timezone.utc).isoformat())
 print('-' * 10)
-print('timedelta 模块')
+
+print('timedelta 类')
 delta = timedelta(days=1, hours=6, minutes=5, seconds=2,
                   milliseconds=4, microseconds=3)
 print(f'delta {delta} delta.max {delta.max} delta.min {delta.min}')
@@ -236,7 +295,7 @@ print(tf.get_relative_time(past_time))  # 1小时前
 print('-' * 30)
 
 print('''
-calendar: 日历包
+calendar: 日历模块
     Calendar 日历基类
         TextCalendar 文本格式日历类
             LocalTextCalendar   本地文本格式日历类

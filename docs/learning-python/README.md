@@ -1,6 +1,8 @@
 python 解释器配置文件:
 > %APPDATA%\JetBrains\PyCharm2026.x\options\jdk.table.xml
 
+> \ / : * ? " < > |
+
 项目结构
 
 ```conf

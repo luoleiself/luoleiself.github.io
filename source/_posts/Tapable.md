@@ -109,12 +109,14 @@ const { SyncHook } = require('tapable');
 
 var syncHook = new SyncHook(['name', 'age']);
 // 钩子函数依次全部执行，如果有 hook 回调，则最后执行
+// 注册
 syncHook.tap('x', (name, age) => {
   console.log('x done ', name, age);
 });
 syncHook.tap('y', (name, age) => {
   console.log('y done ', name, age);
 });
+// 调用
 syncHook.call('call', 18, () => {
   console.log(
     'syncHook.call callback 此处不执行, call 传入参数个数大于构造函数参数列表长度的会被忽略'
@@ -162,6 +164,7 @@ const { SyncBailHook } = require('tapable');
 
 const syncBailHook = new SyncBailHook(['name']);
 // 钩子函数依次执行, 如果某个钩子函数的返回值为 非 undefined，则后面的钩子不再执行，如果有 hook 回调，则最后执行
+// 注册
 syncBailHook.tap('x', (name) => {
   console.log('x done ', name);
   return 'undefined'; // 返回值为非 undefined 不再执行其他 hooks
@@ -170,6 +173,7 @@ syncBailHook.tap('x', (name) => {
 syncBailHook.tap('y', (name) => {
   console.log('y done ', name);
 });
+// 调用
 syncBailHook.call('call');
 syncBailHook.callAsync('callAsync', () => {
   console.log('syncBailHook.callAsync callback');
@@ -212,6 +216,7 @@ const { SyncWaterfallHook } = require('tapable');
 
 var syncWaterfallHook = new SyncWaterfallHook(['name']);
 // 钩子函数依次全部执行，上一个钩子函数的返回值作为下一个钩子函数的参数，如果有 hook 回调，则最后执行
+// 注册
 syncWaterfallHook.tap('x', (name) => {
   console.log('x done ', name);
   return `from x...${name}`;
@@ -219,6 +224,7 @@ syncWaterfallHook.tap('x', (name) => {
 syncWaterfallHook.tap('y', (name) => {
   console.log('y done ', name);
 });
+// 调用
 syncWaterfallHook.call('call');
 syncWaterfallHook.callAsync('callAsync', () => {
   console.log('syncWaterfallHook.callAsync callback');
@@ -246,7 +252,7 @@ class MySyncWaterfallHook {
 
     // 依次执行事件处理函数，事件处理函数的返回值作为下一个事件处理函数的参数
     let [first, ...others] = this.tasks;
-    return reduce((ret, task) => task(ret), first(...args));
+    return others.reduce((ret, task) => task(ret), first(...args));
   }
 }
 ```
@@ -260,6 +266,7 @@ const { SyncLoopHook } = require('tapable');
 
 const syncLoopHook = new SyncLoopHook(['name']);
 // 钩子函数依次全部执行，当循环钩子中回调函数返回非 undefined 时，钩子将从第一个重新启动，直到所有的钩子返回 undefined 时结束 如果有 hook 回调，则最后执行
+// 注册
 syncLoopHook.tap('x', (name) => {
   let flag = Math.floor(Math.random() * 10);
   if (flag > 5) {
@@ -284,6 +291,7 @@ syncLoopHook.tap('z', (name) => {
   console.log('z done ', name);
   return undefined; // 此处返回固定值 undefined 执行下一个 hook
 });
+// 调用
 syncLoopHook.call('call');
 syncLoopHook.callAsync('callAsync', () => {
   console.log('syncLoopHook.callAsync callback');
@@ -345,6 +353,7 @@ const { AsyncParallelHook } = require('tapable');
 
 const asyncParallelHook = new AsyncParallelHook(['name']);
 // 钩子函数异步并行全部执行，所有钩子回调执行完后，hook 回调执行
+// 注册
 asyncParallelHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -375,6 +384,7 @@ asyncParallelHook.tapPromise('w', (name) => {
     }, 8000);
   });
 });
+// 调用
 asyncParallelHook.callAsync('callAsync', () => {
   console.log('asyncParallelHook.callAsync');
 });
@@ -433,6 +443,7 @@ const { AsyncParallelBailHook } = require('tapable');
 
 const asyncParallelBailHook = new AsyncParallelBailHook(['name']);
 // 钩子函数全部异步并行执行, 只要有一个钩子返回了非 undefined 值时, hook 回调会立即执行
+// 注册
 asyncParallelBailHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -454,6 +465,7 @@ asyncParallelBailHook.tapAsync('z', (name, callback) => {
     callback();
   }, 3000);
 });
+// 调用
 asyncParallelBailHook.callAsync('callAsync', () => {
   console.log('asyncParallelBailHook.callAsync');
 });
@@ -480,6 +492,7 @@ const { AsyncSeriesHook } = require('tapable');
 
 const asyncSeriesHook = new AsyncSeriesHook(['name']);
 // 钩子函数全部异步串行执行, 执行顺序按照注册顺序执行, 上一个钩子执行结束后下一个执行开始, hook 回调最后执行
+// 注册
 asyncSeriesHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -501,6 +514,7 @@ asyncSeriesHook.tapAsync('z', (name, callback) => {
     callback();
   }, 3000);
 });
+// 调用
 asyncSeriesHook.callAsync('callAsync', () => {
   console.log('asyncSeriesHook.callAsync');
 });
@@ -525,6 +539,7 @@ const { AsyncSeriesBailHook } = require('tapable');
 
 const asyncSeriesBailHook = new AsyncSeriesBailHook(['name']);
 // 钩子函数全部异步串行执行, 只要有一个钩子返回了 非 undefined 值时, hook 回调立即执行, 其他钩子有可能不再执行
+// 注册
 asyncSeriesBailHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -546,6 +561,7 @@ asyncSeriesBailHook.tapAsync('z', (name, callback) => {
     callback();
   }, 3000);
 });
+// 调用
 asyncSeriesBailHook.callAsync('callAsync', () => {
   console.log('asyncSeriesBailHook.callAsync');
 });
@@ -568,6 +584,7 @@ const { AsyncSeriesWaterfallHook } = require('tapable');
 
 const asyncSeriesWaterfallHook = new AsyncSeriesWaterfallHook(['name']);
 // 钩子函数全部异步串行执行, 上一个钩子的返回的结果作为下一个钩子的参数，hook 回调在所有钩子回调返回后执行
+// 注册
 asyncSeriesWaterfallHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -587,6 +604,7 @@ asyncSeriesWaterfallHook.tapAsync('z', (name, callback) => {
   console.log('z done ', name);
   callback(' from z...');
 });
+// 调用
 asyncSeriesWaterfallHook.callAsync('callAsync', (...args) => {
   console.log('asyncSeriesWaterfallHook.callAsync', args);
 });
@@ -610,6 +628,7 @@ const { AsyncSeriesLoopHook } = require('tapable');
 
 const asyncSeriesLoopHook = new AsyncSeriesLoopHook(['name']);
 // 钩子函数全部异步串行执行,当循环钩子中回调函数返回非 undefined 时, 钩子将从第一个重新启动, 直到所有的钩子返回 undefined 时结束, hook 回调最后执行
+// 注册
 asyncSeriesLoopHook.tapAsync('x', (name, callback) => {
   console.log('x done ', name);
   setTimeout(() => {
@@ -645,7 +664,7 @@ asyncSeriesLoopHook.tapAsync('z', (name, callback) => {
     callback();
   }, 3000);
 });
-
+// 调用
 asyncSeriesLoopHook.callAsync('callAsync', (...args) => {
   console.log('asyncSeriesLoopHook.callAsync', args);
 });

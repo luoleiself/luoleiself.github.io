@@ -22,7 +22,7 @@ CursorResult:   # execute 执行后返回的结果
     returns_rows:   # 是否有返回行
 """
 
-DATABASE_URL = 'mysql://appuser:appuserpassword@172.31.218.169:3306/app?charset=utf8mb4'
+DATABASE_URL = 'mysql+mysqldb://appuser:appuserpassword@172.31.218.169:3306/app?charset=utf8mb4'
 engine = create_engine(
     DATABASE_URL,
     pool_size=20,
@@ -161,43 +161,57 @@ Base.metadata.create_all(engine)
 session_maker = sessionmaker(engine, class_=Session)
 with session_maker() as session:
     # 批量添加
-    # dep1 = Department(name='部门1')
-    # dep2 = Department(name='部门2')
-    # session.add_all([dep1, dep2])
-    # print(dep1, dep2)
-    # session.add_all([
-    #     Employee(name='张三', age=18, birthday=datetime(2020, 1, 1), department=dep1),
-    #     Employee(name='张三1', age=19, birthday=datetime(2021, 1, 1), department=dep1),
-    #     Employee(name='张三2', age=20, birthday=datetime(2022, 1, 1), department=dep2)
-    # ])
+    dep1 = Department(name='部门1')
+    dep2 = Department(name='部门2')
+    departments_length = session.execute(select(func.count(Department.id))).scalar()
+    print(f'departments_length = {departments_length}')
+    if departments_length == 0:
+        session.add_all([dep1, dep2])
+        print(dep1, dep2)
+
+    employees_length = session.execute(select(func.count(Employee.id))).scalar()
+    print(f'employees_length = {employees_length}')
+    if employees_length == 0:
+        session.add_all([
+            Employee(name='张三', age=18, birthday=datetime(2020, 1, 1), department=dep1),
+            Employee(name='张三1', age=19, birthday=datetime(2021, 1, 1), department=dep1),
+            Employee(name='张三2', age=20, birthday=datetime(2022, 1, 1), department=dep2)
+        ])
+    print('-' * 10)
 
     # 按年龄查询大于等于 19 岁的员工
     result = session.query(Employee).filter(Employee.age >= 19).all()
     print(f'按年龄查询大于等于 19 岁的员工: {result}')
+    print('-' * 10)
 
     # 按年龄降序查询
     result = session.execute(select(Employee).order_by(Employee.age.desc())).all()
     print(f'按年龄降序查询: {result}')
+    print('-' * 10)
 
     # 使用 select() 创建查询语句
     result = session.execute(select(Employee).where(Employee.age < 19)).all()
     print(f'按年龄查询小于 19 岁的员工: {result}')
+    print('-' * 10)
 
     # 使用 join() 创建查询语句
     join_statement = select(Employee).join(Department).where(Employee.department_id == Department.id).filter(
         Department.name == '部门1').order_by(Employee.age.desc()).limit(10)
     result = session.execute(join_statement).all()
     print(f'查询 部门1 下的员工, 按员工年龄降序排列, 获取前 10 条数据: {result}')
+    print('-' * 10)
 
-    # 根据 id 更新员工年龄
-    result = session.execute(update(Employee).where(Employee.id == 6).values(age=36)).scalar_one()
+    # 根据 id == 3 更新员工年龄为 36
+    result = session.execute(update(Employee).where(Employee.id == 3).values(age=36))
     print(
-        f'根据 id 更新员工年龄: result.rowcount {result.rowcount}, result.is_insert {result.is_insert}, result.returns_rows {result.returns_rows}')
+        f'根据 id == 3更新员工年龄为 36: result.rowcount {result.rowcount}, result.is_insert {result.is_insert}, result.returns_rows {result.returns_rows}')
+    print('-' * 10)
 
     # 删除员工年龄大于等于 65 的员工信息
-    result = session.execute(delete(Employee).where(Employee.age >= 65)).scalar_one()
+    result = session.execute(delete(Employee).where(Employee.age >= 65))
     print(
         f'删除员工年龄大于等于 65 的员工信息: result.rowcount {result.rowcount}, result.is_insert {result.is_insert}, result.returns_rows {result.returns_rows}')
+    print('-' * 10)
 
     # 使用聚合函数按部门统计人数
     result = session.query(func.count(Employee.id), Department.name).join(Department).group_by(Department.name).all()
@@ -205,6 +219,7 @@ with session_maker() as session:
     agg_statement = select(func.count(Employee.id), Department.name).join(Department).group_by(Department.name)
     result_execute = session.execute(agg_statement).all()
     print(f'execute 使用聚合函数按部门统计人数: {result_execute}')
+    print('-' * 10)
     # 平均年龄
     avg_statement = select(func.avg(Employee.age), Department.name).join(Department).group_by(Department.name)
     result = session.execute(avg_statement).all()
@@ -221,11 +236,12 @@ with session_maker() as session:
     sum_statement = select(func.sum(Employee.age), Department.name).join(Department).group_by(Department.name)
     result = session.execute(sum_statement).all()
     print(f'年龄总和: {result}')
+    print('-' * 10)
 
     # 创建别名
     emp = aliased(Employee, name='emp')
     dpt = aliased(Department, name='dpt')
-
+    print(f'创建别名: emp, dpt {emp, dpt}')
     print('-' * 30)
     # 创建 用户 - 角色 多对多关系
     # user1 = User(name='user1')
@@ -252,6 +268,8 @@ with session_maker() as session:
     print(f'查询所有角色: {result}')
     for role in result:
         print(f'角色: {role.name}, 用户: {role.users}')
+
+    print('-' * 10)
 
     # 查询角色为 role1 的所有用户, query
     result = session.query(User).join(user_roles).join(Role).filter(Role.name == 'role1').all()

@@ -4,6 +4,10 @@ import sqlalchemy
 from sqlalchemy import create_engine, text, Column, Integer, MetaData, Table, String, DateTime, ForeignKey, select
 
 """
+mysqldb: 仅支持 python 2.x
+mysqlclient: mysqldb 的分支, 支持 python 3, 使用 C 语言编写的库, 直接绑定到 mysql 的 C API, 性能比下面的快.
+pymysql: 使用纯 python 语言编写的 mysql 数据库驱动, 在纯 python 环境中更容易部署.
+
 sqlalchemy:
     # 创建并返回 sql 查询语句, 使用 :name 绑定参数, 在执行语句时传入参数
     text("SELECT * FROM users WHERE id=:user_id")
@@ -44,7 +48,7 @@ sqlalchemy:
     delete(): 创建基于 ORM 的 delete 语句
 """
 
-DATABASE_URL = 'mysql://appuser:appuserpassword@172.31.218.169:3306/app'
+DATABASE_URL = 'mysql+mysqldb://appuser:appuserpassword@172.31.218.169:3306/app?charset=utf8mb4'
 engine = create_engine(DATABASE_URL, echo=True)
 # conn = engine.connect() # 创建连接
 
@@ -52,7 +56,7 @@ engine = create_engine(DATABASE_URL, echo=True)
 # 创建元表 MetaData 实例
 meta_data = MetaData()
 # 创建表结构 Table 实例
-employee = Table('employee', meta_data,
+employee = Table('employees', meta_data,
                  Column('id', Integer, autoincrement=True, primary_key=True, nullable=False, comment='id'),
                  Column('name', String(128), nullable=False, comment='姓名'),
                  Column('age', Integer, comment='年龄'),
@@ -73,25 +77,42 @@ print(f't = {t}')
 # 使用 engine 连接执行数据库操作
 with engine.connect() as conn:
     # 创建插入语句
-    # insert_one = employee.insert().values([
-    #     {'name': '张三', 'age': 18, 'birthday': datetime.now()},
-    #     {'name': '张三1', 'age': 19, 'birthday': datetime.now()}
-    # ])
+    employee_length = conn.execute(employee.select()).rowcount
+    print(f'employee_length = {employee_length}')
+    if employee_length == 0:
+        insert_one = employee.insert().values([
+            {'name': '张三', 'age': 18, 'birthday': datetime.now()},
+            {'name': '张三1', 'age': 19, 'birthday': datetime.now()}
+        ])
+        result = conn.execute(insert_one)
+
     # # 创建更新语句
-    # update_one = employee.update().values(age=20).where(employee.c.id == 1)
+    update_one = employee.update().values(age=20).where(employee.c.id == 3)
+    result = conn.execute(update_one)
+    print(f'result = {result.rowcount} {result.is_insert} {result.returns_rows}')
+    print('-' * 10)
     # # 创建查询语句
-    # query_one = employee.select().where(employee.c.id == 1)
+    query_stmt = employee.select()
+    result = conn.execute(query_stmt)
+    print(f'result = {result.fetchall()}')
+    print('-' * 10)
     # # 创建删除语句
     # delete_one = employee.delete().where(employee.c.id == 1)
-    #
+
+    # 1
+    join_query1 = select(employee).join(department, employee.c.department_id == department.c.id).where(
+        department.c.id == 1)
+    print(f'join_query1 = {join_query1}')
+    result = conn.execute(join_query1)
+    print(f'result = {result.fetchall()}')
+    print('-' * 10)
+    # 2
     # # 创建连接查询语句
-    # join_statement = employee.join(department, employee.c.department_id == department.c.id)
-    # # 1
-    # join_query1 = employee.select(join_statement).where(employee.c.id == 1)
-    # # 2
-    # join_query2 = select(employee).select_from(join_statement).where(employee.c.id == 1)
-    #
-    # result = conn.execute(insert_one)
+    join_statement = employee.join(department, employee.c.department_id == department.c.id)
+    join_query2 = select(employee).select_from(join_statement).where(employee.c.id == 1)
+    result = conn.execute(join_query2)
+    print(f'result = {result.fetchall()}')
+    print('-' * 10)
     conn.commit()
 
 if __name__ == '__main__':

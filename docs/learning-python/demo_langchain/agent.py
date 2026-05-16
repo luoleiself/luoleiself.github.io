@@ -97,7 +97,7 @@ def get_time_info(query: str) -> str:
 
 
 # 初始化模型并绑定工具
-llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, api_key=None)
 model_with_tools = llm.bind_tools([get_weather, calculate, get_time_info])
 
 # 测试工具调用

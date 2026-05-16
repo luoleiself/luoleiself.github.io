@@ -78,6 +78,10 @@ console.log(array1.copyWithin(1, 3));
 // expected output: Array ["d", "d", "e", "d", "e"]
 ```
 
+## Object.is()
+
+不等价于 === 运算符. Object.is() 和 === 之间的唯一区别在于它们处理带符号的 0 和 NaN 值的时候. === 运算符（和 == 运算符）将数值 -0 和 +0 视为相等，但是会将 NaN 视为彼此不相等.
+
 ## 表单 accept 属性
 
 表单 input type="file" 上传图片时，accept 属性以文件名结尾格式在部分手机上使用时会提示 '没有应用可执行此操作', 将文件名结尾的格式改为 MIME 类型的格式

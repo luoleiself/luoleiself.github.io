@@ -201,7 +201,7 @@ SHOW GRANTS FOR 'username'@'host';
 FLUSH PRIVILEGES;
 ```
 
-- 权限列表, 逗号分隔的权限集合（SELECT/INSERT/UPDATE等）或 ALL PRIVILEGES
+- 权限列表, 逗号分隔的权限集合（SELECT/INSERT/UPDATE等）或 `ALL PRIVILEGES`
 - 数据库名.表名, 支持通配符：*.*（全局）、mydb.*（单库）、mydb.orders（单表）
 - username@host, 用户标识与访问来源 localhost，192.168.1.%，% 任意主机
 - IDENTIFIED BY, 可选参数，用户不存在时自动创建并设置密码

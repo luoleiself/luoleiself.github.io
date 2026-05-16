@@ -1,6 +1,6 @@
 import asyncio
 import sqlalchemy
-from sqlalchemy import Integer, String, Float, select
+from sqlalchemy import Integer, String, Float, select, func
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base, Mapped, mapped_column
 
@@ -66,17 +66,21 @@ async def main():
     await init_database()
     async with AsyncSessionLocal() as session:
         # 添加数据
-        # session.add_all([
-        #     Book(name='book1', description='description1', price=1.1),
-        #     Book(name='book2', description='description2', price=2.2),
-        #     Book(name='book3', description='description3', price=3.3),
-        #     Book(name='book4', description='description4', price=4.4),
-        #     Book(name='book5', description='description5', price=5.5),
-        #     Book(name='book6', description='description6', price=6.6),
-        #     Book(name='book7', description='description7', price=7.7),
-        #     Book(name='book8', description='description8', price=8.8),
-        # ])
-        # await session.commit()
+        result = await session.execute(select(func.count(Book.id)))
+        length = result.scalar()
+        print(f'result length {length}')
+        if length == 0:
+            session.add_all([
+                Book(name='book1', description='description1', price=1.1),
+                Book(name='book2', description='description2', price=2.2),
+                Book(name='book3', description='description3', price=3.3),
+                Book(name='book4', description='description4', price=4.4),
+                Book(name='book5', description='description5', price=5.5),
+                Book(name='book6', description='description6', price=6.6),
+                Book(name='book7', description='description7', price=7.7),
+                Book(name='book8', description='description8', price=8.8),
+            ])
+            await session.commit()
 
         # 查询所有数据
         result = await session.execute(select(Book))
