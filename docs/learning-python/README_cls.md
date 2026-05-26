@@ -1,5 +1,7 @@
 ## abc
 
+> 抽象类是一种只能被继承不能被实例化的类, 规定子类必须要实现哪些方法, 强制子类必须遵守统一的代码规范.
+
 该模块提供了用于定义抽象类的基类 ABC(Abstract Base Class).
 
 - ABC, 抽象基类, 定义抽象类都继承此类.
@@ -57,14 +59,14 @@ print(f'ani = {ani}')
   - 如果实例化未定义初始化方法的子类时, 参数必须符合父类初始化方法参数的要求
 
 ```python
->>> class Cat():
-...     def __init__(self, name):
-...             self.name = name
-... 
->>> another_cat = Cat('green miao') # 如果定义了初始化方法和参数则必须传入
->>> another_cat.name
+class Cat():
+    def __init__(self, name):
+        self.name = name
+
+another_cat = Cat('green miao') # 如果定义了初始化方法和参数则必须传入
+another_cat.name
 'green miao'
->>> a_cat = Cat()
+a_cat = Cat()
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: Cat.__init__() missing 1 required positional argument: 'name'
@@ -492,7 +494,7 @@ asyncio.run(main())
 
 ### 私有属性
 
-python 没有私有属性
+python 没有私有属性, 通过约定以 `__` 开头的属性标识为私有属性, 私有属性和私有方法只能在类的内部访问
 
 - 使用 getter 和 setter, 仍然可以操作隐藏属性
 
@@ -537,7 +539,7 @@ def diameter(self):
 - 使用 `__` 起始定义内置属性, python 将内置属性增加 `_类名` 的前缀绑定到实例上
   - 单下划线开始的属性和方法约定私有, 但实际上是公开的, 子类可以重写
   - 双下划线开始的属性和方法名称修饰, 真正私有, 不想被子类意外重写
-  - 双下划线起止的属性和方法内置(魔法), 不要自己创建
+  - 双下划线起止的属性和方法保留给 python 内部使用, 不要自己创建
 
 ```python
 class Duck:
@@ -631,7 +633,8 @@ C.go_home() # 不需要实例化直接调用
 - 访问自己不存在的属性或方法时, 优先使用最先继承的父类的属性和方法
   - 搜索过程从左往右搜索 `__mro__` 列表, 按顺序优先匹配
 
-菱形继承: A -> B -> C -> D
+菱形继承: A -> B -> D
+           -> C -> D
 
 ```python
 class D:
@@ -688,6 +691,12 @@ a = A()
 print(f'a.name {a.name}\nA.__mro__ {A.__mro__}')
 # a.name cls_D
 # A.__mro__ (<class '__main__.A'>, <class '__main__.B'>, <class '__main__.D'>, <class '__main__.C'>, <class '__main__.E'>, <class 'object'>)
+
+# 手动实现类实例化方法调用父类实例化方法
+class A(B, C):
+    def __init__(self):
+        super().__init__()  # 第一个父类的实例化方法
+        C.__init__(self)    # 指定类的实例化方法
 ```
 
 ### 多态

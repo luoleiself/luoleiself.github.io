@@ -2,7 +2,7 @@ import asyncio
 import sqlalchemy
 from sqlalchemy import Integer, String, Float, select, func
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column
+from sqlalchemy.orm import declarative_base, DeclarativeBase, Mapped, mapped_column
 
 """
 create_async_engine(): # 创建异步数据库引擎

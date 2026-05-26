@@ -837,7 +837,7 @@ db.survey.find({results: { $elemMatch: { product: "xyz", score: { $gte: 8 } }}})
 
 ```typescript
 // 使用 $ 投影 compass
-// filter:  { 'audioList.id': 'abc' } 等价于 { audioList: { $elemMatch: { id: 'audio123' } } }
+// filter:  { 'audioList.id': 'audio123' } 等价于 { audioList: { $elemMatch: { id: 'audio123' } } }
 // project: { 'audioList.$': 1 }
 
 

@@ -30,7 +30,10 @@ my_project/
 
 - 序列: 连续的可用下标访问的数据存储结构, 字符串, 元组, 列表, 数组, 可使用`切片`进行操作
 - `*` | `**`: 在数据存储结构中使用时, 解构 `可迭代对象`
-- `__` 双下划线起止的名称保留给 python 内部使用
+- `_` 匿名变量
+  - 在 REPL 中保存上一表达式结果
+  - 在 match-case 中匹配任意值但不绑定
+
 - `==`, is, isinstance 运算符和函数,
   - `==` 比较值是否相等, 列表和元组必须有序, 集合无序
   - is 比较内存地址是否是同一个对象, 常用 None 检查
@@ -51,6 +54,39 @@ True
 True
 >>> a is b
 False
+```
+
+match-case 结构化模式匹配语法, 用来替代冗长的 if-elif-else 链, 支持值匹配、结构解包和类型校验.
+
+> python 3.10 支持
+
+- match 定义表达式
+- case 定义匹配模式, 按顺序匹配, 命中第一个就跳出, 不再检查后续 case 块
+  - `_` 通配符, 匹配任意值
+  - 字符串不支持 `f''` 和 `t''`
+
+```python
+match event:
+    case r'\nhello world':  # 原始字符串匹配
+      print("hello world")
+    case 400 | 404: # 匹配 400 或 404
+        print("Bad request")
+    case int(): # 类型匹配
+        print('整型')
+    case list() | tuple():  # 类型匹配
+        print('集合类型')
+    case [x, *y]:   # 列表解包
+        print("value is", x, y)
+    case {'status': code, 'data': data}:    # 匹配包含 status 和 data 的字典
+        print("status:", code, "data:", data)
+    case [x, y] if x >= 0 and y >= 0:  # 先匹配列表, 再检查条件
+        print("x and y are positive")
+    case (x, y) if x == y:  # 先匹配元组, 再检查添加
+        print("x is equal to y")
+    case Point(x=0, y=3):   # 匹配 Point 类实例
+        print("x is 0, y is 3")
+    case _: # 匹配任意值
+        print("No match")
 ```
 
 ## 关键字

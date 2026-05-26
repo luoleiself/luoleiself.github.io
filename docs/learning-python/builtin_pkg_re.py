@@ -24,11 +24,14 @@ print(f'match.end() {match.end()}')  # 45
 print(f'match.group() {match.group()}')  # com
 print('-' * 9)
 
+# 全局查找所有符合条件内容
+print(f're.findall("com", text) {re.findall("com", text)}')  # ['com', 'com', 'com']
+print('-' * 9)
+
 # compile 编译正则表达式
 reg = re.compile("com")
 print(f'reg {reg} {type(reg)}')
-# 全局查找所有符合条件的内容
-print(f'reg.findall(text) {reg.findall(text)}')  # ['com', 'com']
+# reg.findall(text)
 print('-' * 9)
 
 # 返回一个匹配结果的迭代器
