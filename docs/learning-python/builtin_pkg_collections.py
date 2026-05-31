@@ -5,7 +5,7 @@ from queue import Queue
 import time
 
 print('''
-namedtuple: 可使用 .属性 或 下标访问
+namedtuple: 创建轻量级、不可变的数据类, 可使用 .属性 或 下标访问
     参数 field_names: 格式支持包含字符的序列, 或者是以空格或者逗号分割的字符串形式
     Point = namedtuple('Point', 'a b')
     Point = namedtuple('Point', 'a, b')
@@ -13,7 +13,7 @@ namedtuple: 可使用 .属性 或 下标访问
 
     p = Point(1, 2, 3, 1, 2, 4)
 
-Counter: 计数对象, 根据给定的可统计元素创建一个计数对象
+Counter: 计数对象, 根据给定的可统计元素创建一个计数对象, 用于统计可哈希对象的数量.
     c = Counter('abcabcdefgadefghihbefacdhgadedc')
         c.total()   # 返回元素总数
         c.most_common(5)    # 统计数量最多的前5个元素
@@ -32,7 +32,24 @@ ChainMap: 用于快速链接多个映射, 以便将它们视为一个单元. 它
                     # 如果指定了第一个参数 m, 则 m 将成为映射列表前面的新映射, 未指定则使用空字典, 后面为当前实例中的所有映射.
                     # 如果指定了任何关键字参数, 它们将更新传递的映射 m 或新的空字典.
 
-deque: 双端队列
+OrderedDict: 有序字典,
+    od = OrderedDict()
+    od['a'] = 1
+    od['b'] = 2
+    od['c'] = 3
+    
+    for key, value in od.items():
+        print(key, value)   # 按插入顺序输出
+        
+    # 移动元素
+    od.move_to_end('b') # 移到末尾
+    od.move_to_end('a', last=False) # 移到开头
+    
+    # 弹出最后/最先
+    od.popitem()    # 弹出最后
+    od.popitem(last=False)  # 弹出最先
+
+deque: 线程安全的双端队列
     d = deque(maxlen=6) # 设置队列的最大长度
 ''')
 Point = namedtuple('Point', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])

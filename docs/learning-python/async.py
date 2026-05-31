@@ -30,7 +30,7 @@ async def bar():
 
 
 # 直接调用协程函数返回协程对象
-print(foo(), bar())
+# print(foo(), bar())
 print('-' * 30)
 
 print(r'''

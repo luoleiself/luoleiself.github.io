@@ -35,15 +35,16 @@ engine = create_engine(
 
 # 类型声明
 primary_key = Annotated[int, mapped_column(Integer, autoincrement=True, primary_key=True, nullable=False, comment='id')]
-stu_birthday = Annotated[datetime, mapped_column(DateTime, default=datetime.now(), comment='生日')]
+stu_birthday = Annotated[datetime, mapped_column(DateTime(timezone=True), default=datetime.now, comment='生日')]
 
 
 # 方式二: 使用类创建表关系映射类
 # Base = declarative_base() # 创建映射关系基类实例
 class Base(DeclarativeBase):
-    create_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), comment='创建时间')
-    update_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(),
-                                                comment='更新时间')
+    create_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), comment='创建时间')
+    update_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),
+        comment='更新时间')
 
 
 class Employee(Base):

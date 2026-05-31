@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import sqlalchemy
-from sqlalchemy import create_engine, text, Column, Integer, MetaData, Table, String, DateTime, ForeignKey, select
+from sqlalchemy import create_engine, text, Column, Integer, MetaData, Table, String, DateTime, ForeignKey, select, func
 
 """
 mysqldb: 仅支持 python 2.x
@@ -60,7 +60,7 @@ employee = Table('employees', meta_data,
                  Column('id', Integer, autoincrement=True, primary_key=True, nullable=False, comment='id'),
                  Column('name', String(128), nullable=False, comment='姓名'),
                  Column('age', Integer, comment='年龄'),
-                 Column('birthday', DateTime, comment='出生日期'),
+                 Column('birthday', DateTime(timezone=True), server_default=func.now(), comment='出生日期'),
                  # 外键
                  Column('department_id', Integer, ForeignKey('departments.id'), nullable=False, comment='部门ID'))
 
