@@ -64,29 +64,20 @@ print(f'ani = {ani}')
     - 如果实例化未定义初始化方法的子类时, 参数必须符合父类初始化方法参数的要求
 
 ```python
-class Cat():
+class Cat:
     def __init__(self, name):
         self.name = name
 
 
 another_cat = Cat('green miao')  # 如果定义了初始化方法和参数则必须传入
 another_cat.name
-'green miao'
+# 'green miao'
 a_cat = Cat()
-Traceback(most
-recent
-call
-last):
-File
-"<stdin>", line
-1, in < module >
-TypeError: Cat.__init__()
-missing
-1
-required
-positional
-argument: 'name'
 
+
+# Traceback (most recent call last):
+#   File "<stdin>", line 1, in <module>
+# TypeError: Cat.__init__() missing 1 required positional argument: 'name'
 
 # 继承 - 初始化
 class Quote:
@@ -193,55 +184,65 @@ print('-' * 10)
 # moduleName.__dict__ {'__name__': 'select', '__doc__': 'This module supports asynchronous I/O on multiple file descriptors.\n\n*** IMPORTANT NOTICE ***\nOn Windows, only sockets are supported; on Unix, all file descriptors.', '__package__': '', '__loader__': <_frozen_importlib_external.ExtensionFileLoader object at 0x000001989F2D7260>, '__spec__': ModuleSpec(name='select', loader=<_frozen_importlib_external.ExtensionFileLoader object at 0x000001989F2D7260>, origin='D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\DLLs\\select.pyd'), 'select': <built-in function select>, '__file__': 'D:\\uv\\python_install\\cpython-3.12.11-windows-x86_64-none\\DLLs\\select.pyd', 'error': <class 'OSError'>}
 ```
 
-- `__class__` 标识创建实例对象的类
-- `__bases__` 标识类对象继承的父类
+- `__class__` 标识创建对象的类
+- `__bases__` 标识对象继承的父类
 
 ```python
->> >
+# 内置类 list
+type(list)
+# <class 'type'>
+list.__class__
+# <class 'type'>
+list.__bases__
+# (<class 'object'>,)
+l = list()
+type(l)
+# <class 'list'>
+l.__class__
+# <class 'list'>
+l.__bases__  # 实例没有 __bases__ 属性
+# Traceback (most recent call last):
+#   File "<stdin>", line 1, in <module>
+# AttributeError: 'list' object has no attribute '__bases__'. Did you mean: '__class__'?
+
+type(type)
+# <class 'type'>
+type.__class__
+# <class 'type'>
+type.__bases__
+# (<class 'object'>,)
+type(object)
+# <class 'type'>
+object.__class__
+# <class 'type'>
+object.__bases__
+
+
+# ()
 
 class Person:
+    pass
 
 
-    ...
-pass
-...
->> > p = Person()
->> > p.__class__
-<
-
-class '__main__.Person'>
-
->> > type(p)
-<
-
-class '__main__.Person'>
-
->> > p.__bases__  # 实例对象没有 __bases__ 属性
-Traceback(most
-recent
-call
-last):
-File
-"<stdin>", line
-1, in < module >
-AttributeError: 'Person'
-object
-has
-no
-attribute
-'__bases__'.Did
-you
-mean: '__class__'?
->> > Person.__class__
-<
-
-class 'type'>
-
->> > Person.__bases__
-(<
+class Student(Person):
+    pass
 
 
-class 'object'>, )
+s1 = Student()
+type(s1)
+# <class '__main__.Student'>
+s1.__class__
+# <class '__main__.Student'>
+s1.__bases__  # 实例没有 __bases__ 属性
+# Traceback (most recent call last):
+#   File "<stdin>", line 1, in <module>
+# AttributeError: 'Student' object has no attribute '__bases__'. Did you mean: '__class__'?
+type(Student)
+# <class 'type'>
+Student.__class__
+# <class 'type'>
+Student.__bases__
+# (<class '__main__.Person'>,)
 ```
 
 ### 内置方法(魔法方法)
@@ -546,7 +547,7 @@ asyncio.run(main())
     - 如果对象不存在 `__dir__()` 方法, 则 dir() 函数会尽力从对象的 `__dict__` 属性及其类型对象中收集信息
 
 ```python
->> > dir(globals())
+dir(globals())
 # ['__class__', '__class_getitem__', '__contains__', '__delattr__', '__delitem__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__ior__', '__iter__', '__le__', '__len__', '__lt__', '__ne__', '__new__', '__or__', '__reduce__', '__reduce_ex__', '__repr__', '__reversed__', '__ror__', '__setattr__', '__setitem__', '__sizeof__', '__str__', '__subclasshook__', 'clear', 'copy', 'fromkeys', 'get', 'items', 'keys', 'pop', 'popitem', 'setdefault', 'update', 'values']
 ```
 
@@ -614,7 +615,7 @@ class Duck:
         return self.__name
 
     @name.setter
-    def name(self, value)
+    def name(self, value):
         self.__name = value
 
 # 实例化后内置属性 __name 将变为 _Duck__name 绑定到实例上

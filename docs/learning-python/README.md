@@ -20,40 +20,41 @@ my_project/
 |—— 项目源代码
 ```
 
-- GIL(Global Interpreter Lock) 全局解释器锁, 是 Python 解释器中的互斥锁机制, 确保在同一进程内同一时刻只有一个线程执行 python 字节码, 
+- GIL(Global Interpreter Lock) 全局解释器锁, 是 Python 解释器中的互斥锁机制, 确保在同一进程内同一时刻只有一个线程执行
+  python 字节码,
   它简化了内存管理但是限制了多线程的并行计算能力.
-  - 设计目的: python 使用引用计数作为内存管理方式, 确保同一时刻只有一个线程修改引用计数, 避免多线程内存冲突.
-  - 释放条件: 时间片耗尽、遇到I/O操作, python3.2 后采用优先级平衡策略, 防止单个线程长时间持有 GIL 导致其他线程阻塞.
-  - 多进程方案: 创建多个独立进程, 每个进程有独立的 GIL 和内存空间.
-  - 异步编程: 使用 asyncio 实现高效的 I/O 并发处理, 不受 GIL 限制.
-  - 替代解释器: IronPython, Jython, PyPy 等.
+    - 设计目的: python 使用引用计数作为内存管理方式, 确保同一时刻只有一个线程修改引用计数, 避免多线程内存冲突.
+    - 释放条件: 时间片耗尽、遇到I/O操作, python3.2 后采用优先级平衡策略, 防止单个线程长时间持有 GIL 导致其他线程阻塞.
+    - 多进程方案: 创建多个独立进程, 每个进程有独立的 GIL 和内存空间.
+    - 异步编程: 使用 asyncio 实现高效的 I/O 并发处理, 不受 GIL 限制.
+    - 替代解释器: IronPython, Jython, PyPy 等.
 
 - 序列: 连续的可用下标访问的数据存储结构, 字符串, 元组, 列表, 数组, 可使用`切片`进行操作
 - `*` | `**`: 在数据存储结构中使用时, 解构 `可迭代对象`
 - `_` 匿名变量
-  - 在 REPL 中保存上一表达式结果
-  - 在 match-case 中匹配任意值但不绑定
+    - 在 REPL 中保存上一表达式结果
+    - 在 match-case 中匹配任意值但不绑定
 
 - `==`, is, isinstance 运算符和函数,
-  - `==` 比较值是否相等, 列表和元组必须有序, 集合无序
-  - is 比较内存地址是否是同一个对象, 常用 None 检查
-  - isinstance 类型检查, 检查对象是否是某个类或其子类的实例
+    - `==` 比较值是否相等, 列表和元组必须有序, 集合无序
+    - is 比较内存地址是否是同一个对象, 常用 None 检查
+    - isinstance 类型检查, 检查对象是否是某个类或其子类的实例
 
 ```python
 # == 比较值是否相等, 小整数缓存
 # python 会缓存 -5 到 256 的整数
->>> a = 5
->>> b = 5
->>> a == b
-True
->>> a is b  # 小整数缓存
-True
->>> a = 1000
->>> b = 1000
->>> a == b
-True
->>> a is b
-False
+a = 5
+b = 5
+print(a == b)
+# True
+print(a is b)  # 小整数缓存
+# True
+a = 1000
+b = 1000
+print(a == b)
+# True
+print(a is b)
+# False
 ```
 
 match-case 结构化模式匹配语法, 用来替代冗长的 if-elif-else 链, 支持值匹配、结构解包和类型校验.
@@ -62,30 +63,30 @@ match-case 结构化模式匹配语法, 用来替代冗长的 if-elif-else 链, 
 
 - match 定义表达式
 - case 定义匹配模式, 按顺序匹配, 命中第一个就跳出, 不再检查后续 case 块
-  - `_` 通配符, 匹配任意值
-  - 字符串不支持 `f''` 和 `t''`
+    - `_` 通配符, 匹配任意值
+    - 字符串不支持 `f''` 和 `t''`
 
 ```python
 match event:
     case r'\nhello world':  # 原始字符串匹配
-      print("hello world")
-    case 400 | 404: # 匹配 400 或 404
+        print("hello world")
+    case 400 | 404:  # 匹配 400 或 404
         print("Bad request")
-    case int(): # 类型匹配
+    case int():  # 类型匹配
         print('整型')
     case list() | tuple():  # 类型匹配
         print('集合类型')
-    case [x, *y]:   # 列表解包
+    case [x, *y]:  # 列表解包
         print("value is", x, y)
-    case {'status': code, 'data': data}:    # 匹配包含 status 和 data 的字典
+    case {'status': code, 'data': data}:  # 匹配包含 status 和 data 的字典
         print("status:", code, "data:", data)
     case [x, y] if x >= 0 and y >= 0:  # 先匹配列表, 再检查条件
         print("x and y are positive")
     case (x, y) if x == y:  # 先匹配元组, 再检查添加
         print("x is equal to y")
-    case Point(x=0, y=3):   # 匹配 Point 类实例
+    case Point(x=0, y=3):  # 匹配 Point 类实例
         print("x is 0, y is 3")
-    case _: # 匹配任意值
+    case _:  # 匹配任意值
         print("No match")
 ```
 
@@ -100,34 +101,38 @@ count = 0
 total = 100
 name = "Python"
 
+
 def update_stats():
     global count, total  # 可以同时声明多个全局变量
     count += 1
     total -= 10
     name = "Java"  # 如果没有 global name，这是局部变量
 
+
 update_stats()
-print(f"count: {count}")   # 输出: count: 1
-print(f"total: {total}")   # 输出: total: 90
-print(f"name: {name}")     # 输出: name: Python（没变）
+print(f"count: {count}")  # 输出: count: 1
+print(f"total: {total}")  # 输出: total: 90
+print(f"name: {name}")  # 输出: name: Python（没变）
+
 
 # 外层变量声明 nonlocal
 def level1():
     x = 1
-    
+
     def level2():
         x = 2  # level2 的局部变量
-        
+
         def level3():
             nonlocal x  # 指向 level2 的 x，不是 level1 的 x
             x = 3
             print(f"level3: {x}")
-        
+
         level3()
         print(f"level2: {x}")
-    
+
     level2()
     print(f"level1: {x}")
+
 
 level1()
 # 输出:
@@ -166,23 +171,23 @@ level1()
 
 ```python
 # 整型和布尔值
->>> 1 + True
+print(1 + True)
 2
->>> 1 + False
+print(1 + False)
 1
 
 # 整型和浮点型
->>> 1. + 2
+print(1. + 2)
 3.0
->>> 1 + 1.2
+print(1 + 1.2)
 2.2
 
 # 布尔值和浮点型
->>> 1. + True 
+print(1. + True)
 2.0
->>> 1.0 + True 
+print(1.0 + True)
 2.0
->>> 1.0 + False
+print(1.0 + False)
 1.0
 ```
 
@@ -191,13 +196,13 @@ level1()
 - 小整数缓存（Python 会缓存 -5 到 256 的整数）
 
 ```python
->>> a = 5
->>> b = 5
->>> a is b
+a = 5
+b = 5
+print(a is b)
 True
->>> c = 1000
->>> d = 1000
->>> c is d
+c = 1000
+d = 1000
+print(c is d)
 False
 ```
 
@@ -211,24 +216,26 @@ False
 ```python
 from enum import Enum
 
+
 # class syntax
 class Color(Enum):
     RED = 1
     GREEN = 2
     BLUE = 3
 
+
 # functional syntax
 Color = Enum('Color', [('RED', 1), ('GREEN', 2), ('BLUE', 3)])
-print(Color['RED']) # <Color.RED: 1>
-print(Color.RED.name)   # 'RED'
+print(Color['RED'])  # <Color.RED: 1>
+print(Color.RED.name)  # 'RED'
 print(Color.RED.value)  # 1
 
 print(list(Color))  # [<Color.RED: 1>, <Color.GREEN: 2>, <Color.BLUE: 3>]
-print(tuple(Color)) # (<Color.RED: 1>, <Color.GREEN: 2>, <Color.BLUE: 3>)
-print(set(Color))   # {<Color.GREEN: 2>, <Color.RED: 1>, <Color.BLUE: 3>}
+print(tuple(Color))  # (<Color.RED: 1>, <Color.GREEN: 2>, <Color.BLUE: 3>)
+print(set(Color))  # {<Color.GREEN: 2>, <Color.RED: 1>, <Color.BLUE: 3>}
 
-print(Color.RED in Color)   # True
-print(Color.RED.value in Color) # True
+print(Color.RED in Color)  # True
+print(Color.RED.value in Color)  # True
 ```
 
 ## 迭代器
@@ -237,8 +244,8 @@ print(Color.RED.value in Color) # True
 
 ```python
 my_list = [1, 2, 3]  # 列表是可迭代对象，但不是迭代器
-print(hasattr(my_list, '__iter__'))    # True
-print(hasattr(my_list, '__next__'))    # False
+print(hasattr(my_list, '__iter__'))  # True
+print(hasattr(my_list, '__next__'))  # False
 # 获取迭代器
 list_iterator = iter(my_list)
 print(hasattr(list_iterator, '__iter__'))  # True
@@ -258,6 +265,7 @@ def countdown_gen(n):
         n -= 1
     print("倒计时结束！")
 
+
 # 创建生成器对象
 gen = countdown_gen(5)
 print(type(gen))  # <class 'generator'>
@@ -268,7 +276,8 @@ for num in gen:
 
 ## 推导式
 
-推导式(Comprehensions) 是 python 中的一种简洁、高效的创建序列的语法结构，允许用一行代码从一个`可迭代对象`生成新的列表、字典、集合或生成器, 通常比传统的 for 循环更简洁
+推导式(Comprehensions) 是 python 中的一种简洁、高效的创建序列的语法结构，允许用一行代码从一个`可迭代对象`生成新的列表、字典、集合或生成器,
+通常比传统的 for 循环更简洁
 
 - 列表推导式
 
@@ -276,27 +285,27 @@ for num in gen:
 
 ```python
 # 生成 0-9 的平方
->>> squares = [x**2 for x in range(10)]
->>> squares
+squares = [x ** 2 for x in range(10)]
+print(squares)
 [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
 # 只保留偶数
->>> evens = [x for x in range(20) if x % 2 == 0]
->>> evens
+evens = [x for x in range(20) if x % 2 == 0]
+print(evens)
 [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
 
->>> numbers = [number-1 for number in range(1, 6)]
->>> numbers
+numbers = [number - 1 for number in range(1, 6)]
+print(numbers)
 [0, 1, 2, 3, 4]
 # 带判断条件推导式
->>> numbers = [number for number in range(1, 6) if number % 2 == 1]  
->>> numbers
+numbers = [number for number in range(1, 6) if number % 2 == 1]
+print(numbers)
 [1, 3, 5]
 
 # 嵌套推导式
->>> rows = range(1, 4)                                             
->>> cols = range(1, 3) 
->>> cells = [(row, col) for row in rows for col in cols]
->>> cells
+rows = range(1, 4)
+cols = range(1, 3)
+cells = [(row, col) for row in rows for col in cols]
+print(cells)
 [(1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (3, 2)]
 ```
 
@@ -306,13 +315,13 @@ for num in gen:
 
 ```python
 # 创建数字及平方的映射
->>> squares_dict = {x: x**2 for x in range(5)}
->>> squares_dict
+squares_dict = {x: x ** 2 for x in range(5)}
+print(squares_dict)
 {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
 # 统计名字长度
->>> names = ['alice', 'tom', 'jerry', 'bob']     
->>> name_length = {name: len(name) for name in names}
->>> name_length
+names = ['alice', 'tom', 'jerry', 'bob']
+name_length = {name: len(name) for name in names}
+print(name_length)
 {'alice': 5, 'tom': 3, 'jerry': 5, 'bob': 3}
 ```
 
@@ -321,11 +330,11 @@ for num in gen:
 基本语法：{expression for item in iterable if condition}
 
 ```python
->>> numbers = [1, 2, 3, 4, 5, 6]
->>> numbers
+numbers = [1, 2, 3, 4, 5, 6]
+print(numbers)
 [1, 2, 3, 4, 5, 6]
->>> square_set = {x**2 for x in numbers}
->>> square_set
+square_set = {x ** 2 for x in numbers}
+print(square_set)
 {1, 4, 36, 9, 16, 25}
 ```
 
@@ -334,18 +343,19 @@ for num in gen:
 基本语法：(expression for item in iterable if condition)
 
 ```python
->>> gen = (x**2 for x in range(5))
->>> next(gen)
+gen = (x ** 2 for x in range(5))
+next(gen)
 0
->>> next(gen)
+next(gen)
 1
->>> next(gen)
+next(gen)
 4
->>> next(gen)
+next(gen)
 9
->>> next(gen)
+next(gen)
 16
 ```
+
 ## 上下文管理器
 
 - 实现 `__enter__` 和 `__exit__` 魔法方法
@@ -367,18 +377,22 @@ for num in gen:
 
 ```python
 try:
-# 可能发生错误的代码
-except (NameError, ZeroDivisionError) e:
-# 捕获未定义的变量或除以 0 的错误 
-# except: # 等价于下一行的写法
+    # 可能发生错误的代码
+    pass
+except (NameError, ZeroDivisionError) as ex:
+    # 捕获未定义的变量或除以 0 的错误 
+    # except: # 等价于下一行的写法
+    pass
 except Exception as e:
-# 捕获所有错误后执行的代码
+    # 捕获所有错误后执行的代码
+    pass
 else:
-# 没有发生错误执行的代码
+    # 没有发生错误执行的代码
+    pass
 finally:
-# 最后总是会执行的代码
+    # 最后总是会执行的代码
+    pass
 ```
-
 
 ## 模块
 
@@ -400,11 +414,14 @@ finally:
 # 控制包级别 from package_name import * 的导入行为
 __all__ = ['func_1']
 
+
 def func_1():
     pass
 
-def func_2():   # 不在 __all__ 中, 不允许被导入
+
+def func_2():  # 不在 __all__ 中, 不允许被导入
     pass
+
 
 # my_module1.py
 # 控制模块级别的 import * 导入行为

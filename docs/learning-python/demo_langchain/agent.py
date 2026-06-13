@@ -14,7 +14,13 @@ from langchain_openai import ChatOpenAI
     5. 明确要求输出格式
     6. 提供输入输出的示例
 
-LangChain Agent 示例
+LangChain:
+    - Prompts   # 提示词工程
+    - Models    # 调用各类模型
+    - History   # 管理会话历史记录
+    - Indexes   # 管理和分析各类文档
+    - Chains    # 构建功能的执行链条
+    - Agent # 构建智能体
 
 核心组件:
     - create_agent(): 创建智能体

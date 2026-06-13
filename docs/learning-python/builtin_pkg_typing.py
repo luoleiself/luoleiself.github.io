@@ -2,6 +2,10 @@ from typing import TypeVar, TypeAlias, NewType, Annotated, Any, Literal, Literal
     Final, Unpack, Mapping, NamedTuple, TypedDict
 from collections.abc import Callable
 
+"""
+typing 模块为类型提示提供运行时支持
+"""
+
 print('''
 类型缩写: type t_name = o_type
     TypeAlias: Predicate: TypeAlias = Callable[..., bool] 定义类型缩写, 3.12 开始废弃, 使用 type 定义
@@ -11,7 +15,7 @@ Any: 任意类型
 Final: 锁定类型和值, 不能再次修改, 等价于 Literal[type]
 Literal: 字面量值, Literal['r', 'w', 'a']
 LiteralString: 字符串字面量, 只能使用字符串字面量
-Mapping: 键值对的通用容器, 3.9 开启废弃, 使用 [key, value] 代替
+Mapping: 键值对的通用容器, 3.9 开启废弃, 使用 dict[key, value] 代替
 Union: 联合类型, 等价于 x | y
 Optional: 可选类型, 等价于 x | None 或 Union[x, None]
 Never:  表示函数没有返回值
