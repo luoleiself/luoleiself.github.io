@@ -270,6 +270,8 @@ Student.__bases__
 - `__str__` 自定义实例的 print 函数的输出结果
 - `__repr__`  自定义实例的回显
 - `__len__` 自定义实例的获取长度
+- `__bool__` 自定义实例的 bool 函数的返回结果
+- `__contains__` 自定义实例的 in 运算符的返回结果
 
 ```python
 class Word:

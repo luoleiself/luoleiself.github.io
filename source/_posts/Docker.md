@@ -901,7 +901,7 @@ CMD ['/etc/nginx/nginx.conf']
 # Dockerfile
 FROM centos:7 # 基础镜像
 
-LABEL authors=luoleiself<luoleiself@163.com> # 镜像元数据
+LABEL authors=luoleiself<297509760@qq.com> # 镜像元数据
 
 WORKDIR /usr/local/   # 设置工作目录
 
@@ -927,7 +927,7 @@ CMD ["cat", "/usr/local/hello.txt"]   # 容器运行时执行的命令
 Sending build context to Docker daemon  3.072kB
 Step 1/6 : FROM centos:7
  ---> eeb6ee3f44bd
-Step 2/6 : LABEL maintainer=luoleiself<luoleiself@163.com>
+Step 2/6 : LABEL maintainer=luoleiself<297509760@qq.com>
  ---> Running in 42aee4c83238
 Removing intermediate container 42aee4c83238
  ---> c0a8427ea1ca

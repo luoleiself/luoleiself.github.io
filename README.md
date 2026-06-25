@@ -73,7 +73,7 @@ themes/next/\_config.yml
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
   GitHub: https://github.com/luoleiself || fab fa-github
-  E-Mail: mailto:luoleiself@163.com || fa fa-envelope
+  E-Mail: mailto:297509760@qq.com || fa fa-envelope
   #Weibo: https://weibo.com/yourname || fab fa-weibo
   #Google: https://plus.google.com/yourname || fab fa-google
   #Twitter: https://twitter.com/yourname || fab fa-twitter

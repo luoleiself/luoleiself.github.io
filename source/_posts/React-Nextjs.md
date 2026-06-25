@@ -1099,6 +1099,29 @@ export default function Page(){
 - useSelectedLayoutSegments 获取当前 layout 下的活动路由段, 通常用于在父布局中改变子段的状态
 
 ```tsx
+// useSelectedLayoutSegment()
+// layout                   visited URL                   return segment
+// app/layout.js	          /	                               null
+// app/layout.js	          /dashboard	                  'dashboard'
+// app/dashboard/layout.js	/dashboard	                     null
+// app/dashboard/layout.js	/dashboard/settings	          'settings'
+// app/dashboard/layout.js	/dashboard/analytics	        'analytics'
+// app/dashboard/layout.js	/dashboard/analytics/monthly	'analytics'
+// 截获所有动态路由参数 [...slug]
+// app/blog/layout.js	      /blog/a/b/c	                  'a/b/c'
+
+// useSelectedLayoutSegments()
+// Layout	                  Visited URL	          Returned Segments
+// app/layout.js	          /	                        []
+// app/layout.js	          /dashboard	          ['dashboard']
+// app/layout.js	          /dashboard/settings   ['dashboard', 'settings']
+// app/dashboard/layout.js	/dashboard	              []
+// app/dashboard/layout.js	/dashboard/settings   ['settings']
+// 截获所有动态路由参数 [...slug]
+// app/layout.js	          /blog/a/b/c	          ['blog', 'a/b/c']
+// app/blog/layout.js	      /blog/a/b/c	          ['a/b/c']
+
+
 // app/blog/blog-nav-link.tsx
 'use client'
  
