@@ -492,6 +492,8 @@ print(result)  # [11, 22, 33]
 
 #### filter()
 
+> filter(function, iterable, /)
+
 过滤序列返回结果为迭代器对象, 需要使用 list() 转换为列表
 
 ```python
@@ -516,6 +518,10 @@ print(list(reversed([1, 2, 3, 4])))  # [4, 3, 2, 1]
 ```
 
 #### sorted()
+
+> sorted(iterable, /, *, key=None, reverse=False)
+
+- key 指定一个参数的函数, 用于从 iterable 中的每个元素中提取比较键, 默认值为 None
 
 排序`可迭代对象`返回一个新列表
 
