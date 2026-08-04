@@ -226,6 +226,7 @@ git stash branch new-feature stash@{1}
 - git commit -a # 提交工作区自上次 `commit` 之后的变化，直接到仓库区
 - git commit -v # 提交时显示所有 `diff` 信息
 - git commit --amend -m 'message' # 使用一次新的 `commit`，替代上一次提交, 如果代码没有任何新变化，则用来改写上一次 `commit` 的提交信息
+- git commit --amend --no-edit # 使用上次的提交不修改提交信息
 - git commit --amend [file1] [file2] ... # 重做上一次 `commit`，并包括指定文件的新变化
 
 - git commit -n, \-\-no-verify  # 提交时忽略 pre-commit 和 commit-msg hooks
