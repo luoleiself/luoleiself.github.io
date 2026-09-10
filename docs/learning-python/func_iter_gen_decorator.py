@@ -201,3 +201,24 @@ def add_ints(a, b):
 print(f'add_ints(3, 5) result: {add_ints("zhangsan", 3, 5)}')
 print(
     f'@functools.wraps(add_ints) 保留被装饰函数的元信息 add_ints.__name__ {add_ints.__name__}')
+
+# 带参数的装饰器：外层吃参数，中层吃函数，内层吃调用参数
+def repeat(n):
+    """重复执行 n 次的装饰器"""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for _ in range(n):
+                result = func(*args, **kwargs)
+            return result  # 返回最后一次的结果
+        return wrapper
+    return decorator
+
+@repeat(3)
+def say_hello(name):
+    print(f"Hello, {name}!")
+
+say_hello("Python")
+# Hello, Python!
+# Hello, Python!
+# Hello, Python!
