@@ -26,6 +26,7 @@ from starlette import status
 from starlette.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse, Response
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket
+from starlette.middleware import Middleware
 
 from routers import news  # 导入分组路由
 
@@ -407,8 +408,19 @@ async def start_app(app: FastAPI):
     yield
     print('shutdown app...')
 
-
-app = FastAPI(lifespan=start_app, dependencies=[])
+app = FastAPI(
+    lifespan=start_app,
+    dependencies=[],
+    middleware=[
+        Middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_headers=["*"],
+            allow_methods=["*"],
+            allow_credentials=True,
+        )
+    ]
+)
 
 
 # cookie pydantic 模型
@@ -799,15 +811,6 @@ async def add_process_time_header(request: Request, call_next):
     print('end1...')
     return response
 
-
-# 添加 CORS 中间件
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # 挂载静态文件
 app.mount('/static', StaticFiles(directory='static'), name='static')
