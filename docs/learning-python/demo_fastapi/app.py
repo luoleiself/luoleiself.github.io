@@ -28,7 +28,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket
 from starlette.middleware import Middleware
 
-from routers import news  # 导入分组路由
+from .routers import news  # 导入分组路由
 
 """
 # 配置应用位置
