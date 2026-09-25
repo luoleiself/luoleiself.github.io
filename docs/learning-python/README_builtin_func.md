@@ -185,16 +185,16 @@ chr(26834)
 
 #### bytearray()
 
-创建或转换为一个新的字节数组, 表示 0 <= x < 256 范围内的可变整数序列
+创建或转换为一个新的可变字节数组, 表示 0 <= x < 256 范围内的可变整数序列
 
-- 如果传入字符串, 需要指定编码格式
+- 如果传入字符串, 必须指定第二个参数编码格式
 - 如果传入整数, 创建空字节填充的指定大小的字节数组
 - 如果传入符合缓冲区接口的对象, 将使用该对象的只读缓冲区来初始化字节数组
 - 如果传入可迭代对象, 则元素必须符合 0 <= x < 256 范围内的整数
 - 如果没有参数, 将创建一个大小为 0 的数组
 
 ```python
-s = 'hello 中国, 你好!'
+s = 'hello 中国, 你好'
 # bytearray() 创建可变整数序列
 bytearray()  # 创建空字节数组
 bytearray(b'')
@@ -204,7 +204,12 @@ bytearray(s)  # 字符串必须指定编码格式
 # TypeError: string argument without an encoding
 
 ba = bytearray(s, 'utf-8')
-bytearray(b'hello \xe4\xb8\xad\xe5\x9b\xbd, \xe4\xbd\xa0\xe5\xa5\xbd!')
+print(ba)
+# bytearray(b'hello \xe4\xb8\xad\xe5\x9b\xbd, \xe4\xbd\xa0\xe5\xa5\xbd')
+ba[3] = 123 
+ba.decode('utf-8')  # 字节数组解码为字符串
+# 'hel{o 中国, 你好'
+
 bytearray(['a', 2, 3, 4])  # 可迭代对象必须是符合条件的整数
 # Traceback (most recent call last):
 #   File "<stdin>", line 1, in <module>
@@ -217,9 +222,6 @@ bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
 bay[1] = 250
 print(bay)
 bytearray(b'\x00\xfa\x00\x00\x00\x00\x00\x00\x00\x00')
-
-ba.decode('utf-8')  # 字节数组解码为字符串
-'hello 中国, 你好!'
 ```
 
 #### bytes()
@@ -227,12 +229,21 @@ ba.decode('utf-8')  # 字节数组解码为字符串
 创建或转换为一个新的表示 0 <= x < 256 范围内的不可变整数序列
 
 - 参数和 bytearray() 相同
+- 如果传入字符串, 必须指定第二个参数编码格式
 
 ```python
-s = 'hello 中国, 你好!'
+s = 'hello 中国, 你好'
 # bytes() 创建不可变整数序列
-bytes(s, 'utf-8')  # 字符串必须指定编码格式
-b'hello \xe4\xb8\xad\xe5\x9b\xbd, \xe4\xbd\xa0\xe5\xa5\xbd!'
+b = bytes(s, 'utf-8')  # 字符串必须指定编码格式
+print(b)
+# b'hello \xe4\xb8\xad\xe5\x9b\xbd, \xe4\xbd\xa0\xe5\xa5\xbd'
+b[1] = 123
+# Traceback (most recent call last):
+#   File "<stdin>", line 1, in <module>
+# TypeError: 'bytes' object does not support item assignment
+b.decode('utf-8') # 字节序列解码为字符串
+'hello 中国, 你好'
+
 bytes(10)  # 创建指定大小的不可变整数序列
 b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 bytes([1, 2, 3, 4])
@@ -241,9 +252,6 @@ bytes(10)[1] = 12  # 不可变整数序列
 # Traceback (most recent call last):
 #   File "<stdin>", line 1, in <module>
 # TypeError: 'bytes' object does not support item assignment
-
-bytes(s, 'utf-8').decode('utf-8')
-'hello 中国, 你好!'
 ```
 
 #### 其他转换
