@@ -110,6 +110,7 @@ print({*s, 'h', 1})  # 解构为集合
 ### 字符串前缀
 
 - f'', 格式化字符串, 3.6+ 支持
+- t'', 模板字符串, 3.14+ 支持, 返回 Template 对象而非字符串
 - b'', 字节字符串, 表示字节类型
 - r'', 原始字符串, 忽略转义字符
 - u'', Unicode 字符串
@@ -398,8 +399,7 @@ True
 
 ```python
 name = 'python'
-print('hello'
-name)  # 字符串拼接变量报错
+# print('hello' name)  # 字符串拼接变量报错
 #   File "<stdin>", line 1
 #     'hello' name
 #             ^^^^
@@ -469,8 +469,7 @@ print("hello %s" % 'python')  # 单个数据项
 'hello python'
 
 # 多个数据项必须使用元组形式
-print('name: %s, age: %d' % 'python'
-18 )  # 多个数据项应使用元组形式
+# print('name: %s, age: %d' % 'python' 18)  # 多个数据项应使用元组形式
 #   File "<stdin>", line 1
 #     'name: %s, age: %d' % 'python' 18
 #                                    ^^
@@ -756,6 +755,168 @@ print(f'{x = :^+#10o}')  # 居中显示八进制带符号带前缀 0o
 print(f'{x = :^+#10x}')  # 居中显示十六进制带符号带前缀 0x
 'x =   +0x64   '
 ```
+
+#### t-string
+
+> python 3.14 以上支持 (PEP 750), 模板字符串字面量
+
+**原理**
+
+- 写法和 f-string 一致, 前缀换成 `t`, 但结果不是 `str`, 而是 `string.templatelib.Template` 对象
+- f-string 在求值时立即把静态文本和插值拼接成一个字符串, 拼接后边界信息永久丢失
+- t-string 不拼接, 编译器把模板拆成"静态文本 + 插值"交替的清单保留在 `Template` 对象中
+    - 静态文本: 普通 `str`, 编写代码时写死的部分(可信)
+    - 插值: `Interpolation` 对象, 运行时数据(不可信), 携带 4 个属性
+        - `.value` 表达式求值结果
+        - `.expression` 源码中的表达式文本
+        - `.conversion` 转换符(`!r`/`!s`/`!a`)
+        - `.format_spec` 格式说明
+- `Template` 本身不渲染, 需要交给自定义的渲染函数遍历处理
+
+```python
+from string.templatelib import Template, Interpolation
+
+name = 'alice'
+t = t"Hello {name}!"
+type(t)
+# <class 'string.templatelib.Template'>
+list(t)
+# ['Hello ', Interpolation('alice', 'name', None, ''), '!']
+
+# 遍历: 静态部分是 str, 插值部分是 Interpolation
+for part in t:
+    if isinstance(part, Interpolation):
+        print(part.expression, part.value)
+    else:
+        print(repr(part))
+# 'Hello '
+# name alice
+# '!'
+
+# f-string 对比: 拼接后无法区分静态与动态
+f"Hello {name}!" == "Hello alice!"
+True
+```
+
+**作用: 区分"代码"与"数据", 从结构上防止注入类攻击**
+
+- 注入漏洞的根源: f-string 把代码(指令)和数据(值)混入同一个字符串通道, 接收方(数据库/shell/浏览器)把整体当代码解析, 数据中的 `'`、`;`、`<` 等字符逃出数据边界升格为语法
+- t-string 让两者物理分离: 静态部分构成语法结构, 插值部分只作为数据传递
+- 接收方先解析定死结构, 数据到达时解析已结束, 无论内容是什么都只能是数据
+
+**f-string 与 t-string 的区别**
+
+| 维度 | f-string | t-string |
+|---|---|---|
+| 结果类型 | `str`(成品) | `Template`(清单) |
+| 静态/动态边界 | 拼接后丢失 | 结构性保留 |
+| 表达式名信息 | 丢失 | `.expression` 保留 |
+| 直接 print/存储 | 可以 | 不可以, 需先渲染 |
+| 用途 | 日常拼接、格式化输出 | 进入"会执行它"的系统前的安全构建 |
+
+**应用场景与代码**
+
+- SQL 参数化(防 SQL 注入): 静态部分构成查询, 插值转为占位符 + 绑定参数
+
+```python
+from string.templatelib import Interpolation
+
+def sql(template, params=None):
+    """插值 → ? 占位符, 值收集进 params"""
+    params = [] if params is None else params
+    parts = []
+    for part in template:
+        if isinstance(part, Interpolation):
+            parts.append('?')
+            params.append(part.value)
+        else:
+            parts.append(part)
+    return ''.join(parts), params
+
+username = "x' OR '1'='1"  # 恶意输入
+query, values = sql(t"SELECT * FROM users WHERE name = {username}")
+print(query)
+'SELECT * FROM users WHERE name = ?'
+print(values)
+["x' OR '1'='1"]
+# 恶意内容只是一个待匹配的名字, 永远变不成 SQL 语法
+
+cursor.execute(query, values)  # 交给 DB-API 驱动执行
+```
+
+- HTML 转义(防 XSS): 静态部分(自己写的标签)原样输出, 插值一律转义
+
+```python
+import html
+from string.templatelib import Interpolation
+
+def render_html(template):
+    parts = []
+    for part in template:
+        if isinstance(part, Interpolation):
+            parts.append(html.escape(str(part.value), quote=True))
+        else:
+            parts.append(part)
+    return ''.join(parts)
+
+comment = '<script>alert(1)</script>'
+render_html(t"<p>{comment}</p>")
+'<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>'
+# 自己写的 <p> 标签完好, 用户输入的 <script> 变成无害文字
+```
+
+- shell 命令构建(防命令注入): 插值经 `shlex.quote` 转义, 或直接产出参数列表绕过 shell
+
+```python
+import shlex
+from string.templatelib import Interpolation
+
+def sh(template):
+    parts = []
+    for part in template:
+        if isinstance(part, Interpolation):
+            parts.append(shlex.quote(str(part.value)))
+        else:
+            parts.append(part)
+    return ''.join(parts)
+
+filename = 'cat.jpg; rm -rf ~ #'
+sh(t"convert {filename} out.png")
+"convert 'cat.jpg; rm -rf ~ #' out.png"
+# 分号被引号锁住, 只是文件名的一部分, 不会被 shell 当命令分隔符执行
+```
+
+- 日志脱敏: 利用 `.expression`(源码表达式名)识别敏感字段, f-string 拼接后此信息已丢失
+
+```python
+import re
+from string.templatelib import Interpolation
+
+SENSITIVE = re.compile(r'(password|token|secret|api_key)', re.I)
+
+def log_line(template):
+    parts = []
+    for part in template:
+        if isinstance(part, Interpolation):
+            if SENSITIVE.search(part.expression):
+                parts.append('[REDACTED]')
+            else:
+                parts.append(str(part.value))
+        else:
+            parts.append(part)
+    return ''.join(parts)
+
+user, password = 'alice', 'hunter2'
+log_line(t"login: user={user} password={password}")
+'login: user=alice password=[REDACTED]'
+```
+
+**注意事项**
+
+- t-string 不是 f-string 的替代品, 日常拼接、格式化输出继续用 f-string
+- `Template` 不是字符串, 直接 `print(t"...")` 得不到期望文本, 必须先经渲染函数
+- 无法向后兼容: `t"..."` 是语法级特性, python 3.13 及以下直接 `SyntaxError`
+- 渲染函数中的"逃生舱"(原样拼接的包装类型)只接受可信来源, 绝不能包装用户输入
 
 #### join 方法拼接字符串
 
