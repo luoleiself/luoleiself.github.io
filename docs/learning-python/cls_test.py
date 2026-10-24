@@ -1,26 +1,26 @@
 import unittest
 
-'''
+"""
 测试文件名可以以 test 开始或结尾
 测试方法必须以 test_ 开头
-'''
+"""
 
 
 class TestStringMethods(unittest.TestCase):
-    '''所有测试类继承自 unittest.TestCase'''
+    """所有测试类继承自 unittest.TestCase"""
 
     longMessage = True
-    '''
+    """
     longMessage: 控制自定义失败消息展示形式
         默认值为 True,
             如果传入 msg 参数, 自定义消息将附加到标准错误消息之后
         如果为 False,
             如果传入 msg 参数, 自定义消息将替换标准错误信息
             如果未传入 msg 参数, 使用标准错误信息
-    '''
+    """
 
     def setUp(self):
-        '''每个方法执行前都会执行'''
+        """每个方法执行前都会执行"""
         print('test setUp...')
         # 输出测试方法的 id
         print(f'self.id() {self.id()}')
@@ -28,7 +28,7 @@ class TestStringMethods(unittest.TestCase):
         print(f'self.shortDescription() {self.shortDescription()}')
 
     def tearDown(self):
-        '''每个方法执行后都会执行'''
+        """每个方法执行后都会执行"""
         print('test tearDown...')
 
     # 条件为 真 时才跳过
@@ -63,7 +63,7 @@ class TestStringMethods(unittest.TestCase):
 
     # 比较两个多行字符串是否相等
     def test_multiline_str_equal(self):
-        '''比较两个多行字符串是否相等'''
+        """比较两个多行字符串是否相等"""
         self.assertMultiLineEqual('''
         hello world
         hello python
@@ -80,13 +80,13 @@ class TestStringMethods(unittest.TestCase):
         # assertNotRegex 使用第二个参数 search 第一个参数，不匹配则通过
         self.assertNotRegex('hello world', 'world!')
 
-    def test_mybe_skipped(self):
+    def test_maybe_skipped(self):
         if not '':
             self.skipTest('unittest.skipTest() skipped')
 
 
 class TestContainerMethods(unittest.TestCase):
-    '''所有测试类继承自 unittest.TestCase'''
+    """所有测试类继承自 unittest.TestCase"""
 
     # 比较两个序列是否包含相同的元素，忽略元素顺序和容器类型
     def test_count_same_elements_in_two_sequences(self):
@@ -119,7 +119,7 @@ class TestContainerMethods(unittest.TestCase):
 
 
 # 自定义测试结果类 继承 unittest.TestResult
-class CustomTestresult(unittest.TestResult):
+class CustomTestResult(unittest.TestResult):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.passed_tests = []
@@ -127,36 +127,34 @@ class CustomTestresult(unittest.TestResult):
         self.skipped_tests = []
 
     def addSuccess(self, test):
-        '''测试通过时调用'''
+        """测试通过时调用"""
         super().addSuccess(test)
         self.passed_tests.append(test)
         print(f'success: {test}')
 
     def addFailure(self, test, err):
-        '''测试失败时调用'''
+        """测试失败时调用"""
         super().addFailure(test, err)
         self.failed_tests.append(test)
         print(f'failure: {test}')
 
     def addSkip(self, test, reason):
-        '''测试跳过时调用'''
+        """测试跳过时调用"""
         super().addSkip(test, reason)
         self.skipped_tests.append(test)
         print(f'skip: {test}')
 
     def get_report(self):
-        '''返回测试报告'''
-        report = []
-        report.append(f'passed tests: {self.passed_tests}')
-        report.append(f'failed tests: {self.failed_tests}')
-        report.append(f'skipped tests: {self.skipped_tests}')
+        """返回测试报告"""
+        report = [f'passed tests: {self.passed_tests}', f'failed tests: {self.failed_tests}',
+                  f'skipped tests: {self.skipped_tests}']
         return '\n'.join(report)
 
 
 # 自定义测试运行器类 继承 unittest.TextTestRunner
 class CustomTestRunner(unittest.TextTestRunner):
     def _makeResult(self):
-        return CustomTestresult()
+        return CustomTestResult()
 
 
 if __name__ == '__main__':
