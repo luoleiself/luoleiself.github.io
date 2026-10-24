@@ -10,6 +10,9 @@ import time
 - asyncio.wait() 等待任务列表全部完成
 - asyncio.run() 运行协程对象， 内部调用 asyncio.Runner() 创建事件循环上下文管理器
   - asyncio.Runner() 创建事件循环上下文管理器
+- asyncio.TaskGroup() 创建任务组上下文管理器, 并等待组内的所有任务完成
+- asyncio.timeout(delay) 创建超时上下文管理器
+- asyncio.as_completed(fs) 创建一个迭代器, 用于迭代已完成的任务
 async for 用于迭代异步可迭代对象 (实现了 __aiter__ 的对象), 只能用在 async 协程函数中, 否则报错
 async with 用于获取异步上下文管理器, 只能用在 async 协程函数中, 否则报错
 '''
