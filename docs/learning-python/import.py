@@ -1,6 +1,11 @@
-import sys
-for path in sys.path:
-    print(f' {path}')
+"""
+在 Python 模块或包中，__all__ 是一个特殊的列表变量，用于显式声明在执行 from module import * 时允许被导入的名称。
+它的核心作用是控制公共 API，防止命名污染，并保持接口的稳定性。
+基本行为:
+    定义了 __all__：只有列表中列出的名称会被导入。
+    未定义 __all__：会导入所有不以下划线 _ 开头的名称。
+    不影响普通导入：import module 方式可访问模块中所有成员，即使不在 __all__ 中。
+"""
 
 # # 导入方式1: import 导入包下的模块
 # import my_package.my_module1
